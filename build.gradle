@@ -1,0 +1,102 @@
+plugins {
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'maven-publish'
+    id 'java'
+}
+
+dependencies {
+    implementation 'org.apache.maven:maven-artifact:3.0.3'
+    implementation 'org.bstats:bstats-bukkit:1.7'
+    compileOnly 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.0-SNAPSHOT'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.4-SNAPSHOT'
+    compileOnly 'com.github.TechFortress:GriefPrevention:16.14.0'
+    compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.5.10'
+    compileOnly 'com.github.cryptomorin:kingdoms:1.10.3.1'
+    compileOnly 'com.github.TownyAdvanced:Towny:0.96.2.0'
+    compileOnly 'com.github.angeschossen:LandsAPI:4.7.3'
+    compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
+    compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
+    compileOnly 'org.jetbrains:annotations:19.0.0'
+    compileOnly fileTree(dir: '/lib', include: ['*.jar'])
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+}
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+    mavenLocal()
+    maven { url 'https://jitpack.io' }
+
+    // NMS (for jitpack compilation)
+    maven { url 'https://repo.codemc.org/repository/nms/' }
+
+    // bStats
+    maven { url 'https://repo.codemc.org/repository/maven-public' }
+
+    // Spigot API
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+
+    // PlaceholderAPI
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+
+    // ProtocolLib
+    maven { url 'https://repo.dmulloy2.net/nexus/repository/public/' }
+
+    // WorldGuard
+    maven { url 'https://maven.enginehub.org/repo/' }
+
+    // FactionsUUID
+    maven { url 'https://ci.ender.zone/plugin/repository/everything/' }
+
+    // NoCheatPlus
+    maven { url 'https://repo.md-5.net/content/repositories/snapshots/' }
+}
+
+tasks.withType(JavaCompile) {
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+}
+
+configurations.all {
+    exclude group: "org.codehaus.plexus", module: "plexus-utils"
+    exclude group: "com.mojang", module: "brigadier"
+    exclude group: "org.kitteh", module: "paste-gg-api"
+    exclude group: "org.spongepowered", module: "configurate-hocon"
+    exclude group: "com.darkblade12", module: "particleeffect"
+}
+
+shadowJar {
+    relocate('org.bstats.bukkit', 'com.willfp.eco.util.shaded.bstats')
+    relocate('org.apache.maven', 'com.willfp.eco.util.shaded.maven')
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            from components.java
+            artifact shadowJar
+        }
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileJava.dependsOn clean
+
+publishToMavenLocal.dependsOn shadowJar
+
+build.dependsOn shadowJar
+build.dependsOn publishToMavenLocal
+
+group = 'com.willfp'
+archivesBaseName = project.name
+version = '1.0.0'
+java.sourceCompatibility = JavaVersion.VERSION_1_8

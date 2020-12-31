@@ -1,0 +1,23 @@
+# Java
+*.class
+
+# Eclipse IDE
+.settings/
+bin/
+.classpath
+.project
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Gradle
+.gradle
+**/build/
+!src/**/build/
+.gradletasknamecache
+!gradle-wrapper.jar
+gradle-app.setting
+
+# Mac OSX
+.DS_Store
