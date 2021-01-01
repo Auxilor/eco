@@ -1,5 +1,6 @@
 package com.willfp.eco.util.plugin;
 
+import com.willfp.eco.util.ClassUtils;
 import com.willfp.eco.util.arrows.ArrowDataListener;
 import com.willfp.eco.util.bukkit.events.EcoEventManager;
 import com.willfp.eco.util.bukkit.events.EventManager;
@@ -232,11 +233,14 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         Prerequisite.update();
 
-        this.getPacketAdapters().forEach(abstractPacketAdapter -> {
-            if (!abstractPacketAdapter.isPostLoad()) {
-                abstractPacketAdapter.register();
-            }
-        });
+
+        if (ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter")) {
+            this.getPacketAdapters().forEach(abstractPacketAdapter -> {
+                if (!abstractPacketAdapter.isPostLoad()) {
+                    abstractPacketAdapter.register();
+                }
+            });
+        }
 
 
         updatableClasses.add(Configs.class);
@@ -283,11 +287,13 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * Default code to be executed after the server is up.
      */
     public final void afterLoad() {
-        this.getPacketAdapters().forEach(abstractPacketAdapter -> {
-            if (abstractPacketAdapter.isPostLoad()) {
-                abstractPacketAdapter.register();
-            }
-        });
+        if (ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter")) {
+            this.getPacketAdapters().forEach(abstractPacketAdapter -> {
+                if (abstractPacketAdapter.isPostLoad()) {
+                    abstractPacketAdapter.register();
+                }
+            });
+        }
 
         if (!Prerequisite.HAS_PAPER.isMet()) {
             this.getLog().error("");
