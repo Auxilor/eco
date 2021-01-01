@@ -51,6 +51,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -85,6 +86,18 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      */
     @Getter
     private final String proxyPackage;
+
+    /**
+     * The color of the plugin, used in messages.
+     */
+    @Getter
+    private final String color;
+
+    /**
+     * Loaded integrations.
+     */
+    @Getter
+    private final Set<String> loadedIntegrations = new HashSet<>();
 
     /**
      * Set of external plugin integrations.
@@ -159,15 +172,18 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @param resourceId   The spigot resource ID for the plugin.
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
+     * @param color        The color of the plugin (used in messages, such as &a, &b)
      */
     protected AbstractEcoPlugin(@NotNull final String pluginName,
                                 final int resourceId,
                                 final int bStatsId,
-                                @NotNull final String proxyPackage) {
+                                @NotNull final String proxyPackage,
+                                @NotNull final String color) {
         this.pluginName = pluginName;
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
+        this.color = color;
 
         this.log = new EcoLogger(this);
         this.scheduler = new EcoScheduler(this);
@@ -187,10 +203,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         super.onLoad();
 
         this.getLog().info("==========================================");
-        this.getLog().info("");
-        this.getLog().info("Loading &a" + this.pluginName);
-        this.getLog().info("Made by &aAuxilor&f - willfp.com");
-        this.getLog().info("");
+        this.getLog().info("Loading " + this.color + this.pluginName);
         this.getLog().info("==========================================");
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
@@ -219,16 +232,12 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toSet());
 
         this.getDefaultIntegrations().forEach((integrationLoader -> {
-            StringBuilder infoBuilder = new StringBuilder();
-            infoBuilder.append(integrationLoader.getPluginName()).append(": ");
             if (enabledPlugins.contains(integrationLoader.getPluginName())) {
+                this.loadedIntegrations.add(integrationLoader.getPluginName());
                 integrationLoader.load();
-                infoBuilder.append("&aENABLED");
-            } else {
-                infoBuilder.append("&9DISABLED");
             }
-            this.getLog().info(infoBuilder.toString());
         }));
+        this.getLog().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
         this.getLog().info("");
 
         Prerequisite.update();
