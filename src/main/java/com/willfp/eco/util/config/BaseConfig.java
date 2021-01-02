@@ -28,6 +28,7 @@ public abstract class BaseConfig extends PluginDependent implements ValueGetter 
     /**
      * The physical config file, as stored on disk.
      */
+    @Getter(AccessLevel.PROTECTED)
     private final File configFile;
 
     /**
