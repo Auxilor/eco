@@ -38,10 +38,10 @@ public final class TelekinesisUtils {
     }
 
     static {
-        if (!Bukkit.getServicesManager().isProvidedFor(TelekinesisTests.class)) {
+        if (Bukkit.getServicesManager().getKnownServices().stream().noneMatch(clazz -> clazz.getName().contains("TelekinesisTests"))) {
             Bukkit.getServicesManager().register(TelekinesisTests.class, new EcoTelekinesisTests(), AbstractEcoPlugin.getInstance(), ServicePriority.Normal);
         }
 
-        tests = Bukkit.getServicesManager().load(TelekinesisTests.class);
+        tests = (TelekinesisTests) Bukkit.getServicesManager().load(Bukkit.getServicesManager().getKnownServices().stream().filter(clazz -> clazz.getName().contains("TelekinesisTests")).findFirst().get());
     }
 }
