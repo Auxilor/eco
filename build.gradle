@@ -20,7 +20,7 @@ dependencies {
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
     compileOnly 'org.jetbrains:annotations:19.0.0'
-    compileOnly fileTree(dir: '/lib', include: ['*.jar'])
+    compileOnly fileTree(dir: 'lib', include: ['*.jar'])
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.16'
