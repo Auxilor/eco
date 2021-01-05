@@ -202,9 +202,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     public final void onEnable() {
         super.onLoad();
 
-        this.getLog().info("==========================================");
+        this.getLog().info("");
         this.getLog().info("Loading " + this.color + this.pluginName);
-        this.getLog().info("==========================================");
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
         this.getEventManager().registerListener(new NaturalExpGainListeners());
@@ -237,8 +236,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
                 integrationLoader.load();
             }
         }));
+
         this.getLog().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
-        this.getLog().info("");
 
         Prerequisite.update();
 
@@ -265,6 +264,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.updatableClasses.forEach(clazz -> this.getConfigHandler().registerUpdatableClass(clazz));
 
         this.enable();
+
+        this.getLog().info("");
     }
 
     /**
@@ -321,7 +322,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         this.reload();
 
-        this.getLog().info("Loaded &a" + this.pluginName);
+        this.getLog().info("Loaded " + this.color + this.pluginName);
     }
 
     /**
