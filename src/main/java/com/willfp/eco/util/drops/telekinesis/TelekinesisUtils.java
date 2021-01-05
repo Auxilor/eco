@@ -7,14 +7,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.function.Function;
 
 @UtilityClass
 public final class TelekinesisUtils {
+    private final Object instance;
+    private final Class<?> clazz;
+
     /**
      * The test service registered to bukkit.
      */
-    private final TelekinesisTests tests;
+    private final Method testMethod;
+
+    private final Method registerMethod;
 
     /**
      * Test the player for telekinesis.
@@ -25,7 +32,13 @@ public final class TelekinesisUtils {
      * @return If the player is telekinetic.
      */
     public boolean testPlayer(@NotNull final Player player) {
-        return tests.testPlayer(player);
+        try {
+            return (boolean) testMethod.invoke(instance, player);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     /**
@@ -34,14 +47,33 @@ public final class TelekinesisUtils {
      * @param test The test to register, where the boolean output is if the player is telekinetic.
      */
     public void registerTest(@NotNull final Function<Player, Boolean> test) {
-        tests.registerTest(test);
+        try {
+            registerMethod.invoke(instance, test);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     static {
+        Method testMethod1;
+        Method registerMethod1;
         if (Bukkit.getServicesManager().getKnownServices().stream().noneMatch(clazz -> clazz.getName().contains("TelekinesisTests"))) {
             Bukkit.getServicesManager().register(TelekinesisTests.class, new EcoTelekinesisTests(), AbstractEcoPlugin.getInstance(), ServicePriority.Normal);
         }
 
-        tests = (TelekinesisTests) Bukkit.getServicesManager().load(Bukkit.getServicesManager().getKnownServices().stream().filter(clazz -> clazz.getName().contains("TelekinesisTests")).findFirst().get());
+        instance = Bukkit.getServicesManager().load(Bukkit.getServicesManager().getKnownServices().stream().filter(clazz -> clazz.getName().contains("TelekinesisTests")).findFirst().get());
+        clazz = instance.getClass();
+
+        try {
+            testMethod1 = clazz.getDeclaredMethod("testPlayer", Player.class);
+            registerMethod1 = clazz.getDeclaredMethod("registerTest", Function.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            testMethod1 = null;
+            registerMethod1 = null;
+        }
+
+        testMethod = testMethod1;
+        registerMethod = registerMethod1;
     }
 }
