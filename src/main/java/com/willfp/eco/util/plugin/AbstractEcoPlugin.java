@@ -330,6 +330,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      */
     public final void reload() {
         this.getConfigHandler().callUpdate();
+        this.getConfigHandler().callUpdate(); // Call twice to fix issues
         this.getScheduler().cancelAll();
         new FastCollatedDropQueue.CollatedRunnable(this);
 
