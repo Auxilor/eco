@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import lombok.Getter;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -61,7 +62,8 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      *
      * @param packet The packet.
      */
-    public void onReceive(@NotNull final PacketContainer packet) {
+    public void onReceive(@NotNull final PacketContainer packet,
+                          @NotNull final Player player) {
         // Empty rather than abstract as implementations don't need both
     }
 
@@ -70,7 +72,8 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      *
      * @param packet The packet.
      */
-    public void onSend(@NotNull final PacketContainer packet) {
+    public void onSend(@NotNull final PacketContainer packet,
+                       @NotNull final Player player) {
         // Empty rather than abstract as implementations don't need both
     }
 
@@ -89,7 +92,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
             return;
         }
 
-        onReceive(event.getPacket());
+        onReceive(event.getPacket(), event.getPlayer());
     }
 
     /**
@@ -107,7 +110,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
             return;
         }
 
-        onSend(event.getPacket());
+        onSend(event.getPacket(), event.getPlayer());
     }
 
     /**
