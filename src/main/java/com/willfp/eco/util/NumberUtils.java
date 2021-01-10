@@ -1,9 +1,9 @@
 package com.willfp.eco.util;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import lombok.experimental.UtilityClass;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -94,20 +94,12 @@ public class NumberUtils {
      */
     public static int fromNumeral(String numeral) {
         if (numeral.isEmpty()) return 0;
-        if (numeral.startsWith("M")) return 1000 + fromNumeral(numeral.substring(1));
-        if (numeral.startsWith("CM")) return 900 + fromNumeral(numeral.substring(2));
-        if (numeral.startsWith("D")) return 500 + fromNumeral(numeral.substring(1));
-        if (numeral.startsWith("CD")) return 400 + fromNumeral(numeral.substring(2));
-        if (numeral.startsWith("C")) return 100 + fromNumeral(numeral.substring(1));
-        if (numeral.startsWith("XC")) return 90 + fromNumeral(numeral.substring(2));
-        if (numeral.startsWith("L")) return 50 + fromNumeral(numeral.substring(1));
-        if (numeral.startsWith("XL")) return 40 + fromNumeral(numeral.substring(2));
-        if (numeral.startsWith("X")) return 10 + fromNumeral(numeral.substring(1));
-        if (numeral.startsWith("IX")) return 9 + fromNumeral(numeral.substring(2));
-        if (numeral.startsWith("V")) return 5 + fromNumeral(numeral.substring(1));
-        if (numeral.startsWith("IV")) return 4 + fromNumeral(numeral.substring(2));
-        if (numeral.startsWith("I")) return 1 + fromNumeral(numeral.substring(1));
-        throw new IllegalArgumentException("Number is invalid!");
+        for (Map.Entry<Integer, String> entry : NUMERALS.entrySet()) {
+            if (numeral.startsWith(entry.getValue())) {
+                return entry.getKey() + fromNumeral(numeral.substring(entry.getValue().length()));
+            }
+        }
+        return 0;
     }
 
     /**
