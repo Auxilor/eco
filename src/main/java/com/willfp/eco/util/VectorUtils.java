@@ -6,9 +6,16 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @UtilityClass
 public class VectorUtils {
+    /**
+     * Cached circles to prevent many sqrt calls.
+     */
+    private final Map<Integer, Vector[]> CIRCLE_CACHE = new HashMap<>();
+
     /**
      * If vector has all components as finite.
      *
@@ -66,6 +73,11 @@ public class VectorUtils {
      * @return An array of {@link Vector}s.
      */
     public Vector[] getCircle(final int radius) {
+        Vector[] cached = CIRCLE_CACHE.get(radius);
+        if (cached != null) {
+            return cached;
+        }
+
         ArrayList<Vector> circleVecs = new ArrayList<>();
 
         double xoffset = -radius;
@@ -85,7 +97,9 @@ public class VectorUtils {
             zoffset++;
         }
 
-        return circleVecs.toArray(new Vector[0]);
+        Vector[] result = circleVecs.toArray(new Vector[0]);
+        CIRCLE_CACHE.put(radius, result);
+        return result;
     }
 
     /**
