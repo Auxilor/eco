@@ -1,17 +1,22 @@
 package com.willfp.eco.util.recipes.lookup;
 
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.recipes.parts.ComplexRecipePart;
 import com.willfp.eco.util.recipes.parts.EmptyRecipePart;
 import com.willfp.eco.util.recipes.parts.RecipePart;
+import com.willfp.eco.util.recipes.parts.SimpleRecipePart;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.ServicePriority;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @UtilityClass
 public final class RecipePartUtils {
@@ -42,9 +47,32 @@ public final class RecipePartUtils {
      * @return The generated recipe part, or null if invalid.
      */
     public RecipePart lookup(@NotNull final String key) {
+        Object recipePartUncast = null;
+
         try {
-            return (RecipePart) lookupMethod.invoke(instance, key);
+            recipePartUncast = lookupMethod.invoke(instance, key);
         } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return new EmptyRecipePart();
+        }
+
+        if (recipePartUncast.getClass().toString().contains("EmptyRecipePart")) {
+            return new EmptyRecipePart();
+        }
+
+        try {
+            if (recipePartUncast.getClass().toString().contains("SimpleRecipePart")) {
+                Material material = (Material) recipePartUncast.getClass().getDeclaredMethod("getMaterial").invoke(recipePartUncast);
+                return new SimpleRecipePart(material);
+            }
+
+            if (recipePartUncast.getClass().toString().contains("ComplexRecipePart")) {
+                Predicate<ItemStack> predicate = (Predicate<ItemStack>) recipePartUncast.getClass().getDeclaredMethod("getPredicate").invoke(recipePartUncast);
+                ItemStack displayed = (ItemStack) recipePartUncast.getClass().getDeclaredMethod("getDisplayed").invoke(recipePartUncast);
+
+                return new ComplexRecipePart(predicate, displayed);
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
 

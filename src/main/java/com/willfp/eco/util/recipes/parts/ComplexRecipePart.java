@@ -1,5 +1,6 @@
 package com.willfp.eco.util.recipes.parts;
 
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,11 +11,13 @@ public class ComplexRecipePart implements RecipePart {
     /**
      * The test for itemstacks to pass.
      */
+    @Getter
     private final Predicate<ItemStack> predicate;
 
     /**
      * Displayed itemstack: what the user should see.
      */
+    @Getter
     private final ItemStack displayed;
 
     /**

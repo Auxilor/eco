@@ -1,5 +1,6 @@
 package com.willfp.eco.util.recipes.parts;
 
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,7 @@ public class SimpleRecipePart implements RecipePart {
     /**
      * The material.
      */
+    @Getter
     private final Material material;
 
     /**
