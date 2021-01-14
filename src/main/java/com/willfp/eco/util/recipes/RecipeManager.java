@@ -6,6 +6,7 @@ import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,17 @@ public class RecipeManager extends PluginDependent {
 
         Bukkit.getServer().addRecipe(shapedRecipe);
         Bukkit.getServer().addRecipe(displayedRecipe);
+    }
+
+    /**
+     * Get recipe matching matrix.
+     *
+     * @param matrix The matrix to test.
+     * @return The match, or null if not found.
+     */
+    @Nullable
+    public EcoShapedRecipe getMatch(@NotNull final ItemStack[] matrix) {
+        return registry.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
     }
 
     /**

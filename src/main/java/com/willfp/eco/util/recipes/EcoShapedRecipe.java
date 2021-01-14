@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public final class EcoShapedRecipe extends PluginDependent implements Registerable {
     /**
      * Recipe parts.
@@ -83,6 +85,15 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
     @Override
     public void register() {
         this.getPlugin().getRecipeManager().register(this);
+    }
+
+    @Override
+    public String toString() {
+        return "EcoShapedRecipe{"
+                + "parts=" + Arrays.toString(parts)
+                + ", key='" + key + '\''
+                + ", output=" + output
+                + '}';
     }
 
     /**

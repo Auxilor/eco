@@ -2,6 +2,7 @@ package com.willfp.eco.util.recipes;
 
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,16 +39,16 @@ public class RecipeListener extends PluginDependent implements Listener {
             return;
         }
 
-        EcoShapedRecipe internalRecipe = this.getPlugin().getRecipeManager().getShapedRecipe(recipe.getKey().getKey());
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        EcoShapedRecipe matched = this.getPlugin().getRecipeManager().getMatch(matrix);
 
-        if (internalRecipe == null) {
+        if (matched == null) {
+            event.getInventory().setResult(new ItemStack(Material.AIR));
             return;
         }
 
-        ItemStack[] matrix = event.getInventory().getMatrix();
-
-        if (internalRecipe.test(matrix)) {
-            event.getInventory().setResult(internalRecipe.getOutput());
+        if (matched.test(matrix)) {
+            event.getInventory().setResult(matched.getOutput());
         } else {
             event.getInventory().setResult(new ItemStack(Material.AIR));
         }
@@ -70,19 +71,20 @@ public class RecipeListener extends PluginDependent implements Listener {
             return;
         }
 
-        EcoShapedRecipe internalRecipe = this.getPlugin().getRecipeManager().getShapedRecipe(recipe.getKey().getKey());
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        EcoShapedRecipe matched = this.getPlugin().getRecipeManager().getMatch(matrix);
 
-        if (internalRecipe == null) {
+        if (matched == null) {
+            event.getInventory().setResult(new ItemStack(Material.AIR));
+            event.setCancelled(true);
             return;
         }
 
-        ItemStack[] matrix = event.getInventory().getMatrix();
-
-        if (internalRecipe.test(matrix)) {
-            event.getInventory().setResult(internalRecipe.getOutput());
-            event.setCancelled(true);
+        if (matched.test(matrix)) {
+            event.getInventory().setResult(matched.getOutput());
         } else {
             event.getInventory().setResult(new ItemStack(Material.AIR));
+            event.setCancelled(true);
         }
     }
 }
