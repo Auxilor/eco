@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 
 @UtilityClass
-public final class LookupUtils {
+public final class RecipePartUtils {
     /**
      * Instance of registered item lookup utils.
      */
