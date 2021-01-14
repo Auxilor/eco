@@ -77,6 +77,8 @@ public final class TelekinesisUtils {
         try {
             testMethod1 = clazz.getDeclaredMethod("testPlayer", Player.class);
             registerMethod1 = clazz.getDeclaredMethod("registerTest", Function.class);
+            testMethod1.setAccessible(true);
+            registerMethod1.setAccessible(true);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             testMethod1 = null;
