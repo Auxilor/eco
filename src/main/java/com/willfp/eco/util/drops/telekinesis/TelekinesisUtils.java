@@ -13,7 +13,14 @@ import java.util.function.Function;
 
 @UtilityClass
 public final class TelekinesisUtils {
+    /**
+     * Instance of registered telekinesis utils.
+     */
     private final Object instance;
+
+    /**
+     * The class of the utils.
+     */
     private final Class<?> clazz;
 
     /**
@@ -21,6 +28,9 @@ public final class TelekinesisUtils {
      */
     private final Method testMethod;
 
+    /**
+     * The register service registered to bukkit.
+     */
     private final Method registerMethod;
 
     /**

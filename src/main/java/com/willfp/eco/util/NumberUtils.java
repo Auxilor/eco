@@ -1,6 +1,7 @@
 package com.willfp.eco.util;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -92,8 +93,10 @@ public class NumberUtils {
      * @param numeral The numeral to convert.
      * @return The number, converted from a roman numeral.
      */
-    public static int fromNumeral(String numeral) {
-        if (numeral.isEmpty()) return 0;
+    public static int fromNumeral(@NotNull final String numeral) {
+        if (numeral.isEmpty()) {
+            return 0;
+        }
         for (Map.Entry<Integer, String> entry : NUMERALS.entrySet()) {
             if (numeral.startsWith(entry.getValue())) {
                 return entry.getKey() + fromNumeral(numeral.substring(entry.getValue().length()));

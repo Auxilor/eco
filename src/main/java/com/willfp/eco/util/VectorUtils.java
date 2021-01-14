@@ -14,7 +14,7 @@ public class VectorUtils {
     /**
      * Cached circles to prevent many sqrt calls.
      */
-    private final Map<Integer, Vector[]> CIRCLE_CACHE = new HashMap<>();
+    private static final Map<Integer, Vector[]> CIRCLE_CACHE = new HashMap<>();
 
     /**
      * If vector has all components as finite.

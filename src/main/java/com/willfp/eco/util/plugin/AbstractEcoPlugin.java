@@ -39,6 +39,8 @@ import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.util.integrations.placeholder.plugins.PlaceholderIntegrationPAPI;
 import com.willfp.eco.util.optional.Prerequisite;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
+import com.willfp.eco.util.recipes.RecipeListener;
+import com.willfp.eco.util.recipes.RecipeManager;
 import com.willfp.eco.util.updater.UpdateChecker;
 import lombok.Getter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -146,6 +148,12 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     private final RunnableFactory runnableFactory;
 
     /**
+     * Recipe handler for crafting recipes.
+     */
+    @Getter
+    private final RecipeManager recipeManager;
+
+    /**
      * The loader for all plugin extensions.
      *
      * @see com.willfp.eco.util.extensions.Extension
@@ -193,6 +201,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.runnableFactory = new RunnableFactory(this);
         this.extensionLoader = new EcoExtensionLoader(this);
         this.configHandler = new ConfigHandler(this);
+        this.recipeManager = new RecipeManager(this);
     }
 
     /**
@@ -210,6 +219,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getEventManager().registerListener(new ArmorListener());
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
+        this.getEventManager().registerListener(new RecipeListener(this));
 
         new FastCollatedDropQueue.CollatedRunnable(this);
 

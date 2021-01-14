@@ -61,6 +61,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      * The code that should be executed once the packet has been received.
      *
      * @param packet The packet.
+     * @param player The player.
      */
     public void onReceive(@NotNull final PacketContainer packet,
                           @NotNull final Player player) {
@@ -71,6 +72,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      * THe code that should be executed once the packet has been sent.
      *
      * @param packet The packet.
+     * @param player The player.
      */
     public void onSend(@NotNull final PacketContainer packet,
                        @NotNull final Player player) {
