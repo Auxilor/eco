@@ -1,6 +1,6 @@
-package com.willfp.eco.util.recipes.lookup;
+package com.willfp.eco.common.recipes.lookup;
 
-import com.willfp.eco.util.recipes.parts.RecipePart;
+import com.willfp.eco.common.recipes.parts.RecipePart;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;

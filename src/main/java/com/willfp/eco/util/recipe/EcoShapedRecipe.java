@@ -1,12 +1,11 @@
-package com.willfp.eco.util.recipes;
+package com.willfp.eco.util.recipe;
 
+import com.willfp.eco.common.recipes.parts.EmptyRecipePart;
+import com.willfp.eco.common.recipes.parts.RecipePart;
 import com.willfp.eco.util.interfaces.Registerable;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
-import com.willfp.eco.util.recipes.parts.EmptyRecipePart;
-import com.willfp.eco.util.recipes.parts.RecipePart;
 import lombok.Getter;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -184,9 +183,6 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
          * @return The built recipe.
          */
         public EcoShapedRecipe build() {
-            Validate.notNull(output, "Output cannot be null!");
-            Validate.isTrue(output.getType() != Material.AIR, "Output cannot be blank!");
-
             for (int i = 0; i < 9; i++) {
                 if (recipeParts[i] == null) {
                     recipeParts[i] = new EmptyRecipePart();

@@ -1,17 +1,13 @@
-package com.willfp.eco.util.recipes.lookup;
+package com.willfp.eco.common.recipes.lookup;
 
-import com.willfp.eco.util.recipes.parts.EmptyRecipePart;
-import com.willfp.eco.util.recipes.parts.RecipePart;
-import com.willfp.eco.util.recipes.parts.SimpleRecipePart;
+import com.willfp.eco.common.recipes.parts.EmptyRecipePart;
+import com.willfp.eco.common.recipes.parts.RecipePart;
+import com.willfp.eco.common.recipes.parts.SimpleRecipePart;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 public class EcoItemLookup implements ItemLookup {

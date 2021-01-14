@@ -1,4 +1,4 @@
-package com.willfp.eco.util.recipes.parts;
+package com.willfp.eco.common.recipes.parts;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;

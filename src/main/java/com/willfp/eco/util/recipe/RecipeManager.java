@@ -1,4 +1,4 @@
-package com.willfp.eco.util.recipes;
+package com.willfp.eco.util.recipe;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

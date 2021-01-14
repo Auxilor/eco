@@ -1,8 +1,7 @@
-package com.willfp.eco.util.recipes;
+package com.willfp.eco.util.recipe;
 
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
