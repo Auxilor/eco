@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@SuppressWarnings("unchecked")
 @UtilityClass
 public final class RecipePartUtils {
     /**
@@ -47,7 +48,7 @@ public final class RecipePartUtils {
      * @return The generated recipe part, or null if invalid.
      */
     public RecipePart lookup(@NotNull final String key) {
-        Object recipePartUncast = null;
+        Object recipePartUncast;
 
         try {
             recipePartUncast = lookupMethod.invoke(instance, key);

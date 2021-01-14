@@ -17,7 +17,6 @@ public class ComplexRecipePart implements RecipePart {
     /**
      * Displayed itemstack: what the user should see.
      */
-    @Getter
     private final ItemStack displayed;
 
     /**
