@@ -4,7 +4,7 @@ import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
@@ -12,7 +12,7 @@ public class ProxyFactoryFactory extends PluginDependent {
     /**
      * Cached proxy implementations in order to not perform expensive reflective class-finding.
      */
-    private final Map<Class<? extends AbstractProxy>, ProxyFactory<? extends AbstractProxy>> cache = new IdentityHashMap<>();
+    private final Map<Class<? extends AbstractProxy>, ProxyFactory<? extends AbstractProxy>> cache = new HashMap<>();
 
     /**
      * Pass an {@link AbstractEcoPlugin} in order to interface with it.
