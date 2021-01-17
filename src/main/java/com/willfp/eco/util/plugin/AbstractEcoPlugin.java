@@ -41,7 +41,6 @@ import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.util.integrations.placeholder.plugins.PlaceholderIntegrationPAPI;
 import com.willfp.eco.util.optional.Prerequisite;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
-import com.willfp.eco.util.proxy.ProxyFactoryFactory;
 import com.willfp.eco.util.recipe.RecipeListener;
 import com.willfp.eco.util.recipe.RecipeManager;
 import com.willfp.eco.util.recipe.lookup.EcoItemLookup;
@@ -161,12 +160,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     private final RunnableFactory runnableFactory;
 
     /**
-     * Get proxy factory factory to produce {@link com.willfp.eco.util.proxy.AbstractProxy} implementations.
-     */
-    @Getter
-    private final ProxyFactoryFactory proxyFactory;
-
-    /**
      * Recipe handler for crafting recipes.
      */
     @Getter
@@ -218,7 +211,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.namespacedKeyFactory = new NamespacedKeyFactory(this);
         this.metadataValueFactory = new MetadataValueFactory(this);
         this.runnableFactory = new RunnableFactory(this);
-        this.proxyFactory = new ProxyFactoryFactory(this);
         this.extensionLoader = new EcoExtensionLoader(this);
         this.configHandler = new ConfigHandler(this);
         this.recipeManager = new RecipeManager(this);
