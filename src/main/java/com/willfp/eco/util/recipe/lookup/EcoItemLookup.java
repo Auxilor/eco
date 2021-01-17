@@ -1,8 +1,8 @@
-package com.willfp.eco.common.recipes.lookup;
+package com.willfp.eco.util.recipe.lookup;
 
-import com.willfp.eco.common.recipes.parts.EmptyRecipePart;
-import com.willfp.eco.common.recipes.parts.RecipePart;
-import com.willfp.eco.common.recipes.parts.SimpleRecipePart;
+import com.willfp.eco.util.recipe.parts.EmptyRecipePart;
+import com.willfp.eco.util.recipe.parts.RecipePart;
+import com.willfp.eco.util.recipe.parts.SimpleRecipePart;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 

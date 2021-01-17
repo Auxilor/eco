@@ -1,0 +1,21 @@
+name: eco
+version: 2.0.0
+main: com.willfp.eco.spigot.EcoSpigotMain
+api-version: 1.15
+authors: [Auxilor]
+website: willfp.com
+load: STARTUP
+depend:
+  - ProtocolLib
+softdepend:
+  - WorldGuard
+  - GriefPrevention
+  - Towny
+  - FactionsUUID
+  - Lands
+  - Kingdoms
+  - NoCheatPlus
+  - AAC
+  - Matrix
+  - Spartan
+  - PlaceholderAPI

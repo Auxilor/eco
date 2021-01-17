@@ -1,4 +1,4 @@
-package com.willfp.eco.common.recipes.parts;
+package com.willfp.eco.util.recipe.parts;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
