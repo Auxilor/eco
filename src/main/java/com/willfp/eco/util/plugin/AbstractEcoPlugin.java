@@ -60,6 +60,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     /**
      * The instance of eco plugins.
      */
-    private static Map<Class<? extends AbstractEcoPlugin>, AbstractEcoPlugin> instances;
+    private static final Map<Class<? extends AbstractEcoPlugin>, AbstractEcoPlugin> INSTANCES = new HashMap<>();
 
     /**
      * The name of the plugin.
@@ -213,7 +214,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
                                 final int bStatsId,
                                 @NotNull final String proxyPackage,
                                 @NotNull final String color) {
-        instances.put(this.getClass(), this);
+        INSTANCES.put(this.getClass(), this);
 
         this.pluginName = pluginName;
         this.resourceId = resourceId;
@@ -481,6 +482,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @return The plugin.
      */
     public static <T extends AbstractEcoPlugin> T getInstance(@NotNull final Class<T> pluginClass) {
-        return (T) instances.get(pluginClass);
+        return (T) INSTANCES.get(pluginClass);
     }
 }
