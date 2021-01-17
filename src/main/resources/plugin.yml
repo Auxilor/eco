@@ -4,7 +4,12 @@ main: com.willfp.eco.spigot.EcoSpigotMain
 api-version: 1.15
 authors: [Auxilor]
 website: willfp.com
-load: STARTUP
+loadbefore:
+  - EcoEnchants
+  - Talismans
+  - ItemStats
+  - EcoArmor
+  - Illusioner
 depend:
   - ProtocolLib
 softdepend:
