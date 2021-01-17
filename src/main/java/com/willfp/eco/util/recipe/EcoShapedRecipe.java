@@ -1,10 +1,10 @@
 package com.willfp.eco.util.recipe;
 
-import com.willfp.eco.common.recipes.parts.EmptyRecipePart;
-import com.willfp.eco.common.recipes.parts.RecipePart;
 import com.willfp.eco.util.interfaces.Registerable;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.recipe.parts.EmptyRecipePart;
+import com.willfp.eco.util.recipe.parts.RecipePart;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
