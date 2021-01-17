@@ -59,20 +59,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public abstract class AbstractEcoPlugin extends JavaPlugin {
-    /**
-     * The instance of eco plugins.
-     */
-    private static final Map<Class<? extends AbstractEcoPlugin>, AbstractEcoPlugin> INSTANCES = new HashMap<>();
-
     /**
      * The name of the plugin.
      */
@@ -213,8 +206,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
                                 final int bStatsId,
                                 @NotNull final String proxyPackage,
                                 @NotNull final String color) {
-        INSTANCES.put(this.getClass(), this);
-
         this.pluginName = pluginName;
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
@@ -318,9 +309,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getScheduler().cancelAll();
 
         this.disable();
-
-        INSTANCES.remove(this.getClass());
-        INSTANCES.remove(this.getClass(), this);
     }
 
     /**
@@ -474,15 +462,4 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @return A list of all updatable classes.
      */
     public abstract List<Class<?>> getUpdatableClasses();
-
-    /**
-     * Get instance of plugin from class.
-     *
-     * @param pluginClass The class.
-     * @param <T>         The plugin.
-     * @return The plugin.
-     */
-    public static <T extends AbstractEcoPlugin> T getInstance(@NotNull final Class<T> pluginClass) {
-        return (T) INSTANCES.get(pluginClass);
-    }
 }

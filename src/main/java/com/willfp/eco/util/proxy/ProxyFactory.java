@@ -27,16 +27,17 @@ public class ProxyFactory<T extends AbstractProxy> extends PluginDependent {
         this.proxyClass = proxyClass;
 
         try {
-            String className = this.getPlugin().getProxyPackage() + "." + ProxyConstants.NMS_VERSION + "." + proxyClass.getSimpleName().replace("Proxy", "");
+            String className = this.getPlugin().getProxyPackage() + "." + ProxyConstants.NMS_VERSION + "." + this.proxyClass.getSimpleName().replace("Proxy", "");
             final Class<?> class2 = Class.forName(className);
             Object instance = class2.getConstructor().newInstance();
 
-            if (proxyClass.isInstance(instance)) {
-                this.instance = proxyClass.cast(instance);
+            if (this.proxyClass.isInstance(instance)) {
+                this.instance = this.proxyClass.cast(instance);
             } else {
                 throw new UnsupportedVersionException("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UnsupportedVersionException("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION);
         }
     }
