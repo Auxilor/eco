@@ -4,19 +4,16 @@ import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 public class ProxyFactory<T extends AbstractProxy> extends PluginDependent {
-    /**
-     * Cached proxy implementations in order to not perform expensive reflective class-finding.
-     */
-    private static final Map<Class<? extends AbstractProxy>, AbstractProxy> CACHE = new IdentityHashMap<>();
-
     /**
      * The class of the proxy interface.
      */
     private final Class<T> proxyClass;
+
+    /**
+     * The instance of the proxy.
+     */
+    private final T instance;
 
     /**
      * Create a new Proxy Factory for a specific type.
@@ -28,6 +25,20 @@ public class ProxyFactory<T extends AbstractProxy> extends PluginDependent {
                         @NotNull final Class<T> proxyClass) {
         super(plugin);
         this.proxyClass = proxyClass;
+
+        try {
+            String className = this.getPlugin().getProxyPackage() + "." + ProxyConstants.NMS_VERSION + "." + proxyClass.getSimpleName().replace("Proxy", "");
+            final Class<?> class2 = Class.forName(className);
+            Object instance = class2.getConstructor().newInstance();
+
+            if (proxyClass.isInstance(instance)) {
+                this.instance = proxyClass.cast(instance);
+            } else {
+                throw new UnsupportedVersionException("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION);
+            }
+        } catch (Exception e) {
+            throw new UnsupportedVersionException("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION);
+        }
     }
 
     /**
@@ -36,37 +47,6 @@ public class ProxyFactory<T extends AbstractProxy> extends PluginDependent {
      * @return The proxy implementation.
      */
     public @NotNull T getProxy() {
-        try {
-            T cachedProxy = attemptCache();
-            if (cachedProxy != null) {
-                return cachedProxy;
-            }
-
-            String className = this.getPlugin().getProxyPackage() + "." + ProxyConstants.NMS_VERSION + "." + proxyClass.getSimpleName().replace("Proxy", "");
-            final Class<?> class2 = Class.forName(className);
-            Object instance = class2.getConstructor().newInstance();
-            if (proxyClass.isAssignableFrom(class2) && proxyClass.isInstance(instance)) {
-                T proxy = proxyClass.cast(instance);
-                CACHE.put(proxyClass, proxy);
-                return proxy;
-            }
-        } catch (Exception e) {
-            // If not returned, then throw error
-        }
-
-        throw new UnsupportedVersionException("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION);
-    }
-
-    private T attemptCache() {
-        Object proxy = CACHE.get(proxyClass);
-        if (proxy == null) {
-            return null;
-        }
-
-        if (proxyClass.isInstance(proxy)) {
-            return proxyClass.cast(proxy);
-        }
-
-        return null;
+        return instance;
     }
 }

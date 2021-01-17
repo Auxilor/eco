@@ -318,6 +318,9 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getScheduler().cancelAll();
 
         this.disable();
+
+        INSTANCES.remove(this.getClass());
+        INSTANCES.remove(this.getClass(), this);
     }
 
     /**
