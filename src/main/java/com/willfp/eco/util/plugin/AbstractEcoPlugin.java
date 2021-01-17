@@ -45,6 +45,8 @@ import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import com.willfp.eco.util.proxy.ProxyFactoryFactory;
 import com.willfp.eco.util.recipe.RecipeListener;
 import com.willfp.eco.util.recipe.RecipeManager;
+import com.willfp.eco.util.recipe.lookup.EcoItemLookup;
+import com.willfp.eco.util.recipe.lookup.ItemLookup;
 import com.willfp.eco.util.updater.UpdateChecker;
 import lombok.Getter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -328,6 +330,10 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         if (!Bukkit.getServicesManager().isProvidedFor(TelekinesisTests.class)) {
             Bukkit.getServicesManager().register(TelekinesisTests.class, new EcoTelekinesisTests(), this, ServicePriority.Normal);
+        }
+
+        if (!Bukkit.getServicesManager().isProvidedFor(ItemLookup.class)) {
+            Bukkit.getServicesManager().register(ItemLookup.class, new EcoItemLookup(), this, ServicePriority.Normal);
         }
 
         this.load();
