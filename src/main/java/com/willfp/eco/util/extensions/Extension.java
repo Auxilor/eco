@@ -12,7 +12,16 @@ public abstract class Extension {
      * The {@link AbstractEcoPlugin} that this extension is for.
      */
     @Getter(AccessLevel.PROTECTED)
-    private final AbstractEcoPlugin plugin = AbstractEcoPlugin.getInstance();
+    private final AbstractEcoPlugin plugin;
+
+    /**
+     * Create a new extension for a plugin.
+     *
+     * @param plugin The plugin.
+     */
+    protected Extension(@NotNull final AbstractEcoPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Metadata containing version and name.

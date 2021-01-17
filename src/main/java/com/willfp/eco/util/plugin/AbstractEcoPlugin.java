@@ -12,10 +12,13 @@ import com.willfp.eco.util.bukkit.scheduling.EcoScheduler;
 import com.willfp.eco.util.bukkit.scheduling.RunnableFactory;
 import com.willfp.eco.util.bukkit.scheduling.Scheduler;
 import com.willfp.eco.util.command.AbstractCommand;
-import com.willfp.eco.util.config.Configs;
+import com.willfp.eco.util.config.configs.Config;
+import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
 import com.willfp.eco.util.drops.internal.DropManager;
 import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
+import com.willfp.eco.util.drops.telekinesis.EcoTelekinesisTests;
+import com.willfp.eco.util.drops.telekinesis.TelekinesisTests;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
 import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
 import com.willfp.eco.util.events.entitydeathbyentity.EntityDeathByEntityListeners;
@@ -39,6 +42,7 @@ import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.util.integrations.placeholder.plugins.PlaceholderIntegrationPAPI;
 import com.willfp.eco.util.optional.Prerequisite;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
+import com.willfp.eco.util.proxy.ProxyFactoryFactory;
 import com.willfp.eco.util.recipe.RecipeListener;
 import com.willfp.eco.util.recipe.RecipeManager;
 import com.willfp.eco.util.updater.UpdateChecker;
@@ -48,6 +52,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,15 +60,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractEcoPlugin extends JavaPlugin {
     /**
-     * The instance of the plugin.
+     * The instance of eco plugins.
      */
-    @Getter
-    private static AbstractEcoPlugin instance;
+    private static Map<Class<? extends AbstractEcoPlugin>, AbstractEcoPlugin> instances;
 
     /**
      * The name of the plugin.
@@ -130,6 +136,18 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     private final EventManager eventManager;
 
     /**
+     * Config.yml.
+     */
+    @Getter
+    private final Config configYml;
+
+    /**
+     * Lang.yml.
+     */
+    @Getter
+    private final Lang langYml;
+
+    /**
      * The internal factory to produce {@link org.bukkit.NamespacedKey}s.
      */
     @Getter
@@ -146,6 +164,12 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      */
     @Getter
     private final RunnableFactory runnableFactory;
+
+    /**
+     * Get proxy factory factory to produce {@link com.willfp.eco.util.proxy.AbstractProxy} implementations.
+     */
+    @Getter
+    private final ProxyFactoryFactory proxyFactory;
 
     /**
      * Recipe handler for crafting recipes.
@@ -187,6 +211,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
                                 final int bStatsId,
                                 @NotNull final String proxyPackage,
                                 @NotNull final String color) {
+        instances.put(this.getClass(), this);
+
         this.pluginName = pluginName;
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
@@ -199,9 +225,13 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.namespacedKeyFactory = new NamespacedKeyFactory(this);
         this.metadataValueFactory = new MetadataValueFactory(this);
         this.runnableFactory = new RunnableFactory(this);
+        this.proxyFactory = new ProxyFactoryFactory(this);
         this.extensionLoader = new EcoExtensionLoader(this);
         this.configHandler = new ConfigHandler(this);
         this.recipeManager = new RecipeManager(this);
+
+        this.langYml = new Lang(this);
+        this.configYml = new Config(this);
     }
 
     /**
@@ -260,8 +290,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
             });
         }
 
-
-        updatableClasses.add(Configs.class);
         updatableClasses.add(DropManager.class);
         updatableClasses.addAll(this.getUpdatableClasses());
 
@@ -298,7 +326,9 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     public final void onLoad() {
         super.onLoad();
 
-        instance = this;
+        if (!Bukkit.getServicesManager().isProvidedFor(TelekinesisTests.class)) {
+            Bukkit.getServicesManager().register(TelekinesisTests.class, new EcoTelekinesisTests(), this, ServicePriority.Normal);
+        }
 
         this.load();
     }
@@ -339,6 +369,9 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * Default code to be executed on plugin reload.
      */
     public final void reload() {
+        this.getConfigYml().update();
+        this.getLangYml().update();
+
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
         this.getScheduler().cancelAll();
@@ -364,10 +397,10 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         integrationLoaders.add(new IntegrationLoader("Kingdoms", () -> AntigriefManager.register(new AntigriefKingdoms())));
 
         // Anticheat
-        integrationLoaders.add(new IntegrationLoader("AAC5", () -> AnticheatManager.register(new AnticheatAAC())));
-        integrationLoaders.add(new IntegrationLoader("Matrix", () -> AnticheatManager.register(new AnticheatMatrix())));
-        integrationLoaders.add(new IntegrationLoader("NoCheatPlus", () -> AnticheatManager.register(new AnticheatNCP())));
-        integrationLoaders.add(new IntegrationLoader("Spartan", () -> AnticheatManager.register(new AnticheatSpartan())));
+        integrationLoaders.add(new IntegrationLoader("AAC5", () -> AnticheatManager.register(this, new AnticheatAAC())));
+        integrationLoaders.add(new IntegrationLoader("Matrix", () -> AnticheatManager.register(this, new AnticheatMatrix())));
+        integrationLoaders.add(new IntegrationLoader("NoCheatPlus", () -> AnticheatManager.register(this, new AnticheatNCP())));
+        integrationLoaders.add(new IntegrationLoader("Spartan", () -> AnticheatManager.register(this, new AnticheatSpartan())));
         integrationLoaders.addAll(this.getIntegrationLoaders());
         return integrationLoaders;
     }
@@ -433,4 +466,15 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @return A list of all updatable classes.
      */
     public abstract List<Class<?>> getUpdatableClasses();
+
+    /**
+     * Get instance of plugin from class.
+     *
+     * @param pluginClass The class.
+     * @param <T>         The plugin.
+     * @return The plugin.
+     */
+    public static <T extends AbstractEcoPlugin> T getInstance(@NotNull final Class<T> pluginClass) {
+        return (T) instances.get(pluginClass);
+    }
 }

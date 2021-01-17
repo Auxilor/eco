@@ -48,10 +48,12 @@ public abstract class BaseConfig extends PluginDependent implements ValueGetter 
      *
      * @param configName   The name of the config
      * @param removeUnused Whether keys not present in the default config should be removed on update.
+     * @param plugin       The plugin.
      */
     protected BaseConfig(@NotNull final String configName,
-                         final boolean removeUnused) {
-        super(AbstractEcoPlugin.getInstance());
+                         final boolean removeUnused,
+                         @NotNull final AbstractEcoPlugin plugin) {
+        super(plugin);
         this.name = configName + ".yml";
         this.removeUnused = removeUnused;
 

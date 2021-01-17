@@ -2,14 +2,17 @@ package com.willfp.eco.util.config.configs;
 
 import com.willfp.eco.util.StringUtils;
 import com.willfp.eco.util.config.BaseConfig;
+import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class Lang extends BaseConfig {
     /**
-     * lang.yml.
+     * Lang.yml.
+     *
+     * @param plugin The plugin.
      */
-    public Lang() {
-        super("lang", false);
+    public Lang(@NotNull final AbstractEcoPlugin plugin) {
+        super("lang", false, plugin);
     }
 
     /**

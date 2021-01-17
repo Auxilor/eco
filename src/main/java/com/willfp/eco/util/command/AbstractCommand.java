@@ -1,6 +1,5 @@
 package com.willfp.eco.util.command;
 
-import com.willfp.eco.util.config.Configs;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.interfaces.Registerable;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
@@ -112,12 +111,12 @@ public abstract class AbstractCommand extends PluginDependent implements Command
         }
 
         if (playersOnly && !(sender instanceof Player)) {
-            sender.sendMessage(Configs.LANG.getMessage("not-player"));
+            sender.sendMessage(this.getPlugin().getLangYml().getMessage("not-player"));
             return true;
         }
 
         if (!sender.hasPermission(permission) && sender instanceof Player) {
-            sender.sendMessage(Configs.LANG.getNoPermission());
+            sender.sendMessage(this.getPlugin().getLangYml().getNoPermission());
             return true;
         }
 
