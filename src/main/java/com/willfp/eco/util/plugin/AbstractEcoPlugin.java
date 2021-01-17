@@ -15,7 +15,6 @@ import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.config.configs.Config;
 import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
-import com.willfp.eco.util.drops.internal.DropManager;
 import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.drops.telekinesis.EcoTelekinesisTests;
 import com.willfp.eco.util.drops.telekinesis.TelekinesisTests;
@@ -293,7 +292,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
             });
         }
 
-        updatableClasses.add(DropManager.class);
         updatableClasses.addAll(this.getUpdatableClasses());
 
         this.getListeners().forEach(listener -> this.getEventManager().registerListener(listener));
