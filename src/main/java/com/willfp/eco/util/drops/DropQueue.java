@@ -5,7 +5,6 @@ import com.willfp.eco.util.drops.internal.DropManager;
 import com.willfp.eco.util.drops.internal.DropQueueType;
 import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.drops.internal.InternalDropQueue;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +26,6 @@ public class DropQueue {
      * @param player The player.
      */
     public DropQueue(@NotNull final Player player) {
-        Bukkit.getLogger().info("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         handle = DropManager.getType() == DropQueueType.COLLATED ? new FastCollatedDropQueue(player) : new InternalDropQueue(player);
     }
 
