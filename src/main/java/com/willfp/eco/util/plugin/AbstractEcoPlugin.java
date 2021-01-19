@@ -15,10 +15,6 @@ import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.config.configs.Config;
 import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
-import com.willfp.eco.util.events.armorequip.ArmorListener;
-import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
-import com.willfp.eco.util.events.entitydeathbyentity.EntityDeathByEntityListeners;
-import com.willfp.eco.util.events.naturalexpgainevent.NaturalExpGainListeners;
 import com.willfp.eco.util.extensions.loader.EcoExtensionLoader;
 import com.willfp.eco.util.extensions.loader.ExtensionLoader;
 import com.willfp.eco.util.integrations.IntegrationLoader;
@@ -38,7 +34,6 @@ import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.util.integrations.placeholder.plugins.PlaceholderIntegrationPAPI;
 import com.willfp.eco.util.optional.Prerequisite;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
-import com.willfp.eco.util.recipe.RecipeListener;
 import com.willfp.eco.util.recipe.RecipeManager;
 import com.willfp.eco.util.updater.UpdateChecker;
 import lombok.Getter;
@@ -224,11 +219,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getLog().info("Loading " + this.color + this.pluginName);
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
-        this.getEventManager().registerListener(new NaturalExpGainListeners());
-        this.getEventManager().registerListener(new ArmorListener());
-        this.getEventManager().registerListener(new DispenserArmorListener());
-        this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
-        this.getEventManager().registerListener(new RecipeListener(this));
 
         new UpdateChecker(this).getVersion(version -> {
             DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());

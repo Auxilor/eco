@@ -1,6 +1,5 @@
 package com.willfp.eco.util.drops.internal;
 
-import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +12,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FastCollatedDropQueue extends InternalDropQueue {
     /**
@@ -23,7 +22,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
      * <p>
      * Cleared and updated every tick.
      */
-    private static final HashMap<Player, CollatedDrops> COLLATED_MAP = new HashMap<>();
+    private static final Map<Player, CollatedDrops> COLLATED_MAP = new ConcurrentHashMap<>();
 
     /**
      * Backend implementation of {@link AbstractDropQueue}
@@ -103,7 +102,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
         }
     }
 
-    public static class CollatedRunnable extends PluginDependent {
+    public static class CollatedRunnable {
         /**
          * The {@link BukkitTask} that the runnable represents.
          */
@@ -117,7 +116,6 @@ public class FastCollatedDropQueue extends InternalDropQueue {
          */
         @ApiStatus.Internal
         public CollatedRunnable(@NotNull final AbstractEcoPlugin plugin) {
-            super(plugin);
             runnableTask = plugin.getScheduler().runTimer(() -> {
                 for (Map.Entry<Player, CollatedDrops> entry : COLLATED_MAP.entrySet()) {
                     new InternalDropQueue(entry.getKey())
@@ -125,6 +123,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
                             .addItems(entry.getValue().getDrops())
                             .addXP(entry.getValue().getXp())
                             .push();
+                    COLLATED_MAP.remove(entry.getKey());
                 }
                 COLLATED_MAP.clear();
             }, 0, 1);
