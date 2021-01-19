@@ -1,0 +1,12 @@
+rootProject.name = 'eco'
+
+// Core
+include ':eco-util'
+include ':eco-core'
+include ':eco-core:core-nms'
+include ':eco-core:core-nms:v1_15_R1'
+include ':eco-core:core-nms:v1_16_R1'
+include ':eco-core:core-nms:v1_16_R2'
+include ':eco-core:core-nms:v1_16_R3'
+include ':eco-core:core-proxy'
+include ':eco-core:core-plugin'

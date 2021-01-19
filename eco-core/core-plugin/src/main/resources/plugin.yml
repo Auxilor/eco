@@ -1,0 +1,26 @@
+name: eco
+version: 3.0.3
+main: com.willfp.eco.spigot.EcoPlugin
+api-version: 1.15
+authors: [Auxilor]
+website: willfp.com
+loadbefore:
+  - EcoEnchants
+  - Talismans
+  - ItemStats
+  - EcoArmor
+  - Illusioner
+depend:
+  - ProtocolLib
+softdepend:
+  - WorldGuard
+  - GriefPrevention
+  - Towny
+  - FactionsUUID
+  - Lands
+  - Kingdoms
+  - NoCheatPlus
+  - AAC
+  - Matrix
+  - Spartan
+  - PlaceholderAPI

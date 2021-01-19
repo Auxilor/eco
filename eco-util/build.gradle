@@ -1,0 +1,23 @@
+group 'com.willfp'
+version rootProject.version
+
+dependencies {
+    compileOnly 'org.apache.maven:maven-artifact:3.0.3'
+    compileOnly 'org.bstats:bstats-bukkit:1.7'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.0-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileJava.dependsOn clean
+
+build.dependsOn publishToMavenLocal
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            from components.java
+            artifact shadowJar
+        }
+    }
+}
