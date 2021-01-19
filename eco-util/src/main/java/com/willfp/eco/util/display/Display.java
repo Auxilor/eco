@@ -5,7 +5,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -14,7 +16,7 @@ public class Display {
     /**
      * Registered display functions.
      */
-    private static final List<List<Function<ItemStack, ItemStack>>> DISPLAY_FUNCTIONS = new ArrayList<>(10000);
+    private static final List<Map<String, Function<ItemStack, ItemStack>>> DISPLAY_FUNCTIONS = new ArrayList<>(10000);
 
     /**
      * Registered revert functions.
@@ -44,12 +46,13 @@ public class Display {
         }
         Function<ItemStack, ItemStack> function = module.getFunction();
 
-        List<Function<ItemStack, ItemStack>> functions = DISPLAY_FUNCTIONS.get(priority);
+        Map<String, Function<ItemStack, ItemStack>> functions = DISPLAY_FUNCTIONS.get(priority);
         if (functions == null) {
-            functions = new ArrayList<>();
+            functions = new HashMap<>();
         }
 
-        functions.add(function);
+        functions.remove(module.getId());
+        functions.put(module.getId(), function);
 
         DISPLAY_FUNCTIONS.set(priority, functions);
     }
@@ -87,12 +90,12 @@ public class Display {
      * @param itemStack The item.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
-        for (List<Function<ItemStack, ItemStack>> displayFunctions : DISPLAY_FUNCTIONS) {
+        for (Map<String, Function<ItemStack, ItemStack>> displayFunctions : DISPLAY_FUNCTIONS) {
             if (displayFunctions == null) {
                 continue;
             }
 
-            for (Function<ItemStack, ItemStack> displayFunction : displayFunctions) {
+            for (Function<ItemStack, ItemStack> displayFunction : displayFunctions.values()) {
                 displayFunction.apply(itemStack);
             }
         }

@@ -20,14 +20,23 @@ public class DisplayModule {
     private final Function<ItemStack, ItemStack> function;
 
     /**
+     * Function id for unregistration.
+     */
+    @Getter
+    private final String id;
+
+    /**
      * Create new display module.
      *
      * @param function The function.
      * @param priority The priority.
+     * @param id       The id.
      */
     public DisplayModule(@NotNull final Function<ItemStack, ItemStack> function,
-                         final int priority) {
+                         final int priority,
+                         @NotNull final String id) {
         this.function = function;
         this.priority = priority;
+        this.id = id;
     }
 }
