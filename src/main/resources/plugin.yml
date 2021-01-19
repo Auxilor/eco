@@ -1,5 +1,5 @@
 name: eco
-version: 3.0.1
+version: 3.0.2
 main: com.willfp.eco.spigot.EcoSpigotMain
 api-version: 1.15
 authors: [Auxilor]

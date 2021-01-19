@@ -1,13 +1,19 @@
 package com.willfp.eco.util;
 
 import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.util.optional.Prerequisite;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,6 +22,11 @@ import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
 
 @UtilityClass
 public class StringUtils {
+    /**
+     * Regex for gradients.
+     */
+    private static final String GRADIENT_REGEX = "<\\$#[A-Fa-f0-9]{6}>";
+
     /**
      * Translate a string - converts Placeholders and Color codes.
      *
@@ -26,10 +37,13 @@ public class StringUtils {
     public String translate(@NotNull final String message,
                             @Nullable final Player player) {
         String processedMessage = message;
+        if (Prerequisite.MINIMUM_1_16.isMet()) {
+            processedMessage = translateGradients(processedMessage);
+        }
         processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         processedMessage = translateHexColorCodes(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
-        return ChatColor.translateAlternateColorCodes('&', translateHexColorCodes(processedMessage));
+        return processedMessage;
     }
 
     /**
@@ -40,11 +54,7 @@ public class StringUtils {
      * @see StringUtils#translate(String, Player)
      */
     public String translate(@NotNull final String message) {
-        String processedMessage = message;
-        processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, null);
-        processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
-        return ChatColor.translateAlternateColorCodes('&', translateHexColorCodes(processedMessage));
+        return translate(message, null);
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
@@ -60,6 +70,105 @@ public class StringUtils {
         }
 
         return matcher.appendTail(buffer).toString();
+    }
+
+    /**
+     * Apply gradients to the provided string.
+     *
+     * @param message the string to parse.
+     * @return the parsed string.
+     */
+    public static String translateGradients(@NotNull final String message) {
+        List<String> hexes = new ArrayList<>();
+        Matcher matcher = Pattern.compile(GRADIENT_REGEX).matcher(message);
+        while (matcher.find()) {
+            hexes.add(matcher.group().replace("<$", "").replace(">", ""));
+        }
+        int hexIndex = 0;
+        List<String> texts = new LinkedList<>(Arrays.asList(message.split(GRADIENT_REGEX)));
+        StringBuilder finalMsg = new StringBuilder();
+        for (String text : texts) {
+            if (texts.get(0).equalsIgnoreCase(text)) {
+                finalMsg.append(text);
+                continue;
+            }
+            if (text.length() == 0) {
+                continue;
+            }
+            if (hexIndex + 1 >= hexes.size()) {
+                if (!finalMsg.toString().contains(text)) {
+                    finalMsg.append(text);
+                }
+                continue;
+            }
+            String fromHex = hexes.get(hexIndex);
+            String toHex = hexes.get(hexIndex + 1);
+            finalMsg.append(insertFades(text, fromHex, toHex));
+            hexIndex++;
+        }
+        return finalMsg.toString();
+    }
+
+    private static String insertFades(@NotNull final String message,
+                                      @NotNull final String fromHex,
+                                      @NotNull final String toHex) {
+        boolean bold = message.contains("&l");
+        boolean italic = message.contains("&o");
+        String msg = message;
+        msg = msg.replace("&l", "");
+        msg = msg.replace("&o", "");
+        int length = msg.length();
+        Color fromRGB = Color.decode(fromHex);
+        Color toRGB = Color.decode(toHex);
+        double rStep = Math.abs((double) (fromRGB.getRed() - toRGB.getRed()) / length);
+        double gStep = Math.abs((double) (fromRGB.getGreen() - toRGB.getGreen()) / length);
+        double bStep = Math.abs((double) (fromRGB.getBlue() - toRGB.getBlue()) / length);
+        if (fromRGB.getRed() > toRGB.getRed()) {
+            rStep = -rStep; //200, 100
+        }
+        if (fromRGB.getGreen() > toRGB.getGreen()) {
+            gStep = -gStep; //200, 100
+        }
+        if (fromRGB.getBlue() > toRGB.getBlue()) {
+            bStep = -bStep; //200, 100
+        }
+        Color finalColor = new Color(fromRGB.getRGB());
+        msg = msg.replaceAll(GRADIENT_REGEX, "");
+        msg = msg.replace("", "<$>");
+        for (int index = 0; index <= length; index++) {
+            int red = (int) Math.round(finalColor.getRed() + rStep);
+            int green = (int) Math.round(finalColor.getGreen() + gStep);
+            int blue = (int) Math.round(finalColor.getBlue() + bStep);
+            if (red > 255) {
+                red = 255;
+            }
+            if (red < 0) {
+                red = 0;
+            }
+            if (green > 255) {
+                green = 255;
+            }
+            if (green < 0) {
+                green = 0;
+            }
+            if (blue > 255) {
+                blue = 255;
+            }
+            if (blue < 0) {
+                blue = 0;
+            }
+            finalColor = new Color(red, green, blue);
+            String hex = "#" + Integer.toHexString(finalColor.getRGB()).substring(2);
+            String formats = "";
+            if (bold) {
+                formats += ChatColor.BOLD;
+            }
+            if (italic) {
+                formats += ChatColor.ITALIC;
+            }
+            msg = msg.replaceFirst("<\\$>", ChatColor.of(hex) + formats);
+        }
+        return msg;
     }
 
     /**
