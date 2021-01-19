@@ -15,7 +15,6 @@ import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.config.configs.Config;
 import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
-import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.drops.telekinesis.EcoTelekinesisTests;
 import com.willfp.eco.util.drops.telekinesis.TelekinesisTests;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
@@ -236,8 +235,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
         this.getEventManager().registerListener(new RecipeListener(this));
 
-        new FastCollatedDropQueue.CollatedRunnable(this);
-
         new UpdateChecker(this).getVersion(version -> {
             DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
             DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
@@ -363,7 +360,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
         this.getScheduler().cancelAll();
-        new FastCollatedDropQueue.CollatedRunnable(this);
 
         this.onReload();
     }

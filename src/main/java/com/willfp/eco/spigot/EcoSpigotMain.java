@@ -1,6 +1,7 @@
 package com.willfp.eco.spigot;
 
 import com.willfp.eco.util.command.AbstractCommand;
+import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
@@ -19,7 +20,7 @@ public class EcoSpigotMain extends AbstractEcoPlugin {
 
     @Override
     public void enable() {
-
+        new FastCollatedDropQueue.CollatedRunnable(this);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class EcoSpigotMain extends AbstractEcoPlugin {
 
     @Override
     public void onReload() {
-
+        new FastCollatedDropQueue.CollatedRunnable(this);
     }
 
     @Override

@@ -124,13 +124,13 @@ public class StringUtils {
         double gStep = Math.abs((double) (fromRGB.getGreen() - toRGB.getGreen()) / length);
         double bStep = Math.abs((double) (fromRGB.getBlue() - toRGB.getBlue()) / length);
         if (fromRGB.getRed() > toRGB.getRed()) {
-            rStep = -rStep; //200, 100
+            rStep = -rStep;
         }
         if (fromRGB.getGreen() > toRGB.getGreen()) {
-            gStep = -gStep; //200, 100
+            gStep = -gStep;
         }
         if (fromRGB.getBlue() > toRGB.getBlue()) {
-            bStep = -bStep; //200, 100
+            bStep = -bStep;
         }
         Color finalColor = new Color(fromRGB.getRGB());
         msg = msg.replaceAll(GRADIENT_REGEX, "");
