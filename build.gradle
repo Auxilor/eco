@@ -98,5 +98,5 @@ build.dependsOn publishToMavenLocal
 
 group = 'com.willfp'
 archivesBaseName = project.name
-version = '3.0.2'
+version = '3.0.3'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
