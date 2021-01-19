@@ -11,5 +11,5 @@ public final class DropManager {
      * Standard by default, used if drops.collate key is not present in config.
      */
     @Getter
-    private DropQueueType type = DropQueueType.COLLATED;
+    private DropQueueType type = DropQueueType.STANDARD;
 }

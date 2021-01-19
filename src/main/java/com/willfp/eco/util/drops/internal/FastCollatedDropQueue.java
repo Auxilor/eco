@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class FastCollatedDropQueue extends InternalDropQueue {
     /**
      * The {@link CollatedDrops} linked to every player.

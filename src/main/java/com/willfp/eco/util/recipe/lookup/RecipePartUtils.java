@@ -1,18 +1,22 @@
 package com.willfp.eco.util.recipe.lookup;
 
+import com.willfp.eco.util.recipe.parts.EmptyRecipePart;
 import com.willfp.eco.util.recipe.parts.RecipePart;
+import com.willfp.eco.util.recipe.parts.SimpleRecipePart;
 import lombok.experimental.UtilityClass;
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @UtilityClass
 public final class RecipePartUtils {
     /**
-     * Instance of registered lookups.
+     * Set of tests that return if the player is telekinetic.
      */
-    private final ItemLookup lookup;
+    private static final Map<String, Function<String, RecipePart>> TESTS = new HashMap<>();
 
     /**
      * Register a new lookup.
@@ -22,7 +26,7 @@ public final class RecipePartUtils {
      */
     public void registerLookup(@NotNull final String key,
                                @NotNull final Function<String, RecipePart> lookupFunction) {
-        lookup.registerLookup(key, lookupFunction);
+        TESTS.put(key, lookupFunction);
     }
 
     /**
@@ -32,10 +36,16 @@ public final class RecipePartUtils {
      * @return The generated recipe part, or null if invalid.
      */
     public RecipePart lookup(@NotNull final String key) {
-        return lookup.lookup(key);
-    }
+        Function<String, RecipePart> lookup = TESTS.get(key);
 
-    static {
-        lookup = Bukkit.getServicesManager().load(ItemLookup.class);
+        if (lookup == null) {
+            Material material = Material.getMaterial(key.toUpperCase());
+            if (material == null || material == Material.AIR) {
+                return new EmptyRecipePart();
+            }
+            return new SimpleRecipePart(material);
+        }
+
+        return lookup.apply(key);
     }
 }

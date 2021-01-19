@@ -15,8 +15,6 @@ import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.config.configs.Config;
 import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
-import com.willfp.eco.util.drops.telekinesis.EcoTelekinesisTests;
-import com.willfp.eco.util.drops.telekinesis.TelekinesisTests;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
 import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
 import com.willfp.eco.util.events.entitydeathbyentity.EntityDeathByEntityListeners;
@@ -42,8 +40,6 @@ import com.willfp.eco.util.optional.Prerequisite;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import com.willfp.eco.util.recipe.RecipeListener;
 import com.willfp.eco.util.recipe.RecipeManager;
-import com.willfp.eco.util.recipe.lookup.EcoItemLookup;
-import com.willfp.eco.util.recipe.lookup.ItemLookup;
 import com.willfp.eco.util.updater.UpdateChecker;
 import lombok.Getter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -51,7 +47,6 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -306,14 +301,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     @Override
     public final void onLoad() {
         super.onLoad();
-
-        if (!Bukkit.getServicesManager().isProvidedFor(TelekinesisTests.class)) {
-            Bukkit.getServicesManager().register(TelekinesisTests.class, new EcoTelekinesisTests(), this, ServicePriority.Normal);
-        }
-
-        if (!Bukkit.getServicesManager().isProvidedFor(ItemLookup.class)) {
-            Bukkit.getServicesManager().register(ItemLookup.class, new EcoItemLookup(), this, ServicePriority.Normal);
-        }
 
         this.load();
     }
