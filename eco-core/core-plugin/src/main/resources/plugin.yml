@@ -1,5 +1,5 @@
 name: eco
-version: 3.0.3
+version: ${projectVersion}
 main: com.willfp.eco.spigot.EcoPlugin
 api-version: 1.15
 authors: [Auxilor]
