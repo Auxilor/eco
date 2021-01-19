@@ -14,7 +14,7 @@ public class Display {
     /**
      * Registered display functions.
      */
-    private static final List<List<Function<ItemStack, ItemStack>>> DISPLAY_FUNCTIONS = new ArrayList<>();
+    private static final List<List<Function<ItemStack, ItemStack>>> DISPLAY_FUNCTIONS = new ArrayList<>(10000);
 
     /**
      * Registered revert functions.
@@ -39,6 +39,9 @@ public class Display {
      */
     public void registerDisplayModule(@NotNull final DisplayModule module) {
         int priority = module.getPriority();
+        if (priority > 9999) {
+            priority = 9999;
+        }
         Function<ItemStack, ItemStack> function = module.getFunction();
 
         List<Function<ItemStack, ItemStack>> functions = DISPLAY_FUNCTIONS.get(priority);
@@ -143,5 +146,11 @@ public class Display {
         }
 
         return false;
+    }
+
+    static {
+        for (int i = 0; i < 10000; i++) {
+            DISPLAY_FUNCTIONS.add(null);
+        }
     }
 }
