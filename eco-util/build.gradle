@@ -18,6 +18,7 @@ publishing {
         shadow(MavenPublication) {
             from components.java
             artifact shadowJar
+            artifactId 'eco'
         }
     }
 }
