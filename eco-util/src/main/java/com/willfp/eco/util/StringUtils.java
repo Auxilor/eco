@@ -9,11 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -25,7 +21,12 @@ public class StringUtils {
     /**
      * Regex for gradients.
      */
-    private static final String GRADIENT_REGEX = "<\\$#[A-Fa-f0-9]{6}>";
+    private static final Pattern GRADIENT_REGEX = Pattern.compile("<GRADIENT:([0-9A-Fa-f]{6})>(.*?)</GRADIENT:([0-9A-Fa-f]{6})>");
+
+    /**
+     * Regex for hex codes.
+     */
+    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + "");
 
     /**
      * Translate a string - converts Placeholders and Color codes.
@@ -37,12 +38,12 @@ public class StringUtils {
     public String translate(@NotNull final String message,
                             @Nullable final Player player) {
         String processedMessage = message;
+        processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
+        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         if (Prerequisite.MINIMUM_1_16.isMet()) {
             processedMessage = translateGradients(processedMessage);
         }
-        processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         return processedMessage;
     }
 
@@ -58,8 +59,7 @@ public class StringUtils {
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
-        Pattern hexPattern = Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + "");
-        Matcher matcher = hexPattern.matcher(message);
+        Matcher matcher = HEX_PATTERN.matcher(message);
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
@@ -73,102 +73,69 @@ public class StringUtils {
     }
 
     /**
-     * Apply gradients to the provided string.
+     * Colors a string with a gradient.
      *
-     * @param message the string to parse.
-     * @return the parsed string.
+     * @param string The string to color.
+     * @param start  The start color.
+     * @param end    The end color.
+     * @return The string, colored.
      */
-    public static String translateGradients(@NotNull final String message) {
-        List<String> hexes = new ArrayList<>();
-        Matcher matcher = Pattern.compile(GRADIENT_REGEX).matcher(message);
-        while (matcher.find()) {
-            hexes.add(matcher.group().replace("<$", "").replace(">", ""));
+    private static String processGradients(@NotNull final String string,
+                                           @NotNull final Color start,
+                                           @NotNull final Color end) {
+        StringBuilder stringBuilder = new StringBuilder();
+        ChatColor[] colors = getGradientColors(start, end, string.length());
+        String[] characters = string.split("");
+        for (int i = 0; i < string.length(); i++) {
+            stringBuilder.append(colors[i]).append(characters[i]);
         }
-        int hexIndex = 0;
-        List<String> texts = new LinkedList<>(Arrays.asList(message.split(GRADIENT_REGEX)));
-        StringBuilder finalMsg = new StringBuilder();
-        for (String text : texts) {
-            if (texts.get(0).equalsIgnoreCase(text)) {
-                finalMsg.append(text);
-                continue;
-            }
-            if (text.length() == 0) {
-                continue;
-            }
-            if (hexIndex + 1 >= hexes.size()) {
-                if (!finalMsg.toString().contains(text)) {
-                    finalMsg.append(text);
-                }
-                continue;
-            }
-            String fromHex = hexes.get(hexIndex);
-            String toHex = hexes.get(hexIndex + 1);
-            finalMsg.append(insertFades(text, fromHex, toHex));
-            hexIndex++;
-        }
-        return finalMsg.toString();
+        return stringBuilder.toString();
     }
 
-    private static String insertFades(@NotNull final String message,
-                                      @NotNull final String fromHex,
-                                      @NotNull final String toHex) {
-        boolean bold = message.contains("&l");
-        boolean italic = message.contains("&o");
-        String msg = message;
-        msg = msg.replace("&l", "");
-        msg = msg.replace("&o", "");
-        int length = msg.length();
-        Color fromRGB = Color.decode(fromHex);
-        Color toRGB = Color.decode(toHex);
-        double rStep = Math.abs((double) (fromRGB.getRed() - toRGB.getRed()) / length);
-        double gStep = Math.abs((double) (fromRGB.getGreen() - toRGB.getGreen()) / length);
-        double bStep = Math.abs((double) (fromRGB.getBlue() - toRGB.getBlue()) / length);
-        if (fromRGB.getRed() > toRGB.getRed()) {
-            rStep = -rStep;
+    /**
+     * Creates chatColors for gradients.
+     *
+     * @param start The start color.
+     * @param end   The end color.
+     * @param step  How many colors are returned.
+     * @return Array of chat colors.
+     */
+    private static ChatColor[] getGradientColors(@NotNull final Color start,
+                                                 @NotNull final Color end,
+                                                 final int step) {
+        ChatColor[] colors = new ChatColor[step];
+        int stepR = Math.abs(start.getRed() - end.getRed()) / (step - 1);
+        int stepG = Math.abs(start.getGreen() - end.getGreen()) / (step - 1);
+        int stepB = Math.abs(start.getBlue() - end.getBlue()) / (step - 1);
+        int[] direction = new int[]{
+                start.getRed() < end.getRed() ? +1 : -1,
+                start.getGreen() < end.getGreen() ? +1 : -1,
+                start.getBlue() < end.getBlue() ? +1 : -1
+        };
+
+        for (int i = 0; i < step; i++) {
+            Color color = new Color(start.getRed() + ((stepR * i) * direction[0]), start.getGreen() + ((stepG * i) * direction[1]), start.getBlue() + ((stepB * i) * direction[2]));
+            colors[i] = ChatColor.of(color);
         }
-        if (fromRGB.getGreen() > toRGB.getGreen()) {
-            gStep = -gStep;
+        return colors;
+    }
+
+    /**
+     * Add gradients to a string.
+     *
+     * @param string The string.
+     * @return The string, colorized.
+     */
+    private static String translateGradients(@NotNull final String string) {
+        String processedString = string;
+        Matcher matcher = GRADIENT_REGEX.matcher(string);
+        while (matcher.find()) {
+            String start = matcher.group(1);
+            String end = matcher.group(3);
+            String content = matcher.group(2);
+            processedString = processedString.replace(matcher.group(), processGradients(content, new Color(Integer.parseInt(start, 16)), new Color(Integer.parseInt(end, 16))));
         }
-        if (fromRGB.getBlue() > toRGB.getBlue()) {
-            bStep = -bStep;
-        }
-        Color finalColor = new Color(fromRGB.getRGB());
-        msg = msg.replaceAll(GRADIENT_REGEX, "");
-        msg = msg.replace("", "<$>");
-        for (int index = 0; index <= length; index++) {
-            int red = (int) Math.round(finalColor.getRed() + rStep);
-            int green = (int) Math.round(finalColor.getGreen() + gStep);
-            int blue = (int) Math.round(finalColor.getBlue() + bStep);
-            if (red > 255) {
-                red = 255;
-            }
-            if (red < 0) {
-                red = 0;
-            }
-            if (green > 255) {
-                green = 255;
-            }
-            if (green < 0) {
-                green = 0;
-            }
-            if (blue > 255) {
-                blue = 255;
-            }
-            if (blue < 0) {
-                blue = 0;
-            }
-            finalColor = new Color(red, green, blue);
-            String hex = "#" + Integer.toHexString(finalColor.getRGB()).substring(2);
-            String formats = "";
-            if (bold) {
-                formats += ChatColor.BOLD;
-            }
-            if (italic) {
-                formats += ChatColor.ITALIC;
-            }
-            msg = msg.replaceFirst("<\\$>", ChatColor.of(hex) + formats);
-        }
-        return msg;
+        return processedString;
     }
 
     /**
