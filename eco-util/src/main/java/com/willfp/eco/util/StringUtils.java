@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -38,12 +40,12 @@ public class StringUtils {
     public String translate(@NotNull final String message,
                             @Nullable final Player player) {
         String processedMessage = message;
-        processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         if (Prerequisite.MINIMUM_1_16.isMet()) {
             processedMessage = translateGradients(processedMessage);
         }
+        processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         processedMessage = translateHexColorCodes(processedMessage);
+        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         return processedMessage;
     }
 
@@ -83,11 +85,32 @@ public class StringUtils {
     private static String processGradients(@NotNull final String string,
                                            @NotNull final Color start,
                                            @NotNull final Color end) {
+        String processedString = string;
+        List<ChatColor> modifiers = new ArrayList<>();
+        if (processedString.contains("&l")) {
+            modifiers.add(ChatColor.BOLD);
+        }
+        if (processedString.contains("&o")) {
+            modifiers.add(ChatColor.ITALIC);
+        }
+        if (processedString.contains("&n")) {
+            modifiers.add(ChatColor.UNDERLINE);
+        }
+        if (processedString.contains("&k")) {
+            modifiers.add(ChatColor.MAGIC);
+        }
+        processedString = processedString.replace("&l", "");
+        processedString = processedString.replace("&o", "");
+        processedString = processedString.replace("&n", "");
+        processedString = processedString.replace("&k", "");
+
         StringBuilder stringBuilder = new StringBuilder();
-        ChatColor[] colors = getGradientColors(start, end, string.length());
-        String[] characters = string.split("");
-        for (int i = 0; i < string.length(); i++) {
-            stringBuilder.append(colors[i]).append(characters[i]);
+        ChatColor[] colors = getGradientColors(start, end, processedString.length());
+        String[] characters = processedString.split("");
+        for (int i = 0; i < processedString.length(); i++) {
+            stringBuilder.append(colors[i]);
+            modifiers.forEach(stringBuilder::append);
+            stringBuilder.append(characters[i]);
         }
         return stringBuilder.toString();
     }
