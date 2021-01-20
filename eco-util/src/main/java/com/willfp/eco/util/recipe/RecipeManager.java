@@ -52,8 +52,8 @@ public class RecipeManager extends PluginDependent {
             displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(recipe.getDisplayedAtIndex(i)));
         }
 
-        Bukkit.getServer().addRecipe(shapedRecipe);
         Bukkit.getServer().addRecipe(displayedRecipe);
+        Bukkit.getServer().addRecipe(shapedRecipe);
     }
 
     /**
