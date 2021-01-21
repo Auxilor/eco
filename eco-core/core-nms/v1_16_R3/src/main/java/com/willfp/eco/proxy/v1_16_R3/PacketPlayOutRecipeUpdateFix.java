@@ -1,9 +1,9 @@
 package com.willfp.eco.proxy.v1_16_R3;
 
 import com.willfp.eco.proxy.proxies.PacketPlayOutRecipeUpdateFixProxy;
+import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import net.minecraft.server.v1_16_R3.IRecipe;
 import net.minecraft.server.v1_16_R3.PacketPlayOutRecipeUpdate;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -14,33 +14,44 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public final class PacketPlayOutRecipeUpdateFix implements PacketPlayOutRecipeUpdateFixProxy {
     @Override
-    public List<Object> splitPackets(@NotNull final Object object,
-                                     @NotNull final Player player) {
+    public Object splitAndModifyPacket(@NotNull final Object object) {
         if (!(object instanceof PacketPlayOutRecipeUpdate)) {
             throw new IllegalArgumentException("Parameter not packet!");
         }
 
         PacketPlayOutRecipeUpdate oldPacket = (PacketPlayOutRecipeUpdate) object;
         List<IRecipe<?>> recipes = new ArrayList<>();
+        Field f = null;
         try {
-            Field f = oldPacket.getClass().getDeclaredField("a");
+            f = oldPacket.getClass().getDeclaredField("a");
             f.setAccessible(true);
             recipes.addAll((Collection<? extends IRecipe<?>>) f.get(oldPacket));
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
 
-        List<Object> splitPackets = new ArrayList<>();
-        List<IRecipe<?>> splitRecipes = new ArrayList<>();
-        for (int i = 0; i < recipes.size(); i++) {
-            splitRecipes.add(recipes.get(i));
-            if (i % 100 == 0) {
-                PacketPlayOutRecipeUpdate newPacket = new PacketPlayOutRecipeUpdate(splitRecipes);
-                splitPackets.add(newPacket);
-                splitRecipes.clear();
+        if (f == null) {
+            return null;
+        }
+
+        List<IRecipe<?>> externRecipes = new ArrayList<>();
+        for (IRecipe<?> recipe : new ArrayList<>(recipes)) {
+            if (AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+                externRecipes.add(recipe);
+                recipes.remove(recipe);
             }
         }
 
-        return splitPackets;
+        if (externRecipes.isEmpty()) {
+            return null;
+        }
+
+        try {
+            f.set(object, recipes);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return new PacketPlayOutRecipeUpdate(externRecipes);
     }
 }
