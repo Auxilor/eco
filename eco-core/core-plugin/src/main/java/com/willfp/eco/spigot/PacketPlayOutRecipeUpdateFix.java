@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 public class PacketPlayOutRecipeUpdateFix extends PacketAdapter {
     /**
@@ -28,16 +27,14 @@ public class PacketPlayOutRecipeUpdateFix extends PacketAdapter {
         PacketContainer packet = event.getPacket();
         Player player = event.getPlayer();
 
-        List<Object> packets = InternalProxyUtils.getProxy(PacketPlayOutRecipeUpdateFixProxy.class).splitPackets(packet.getHandle(), player);
-        if (packets.size() > 1) {
+        Object otherPacket = InternalProxyUtils.getProxy(PacketPlayOutRecipeUpdateFixProxy.class).splitAndModifyPacket(packet.getHandle());
+        if (otherPacket != null) {
             event.setCancelled(true);
-            for (Object o : packets) {
-                PacketContainer container = PacketContainer.fromPacket(o);
-                try {
-                    ProtocolLibrary.getProtocolManager().sendServerPacket(player, container);
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+            PacketContainer container = PacketContainer.fromPacket(otherPacket);
+            try {
+                ProtocolLibrary.getProtocolManager().sendServerPacket(player, container);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
         }
     }
