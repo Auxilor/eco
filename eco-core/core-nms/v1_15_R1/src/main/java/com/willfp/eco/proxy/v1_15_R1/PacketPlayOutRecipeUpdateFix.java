@@ -42,7 +42,7 @@ public final class PacketPlayOutRecipeUpdateFix implements PacketPlayOutRecipeUp
             }
         }
 
-        if (externRecipes.isEmpty()) {
+        if (recipes.isEmpty()) {
             return null;
         }
 

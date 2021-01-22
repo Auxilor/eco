@@ -1,5 +1,6 @@
 package com.willfp.eco.spigot;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.willfp.eco.spigot.display.packets.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.packets.PacketChat;
 import com.willfp.eco.spigot.display.packets.PacketOpenWindowMerchant;
@@ -57,7 +58,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
         this.getEventManager().registerListener(new RecipeListener(this));
-        //ProtocolLibrary.getProtocolManager().addPacketListener(new PacketPlayOutRecipeUpdateFix(this));
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketPlayOutRecipeUpdateFix(this));
     }
 
     @Override
