@@ -27,7 +27,6 @@ import com.willfp.eco.util.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.util.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
-import com.willfp.eco.util.recipe.RecipeListener;
 import lombok.Getter;
 import org.bukkit.event.Listener;
 
@@ -57,7 +56,6 @@ public class EcoPlugin extends AbstractEcoPlugin {
         this.getEventManager().registerListener(new ArmorListener());
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
-        this.getEventManager().registerListener(new RecipeListener(this));
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketPlayOutRecipeUpdateFix(this));
     }
 

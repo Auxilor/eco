@@ -250,14 +250,11 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         Prerequisite.update();
 
-
-        if (ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter")) {
-            this.getPacketAdapters().forEach(abstractPacketAdapter -> {
-                if (!abstractPacketAdapter.isPostLoad()) {
-                    abstractPacketAdapter.register();
-                }
-            });
-        }
+        this.getPacketAdapters().forEach(abstractPacketAdapter -> {
+            if (!abstractPacketAdapter.isPostLoad()) {
+                abstractPacketAdapter.register();
+            }
+        });
 
         updatableClasses.addAll(this.getUpdatableClasses());
 

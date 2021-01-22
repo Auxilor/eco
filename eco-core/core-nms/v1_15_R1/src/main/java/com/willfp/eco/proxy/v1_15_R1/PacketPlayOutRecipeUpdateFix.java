@@ -3,6 +3,8 @@ package com.willfp.eco.proxy.v1_15_R1;
 import com.willfp.eco.proxy.proxies.PacketPlayOutRecipeUpdateFixProxy;
 import net.minecraft.server.v1_15_R1.IRecipe;
 import net.minecraft.server.v1_15_R1.PacketPlayOutRecipeUpdate;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
