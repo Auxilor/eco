@@ -2,14 +2,19 @@ package com.willfp.eco.proxy.proxies;
 
 
 import com.willfp.eco.util.proxy.AbstractProxy;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public interface PacketPlayOutRecipeUpdateFixProxy extends AbstractProxy {
     /**
      * Split recipe update packet into smaller packets.
      *
      * @param object The packet.
-     * @return The extra packet for eco recipes.
+     * @param player The player.
+     * @return The packets, split up.
      */
-    Object splitAndModifyPacket(@NotNull Object object);
+    List<Object> splitPackets(@NotNull Object object,
+                              @NotNull Player player);
 }
