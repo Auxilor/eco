@@ -88,6 +88,7 @@ public class Display {
      * Display on ItemStacks.
      *
      * @param itemStack The item.
+     * @return The itemstack.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
         for (Map<String, Function<ItemStack, ItemStack>> displayFunctions : DISPLAY_FUNCTIONS) {
@@ -107,6 +108,7 @@ public class Display {
      * Display on ItemStacks and then finalize.
      *
      * @param itemStack The item.
+     * @return The itemstack.
      */
     public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
         return finalize(display(itemStack));
@@ -116,6 +118,7 @@ public class Display {
      * Revert on ItemStacks.
      *
      * @param itemStack The item.
+     * @return The itemstack.
      */
     public ItemStack revert(@NotNull final ItemStack itemStack) {
         for (Function<ItemStack, ItemStack> displayFunction : REVERT_FUNCTIONS) {
@@ -128,6 +131,7 @@ public class Display {
      * Finalize an ItemStacks.
      *
      * @param itemStack The item.
+     * @return The itemstack.
      */
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
         for (Function<ItemStack, ItemStack> function : FINALIZE_FUNCTIONS) {
@@ -140,6 +144,7 @@ public class Display {
      * Finalize an ItemStacks.
      *
      * @param itemStack The item.
+     * @return If finalized.
      */
     public boolean isFinalized(@NotNull final ItemStack itemStack) {
         for (Predicate<ItemStack> function : FINALIZE_TEST_FUNCTIONS) {
