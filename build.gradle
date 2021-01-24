@@ -25,7 +25,7 @@ allprojects {
         // NMS (for jitpack compilation)
         maven { url 'https://repo.codemc.org/repository/nms/' }
 
-        // bStats
+        // bStats, mcMMO
         maven { url 'https://repo.codemc.org/repository/maven-public' }
 
         // Spigot API

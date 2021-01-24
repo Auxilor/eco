@@ -15,6 +15,7 @@ import com.willfp.eco.spigot.integrations.antigrief.plugins.AntigriefKingdoms;
 import com.willfp.eco.spigot.integrations.antigrief.plugins.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.plugins.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.plugins.AntigriefWorldGuard;
+import com.willfp.eco.spigot.integrations.mcmmo.plugins.McmmoIntegrationImpl;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
@@ -24,6 +25,7 @@ import com.willfp.eco.util.events.naturalexpgainevent.NaturalExpGainListeners;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.util.integrations.antigrief.AntigriefManager;
+import com.willfp.eco.util.integrations.mcmmo.McmmoManager;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import lombok.Getter;
@@ -55,7 +57,6 @@ public class EcoPlugin extends AbstractEcoPlugin {
         this.getEventManager().registerListener(new ArmorListener());
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
-        //ProtocolLibrary.getProtocolManager().addPacketListener(new PacketPlayOutRecipeUpdateFix(this));
     }
 
     @Override
@@ -92,7 +93,10 @@ public class EcoPlugin extends AbstractEcoPlugin {
                 // Anticheat
                 new IntegrationLoader("AAC5", () -> AnticheatManager.register(this, new AnticheatAAC())),
                 new IntegrationLoader("Matrix", () -> AnticheatManager.register(this, new AnticheatMatrix())),
-                new IntegrationLoader("NoCheatPlus", () -> AnticheatManager.register(this, new AnticheatNCP()))
+                new IntegrationLoader("NoCheatPlus", () -> AnticheatManager.register(this, new AnticheatNCP())),
+
+                // Misc
+                new IntegrationLoader("mcMMO", () -> McmmoManager.register(new McmmoIntegrationImpl()))
         );
     }
 
