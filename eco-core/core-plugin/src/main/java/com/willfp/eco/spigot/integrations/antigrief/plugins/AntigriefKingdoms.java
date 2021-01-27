@@ -5,22 +5,35 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 import org.kingdoms.constants.kingdom.Kingdom;
+import org.kingdoms.constants.kingdom.KingdomRelation;
 import org.kingdoms.constants.land.Land;
+import org.kingdoms.constants.player.DefaultKingdomPermission;
+import org.kingdoms.constants.player.KingdomPlayer;
 import org.kingdoms.managers.PvPManager;
-import org.kingdoms.managers.land.LandManager;
 
 public class AntigriefKingdoms implements AntigriefWrapper {
     @Override
     public boolean canBreakBlock(@NotNull final Player player,
                                  @NotNull final Block block) {
-        BlockBreakEvent event = new BlockBreakEvent(block, player);
-        LandManager.onBreak(event);
-        return !event.isCancelled();
+        KingdomPlayer kp = KingdomPlayer.getKingdomPlayer(player);
+        if (kp.isAdmin()) {
+            return true;
+        }
+
+        Kingdom kingdom = kp.getKingdom();
+        if (kingdom == null) {
+            return false;
+        }
+
+        Land land = Land.getLand(block);
+
+        DefaultKingdomPermission permission = land.isNexusLand() ? DefaultKingdomPermission.NEXUS_BUILD : DefaultKingdomPermission.BUILD;
+        if (!kp.hasPermission(permission)) {
+            return false;
+        }
+        return kingdom.hasAttribute(land.getKingdom(), KingdomRelation.Attribute.BUILD);
     }
 
     @Override
@@ -41,10 +54,7 @@ public class AntigriefKingdoms implements AntigriefWrapper {
     @Override
     public boolean canPlaceBlock(@NotNull final Player player,
                                  @NotNull final Block block) {
-        Block placedOn = block.getRelative(0, -1, 0);
-        BlockPlaceEvent event = new BlockPlaceEvent(block, block.getState(), placedOn, player.getInventory().getItemInMainHand(), player, true, EquipmentSlot.HAND);
-        LandManager.onPlace(event);
-        return !event.isCancelled();
+        return canBreakBlock(player, block);
     }
 
     @Override
