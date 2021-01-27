@@ -1,4 +1,4 @@
-package com.willfp.eco.spigot.integrations.mcmmo.plugins;
+package com.willfp.eco.spigot.integrations.mcmmo;
 
 import com.gmail.nossr50.datatypes.meta.BonusDropMeta;
 import com.gmail.nossr50.events.fake.FakeEvent;

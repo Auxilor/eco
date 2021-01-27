@@ -1,4 +1,4 @@
-package com.willfp.eco.spigot.integrations.anticheat.plugins;
+package com.willfp.eco.spigot.integrations.anticheat;
 
 import com.willfp.eco.util.integrations.anticheat.AnticheatWrapper;
 import me.vagdedes.spartan.api.PlayerViolationEvent;

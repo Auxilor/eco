@@ -1,4 +1,4 @@
-package com.willfp.eco.spigot.integrations.antigrief.plugins;
+package com.willfp.eco.spigot.integrations.antigrief;
 
 import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
 import me.ryanhamshire.GriefPrevention.Claim;

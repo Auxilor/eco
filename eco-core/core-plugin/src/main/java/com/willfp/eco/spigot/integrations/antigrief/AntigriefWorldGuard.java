@@ -1,4 +1,4 @@
-package com.willfp.eco.spigot.integrations.antigrief.plugins;
+package com.willfp.eco.spigot.integrations.antigrief;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;

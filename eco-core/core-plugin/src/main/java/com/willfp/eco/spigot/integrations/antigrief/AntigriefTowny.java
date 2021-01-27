@@ -1,4 +1,4 @@
-package com.willfp.eco.spigot.integrations.antigrief.plugins;
+package com.willfp.eco.spigot.integrations.antigrief;
 
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyPermission;
