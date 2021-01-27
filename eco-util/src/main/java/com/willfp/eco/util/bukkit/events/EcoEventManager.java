@@ -11,8 +11,6 @@ import org.jetbrains.annotations.NotNull;
 public class EcoEventManager extends PluginDependent implements EventManager {
     /**
      * Manager class for event management.
-     * <p>
-     * Prevents calls to {@link AbstractEcoPlugin#getInstance()}.
      *
      * @param plugin The {@link AbstractEcoPlugin} that this manages the events of.
      */
