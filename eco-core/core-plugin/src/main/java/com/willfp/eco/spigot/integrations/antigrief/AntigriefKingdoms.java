@@ -29,6 +29,10 @@ public class AntigriefKingdoms implements AntigriefWrapper {
 
         Land land = Land.getLand(block);
 
+        if (land == null) {
+            return true;
+        }
+
         DefaultKingdomPermission permission = land.isNexusLand() ? DefaultKingdomPermission.NEXUS_BUILD : DefaultKingdomPermission.BUILD;
         if (!kp.hasPermission(permission)) {
             return false;
