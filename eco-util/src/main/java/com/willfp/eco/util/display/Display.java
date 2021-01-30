@@ -74,6 +74,7 @@ public class Display {
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
         if (isFinalized(itemStack)) {
+            unfinalize(itemStack);
             return itemStack;
         }
 
@@ -110,12 +111,14 @@ public class Display {
      */
     public ItemStack revert(@NotNull final ItemStack itemStack) {
         if (isFinalized(itemStack)) {
+            unfinalize(itemStack);
             return itemStack;
         }
 
         for (Function<ItemStack, ItemStack> displayFunction : REVERT_FUNCTIONS) {
             displayFunction.apply(itemStack);
         }
+
         return itemStack;
     }
 
@@ -133,6 +136,24 @@ public class Display {
         }
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(finalizeKey, PersistentDataType.INTEGER, 1);
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    /**
+     * Unfinalize an ItemStacks.
+     *
+     * @param itemStack The item.
+     * @return The itemstack.
+     */
+    public ItemStack unfinalize(@NotNull final ItemStack itemStack) {
+        Validate.notNull(finalizeKey, "Key cannot be null!");
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return itemStack;
+        }
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.remove(finalizeKey);
         itemStack.setItemMeta(meta);
         return itemStack;
     }
