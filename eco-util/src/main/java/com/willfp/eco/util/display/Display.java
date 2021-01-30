@@ -1,7 +1,13 @@
 package com.willfp.eco.util.display;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang.Validate;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,15 +30,9 @@ public class Display {
     private static final List<Function<ItemStack, ItemStack>> REVERT_FUNCTIONS = new ArrayList<>();
 
     /**
-     * Registered finalize functions.
+     * NamespacedKey for finalizing.
      */
-    public static final List<Function<ItemStack, ItemStack>> FINALIZE_FUNCTIONS = new ArrayList<>();
-
-
-    /**
-     * Registered finalize test functions.
-     */
-    public static final List<Predicate<ItemStack>> FINALIZE_TEST_FUNCTIONS = new ArrayList<>();
+    private static NamespacedKey finalizeKey;
 
     /**
      * Register display module.
@@ -67,30 +67,18 @@ public class Display {
     }
 
     /**
-     * Register finalize function.
-     *
-     * @param function The function.
-     */
-    public void registerFinalizeModule(@NotNull final Function<ItemStack, ItemStack> function) {
-        FINALIZE_FUNCTIONS.add(function);
-    }
-
-    /**
-     * Register finalize test function.
-     *
-     * @param function The function.
-     */
-    public void registerFinalizeTestModule(@NotNull final Predicate<ItemStack> function) {
-        FINALIZE_TEST_FUNCTIONS.add(function);
-    }
-
-    /**
      * Display on ItemStacks.
      *
      * @param itemStack The item.
      * @return The itemstack.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
+        if (isFinalized(itemStack)) {
+            return itemStack;
+        }
+
+        revert(itemStack);
+
         for (Map<String, Function<ItemStack, ItemStack>> displayFunctions : DISPLAY_FUNCTIONS) {
             if (displayFunctions == null) {
                 continue;
@@ -121,6 +109,10 @@ public class Display {
      * @return The itemstack.
      */
     public ItemStack revert(@NotNull final ItemStack itemStack) {
+        if (isFinalized(itemStack)) {
+            return itemStack;
+        }
+
         for (Function<ItemStack, ItemStack> displayFunction : REVERT_FUNCTIONS) {
             displayFunction.apply(itemStack);
         }
@@ -134,26 +126,64 @@ public class Display {
      * @return The itemstack.
      */
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
-        for (Function<ItemStack, ItemStack> function : FINALIZE_FUNCTIONS) {
-            function.apply(itemStack);
+        Validate.notNull(finalizeKey, "Key cannot be null!");
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return itemStack;
         }
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(finalizeKey, PersistentDataType.INTEGER, 1);
+        itemStack.setItemMeta(meta);
         return itemStack;
     }
 
     /**
-     * Finalize an ItemStacks.
+     * If an item is finalized.
      *
      * @param itemStack The item.
      * @return If finalized.
      */
     public boolean isFinalized(@NotNull final ItemStack itemStack) {
-        for (Predicate<ItemStack> function : FINALIZE_TEST_FUNCTIONS) {
-            if (function.test(itemStack)) {
-                return true;
-            }
+        Validate.notNull(finalizeKey, "Key cannot be null!");
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return false;
         }
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        return container.has(finalizeKey, PersistentDataType.INTEGER);
+    }
 
-        return false;
+
+    /**
+     * Register finalize function.
+     *
+     * @param function The function.
+     * @deprecated Not needed.
+     */
+    @Deprecated
+    public void registerFinalizeModule(@NotNull final Function<ItemStack, ItemStack> function) {
+        // This function is not needed.
+    }
+
+    /**
+     * Register finalize test function.
+     *
+     * @param function The function.
+     * @deprecated Not needed.
+     */
+    @Deprecated
+    public void registerFinalizeTestModule(@NotNull final Predicate<ItemStack> function) {
+        // This isn't needed.
+    }
+
+    /**
+     * Set key to be used for finalization.
+     *
+     * @param finalizeKey The key.
+     */
+    @ApiStatus.Internal
+    public static void setFinalizeKey(@NotNull final NamespacedKey finalizeKey) {
+        Display.finalizeKey = finalizeKey;
     }
 
     static {

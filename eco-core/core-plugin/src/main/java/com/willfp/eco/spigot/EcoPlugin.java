@@ -17,6 +17,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.util.command.AbstractCommand;
+import com.willfp.eco.util.display.Display;
 import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
 import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
@@ -48,6 +49,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
     public EcoPlugin() {
         super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
+        Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
     }
 
     @Override
