@@ -2,6 +2,7 @@ package com.willfp.eco.util;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
@@ -37,25 +38,32 @@ public class DurabilityUtils {
             return;
         }
 
+        if (!(item.getItemMeta() instanceof Damageable)) {
+            return;
+        }
+
+        // Special edge case
+        if (item.getType() == Material.CARVED_PUMPKIN || item.getType() == Material.PLAYER_HEAD) {
+            return;
+        }
+
         PlayerItemDamageEvent event3 = new PlayerItemDamageEvent(player, item, damage);
         Bukkit.getPluginManager().callEvent(event3);
 
         if (!event3.isCancelled()) {
             int damage2 = event3.getDamage();
-            if (item.getItemMeta() instanceof Damageable) {
-                Damageable meta = (Damageable) item.getItemMeta();
-                meta.setDamage(meta.getDamage() + damage2);
+            Damageable meta = (Damageable) item.getItemMeta();
+            meta.setDamage(meta.getDamage() + damage2);
 
-                if (meta.getDamage() >= item.getType().getMaxDurability()) {
-                    meta.setDamage(item.getType().getMaxDurability());
-                    item.setItemMeta((ItemMeta) meta);
-                    PlayerItemBreakEvent event = new PlayerItemBreakEvent(player, item);
-                    Bukkit.getPluginManager().callEvent(event);
-                    player.getInventory().clear(slot);
-                    player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1, 1);
-                } else {
-                    item.setItemMeta((ItemMeta) meta);
-                }
+            if (meta.getDamage() >= item.getType().getMaxDurability()) {
+                meta.setDamage(item.getType().getMaxDurability());
+                item.setItemMeta((ItemMeta) meta);
+                PlayerItemBreakEvent event = new PlayerItemBreakEvent(player, item);
+                Bukkit.getPluginManager().callEvent(event);
+                player.getInventory().clear(slot);
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1, 1);
+            } else {
+                item.setItemMeta((ItemMeta) meta);
             }
         }
     }
@@ -78,20 +86,22 @@ public class DurabilityUtils {
             return;
         }
 
+        if (!(item.getItemMeta() instanceof Damageable)) {
+            return;
+        }
+
         PlayerItemDamageEvent event3 = new PlayerItemDamageEvent(player, item, damage);
         Bukkit.getPluginManager().callEvent(event3);
 
         if (!event3.isCancelled()) {
             int damage2 = event3.getDamage();
-            if (item.getItemMeta() instanceof Damageable) {
-                Damageable meta = (Damageable) item.getItemMeta();
-                meta.setDamage(meta.getDamage() + damage2);
+            Damageable meta = (Damageable) item.getItemMeta();
+            meta.setDamage(meta.getDamage() + damage2);
 
-                if (meta.getDamage() >= item.getType().getMaxDurability()) {
-                    meta.setDamage(item.getType().getMaxDurability() - 1);
-                }
-                item.setItemMeta((ItemMeta) meta);
+            if (meta.getDamage() >= item.getType().getMaxDurability()) {
+                meta.setDamage(item.getType().getMaxDurability() - 1);
             }
+            item.setItemMeta((ItemMeta) meta);
         }
     }
 
