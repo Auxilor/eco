@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
@@ -132,6 +133,11 @@ public class InternalDropQueue implements AbstractDropQueue {
         World world = loc.getWorld();
         assert world != null;
         loc = loc.add(0.5, 0.5, 0.5);
+
+        items.removeIf(itemStack -> itemStack.getType() == Material.AIR);
+        if (items.isEmpty()) {
+            return;
+        }
 
         if (hasTelekinesis) {
             HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(items.toArray(new ItemStack[0]));
