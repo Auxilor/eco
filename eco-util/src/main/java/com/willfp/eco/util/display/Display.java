@@ -130,6 +130,9 @@ public class Display {
      */
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
+        if (itemStack.getType().getMaxStackSize() > 1) {
+            return itemStack;
+        }
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
             return itemStack;
