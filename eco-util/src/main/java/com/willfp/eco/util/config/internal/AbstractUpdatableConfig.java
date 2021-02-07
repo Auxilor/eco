@@ -4,9 +4,9 @@ import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,10 +36,11 @@ public abstract class AbstractUpdatableConfig extends AbstractConfig {
                                       @NotNull final String subDirectoryPath,
                                       @NotNull final Class<?> source,
                                       final boolean removeUnused,
-                                      @Nullable final String... updateBlacklist) {
+                                      @NotNull final String... updateBlacklist) {
         super(configName, plugin, subDirectoryPath, source);
         this.removeUnused = removeUnused;
-        this.updateBlacklist = Arrays.asList(updateBlacklist);
+        this.updateBlacklist = new ArrayList<>(Arrays.asList(updateBlacklist));
+        this.updateBlacklist.removeIf(String::isEmpty);
 
         update();
     }

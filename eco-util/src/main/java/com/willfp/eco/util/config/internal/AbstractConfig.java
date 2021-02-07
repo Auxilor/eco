@@ -121,10 +121,10 @@ public abstract class AbstractConfig extends PluginDependent {
         if (subDirectoryPath.isEmpty()) {
             resourcePath = name;
         } else {
-            resourcePath = "/" + subDirectoryPath + name;
+            resourcePath = subDirectoryPath + name;
         }
 
-        return resourcePath;
+        return "/" + resourcePath;
     }
 
     /**
@@ -136,8 +136,7 @@ public abstract class AbstractConfig extends PluginDependent {
         InputStream newIn = source.getResourceAsStream(getResourcePath());
 
         if (newIn == null) {
-            this.getPlugin().getLog().error(this.getName() + " is null?");
-            return null;
+            throw new NullPointerException(this.getName() + " is null?");
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(newIn, StandardCharsets.UTF_8));

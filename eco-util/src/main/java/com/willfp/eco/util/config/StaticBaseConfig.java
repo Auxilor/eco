@@ -15,6 +15,6 @@ public abstract class StaticBaseConfig extends AbstractConfig {
      */
     protected StaticBaseConfig(@NotNull final String configName,
                                @NotNull final AbstractEcoPlugin plugin) {
-        super(configName, plugin, "/", plugin.getClass());
+        super(configName, plugin, "", plugin.getClass());
     }
 }
