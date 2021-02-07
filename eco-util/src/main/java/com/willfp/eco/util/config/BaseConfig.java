@@ -1,74 +1,49 @@
 package com.willfp.eco.util.config;
 
-import com.willfp.eco.util.StringUtils;
-import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-public abstract class BaseConfig extends PluginDependent implements ValueGetter {
-    /**
-     * The linked {@link YamlConfiguration} where values are physically stored.
-     */
-    @Getter(AccessLevel.PUBLIC)
-    private final YamlConfiguration config;
-
-    /**
-     * The physical config file, as stored on disk.
-     */
-    @Getter(AccessLevel.PROTECTED)
-    private final File configFile;
-
-    /**
-     * The full name of the config file (eg config.yml).
-     */
-    private final String name;
-
+public abstract class BaseConfig extends StaticBaseConfig {
     /**
      * Whether keys not in the base config should be removed on update.
      */
     private final boolean removeUnused;
 
     /**
+     * List of blacklisted update keys.
+     */
+    private final List<String> updateBlacklist;
+
+    /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
      * <p>
      * Automatically updates.
      *
-     * @param configName   The name of the config
-     * @param removeUnused Whether keys not present in the default config should be removed on update.
-     * @param plugin       The plugin.
+     * @param configName      The name of the config
+     * @param removeUnused    Whether keys not present in the default config should be removed on update.
+     * @param plugin          The plugin.
+     * @param updateBlacklist Substring of keys to not add/remove keys for.
      */
     protected BaseConfig(@NotNull final String configName,
                          final boolean removeUnused,
-                         @NotNull final AbstractEcoPlugin plugin) {
-        super(plugin);
-        this.name = configName + ".yml";
+                         @NotNull final AbstractEcoPlugin plugin,
+                         @Nullable final String... updateBlacklist) {
+        super(configName, plugin);
         this.removeUnused = removeUnused;
-
-        if (!new File(this.getPlugin().getDataFolder(), this.name).exists()) {
-            createFile();
-        }
-
-        this.configFile = new File(this.getPlugin().getDataFolder(), this.name);
-        this.config = YamlConfiguration.loadConfiguration(configFile);
+        this.updateBlacklist = Arrays.asList(updateBlacklist);
 
         update();
-    }
-
-    private void createFile() {
-        this.getPlugin().saveResource(name, false);
     }
 
     /**
@@ -78,11 +53,11 @@ public abstract class BaseConfig extends PluginDependent implements ValueGetter 
      */
     public void update() {
         try {
-            config.load(configFile);
+            config.load(this.getConfigFile());
 
-            InputStream newIn = this.getPlugin().getResource(name);
+            InputStream newIn = this.getPlugin().getResource(this.getName());
             if (newIn == null) {
-                this.getPlugin().getLog().error(name + " is null?");
+                this.getPlugin().getLog().error(this.getName() + " is null?");
                 return;
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(newIn, StandardCharsets.UTF_8));
@@ -95,127 +70,25 @@ public abstract class BaseConfig extends PluginDependent implements ValueGetter 
 
             newConfig.getKeys(true).forEach((s -> {
                 if (!config.getKeys(true).contains(s)) {
-                    config.set(s, newConfig.get(s));
+                    if (updateBlacklist.stream().noneMatch(s::contains)) {
+                        config.set(s, newConfig.get(s));
+                    }
                 }
             }));
 
             if (this.removeUnused) {
                 config.getKeys(true).forEach((s -> {
                     if (!newConfig.getKeys(true).contains(s)) {
-                        config.set(s, null);
+                        if (updateBlacklist.stream().noneMatch(s::contains)) {
+                            config.set(s, null);
+                        }
                     }
                 }));
             }
 
-            config.save(configFile);
+            config.save(this.getConfigFile());
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Get an integer from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or 0 if not found.
-     */
-    @Override
-    public int getInt(@NotNull final String path) {
-        return config.getInt(path, 0);
-    }
-
-    /**
-     * Get an integer from config with a specified default (not found) value.
-     *
-     * @param path The key to fetch the value from.
-     * @param def  The value to default to if not found.
-     * @return The found value, or the default.
-     */
-    @Override
-    public int getInt(@NotNull final String path,
-                      final int def) {
-        return config.getInt(path, def);
-    }
-
-    /**
-     * Get a list of integers from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
-    @Override
-    @NotNull
-    public List<Integer> getInts(@NotNull final String path) {
-        return config.getIntegerList(path);
-    }
-
-    /**
-     * Get a boolean from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or false if not found.
-     */
-    @Override
-    public boolean getBool(@NotNull final String path) {
-        return config.getBoolean(path, false);
-    }
-
-    /**
-     * Get a list of booleans from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
-    @Override
-    @NotNull
-    public List<Boolean> getBools(@NotNull final String path) {
-        return config.getBooleanList(path);
-    }
-
-    /**
-     * Get a string from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or an empty string if not found.
-     */
-    @Override
-    @NotNull
-    public String getString(@NotNull final String path) {
-        return StringUtils.translate(Objects.requireNonNull(config.getString(path, "")));
-    }
-
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
-    @Override
-    @NotNull
-    public List<String> getStrings(@NotNull final String path) {
-        return config.getStringList(path);
-    }
-
-    /**
-     * Get a decimal from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or 0 if not found.
-     */
-    @Override
-    public double getDouble(@NotNull final String path) {
-        return config.getDouble(path, 0);
-    }
-
-    /**
-     * Get a list of decimals from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
-    @Override
-    @NotNull
-    public List<Double> getDoubles(@NotNull final String path) {
-        return config.getDoubleList(path);
     }
 }
