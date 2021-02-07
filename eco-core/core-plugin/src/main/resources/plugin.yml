@@ -7,7 +7,7 @@ website: willfp.com
 loadbefore:
   - EcoEnchants
   - Talismans
-  - ItemStats
+  - StatTrackers
   - EcoArmor
   - Illusioner
 depend:
