@@ -3,7 +3,6 @@ package com.willfp.eco.util.config;
 import com.willfp.eco.util.config.internal.AbstractUpdatableConfig;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class ExtendableConfig extends AbstractUpdatableConfig {
     /**
@@ -23,7 +22,7 @@ public abstract class ExtendableConfig extends AbstractUpdatableConfig {
                                @NotNull final AbstractEcoPlugin plugin,
                                @NotNull final Class<?> source,
                                @NotNull final String subDirectoryPath,
-                               @Nullable final String... updateBlacklist) {
+                               @NotNull final String... updateBlacklist) {
         super(configName, plugin, subDirectoryPath, source, removeUnused, updateBlacklist);
     }
 }
