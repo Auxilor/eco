@@ -14,7 +14,7 @@ import java.util.function.Function;
 @UtilityClass
 public final class RecipePartUtils {
     /**
-     * Set of tests that return if the player is telekinetic.
+     * All recipes.
      */
     private static final Map<String, Function<String, RecipePart>> TESTS = new HashMap<>();
 

@@ -16,6 +16,7 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
     /**
      * Recipe parts.
      */
+    @Getter
     private final RecipePart[] parts;
 
     /**
