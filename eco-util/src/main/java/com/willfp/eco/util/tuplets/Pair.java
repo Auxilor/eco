@@ -5,7 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("DeprecatedIsStillUsed")
 @ToString
+@Deprecated
 public class Pair<A, B> {
     /**
      * The first value in the pair.
@@ -25,6 +27,8 @@ public class Pair<A, B> {
 
     /**
      * Create a pair of values.
+     * <p>
+     * This is deprecated because I forgot how to spell Tuples before putting this into production.
      *
      * @param first  The first item in the pair.
      * @param second The second item in the pair.

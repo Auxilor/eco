@@ -1,4 +1,4 @@
-package com.willfp.eco.util.events.entitydeathbyentity;
+package com.willfp.eco.spigot.eventlisteners;
 
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;

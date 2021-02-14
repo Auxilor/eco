@@ -1,11 +1,11 @@
 package com.willfp.eco.spigot;
 
-import com.willfp.eco.spigot.display.packets.PacketAutoRecipe;
-import com.willfp.eco.spigot.display.packets.PacketChat;
-import com.willfp.eco.spigot.display.packets.PacketOpenWindowMerchant;
-import com.willfp.eco.spigot.display.packets.PacketSetCreativeSlot;
-import com.willfp.eco.spigot.display.packets.PacketSetSlot;
-import com.willfp.eco.spigot.display.packets.PacketWindowItems;
+import com.willfp.eco.spigot.display.PacketAutoRecipe;
+import com.willfp.eco.spigot.display.PacketChat;
+import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
+import com.willfp.eco.spigot.display.PacketSetCreativeSlot;
+import com.willfp.eco.spigot.display.PacketSetSlot;
+import com.willfp.eco.spigot.display.PacketWindowItems;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
@@ -21,8 +21,8 @@ import com.willfp.eco.util.display.Display;
 import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
 import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
-import com.willfp.eco.util.events.entitydeathbyentity.EntityDeathByEntityListeners;
-import com.willfp.eco.util.events.naturalexpgainevent.NaturalExpGainListeners;
+import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
+import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.util.integrations.antigrief.AntigriefManager;

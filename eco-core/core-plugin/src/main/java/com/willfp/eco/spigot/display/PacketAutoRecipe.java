@@ -1,4 +1,4 @@
-package com.willfp.eco.spigot.display.packets;
+package com.willfp.eco.spigot.display;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

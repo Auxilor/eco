@@ -1,4 +1,4 @@
-package com.willfp.eco.util.events.naturalexpgainevent;
+package com.willfp.eco.spigot.eventlisteners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

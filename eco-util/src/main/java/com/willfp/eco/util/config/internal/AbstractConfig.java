@@ -19,7 +19,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public abstract class AbstractConfig extends PluginDependent {
@@ -52,6 +54,11 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @Getter(AccessLevel.PROTECTED)
     private final Class<?> source;
+
+    /**
+     * Cached values for faster reading.
+     */
+    private final Map<String, Object> cache = new HashMap<>();
 
     /**
      * Abstract config.
@@ -149,6 +156,19 @@ public abstract class AbstractConfig extends PluginDependent {
         }
 
         return newConfig;
+    }
+
+    /**
+     * Reload config.
+     */
+    public final void reload() {
+        cache.clear();
+        try {
+            config.load(this.getConfigFile());
+        } catch (IOException | InvalidConfigurationException e) {
+            this.getPlugin().getLog().error("Config " + this.getName() + " is missing the config file?");
+            e.printStackTrace();
+        }
     }
 
     /**
