@@ -1,5 +1,6 @@
-package com.willfp.eco.util.bukkit.events;
+package com.willfp.eco.internal.bukkit.events;
 
+import com.willfp.eco.util.bukkit.events.EventManager;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.Bukkit;

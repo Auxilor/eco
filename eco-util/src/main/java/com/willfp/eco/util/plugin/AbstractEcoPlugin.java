@@ -1,21 +1,21 @@
 package com.willfp.eco.util.plugin;
 
+import com.willfp.eco.internal.bukkit.events.EcoEventManager;
+import com.willfp.eco.internal.bukkit.logging.EcoLogger;
+import com.willfp.eco.internal.bukkit.scheduling.EcoScheduler;
 import com.willfp.eco.util.ClassUtils;
 import com.willfp.eco.util.arrows.ArrowDataListener;
-import com.willfp.eco.util.bukkit.events.EcoEventManager;
 import com.willfp.eco.util.bukkit.events.EventManager;
 import com.willfp.eco.util.bukkit.keys.NamespacedKeyFactory;
-import com.willfp.eco.util.bukkit.logging.EcoLogger;
 import com.willfp.eco.util.bukkit.logging.Logger;
 import com.willfp.eco.util.bukkit.meta.MetadataValueFactory;
-import com.willfp.eco.util.bukkit.scheduling.EcoScheduler;
 import com.willfp.eco.util.bukkit.scheduling.RunnableFactory;
 import com.willfp.eco.util.bukkit.scheduling.Scheduler;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.config.configs.Config;
 import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
-import com.willfp.eco.util.extensions.loader.EcoExtensionLoader;
+import com.willfp.eco.internal.extensions.EcoExtensionLoader;
 import com.willfp.eco.util.extensions.loader.ExtensionLoader;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unchecked")
 public abstract class AbstractEcoPlugin extends JavaPlugin {
     /**
      * Loaded eco plugins.

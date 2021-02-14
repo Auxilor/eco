@@ -6,6 +6,9 @@ import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
 import com.willfp.eco.spigot.display.PacketSetCreativeSlot;
 import com.willfp.eco.spigot.display.PacketSetSlot;
 import com.willfp.eco.spigot.display.PacketWindowItems;
+import com.willfp.eco.spigot.drops.CollatedRunnable;
+import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
+import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
@@ -18,11 +21,8 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.display.Display;
-import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
 import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
-import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
-import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.util.integrations.antigrief.AntigriefManager;
@@ -54,7 +54,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
 
     @Override
     public void enable() {
-        new FastCollatedDropQueue.CollatedRunnable(this);
+        new CollatedRunnable(this);
         this.getEventManager().registerListener(new NaturalExpGainListeners());
         this.getEventManager().registerListener(new ArmorListener());
         this.getEventManager().registerListener(new DispenserArmorListener());
@@ -73,7 +73,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
 
     @Override
     public void onReload() {
-        new FastCollatedDropQueue.CollatedRunnable(this);
+        new CollatedRunnable(this);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.willfp.eco.util.optional;
 
 import com.willfp.eco.util.ClassUtils;
+import com.willfp.eco.util.proxy.ProxyConstants;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Prerequisite {
      * Requires the server to be running minecraft version 1.16 or higher.
      */
     public static final Prerequisite MINIMUM_1_16 = new Prerequisite(
-            () -> !Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("15"),
+            () -> !ProxyConstants.NMS_VERSION.contains("15"),
             "Requires minimum server version of 1.16"
     );
 

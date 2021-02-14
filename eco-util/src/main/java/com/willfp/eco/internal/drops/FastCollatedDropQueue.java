@@ -1,6 +1,5 @@
-package com.willfp.eco.util.drops.internal;
+package com.willfp.eco.internal.drops;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,8 +7,6 @@ import lombok.experimental.Accessors;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
      * <p>
      * Cleared and updated every tick.
      */
-    private static final Map<Player, CollatedDrops> COLLATED_MAP = new ConcurrentHashMap<>();
+    public static final Map<Player, CollatedDrops> COLLATED_MAP = new ConcurrentHashMap<>();
 
     /**
      * Backend implementation of {@link AbstractDropQueue}
@@ -37,7 +34,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
     }
 
     /**
-     * Queues the drops to be managed by the {@link CollatedRunnable}.
+     * Queues the drops to be managed by the runnable.
      */
     @Override
     public void push() {
@@ -50,7 +47,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
      * The items, location, and xp linked to a player's drops.
      */
     @ToString
-    private static final class CollatedDrops {
+    public static final class CollatedDrops {
         /**
          * A collection of all ItemStacks to be dropped at the end of the tick.
          */
@@ -99,34 +96,6 @@ public class FastCollatedDropQueue extends InternalDropQueue {
         public CollatedDrops addXp(final int xp) {
             this.xp += xp;
             return this;
-        }
-    }
-
-    public static class CollatedRunnable {
-        /**
-         * The {@link BukkitTask} that the runnable represents.
-         */
-        @Getter
-        private final BukkitTask runnableTask;
-
-        /**
-         * Create and run a new runnable to process collated drops.
-         *
-         * @param plugin The {@link AbstractEcoPlugin} that manages the processing.
-         */
-        @ApiStatus.Internal
-        public CollatedRunnable(@NotNull final AbstractEcoPlugin plugin) {
-            runnableTask = plugin.getScheduler().runTimer(() -> {
-                for (Map.Entry<Player, CollatedDrops> entry : COLLATED_MAP.entrySet()) {
-                    new InternalDropQueue(entry.getKey())
-                            .setLocation(entry.getValue().getLocation())
-                            .addItems(entry.getValue().getDrops())
-                            .addXP(entry.getValue().getXp())
-                            .push();
-                    COLLATED_MAP.remove(entry.getKey());
-                }
-                COLLATED_MAP.clear();
-            }, 0, 1);
         }
     }
 }

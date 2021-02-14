@@ -1,10 +1,10 @@
 package com.willfp.eco.util.drops;
 
-import com.willfp.eco.util.drops.internal.AbstractDropQueue;
-import com.willfp.eco.util.drops.internal.DropManager;
-import com.willfp.eco.util.drops.internal.DropQueueType;
-import com.willfp.eco.util.drops.internal.FastCollatedDropQueue;
-import com.willfp.eco.util.drops.internal.InternalDropQueue;
+import com.willfp.eco.internal.drops.AbstractDropQueue;
+import com.willfp.eco.internal.drops.DropManager;
+import com.willfp.eco.internal.drops.DropQueueType;
+import com.willfp.eco.internal.drops.FastCollatedDropQueue;
+import com.willfp.eco.internal.drops.InternalDropQueue;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

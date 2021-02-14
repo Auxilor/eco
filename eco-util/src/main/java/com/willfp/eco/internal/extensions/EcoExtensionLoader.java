@@ -1,8 +1,9 @@
-package com.willfp.eco.util.extensions.loader;
+package com.willfp.eco.internal.extensions;
 
 
 import com.willfp.eco.util.extensions.Extension;
 import com.willfp.eco.util.extensions.MalformedExtensionException;
+import com.willfp.eco.util.extensions.loader.ExtensionLoader;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;

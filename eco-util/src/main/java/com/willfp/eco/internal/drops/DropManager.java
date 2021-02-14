@@ -1,4 +1,4 @@
-package com.willfp.eco.util.drops.internal;
+package com.willfp.eco.internal.drops;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;

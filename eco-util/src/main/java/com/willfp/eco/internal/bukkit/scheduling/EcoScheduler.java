@@ -1,5 +1,6 @@
-package com.willfp.eco.util.bukkit.scheduling;
+package com.willfp.eco.internal.bukkit.scheduling;
 
+import com.willfp.eco.util.bukkit.scheduling.Scheduler;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.Bukkit;

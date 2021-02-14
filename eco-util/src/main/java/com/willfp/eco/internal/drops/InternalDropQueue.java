@@ -1,4 +1,4 @@
-package com.willfp.eco.util.drops.internal;
+package com.willfp.eco.internal.drops;
 
 import com.willfp.eco.util.drops.telekinesis.TelekinesisUtils;
 import lombok.AccessLevel;
