@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractConfig extends PluginDependent {
     /**
      * The linked {@link YamlConfiguration} where values are physically stored.
@@ -159,16 +160,10 @@ public abstract class AbstractConfig extends PluginDependent {
     }
 
     /**
-     * Reload config.
+     * Clears cache.
      */
-    public final void reload() {
+    public final void clearCache() {
         cache.clear();
-        try {
-            config.load(this.getConfigFile());
-        } catch (IOException | InvalidConfigurationException e) {
-            this.getPlugin().getLog().error("Config " + this.getName() + " is missing the config file?");
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -205,7 +200,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @Nullable
     public ConfigurationSection getSectionOrNull(@NotNull final String path) {
-        return config.getConfigurationSection(path);
+        if (cache.containsKey(path)) {
+            return (ConfigurationSection) cache.get(path);
+        } else {
+            cache.put(path, config.getConfigurationSection(path));
+            return getSectionOrNull(path);
+        }
     }
 
     /**
@@ -215,7 +215,12 @@ public abstract class AbstractConfig extends PluginDependent {
      * @return The found value, or 0 if not found.
      */
     public int getInt(@NotNull final String path) {
-        return config.getInt(path, 0);
+        if (cache.containsKey(path)) {
+            return (int) cache.get(path);
+        } else {
+            cache.put(path, config.getInt(path, 0));
+            return getInt(path);
+        }
     }
 
     /**
@@ -242,7 +247,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     public int getInt(@NotNull final String path,
                       final int def) {
-        return config.getInt(path, def);
+        if (cache.containsKey(path)) {
+            return (int) cache.get(path);
+        } else {
+            cache.put(path, config.getInt(path, def));
+            return getInt(path);
+        }
     }
 
     /**
@@ -253,7 +263,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @NotNull
     public List<Integer> getInts(@NotNull final String path) {
-        return config.getIntegerList(path);
+        if (cache.containsKey(path)) {
+            return (List<Integer>) cache.get(path);
+        } else {
+            cache.put(path, config.getIntegerList(path));
+            return getInts(path);
+        }
     }
 
     /**
@@ -278,7 +293,12 @@ public abstract class AbstractConfig extends PluginDependent {
      * @return The found value, or false if not found.
      */
     public boolean getBool(@NotNull final String path) {
-        return config.getBoolean(path, false);
+        if (cache.containsKey(path)) {
+            return (boolean) cache.get(path);
+        } else {
+            cache.put(path, config.getBoolean(path));
+            return getBool(path);
+        }
     }
 
     /**
@@ -304,7 +324,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @NotNull
     public List<Boolean> getBools(@NotNull final String path) {
-        return config.getBooleanList(path);
+        if (cache.containsKey(path)) {
+            return (List<Boolean>) cache.get(path);
+        } else {
+            cache.put(path, config.getBooleanList(path));
+            return getBools(path);
+        }
     }
 
     /**
@@ -330,7 +355,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @NotNull
     public String getString(@NotNull final String path) {
-        return StringUtils.translate(Objects.requireNonNull(config.getString(path, "")));
+        if (cache.containsKey(path)) {
+            return (String) cache.get(path);
+        } else {
+            cache.put(path, StringUtils.translate(Objects.requireNonNull(config.getString(path, ""))));
+            return getString(path);
+        }
     }
 
     /**
@@ -356,7 +386,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
-        return config.getStringList(path);
+        if (cache.containsKey(path)) {
+            return (List<String>) cache.get(path);
+        } else {
+            cache.put(path, config.getStringList(path));
+            return getStrings(path);
+        }
     }
 
     /**
@@ -381,7 +416,12 @@ public abstract class AbstractConfig extends PluginDependent {
      * @return The found value, or 0 if not found.
      */
     public double getDouble(@NotNull final String path) {
-        return config.getDouble(path, 0);
+        if (cache.containsKey(path)) {
+            return (double) cache.get(path);
+        } else {
+            cache.put(path, config.getDouble(path));
+            return getDouble(path);
+        }
     }
 
     /**
@@ -407,7 +447,12 @@ public abstract class AbstractConfig extends PluginDependent {
      */
     @NotNull
     public List<Double> getDoubles(@NotNull final String path) {
-        return config.getDoubleList(path);
+        if (cache.containsKey(path)) {
+            return (List<Double>) cache.get(path);
+        } else {
+            cache.put(path, config.getDoubleList(path));
+            return getDoubles(path);
+        }
     }
 
     /**

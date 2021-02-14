@@ -51,6 +51,7 @@ public abstract class AbstractUpdatableConfig extends AbstractConfig {
      * Writes missing values, however removes comments due to how configs are stored internally in bukkit.
      */
     public void update() {
+        super.clearCache();
         try {
             config.load(this.getConfigFile());
 
