@@ -64,6 +64,8 @@ public class PlayerUtils {
      * @param function The function.
      */
     public void initializeBlockBreak(@NotNull final BiConsumer<Player, Block> function) {
+        Validate.isTrue(!initialized, "Already initialized!");
+
         blockBreakConsumer = function;
 
         initialized = cooldownFunction != null;
@@ -75,6 +77,8 @@ public class PlayerUtils {
      * @param function The function.
      */
     public void initializeCooldown(@NotNull final Function<Player, Double> function) {
+        Validate.isTrue(!initialized, "Already initialized!");
+
         cooldownFunction = function;
 
         initialized = blockBreakConsumer != null;

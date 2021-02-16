@@ -39,6 +39,8 @@ public class SkullUtils {
      * @param function The function.
      */
     public void initialize(@NotNull final BiConsumer<SkullMeta, String> function) {
+        Validate.isTrue(!initialized, "Already initialized!");
+
         metaSetConsumer = function;
         initialized = true;
     }
