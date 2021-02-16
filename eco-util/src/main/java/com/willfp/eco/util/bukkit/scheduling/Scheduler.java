@@ -12,7 +12,8 @@ public interface Scheduler {
      * @param ticksLater The amount of ticks to wait before execution.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runLater(@NotNull Runnable runnable, long ticksLater);
+    BukkitTask runLater(@NotNull Runnable runnable,
+                        long ticksLater);
 
     /**
      * Run the task repeatedly on a timer.
@@ -22,7 +23,9 @@ public interface Scheduler {
      * @param repeat   The amount of ticks to wait between executions.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runTimer(@NotNull Runnable runnable, long delay, long repeat);
+    BukkitTask runTimer(@NotNull Runnable runnable,
+                        long delay,
+                        long repeat);
 
     /**
      * Run the task repeatedly and asynchronously on a timer.
@@ -32,7 +35,9 @@ public interface Scheduler {
      * @param repeat   The amount of ticks to wait between executions.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runAsyncTimer(@NotNull Runnable runnable, long delay, long repeat);
+    BukkitTask runAsyncTimer(@NotNull Runnable runnable,
+                             long delay,
+                             long repeat);
 
     /**
      * Run the task.
@@ -58,7 +63,9 @@ public interface Scheduler {
      * @param repeat   The amount of ticks to wait between executions.
      * @return The id of the task.
      */
-    int syncRepeating(@NotNull Runnable runnable, long delay, long repeat);
+    int syncRepeating(@NotNull Runnable runnable,
+                      long delay,
+                      long repeat);
 
     /**
      * Cancel all running tasks from the linked {@link AbstractEcoPlugin}.
