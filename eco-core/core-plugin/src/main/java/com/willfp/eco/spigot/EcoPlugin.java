@@ -23,6 +23,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
+import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.PlayerUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
@@ -58,8 +59,8 @@ public class EcoPlugin extends AbstractEcoPlugin {
         instance = this;
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
         SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
-        PlayerUtils.initializeBlockBreak(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
-        PlayerUtils.initializeCooldown(((player) -> InternalProxyUtils.getProxy(CooldownProxy.class).getAttackCooldown(player)));
+        BlockUtils.initialize(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
+        PlayerUtils.initialize(((player) -> InternalProxyUtils.getProxy(CooldownProxy.class).getAttackCooldown(player)));
         TridentUtils.initialize(((trident) -> InternalProxyUtils.getProxy(TridentStackProxy.class).getTridentStack(trident)));
     }
 
