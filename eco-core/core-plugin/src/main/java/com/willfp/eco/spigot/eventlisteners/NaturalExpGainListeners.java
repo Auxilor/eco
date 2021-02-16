@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class NaturalExpGainListeners implements Listener {
@@ -28,9 +29,10 @@ public class NaturalExpGainListeners implements Listener {
 
         NaturalExpGainBuilder toRemove = null;
         for (NaturalExpGainBuilder searchBuilder : events) {
-            if (!searchBuilder.getLocation().getWorld().equals(event.getPlayer().getLocation().getWorld())) {
+            if (!Objects.equals(searchBuilder.getLocation().getWorld(), event.getPlayer().getLocation().getWorld())) {
                 continue;
             }
+
             if (searchBuilder.getReason().equals(NaturalExpGainBuilder.BuildReason.BOTTLE) && searchBuilder.getLocation().distanceSquared(event.getPlayer().getLocation()) > 52) {
                 toRemove = searchBuilder;
             }

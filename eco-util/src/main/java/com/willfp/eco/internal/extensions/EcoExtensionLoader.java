@@ -6,6 +6,7 @@ import com.willfp.eco.util.extensions.MalformedExtensionException;
 import com.willfp.eco.util.extensions.loader.ExtensionLoader;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,6 +96,9 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
         String mainClass = extensionYml.getString("main");
         String name = extensionYml.getString("name");
         String version = extensionYml.getString("version");
+        Validate.notNull(name, "Name is missing!");
+        Validate.notNull(version, "Version is missing!");
+
         Extension.ExtensionMetadata metadata = new Extension.ExtensionMetadata(version, name);
 
         Class<?> cls;
