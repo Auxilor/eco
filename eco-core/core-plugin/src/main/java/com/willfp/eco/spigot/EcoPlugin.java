@@ -3,6 +3,7 @@ package com.willfp.eco.spigot;
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.CooldownProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
+import com.willfp.eco.proxy.proxies.TridentStackProxy;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
 import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
@@ -24,6 +25,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.util.PlayerUtils;
 import com.willfp.eco.util.SkullUtils;
+import com.willfp.eco.util.TridentUtils;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.display.Display;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
@@ -58,6 +60,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
         SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
         PlayerUtils.initializeBlockBreak(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
         PlayerUtils.initializeCooldown(((player) -> InternalProxyUtils.getProxy(CooldownProxy.class).getAttackCooldown(player)));
+        TridentUtils.initialize(((trident) -> InternalProxyUtils.getProxy(TridentStackProxy.class).getTridentStack(trident)));
     }
 
     @Override
