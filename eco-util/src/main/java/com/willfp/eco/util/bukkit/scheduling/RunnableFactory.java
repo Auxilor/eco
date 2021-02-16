@@ -1,12 +1,12 @@
 package com.willfp.eco.util.bukkit.scheduling;
 
-import com.willfp.eco.util.internal.PluginDependentFactory;
+import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class RunnableFactory extends PluginDependentFactory {
+public class RunnableFactory extends PluginDependent {
     /**
      * Factory class to produce {@link EcoBukkitRunnable}s associated with an {@link AbstractEcoPlugin}.
      *

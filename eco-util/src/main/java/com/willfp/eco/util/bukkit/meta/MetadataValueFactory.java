@@ -1,11 +1,11 @@
 package com.willfp.eco.util.bukkit.meta;
 
-import com.willfp.eco.util.internal.PluginDependentFactory;
+import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
-public class MetadataValueFactory extends PluginDependentFactory {
+public class MetadataValueFactory extends PluginDependent {
     /**
      * Factory class to produce {@link FixedMetadataValue}s associated with an {@link AbstractEcoPlugin}.
      *
