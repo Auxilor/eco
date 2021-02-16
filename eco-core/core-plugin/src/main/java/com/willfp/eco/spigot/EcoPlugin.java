@@ -1,5 +1,7 @@
 package com.willfp.eco.spigot;
 
+import com.willfp.eco.proxy.proxies.BlockBreakProxy;
+import com.willfp.eco.proxy.proxies.CooldownProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
@@ -20,6 +22,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
+import com.willfp.eco.util.PlayerUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.display.Display;
@@ -52,7 +55,9 @@ public class EcoPlugin extends AbstractEcoPlugin {
         super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
-        SkullUtils.initalize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
+        SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
+        PlayerUtils.initializeBlockBreak(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
+        PlayerUtils.initializeCooldown(((player) -> InternalProxyUtils.getProxy(CooldownProxy.class).getAttackCooldown(player)));
     }
 
     @Override

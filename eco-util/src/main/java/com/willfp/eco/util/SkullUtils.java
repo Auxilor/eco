@@ -38,7 +38,7 @@ public class SkullUtils {
      *
      * @param function The function.
      */
-    public void initalize(@NotNull final BiConsumer<SkullMeta, String> function) {
+    public void initialize(@NotNull final BiConsumer<SkullMeta, String> function) {
         metaSetConsumer = function;
         initialized = true;
     }
