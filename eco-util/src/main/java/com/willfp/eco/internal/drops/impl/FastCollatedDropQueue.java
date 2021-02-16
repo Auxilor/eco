@@ -1,5 +1,6 @@
-package com.willfp.eco.internal.drops;
+package com.willfp.eco.internal.drops.impl;
 
+import com.willfp.eco.internal.drops.AbstractDropQueue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

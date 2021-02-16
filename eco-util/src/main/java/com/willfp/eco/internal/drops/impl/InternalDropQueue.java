@@ -1,5 +1,6 @@
-package com.willfp.eco.internal.drops;
+package com.willfp.eco.internal.drops.impl;
 
+import com.willfp.eco.internal.drops.AbstractDropQueue;
 import com.willfp.eco.util.drops.telekinesis.TelekinesisUtils;
 import lombok.AccessLevel;
 import lombok.Getter;

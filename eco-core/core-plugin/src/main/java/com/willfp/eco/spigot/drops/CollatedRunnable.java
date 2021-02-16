@@ -1,8 +1,8 @@
 package com.willfp.eco.spigot.drops;
 
 
-import com.willfp.eco.internal.drops.FastCollatedDropQueue;
-import com.willfp.eco.internal.drops.InternalDropQueue;
+import com.willfp.eco.internal.drops.impl.FastCollatedDropQueue;
+import com.willfp.eco.internal.drops.impl.InternalDropQueue;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import lombok.Getter;
 import org.bukkit.entity.Player;

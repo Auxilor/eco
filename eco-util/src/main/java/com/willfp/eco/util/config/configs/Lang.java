@@ -1,6 +1,5 @@
 package com.willfp.eco.util.config.configs;
 
-import com.willfp.eco.util.StringUtils;
 import com.willfp.eco.util.config.BaseConfig;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +20,7 @@ public class Lang extends BaseConfig {
      * @return The prefix.
      */
     public String getPrefix() {
-        return StringUtils.translate(this.getConfig().getString("messages.prefix"));
+        return this.getString("messages.prefix");
     }
 
     /**
@@ -30,7 +29,7 @@ public class Lang extends BaseConfig {
      * @return The message.
      */
     public String getNoPermission() {
-        return getPrefix() + StringUtils.translate(this.getConfig().getString("messages.no-permission"));
+        return getPrefix() + this.getString("messages.no-permission");
     }
 
     /**
@@ -40,6 +39,6 @@ public class Lang extends BaseConfig {
      * @return The message with a prefix appended.
      */
     public String getMessage(@NotNull final String message) {
-        return getPrefix() + StringUtils.translate(this.getConfig().getString("messages." + message));
+        return getPrefix() + this.getString("messages." + message);
     }
 }
