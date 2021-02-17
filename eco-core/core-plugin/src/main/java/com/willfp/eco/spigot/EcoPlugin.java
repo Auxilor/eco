@@ -30,6 +30,7 @@ import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.display.Display;
+import com.willfp.eco.util.display.DisplayModule;
 import com.willfp.eco.util.events.armorequip.ArmorListener;
 import com.willfp.eco.util.events.armorequip.DispenserArmorListener;
 import com.willfp.eco.util.integrations.IntegrationLoader;
@@ -40,6 +41,7 @@ import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import lombok.Getter;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +58,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
      * Create a new instance of eco.
      */
     public EcoPlugin() {
-        super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a", null);
+        super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
         SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
@@ -141,5 +143,11 @@ public class EcoPlugin extends AbstractEcoPlugin {
     @Override
     public List<Class<?>> getUpdatableClasses() {
         return new ArrayList<>();
+    }
+
+    @Override
+    @Nullable
+    protected DisplayModule createDisplayModule() {
+        return null;
     }
 }
