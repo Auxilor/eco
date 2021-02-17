@@ -24,7 +24,6 @@ import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.util.integrations.placeholder.plugins.PlaceholderIntegrationPAPI;
 import com.willfp.eco.util.optional.Prerequisite;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
-import com.willfp.eco.util.recipe.recipes.RecipeListener;
 import com.willfp.eco.util.updater.UpdateChecker;
 import lombok.Getter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -219,7 +218,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getLog().info("Loading " + this.color + this.pluginName);
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
-        this.getEventManager().registerListener(new RecipeListener(this));
 
         new UpdateChecker(this).getVersion(version -> {
             DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
