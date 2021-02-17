@@ -176,20 +176,18 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, such as &a, &b)
-     * @param module       The display module for the plugin.
      */
     protected AbstractEcoPlugin(@NotNull final String pluginName,
                                 final int resourceId,
                                 final int bStatsId,
                                 @NotNull final String proxyPackage,
-                                @NotNull final String color,
-                                @Nullable final DisplayModule module) {
+                                @NotNull final String color) {
         this.pluginName = pluginName;
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
         this.color = color;
-        this.displayModule = module;
+        this.displayModule = createDisplayModule();
 
         this.log = new EcoLogger(this);
         this.scheduler = new EcoScheduler(this);
@@ -404,4 +402,12 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @return A list of all updatable classes.
      */
     public abstract List<Class<?>> getUpdatableClasses();
+
+    /**
+     * Create the display module for the plugin.
+     *
+     * @return The display module, or null.
+     */
+    @Nullable
+    protected abstract DisplayModule createDisplayModule();
 }
