@@ -159,7 +159,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * The display module for the plugin.
      */
     @Getter
-    @Nullable
     private final DisplayModule displayModule;
 
     /**
