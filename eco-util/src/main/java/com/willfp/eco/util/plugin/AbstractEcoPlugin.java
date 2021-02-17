@@ -159,7 +159,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * The display module for the plugin.
      */
     @Getter
-    private final DisplayModule displayModule;
+    private DisplayModule displayModule;
 
     /**
      * If the server is running an outdated version of the plugin.
@@ -198,8 +198,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         this.langYml = new Lang(this);
         this.configYml = new Config(this);
-
-        this.displayModule = createDisplayModule();
 
         LOADED_ECO_PLUGINS.add(this.getName().toLowerCase());
     }
@@ -301,6 +299,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * Default code to be executed after the server is up.
      */
     public final void afterLoad() {
+        this.displayModule = createDisplayModule();
+
         this.getPacketAdapters().forEach(abstractPacketAdapter -> {
             if (abstractPacketAdapter.isPostLoad()) {
                 abstractPacketAdapter.register();
