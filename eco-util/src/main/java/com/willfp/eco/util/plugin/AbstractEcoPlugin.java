@@ -1,11 +1,10 @@
 package com.willfp.eco.util.plugin;
 
+import com.willfp.eco.internal.arrows.ArrowDataListener;
 import com.willfp.eco.internal.bukkit.events.EcoEventManager;
 import com.willfp.eco.internal.bukkit.logging.EcoLogger;
 import com.willfp.eco.internal.bukkit.scheduling.EcoScheduler;
 import com.willfp.eco.internal.extensions.EcoExtensionLoader;
-import com.willfp.eco.util.ClassUtils;
-import com.willfp.eco.internal.arrows.ArrowDataListener;
 import com.willfp.eco.util.bukkit.events.EventManager;
 import com.willfp.eco.util.bukkit.keys.NamespacedKeyFactory;
 import com.willfp.eco.util.bukkit.logging.Logger;
@@ -304,13 +303,11 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * Default code to be executed after the server is up.
      */
     public final void afterLoad() {
-        if (ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter")) {
-            this.getPacketAdapters().forEach(abstractPacketAdapter -> {
-                if (abstractPacketAdapter.isPostLoad()) {
-                    abstractPacketAdapter.register();
-                }
-            });
-        }
+        this.getPacketAdapters().forEach(abstractPacketAdapter -> {
+            if (abstractPacketAdapter.isPostLoad()) {
+                abstractPacketAdapter.register();
+            }
+        });
 
         if (!Prerequisite.HAS_PAPER.isMet()) {
             this.getLog().error("");
