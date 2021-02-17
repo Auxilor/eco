@@ -1,6 +1,5 @@
 package com.willfp.eco.util.recipe.recipes;
 
-import com.willfp.eco.util.interfaces.Registerable;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import com.willfp.eco.util.recipe.Recipes;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public final class EcoShapedRecipe extends PluginDependent implements Registerable {
+public final class EcoShapedRecipe extends PluginDependent {
     /**
      * Recipe parts.
      */
@@ -91,7 +90,6 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
     /**
      * Register the recipe.
      */
-    @Override
     public void register() {
         Recipes.register(this);
     }

@@ -1,7 +1,6 @@
 package com.willfp.eco.util.command;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.interfaces.Registerable;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractCommand extends PluginDependent implements CommandExecutor, Registerable {
+public abstract class AbstractCommand extends PluginDependent implements CommandExecutor {
     /**
      * The name of the command
      * <p>
@@ -130,7 +129,6 @@ public abstract class AbstractCommand extends PluginDependent implements Command
      * <p>
      * Requires the command name to exist, defined in plugin.yml.
      */
-    @Override
     public final void register() {
         PluginCommand command = Bukkit.getPluginCommand(name);
         assert command != null;
