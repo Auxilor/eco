@@ -7,6 +7,7 @@ import com.willfp.eco.util.recipe.parts.RecipePart;
 import com.willfp.eco.util.recipe.parts.SimpleRecipePart;
 import com.willfp.eco.util.recipe.recipes.EcoShapedRecipe;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -71,6 +72,7 @@ public class RecipeListener implements Listener {
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
+            event.setResult(Event.Result.DENY);
             event.setCancelled(true);
             return;
         }
@@ -79,6 +81,7 @@ public class RecipeListener implements Listener {
             event.getInventory().setResult(matched.getOutput());
         } else {
             event.getInventory().setResult(new ItemStack(Material.AIR));
+            event.setResult(Event.Result.DENY);
             event.setCancelled(true);
         }
     }
@@ -139,6 +142,7 @@ public class RecipeListener implements Listener {
             if (part instanceof SimpleRecipePart) {
                 if (RecipeParts.isRecipePart(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
+                    event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
                     return;
                 }
@@ -191,6 +195,7 @@ public class RecipeListener implements Listener {
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
             if (RecipeParts.isRecipePart(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
+                event.setResult(Event.Result.DENY);
                 event.setCancelled(true);
                 return;
             }
