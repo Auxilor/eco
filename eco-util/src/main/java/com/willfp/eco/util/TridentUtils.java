@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Trident;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -38,6 +39,7 @@ public class TridentUtils {
      *
      * @param function The function.
      */
+    @ApiStatus.Internal
     public void initialize(@NotNull final Function<Trident, ItemStack> function) {
         Validate.isTrue(!initialized, "Already initialized!");
 

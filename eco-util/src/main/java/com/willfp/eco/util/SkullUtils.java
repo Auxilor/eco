@@ -3,6 +3,7 @@ package com.willfp.eco.util;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
@@ -38,6 +39,7 @@ public class SkullUtils {
      *
      * @param function The function.
      */
+    @ApiStatus.Internal
     public void initialize(@NotNull final BiConsumer<SkullMeta, String> function) {
         Validate.isTrue(!initialized, "Already initialized!");
 

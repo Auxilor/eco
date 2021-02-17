@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -76,6 +77,7 @@ public class  BlockUtils {
      *
      * @param function The function.
      */
+    @ApiStatus.Internal
     public void initialize(@NotNull final BiConsumer<Player, Block> function) {
         Validate.isTrue(!initialized, "Already initialized!");
 

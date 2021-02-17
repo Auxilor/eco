@@ -4,6 +4,7 @@ import com.willfp.eco.util.optional.Prerequisite;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -42,6 +43,7 @@ public class PlayerUtils {
      *
      * @param function The function.
      */
+    @ApiStatus.Internal
     public void initialize(@NotNull final Function<Player, Double> function) {
         Validate.isTrue(!initialized, "Already initialized!");
 
