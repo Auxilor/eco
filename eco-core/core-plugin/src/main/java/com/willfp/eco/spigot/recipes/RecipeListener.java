@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerRecipeDiscoverEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
@@ -193,6 +194,22 @@ public class RecipeListener implements Listener {
                 event.setCancelled(true);
                 return;
             }
+        }
+    }
+
+    /**
+     * Prevents learning displayed recipes.
+     *
+     * @param event The event to listen for.
+     */
+    @EventHandler
+    public void preventLearningDisplayedRecipes(@NotNull final PlayerRecipeDiscoverEvent event) {
+        if (!AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(event.getRecipe().getNamespace())) {
+            return;
+        }
+
+        if (event.getRecipe().getKey().contains("_displayed")) {
+            event.setCancelled(true);
         }
     }
 }

@@ -69,6 +69,17 @@ public class Recipes {
      */
     @Nullable
     public EcoShapedRecipe getShapedRecipe(@NotNull final NamespacedKey key) {
-        return RECIPES.get(key);
+        EcoShapedRecipe recipe = RECIPES.get(key);
+        if (recipe != null) {
+            return recipe;
+        }
+
+        if (key.getKey().contains("_displayed")) {
+            NamespacedKey otherKey = new NamespacedKey(key.getNamespace(), key.getKey().replace("_displayed", ""));
+
+            return RECIPES.get(otherKey);
+        }
+
+        return null;
     }
 }
