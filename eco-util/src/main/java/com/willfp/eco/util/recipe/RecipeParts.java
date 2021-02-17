@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +37,6 @@ public final class RecipeParts {
      * @param key The string to test.
      * @return The found recipe part, or null if not found.
      */
-    @Nullable
     public RecipePart lookup(@NotNull final String key) {
         String[] split = key.toLowerCase().split(":");
         if (split.length == 1) {
@@ -49,7 +47,8 @@ public final class RecipeParts {
             return new SimpleRecipePart(material);
         }
 
-        return PARTS.get(new NamespacedKey(split[0], split[1]));
+        RecipePart part = PARTS.get(new NamespacedKey(split[0], split[1]));
+        return part == null ? new EmptyRecipePart() : part;
     }
 
     /**
