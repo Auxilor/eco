@@ -55,7 +55,7 @@ public class EcoPlugin extends AbstractEcoPlugin {
      * Create a new instance of eco.
      */
     public EcoPlugin() {
-        super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a");
+        super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a", null);
         instance = this;
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
         SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));

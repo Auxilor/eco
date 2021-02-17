@@ -3,6 +3,7 @@ package com.willfp.eco.util.plugin;
 import com.willfp.eco.internal.bukkit.events.EcoEventManager;
 import com.willfp.eco.internal.bukkit.logging.EcoLogger;
 import com.willfp.eco.internal.bukkit.scheduling.EcoScheduler;
+import com.willfp.eco.internal.extensions.EcoExtensionLoader;
 import com.willfp.eco.util.ClassUtils;
 import com.willfp.eco.util.arrows.ArrowDataListener;
 import com.willfp.eco.util.bukkit.events.EventManager;
@@ -15,7 +16,8 @@ import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.config.configs.Config;
 import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
-import com.willfp.eco.internal.extensions.EcoExtensionLoader;
+import com.willfp.eco.util.display.Display;
+import com.willfp.eco.util.display.DisplayModule;
 import com.willfp.eco.util.extensions.loader.ExtensionLoader;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
@@ -33,6 +35,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,6 +165,13 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     private final ConfigHandler configHandler;
 
     /**
+     * The display module for the plugin.
+     */
+    @Getter
+    @Nullable
+    private final DisplayModule displayModule;
+
+    /**
      * If the server is running an outdated version of the plugin.
      */
     @Getter
@@ -175,17 +185,20 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, such as &a, &b)
+     * @param module       The display module for the plugin.
      */
     protected AbstractEcoPlugin(@NotNull final String pluginName,
                                 final int resourceId,
                                 final int bStatsId,
                                 @NotNull final String proxyPackage,
-                                @NotNull final String color) {
+                                @NotNull final String color,
+                                @Nullable final DisplayModule module) {
         this.pluginName = pluginName;
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
         this.color = color;
+        this.displayModule = module;
 
         this.log = new EcoLogger(this);
         this.scheduler = new EcoScheduler(this);
@@ -262,6 +275,10 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.getCommands().forEach(AbstractCommand::register);
 
         this.getScheduler().runLater(this::afterLoad, 1);
+
+        if (this.getDisplayModule() != null) {
+            Display.registerDisplayModule(this.getDisplayModule());
+        }
 
         this.updatableClasses.forEach(clazz -> this.getConfigHandler().registerUpdatableClass(clazz));
 

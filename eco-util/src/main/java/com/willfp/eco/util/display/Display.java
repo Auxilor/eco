@@ -14,25 +14,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 @UtilityClass
 public class Display {
     /**
-     * Registered display functions.
+     * The prefix for lore lines.
      */
-    private static final List<Map<String, Function<ItemStack, ItemStack>>> DISPLAY_FUNCTIONS = new ArrayList<>(10000);
+    public static final String PREFIX = "§z";
 
     /**
-     * Registered revert functions.
+     * All registered display modules.
      */
-    private static final List<Function<ItemStack, ItemStack>> REVERT_FUNCTIONS = new ArrayList<>();
+    private static final Map<DisplayPriority, List<DisplayModule>> MODULES = new HashMap<>();
 
     /**
      * NamespacedKey for finalizing.
      */
-    private static NamespacedKey finalizeKey;
+    private static NamespacedKey finalizeKey = null;
 
     /**
      * Register display module.
@@ -40,30 +38,11 @@ public class Display {
      * @param module The module.
      */
     public void registerDisplayModule(@NotNull final DisplayModule module) {
-        int priority = module.getPriority();
-        if (priority > 9999) {
-            priority = 9999;
-        }
-        Function<ItemStack, ItemStack> function = module.getFunction();
+        List<DisplayModule> modules = MODULES.get(module.getPriority());
 
-        Map<String, Function<ItemStack, ItemStack>> functions = DISPLAY_FUNCTIONS.get(priority);
-        if (functions == null) {
-            functions = new HashMap<>();
-        }
+        modules.add(module);
 
-        functions.remove(module.getId());
-        functions.put(module.getId(), function);
-
-        DISPLAY_FUNCTIONS.set(priority, functions);
-    }
-
-    /**
-     * Register revert function.
-     *
-     * @param function The function.
-     */
-    public void registerRevertModule(@NotNull final Function<ItemStack, ItemStack> function) {
-        REVERT_FUNCTIONS.add(function);
+        MODULES.put(module.getPriority(), modules);
     }
 
     /**
@@ -80,13 +59,20 @@ public class Display {
 
         revert(itemStack);
 
-        for (Map<String, Function<ItemStack, ItemStack>> displayFunctions : DISPLAY_FUNCTIONS) {
-            if (displayFunctions == null) {
-                continue;
-            }
+        if (!itemStack.hasItemMeta()) {
+            return itemStack;
+        }
 
-            for (Function<ItemStack, ItemStack> displayFunction : displayFunctions.values()) {
-                displayFunction.apply(itemStack);
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta == null) {
+            return itemStack;
+        }
+
+        for (DisplayPriority priority : DisplayPriority.values()) {
+            List<DisplayModule> modules = MODULES.get(priority);
+            for (DisplayModule module : modules) {
+                module.display(itemStack);
             }
         }
 
@@ -115,8 +101,33 @@ public class Display {
             return itemStack;
         }
 
-        for (Function<ItemStack, ItemStack> displayFunction : REVERT_FUNCTIONS) {
-            displayFunction.apply(itemStack);
+        if (!itemStack.hasItemMeta()) {
+            return itemStack;
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta == null) {
+            return itemStack;
+        }
+
+        List<String> lore = meta.getLore();
+
+        if (lore == null) {
+            lore = new ArrayList<>();
+        }
+
+        lore.removeIf(line -> line.startsWith(Display.PREFIX));
+
+        meta.setLore(lore);
+
+        itemStack.setItemMeta(meta);
+
+        for (DisplayPriority priority : DisplayPriority.values()) {
+            List<DisplayModule> modules = MODULES.get(priority);
+            for (DisplayModule module : modules) {
+                module.revert(itemStack);
+            }
         }
 
         return itemStack;
@@ -130,13 +141,16 @@ public class Display {
      */
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
+
         if (itemStack.getType().getMaxStackSize() > 1) {
             return itemStack;
         }
+
         ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) {
             return itemStack;
         }
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(finalizeKey, PersistentDataType.INTEGER, 1);
         itemStack.setItemMeta(meta);
@@ -151,10 +165,13 @@ public class Display {
      */
     public ItemStack unfinalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
+
         ItemMeta meta = itemStack.getItemMeta();
+
         if (meta == null) {
             return itemStack;
         }
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.remove(finalizeKey);
         itemStack.setItemMeta(meta);
@@ -169,35 +186,15 @@ public class Display {
      */
     public boolean isFinalized(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
+
         ItemMeta meta = itemStack.getItemMeta();
+
         if (meta == null) {
             return false;
         }
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
         return container.has(finalizeKey, PersistentDataType.INTEGER);
-    }
-
-
-    /**
-     * Register finalize function.
-     *
-     * @param function The function.
-     * @deprecated Not needed.
-     */
-    @Deprecated
-    public void registerFinalizeModule(@NotNull final Function<ItemStack, ItemStack> function) {
-        // This function is not needed.
-    }
-
-    /**
-     * Register finalize test function.
-     *
-     * @param function The function.
-     * @deprecated Not needed.
-     */
-    @Deprecated
-    public void registerFinalizeTestModule(@NotNull final Predicate<ItemStack> function) {
-        // This isn't needed.
     }
 
     /**
@@ -211,8 +208,8 @@ public class Display {
     }
 
     static {
-        for (int i = 0; i < 10000; i++) {
-            DISPLAY_FUNCTIONS.add(null);
+        for (DisplayPriority priority : DisplayPriority.values()) {
+            MODULES.put(priority, new ArrayList<>());
         }
     }
 }

@@ -1,42 +1,41 @@
 package com.willfp.eco.util.display;
 
+import com.willfp.eco.util.internal.PluginDependent;
+import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
-
-public class DisplayModule {
+public abstract class DisplayModule extends PluginDependent {
     /**
-     * Priority of the display module, where lower numbers are executed sooner.
+     * The priority of the module.
      */
     @Getter
-    private final int priority;
+    private final DisplayPriority priority;
 
     /**
-     * The function executed on display.
-     */
-    @Getter
-    private final Function<ItemStack, ItemStack> function;
-
-    /**
-     * Function id for unregistration.
-     */
-    @Getter
-    private final String id;
-
-    /**
-     * Create new display module.
+     * Create a new display module.
      *
-     * @param function The function.
-     * @param priority The priority.
-     * @param id       The id.
+     * @param plugin   The plugin that the display is for.
+     * @param priority The priority of the module.
      */
-    public DisplayModule(@NotNull final Function<ItemStack, ItemStack> function,
-                         final int priority,
-                         @NotNull final String id) {
-        this.function = function;
+    protected DisplayModule(@NotNull final AbstractEcoPlugin plugin,
+                            @NotNull final DisplayPriority priority) {
+        super(plugin);
         this.priority = priority;
-        this.id = id;
     }
+
+    /**
+     * Display an item.
+     *
+     * @param itemStack The item.
+     */
+    protected abstract void display(@NotNull ItemStack itemStack);
+
+    /**
+     * Revert an item.
+     *
+     * @param itemStack The item.
+     */
+    protected abstract void revert(@NotNull ItemStack itemStack);
 }
