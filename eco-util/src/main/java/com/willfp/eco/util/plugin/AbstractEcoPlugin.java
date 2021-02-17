@@ -261,10 +261,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         this.getScheduler().runLater(this::afterLoad, 1);
 
-        if (this.getDisplayModule() != null) {
-            Display.registerDisplayModule(this.getDisplayModule());
-        }
-
         this.updatableClasses.forEach(clazz -> this.getConfigHandler().registerUpdatableClass(clazz));
 
         this.enable();
@@ -300,6 +296,10 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      */
     public final void afterLoad() {
         this.displayModule = createDisplayModule();
+
+        if (this.getDisplayModule() != null) {
+            Display.registerDisplayModule(this.getDisplayModule());
+        }
 
         this.getPacketAdapters().forEach(abstractPacketAdapter -> {
             if (abstractPacketAdapter.isPostLoad()) {
