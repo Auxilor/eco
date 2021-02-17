@@ -186,7 +186,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
         this.color = color;
-        this.displayModule = createDisplayModule();
 
         this.log = new EcoLogger(this);
         this.scheduler = new EcoScheduler(this);
@@ -199,6 +198,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         this.langYml = new Lang(this);
         this.configYml = new Config(this);
+
+        this.displayModule = createDisplayModule();
 
         LOADED_ECO_PLUGINS.add(this.getName().toLowerCase());
     }
