@@ -1,12 +1,14 @@
-package com.willfp.eco.util.recipe;
+package com.willfp.eco.util.recipe.recipes;
 
 import com.willfp.eco.util.interfaces.Registerable;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.recipe.Recipes;
 import com.willfp.eco.util.recipe.parts.EmptyRecipePart;
 import com.willfp.eco.util.recipe.parts.RecipePart;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +25,13 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
      * The key of the recipe.
      */
     @Getter
-    private final String key;
+    private final NamespacedKey key;
+
+    /**
+     * The key of the displayed recipe.
+     */
+    @Getter
+    private final NamespacedKey displayedKey;
 
     /**
      * The recipe's output.
@@ -38,7 +46,8 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
         super(plugin);
 
         this.parts = parts;
-        this.key = key;
+        this.key = plugin.getNamespacedKeyFactory().create(key);
+        this.displayedKey = plugin.getNamespacedKeyFactory().create(key + "_displayed");
         this.output = output;
     }
 
@@ -84,7 +93,7 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
      */
     @Override
     public void register() {
-        this.getPlugin().getRecipeManager().register(this);
+        Recipes.register(this);
     }
 
     @Override
@@ -191,68 +200,6 @@ public final class EcoShapedRecipe extends PluginDependent implements Registerab
             }
 
             return new EcoShapedRecipe(plugin, key.toLowerCase(), recipeParts, output);
-        }
-    }
-
-    public enum RecipePosition {
-        /**
-         * Top left of matrix.
-         */
-        TOP_LEFT(0),
-
-        /**
-         * Top middle of matrix.
-         */
-        TOP_MIDDLE(1),
-
-        /**
-         * Top right of matrix.
-         */
-        TOP_RIGHT(2),
-
-        /**
-         * Middle left of matrix.
-         */
-        MIDDLE_LEFT(3),
-
-        /**
-         * Middle of matrix.
-         */
-        MIDDLE(4),
-
-        /**
-         * Middle right of matrix.
-         */
-        MIDDLE_RIGHT(5),
-
-        /**
-         * Bottom left of matrix.
-         */
-        BOTTOM_LEFT(6),
-
-        /**
-         * Bottom middle of matrix.
-         */
-        BOTTOM_MIDDLE(7),
-
-        /**
-         * Bottom right of matrix.
-         */
-        BOTTOM_RIGHT(8);
-
-        /**
-         * The index within a crafting table matrix.
-         */
-        @Getter
-        private final int index;
-
-        /**
-         * Recipe position with crafting table index.
-         *
-         * @param index The index.
-         */
-        RecipePosition(final int index) {
-            this.index = index;
         }
     }
 }

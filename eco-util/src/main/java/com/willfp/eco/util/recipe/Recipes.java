@@ -2,8 +2,8 @@ package com.willfp.eco.util.recipe;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.recipe.recipes.EcoShapedRecipe;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -12,40 +12,34 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@UtilityClass
 @SuppressWarnings("deprecation")
-public class RecipeManager extends PluginDependent {
+public class Recipes {
     /**
      * Registry of all recipes.
      */
-    private final BiMap<String, EcoShapedRecipe> registry = HashBiMap.create();
+    private static final BiMap<NamespacedKey, EcoShapedRecipe> RECIPES = HashBiMap.create();
+
 
     /**
-     * Pass an {@link AbstractEcoPlugin} in order to interface with it.
+     * Register a recipe.
      *
-     * @param plugin The plugin to manage.
+     * @param recipe The recipe.
      */
-    public RecipeManager(@NotNull final AbstractEcoPlugin plugin) {
-        super(plugin);
-    }
+    public void register(@NotNull final EcoShapedRecipe recipe) {
+        RECIPES.forcePut(recipe.getKey(), recipe);
 
-    void register(@NotNull final EcoShapedRecipe recipe) {
-        String key = recipe.getKey();
-        registry.forcePut(key, recipe);
+        Bukkit.getServer().removeRecipe(recipe.getKey());
+        Bukkit.getServer().removeRecipe(recipe.getDisplayedKey());
 
-        NamespacedKey baseKey = this.getPlugin().getNamespacedKeyFactory().create(key);
-        Bukkit.getServer().removeRecipe(baseKey);
-
-        NamespacedKey displayedKey = this.getPlugin().getNamespacedKeyFactory().create(key + "_displayed");
-        Bukkit.getServer().removeRecipe(displayedKey);
-
-        ShapedRecipe shapedRecipe = new ShapedRecipe(baseKey, recipe.getOutput());
+        ShapedRecipe shapedRecipe = new ShapedRecipe(recipe.getKey(), recipe.getOutput());
         shapedRecipe.shape("012", "345", "678");
         for (int i = 0; i < 9; i++) {
             char character = String.valueOf(i).toCharArray()[0];
             shapedRecipe.setIngredient(character, recipe.getMaterialAtIndex(i));
         }
 
-        ShapedRecipe displayedRecipe = new ShapedRecipe(displayedKey, recipe.getOutput());
+        ShapedRecipe displayedRecipe = new ShapedRecipe(recipe.getDisplayedKey(), recipe.getOutput());
         displayedRecipe.shape("012", "345", "678");
         for (int i = 0; i < 9; i++) {
             char character = String.valueOf(i).toCharArray()[0];
@@ -64,7 +58,7 @@ public class RecipeManager extends PluginDependent {
      */
     @Nullable
     public EcoShapedRecipe getMatch(@NotNull final ItemStack[] matrix) {
-        return registry.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
+        return RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
     }
 
     /**
@@ -74,7 +68,7 @@ public class RecipeManager extends PluginDependent {
      * @return The shaped recipe, or null if not found.
      */
     @Nullable
-    public EcoShapedRecipe getShapedRecipe(@NotNull final String key) {
-        return registry.get(key);
+    public EcoShapedRecipe getShapedRecipe(@NotNull final NamespacedKey key) {
+        return RECIPES.get(key);
     }
 }

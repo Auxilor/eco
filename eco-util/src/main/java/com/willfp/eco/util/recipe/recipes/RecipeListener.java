@@ -1,7 +1,8 @@
-package com.willfp.eco.util.recipe;
+package com.willfp.eco.util.recipe.recipes;
 
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.recipe.Recipes;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +40,7 @@ public class RecipeListener extends PluginDependent implements Listener {
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
-        EcoShapedRecipe matched = this.getPlugin().getRecipeManager().getMatch(matrix);
+        EcoShapedRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -71,7 +72,7 @@ public class RecipeListener extends PluginDependent implements Listener {
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
-        EcoShapedRecipe matched = this.getPlugin().getRecipeManager().getMatch(matrix);
+        EcoShapedRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
