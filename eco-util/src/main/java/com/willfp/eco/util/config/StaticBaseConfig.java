@@ -1,6 +1,6 @@
 package com.willfp.eco.util.config;
 
-import com.willfp.eco.util.config.internal.AbstractConfig;
+import com.willfp.eco.internal.config.AbstractConfig;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
