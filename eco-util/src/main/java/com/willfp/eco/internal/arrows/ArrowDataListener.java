@@ -1,4 +1,4 @@
-package com.willfp.eco.util.arrows;
+package com.willfp.eco.internal.arrows;
 
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
