@@ -48,6 +48,7 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig {
                              @NotNull final String subDirectoryPath,
                              @NotNull final Class<?> source) {
         super(configName, plugin);
+        String name = configName + ".yml";
         this.source = source;
         this.subDirectoryPath = subDirectoryPath;
 
@@ -56,11 +57,11 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig {
             directory.mkdirs();
         }
 
-        if (!new File(directory, this.getName()).exists()) {
+        if (!new File(directory, name).exists()) {
             createFile();
         }
 
-        this.configFile = new File(directory, this.getName());
+        this.configFile = new File(directory, name);
         init(YamlConfiguration.loadConfiguration(configFile));
     }
 
