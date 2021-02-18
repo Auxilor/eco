@@ -24,12 +24,6 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
     protected YamlConfiguration config = null;
 
     /**
-     * The full name of the config file (eg config.yml).
-     */
-    @Getter(AccessLevel.PROTECTED)
-    private final String name;
-
-    /**
      * Cached values for faster reading.
      */
     private final Map<String, Object> cache = new HashMap<>();
@@ -43,7 +37,6 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
     protected AbstractUndefinedConfig(@NotNull final String configName,
                                       @NotNull final AbstractEcoPlugin plugin) {
         super(plugin);
-        this.name = configName + ".yml";
     }
 
     protected void init(@NotNull final YamlConfiguration config) {
