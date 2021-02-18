@@ -26,7 +26,7 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig {
     /**
      * The full name of the config file (eg config.yml).
      */
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final String name;
 
     /**
@@ -63,11 +63,11 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig {
             directory.mkdirs();
         }
 
-        if (!new File(directory, this.getName()).exists()) {
+        if (!new File(directory, this.name).exists()) {
             createFile();
         }
 
-        this.configFile = new File(directory, this.getName());
+        this.configFile = new File(directory, this.name);
         init(YamlConfiguration.loadConfiguration(configFile));
     }
 
@@ -107,9 +107,9 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig {
         String resourcePath;
 
         if (subDirectoryPath.isEmpty()) {
-            resourcePath = this.getName();
+            resourcePath = name;
         } else {
-            resourcePath = subDirectoryPath + this.getName();
+            resourcePath = subDirectoryPath + name;
         }
 
         return "/" + resourcePath;
@@ -124,7 +124,7 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig {
         InputStream newIn = source.getResourceAsStream(getResourcePath());
 
         if (newIn == null) {
-            throw new NullPointerException(this.getName() + " is null?");
+            throw new NullPointerException(name + " is null?");
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(newIn, StandardCharsets.UTF_8));
