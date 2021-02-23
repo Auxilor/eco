@@ -5,7 +5,6 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
@@ -25,7 +24,7 @@ public class AntigriefWorldGuard implements AntigriefWrapper {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = container.createQuery();
 
-        if (query.queryState(BukkitAdapter.adapt(block.getLocation()), localPlayer, Flags.BUILD) == StateFlag.State.DENY) {
+        if (!query.testBuild(BukkitAdapter.adapt(block.getLocation()), localPlayer, Flags.BLOCK_BREAK)) {
             return WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, BukkitAdapter.adapt(block.getWorld()));
         }
         return true;
@@ -40,7 +39,7 @@ public class AntigriefWorldGuard implements AntigriefWrapper {
         World world = location.getWorld();
         Validate.notNull(world, "World cannot be null!");
 
-        if (query.queryState(BukkitAdapter.adapt(location), localPlayer, Flags.OTHER_EXPLOSION) == StateFlag.State.DENY) {
+        if (!query.testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.TNT)) {
             return WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, BukkitAdapter.adapt(world));
         }
         return true;
@@ -53,7 +52,7 @@ public class AntigriefWorldGuard implements AntigriefWrapper {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = container.createQuery();
 
-        if (query.queryState(BukkitAdapter.adapt(block.getLocation()), localPlayer, Flags.BLOCK_PLACE) == StateFlag.State.DENY) {
+        if (!query.testBuild(BukkitAdapter.adapt(block.getLocation()), localPlayer, Flags.BLOCK_PLACE)) {
             return WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, BukkitAdapter.adapt(block.getWorld()));
         }
         return true;
@@ -67,11 +66,11 @@ public class AntigriefWorldGuard implements AntigriefWrapper {
         RegionQuery query = container.createQuery();
 
         if (victim instanceof Player) {
-            if (query.queryState(BukkitAdapter.adapt(victim.getLocation()), localPlayer, Flags.PVP) == StateFlag.State.DENY) {
+            if (!query.testBuild(BukkitAdapter.adapt(victim.getLocation()), localPlayer, Flags.PVP)) {
                 return WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, BukkitAdapter.adapt(player.getWorld()));
             }
         } else {
-            if (query.queryState(BukkitAdapter.adapt(victim.getLocation()), localPlayer, Flags.DAMAGE_ANIMALS) == StateFlag.State.DENY) {
+            if (!query.testBuild(BukkitAdapter.adapt(victim.getLocation()), localPlayer, Flags.DAMAGE_ANIMALS)) {
                 return WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, BukkitAdapter.adapt(player.getWorld()));
             }
         }
