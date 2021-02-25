@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @UtilityClass
+@SuppressWarnings("deprecation")
 public class Display {
     /**
      * The prefix for lore lines.
@@ -59,6 +60,15 @@ public class Display {
             return itemStack;
         }
 
+        Map<String, Object[]> pluginVarArgs = new HashMap<>();
+
+        for (DisplayPriority priority : DisplayPriority.values()) {
+            List<DisplayModule> modules = MODULES.get(priority);
+            for (DisplayModule module : modules) {
+                pluginVarArgs.put(module.getPluginName(), module.generateVarArgs(itemStack));
+            }
+        }
+
         revert(itemStack);
 
         if (!itemStack.hasItemMeta()) {
@@ -74,7 +84,12 @@ public class Display {
         for (DisplayPriority priority : DisplayPriority.values()) {
             List<DisplayModule> modules = MODULES.get(priority);
             for (DisplayModule module : modules) {
-                module.display(itemStack);
+                Object[] varargs = pluginVarArgs.get(module.getPluginName());
+                if (varargs.length == 0) {
+                    module.display(itemStack);
+                } else {
+                    module.display(itemStack, varargs);
+                }
             }
         }
 

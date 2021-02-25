@@ -29,15 +29,44 @@ public abstract class DisplayModule extends PluginDependent {
      * Display an item.
      *
      * @param itemStack The item.
+     * @param args      Optional args for display.
      */
-    protected abstract void display(@NotNull ItemStack itemStack);
+    protected void display(@NotNull final ItemStack itemStack,
+                           @NotNull final Object... args) {
+        // Technically optional.
+    }
+
+    /**
+     * Display an item.
+     * <p>
+     * This method exists for parity with older plugins that don't include the varargs.
+     *
+     * @param itemStack The item.
+     * @deprecated Use {@link this#display(ItemStack, Object...)} instead.
+     */
+    @Deprecated
+    protected void display(@NotNull final ItemStack itemStack) {
+        // Technically optional.
+    }
 
     /**
      * Revert an item.
      *
      * @param itemStack The item.
      */
-    protected abstract void revert(@NotNull ItemStack itemStack);
+    protected void revert(@NotNull final ItemStack itemStack) {
+        // Technically optoinal.
+    }
+
+    /**
+     * Create varargs to pass back to itemstack after reverting, but before display.
+     *
+     * @param itemStack The itemStack.
+     * @return The plugin-specific varargs.
+     */
+    protected Object[] generateVarArgs(@NotNull final ItemStack itemStack) {
+        return new Object[0];
+    }
 
     /**
      * Get name of plugin.
