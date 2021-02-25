@@ -40,6 +40,8 @@ public class Display {
     public void registerDisplayModule(@NotNull final DisplayModule module) {
         List<DisplayModule> modules = MODULES.get(module.getPriority());
 
+        modules.removeIf(module1 -> module1.getPluginName().equalsIgnoreCase(module.getPluginName()));
+
         modules.add(module);
 
         MODULES.put(module.getPriority(), modules);

@@ -38,4 +38,13 @@ public abstract class DisplayModule extends PluginDependent {
      * @param itemStack The item.
      */
     protected abstract void revert(@NotNull ItemStack itemStack);
+
+    /**
+     * Get name of plugin.
+     *
+     * @return The plugin name.
+     */
+    String getPluginName() {
+        return super.getPlugin().getPluginName();
+    }
 }
