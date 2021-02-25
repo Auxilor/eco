@@ -44,7 +44,7 @@ public abstract class DisplayModule extends PluginDependent {
      *
      * @return The plugin name.
      */
-    String getPluginName() {
+    final String getPluginName() {
         return super.getPlugin().getPluginName();
     }
 }
