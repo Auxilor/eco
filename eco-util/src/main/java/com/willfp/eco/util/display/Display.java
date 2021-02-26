@@ -55,11 +55,6 @@ public class Display {
      * @return The itemstack.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
-        if (isFinalized(itemStack)) {
-            unfinalize(itemStack);
-            return itemStack;
-        }
-
         Map<String, Object[]> pluginVarArgs = new HashMap<>();
 
         for (DisplayPriority priority : DisplayPriority.values()) {
@@ -113,9 +108,8 @@ public class Display {
      * @return The itemstack.
      */
     public ItemStack revert(@NotNull final ItemStack itemStack) {
-        if (isFinalized(itemStack)) {
+        if (Display.isFinalized(itemStack)) {
             unfinalize(itemStack);
-            return itemStack;
         }
 
         if (!itemStack.hasItemMeta()) {

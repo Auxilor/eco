@@ -18,7 +18,7 @@ public final class VillagerTrade implements VillagerTradeProxy {
             Field fResult = MerchantRecipe.class.getDeclaredField("result");
             fResult.setAccessible(true);
             ItemStack result = merchantRecipe.getResult();
-            Display.display(result);
+            Display.displayAndFinalize(result);
             fResult.set(merchantRecipe, result);
 
             // Get NMS MerchantRecipe from CraftMerchantRecipe
@@ -30,7 +30,7 @@ public final class VillagerTrade implements VillagerTradeProxy {
             fSelling.setAccessible(true);
 
             ItemStack selling = CraftItemStack.asBukkitCopy(handle.sellingItem);
-            Display.display(selling);
+            Display.displayAndFinalize(selling);
 
             fSelling.set(handle, CraftItemStack.asNMSCopy(selling));
         } catch (IllegalAccessException | NoSuchFieldException e) {
