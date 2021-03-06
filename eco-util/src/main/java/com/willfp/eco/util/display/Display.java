@@ -55,6 +55,10 @@ public class Display {
      * @return The itemstack.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
+        if (!itemStack.hasItemMeta()) {
+            return itemStack; // return early if there's no customization of the item
+        }
+
         Map<String, Object[]> pluginVarArgs = new HashMap<>();
 
         for (DisplayPriority priority : DisplayPriority.values()) {
@@ -65,10 +69,6 @@ public class Display {
         }
 
         revert(itemStack);
-
-        if (!itemStack.hasItemMeta()) {
-            return itemStack;
-        }
 
         ItemMeta meta = itemStack.getItemMeta();
 
@@ -124,15 +124,10 @@ public class Display {
 
         List<String> lore = meta.getLore();
 
-        if (lore == null) {
-            lore = new ArrayList<>();
+        if (lore != null && lore.removeIf(line -> line.startsWith(Display.PREFIX))) { // only apply lore modification if needed
+            meta.setLore(lore);
+            itemStack.setItemMeta(meta);
         }
-
-        lore.removeIf(line -> line.startsWith(Display.PREFIX));
-
-        meta.setLore(lore);
-
-        itemStack.setItemMeta(meta);
 
         for (DisplayPriority priority : DisplayPriority.values()) {
             List<DisplayModule> modules = MODULES.get(priority);
