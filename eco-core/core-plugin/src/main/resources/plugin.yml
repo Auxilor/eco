@@ -9,7 +9,7 @@ loadbefore:
   - Talismans
   - StatTrackers
   - EcoArmor
-  - Illusioner
+  - EcoBosses
 depend:
   - ProtocolLib
 softdepend:
