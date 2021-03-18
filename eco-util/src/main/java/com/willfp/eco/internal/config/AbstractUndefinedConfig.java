@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,7 +151,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         if (cache.containsKey(path)) {
             return (List<Integer>) cache.get(path);
         } else {
-            cache.put(path, config.getIntegerList(path));
+            cache.put(path, has(path) ? new ArrayList<>(config.getIntegerList(path)) : new ArrayList<>());
             return getInts(path);
         }
     }
@@ -211,7 +212,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         if (cache.containsKey(path)) {
             return (List<Boolean>) cache.get(path);
         } else {
-            cache.put(path, config.getBooleanList(path));
+            cache.put(path, has(path) ? new ArrayList<>(config.getBooleanList(path)) : new ArrayList<>());
             return getBools(path);
         }
     }
@@ -273,7 +274,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         if (cache.containsKey(path)) {
             return (List<String>) cache.get(path);
         } else {
-            cache.put(path, config.getStringList(path));
+            cache.put(path, has(path) ? new ArrayList<>(config.getStringList(path)) : new ArrayList<>());
             return getStrings(path);
         }
     }
@@ -334,7 +335,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         if (cache.containsKey(path)) {
             return (List<Double>) cache.get(path);
         } else {
-            cache.put(path, config.getDoubleList(path));
+            cache.put(path, has(path) ? new ArrayList<>(config.getDoubleList(path)) : new ArrayList<>());
             return getDoubles(path);
         }
     }
