@@ -31,6 +31,11 @@ public class StringUtils {
     private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + "");
 
     /**
+     * Regex for hex codes.
+     */
+    private static final Pattern ALT_HEX_PATTERN = Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}");
+
+    /**
      * Translate a string - converts Placeholders and Color codes.
      *
      * @param message The message to translate.
@@ -61,7 +66,22 @@ public class StringUtils {
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
-        Matcher matcher = HEX_PATTERN.matcher(message);
+        String processedMessage = message;
+        for (HexParseMode parseMode : HexParseMode.values()) {
+            processedMessage = translateHexColorCodes(processedMessage, parseMode);
+        }
+        return processedMessage;
+    }
+
+    private static String translateHexColorCodes(@NotNull final String message,
+                                                 @NotNull final HexParseMode mode) {
+        Matcher matcher;
+        if (mode == HexParseMode.CMI) {
+            matcher = ALT_HEX_PATTERN.matcher(message);
+        } else {
+            matcher = HEX_PATTERN.matcher(message);
+        }
+
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
@@ -200,5 +220,10 @@ public class StringUtils {
             return string.substring(prefix.length());
         }
         return string;
+    }
+
+    private enum HexParseMode {
+        CMI,
+        NORMAL
     }
 }
