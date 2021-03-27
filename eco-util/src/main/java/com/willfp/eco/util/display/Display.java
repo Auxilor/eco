@@ -80,6 +80,8 @@ public class Display {
             List<DisplayModule> modules = MODULES.get(priority);
             for (DisplayModule module : modules) {
                 Object[] varargs = pluginVarArgs.get(module.getPluginName());
+                module.display(itemStack);
+                module.display(itemStack, varargs);
                 if (varargs.length == 0) {
                     module.display(itemStack);
                 } else {
