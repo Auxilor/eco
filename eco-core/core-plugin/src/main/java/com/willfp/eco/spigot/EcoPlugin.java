@@ -16,11 +16,13 @@ import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefUltimateLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.spigot.recipes.RecipeListener;
@@ -107,6 +109,8 @@ public class EcoPlugin extends AbstractEcoPlugin {
                 new IntegrationLoader("Towny", () -> AntigriefManager.register(new AntigriefTowny())),
                 new IntegrationLoader("Lands", () -> AntigriefManager.register(new AntigriefLands(this))),
                 new IntegrationLoader("Kingdoms", () -> AntigriefManager.register(new AntigriefKingdoms())),
+                new IntegrationLoader("ULands", () -> AntigriefManager.register(new AntigriefUltimateLands())),
+                new IntegrationLoader("CombatLogX", () -> AntigriefManager.register(new AntigriefCombatLogX())),
 
                 // Anticheat
                 new IntegrationLoader("AAC5", () -> AnticheatManager.register(this, new AnticheatAAC())),

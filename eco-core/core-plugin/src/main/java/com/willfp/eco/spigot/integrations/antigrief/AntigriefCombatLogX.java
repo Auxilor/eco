@@ -72,6 +72,6 @@ public class AntigriefCombatLogX implements AntigriefWrapper {
 
     @Override
     public String getPluginName() {
-        return "Towny";
+        return "CombatLogX";
     }
 }
