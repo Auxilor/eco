@@ -1,8 +1,9 @@
 package com.willfp.eco.spigot.integrations.antigrief;
 
+import com.SirBlobman.combatlogx.api.ICombatLogX;
+import com.SirBlobman.combatlogx.api.expansion.Expansion;
 import com.SirBlobman.combatlogx.expansion.newbie.helper.NewbieHelper;
 import com.SirBlobman.combatlogx.expansion.newbie.helper.listener.ListenerPVP;
-import com.github.sirblobman.combatlogx.api.ICombatLogX;
 import com.willfp.eco.spigot.EcoPlugin;
 import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
 import org.bukkit.Bukkit;
@@ -29,11 +30,9 @@ public class AntigriefCombatLogX implements AntigriefWrapper {
     public AntigriefCombatLogX() {
         assert instance != null;
         EcoPlugin.getInstance().getScheduler().runLater(() -> {
-            Object expansionUncast = instance.getExpansionManager().getAllExpansions().stream().filter(ex -> ex.getName().toLowerCase().contains("newbie")).findFirst().orElse(null);
-            if (expansionUncast != null) {
-                if (expansionUncast.getClass().getName().equals(NewbieHelper.class.getName())) {
-                    pvp = ((NewbieHelper) expansionUncast).getPVPListener();
-                }
+            Expansion expansionUncast = instance.getExpansionManager().getExpansionByName("NewbieHelper").orElse(null);
+            if (expansionUncast instanceof NewbieHelper) {
+                pvp = ((NewbieHelper) expansionUncast).getPVPListener();
             }
         }, 3);
     }
