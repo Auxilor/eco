@@ -82,11 +82,6 @@ public class Display {
                 Object[] varargs = pluginVarArgs.get(module.getPluginName());
                 module.display(itemStack);
                 module.display(itemStack, varargs);
-                if (varargs.length == 0) {
-                    module.display(itemStack);
-                } else {
-                    module.display(itemStack, varargs);
-                }
             }
         }
 
