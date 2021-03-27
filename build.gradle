@@ -45,6 +45,9 @@ allprojects {
 
         // NoCheatPlus
         maven { url 'https://repo.md-5.net/content/repositories/snapshots/' }
+
+        // CombatLogX
+        maven { url 'https://nexus.sirblobman.xyz/repository/public/' }
     }
 
     dependencies {
