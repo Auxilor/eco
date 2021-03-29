@@ -23,7 +23,7 @@ public class AnticheatNCP implements AnticheatWrapper {
 
     @Override
     public void exempt(@NotNull final Player player) {
-        if (!NCPExemptionManager.isExempted(player, CheckType.ALL)) {
+        if (NCPExemptionManager.isExempted(player, CheckType.ALL)) {
             return;
         }
 
