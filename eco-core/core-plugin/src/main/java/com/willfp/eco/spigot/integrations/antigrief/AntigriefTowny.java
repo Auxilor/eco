@@ -19,15 +19,24 @@ public class AntigriefTowny implements AntigriefWrapper {
     @Override
     public boolean canBreakBlock(@NotNull final Player player,
                                  @NotNull final Block block) {
+        TownyWorld world = TownyUniverse.getInstance().getWorldMap().get(block.getLocation().getWorld().getName());
+        if (world == null) {
+            return true;
+        }
         if (TownyAPI.getInstance().isWilderness(block)) {
             return true;
         }
-        return PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.DESTROY);
+        return PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.DESTROY)
+                || PlayerCacheUtil.getCachePermission(player, block.getLocation(), block.getType(), TownyPermission.ActionType.BUILD);
     }
 
     @Override
     public boolean canCreateExplosion(@NotNull final Player player,
                                       @NotNull final Location location) {
+        TownyWorld world = TownyUniverse.getInstance().getWorldMap().get(location.getWorld().getName());
+        if (world == null) {
+            return true;
+        }
         if (TownyAPI.getInstance().isWilderness(location)) {
             return true;
         }
@@ -37,6 +46,10 @@ public class AntigriefTowny implements AntigriefWrapper {
     @Override
     public boolean canPlaceBlock(@NotNull final Player player,
                                  @NotNull final Block block) {
+        TownyWorld world = TownyUniverse.getInstance().getWorldMap().get(block.getLocation().getWorld().getName());
+        if (world == null) {
+            return true;
+        }
         if (TownyAPI.getInstance().isWilderness(block)) {
             return true;
         }
@@ -46,14 +59,13 @@ public class AntigriefTowny implements AntigriefWrapper {
     @Override
     public boolean canInjure(@NotNull final Player player,
                              @NotNull final LivingEntity victim) {
+        TownyWorld world = TownyUniverse.getInstance().getWorldMap().get(victim.getLocation().getWorld().getName());
+        if (world == null) {
+            return true;
+        }
         if (TownyAPI.getInstance().isWilderness(victim.getLocation())) {
             if (victim instanceof Player) {
-                TownyWorld world = TownyUniverse.getInstance().getWorldMap().get(victim.getLocation().getWorld().getName());
-                if (world != null) {
-                    if (world.isPVP()) {
-                        return true;
-                    }
-                }
+                return world.isPVP();
             } else {
                 return true;
             }
