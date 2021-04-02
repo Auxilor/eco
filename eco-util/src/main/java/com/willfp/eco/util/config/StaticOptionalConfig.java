@@ -5,7 +5,7 @@ import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class StaticOptionalConfig extends AbstractUndefinedConfig {
+public abstract class StaticOptionalConfig extends AbstractUndefinedConfig<YamlConfiguration> {
     /**
      * Config implementation for passing YamlConfigurations.
      * <p>
@@ -14,11 +14,26 @@ public abstract class StaticOptionalConfig extends AbstractUndefinedConfig {
      * @param configName The name of the config
      * @param plugin     The plugin.
      * @param config     The YamlConfiguration handle.
+     * @deprecated Plugin not required.
      */
+    @Deprecated
     public StaticOptionalConfig(@NotNull final String configName,
                                 @NotNull final AbstractEcoPlugin plugin,
                                 @NotNull final YamlConfiguration config) {
-        super(configName, plugin);
+        this(configName, config);
+    }
+
+    /**
+     * Config implementation for passing YamlConfigurations.
+     * <p>
+     * Does not automatically update.
+     *
+     * @param configName The name of the config
+     * @param config     The YamlConfiguration handle.
+     */
+    public StaticOptionalConfig(@NotNull final String configName,
+                                @NotNull final YamlConfiguration config) {
+        super(configName);
 
         init(config);
     }
