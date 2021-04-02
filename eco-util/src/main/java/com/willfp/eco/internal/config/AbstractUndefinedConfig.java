@@ -1,12 +1,13 @@
 package com.willfp.eco.internal.config;
 
+import com.willfp.eco.util.SerializationUtils;
 import com.willfp.eco.util.StringUtils;
-import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.config.Config;
+import com.willfp.eco.util.serialization.EcoSerializable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.MemorySection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,13 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@SuppressWarnings({"unchecked", "unused"})
-public abstract class AbstractUndefinedConfig extends PluginDependent {
+@SuppressWarnings({"unchecked", "unused", "DeprecatedIsStillUsed"})
+public abstract class AbstractUndefinedConfig<T extends ConfigurationSection> implements Config {
     /**
-     * The linked {@link YamlConfiguration} where values are physically stored.
+     * The linked {@link MemorySection} where values are physically stored.
      */
     @Getter(AccessLevel.PUBLIC)
-    protected YamlConfiguration config = null;
+    protected T config = null;
 
     /**
      * Cached values for faster reading.
@@ -33,41 +34,80 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
      * Abstract config.
      *
      * @param configName The name of the config
-     * @param plugin     The plugin.
      */
-    protected AbstractUndefinedConfig(@NotNull final String configName,
-                                      @NotNull final AbstractEcoPlugin plugin) {
-        super(plugin);
+    protected AbstractUndefinedConfig(@NotNull final String configName) {
+
     }
 
-    protected void init(@NotNull final YamlConfiguration config) {
+    protected Config init(@NotNull final T config) {
         this.config = config;
+        return this;
     }
 
-    /**
-     * Clears cache.
-     */
+    @Override
     public final void clearCache() {
         cache.clear();
     }
 
-    /**
-     * Get if the config contains a key.
-     *
-     * @param path The key to check.
-     * @return If contained.
-     */
+    @Override
     public boolean has(@NotNull final String path) {
         return config.contains(path);
     }
 
-    /**
-     * Get configuration section from config.
-     *
-     * @param path The key to check.
-     * @return The configuration section. Throws NPE if not found.
-     */
     @NotNull
+    @Override
+    public List<String> getKeys(final boolean deep) {
+        return new ArrayList<>(config.getKeys(deep));
+    }
+
+    @Override
+    public void set(@NotNull final String path,
+                    @NotNull final EcoSerializable<?> object) {
+        Config serializedConfig = object.serialize();
+        for (String key : serializedConfig.getKeys(true)) {
+            Object raw = serializedConfig.getRaw(key);
+            config.set(path + "." + key, raw);
+            cache.put(path + "." + key, raw);
+        }
+    }
+
+    @Override
+    @Nullable
+    public Object getRaw(@NotNull final String path) {
+        return config.get(path);
+    }
+
+    @Override
+    @NotNull
+    public <T extends EcoSerializable<T>> T get(@NotNull final String path,
+                                                @NotNull final Class<T> clazz) {
+        T object = getOrNull(path, clazz);
+        if (object == null) {
+            throw new NullPointerException("Object cannot be null!");
+        } else {
+            return object;
+        }
+    }
+
+    @Override
+    @Nullable
+    public <T extends EcoSerializable<T>> T getOrNull(@NotNull final String path,
+                                                      @NotNull final Class<T> clazz) {
+        if (cache.containsKey(path)) {
+            return (T) cache.get(path);
+        } else {
+            Config section = getSubsectionOrNull(path);
+            if (section == null) {
+                return null;
+            }
+            cache.put(path, SerializationUtils.deserialize(section, clazz));
+            return getOrNull(path, clazz);
+        }
+    }
+
+    @Override
+    @NotNull
+    @Deprecated
     public ConfigurationSection getSection(@NotNull final String path) {
         ConfigurationSection section = getSectionOrNull(path);
         if (section == null) {
@@ -77,13 +117,9 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get configuration section from config.
-     *
-     * @param path The key to check.
-     * @return The configuration section, or null if not found.
-     */
+    @Override
     @Nullable
+    @Deprecated
     public ConfigurationSection getSectionOrNull(@NotNull final String path) {
         if (cache.containsKey(path)) {
             return (ConfigurationSection) cache.get(path);
@@ -93,12 +129,23 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get an integer from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or 0 if not found.
-     */
+    @Override
+    @NotNull
+    public Config getSubsection(@NotNull final String path) {
+        return new ConfigSection(this.getSection(path));
+    }
+
+    @Override
+    @Nullable
+    public Config getSubsectionOrNull(@NotNull final String path) {
+        ConfigurationSection section = this.getSectionOrNull(path);
+        if (section == null) {
+            return null;
+        }
+        return new ConfigSection(section);
+    }
+
+    @Override
     public int getInt(@NotNull final String path) {
         if (cache.containsKey(path)) {
             return (int) cache.get(path);
@@ -108,12 +155,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get an integer from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public Integer getIntOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -123,13 +165,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get an integer from config with a specified default (not found) value.
-     *
-     * @param path The key to fetch the value from.
-     * @param def  The value to default to if not found.
-     * @return The found value, or the default.
-     */
+    @Override
     public int getInt(@NotNull final String path,
                       final int def) {
         if (cache.containsKey(path)) {
@@ -140,12 +176,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of integers from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
+    @Override
     @NotNull
     public List<Integer> getInts(@NotNull final String path) {
         if (cache.containsKey(path)) {
@@ -156,12 +187,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of integers from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public List<Integer> getIntsOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -171,12 +197,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a boolean from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or false if not found.
-     */
+    @Override
     public boolean getBool(@NotNull final String path) {
         if (cache.containsKey(path)) {
             return (boolean) cache.get(path);
@@ -186,12 +207,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a boolean from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public Boolean getBoolOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -201,12 +217,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of booleans from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
+    @Override
     @NotNull
     public List<Boolean> getBools(@NotNull final String path) {
         if (cache.containsKey(path)) {
@@ -217,12 +228,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of booleans from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public List<Boolean> getBoolsOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -232,12 +238,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a string from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or an empty string if not found.
-     */
+    @Override
     @NotNull
     public String getString(@NotNull final String path) {
         if (cache.containsKey(path)) {
@@ -248,12 +249,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a string from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public String getStringOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -263,12 +259,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
+    @Override
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
         if (cache.containsKey(path)) {
@@ -279,12 +270,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public List<String> getStringsOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -294,12 +280,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a decimal from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or 0 if not found.
-     */
+    @Override
     public double getDouble(@NotNull final String path) {
         if (cache.containsKey(path)) {
             return (double) cache.get(path);
@@ -309,12 +290,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a decimal from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public Double getDoubleOrNull(@NotNull final String path) {
         if (has(path)) {
@@ -324,12 +300,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of decimals from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     */
+    @Override
     @NotNull
     public List<Double> getDoubles(@NotNull final String path) {
         if (cache.containsKey(path)) {
@@ -340,12 +311,7 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
         }
     }
 
-    /**
-     * Get a list of decimals from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
+    @Override
     @Nullable
     public List<Double> getDoublesOrNull(@NotNull final String path) {
         if (has(path)) {
