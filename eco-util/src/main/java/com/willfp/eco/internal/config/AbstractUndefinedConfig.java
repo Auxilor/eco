@@ -4,8 +4,6 @@ import com.willfp.eco.util.SerializationUtils;
 import com.willfp.eco.util.StringUtils;
 import com.willfp.eco.util.config.Config;
 import com.willfp.eco.util.serialization.EcoSerializable;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +20,6 @@ public abstract class AbstractUndefinedConfig<T extends ConfigurationSection> im
     /**
      * The linked {@link MemorySection} where values are physically stored.
      */
-    @Getter(AccessLevel.PUBLIC)
     protected T config = null;
 
     /**

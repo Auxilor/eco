@@ -145,4 +145,14 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig<YamlConfigu
 
         return newConfig;
     }
+
+    /**
+     * Get config handle.
+     *
+     * @return The config.
+     */
+    @Deprecated
+    public YamlConfiguration getConfig() {
+        return (YamlConfiguration) super.config;
+    }
 }
