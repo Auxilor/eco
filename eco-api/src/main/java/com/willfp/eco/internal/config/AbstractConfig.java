@@ -16,12 +16,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-public abstract class AbstractConfig extends ConfigWrapper {
+public abstract class AbstractConfig extends AbstractUndefinedConfig<YamlConfiguration> {
     /**
      * The physical config file, as stored on disk.
      */
     @Getter(AccessLevel.PROTECTED)
     private final File configFile;
+
+    /**
+     * Plugin handle.
+     */
+    @Getter(AccessLevel.PROTECTED)
+    private final AbstractEcoPlugin plugin;
 
     /**
      * The full name of the config file (eg config.yml).
@@ -53,7 +59,8 @@ public abstract class AbstractConfig extends ConfigWrapper {
                              @NotNull final AbstractEcoPlugin plugin,
                              @NotNull final String subDirectoryPath,
                              @NotNull final Class<?> source) {
-        super(configName, plugin);
+        super(configName);
+        this.plugin = plugin;
         this.name = configName + ".yml";
         this.source = source;
         this.subDirectoryPath = subDirectoryPath;
@@ -137,5 +144,15 @@ public abstract class AbstractConfig extends ConfigWrapper {
         }
 
         return newConfig;
+    }
+
+    /**
+     * Get config handle.
+     *
+     * @return The config.
+     */
+    @Deprecated
+    public YamlConfiguration getConfig() {
+        return (YamlConfiguration) super.config;
     }
 }
