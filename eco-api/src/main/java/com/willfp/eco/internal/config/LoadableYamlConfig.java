@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.config;
 
-import com.willfp.eco.util.plugin.EcoPlugin;
+import com.willfp.eco.core.EcoPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.InvalidConfigurationException;

@@ -1,7 +1,7 @@
 package com.willfp.eco.spigot.eventlisteners;
 
-import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

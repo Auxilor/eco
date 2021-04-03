@@ -2,7 +2,6 @@ package com.willfp.eco.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.willfp.eco.util.optional.Prerequisite;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

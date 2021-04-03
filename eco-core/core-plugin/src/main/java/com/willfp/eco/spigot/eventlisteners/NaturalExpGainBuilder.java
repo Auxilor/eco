@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.eventlisteners;
 
-import com.willfp.eco.util.events.NaturalExpGainEvent;
+import com.willfp.eco.core.events.NaturalExpGainEvent;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.Validate;

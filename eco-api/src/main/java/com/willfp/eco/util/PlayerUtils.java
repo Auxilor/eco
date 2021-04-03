@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import com.willfp.eco.util.optional.Prerequisite;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;

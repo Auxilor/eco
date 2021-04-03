@@ -1,11 +1,11 @@
 package com.willfp.eco.spigot.recipes;
 
-import com.willfp.eco.util.plugin.EcoPlugin;
-import com.willfp.eco.util.recipe.RecipeParts;
-import com.willfp.eco.util.recipe.Recipes;
-import com.willfp.eco.util.recipe.parts.RecipePart;
-import com.willfp.eco.util.recipe.parts.SimpleRecipePart;
-import com.willfp.eco.util.recipe.recipes.ShapedCraftingRecipe;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.recipe.RecipeParts;
+import com.willfp.eco.core.recipe.Recipes;
+import com.willfp.eco.core.recipe.parts.RecipePart;
+import com.willfp.eco.core.recipe.parts.SimpleRecipePart;
+import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;

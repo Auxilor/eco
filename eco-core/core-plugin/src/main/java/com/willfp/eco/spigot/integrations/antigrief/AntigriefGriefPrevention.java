@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.integrations.antigrief;
 
-import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
+import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import org.bukkit.Location;

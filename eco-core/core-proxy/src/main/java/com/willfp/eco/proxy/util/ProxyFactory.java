@@ -1,10 +1,10 @@
 package com.willfp.eco.proxy.util;
 
-import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.EcoPlugin;
-import com.willfp.eco.util.proxy.AbstractProxy;
-import com.willfp.eco.util.proxy.ProxyConstants;
-import com.willfp.eco.util.proxy.UnsupportedVersionException;
+import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.proxy.AbstractProxy;
+import com.willfp.eco.core.proxy.ProxyConstants;
+import com.willfp.eco.core.proxy.UnsupportedVersionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;

@@ -5,8 +5,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.willfp.eco.proxy.proxies.AutoCraftProxy;
 import com.willfp.eco.spigot.InternalProxyUtils;
-import com.willfp.eco.util.plugin.EcoPlugin;
-import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.AbstractPacketAdapter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

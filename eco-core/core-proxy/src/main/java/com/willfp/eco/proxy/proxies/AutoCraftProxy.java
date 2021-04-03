@@ -1,6 +1,6 @@
 package com.willfp.eco.proxy.proxies;
 
-import com.willfp.eco.util.proxy.AbstractProxy;
+import com.willfp.eco.core.proxy.AbstractProxy;
 import org.jetbrains.annotations.NotNull;
 
 public interface AutoCraftProxy extends AbstractProxy {

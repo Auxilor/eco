@@ -1,11 +1,11 @@
 package com.willfp.eco.internal.extensions;
 
 
-import com.willfp.eco.util.extensions.Extension;
-import com.willfp.eco.util.extensions.MalformedExtensionException;
-import com.willfp.eco.util.extensions.ExtensionLoader;
-import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.EcoPlugin;
+import com.willfp.eco.core.extensions.Extension;
+import com.willfp.eco.core.extensions.MalformedExtensionException;
+import com.willfp.eco.core.extensions.ExtensionLoader;
+import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.EcoPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;

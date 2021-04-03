@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.eventlisteners;
 
-import com.willfp.eco.util.events.ArmorEquipEvent;
+import com.willfp.eco.core.events.ArmorEquipEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

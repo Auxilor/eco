@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.integrations.antigrief;
 
-import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
+import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;

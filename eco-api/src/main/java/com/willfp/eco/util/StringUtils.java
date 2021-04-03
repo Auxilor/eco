@@ -1,7 +1,6 @@
 package com.willfp.eco.util;
 
-import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.util.optional.Prerequisite;
+import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;

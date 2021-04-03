@@ -1,6 +1,6 @@
 package com.willfp.eco.proxy.proxies;
 
-import com.willfp.eco.util.proxy.AbstractProxy;
+import com.willfp.eco.core.proxy.AbstractProxy;
 import org.bukkit.inventory.MerchantRecipe;
 
 public interface VillagerTradeProxy extends AbstractProxy {

@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.config;
 
-import com.willfp.eco.util.plugin.EcoPlugin;
+import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;

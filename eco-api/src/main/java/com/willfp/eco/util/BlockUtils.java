@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 @UtilityClass
-public class  BlockUtils {
+public class BlockUtils {
     /**
      * If the meta set function has been set.
      */
@@ -37,6 +37,15 @@ public class  BlockUtils {
                 if (blocks.size() > limit || blocks.size() > 2500) {
                     return blocks;
                 }
+            }
+        }
+        // Running twice to get more spherical shape.
+        for (BlockFace face : BlockFace.values()) {
+            Block block = start.getRelative(face);
+            if (!blocks.contains(block) && allowedMaterials.contains(block.getType())) {
+                if (blocks.size() > limit || blocks.size() > 2500) {
+                    return blocks;
+                }
                 blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
             }
         }
@@ -49,7 +58,6 @@ public class  BlockUtils {
      * @param start            The initial block.
      * @param allowedMaterials A list of all valid {@link Material}s.
      * @param limit            The maximum size of vein to return.
-     *
      * @return A set of all {@link Block}s.
      */
     public Set<Block> getVein(@NotNull final Block start,

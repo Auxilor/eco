@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot;
 
-import com.willfp.eco.util.proxy.AbstractProxy;
+import com.willfp.eco.core.proxy.AbstractProxy;
 import com.willfp.eco.proxy.util.ProxyFactory;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +15,6 @@ public class InternalProxyUtils {
      * @return The proxy implementation.
      */
     public @NotNull <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
-        return new ProxyFactory<>(EcoPlugin.getInstance(), proxyClass).getProxy();
+        return new ProxyFactory<>(EcoSpigotPlugin.getInstance(), proxyClass).getProxy();
     }
 }

@@ -7,7 +7,7 @@ import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.object.TownyWorld;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
-import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
+import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

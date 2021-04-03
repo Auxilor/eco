@@ -1,7 +1,7 @@
 package com.willfp.eco.proxy.v1_16_R3;
 
 import com.willfp.eco.proxy.proxies.VillagerTradeProxy;
-import com.willfp.eco.util.display.Display;
+import com.willfp.eco.core.display.Display;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe;
 import org.bukkit.inventory.ItemStack;

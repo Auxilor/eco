@@ -4,7 +4,7 @@ import com.gmail.nossr50.datatypes.meta.BonusDropMeta;
 import com.gmail.nossr50.events.fake.FakeEvent;
 import com.gmail.nossr50.mcMMO;
 import com.willfp.eco.util.ClassUtils;
-import com.willfp.eco.util.integrations.mcmmo.McmmoWrapper;
+import com.willfp.eco.core.integrations.mcmmo.McmmoWrapper;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;

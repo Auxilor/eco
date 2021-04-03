@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @UtilityClass
@@ -78,7 +79,7 @@ public class VectorUtils {
             return cached;
         }
 
-        ArrayList<Vector> circleVecs = new ArrayList<>();
+        List<Vector> vectors = new ArrayList<>();
 
         double xoffset = -radius;
         double zoffset = -radius;
@@ -86,7 +87,7 @@ public class VectorUtils {
         while (zoffset <= radius) {
             while (xoffset <= radius) {
                 if (Math.round(Math.sqrt((xoffset * xoffset) + (zoffset * zoffset))) <= radius) {
-                    circleVecs.add(new Vector(xoffset, 0, zoffset));
+                    vectors.add(new Vector(xoffset, 0, zoffset));
                 } else {
                     xoffset++;
                     continue;
@@ -97,7 +98,7 @@ public class VectorUtils {
             zoffset++;
         }
 
-        Vector[] result = circleVecs.toArray(new Vector[0]);
+        Vector[] result = vectors.toArray(new Vector[0]);
         CIRCLE_CACHE.put(radius, result);
         return result;
     }
@@ -109,21 +110,21 @@ public class VectorUtils {
      * @return An array of {@link Vector}s.
      */
     public Vector[] getSquare(final int radius) {
-        ArrayList<Vector> circleVecs = new ArrayList<>();
+        List<Vector> vectors = new ArrayList<>();
 
         int xoffset = -radius;
         int zoffset = -radius;
 
         while (zoffset <= radius) {
             while (xoffset <= radius) {
-                circleVecs.add(new Vector(xoffset, 0, zoffset));
+                vectors.add(new Vector(xoffset, 0, zoffset));
                 xoffset++;
             }
             xoffset = -radius;
             zoffset++;
         }
 
-        return circleVecs.toArray(new Vector[0]);
+        return vectors.toArray(new Vector[0]);
     }
 
     /**
@@ -133,16 +134,16 @@ public class VectorUtils {
      * @return An array of {@link Vector}s.
      */
     public Vector[] getCube(final int radius) {
-        ArrayList<Vector> cubeVecs = new ArrayList<>();
+        List<Vector> vectors = new ArrayList<>();
 
         for (int y = -radius; y <= radius; y++) {
             for (int z = -radius; z <= radius; z++) {
                 for (int x = -radius; x <= radius; x++) {
-                    cubeVecs.add(new Vector(x, y, z));
+                    vectors.add(new Vector(x, y, z));
                 }
             }
         }
 
-        return cubeVecs.toArray(new Vector[0]);
+        return vectors.toArray(new Vector[0]);
     }
 }

@@ -2,9 +2,9 @@ package com.willfp.eco.spigot.display;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
-import com.willfp.eco.util.display.Display;
-import com.willfp.eco.util.plugin.EcoPlugin;
-import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
+import com.willfp.eco.core.display.Display;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.AbstractPacketAdapter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

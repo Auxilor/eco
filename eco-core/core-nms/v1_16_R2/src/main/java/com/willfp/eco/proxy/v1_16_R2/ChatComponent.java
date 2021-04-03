@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.willfp.eco.proxy.proxies.ChatComponentProxy;
-import com.willfp.eco.util.display.Display;
+import com.willfp.eco.core.display.Display;
 import net.minecraft.server.v1_16_R2.ChatBaseComponent;
 import net.minecraft.server.v1_16_R2.ChatHoverable;
 import net.minecraft.server.v1_16_R2.ChatMessage;

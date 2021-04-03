@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.integrations.anticheat;
 
-import com.willfp.eco.util.integrations.anticheat.AnticheatWrapper;
+import com.willfp.eco.core.integrations.anticheat.AnticheatWrapper;
 import me.rerere.matrix.api.events.PlayerViolationEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
