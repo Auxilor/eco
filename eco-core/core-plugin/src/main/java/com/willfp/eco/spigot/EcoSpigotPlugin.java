@@ -25,7 +25,6 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefUltimateLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.spigot.recipes.RecipeListener;
@@ -111,7 +110,6 @@ public class EcoSpigotPlugin extends com.willfp.eco.core.EcoPlugin {
                 new IntegrationLoader("Towny", () -> AntigriefManager.register(new AntigriefTowny())),
                 new IntegrationLoader("Lands", () -> AntigriefManager.register(new AntigriefLands(this))),
                 new IntegrationLoader("Kingdoms", () -> AntigriefManager.register(new AntigriefKingdoms())),
-                new IntegrationLoader("ULands", () -> AntigriefManager.register(new AntigriefUltimateLands())),
                 new IntegrationLoader("CombatLogX", () -> AntigriefManager.register(new AntigriefCombatLogX())),
 
                 // Anticheat
