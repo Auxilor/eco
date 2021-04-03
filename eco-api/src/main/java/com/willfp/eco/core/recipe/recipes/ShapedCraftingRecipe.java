@@ -2,9 +2,9 @@ package com.willfp.eco.core.recipe.recipes;
 
 import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
-import com.willfp.eco.core.recipe.parts.EmptyRecipePart;
-import com.willfp.eco.core.recipe.parts.RecipePart;
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,7 +18,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
      * Recipe parts.
      */
     @Getter
-    private final RecipePart[] parts;
+    private final TestableItem[] parts;
 
     /**
      * The key of the recipe.
@@ -40,7 +40,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
 
     private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
                                  @NotNull final String key,
-                                 @NotNull final RecipePart[] parts,
+                                 @NotNull final TestableItem[] parts,
                                  @NotNull final ItemStack output) {
         super(plugin);
 
@@ -52,12 +52,12 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
 
     @Override
     public Material getMaterialAtIndex(final int index) {
-        return parts[index].getDisplayed().getType();
+        return parts[index].getItem().getType();
     }
 
     @Override
     public ItemStack getDisplayedAtIndex(final int index) {
-        return parts[index].getDisplayed();
+        return parts[index].getItem();
     }
 
     @Override
@@ -102,7 +102,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
         /**
          * The recipe parts.
          */
-        private final RecipePart[] recipeParts = new RecipePart[9];
+        private final TestableItem[] recipeParts = new TestableItem[9];
 
         /**
          * The output of the recipe.
@@ -139,7 +139,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
          * @return The builder.
          */
         public Builder setRecipePart(@NotNull final RecipePosition position,
-                                     @NotNull final RecipePart part) {
+                                     @NotNull final TestableItem part) {
             this.recipeParts[position.getIndex()] = part;
             return this;
         }
@@ -152,7 +152,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
          * @return The builder.
          */
         public Builder setRecipePart(final int position,
-                                     @NotNull final RecipePart part) {
+                                     @NotNull final TestableItem part) {
             this.recipeParts[position] = part;
             return this;
         }
@@ -176,7 +176,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
         public ShapedCraftingRecipe build() {
             for (int i = 0; i < 9; i++) {
                 if (recipeParts[i] == null) {
-                    recipeParts[i] = new EmptyRecipePart();
+                    recipeParts[i] = new EmptyTestableItem();
                 }
             }
 

@@ -1,4 +1,4 @@
-package com.willfp.eco.core.config.updating.exceptions;
+package com.willfp.eco.internal.config.updating.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 

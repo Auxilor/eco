@@ -1,10 +1,10 @@
 package com.willfp.eco.spigot.recipes;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.recipe.RecipeParts;
+import com.willfp.eco.core.items.CustomItems;
+import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
-import com.willfp.eco.core.recipe.parts.RecipePart;
-import com.willfp.eco.core.recipe.parts.SimpleRecipePart;
+import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -107,9 +107,9 @@ public class RecipeListener implements Listener {
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
-            RecipePart part = shapedCraftingRecipe.getParts()[i];
-            if (part instanceof SimpleRecipePart) {
-                if (RecipeParts.isRecipePart(itemStack)) {
+            TestableItem part = shapedCraftingRecipe.getParts()[i];
+            if (part instanceof MaterialTestableItem) {
+                if (CustomItems.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
                     return;
                 }
@@ -138,9 +138,9 @@ public class RecipeListener implements Listener {
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
-            RecipePart part = shapedCraftingRecipe.getParts()[i];
-            if (part instanceof SimpleRecipePart) {
-                if (RecipeParts.isRecipePart(itemStack)) {
+            TestableItem part = shapedCraftingRecipe.getParts()[i];
+            if (part instanceof MaterialTestableItem) {
+                if (CustomItems.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
@@ -168,7 +168,7 @@ public class RecipeListener implements Listener {
         }
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            if (RecipeParts.isRecipePart(itemStack)) {
+            if (CustomItems.isCustomItem(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
                 return;
             }
@@ -193,7 +193,7 @@ public class RecipeListener implements Listener {
         }
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            if (RecipeParts.isRecipePart(itemStack)) {
+            if (CustomItems.isCustomItem(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
                 event.setResult(Event.Result.DENY);
                 event.setCancelled(true);

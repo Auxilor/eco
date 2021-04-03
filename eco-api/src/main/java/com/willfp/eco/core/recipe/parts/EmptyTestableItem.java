@@ -1,14 +1,15 @@
 package com.willfp.eco.core.recipe.parts;
 
+import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class EmptyRecipePart implements RecipePart {
+public class EmptyTestableItem implements TestableItem {
     /**
      * Create a new empty recipe part.
      */
-    public EmptyRecipePart() {
+    public EmptyTestableItem() {
 
     }
 
@@ -24,7 +25,7 @@ public class EmptyRecipePart implements RecipePart {
     }
 
     @Override
-    public ItemStack getDisplayed() {
+    public ItemStack getItem() {
         return new ItemStack(Material.AIR);
     }
 }

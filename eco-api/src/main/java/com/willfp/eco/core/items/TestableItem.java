@@ -1,9 +1,9 @@
-package com.willfp.eco.core.recipe.parts;
+package com.willfp.eco.core.items;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public interface RecipePart {
+public interface TestableItem {
     /**
      * If an ItemStack matches the recipe part.
      *
@@ -17,6 +17,5 @@ public interface RecipePart {
      *
      * @return The item, displayed.
      */
-    ItemStack getDisplayed();
+    ItemStack getItem();
 }
-

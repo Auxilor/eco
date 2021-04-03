@@ -1,12 +1,13 @@
 package com.willfp.eco.core.recipe.parts;
 
+import com.willfp.eco.core.items.TestableItem;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SimpleRecipePart implements RecipePart {
+public class MaterialTestableItem implements TestableItem {
     /**
      * The material.
      */
@@ -18,7 +19,7 @@ public class SimpleRecipePart implements RecipePart {
      *
      * @param material The material.
      */
-    public SimpleRecipePart(@NotNull final Material material) {
+    public MaterialTestableItem(@NotNull final Material material) {
         this.material = material;
     }
 
@@ -34,7 +35,7 @@ public class SimpleRecipePart implements RecipePart {
     }
 
     @Override
-    public ItemStack getDisplayed() {
+    public ItemStack getItem() {
         return new ItemStack(material);
     }
 }

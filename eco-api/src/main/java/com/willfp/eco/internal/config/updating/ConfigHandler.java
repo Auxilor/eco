@@ -1,8 +1,8 @@
-package com.willfp.eco.core.config.updating;
+package com.willfp.eco.internal.config.updating;
 
-import com.willfp.eco.core.config.updating.annotations.ConfigUpdater;
-import com.willfp.eco.core.config.updating.exceptions.InvalidUpdatableClassException;
-import com.willfp.eco.core.config.updating.exceptions.InvalidUpdateMethodException;
+import com.willfp.eco.internal.config.updating.annotations.ConfigUpdater;
+import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdatableClassException;
+import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException;
 import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;

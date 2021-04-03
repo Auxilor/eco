@@ -1,4 +1,4 @@
-package com.willfp.eco.core.recipe.parts;
+package com.willfp.eco.core.items;
 
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -7,27 +7,27 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class ComplexRecipePart implements RecipePart {
+public class CustomItem implements TestableItem {
     /**
-     * The test for itemstacks to pass.
+     * The test for ItemStacks to pass.
      */
     @Getter
     private final Predicate<ItemStack> predicate;
 
     /**
-     * Displayed itemstack: what the user should see.
+     * Example Item: what the user should see.
      */
-    private final ItemStack displayed;
+    private final ItemStack item;
 
     /**
      * Create a new complex recipe part.
      * @param predicate The test.
-     * @param displayed The example itemstack.
+     * @param item The example ItemStacks.
      */
-    public ComplexRecipePart(@NotNull final Predicate<ItemStack> predicate,
-                             @NotNull final ItemStack displayed) {
+    public CustomItem(@NotNull final Predicate<ItemStack> predicate,
+                      @NotNull final ItemStack item) {
         this.predicate = predicate;
-        this.displayed = displayed;
+        this.item = item;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ComplexRecipePart implements RecipePart {
     }
 
     @Override
-    public ItemStack getDisplayed() {
-        return displayed;
+    public ItemStack getItem() {
+        return item;
     }
 }

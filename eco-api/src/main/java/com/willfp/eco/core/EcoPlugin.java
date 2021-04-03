@@ -3,7 +3,7 @@ package com.willfp.eco.core;
 import com.willfp.eco.core.command.AbstractCommand;
 import com.willfp.eco.core.config.configs.Config;
 import com.willfp.eco.core.config.configs.Lang;
-import com.willfp.eco.core.config.updating.ConfigHandler;
+import com.willfp.eco.internal.config.updating.ConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.events.EventManager;
@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public abstract class EcoPlugin extends JavaPlugin {
@@ -153,6 +154,11 @@ public abstract class EcoPlugin extends JavaPlugin {
      */
     @Getter
     private DisplayModule displayModule;
+
+    /**
+     * The logger for the plugin.
+     */
+    private Logger logger;
 
     /**
      * If the server is running an outdated version of the plugin.
@@ -403,5 +409,11 @@ public abstract class EcoPlugin extends JavaPlugin {
     @Nullable
     protected DisplayModule createDisplayModule() {
         return null;
+    }
+
+    @NotNull
+    @Override
+    public Logger getLogger() {
+        return logger;
     }
 }

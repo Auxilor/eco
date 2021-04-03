@@ -1,6 +1,6 @@
-package com.willfp.eco.core.config.updating.exceptions;
+package com.willfp.eco.internal.config.updating.exceptions;
 
-import com.willfp.eco.core.config.updating.ConfigHandler;
+import com.willfp.eco.internal.config.updating.ConfigHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class InvalidUpdatableClassException extends RuntimeException {

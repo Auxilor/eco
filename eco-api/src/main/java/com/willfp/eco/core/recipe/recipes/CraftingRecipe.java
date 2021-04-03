@@ -1,6 +1,6 @@
 package com.willfp.eco.core.recipe.recipes;
 
-import com.willfp.eco.core.recipe.parts.RecipePart;
+import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +41,7 @@ public interface CraftingRecipe {
      *
      * @return The parts.
      */
-    RecipePart[] getParts();
+    TestableItem[] getParts();
 
     /**
      * Get the recipe key.
