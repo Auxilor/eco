@@ -14,7 +14,7 @@ bin/
 # Gradle
 .gradle
 **/build/
-!eco-util/src/**/build/
+!eco-api/src/**/build/
 .gradletasknamecache
 !gradle-wrapper.jar
 gradle-app.setting

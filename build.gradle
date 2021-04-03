@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(":eco-util")
+    implementation project(":eco-api")
     implementation project(":eco-core").getSubprojects()
 }
 
