@@ -44,9 +44,7 @@ public class StringUtils {
     public String translate(@NotNull final String message,
                             @Nullable final Player player) {
         String processedMessage = message;
-        if (Prerequisite.MINIMUM_1_16.isMet()) {
-            processedMessage = translateGradients(processedMessage);
-        }
+        processedMessage = translateGradients(processedMessage);
         processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         processedMessage = translateHexColorCodes(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);

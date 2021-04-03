@@ -1,8 +1,14 @@
 package com.willfp.eco.spigot;
 
+import com.willfp.eco.core.AbstractPacketAdapter;
+import com.willfp.eco.core.command.AbstractCommand;
+import com.willfp.eco.core.display.Display;
+import com.willfp.eco.core.display.DisplayModule;
+import com.willfp.eco.core.integrations.IntegrationLoader;
+import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
+import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
+import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
-import com.willfp.eco.proxy.proxies.CooldownProxy;
-import com.willfp.eco.proxy.proxies.FastItemStackHandlerFactoryProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
@@ -29,18 +35,8 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.spigot.recipes.RecipeListener;
 import com.willfp.eco.util.BlockUtils;
-import com.willfp.eco.util.PlayerUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
-import com.willfp.eco.core.command.AbstractCommand;
-import com.willfp.eco.core.display.Display;
-import com.willfp.eco.core.display.DisplayModule;
-import com.willfp.eco.core.fast.FastItemStack;
-import com.willfp.eco.core.integrations.IntegrationLoader;
-import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
-import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
-import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
-import com.willfp.eco.core.AbstractPacketAdapter;
 import lombok.Getter;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
@@ -65,9 +61,7 @@ public class EcoSpigotPlugin extends com.willfp.eco.core.EcoPlugin {
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
         SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
         BlockUtils.initialize(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
-        PlayerUtils.initialize(((player) -> InternalProxyUtils.getProxy(CooldownProxy.class).getAttackCooldown(player)));
         TridentUtils.initialize(((trident) -> InternalProxyUtils.getProxy(TridentStackProxy.class).getTridentStack(trident)));
-        FastItemStack.initialize(InternalProxyUtils.getProxy(FastItemStackHandlerFactoryProxy.class));
     }
 
     @Override

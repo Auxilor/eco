@@ -1,6 +1,6 @@
-package com.willfp.eco.util;
+package com.willfp.eco.core;
 
-import com.willfp.eco.core.proxy.ProxyConstants;
+import com.willfp.eco.util.ClassUtils;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,15 +14,6 @@ public class Prerequisite {
      * All existing prerequisites are registered on creation.
      */
     private static final List<Prerequisite> VALUES = new ArrayList<>();
-
-    /**
-     * Requires the server to be running minecraft version 1.16 or higher.
-     */
-    public static final Prerequisite MINIMUM_1_16 = new Prerequisite(
-            () -> !ProxyConstants.NMS_VERSION.contains("15"),
-            "Requires minimum server version of 1.16"
-    );
-
     /**
      * Requires the server to be running an implementation of paper.
      */

@@ -79,9 +79,6 @@ public class TeamUtils {
         MATERIAL_COLORS.forcePut(Material.LAPIS_ORE, ChatColor.BLUE);
         MATERIAL_COLORS.forcePut(Material.REDSTONE_ORE, ChatColor.RED);
         MATERIAL_COLORS.forcePut(Material.DIAMOND_ORE, ChatColor.AQUA);
-
-        if (Prerequisite.MINIMUM_1_16.isMet()) {
-            MATERIAL_COLORS.forcePut(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
-        }
+        MATERIAL_COLORS.forcePut(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
     }
 }

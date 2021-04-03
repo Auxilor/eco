@@ -1,7 +1,7 @@
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.spigot.EcoPlugin
-api-version: 1.15
+api-version: 1.16
 authors: [Auxilor]
 website: willfp.com
 loadbefore:
