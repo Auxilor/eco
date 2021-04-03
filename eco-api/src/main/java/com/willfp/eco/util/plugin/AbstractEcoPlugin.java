@@ -17,7 +17,7 @@ import com.willfp.eco.util.config.configs.Lang;
 import com.willfp.eco.util.config.updating.ConfigHandler;
 import com.willfp.eco.util.display.Display;
 import com.willfp.eco.util.display.DisplayModule;
-import com.willfp.eco.util.extensions.loader.ExtensionLoader;
+import com.willfp.eco.util.extensions.ExtensionLoader;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.util.integrations.placeholder.plugins.PlaceholderIntegrationPAPI;

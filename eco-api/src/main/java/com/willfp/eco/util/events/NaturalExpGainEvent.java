@@ -1,4 +1,4 @@
-package com.willfp.eco.util.events.naturalexpgainevent;
+package com.willfp.eco.util.events;
 
 import lombok.Getter;
 import org.bukkit.event.Event;

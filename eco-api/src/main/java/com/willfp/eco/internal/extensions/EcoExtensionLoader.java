@@ -3,7 +3,7 @@ package com.willfp.eco.internal.extensions;
 
 import com.willfp.eco.util.extensions.Extension;
 import com.willfp.eco.util.extensions.MalformedExtensionException;
-import com.willfp.eco.util.extensions.loader.ExtensionLoader;
+import com.willfp.eco.util.extensions.ExtensionLoader;
 import com.willfp.eco.util.internal.PluginDependent;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.apache.commons.lang.Validate;
@@ -99,7 +99,7 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
         Validate.notNull(name, "Name is missing!");
         Validate.notNull(version, "Version is missing!");
 
-        Extension.ExtensionMetadata metadata = new Extension.ExtensionMetadata(version, name);
+        ExtensionMetadata metadata = new ExtensionMetadata(version, name);
 
         Class<?> cls;
         Object object = null;
@@ -127,15 +127,6 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
     public void unloadExtensions() {
         extensions.forEach(Extension::disable);
         extensions.clear();
-    }
-
-    /**
-     * Unloads, then loads all extensions.
-     */
-    @Override
-    public void reloadExtensions() {
-        unloadExtensions();
-        loadExtensions();
     }
 
     /**

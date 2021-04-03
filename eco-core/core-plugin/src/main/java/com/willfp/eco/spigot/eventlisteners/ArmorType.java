@@ -1,11 +1,7 @@
-package com.willfp.eco.util.events.armorequip;
+package com.willfp.eco.spigot.eventlisteners;
 
 import org.bukkit.inventory.ItemStack;
 
-/**
- * @author Arnah
- * @since Jul 30, 2015
- */
 public enum ArmorType {
     HELMET(5),
     CHESTPLATE(6),

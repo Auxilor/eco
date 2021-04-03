@@ -1,6 +1,4 @@
-package com.willfp.eco.util.extensions.loader;
-
-import com.willfp.eco.util.extensions.Extension;
+package com.willfp.eco.util.extensions;
 
 import java.util.Set;
 
@@ -19,11 +17,6 @@ public interface ExtensionLoader {
      * Unload all loaded extensions.
      */
     void unloadExtensions();
-
-    /**
-     * Reload all extensions.
-     */
-    void reloadExtensions();
 
     /**
      * Retrieve a set of all loaded extensions.

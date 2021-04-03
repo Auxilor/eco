@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
-public abstract class AbstractUndefinedConfig extends PluginDependent {
+public abstract class ConfigWrapper extends PluginDependent {
     /**
      * The linked {@link YamlConfiguration} where values are physically stored.
      */
@@ -35,8 +35,8 @@ public abstract class AbstractUndefinedConfig extends PluginDependent {
      * @param configName The name of the config
      * @param plugin     The plugin.
      */
-    protected AbstractUndefinedConfig(@NotNull final String configName,
-                                      @NotNull final AbstractEcoPlugin plugin) {
+    protected ConfigWrapper(@NotNull final String configName,
+                            @NotNull final AbstractEcoPlugin plugin) {
         super(plugin);
     }
 

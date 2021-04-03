@@ -1,4 +1,4 @@
-package com.willfp.eco.util.drops.telekinesis;
+package com.willfp.eco.util;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;

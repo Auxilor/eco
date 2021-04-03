@@ -1,11 +1,11 @@
 package com.willfp.eco.util.config;
 
-import com.willfp.eco.internal.config.AbstractUndefinedConfig;
+import com.willfp.eco.internal.config.ConfigWrapper;
 import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class StaticOptionalConfig extends AbstractUndefinedConfig {
+public abstract class StaticOptionalConfig extends ConfigWrapper {
     /**
      * Config implementation for passing YamlConfigurations.
      * <p>
