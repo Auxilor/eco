@@ -1,7 +1,7 @@
 package com.willfp.eco.util.display;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ public abstract class DisplayModule extends PluginDependent {
      * @param plugin   The plugin that the display is for.
      * @param priority The priority of the module.
      */
-    protected DisplayModule(@NotNull final AbstractEcoPlugin plugin,
+    protected DisplayModule(@NotNull final EcoPlugin plugin,
                             @NotNull final DisplayPriority priority) {
         super(plugin);
         this.priority = priority;

@@ -2,7 +2,7 @@ package com.willfp.eco.internal.bukkit.scheduling;
 
 import com.willfp.eco.util.bukkit.scheduling.Scheduler;
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.ApiStatus;
@@ -10,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class EcoScheduler extends PluginDependent implements Scheduler {
     /**
-     * Create a scheduler to manage the tasks of an {@link AbstractEcoPlugin}.
+     * Create a scheduler to manage the tasks of an {@link EcoPlugin}.
      *
      * @param plugin The plugin to manage.
      */
     @ApiStatus.Internal
-    public EcoScheduler(@NotNull final AbstractEcoPlugin plugin) {
+    public EcoScheduler(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
@@ -100,7 +100,7 @@ public class EcoScheduler extends PluginDependent implements Scheduler {
     }
 
     /**
-     * Cancel all running tasks from the linked {@link AbstractEcoPlugin}.
+     * Cancel all running tasks from the linked {@link EcoPlugin}.
      */
     @Override
     public void cancelAll() {

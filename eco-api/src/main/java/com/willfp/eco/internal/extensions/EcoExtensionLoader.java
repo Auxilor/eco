@@ -5,7 +5,7 @@ import com.willfp.eco.util.extensions.Extension;
 import com.willfp.eco.util.extensions.MalformedExtensionException;
 import com.willfp.eco.util.extensions.ExtensionLoader;
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -31,11 +31,11 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
     private final Set<Extension> extensions = new HashSet<>();
 
     /**
-     * Create a new extension loader and link it to a specific {@link AbstractEcoPlugin}.
+     * Create a new extension loader and link it to a specific {@link EcoPlugin}.
      *
      * @param plugin The plugin to manage
      */
-    public EcoExtensionLoader(@NotNull final AbstractEcoPlugin plugin) {
+    public EcoExtensionLoader(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
@@ -63,7 +63,7 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
             try {
                 loadExtension(extensionJar);
             } catch (MalformedExtensionException e) {
-                this.getPlugin().getLog().error(extensionJar.getName() + " caused MalformedExtensionException: " + e.getMessage());
+                this.getPlugin().getLogger().severe(extensionJar.getName() + " caused MalformedExtensionException: " + e.getMessage());
             }
         }
     }
@@ -105,7 +105,7 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
         Object object = null;
         try {
             cls = cl.loadClass(mainClass);
-            object = cls.getConstructor(AbstractEcoPlugin.class).newInstance(this.getPlugin());
+            object = cls.getConstructor(EcoPlugin.class).newInstance(this.getPlugin());
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }

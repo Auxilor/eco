@@ -4,6 +4,8 @@ import com.willfp.eco.util.SerializationUtils;
 import com.willfp.eco.util.StringUtils;
 import com.willfp.eco.util.config.Config;
 import com.willfp.eco.util.serialization.EcoSerializable;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.jetbrains.annotations.NotNull;
@@ -16,11 +18,12 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused", "DeprecatedIsStillUsed"})
-public abstract class AbstractUndefinedConfig<T extends ConfigurationSection> implements Config {
+public abstract class ConfigWrapper<T extends ConfigurationSection> implements Config {
     /**
      * The linked {@link MemorySection} where values are physically stored.
      */
-    protected T config = null;
+    @Getter(AccessLevel.PROTECTED)
+    private T config = null;
 
     /**
      * Cached values for faster reading.
@@ -29,10 +32,8 @@ public abstract class AbstractUndefinedConfig<T extends ConfigurationSection> im
 
     /**
      * Abstract config.
-     *
-     * @param configName The name of the config
      */
-    protected AbstractUndefinedConfig(@NotNull final String configName) {
+    protected ConfigWrapper() {
 
     }
 

@@ -1,6 +1,6 @@
 package com.willfp.eco.util.bukkit.scheduling;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +68,7 @@ public interface Scheduler {
                       long repeat);
 
     /**
-     * Cancel all running tasks from the linked {@link AbstractEcoPlugin}.
+     * Cancel all running tasks from the linked {@link EcoPlugin}.
      */
     void cancelAll();
 }

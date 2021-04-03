@@ -1,7 +1,7 @@
 package com.willfp.eco.spigot.eventlisteners;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,12 +24,12 @@ public class EntityDeathByEntityListeners extends PluginDependent implements Lis
     private final Set<EntityDeathByEntityBuilder> events = new HashSet<>();
 
     /**
-     * Create a listener associated with an {@link AbstractEcoPlugin}.
+     * Create a listener associated with an {@link EcoPlugin}.
      *
      * @param plugin The plugin to associate with.
      */
     @ApiStatus.Internal
-    public EntityDeathByEntityListeners(@NotNull final AbstractEcoPlugin plugin) {
+    public EntityDeathByEntityListeners(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 

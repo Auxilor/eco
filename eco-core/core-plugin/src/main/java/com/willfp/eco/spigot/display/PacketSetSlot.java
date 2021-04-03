@@ -3,7 +3,7 @@ package com.willfp.eco.spigot.display;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.willfp.eco.util.display.Display;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public class PacketSetSlot extends AbstractPacketAdapter {
      *
      * @param plugin The plugin to listen through.
      */
-    public PacketSetSlot(@NotNull final AbstractEcoPlugin plugin) {
+    public PacketSetSlot(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.SET_SLOT, false);
     }
 

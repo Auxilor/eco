@@ -4,7 +4,7 @@ import com.willfp.eco.util.config.updating.annotations.ConfigUpdater;
 import com.willfp.eco.util.config.updating.exceptions.InvalidUpdatableClassException;
 import com.willfp.eco.util.config.updating.exceptions.InvalidUpdateMethodException;
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,11 +21,11 @@ public class ConfigHandler extends PluginDependent {
     private final Set<Class<?>> updatableClasses = new HashSet<>();
 
     /**
-     * Creates a new config handler and links it to an {@link AbstractEcoPlugin}.
+     * Creates a new config handler and links it to an {@link EcoPlugin}.
      *
      * @param plugin The plugin to manage.
      */
-    public ConfigHandler(@NotNull final AbstractEcoPlugin plugin) {
+    public ConfigHandler(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 

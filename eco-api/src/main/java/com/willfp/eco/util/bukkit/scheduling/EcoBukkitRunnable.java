@@ -1,6 +1,6 @@
 package com.willfp.eco.util.bukkit.scheduling;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.ApiStatus;
@@ -8,28 +8,28 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class EcoBukkitRunnable extends BukkitRunnable {
     /**
-     * The linked {@link AbstractEcoPlugin} to associate runnables with.
+     * The linked {@link EcoPlugin} to associate runnables with.
      */
-    private final AbstractEcoPlugin plugin;
+    private final EcoPlugin plugin;
 
     /**
      * Creates a new {@link EcoBukkitRunnable}.
      * <p>
      * Cannot be instantiated normally, use {@link RunnableFactory}.
      *
-     * @param plugin The {@link AbstractEcoPlugin} to associate runnables with.
+     * @param plugin The {@link EcoPlugin} to associate runnables with.
      */
     @ApiStatus.Internal
-    EcoBukkitRunnable(@NotNull final AbstractEcoPlugin plugin) {
+    EcoBukkitRunnable(@NotNull final EcoPlugin plugin) {
         this.plugin = plugin;
     }
 
     /**
-     * Get the {@link AbstractEcoPlugin} that created this runnable.
+     * Get the {@link EcoPlugin} that created this runnable.
      *
      * @return The linked plugin.
      */
-    protected final AbstractEcoPlugin getPlugin() {
+    protected final EcoPlugin getPlugin() {
         return this.plugin;
     }
 

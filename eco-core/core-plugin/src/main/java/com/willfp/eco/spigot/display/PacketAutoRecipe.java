@@ -5,7 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.willfp.eco.proxy.proxies.AutoCraftProxy;
 import com.willfp.eco.spigot.InternalProxyUtils;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,14 +18,14 @@ public class PacketAutoRecipe extends AbstractPacketAdapter {
      *
      * @param plugin The plugin to listen through.
      */
-    public PacketAutoRecipe(@NotNull final AbstractEcoPlugin plugin) {
+    public PacketAutoRecipe(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.AUTO_RECIPE, false);
     }
 
     @Override
     public void onSend(@NotNull final PacketContainer packet,
                        @NotNull final Player player) {
-        if (!AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(packet.getMinecraftKeys().getValues().get(0).getFullKey().split(":")[0])) {
+        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(packet.getMinecraftKeys().getValues().get(0).getFullKey().split(":")[0])) {
             return;
         }
 

@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.arrows;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
@@ -20,10 +20,10 @@ public class ArrowDataListener extends PluginDependent implements Listener {
     /**
      * Listener to add metadata to arrows about the enchantments on the bow that shot them.
      *
-     * @param plugin The {@link AbstractEcoPlugin} that registered the listener.
+     * @param plugin The {@link EcoPlugin} that registered the listener.
      */
     @ApiStatus.Internal
-    public ArrowDataListener(@NotNull final AbstractEcoPlugin plugin) {
+    public ArrowDataListener(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 

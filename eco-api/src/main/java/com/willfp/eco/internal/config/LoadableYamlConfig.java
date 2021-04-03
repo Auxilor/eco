@@ -1,10 +1,11 @@
 package com.willfp.eco.internal.config;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -16,7 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-public abstract class AbstractConfig extends AbstractUndefinedConfig<YamlConfiguration> {
+public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration> {
     /**
      * The physical config file, as stored on disk.
      */
@@ -27,7 +28,7 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig<YamlConfigu
      * Plugin handle.
      */
     @Getter(AccessLevel.PROTECTED)
-    private final AbstractEcoPlugin plugin;
+    private final EcoPlugin plugin;
 
     /**
      * The full name of the config file (eg config.yml).
@@ -55,11 +56,10 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig<YamlConfigu
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    protected AbstractConfig(@NotNull final String configName,
-                             @NotNull final AbstractEcoPlugin plugin,
-                             @NotNull final String subDirectoryPath,
-                             @NotNull final Class<?> source) {
-        super(configName);
+    protected LoadableYamlConfig(@NotNull final String configName,
+                                 @NotNull final EcoPlugin plugin,
+                                 @NotNull final String subDirectoryPath,
+                                 @NotNull final Class<?> source) {
         this.plugin = plugin;
         this.name = configName + ".yml";
         this.source = source;
@@ -151,8 +151,8 @@ public abstract class AbstractConfig extends AbstractUndefinedConfig<YamlConfigu
      *
      * @return The config.
      */
-    @Deprecated
+    @ApiStatus.Internal
     public YamlConfiguration getConfig() {
-        return (YamlConfiguration) super.config;
+        return super.getConfig();
     }
 }

@@ -1,7 +1,7 @@
 package com.willfp.eco.util.extensions;
 
 import com.willfp.eco.internal.extensions.ExtensionMetadata;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
@@ -9,17 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class Extension {
     /**
-     * The {@link AbstractEcoPlugin} that this extension is for.
+     * The {@link EcoPlugin} that this extension is for.
      */
     @Getter(AccessLevel.PROTECTED)
-    private final AbstractEcoPlugin plugin;
+    private final EcoPlugin plugin;
 
     /**
      * Create a new extension for a plugin.
      *
      * @param plugin The plugin.
      */
-    protected Extension(@NotNull final AbstractEcoPlugin plugin) {
+    protected Extension(@NotNull final EcoPlugin plugin) {
         this.plugin = plugin;
     }
 

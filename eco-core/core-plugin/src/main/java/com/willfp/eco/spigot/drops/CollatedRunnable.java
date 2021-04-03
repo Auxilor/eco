@@ -3,7 +3,7 @@ package com.willfp.eco.spigot.drops;
 
 import com.willfp.eco.internal.drops.impl.FastCollatedDropQueue;
 import com.willfp.eco.internal.drops.impl.InternalDropQueue;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -21,9 +21,9 @@ public class CollatedRunnable {
     /**
      * Create and run a new runnable to process collated drops.
      *
-     * @param plugin The {@link AbstractEcoPlugin} that manages the processing.
+     * @param plugin The {@link EcoPlugin} that manages the processing.
      */
-    public CollatedRunnable(@NotNull final AbstractEcoPlugin plugin) {
+    public CollatedRunnable(@NotNull final EcoPlugin plugin) {
         runnableTask = plugin.getScheduler().runTimer(() -> {
             for (Map.Entry<Player, FastCollatedDropQueue.CollatedDrops> entry : FastCollatedDropQueue.COLLATED_MAP.entrySet()) {
                 new InternalDropQueue(entry.getKey())

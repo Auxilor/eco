@@ -2,7 +2,7 @@ package com.willfp.eco.spigot.integrations.antigrief;
 
 import com.willfp.eco.util.integrations.antigrief.AntigriefWrapper;
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import me.angeschossen.lands.api.integration.LandsIntegration;
 import me.angeschossen.lands.api.land.Area;
 import me.angeschossen.lands.api.role.enums.RoleSetting;
@@ -23,7 +23,7 @@ public class AntigriefLands extends PluginDependent implements AntigriefWrapper 
      *
      * @param plugin The integration provider.
      */
-    public AntigriefLands(@NotNull final AbstractEcoPlugin plugin) {
+    public AntigriefLands(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 

@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.willfp.eco.proxy.proxies.ChatComponentProxy;
 import com.willfp.eco.spigot.InternalProxyUtils;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ public class PacketChat extends AbstractPacketAdapter {
      *
      * @param plugin The plugin to listen through.
      */
-    public PacketChat(@NotNull final AbstractEcoPlugin plugin) {
+    public PacketChat(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.CHAT, ListenerPriority.MONITOR, true);
     }
 

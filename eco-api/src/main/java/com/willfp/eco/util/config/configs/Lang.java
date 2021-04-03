@@ -1,7 +1,7 @@
 package com.willfp.eco.util.config.configs;
 
 import com.willfp.eco.util.config.BaseConfig;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class Lang extends BaseConfig {
@@ -10,7 +10,7 @@ public class Lang extends BaseConfig {
      *
      * @param plugin The plugin.
      */
-    public Lang(@NotNull final AbstractEcoPlugin plugin) {
+    public Lang(@NotNull final EcoPlugin plugin) {
         super("lang", false, plugin);
     }
 

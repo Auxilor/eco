@@ -2,7 +2,7 @@ package com.willfp.eco.util.integrations.placeholder.plugins;
 
 import com.willfp.eco.util.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.util.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -13,14 +13,14 @@ public class PlaceholderIntegrationPAPI extends PlaceholderExpansion implements 
     /**
      * The linked plugin.
      */
-    private final AbstractEcoPlugin plugin;
+    private final EcoPlugin plugin;
 
     /**
      * Create a new PlaceholderAPI integration.
      *
      * @param plugin The plugin to manage placeholders for.
      */
-    public PlaceholderIntegrationPAPI(@NotNull final AbstractEcoPlugin plugin) {
+    public PlaceholderIntegrationPAPI(@NotNull final EcoPlugin plugin) {
         this.plugin = plugin;
     }
 

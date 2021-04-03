@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.recipes;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.recipe.RecipeParts;
 import com.willfp.eco.util.recipe.Recipes;
 import com.willfp.eco.util.recipe.parts.RecipePart;
@@ -31,7 +31,7 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        if (!AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -63,7 +63,7 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        if (!AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -163,7 +163,7 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        if (AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -188,7 +188,7 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        if (AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -209,7 +209,7 @@ public class RecipeListener implements Listener {
      */
     @EventHandler
     public void preventLearningDisplayedRecipes(@NotNull final PlayerRecipeDiscoverEvent event) {
-        if (!AbstractEcoPlugin.LOADED_ECO_PLUGINS.contains(event.getRecipe().getNamespace())) {
+        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(event.getRecipe().getNamespace())) {
             return;
         }
 

@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      * @param priority The priority at which the adapter should be ran on packet send/receive.
      * @param postLoad If the packet adapter should be registered after the server has loaded.
      */
-    protected AbstractPacketAdapter(@NotNull final AbstractEcoPlugin plugin,
+    protected AbstractPacketAdapter(@NotNull final EcoPlugin plugin,
                                     @NotNull final PacketType type,
                                     @NotNull final ListenerPriority priority,
                                     final boolean postLoad) {
@@ -51,7 +51,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      * @param type     The {@link PacketType} to listen for.
      * @param postLoad If the packet adapter should be registered after the server has loaded.
      */
-    protected AbstractPacketAdapter(@NotNull final AbstractEcoPlugin plugin,
+    protected AbstractPacketAdapter(@NotNull final EcoPlugin plugin,
                                     @NotNull final PacketType type,
                                     final boolean postLoad) {
         this(plugin, type, ListenerPriority.NORMAL, postLoad);

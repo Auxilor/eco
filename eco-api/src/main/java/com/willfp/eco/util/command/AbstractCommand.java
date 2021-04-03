@@ -1,7 +1,7 @@
 package com.willfp.eco.util.command;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -43,12 +43,12 @@ public abstract class AbstractCommand extends PluginDependent implements Command
      * <p>
      * The name cannot be the same as an existing command as this will conflict.
      *
-     * @param plugin      The owning {@link AbstractEcoPlugin}.
+     * @param plugin      The owning {@link EcoPlugin}.
      * @param name        The name used in execution.
      * @param permission  The permission required to execute the command.
      * @param playersOnly If only players should be able to execute this command.
      */
-    protected AbstractCommand(@NotNull final AbstractEcoPlugin plugin,
+    protected AbstractCommand(@NotNull final EcoPlugin plugin,
                               @NotNull final String name,
                               @NotNull final String permission,
                               final boolean playersOnly) {
@@ -98,7 +98,7 @@ public abstract class AbstractCommand extends PluginDependent implements Command
      * @param command The bukkit command.
      * @param label   The name of the executed command.
      * @param args    The arguments of the command (anything after the physical command name)
-     * @return If the command was processed by the linked {@link AbstractEcoPlugin}
+     * @return If the command was processed by the linked {@link EcoPlugin}
      */
     @Override
     public final boolean onCommand(@NotNull final CommandSender sender,

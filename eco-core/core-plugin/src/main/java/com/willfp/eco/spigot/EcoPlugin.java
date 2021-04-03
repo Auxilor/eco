@@ -39,7 +39,6 @@ import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.util.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.util.integrations.mcmmo.McmmoManager;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import lombok.Getter;
 import org.bukkit.event.Listener;
@@ -49,7 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EcoPlugin extends AbstractEcoPlugin {
+public class EcoPlugin extends com.willfp.eco.util.plugin.EcoPlugin {
     /**
      * Instance of eco.
      */

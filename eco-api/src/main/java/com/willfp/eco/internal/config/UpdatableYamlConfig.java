@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.config;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractUpdatableConfig extends AbstractConfig {
+public abstract class UpdatableYamlConfig extends LoadableYamlConfig {
     /**
      * Whether keys not in the base config should be removed on update.
      */
@@ -31,12 +31,12 @@ public abstract class AbstractUpdatableConfig extends AbstractConfig {
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param updateBlacklist  Substring of keys to not add/remove keys for.
      */
-    protected AbstractUpdatableConfig(@NotNull final String configName,
-                                      @NotNull final AbstractEcoPlugin plugin,
-                                      @NotNull final String subDirectoryPath,
-                                      @NotNull final Class<?> source,
-                                      final boolean removeUnused,
-                                      @NotNull final String... updateBlacklist) {
+    protected UpdatableYamlConfig(@NotNull final String configName,
+                                  @NotNull final EcoPlugin plugin,
+                                  @NotNull final String subDirectoryPath,
+                                  @NotNull final Class<?> source,
+                                  final boolean removeUnused,
+                                  @NotNull final String... updateBlacklist) {
         super(configName, plugin, subDirectoryPath, source);
         this.removeUnused = removeUnused;
         this.updateBlacklist = new ArrayList<>(Arrays.asList(updateBlacklist));
@@ -53,33 +53,33 @@ public abstract class AbstractUpdatableConfig extends AbstractConfig {
     public void update() {
         super.clearCache();
         try {
-            config.load(this.getConfigFile());
+            this.getConfig().load(this.getConfigFile());
 
             YamlConfiguration newConfig = this.getConfigInJar();
 
-            if (newConfig.getKeys(true).equals(config.getKeys(true))) {
+            if (newConfig.getKeys(true).equals(this.getConfig().getKeys(true))) {
                 return;
             }
 
             newConfig.getKeys(true).forEach((s -> {
-                if (!config.getKeys(true).contains(s)) {
+                if (!this.getConfig().getKeys(true).contains(s)) {
                     if (updateBlacklist.stream().noneMatch(s::contains)) {
-                        config.set(s, newConfig.get(s));
+                        this.getConfig().set(s, newConfig.get(s));
                     }
                 }
             }));
 
             if (this.removeUnused) {
-                config.getKeys(true).forEach((s -> {
+                this.getConfig().getKeys(true).forEach((s -> {
                     if (!newConfig.getKeys(true).contains(s)) {
                         if (updateBlacklist.stream().noneMatch(s::contains)) {
-                            config.set(s, null);
+                            this.getConfig().set(s, null);
                         }
                     }
                 }));
             }
 
-            config.save(this.getConfigFile());
+            this.getConfig().save(this.getConfigFile());
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }

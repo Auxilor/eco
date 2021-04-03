@@ -4,7 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.willfp.eco.proxy.proxies.VillagerTradeProxy;
 import com.willfp.eco.spigot.InternalProxyUtils;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.protocollib.AbstractPacketAdapter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.MerchantRecipe;
@@ -19,7 +19,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
      *
      * @param plugin The plugin to listen through.
      */
-    public PacketOpenWindowMerchant(@NotNull final AbstractEcoPlugin plugin) {
+    public PacketOpenWindowMerchant(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.OPEN_WINDOW_MERCHANT, false);
     }
 

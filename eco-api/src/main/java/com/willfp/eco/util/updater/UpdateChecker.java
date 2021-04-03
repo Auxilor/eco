@@ -1,7 +1,7 @@
 package com.willfp.eco.util.updater;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,7 @@ public class UpdateChecker extends PluginDependent {
      *
      * @param plugin The plugin to check.
      */
-    public UpdateChecker(@NotNull final AbstractEcoPlugin plugin) {
+    public UpdateChecker(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 

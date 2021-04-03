@@ -1,7 +1,7 @@
 package com.willfp.eco.util.recipe.recipes;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.recipe.Recipes;
 import com.willfp.eco.util.recipe.parts.EmptyRecipePart;
 import com.willfp.eco.util.recipe.parts.RecipePart;
@@ -38,7 +38,7 @@ public final class EcoShapedRecipe extends PluginDependent {
     @Getter
     private final ItemStack output;
 
-    private EcoShapedRecipe(@NotNull final AbstractEcoPlugin plugin,
+    private EcoShapedRecipe(@NotNull final EcoPlugin plugin,
                             @NotNull final String key,
                             @NotNull final RecipePart[] parts,
                             @NotNull final ItemStack output) {
@@ -110,7 +110,7 @@ public final class EcoShapedRecipe extends PluginDependent {
      * @param key    The recipe key.
      * @return A new builder.
      */
-    public static Builder builder(@NotNull final AbstractEcoPlugin plugin,
+    public static Builder builder(@NotNull final EcoPlugin plugin,
                                   @NotNull final String key) {
         return new Builder(plugin, key);
     }
@@ -134,7 +134,7 @@ public final class EcoShapedRecipe extends PluginDependent {
         /**
          * The plugin that created the recipe.
          */
-        private final AbstractEcoPlugin plugin;
+        private final EcoPlugin plugin;
 
         /**
          * Create a new recipe builder.
@@ -142,7 +142,7 @@ public final class EcoShapedRecipe extends PluginDependent {
          * @param plugin The plugin that owns the recipe.
          * @param key    The recipe key.
          */
-        private Builder(@NotNull final AbstractEcoPlugin plugin,
+        private Builder(@NotNull final EcoPlugin plugin,
                         @NotNull final String key) {
             this.key = key;
             this.plugin = plugin;

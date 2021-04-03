@@ -1,6 +1,6 @@
 package com.willfp.eco.util.integrations.anticheat;
 
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -22,7 +22,7 @@ public class AnticheatManager {
      * @param plugin    The plugin.
      * @param anticheat The anticheat to register.
      */
-    public void register(@NotNull final AbstractEcoPlugin plugin,
+    public void register(@NotNull final EcoPlugin plugin,
                          @NotNull final AnticheatWrapper anticheat) {
         if (anticheat instanceof Listener) {
             plugin.getEventManager().registerListener((Listener) anticheat);

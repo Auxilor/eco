@@ -1,7 +1,7 @@
 package com.willfp.eco.proxy.util;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import com.willfp.eco.util.proxy.AbstractProxy;
 import com.willfp.eco.util.proxy.ProxyConstants;
 import com.willfp.eco.util.proxy.UnsupportedVersionException;
@@ -27,7 +27,7 @@ public class ProxyFactory<T extends AbstractProxy> extends PluginDependent {
      * @param plugin     The plugin to create proxies for.
      * @param proxyClass The class of the proxy interface.
      */
-    public ProxyFactory(@NotNull final AbstractEcoPlugin plugin,
+    public ProxyFactory(@NotNull final EcoPlugin plugin,
                         @NotNull final Class<T> proxyClass) {
         super(plugin);
         this.proxyClass = proxyClass;

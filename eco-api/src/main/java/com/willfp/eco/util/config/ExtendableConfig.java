@@ -1,10 +1,10 @@
 package com.willfp.eco.util.config;
 
-import com.willfp.eco.internal.config.AbstractUpdatableConfig;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.internal.config.UpdatableYamlConfig;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ExtendableConfig extends AbstractUpdatableConfig {
+public abstract class ExtendableConfig extends UpdatableYamlConfig {
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
      * <p>
@@ -19,7 +19,7 @@ public abstract class ExtendableConfig extends AbstractUpdatableConfig {
      */
     protected ExtendableConfig(@NotNull final String configName,
                                final boolean removeUnused,
-                               @NotNull final AbstractEcoPlugin plugin,
+                               @NotNull final EcoPlugin plugin,
                                @NotNull final Class<?> source,
                                @NotNull final String subDirectoryPath,
                                @NotNull final String... updateBlacklist) {

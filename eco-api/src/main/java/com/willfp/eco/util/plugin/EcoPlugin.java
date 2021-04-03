@@ -2,12 +2,10 @@ package com.willfp.eco.util.plugin;
 
 import com.willfp.eco.internal.arrows.ArrowDataListener;
 import com.willfp.eco.internal.bukkit.events.EcoEventManager;
-import com.willfp.eco.internal.bukkit.logging.EcoLogger;
 import com.willfp.eco.internal.bukkit.scheduling.EcoScheduler;
 import com.willfp.eco.internal.extensions.EcoExtensionLoader;
 import com.willfp.eco.util.bukkit.events.EventManager;
 import com.willfp.eco.util.bukkit.keys.NamespacedKeyFactory;
-import com.willfp.eco.util.bukkit.logging.Logger;
 import com.willfp.eco.util.bukkit.meta.MetadataValueFactory;
 import com.willfp.eco.util.bukkit.scheduling.RunnableFactory;
 import com.willfp.eco.util.bukkit.scheduling.Scheduler;
@@ -41,7 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public abstract class AbstractEcoPlugin extends JavaPlugin {
+public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Loaded eco plugins.
      */
@@ -92,12 +90,6 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * Set of classes to be processed on config update.
      */
     private final List<Class<?>> updatableClasses = new ArrayList<>();
-
-    /**
-     * The internal plugin logger.
-     */
-    @Getter
-    private final Logger log;
 
     /**
      * The internal plugin scheduler.
@@ -176,18 +168,17 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, such as &a, &b)
      */
-    protected AbstractEcoPlugin(@NotNull final String pluginName,
-                                final int resourceId,
-                                final int bStatsId,
-                                @NotNull final String proxyPackage,
-                                @NotNull final String color) {
+    protected EcoPlugin(@NotNull final String pluginName,
+                        final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String proxyPackage,
+                        @NotNull final String color) {
         this.pluginName = pluginName;
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
         this.color = color;
 
-        this.log = new EcoLogger(this);
         this.scheduler = new EcoScheduler(this);
         this.eventManager = new EcoEventManager(this);
         this.namespacedKeyFactory = new NamespacedKeyFactory(this);
@@ -209,8 +200,8 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
     public final void onEnable() {
         super.onLoad();
 
-        this.getLog().info("");
-        this.getLog().info("Loading " + this.color + this.pluginName);
+        this.getLogger().info("");
+        this.getLogger().info("Loading " + this.color + this.pluginName);
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
 
@@ -220,9 +211,9 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
             if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
                 this.outdated = true;
                 this.getScheduler().runTimer(() -> {
-                    this.getLog().info("&c " + this.pluginName + " is out of date! (Version " + this.getDescription().getVersion() + ")");
-                    this.getLog().info("&cThe newest version is &f" + version);
-                    this.getLog().info("&cDownload the new version!");
+                    this.getLogger().info("&c " + this.pluginName + " is out of date! (Version " + this.getDescription().getVersion() + ")");
+                    this.getLogger().info("&cThe newest version is &f" + version);
+                    this.getLogger().info("&cDownload the new version!");
                 }, 0, 864000);
             }
         });
@@ -243,7 +234,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
             }
         }));
 
-        this.getLog().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+        this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
 
         Prerequisite.update();
 
@@ -265,7 +256,7 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
 
         this.enable();
 
-        this.getLog().info("");
+        this.getLogger().info("");
     }
 
     /**
@@ -308,23 +299,23 @@ public abstract class AbstractEcoPlugin extends JavaPlugin {
         });
 
         if (!Prerequisite.HAS_PAPER.isMet()) {
-            this.getLog().error("");
-            this.getLog().error("----------------------------");
-            this.getLog().error("");
-            this.getLog().error("You don't seem to be running paper!");
-            this.getLog().error("Paper is strongly recommended for all servers,");
-            this.getLog().error("and some things may not function properly without it");
-            this.getLog().error("Download Paper from &fhttps://papermc.io");
-            this.getLog().error("");
-            this.getLog().error("----------------------------");
-            this.getLog().error("");
+            this.getLogger().severe("");
+            this.getLogger().severe("----------------------------");
+            this.getLogger().severe("");
+            this.getLogger().severe("You don't seem to be running paper!");
+            this.getLogger().severe("Paper is strongly recommended for all servers,");
+            this.getLogger().severe("and some things may not function properly without it");
+            this.getLogger().severe("Download Paper from &fhttps://papermc.io");
+            this.getLogger().severe("");
+            this.getLogger().severe("----------------------------");
+            this.getLogger().severe("");
         }
 
         this.postLoad();
 
         this.reload();
 
-        this.getLog().info("Loaded " + this.color + this.pluginName);
+        this.getLogger().info("Loaded " + this.color + this.pluginName);
     }
 
     /**

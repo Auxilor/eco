@@ -1,22 +1,22 @@
 package com.willfp.eco.util.bukkit.keys;
 
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 public class NamespacedKeyFactory extends PluginDependent {
     /**
-     * Factory class to produce {@link NamespacedKey}s associated with an {@link AbstractEcoPlugin}.
+     * Factory class to produce {@link NamespacedKey}s associated with an {@link EcoPlugin}.
      *
      * @param plugin The plugin that this factory creates keys for.
      */
-    public NamespacedKeyFactory(@NotNull final AbstractEcoPlugin plugin) {
+    public NamespacedKeyFactory(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
     /**
-     * Create an {@link NamespacedKey} associated with an {@link AbstractEcoPlugin}.
+     * Create an {@link NamespacedKey} associated with an {@link EcoPlugin}.
      *
      * @param key The key in the {@link NamespacedKey}.
      * @return The created {@link NamespacedKey}.

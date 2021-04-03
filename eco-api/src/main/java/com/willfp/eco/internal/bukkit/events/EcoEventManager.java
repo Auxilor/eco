@@ -2,7 +2,7 @@ package com.willfp.eco.internal.bukkit.events;
 
 import com.willfp.eco.util.bukkit.events.EventManager;
 import com.willfp.eco.util.internal.PluginDependent;
-import com.willfp.eco.util.plugin.AbstractEcoPlugin;
+import com.willfp.eco.util.plugin.EcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -13,10 +13,10 @@ public class EcoEventManager extends PluginDependent implements EventManager {
     /**
      * Manager class for event management.
      *
-     * @param plugin The {@link AbstractEcoPlugin} that this manages the events of.
+     * @param plugin The {@link EcoPlugin} that this manages the events of.
      */
     @ApiStatus.Internal
-    public EcoEventManager(@NotNull final AbstractEcoPlugin plugin) {
+    public EcoEventManager(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
