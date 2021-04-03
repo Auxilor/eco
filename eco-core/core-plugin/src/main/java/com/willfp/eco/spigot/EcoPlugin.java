@@ -2,6 +2,7 @@ package com.willfp.eco.spigot;
 
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.CooldownProxy;
+import com.willfp.eco.proxy.proxies.FastItemStackHandlerFactoryProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
@@ -11,6 +12,8 @@ import com.willfp.eco.spigot.display.PacketSetCreativeSlot;
 import com.willfp.eco.spigot.display.PacketSetSlot;
 import com.willfp.eco.spigot.display.PacketWindowItems;
 import com.willfp.eco.spigot.drops.CollatedRunnable;
+import com.willfp.eco.spigot.eventlisteners.ArmorListener;
+import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
@@ -33,8 +36,7 @@ import com.willfp.eco.util.TridentUtils;
 import com.willfp.eco.util.command.AbstractCommand;
 import com.willfp.eco.util.display.Display;
 import com.willfp.eco.util.display.DisplayModule;
-import com.willfp.eco.spigot.eventlisteners.ArmorListener;
-import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
+import com.willfp.eco.util.fast.FastItemStack;
 import com.willfp.eco.util.integrations.IntegrationLoader;
 import com.willfp.eco.util.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.util.integrations.antigrief.AntigriefManager;
@@ -66,6 +68,7 @@ public class EcoPlugin extends com.willfp.eco.util.plugin.EcoPlugin {
         BlockUtils.initialize(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
         PlayerUtils.initialize(((player) -> InternalProxyUtils.getProxy(CooldownProxy.class).getAttackCooldown(player)));
         TridentUtils.initialize(((trident) -> InternalProxyUtils.getProxy(TridentStackProxy.class).getTridentStack(trident)));
+        FastItemStack.initialize(InternalProxyUtils.getProxy(FastItemStackHandlerFactoryProxy.class));
     }
 
     @Override

@@ -5,6 +5,10 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
+    <!-- Internals don't need javadoc. -->
+    <suppress files="[\\/]internal[\\/]" checks="MissingJavadocMethod"/>
+    <suppress files="[\\/]internal[\\/]" checks="JavadocVariable"/>
+
     <!-- Modified version of library -->
     <suppress files="ArmorEquipEvent.java" checks="JavadocVariable"/>
     <suppress files="ArmorEquipEvent.java" checks="MissingJavadocMethod"/>
