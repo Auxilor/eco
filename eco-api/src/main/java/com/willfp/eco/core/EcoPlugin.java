@@ -130,7 +130,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     private final MetadataValueFactory metadataValueFactory;
 
     /**
-     * The internal factory to produce {@link com.willfp.eco.core.scheduling.EcoBukkitRunnable}s.
+     * The internal factory to produce {@link com.willfp.eco.core.scheduling.RunnableTask}s.
      */
     @Getter
     private final RunnableFactory runnableFactory;
@@ -402,5 +402,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @return The display module, or null.
      */
     @Nullable
-    protected abstract DisplayModule createDisplayModule();
+    protected DisplayModule createDisplayModule() {
+        return null;
+    }
 }

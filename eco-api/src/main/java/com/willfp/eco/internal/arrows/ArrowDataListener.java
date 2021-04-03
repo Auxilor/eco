@@ -1,9 +1,8 @@
 package com.willfp.eco.internal.arrows;
 
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -13,8 +12,6 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public class ArrowDataListener extends PluginDependent implements Listener {
     /**
@@ -54,7 +51,6 @@ public class ArrowDataListener extends PluginDependent implements Listener {
             return;
         }
 
-        Map<Enchantment, Integer> enchantments = item.getItemMeta().getEnchants();
-        arrow.setMetadata("enchantments", this.getPlugin().getMetadataValueFactory().create(enchantments));
+        arrow.setMetadata("shot-from", this.getPlugin().getMetadataValueFactory().create(item));
     }
 }
