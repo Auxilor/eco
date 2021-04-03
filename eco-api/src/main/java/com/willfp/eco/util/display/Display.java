@@ -1,5 +1,6 @@
 package com.willfp.eco.util.display;
 
+import com.willfp.eco.util.fast.FastItemStack;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 @UtilityClass
-@SuppressWarnings("deprecation")
 public class Display {
     /**
      * The prefix for lore lines.

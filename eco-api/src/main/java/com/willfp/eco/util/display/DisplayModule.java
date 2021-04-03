@@ -37,25 +37,12 @@ public abstract class DisplayModule extends PluginDependent {
     }
 
     /**
-     * Display an item.
-     * <p>
-     * This method exists for parity with older plugins that don't include the varargs.
-     *
-     * @param itemStack The item.
-     * @deprecated Use {@link this#display(ItemStack, Object...)} instead.
-     */
-    @Deprecated
-    protected void display(@NotNull final ItemStack itemStack) {
-        // Technically optional.
-    }
-
-    /**
      * Revert an item.
      *
      * @param itemStack The item.
      */
     protected void revert(@NotNull final ItemStack itemStack) {
-        // Technically optoinal.
+        // Technically optional.
     }
 
     /**
