@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -147,12 +146,11 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
     }
 
     /**
-     * Get config handle.
+     * Save the config.
      *
-     * @return The config.
+     * @throws IOException If error in saving.
      */
-    @ApiStatus.Internal
-    public YamlConfiguration getConfig() {
-        return super.getConfig();
+    public void save() throws IOException {
+        this.getHandle().save(this.getConfigFile());
     }
 }

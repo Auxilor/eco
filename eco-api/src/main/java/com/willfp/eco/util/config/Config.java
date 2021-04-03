@@ -36,7 +36,17 @@ public interface Config {
      * @return The object.
      */
     @Nullable
-    Object getRaw(@NotNull String path);
+    Object get(@NotNull String path);
+
+    /**
+     * Set an object in config.
+     * Default implementations call {@link org.bukkit.configuration.file.YamlConfiguration#set(String, Object)}
+     *
+     * @param path The path.
+     * @param object The object.
+     */
+    void set(@NotNull String path,
+             @Nullable Object object);
 
     /**
      * Get subsection from config.

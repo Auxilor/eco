@@ -53,33 +53,33 @@ public abstract class UpdatableYamlConfig extends LoadableYamlConfig {
     public void update() {
         super.clearCache();
         try {
-            this.getConfig().load(this.getConfigFile());
+            this.getHandle().load(this.getConfigFile());
 
             YamlConfiguration newConfig = this.getConfigInJar();
 
-            if (newConfig.getKeys(true).equals(this.getConfig().getKeys(true))) {
+            if (newConfig.getKeys(true).equals(this.getHandle().getKeys(true))) {
                 return;
             }
 
             newConfig.getKeys(true).forEach((s -> {
-                if (!this.getConfig().getKeys(true).contains(s)) {
+                if (!this.getHandle().getKeys(true).contains(s)) {
                     if (updateBlacklist.stream().noneMatch(s::contains)) {
-                        this.getConfig().set(s, newConfig.get(s));
+                        this.getHandle().set(s, newConfig.get(s));
                     }
                 }
             }));
 
             if (this.removeUnused) {
-                this.getConfig().getKeys(true).forEach((s -> {
+                this.getHandle().getKeys(true).forEach((s -> {
                     if (!newConfig.getKeys(true).contains(s)) {
                         if (updateBlacklist.stream().noneMatch(s::contains)) {
-                            this.getConfig().set(s, null);
+                            this.getHandle().set(s, null);
                         }
                     }
                 }));
             }
 
-            this.getConfig().save(this.getConfigFile());
+            this.getHandle().save(this.getConfigFile());
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }

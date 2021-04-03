@@ -2,11 +2,9 @@ package com.willfp.eco.internal.config;
 
 import com.willfp.eco.util.StringUtils;
 import com.willfp.eco.util.config.Config;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemorySection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,10 +17,10 @@ import java.util.Objects;
 @SuppressWarnings({"unchecked", "unused"})
 public abstract class ConfigWrapper<T extends ConfigurationSection> implements Config {
     /**
-     * The linked {@link MemorySection} where values are physically stored.
+     * The linked {@link ConfigurationSection} where values are physically stored.
      */
-    @Getter(AccessLevel.PROTECTED)
-    private T config = null;
+    @Getter
+    private T handle = null;
 
     /**
      * Cached values for faster reading.
@@ -37,7 +35,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
     }
 
     protected Config init(@NotNull final T config) {
-        this.config = config;
+        this.handle = config;
         return this;
     }
 
@@ -48,19 +46,25 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
 
     @Override
     public boolean has(@NotNull final String path) {
-        return config.contains(path);
+        return handle.contains(path);
     }
 
     @NotNull
     @Override
     public List<String> getKeys(final boolean deep) {
-        return new ArrayList<>(config.getKeys(deep));
+        return new ArrayList<>(handle.getKeys(deep));
     }
 
     @Override
     @Nullable
-    public Object getRaw(@NotNull final String path) {
-        return config.get(path);
+    public Object get(@NotNull final String path) {
+        return handle.get(path);
+    }
+
+    @Override
+    public void set(@NotNull final String path,
+                    @Nullable final Object object) {
+        handle.set(path, object);
     }
 
     @Override
@@ -77,7 +81,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (Config) cache.get(path);
         } else {
-            cache.put(path, new ConfigSection(Objects.requireNonNull(config.getConfigurationSection(path))));
+            cache.put(path, new ConfigSection(Objects.requireNonNull(handle.getConfigurationSection(path))));
             return getSubsectionOrNull(path);
         }
     }
@@ -87,7 +91,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (int) cache.get(path);
         } else {
-            cache.put(path, config.getInt(path, 0));
+            cache.put(path, handle.getInt(path, 0));
             return getInt(path);
         }
     }
@@ -108,7 +112,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (int) cache.get(path);
         } else {
-            cache.put(path, config.getInt(path, def));
+            cache.put(path, handle.getInt(path, def));
             return getInt(path);
         }
     }
@@ -119,7 +123,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (List<Integer>) cache.get(path);
         } else {
-            cache.put(path, has(path) ? new ArrayList<>(config.getIntegerList(path)) : new ArrayList<>());
+            cache.put(path, has(path) ? new ArrayList<>(handle.getIntegerList(path)) : new ArrayList<>());
             return getInts(path);
         }
     }
@@ -139,7 +143,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (boolean) cache.get(path);
         } else {
-            cache.put(path, config.getBoolean(path));
+            cache.put(path, handle.getBoolean(path));
             return getBool(path);
         }
     }
@@ -160,7 +164,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (List<Boolean>) cache.get(path);
         } else {
-            cache.put(path, has(path) ? new ArrayList<>(config.getBooleanList(path)) : new ArrayList<>());
+            cache.put(path, has(path) ? new ArrayList<>(handle.getBooleanList(path)) : new ArrayList<>());
             return getBools(path);
         }
     }
@@ -181,7 +185,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (String) cache.get(path);
         } else {
-            cache.put(path, StringUtils.translate(Objects.requireNonNull(config.getString(path, ""))));
+            cache.put(path, StringUtils.translate(Objects.requireNonNull(handle.getString(path, ""))));
             return getString(path);
         }
     }
@@ -202,7 +206,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (List<String>) cache.get(path);
         } else {
-            cache.put(path, has(path) ? new ArrayList<>(config.getStringList(path)) : new ArrayList<>());
+            cache.put(path, has(path) ? new ArrayList<>(handle.getStringList(path)) : new ArrayList<>());
             return getStrings(path);
         }
     }
@@ -222,7 +226,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (double) cache.get(path);
         } else {
-            cache.put(path, config.getDouble(path));
+            cache.put(path, handle.getDouble(path));
             return getDouble(path);
         }
     }
@@ -243,7 +247,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (List<Double>) cache.get(path);
         } else {
-            cache.put(path, has(path) ? new ArrayList<>(config.getDoubleList(path)) : new ArrayList<>());
+            cache.put(path, has(path) ? new ArrayList<>(handle.getDoubleList(path)) : new ArrayList<>());
             return getDoubles(path);
         }
     }
