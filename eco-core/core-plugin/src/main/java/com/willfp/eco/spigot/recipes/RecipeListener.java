@@ -5,7 +5,7 @@ import com.willfp.eco.util.recipe.RecipeParts;
 import com.willfp.eco.util.recipe.Recipes;
 import com.willfp.eco.util.recipe.parts.RecipePart;
 import com.willfp.eco.util.recipe.parts.SimpleRecipePart;
-import com.willfp.eco.util.recipe.recipes.EcoShapedRecipe;
+import com.willfp.eco.util.recipe.recipes.ShapedCraftingRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -36,7 +36,7 @@ public class RecipeListener implements Listener {
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
-        EcoShapedRecipe matched = Recipes.getMatch(matrix);
+        ShapedCraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -68,7 +68,7 @@ public class RecipeListener implements Listener {
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
-        EcoShapedRecipe matched = Recipes.getMatch(matrix);
+        ShapedCraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -99,15 +99,15 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        EcoShapedRecipe ecoShapedRecipe = Recipes.getShapedRecipe(recipe.getKey());
+        ShapedCraftingRecipe shapedCraftingRecipe = Recipes.getShapedRecipe(recipe.getKey());
 
-        if (ecoShapedRecipe == null) {
+        if (shapedCraftingRecipe == null) {
             return;
         }
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
-            RecipePart part = ecoShapedRecipe.getParts()[i];
+            RecipePart part = shapedCraftingRecipe.getParts()[i];
             if (part instanceof SimpleRecipePart) {
                 if (RecipeParts.isRecipePart(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -130,15 +130,15 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        EcoShapedRecipe ecoShapedRecipe = Recipes.getShapedRecipe(recipe.getKey());
+        ShapedCraftingRecipe shapedCraftingRecipe = Recipes.getShapedRecipe(recipe.getKey());
 
-        if (ecoShapedRecipe == null) {
+        if (shapedCraftingRecipe == null) {
             return;
         }
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
-            RecipePart part = ecoShapedRecipe.getParts()[i];
+            RecipePart part = shapedCraftingRecipe.getParts()[i];
             if (part instanceof SimpleRecipePart) {
                 if (RecipeParts.isRecipePart(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));

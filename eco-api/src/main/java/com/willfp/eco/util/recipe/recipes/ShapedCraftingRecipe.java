@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
-public final class EcoShapedRecipe extends PluginDependent {
+public final class ShapedCraftingRecipe extends PluginDependent implements CraftingRecipe {
     /**
      * Recipe parts.
      */
@@ -38,10 +38,10 @@ public final class EcoShapedRecipe extends PluginDependent {
     @Getter
     private final ItemStack output;
 
-    private EcoShapedRecipe(@NotNull final EcoPlugin plugin,
-                            @NotNull final String key,
-                            @NotNull final RecipePart[] parts,
-                            @NotNull final ItemStack output) {
+    private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
+                                 @NotNull final String key,
+                                 @NotNull final RecipePart[] parts,
+                                 @NotNull final ItemStack output) {
         super(plugin);
 
         this.parts = parts;
@@ -50,32 +50,17 @@ public final class EcoShapedRecipe extends PluginDependent {
         this.output = output;
     }
 
-    /**
-     * Get item material at a specific index.
-     *
-     * @param index The index to check.
-     * @return The material.
-     */
+    @Override
     public Material getMaterialAtIndex(final int index) {
         return parts[index].getDisplayed().getType();
     }
 
-    /**
-     * Get "real" item at specific index.
-     *
-     * @param index The index to check.
-     * @return The item.
-     */
+    @Override
     public ItemStack getDisplayedAtIndex(final int index) {
         return parts[index].getDisplayed();
     }
 
-    /**
-     * Test matrix against recipe.
-     *
-     * @param matrix The matrix to check.
-     * @return If the recipe matches.
-     */
+    @Override
     public boolean test(@NotNull final ItemStack[] matrix) {
         boolean matches = true;
         for (int i = 0; i < 9; i++) {
@@ -87,9 +72,7 @@ public final class EcoShapedRecipe extends PluginDependent {
         return matches;
     }
 
-    /**
-     * Register the recipe.
-     */
+    @Override
     public void register() {
         Recipes.register(this);
     }
@@ -190,14 +173,14 @@ public final class EcoShapedRecipe extends PluginDependent {
          *
          * @return The built recipe.
          */
-        public EcoShapedRecipe build() {
+        public ShapedCraftingRecipe build() {
             for (int i = 0; i < 9; i++) {
                 if (recipeParts[i] == null) {
                     recipeParts[i] = new EmptyRecipePart();
                 }
             }
 
-            return new EcoShapedRecipe(plugin, key.toLowerCase(), recipeParts, output);
+            return new ShapedCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output);
         }
     }
 }

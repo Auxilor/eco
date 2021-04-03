@@ -2,7 +2,7 @@ package com.willfp.eco.util.recipe;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.willfp.eco.util.recipe.recipes.EcoShapedRecipe;
+import com.willfp.eco.util.recipe.recipes.ShapedCraftingRecipe;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -18,7 +18,7 @@ public class Recipes {
     /**
      * Registry of all recipes.
      */
-    private static final BiMap<NamespacedKey, EcoShapedRecipe> RECIPES = HashBiMap.create();
+    private static final BiMap<NamespacedKey, ShapedCraftingRecipe> RECIPES = HashBiMap.create();
 
 
     /**
@@ -26,7 +26,7 @@ public class Recipes {
      *
      * @param recipe The recipe.
      */
-    public void register(@NotNull final EcoShapedRecipe recipe) {
+    public void register(@NotNull final ShapedCraftingRecipe recipe) {
         RECIPES.forcePut(recipe.getKey(), recipe);
 
         Bukkit.getServer().removeRecipe(recipe.getKey());
@@ -57,7 +57,7 @@ public class Recipes {
      * @return The match, or null if not found.
      */
     @Nullable
-    public EcoShapedRecipe getMatch(@NotNull final ItemStack[] matrix) {
+    public ShapedCraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
         return RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
     }
 
@@ -68,8 +68,8 @@ public class Recipes {
      * @return The shaped recipe, or null if not found.
      */
     @Nullable
-    public EcoShapedRecipe getShapedRecipe(@NotNull final NamespacedKey key) {
-        EcoShapedRecipe recipe = RECIPES.get(key);
+    public ShapedCraftingRecipe getShapedRecipe(@NotNull final NamespacedKey key) {
+        ShapedCraftingRecipe recipe = RECIPES.get(key);
         if (recipe != null) {
             return recipe;
         }

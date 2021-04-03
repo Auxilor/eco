@@ -1,7 +1,5 @@
 package com.willfp.eco.util.config;
 
-import com.willfp.eco.util.serialization.EcoSerializable;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,15 +29,6 @@ public interface Config {
     List<String> getKeys(boolean deep);
 
     /**
-     * Set an object in config.
-     *
-     * @param path   The path.
-     * @param object The object.
-     */
-    void set(@NotNull String path,
-             @NotNull EcoSerializable<?> object);
-
-    /**
      * Get an object from config.
      * Default implementations call {@link org.bukkit.configuration.file.YamlConfiguration#get(String)}.
      *
@@ -48,48 +37,6 @@ public interface Config {
      */
     @Nullable
     Object getRaw(@NotNull String path);
-
-    /**
-     * Get an object from config.
-     *
-     * @param path  The path.
-     * @param clazz The class of the object.
-     * @param <T>   The type of the object.
-     * @return The object.
-     */
-    @NotNull <T extends EcoSerializable<T>> T get(@NotNull String path,
-                                                  @NotNull Class<T> clazz);
-
-    /**
-     * Get an object from config.
-     *
-     * @param path  The path.
-     * @param clazz The class of the object.
-     * @param <T>   The type of the object.
-     * @return The object, or null if not found.
-     */
-    @Nullable <T extends EcoSerializable<T>> T getOrNull(@NotNull String path,
-                                                         @NotNull Class<T> clazz);
-
-    /**
-     * Get bukkit configuration section from config.
-     *
-     * @param path The key to check.
-     * @return The configuration section. Throws NPE if not found.
-     */
-    @NotNull
-    @Deprecated
-    ConfigurationSection getSection(@NotNull String path);
-
-    /**
-     * Get bukkit configuration section from config.
-     *
-     * @param path The key to check.
-     * @return The configuration section, or null if not found.
-     */
-    @Nullable
-    @Deprecated
-    ConfigurationSection getSectionOrNull(@NotNull String path);
 
     /**
      * Get subsection from config.

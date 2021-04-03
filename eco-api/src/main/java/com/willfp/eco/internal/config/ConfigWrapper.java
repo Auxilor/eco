@@ -1,11 +1,10 @@
 package com.willfp.eco.internal.config;
 
-import com.willfp.eco.util.SerializationUtils;
 import com.willfp.eco.util.StringUtils;
 import com.willfp.eco.util.config.Config;
-import com.willfp.eco.util.serialization.EcoSerializable;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemorySection;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@SuppressWarnings({"unchecked", "unused", "DeprecatedIsStillUsed"})
+@SuppressWarnings({"unchecked", "unused"})
 public abstract class ConfigWrapper<T extends ConfigurationSection> implements Config {
     /**
      * The linked {@link MemorySection} where values are physically stored.
@@ -59,17 +58,6 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
     }
 
     @Override
-    public void set(@NotNull final String path,
-                    @NotNull final EcoSerializable<?> object) {
-        Config serializedConfig = object.serialize();
-        for (String key : serializedConfig.getKeys(true)) {
-            Object raw = serializedConfig.getRaw(key);
-            config.set(path + "." + key, raw);
-            cache.put(path + "." + key, raw);
-        }
-    }
-
-    @Override
     @Nullable
     public Object getRaw(@NotNull final String path) {
         return config.get(path);
@@ -77,70 +65,21 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
 
     @Override
     @NotNull
-    public <T extends EcoSerializable<T>> T get(@NotNull final String path,
-                                                @NotNull final Class<T> clazz) {
-        T object = getOrNull(path, clazz);
-        if (object == null) {
-            throw new NullPointerException("Object cannot be null!");
-        } else {
-            return object;
-        }
-    }
-
-    @Override
-    @Nullable
-    public <T extends EcoSerializable<T>> T getOrNull(@NotNull final String path,
-                                                      @NotNull final Class<T> clazz) {
-        if (cache.containsKey(path)) {
-            return (T) cache.get(path);
-        } else {
-            Config section = getSubsectionOrNull(path);
-            if (section == null) {
-                return null;
-            }
-            cache.put(path, SerializationUtils.deserialize(section, clazz));
-            return getOrNull(path, clazz);
-        }
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public ConfigurationSection getSection(@NotNull final String path) {
-        ConfigurationSection section = getSectionOrNull(path);
-        if (section == null) {
-            throw new NullPointerException("Section cannot be null!");
-        } else {
-            return section;
-        }
-    }
-
-    @Override
-    @Nullable
-    @Deprecated
-    public ConfigurationSection getSectionOrNull(@NotNull final String path) {
-        if (cache.containsKey(path)) {
-            return (ConfigurationSection) cache.get(path);
-        } else {
-            cache.put(path, config.getConfigurationSection(path));
-            return getSectionOrNull(path);
-        }
-    }
-
-    @Override
-    @NotNull
     public Config getSubsection(@NotNull final String path) {
-        return new ConfigSection(this.getSection(path));
+        Config subsection = getSubsectionOrNull(path);
+        Validate.notNull(subsection);
+        return subsection;
     }
 
     @Override
     @Nullable
     public Config getSubsectionOrNull(@NotNull final String path) {
-        ConfigurationSection section = this.getSectionOrNull(path);
-        if (section == null) {
-            return null;
+        if (cache.containsKey(path)) {
+            return (Config) cache.get(path);
+        } else {
+            cache.put(path, new ConfigSection(Objects.requireNonNull(config.getConfigurationSection(path))));
+            return getSubsectionOrNull(path);
         }
-        return new ConfigSection(section);
     }
 
     @Override
