@@ -3,6 +3,7 @@ package com.willfp.eco.proxy.v1_16_R3;
 import com.willfp.eco.internal.fast.AbstractFastItemStackHandler;
 import com.willfp.eco.proxy.proxies.FastItemStackHandlerFactoryProxy;
 import com.willfp.eco.proxy.v1_16_R3.fast.FastItemStackHandler;
+import org.apache.commons.lang.Validate;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,8 @@ public class FastItemStackHandlerFactory implements FastItemStackHandlerFactoryP
      * @return The NMS ItemStack.
      */
     public net.minecraft.server.v1_16_R3.ItemStack get(@NotNull final ItemStack itemStack) {
+        Validate.isTrue(itemStack instanceof CraftItemStack, "Must be a CraftItemStack!");
+
         try {
             return (net.minecraft.server.v1_16_R3.ItemStack) HANDLE_FIELD.get(itemStack);
         } catch (ReflectiveOperationException e) {

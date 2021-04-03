@@ -80,8 +80,9 @@ public class FastItemStackHandler implements AbstractFastItemStackHandler {
 
     @Override
     public List<String> getLore() {
-        if (tag.hasKey("Lore")) {
-            NBTTagList list = tag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
+        NBTTagCompound displayTag = getDisplayTag(this.tag);
+        if (displayTag.hasKey("Lore")) {
+            NBTTagList list = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
             List<String> lore = new ArrayList<>(list.size());
 
             for (int index = 0; index < list.size(); index++) {
