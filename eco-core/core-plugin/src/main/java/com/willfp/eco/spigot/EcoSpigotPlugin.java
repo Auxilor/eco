@@ -1,6 +1,7 @@
 package com.willfp.eco.spigot;
 
 import com.willfp.eco.core.AbstractPacketAdapter;
+import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.AbstractCommand;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
@@ -45,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EcoSpigotPlugin extends com.willfp.eco.core.EcoPlugin {
+public class EcoSpigotPlugin extends EcoPlugin {
     /**
      * Instance of eco.
      */
