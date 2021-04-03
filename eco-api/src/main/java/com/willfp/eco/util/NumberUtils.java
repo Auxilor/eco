@@ -11,6 +11,21 @@ import java.util.concurrent.ThreadLocalRandom;
 @UtilityClass
 public class NumberUtils {
     /**
+     * Precision.
+     */
+    private static final int FAST_TRIG_PRECISION = 100;
+
+    /**
+     * Modulus.
+     */
+    private static final int FAST_TRIG_MODULUS = 360 * FAST_TRIG_PRECISION;
+
+    /**
+     * Sin lookup table.
+     */
+    private static final double[] SIN_LOOKUP = new double[FAST_TRIG_MODULUS];
+
+    /**
      * Set of roman numerals to look up.
      */
     private static final TreeMap<Integer, String> NUMERALS = new TreeMap<>();
@@ -29,6 +44,34 @@ public class NumberUtils {
         NUMERALS.put(5, "V");
         NUMERALS.put(4, "IV");
         NUMERALS.put(1, "I");
+
+        for (int i = 0; i < SIN_LOOKUP.length; i++) {
+            SIN_LOOKUP[i] = Math.sin((i * Math.PI) / (FAST_TRIG_PRECISION * 180));
+        }
+    }
+
+    private static double sinLookup(final int a) {
+        return a >= 0 ? SIN_LOOKUP[a % FAST_TRIG_MODULUS] : -SIN_LOOKUP[-a % FAST_TRIG_MODULUS];
+    }
+
+    /**
+     * Get the sin of a number.
+     *
+     * @param a The number.
+     * @return The sin.
+     */
+    public static double fastSin(final double a) {
+        return sinLookup((int) (a * FAST_TRIG_PRECISION + 0.5f));
+    }
+
+    /**
+     * Get the cosine of a number.
+     *
+     * @param a The number.
+     * @return The cosine.
+     */
+    public static double fastCos(final double a) {
+        return sinLookup((int) ((a + 90f) * FAST_TRIG_PRECISION + 0.5f));
     }
 
     /**
