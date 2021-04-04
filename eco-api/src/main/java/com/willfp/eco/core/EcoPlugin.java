@@ -1,8 +1,8 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.AbstractCommand;
-import com.willfp.eco.core.config.configs.Config;
-import com.willfp.eco.core.config.configs.Lang;
+import com.willfp.eco.core.config.base.ConfigYml;
+import com.willfp.eco.core.config.base.LangYml;
 import com.willfp.eco.internal.config.updating.ConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
@@ -109,13 +109,13 @@ public abstract class EcoPlugin extends JavaPlugin {
      * Config.yml.
      */
     @Getter
-    private final Config configYml;
+    private final ConfigYml configYml;
 
     /**
      * Lang.yml.
      */
     @Getter
-    private final Lang langYml;
+    private final LangYml langYml;
 
     /**
      * The internal factory to produce {@link org.bukkit.NamespacedKey}s.
@@ -194,8 +194,8 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.extensionLoader = new EcoExtensionLoader(this);
         this.configHandler = new ConfigHandler(this);
 
-        this.langYml = new Lang(this);
-        this.configYml = new Config(this);
+        this.langYml = new LangYml(this);
+        this.configYml = new ConfigYml(this);
 
         LOADED_ECO_PLUGINS.add(this.getName().toLowerCase());
     }

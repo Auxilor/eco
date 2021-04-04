@@ -1,16 +1,16 @@
-package com.willfp.eco.core.config.configs;
+package com.willfp.eco.core.config.base;
 
 import com.willfp.eco.core.config.BaseConfig;
 import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
-public class Lang extends BaseConfig {
+public class LangYml extends BaseConfig {
     /**
      * Lang.yml.
      *
      * @param plugin The plugin.
      */
-    public Lang(@NotNull final EcoPlugin plugin) {
+    public LangYml(@NotNull final EcoPlugin plugin) {
         super("lang", false, plugin);
     }
 
