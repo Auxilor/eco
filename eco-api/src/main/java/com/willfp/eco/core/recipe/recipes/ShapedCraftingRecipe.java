@@ -14,6 +14,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -107,7 +108,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
         /**
          * The recipe parts.
          */
-        private final List<TestableItem> recipeParts = new ArrayList<>(9);
+        private final List<TestableItem> recipeParts = new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null)); // Jank
 
         /**
          * The output of the recipe.

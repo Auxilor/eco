@@ -2,12 +2,17 @@ package com.willfp.eco.internal.logging;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.util.StringUtils;
-import org.bukkit.plugin.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
-public class EcoLogger extends PluginLogger {
-    public EcoLogger(@NotNull final EcoPlugin context) {
-        super(context);
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class EcoLogger extends Logger {
+    public EcoLogger(@NotNull final EcoPlugin plugin) {
+        super(plugin.getName(), (String) null);
+        String prefix = plugin.getDescription().getPrefix();
+        this.setParent(plugin.getServer().getLogger());
+        this.setLevel(Level.ALL);
     }
 
     @Override
