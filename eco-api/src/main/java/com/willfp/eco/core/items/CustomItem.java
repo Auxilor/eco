@@ -54,6 +54,6 @@ public class CustomItem implements TestableItem {
      * Register the item.
      */
     public void register() {
-        CustomItems.registerCustomItem(this.getKey(), this);
+        Items.registerCustomItem(this.getKey(), this);
     }
 }

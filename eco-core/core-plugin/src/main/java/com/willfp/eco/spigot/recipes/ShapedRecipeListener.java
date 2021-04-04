@@ -1,7 +1,7 @@
 package com.willfp.eco.spigot.recipes;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.items.CustomItems;
+import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
@@ -112,7 +112,7 @@ public class ShapedRecipeListener implements Listener {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
             TestableItem part = shapedCraftingRecipe.getParts().get(i);
             if (part instanceof MaterialTestableItem) {
-                if (CustomItems.isCustomItem(itemStack)) {
+                if (Items.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
                     return;
                 }
@@ -145,7 +145,7 @@ public class ShapedRecipeListener implements Listener {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
             TestableItem part = shapedCraftingRecipe.getParts().get(i);
             if (part instanceof MaterialTestableItem) {
-                if (CustomItems.isCustomItem(itemStack)) {
+                if (Items.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
@@ -173,7 +173,7 @@ public class ShapedRecipeListener implements Listener {
         }
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            if (CustomItems.isCustomItem(itemStack)) {
+            if (Items.isCustomItem(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
                 return;
             }
@@ -198,7 +198,7 @@ public class ShapedRecipeListener implements Listener {
         }
 
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
-            if (CustomItems.isCustomItem(itemStack)) {
+            if (Items.isCustomItem(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
                 event.setResult(Event.Result.DENY);
                 event.setCancelled(true);

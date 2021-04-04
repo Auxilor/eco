@@ -13,7 +13,7 @@ import java.util.Map;
 
 @UtilityClass
 @SuppressWarnings("deprecation")
-public final class CustomItems {
+public final class Items {
     /**
      * All recipe parts.
      */
