@@ -1,8 +1,8 @@
-package com.willfp.eco.internal.integration;
+package com.willfp.eco.internal.integrations;
 
+import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.core.EcoPlugin;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -36,7 +36,7 @@ public class PlaceholderIntegrationPAPI extends PlaceholderExpansion implements 
 
     @Override
     public @NotNull String getAuthor() {
-        return "Auxilor";
+        return String.join(", ", plugin.getDescription().getAuthors());
     }
 
     @Override

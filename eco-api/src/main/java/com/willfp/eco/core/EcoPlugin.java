@@ -21,7 +21,7 @@ import com.willfp.eco.internal.extensions.EcoExtensionLoader;
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory;
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory;
 import com.willfp.eco.internal.factory.EcoRunnableFactory;
-import com.willfp.eco.internal.integration.PlaceholderIntegrationPAPI;
+import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
 import lombok.Getter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
