@@ -36,6 +36,7 @@ public class StringUtils {
     private static final List<Pattern> HEX_PATTERNS = new ImmutableList.Builder<Pattern>()
             .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + ""))
             .add(Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}"))
+            .add(Pattern.compile("<#" + "([A-Fa-f0-9]{6})" + ">"))
             .build();
 
     /**
