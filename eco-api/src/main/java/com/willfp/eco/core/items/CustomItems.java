@@ -17,7 +17,7 @@ public final class CustomItems {
     /**
      * All recipe parts.
      */
-    private static final Map<NamespacedKey, TestableItem> REGISTRY = new HashMap<>();
+    private static final Map<NamespacedKey, CustomItem> REGISTRY = new HashMap<>();
 
     /**
      * Register a new recipe part.
@@ -26,7 +26,7 @@ public final class CustomItems {
      * @param part The recipe part.
      */
     public void registerCustomItem(@NotNull final NamespacedKey key,
-                                   @NotNull final TestableItem part) {
+                                   @NotNull final CustomItem part) {
         REGISTRY.put(key, part);
     }
 
@@ -36,7 +36,7 @@ public final class CustomItems {
      * Used for recipes.
      *
      * @param key The string to test.
-     * @return The found testable item, or null if not found.
+     * @return The found testable item, or an empty item if not found.
      */
     public TestableItem lookup(@NotNull final String key) {
         String[] split = key.toLowerCase().split(":");
@@ -48,7 +48,7 @@ public final class CustomItems {
             return new MaterialTestableItem(material);
         }
 
-        TestableItem part = REGISTRY.get(new NamespacedKey(split[0], split[1]));
+        CustomItem part = REGISTRY.get(new NamespacedKey(split[0], split[1]));
         return part == null ? new EmptyTestableItem() : part;
     }
 
@@ -59,6 +59,11 @@ public final class CustomItems {
      * @return If is recipe.
      */
     public boolean isCustomItem(@NotNull final ItemStack itemStack) {
-        return REGISTRY.values().stream().anyMatch(recipePart -> recipePart.matches(itemStack));
+        for (CustomItem item : REGISTRY.values()) {
+            if (item.matches(itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

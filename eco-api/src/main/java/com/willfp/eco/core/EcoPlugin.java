@@ -85,11 +85,6 @@ public abstract class EcoPlugin extends JavaPlugin {
     private final Set<String> loadedIntegrations = new HashSet<>();
 
     /**
-     * Set of external plugin integrations.
-     */
-    private final List<IntegrationLoader> integrationLoaders = new ArrayList<>();
-
-    /**
      * Set of classes to be processed on config update.
      */
     private final List<Class<?>> updatableClasses = new ArrayList<>();
@@ -159,7 +154,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * The logger for the plugin.
      */
-    private Logger logger;
+    private final Logger logger;
 
     /**
      * If the server is running an outdated version of the plugin.
@@ -207,7 +202,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      */
     @Override
     public final void onEnable() {
-        super.onLoad();
+        super.onEnable();
 
         this.getLogger().info("");
         this.getLogger().info("Loading " + this.color + this.pluginName);
