@@ -22,6 +22,7 @@ import com.willfp.eco.internal.factory.EcoMetadataValueFactory;
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory;
 import com.willfp.eco.internal.factory.EcoRunnableFactory;
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
+import com.willfp.eco.internal.logging.EcoLogger;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
 import lombok.Getter;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -193,6 +194,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.runnableFactory = new EcoRunnableFactory(this);
         this.extensionLoader = new EcoExtensionLoader(this);
         this.configHandler = new ConfigHandler(this);
+        this.logger = new EcoLogger(this);
 
         this.langYml = new LangYml(this);
         this.configYml = new ConfigYml(this);
