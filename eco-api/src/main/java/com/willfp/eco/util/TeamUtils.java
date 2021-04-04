@@ -44,10 +44,10 @@ public class TeamUtils {
 
         Team team;
 
-        if (!SCOREBOARD.getTeams().stream().map(Team::getName).collect(Collectors.toList()).contains("EE-" + color.name())) {
-            team = SCOREBOARD.registerNewTeam("EE-" + color.name());
+        if (!SCOREBOARD.getTeams().stream().map(Team::getName).collect(Collectors.toList()).contains("EC-" + color.name())) {
+            team = SCOREBOARD.registerNewTeam("EC-" + color.name());
         } else {
-            team = SCOREBOARD.getTeam("EE-" + color.name());
+            team = SCOREBOARD.getTeam("EC-" + color.name());
         }
         assert team != null;
         team.setColor(color);
