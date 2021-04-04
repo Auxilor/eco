@@ -60,9 +60,15 @@ public class EcoSpigotPlugin extends EcoPlugin {
         super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
-        SkullUtils.initialize((skullMeta, base64) -> InternalProxyUtils.getProxy(SkullProxy.class).setSkullTexture(skullMeta, base64));
-        BlockUtils.initialize(((player, block) -> InternalProxyUtils.getProxy(BlockBreakProxy.class).breakBlock(player, block)));
-        TridentUtils.initialize(((trident) -> InternalProxyUtils.getProxy(TridentStackProxy.class).getTridentStack(trident)));
+
+        SkullProxy skullProxy = InternalProxyUtils.getProxy(SkullProxy.class);
+        SkullUtils.initialize(skullProxy::setSkullTexture);
+
+        BlockBreakProxy blockBreakProxy = InternalProxyUtils.getProxy(BlockBreakProxy.class);
+        BlockUtils.initialize(blockBreakProxy::breakBlock);
+
+        TridentStackProxy tridentStackProxy = InternalProxyUtils.getProxy(TridentStackProxy.class);
+        TridentUtils.initialize(tridentStackProxy::getTridentStack);
     }
 
     @Override
