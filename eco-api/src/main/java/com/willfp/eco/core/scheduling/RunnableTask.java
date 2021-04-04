@@ -51,4 +51,9 @@ public interface RunnableTask extends Runnable {
      * @return The created {@link BukkitTask}
      */
     @NotNull BukkitTask runTaskTimerAsynchronously(long delay, long period);
+
+    /**
+     * Cancel the task.
+     */
+    void cancel();
 }

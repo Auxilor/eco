@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.events;
+package com.willfp.eco.internal.scheduling;
 
 import com.willfp.eco.internal.factory.EcoRunnableFactory;
 import com.willfp.eco.core.scheduling.RunnableTask;
