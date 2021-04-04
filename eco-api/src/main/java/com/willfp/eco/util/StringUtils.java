@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
@@ -20,19 +21,22 @@ import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
 @UtilityClass
 public class StringUtils {
     /**
-     * Regex for gradients.
+     * Regexes for gradients.
      */
-    private static final Pattern GRADIENT_REGEX = Pattern.compile("<GRADIENT:([0-9A-Fa-f]{6})>(.*?)</GRADIENT:([0-9A-Fa-f]{6})>");
+    private static final List<Pattern> GRADIENT_PATTERNS = new ImmutableList.Builder<Pattern>()
+            .add(Pattern.compile("<GRADIENT:([0-9A-Fa-f]{6})>(.*?)</GRADIENT:([0-9A-Fa-f]{6})>"))
+            .add(Pattern.compile("<G:([0-9A-Fa-f]{6})>(.*?)</G:([0-9A-Fa-f]{6})>"))
+            .add(Pattern.compile("<#:([0-9A-Fa-f]{6})>(.*?)</#:([0-9A-Fa-f]{6})>"))
+            .add(Pattern.compile("\\{#:([0-9A-Fa-f]{6})}(.*?)\\{/#:([0-9A-Fa-f]{6})}"))
+            .build();
 
     /**
-     * Regex for hex codes.
+     * Regexes for hex codes.
      */
-    private static final Pattern HEX_PATTERN = Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + "");
-
-    /**
-     * Regex for hex codes.
-     */
-    private static final Pattern ALT_HEX_PATTERN = Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}");
+    private static final List<Pattern> HEX_PATTERNS = new ImmutableList.Builder<Pattern>()
+            .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + ""))
+            .add(Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}"))
+            .build();
 
     /**
      * Translate a string - converts Placeholders and Color codes.
@@ -64,20 +68,15 @@ public class StringUtils {
 
     private static String translateHexColorCodes(@NotNull final String message) {
         String processedMessage = message;
-        for (HexParseMode parseMode : HexParseMode.values()) {
-            processedMessage = translateHexColorCodes(processedMessage, parseMode);
+        for (Pattern pattern : HEX_PATTERNS) {
+            processedMessage = translateHexColorCodes(processedMessage, pattern);
         }
         return processedMessage;
     }
 
     private static String translateHexColorCodes(@NotNull final String message,
-                                                 @NotNull final HexParseMode mode) {
-        Matcher matcher;
-        if (mode == HexParseMode.CMI) {
-            matcher = ALT_HEX_PATTERN.matcher(message);
-        } else {
-            matcher = HEX_PATTERN.matcher(message);
-        }
+                                                 @NotNull final Pattern pattern) {
+        Matcher matcher = pattern.matcher(message);
 
         StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
         while (matcher.find()) {
@@ -168,12 +167,14 @@ public class StringUtils {
      */
     private static String translateGradients(@NotNull final String string) {
         String processedString = string;
-        Matcher matcher = GRADIENT_REGEX.matcher(string);
-        while (matcher.find()) {
-            String start = matcher.group(1);
-            String end = matcher.group(3);
-            String content = matcher.group(2);
-            processedString = processedString.replace(matcher.group(), processGradients(content, new Color(Integer.parseInt(start, 16)), new Color(Integer.parseInt(end, 16))));
+        for (Pattern pattern : GRADIENT_PATTERNS) {
+            Matcher matcher = pattern.matcher(string);
+            while (matcher.find()) {
+                String start = matcher.group(1);
+                String end = matcher.group(3);
+                String content = matcher.group(2);
+                processedString = processedString.replace(matcher.group(), processGradients(content, new Color(Integer.parseInt(start, 16)), new Color(Integer.parseInt(end, 16))));
+            }
         }
         return processedString;
     }
@@ -217,10 +218,5 @@ public class StringUtils {
             return string.substring(prefix.length());
         }
         return string;
-    }
-
-    private enum HexParseMode {
-        CMI,
-        NORMAL
     }
 }
