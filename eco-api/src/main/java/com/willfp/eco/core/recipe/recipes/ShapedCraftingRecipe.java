@@ -1,24 +1,28 @@
 package com.willfp.eco.core.recipe.recipes;
 
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import lombok.Getter;
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
+@SuppressWarnings("deprecation")
 public final class ShapedCraftingRecipe extends PluginDependent implements CraftingRecipe {
     /**
      * Recipe parts.
      */
     @Getter
-    private final TestableItem[] parts;
+    private final List<TestableItem> parts;
 
     /**
      * The key of the recipe.
@@ -40,7 +44,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
 
     private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
                                  @NotNull final String key,
-                                 @NotNull final TestableItem[] parts,
+                                 @NotNull final List<TestableItem> parts,
                                  @NotNull final ItemStack output) {
         super(plugin);
 
@@ -51,20 +55,10 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
     }
 
     @Override
-    public Material getMaterialAtIndex(final int index) {
-        return parts[index].getItem().getType();
-    }
-
-    @Override
-    public ItemStack getDisplayedAtIndex(final int index) {
-        return parts[index].getItem();
-    }
-
-    @Override
     public boolean test(@NotNull final ItemStack[] matrix) {
         boolean matches = true;
         for (int i = 0; i < 9; i++) {
-            if (!parts[i].matches(matrix[i])) {
+            if (!parts.get(i).matches(matrix[i])) {
                 matches = false;
             }
         }
@@ -75,15 +69,26 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
     @Override
     public void register() {
         Recipes.register(this);
-    }
 
-    @Override
-    public String toString() {
-        return "EcoShapedRecipe{"
-                + "parts=" + Arrays.toString(parts)
-                + ", key='" + key + '\''
-                + ", output=" + output
-                + '}';
+        Bukkit.getServer().removeRecipe(this.getKey());
+        Bukkit.getServer().removeRecipe(this.getDisplayedKey());
+
+        ShapedRecipe shapedRecipe = new ShapedRecipe(this.getKey(), this.getOutput());
+        shapedRecipe.shape("012", "345", "678");
+        for (int i = 0; i < 9; i++) {
+            char character = String.valueOf(i).toCharArray()[0];
+            shapedRecipe.setIngredient(character, parts.get(i).getItem().getType());
+        }
+
+        ShapedRecipe displayedRecipe = new ShapedRecipe(this.getDisplayedKey(), this.getOutput());
+        displayedRecipe.shape("012", "345", "678");
+        for (int i = 0; i < 9; i++) {
+            char character = String.valueOf(i).toCharArray()[0];
+            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(parts.get(i).getItem()));
+        }
+
+        Bukkit.getServer().addRecipe(shapedRecipe);
+        Bukkit.getServer().addRecipe(displayedRecipe);
     }
 
     /**
@@ -102,7 +107,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
         /**
          * The recipe parts.
          */
-        private final TestableItem[] recipeParts = new TestableItem[9];
+        private final List<TestableItem> recipeParts = new ArrayList<>(9);
 
         /**
          * The output of the recipe.
@@ -140,7 +145,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
          */
         public Builder setRecipePart(@NotNull final RecipePosition position,
                                      @NotNull final TestableItem part) {
-            this.recipeParts[position.getIndex()] = part;
+            recipeParts.set(position.getIndex(), part);
             return this;
         }
 
@@ -153,7 +158,7 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
          */
         public Builder setRecipePart(final int position,
                                      @NotNull final TestableItem part) {
-            this.recipeParts[position] = part;
+            recipeParts.set(position, part);
             return this;
         }
 
@@ -175,8 +180,8 @@ public final class ShapedCraftingRecipe extends PluginDependent implements Craft
          */
         public ShapedCraftingRecipe build() {
             for (int i = 0; i < 9; i++) {
-                if (recipeParts[i] == null) {
-                    recipeParts[i] = new EmptyTestableItem();
+                if (recipeParts.get(i) == null) {
+                    recipeParts.set(i, new EmptyTestableItem());
                 }
             }
 

@@ -5,6 +5,7 @@ import com.willfp.eco.core.items.CustomItems;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
+import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-public class RecipeListener implements Listener {
+public class ShapedRecipeListener implements Listener {
     /**
      * Called on item craft.
      *
@@ -36,7 +37,7 @@ public class RecipeListener implements Listener {
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
-        ShapedCraftingRecipe matched = Recipes.getMatch(matrix);
+        CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -68,7 +69,7 @@ public class RecipeListener implements Listener {
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
-        ShapedCraftingRecipe matched = Recipes.getMatch(matrix);
+        CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
             event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -99,15 +100,17 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        ShapedCraftingRecipe shapedCraftingRecipe = Recipes.getShapedRecipe(recipe.getKey());
+        CraftingRecipe craftingRecipe = Recipes.getRecipe(recipe.getKey());
 
-        if (shapedCraftingRecipe == null) {
+        if (!(craftingRecipe instanceof ShapedCraftingRecipe)) {
             return;
         }
 
+        ShapedCraftingRecipe shapedCraftingRecipe = (ShapedCraftingRecipe) craftingRecipe;
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
-            TestableItem part = shapedCraftingRecipe.getParts()[i];
+            TestableItem part = shapedCraftingRecipe.getParts().get(i);
             if (part instanceof MaterialTestableItem) {
                 if (CustomItems.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -130,15 +133,17 @@ public class RecipeListener implements Listener {
 
         ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
-        ShapedCraftingRecipe shapedCraftingRecipe = Recipes.getShapedRecipe(recipe.getKey());
+        CraftingRecipe craftingRecipe = Recipes.getRecipe(recipe.getKey());
 
-        if (shapedCraftingRecipe == null) {
+        if (!(craftingRecipe instanceof ShapedCraftingRecipe)) {
             return;
         }
 
+        ShapedCraftingRecipe shapedCraftingRecipe = (ShapedCraftingRecipe) craftingRecipe;
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
-            TestableItem part = shapedCraftingRecipe.getParts()[i];
+            TestableItem part = shapedCraftingRecipe.getParts().get(i);
             if (part instanceof MaterialTestableItem) {
                 if (CustomItems.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));

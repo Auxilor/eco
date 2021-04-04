@@ -13,9 +13,9 @@ public interface TestableItem {
     boolean matches(@Nullable ItemStack itemStack);
 
     /**
-     * Get a displayed itemstack, for autocraft.
+     * Get an example item.
      *
-     * @return The item, displayed.
+     * @return The item.
      */
     ItemStack getItem();
 }

@@ -1,28 +1,13 @@
 package com.willfp.eco.core.recipe.recipes;
 
 import com.willfp.eco.core.items.TestableItem;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface CraftingRecipe {
-    /**
-     * Get item material at a specific index.
-     *
-     * @param index The index to check.
-     * @return The material.
-     */
-    Material getMaterialAtIndex(int index);
-
-    /**
-     * Get "real" item at specific index.
-     *
-     * @param index The index to check.
-     * @return The item.
-     */
-    ItemStack getDisplayedAtIndex(int index);
-
     /**
      * Test matrix against recipe.
      *
@@ -41,7 +26,7 @@ public interface CraftingRecipe {
      *
      * @return The parts.
      */
-    TestableItem[] getParts();
+    List<TestableItem> getParts();
 
     /**
      * Get the recipe key.

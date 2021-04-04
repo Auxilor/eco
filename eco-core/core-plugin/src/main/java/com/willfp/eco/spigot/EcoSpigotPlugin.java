@@ -34,7 +34,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
-import com.willfp.eco.spigot.recipes.RecipeListener;
+import com.willfp.eco.spigot.recipes.ShapedRecipeListener;
 import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
@@ -72,7 +72,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
         this.getEventManager().registerListener(new ArmorListener());
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
-        this.getEventManager().registerListener(new RecipeListener());
+        this.getEventManager().registerListener(new ShapedRecipeListener());
     }
 
     @Override

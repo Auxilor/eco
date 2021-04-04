@@ -2,13 +2,10 @@ package com.willfp.eco.core.recipe;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
+import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import lombok.experimental.UtilityClass;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +15,7 @@ public class Recipes {
     /**
      * Registry of all recipes.
      */
-    private static final BiMap<NamespacedKey, ShapedCraftingRecipe> RECIPES = HashBiMap.create();
+    private static final BiMap<NamespacedKey, CraftingRecipe> RECIPES = HashBiMap.create();
 
 
     /**
@@ -26,28 +23,8 @@ public class Recipes {
      *
      * @param recipe The recipe.
      */
-    public void register(@NotNull final ShapedCraftingRecipe recipe) {
+    public void register(@NotNull final CraftingRecipe recipe) {
         RECIPES.forcePut(recipe.getKey(), recipe);
-
-        Bukkit.getServer().removeRecipe(recipe.getKey());
-        Bukkit.getServer().removeRecipe(recipe.getDisplayedKey());
-
-        ShapedRecipe shapedRecipe = new ShapedRecipe(recipe.getKey(), recipe.getOutput());
-        shapedRecipe.shape("012", "345", "678");
-        for (int i = 0; i < 9; i++) {
-            char character = String.valueOf(i).toCharArray()[0];
-            shapedRecipe.setIngredient(character, recipe.getMaterialAtIndex(i));
-        }
-
-        ShapedRecipe displayedRecipe = new ShapedRecipe(recipe.getDisplayedKey(), recipe.getOutput());
-        displayedRecipe.shape("012", "345", "678");
-        for (int i = 0; i < 9; i++) {
-            char character = String.valueOf(i).toCharArray()[0];
-            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(recipe.getDisplayedAtIndex(i)));
-        }
-
-        Bukkit.getServer().addRecipe(shapedRecipe);
-        Bukkit.getServer().addRecipe(displayedRecipe);
     }
 
     /**
@@ -57,19 +34,19 @@ public class Recipes {
      * @return The match, or null if not found.
      */
     @Nullable
-    public ShapedCraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
+    public CraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
         return RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
     }
 
     /**
-     * Get shaped recipe by key.
+     * Get recipe by key.
      *
      * @param key The key.
-     * @return The shaped recipe, or null if not found.
+     * @return The recipe, or null if not found.
      */
     @Nullable
-    public ShapedCraftingRecipe getShapedRecipe(@NotNull final NamespacedKey key) {
-        ShapedCraftingRecipe recipe = RECIPES.get(key);
+    public CraftingRecipe getRecipe(@NotNull final NamespacedKey key) {
+        CraftingRecipe recipe = RECIPES.get(key);
         if (recipe != null) {
             return recipe;
         }
