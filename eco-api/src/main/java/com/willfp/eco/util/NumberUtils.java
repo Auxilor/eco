@@ -11,19 +11,9 @@ import java.util.concurrent.ThreadLocalRandom;
 @UtilityClass
 public class NumberUtils {
     /**
-     * Precision.
-     */
-    private static final int FAST_TRIG_PRECISION = 100;
-
-    /**
-     * Modulus.
-     */
-    private static final int FAST_TRIG_MODULUS = 360 * FAST_TRIG_PRECISION;
-
-    /**
      * Sin lookup table.
      */
-    private static final double[] SIN_LOOKUP = new double[FAST_TRIG_MODULUS];
+    private static final double[] SIN_LOOKUP = new double[65536];
 
     /**
      * Set of roman numerals to look up.
@@ -45,13 +35,9 @@ public class NumberUtils {
         NUMERALS.put(4, "IV");
         NUMERALS.put(1, "I");
 
-        for (int i = 0; i < SIN_LOOKUP.length; i++) {
-            SIN_LOOKUP[i] = Math.sin((i * Math.PI) / (FAST_TRIG_PRECISION * 180));
+        for (int i = 0; i < 65536; ++i) {
+            SIN_LOOKUP[i] = Math.sin((double) i * 3.141592653589793D * 2.0D / 65536.0D);
         }
-    }
-
-    private static double sinLookup(final int a) {
-        return a >= 0 ? SIN_LOOKUP[a % FAST_TRIG_MODULUS] : -SIN_LOOKUP[-a % FAST_TRIG_MODULUS];
     }
 
     /**
@@ -61,7 +47,8 @@ public class NumberUtils {
      * @return The sin.
      */
     public static double fastSin(final double a) {
-        return sinLookup((int) (a * FAST_TRIG_PRECISION + 0.5f));
+        float f = (float) a;
+        return SIN_LOOKUP[(int) (f * 10430.378F) & '\uffff'];
     }
 
     /**
@@ -71,7 +58,8 @@ public class NumberUtils {
      * @return The cosine.
      */
     public static double fastCos(final double a) {
-        return sinLookup((int) ((a + 90f) * FAST_TRIG_PRECISION + 0.5f));
+        float f = (float) a;
+        return SIN_LOOKUP[(int) (f * 10430.378F + 16384.0F) & '\uffff'];
     }
 
     /**
