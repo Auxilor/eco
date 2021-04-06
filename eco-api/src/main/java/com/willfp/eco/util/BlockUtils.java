@@ -37,15 +37,6 @@ public class BlockUtils {
                 if (blocks.size() > limit || blocks.size() > 2500) {
                     return blocks;
                 }
-            }
-        }
-        // Running twice to get more spherical shape.
-        for (BlockFace face : BlockFace.values()) {
-            Block block = start.getRelative(face);
-            if (!blocks.contains(block) && allowedMaterials.contains(block.getType())) {
-                if (blocks.size() > limit || blocks.size() > 2500) {
-                    return blocks;
-                }
                 blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
             }
         }
