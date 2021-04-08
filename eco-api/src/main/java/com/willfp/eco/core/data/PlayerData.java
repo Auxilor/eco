@@ -3,11 +3,9 @@ package com.willfp.eco.core.data;
 import com.willfp.eco.core.config.BaseConfig;
 import com.willfp.eco.core.config.Config;
 import com.willfp.eco.internal.config.ConfigSection;
-import com.willfp.eco.internal.config.ConfigWrapper;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@SuppressWarnings("unchecked")
 @UtilityClass
 public class PlayerData {
     /**
@@ -40,9 +37,7 @@ public class PlayerData {
     public void writeInt(@NotNull final OfflinePlayer player,
                          @NotNull final NamespacedKey key,
                          final int data) {
-        Config config = getPlayerConfig(player);
-
-        config.set("player-data." + player.getUniqueId() + "." + key.toString(), data);
+        getPlayerConfig(player).set(key.toString(), data);
     }
 
     /**
@@ -55,9 +50,7 @@ public class PlayerData {
     public void writeString(@NotNull final OfflinePlayer player,
                             @NotNull final NamespacedKey key,
                             @NotNull final String data) {
-        Config config = getPlayerConfig(player);
-
-        config.set("player-data." + player.getUniqueId() + "." + key.toString(), data);
+        getPlayerConfig(player).set(key.toString(), data);
     }
 
     /**
@@ -70,9 +63,7 @@ public class PlayerData {
     public void writeDouble(@NotNull final OfflinePlayer player,
                             @NotNull final NamespacedKey key,
                             final double data) {
-        Config config = getPlayerConfig(player);
-
-        config.set("player-data." + player.getUniqueId() + "." + key.toString(), data);
+        getPlayerConfig(player).set(key.toString(), data);
     }
 
     /**
@@ -83,7 +74,7 @@ public class PlayerData {
      */
     public int readInt(@NotNull final OfflinePlayer player,
                        @NotNull final NamespacedKey key) {
-        return getPlayerConfig(player).getInt("player-data." + player.getUniqueId() + "." + key.toString());
+        return getPlayerConfig(player).getInt(key.toString());
     }
 
     /**
@@ -94,7 +85,7 @@ public class PlayerData {
      */
     public String readString(@NotNull final OfflinePlayer player,
                              @NotNull final NamespacedKey key) {
-        return getPlayerConfig(player).getString("player-data." + player.getUniqueId() + "." + key.toString());
+        return getPlayerConfig(player).getString(key.toString());
     }
 
     /**
@@ -105,7 +96,7 @@ public class PlayerData {
      */
     public double readDouble(@NotNull final OfflinePlayer player,
                              @NotNull final NamespacedKey key) {
-        return getPlayerConfig(player).getDouble("player-data." + player.getUniqueId() + "." + key.toString());
+        return getPlayerConfig(player).getDouble(key.toString());
     }
 
     /**
@@ -126,7 +117,11 @@ public class PlayerData {
      */
     @ApiStatus.Internal
     public void save(@NotNull final BaseConfig config) throws IOException {
-        PLAYER_DATA.forEach((uuid, section) -> config.set("player-data." + uuid.toString(), ((ConfigWrapper<ConfigurationSection>) section).getHandle()));
+        for (Map.Entry<UUID, Config> entry : PLAYER_DATA.entrySet()) {
+            for (String key : entry.getValue().getKeys(false)) {
+                config.set("player-data." + entry.getKey().toString() + "." + key, entry.getValue().get(key));
+            }
+        }
         config.save();
     }
 

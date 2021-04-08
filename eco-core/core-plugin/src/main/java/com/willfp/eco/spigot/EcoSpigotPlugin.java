@@ -81,7 +81,6 @@ public class EcoSpigotPlugin extends EcoPlugin {
         TridentUtils.initialize(tridentStackProxy::getTridentStack);
 
         this.dataYml = new DataYml(this);
-
         PlayerData.init(this.dataYml);
     }
 
@@ -99,9 +98,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
         Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers")));
         Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers2")));
 
-        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers"), "Test");
-        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers2"), "Test2");
-        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers"), "Rewritted");
+        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers2"), "Poggers 2");
+        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers"), "Poggers");
 
         Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers")));
         Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers2")));
@@ -109,13 +107,11 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
     @Override
     public void disable() {
-        this.getScheduler().run(() -> {
-            try {
-                PlayerData.save(this.dataYml);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        try {
+            PlayerData.save(this.dataYml);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

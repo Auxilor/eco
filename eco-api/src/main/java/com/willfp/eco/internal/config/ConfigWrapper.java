@@ -64,6 +64,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
     @Override
     public void set(@NotNull final String path,
                     @Nullable final Object object) {
+        cache.remove(path);
         handle.set(path, object);
     }
 
