@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @UtilityClass
-public class PlayerData {
+public class Data {
     /**
      * Instance of eco data.yml.
      */

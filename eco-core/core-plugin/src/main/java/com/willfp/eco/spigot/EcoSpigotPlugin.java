@@ -3,7 +3,7 @@ package com.willfp.eco.spigot;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.AbstractCommand;
-import com.willfp.eco.core.data.PlayerData;
+import com.willfp.eco.core.data.Data;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.integrations.IntegrationLoader;
@@ -79,7 +79,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
         TridentUtils.initialize(tridentStackProxy::getTridentStack);
 
         this.dataYml = new DataYml(this);
-        PlayerData.init(this.dataYml);
+        Data.init(this.dataYml);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
     @Override
     public void disable() {
         try {
-            PlayerData.save(this.dataYml);
+            Data.save(this.dataYml);
         } catch (IOException e) {
             e.printStackTrace();
         }
