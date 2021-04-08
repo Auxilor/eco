@@ -3,6 +3,7 @@ package com.willfp.eco.spigot;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.AbstractCommand;
+import com.willfp.eco.core.data.PlayerData;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.integrations.IntegrationLoader;
@@ -12,6 +13,7 @@ import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
+import com.willfp.eco.spigot.config.DataYml;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
 import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
@@ -42,6 +44,7 @@ import lombok.Getter;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +55,11 @@ public class EcoSpigotPlugin extends EcoPlugin {
      */
     @Getter
     private static EcoSpigotPlugin instance;
+
+    /**
+     * data.yml.
+     */
+    private final DataYml dataYml;
 
     /**
      * Create a new instance of eco.
@@ -69,6 +77,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
         TridentStackProxy tridentStackProxy = InternalProxyUtils.getProxy(TridentStackProxy.class);
         TridentUtils.initialize(tridentStackProxy::getTridentStack);
+
+        this.dataYml = new DataYml(this);
     }
 
     @Override
@@ -79,11 +89,19 @@ public class EcoSpigotPlugin extends EcoPlugin {
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
         this.getEventManager().registerListener(new ShapedRecipeListener());
+
+        PlayerData.init(this.dataYml);
     }
 
     @Override
     public void disable() {
-
+        this.getScheduler().run(() -> {
+            try {
+                PlayerData.save(this.dataYml);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

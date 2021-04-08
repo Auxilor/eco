@@ -9,7 +9,7 @@ public class ConfigSection extends ConfigWrapper<ConfigurationSection> {
      *
      * @param section    The section.
      */
-    protected ConfigSection(@NotNull final ConfigurationSection section) {
+    public ConfigSection(@NotNull final ConfigurationSection section) {
         this.init(section);
     }
 }
