@@ -81,7 +81,12 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
         if (cache.containsKey(path)) {
             return (Config) cache.get(path);
         } else {
-            cache.put(path, new ConfigSection(Objects.requireNonNull(handle.getConfigurationSection(path))));
+            ConfigurationSection raw = handle.getConfigurationSection(path);
+            if (raw == null) {
+                cache.put(path, null);
+            } else {
+                cache.put(path, new ConfigSection(raw));
+            }
             return getSubsectionOrNull(path);
         }
     }
