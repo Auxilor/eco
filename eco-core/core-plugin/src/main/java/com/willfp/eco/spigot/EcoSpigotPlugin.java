@@ -41,8 +41,6 @@ import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,17 +90,6 @@ public class EcoSpigotPlugin extends EcoPlugin {
         this.getEventManager().registerListener(new DispenserArmorListener());
         this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
         this.getEventManager().registerListener(new ShapedRecipeListener());
-
-        OfflinePlayer player = Bukkit.getOfflinePlayer("Auxilor");
-
-        Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers")));
-        Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers2")));
-
-        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers2"), "Poggers 2");
-        PlayerData.writeString(player, this.getNamespacedKeyFactory().create("poggers"), "Poggers");
-
-        Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers")));
-        Bukkit.getLogger().info(PlayerData.readString(player, this.getNamespacedKeyFactory().create("poggers2")));
     }
 
     @Override
