@@ -25,9 +25,7 @@ import com.willfp.eco.spigot.eventlisteners.ArmorListener;
 import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
+import com.willfp.eco.spigot.integrations.anticheat.*;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention;
@@ -132,6 +130,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new IntegrationLoader("AAC5", () -> AnticheatManager.register(this, new AnticheatAAC())),
                 new IntegrationLoader("Matrix", () -> AnticheatManager.register(this, new AnticheatMatrix())),
                 new IntegrationLoader("NoCheatPlus", () -> AnticheatManager.register(this, new AnticheatNCP())),
+                new IntegrationLoader("Spartan", () -> AnticheatManager.register(this, new AnticheatSpartan())),
+                new IntegrationLoader("Vulcan", () -> AnticheatManager.register(this, new AnticheatVulcan())),
 
                 // Misc
                 new IntegrationLoader("mcMMO", () -> McmmoManager.register(new McmmoIntegrationImpl()))
