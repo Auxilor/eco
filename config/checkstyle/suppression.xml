@@ -8,6 +8,8 @@
     <!-- Internals don't need javadoc. -->
     <suppress files="[\\/]internal[\\/]" checks="MissingJavadocMethod"/>
     <suppress files="[\\/]internal[\\/]" checks="JavadocVariable"/>
+    <suppress files="[\\/]eco[\\/]spigot[\\/]" checks="MissingJavadocMethod"/>
+    <suppress files="[\\/]eco[\\/]spigot[\\/]" checks="JavadocVariable"/>
 
     <!-- Modified version of library -->
     <suppress files="ArmorEquipEvent.java" checks="JavadocVariable"/>

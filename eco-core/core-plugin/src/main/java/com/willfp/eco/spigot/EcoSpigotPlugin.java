@@ -25,6 +25,7 @@ import com.willfp.eco.spigot.eventlisteners.ArmorListener;
 import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
+import com.willfp.eco.spigot.gui.GUIListener;
 import com.willfp.eco.spigot.integrations.anticheat.*;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID;
@@ -83,11 +84,6 @@ public class EcoSpigotPlugin extends EcoPlugin {
     @Override
     public void enable() {
         new CollatedRunnable(this);
-        this.getEventManager().registerListener(new NaturalExpGainListeners());
-        this.getEventManager().registerListener(new ArmorListener());
-        this.getEventManager().registerListener(new DispenserArmorListener());
-        this.getEventManager().registerListener(new EntityDeathByEntityListeners(this));
-        this.getEventManager().registerListener(new ShapedRecipeListener());
     }
 
     @Override
@@ -157,7 +153,14 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
     @Override
     public List<Listener> getListeners() {
-        return new ArrayList<>();
+        return Arrays.asList(
+                new NaturalExpGainListeners(),
+                new ArmorListener(),
+                new DispenserArmorListener(),
+                new EntityDeathByEntityListeners(this),
+                new ShapedRecipeListener(),
+                new GUIListener(this)
+        );
     }
 
     @Override
