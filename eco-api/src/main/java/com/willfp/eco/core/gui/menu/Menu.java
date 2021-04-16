@@ -3,6 +3,8 @@ package com.willfp.eco.core.gui.menu;
 import com.willfp.eco.core.gui.slot.Slot;
 import com.willfp.eco.internal.gui.EcoMenu;
 import com.willfp.eco.internal.gui.FillerSlot;
+import com.willfp.eco.util.ListUtils;
+import com.willfp.eco.util.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -10,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public interface Menu {
@@ -29,34 +32,34 @@ public interface Menu {
     class Builder {
         private final int rows;
         private String title = "Menu";
-        private Slot[][] maskSlots;
-        private final Slot[][] slots;
+        private List<List<Slot>> maskSlots;
+        private final List<List<Slot>> slots;
         private Consumer<InventoryCloseEvent> onClose = (event) -> {
         };
 
         Builder(final int rows) {
             this.rows = rows;
-            this.slots = new Slot[rows][9];
-            this.maskSlots = new Slot[rows][9];
+            this.slots = ListUtils.create2DList(rows, 9);
+            this.maskSlots = ListUtils.create2DList(rows, 9);
         }
 
         public Builder setTitle(@NotNull final String title) {
-            this.title = title;
+            this.title = StringUtils.translate(title);
             return this;
         }
 
         public Builder setSlot(final int row,
                                final int column,
                                @NotNull final Slot slot) {
-            if (row < 0 || row > this.rows - 1) {
+            if (row < 1 || row > this.rows) {
                 throw new IllegalArgumentException("Invalid row number!");
             }
 
-            if (column < 0 || column > 8) {
+            if (column < 1 || column > 9) {
                 throw new IllegalArgumentException("Invalid column number!");
             }
 
-            slots[row][column] = slot;
+            slots.get(row - 1).set(column - 1, slot);
             return this;
         }
 
@@ -71,20 +74,20 @@ public interface Menu {
         }
 
         public Menu build() {
-            Slot[][] finalSlots = maskSlots;
-            for (int i = 0; i < slots.length; i++) {
-                for (int j = 0; j < slots[i].length; j++) {
-                    Slot slot = slots[i][j];
+            List<List<Slot>> finalSlots = maskSlots;
+            for (int i = 0; i < slots.size(); i++) {
+                for (int j = 0; j < slots.get(i).size(); j++) {
+                    Slot slot = slots.get(i).get(j);
                     if (slot != null) {
-                        finalSlots[i][j] = slot;
+                        finalSlots.get(i).set(j, slot);
                     }
                 }
             }
 
-            for (int i = 0; i < finalSlots.length; i++) {
-                for (int j = 0; j < finalSlots[i].length; j++) {
-                    if (finalSlots[i][j] == null) {
-                        finalSlots[i][j] = new FillerSlot(new ItemStack(Material.AIR));
+            for (List<Slot> finalSlot : finalSlots) {
+                for (int j = 0; j < finalSlot.size(); j++) {
+                    if (finalSlot.get(j) == null) {
+                        finalSlot.set(j, new FillerSlot(new ItemStack(Material.AIR)));
                     }
                 }
             }
