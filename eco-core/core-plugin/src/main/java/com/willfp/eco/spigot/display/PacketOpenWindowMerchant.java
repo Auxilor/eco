@@ -1,6 +1,7 @@
 package com.willfp.eco.spigot.display;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.core.AbstractPacketAdapter;
@@ -21,7 +22,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
      * @param plugin The plugin to listen through.
      */
     public PacketOpenWindowMerchant(@NotNull final EcoPlugin plugin) {
-        super(plugin, PacketType.Play.Server.OPEN_WINDOW_MERCHANT, false);
+        super(plugin, PacketType.Play.Server.OPEN_WINDOW_MERCHANT, ListenerPriority.MONITOR, true);
     }
 
     @Override
@@ -30,9 +31,9 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
                        @NotNull final PacketEvent event) {
         List<MerchantRecipe> recipes = new ArrayList<>();
 
-        for (MerchantRecipe recipe : packet.getMerchantRecipeLists().readSafely(0)) {
+        for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
             MerchantRecipe newRecipe = new MerchantRecipe(
-                    Display.displayAndFinalize(recipe.getResult()),
+                    Display.display(recipe.getResult().clone()),
                     recipe.getUses(),
                     recipe.getMaxUses(),
                     recipe.hasExperienceReward(),
@@ -41,7 +42,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
             );
 
             for (ItemStack ingredient : recipe.getIngredients()) {
-                newRecipe.addIngredient(Display.displayAndFinalize(ingredient));
+                newRecipe.addIngredient(Display.display(ingredient.clone()));
             }
             recipes.add(newRecipe);
         }
