@@ -79,6 +79,32 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
+     * The code that should be executed once the packet has been received.
+     *
+     * @param packet The packet.
+     * @param player The player.
+     * @param event  The event.
+     */
+    public void onReceive(@NotNull final PacketContainer packet,
+                          @NotNull final Player player,
+                          @NotNull final PacketEvent event) {
+        // Empty rather than abstract as implementations don't need both
+    }
+
+    /**
+     * THe code that should be executed once the packet has been sent.
+     *
+     * @param packet The packet.
+     * @param player The player.
+     * @param event  The event.
+     */
+    public void onSend(@NotNull final PacketContainer packet,
+                       @NotNull final Player player,
+                       @NotNull final PacketEvent event) {
+        // Empty rather than abstract as implementations don't need both
+    }
+
+    /**
      * Boilerplate to assert that the packet is of the specified type.
      *
      * @param event The ProtocolLib event.
@@ -94,6 +120,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
         }
 
         onReceive(event.getPacket(), event.getPlayer());
+        onReceive(event.getPacket(), event.getPlayer(), event);
     }
 
     /**
@@ -112,6 +139,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
         }
 
         onSend(event.getPacket(), event.getPlayer());
+        onSend(event.getPacket(), event.getPlayer(), event);
     }
 
     /**

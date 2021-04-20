@@ -2,16 +2,17 @@ package com.willfp.eco.spigot.display;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
-import com.willfp.eco.proxy.proxies.VillagerTradeProxy;
-import com.willfp.eco.spigot.InternalProxyUtils;
-import com.willfp.eco.core.EcoPlugin;
+import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.core.AbstractPacketAdapter;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.display.Display;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
     /**
@@ -25,11 +26,26 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
 
     @Override
     public void onSend(@NotNull final PacketContainer packet,
-                       @NotNull final Player player) {
-        List<MerchantRecipe> recipes = packet.getMerchantRecipeLists().readSafely(0);
+                       @NotNull final Player player,
+                       @NotNull final PacketEvent event) {
+        List<MerchantRecipe> recipes = new ArrayList<>();
 
-        recipes = recipes.stream().peek(merchantRecipe -> InternalProxyUtils.getProxy(VillagerTradeProxy.class).displayTrade(merchantRecipe)).collect(Collectors.toList());
+        for (MerchantRecipe recipe : packet.getMerchantRecipeLists().readSafely(0)) {
+            MerchantRecipe newRecipe = new MerchantRecipe(
+                    Display.displayAndFinalize(recipe.getResult()),
+                    recipe.getUses(),
+                    recipe.getMaxUses(),
+                    recipe.hasExperienceReward(),
+                    recipe.getVillagerExperience(),
+                    recipe.getPriceMultiplier()
+            );
 
-        packet.getMerchantRecipeLists().writeSafely(0, recipes);
+            for (ItemStack ingredient : recipe.getIngredients()) {
+                newRecipe.addIngredient(Display.displayAndFinalize(ingredient));
+            }
+            recipes.add(newRecipe);
+        }
+
+        packet.getMerchantRecipeLists().write(0, recipes);
     }
 }
