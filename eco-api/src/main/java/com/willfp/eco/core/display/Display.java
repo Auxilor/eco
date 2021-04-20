@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("DeprecatedIsStillUsed")
 @UtilityClass
 public class Display {
     /**
@@ -30,6 +31,7 @@ public class Display {
     /**
      * NamespacedKey for finalizing.
      */
+    @Deprecated
     private static NamespacedKey finalizeKey = null;
 
     /**
@@ -92,6 +94,7 @@ public class Display {
      * @param itemStack The item.
      * @return The itemstack.
      */
+    @Deprecated
     public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
         return finalize(display(itemStack));
     }
@@ -140,6 +143,7 @@ public class Display {
      * @param itemStack The item.
      * @return The itemstack.
      */
+    @Deprecated
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
 
@@ -164,6 +168,7 @@ public class Display {
      * @param itemStack The item.
      * @return The itemstack.
      */
+    @Deprecated
     public ItemStack unfinalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
 
@@ -185,6 +190,7 @@ public class Display {
      * @param itemStack The item.
      * @return If finalized.
      */
+    @Deprecated
     public boolean isFinalized(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
 
