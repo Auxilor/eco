@@ -6,14 +6,14 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.display.Display;
+import com.willfp.eco.proxy.proxies.VillagerTradeProxy;
+import com.willfp.eco.spigot.InternalProxyUtils;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
     /**
@@ -29,24 +29,10 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
     public void onSend(@NotNull final PacketContainer packet,
                        @NotNull final Player player,
                        @NotNull final PacketEvent event) {
-        List<MerchantRecipe> recipes = new ArrayList<>();
+        List<MerchantRecipe> recipes = packet.getMerchantRecipeLists().readSafely(0);
 
-        for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
-            MerchantRecipe newRecipe = new MerchantRecipe(
-                    Display.display(recipe.getResult().clone()),
-                    recipe.getUses(),
-                    recipe.getMaxUses(),
-                    recipe.hasExperienceReward(),
-                    recipe.getVillagerExperience(),
-                    recipe.getPriceMultiplier()
-            );
+        recipes = recipes.stream().peek(merchantRecipe -> InternalProxyUtils.getProxy(VillagerTradeProxy.class).displayTrade(merchantRecipe)).collect(Collectors.toList());
 
-            for (ItemStack ingredient : recipe.getIngredients()) {
-                newRecipe.addIngredient(Display.display(ingredient.clone()));
-            }
-            recipes.add(newRecipe);
-        }
-
-        packet.getMerchantRecipeLists().write(0, recipes);
+        packet.getMerchantRecipeLists().writeSafely(0, recipes);
     }
 }
