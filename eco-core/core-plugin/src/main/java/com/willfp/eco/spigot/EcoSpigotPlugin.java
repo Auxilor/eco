@@ -141,14 +141,19 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
     @Override
     public List<AbstractPacketAdapter> getPacketAdapters() {
-        return Arrays.asList(
+        List<AbstractPacketAdapter> adapters = new ArrayList<>(Arrays.asList(
                 new PacketAutoRecipe(this),
                 new PacketChat(this),
-                new PacketOpenWindowMerchant(this),
                 new PacketSetCreativeSlot(this),
                 new PacketSetSlot(this),
                 new PacketWindowItems(this)
-        );
+        ));
+
+        if (!this.getConfigYml().getBool("disable-villager-display")) {
+            adapters.add(new PacketOpenWindowMerchant(this));
+        }
+
+        return adapters;
     }
 
     @Override
