@@ -59,7 +59,7 @@ public final class ChatComponent implements ChatComponentProxy {
         String tag = json.getAsJsonObject().get("tag").toString();
         ItemStack itemStack = getFromTag(tag, id);
 
-        Display.display(itemStack);
+        Display.displayAndFinalize(itemStack);
 
         json.getAsJsonObject().remove("tag");
         String newTag = toJson(itemStack);
