@@ -10,6 +10,26 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 
 public final class VillagerTrade implements VillagerTradeProxy {
+    /**
+     * Handle.
+     */
+    private final Field handle;
+
+    /**
+     * Create new Villager Trade.
+     */
+    public VillagerTrade() {
+        try {
+            handle = CraftMerchantRecipe.class.getDeclaredField("handle");
+            handle.setAccessible(true);
+            return;
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+        throw new RuntimeException("Error!");
+    }
+
     @Override
     public MerchantRecipe displayTrade(@NotNull final MerchantRecipe recipe) {
         CraftMerchantRecipe oldRecipe = (CraftMerchantRecipe) recipe;
@@ -35,10 +55,8 @@ public final class VillagerTrade implements VillagerTradeProxy {
     @NotNull
     private net.minecraft.server.v1_16_R3.MerchantRecipe getHandle(@NotNull final CraftMerchantRecipe recipe) {
         try {
-            Field handle = CraftMerchantRecipe.class.getDeclaredField("handle");
-            handle.setAccessible(true);
             return (net.minecraft.server.v1_16_R3.MerchantRecipe) handle.get(recipe);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 

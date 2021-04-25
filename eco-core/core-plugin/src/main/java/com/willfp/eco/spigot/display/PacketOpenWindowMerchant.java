@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
     /**
@@ -29,10 +29,14 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
     public void onSend(@NotNull final PacketContainer packet,
                        @NotNull final Player player,
                        @NotNull final PacketEvent event) {
-        List<MerchantRecipe> recipes = packet.getMerchantRecipeLists().readSafely(0);
 
-        recipes = recipes.stream().peek(merchantRecipe -> InternalProxyUtils.getProxy(VillagerTradeProxy.class).displayTrade(merchantRecipe)).collect(Collectors.toList());
+        List<MerchantRecipe> recipes = new ArrayList<>();
 
-        packet.getMerchantRecipeLists().writeSafely(0, recipes);
+        for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
+            MerchantRecipe newRecipe = InternalProxyUtils.getProxy(VillagerTradeProxy.class).displayTrade(recipe);
+            recipes.add(newRecipe);
+        }
+
+        packet.getMerchantRecipeLists().write(0, recipes);
     }
 }
