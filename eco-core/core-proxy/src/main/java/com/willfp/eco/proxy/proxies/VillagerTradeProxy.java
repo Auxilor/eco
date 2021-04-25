@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 
 public interface VillagerTradeProxy extends AbstractProxy {
     /**
-     * Display a MerchantRecipe without creating a new one.
+     * Display a MerchantRecipe.
      *
      * @param recipe The recipe.
+     * @return The new recipe.
      */
-    void displayTrade(@NotNull MerchantRecipe recipe);
+    MerchantRecipe displayTrade(@NotNull MerchantRecipe recipe);
 }
