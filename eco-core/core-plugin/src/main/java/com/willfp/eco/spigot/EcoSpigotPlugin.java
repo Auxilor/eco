@@ -149,7 +149,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new PacketWindowItems(this)
         ));
 
-        if (!this.getConfigYml().getBool("disable-villager-display")) {
+        if (!this.getConfigYml().getBool("disable-display-on-villagers")) {
             adapters.add(new PacketOpenWindowMerchant(this));
         }
 
