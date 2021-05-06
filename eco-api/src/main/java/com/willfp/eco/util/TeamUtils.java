@@ -79,6 +79,7 @@ public class TeamUtils {
         MATERIAL_COLORS.forcePut(Material.LAPIS_ORE, ChatColor.BLUE);
         MATERIAL_COLORS.forcePut(Material.REDSTONE_ORE, ChatColor.RED);
         MATERIAL_COLORS.forcePut(Material.DIAMOND_ORE, ChatColor.AQUA);
+        MATERIAL_COLORS.forcePut(Material.EMERALD_ORE, ChatColor.GREEN);
         MATERIAL_COLORS.forcePut(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
     }
 }
