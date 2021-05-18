@@ -39,7 +39,13 @@ public final class ChatComponent implements ChatComponentProxy {
     }
 
     private void modifyBaseComponent(@NotNull final IChatBaseComponent component) {
-        component.getSiblings().forEach(this::modifyBaseComponent);
+        for (IChatBaseComponent sibling : component.getSiblings()) {
+            if (sibling == null) {
+                continue;
+            }
+
+            modifyBaseComponent(sibling);
+        }
         if (component instanceof ChatMessage) {
             Arrays.stream(((ChatMessage) component).getArgs())
                     .filter(o -> o instanceof IChatBaseComponent)
