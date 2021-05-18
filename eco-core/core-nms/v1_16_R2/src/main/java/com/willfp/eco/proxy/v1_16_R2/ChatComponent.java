@@ -27,7 +27,13 @@ public final class ChatComponent implements ChatComponentProxy {
         }
 
         IChatBaseComponent chatComponent = (IChatBaseComponent) object;
-        chatComponent.stream().forEach(this::modifyBaseComponent);
+        for (IChatBaseComponent iChatBaseComponent : chatComponent) {
+            if (iChatBaseComponent == null) {
+                continue;
+            }
+
+            modifyBaseComponent(iChatBaseComponent);
+        }
 
         return chatComponent;
     }
