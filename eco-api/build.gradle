@@ -13,13 +13,3 @@ compileJava.options.encoding = 'UTF-8'
 compileJava.dependsOn clean
 
 build.dependsOn publishToMavenLocal
-
-publishing {
-    publications {
-        shadow(MavenPublication) {
-            from components.java
-            artifact shadowJar
-            artifactId 'eco'
-        }
-    }
-}
