@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.util.ClassUtils;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -14,12 +15,21 @@ public class Prerequisite {
      * All existing prerequisites are registered on creation.
      */
     private static final List<Prerequisite> VALUES = new ArrayList<>();
+
     /**
      * Requires the server to be running an implementation of paper.
      */
     public static final Prerequisite HAS_PAPER = new Prerequisite(
             () -> ClassUtils.exists("com.destroystokyo.paper.event.player.PlayerElytraBoostEvent"),
             "Requires server to be running paper (or a fork)"
+    );
+
+    /**
+     * Requires the server to be running 1.17
+     */
+    public static final Prerequisite v1_17 = new Prerequisite(
+            () -> ProxyConstants.NMS_VERSION.contains("17"),
+            "Requires server to be running 1.17+"
     );
 
     /**
