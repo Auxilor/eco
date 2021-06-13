@@ -1,3 +1,7 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
 group 'com.willfp'
 version rootProject.version
 
@@ -13,3 +17,12 @@ compileJava.options.encoding = 'UTF-8'
 compileJava.dependsOn clean
 
 build.dependsOn publishToMavenLocal
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            from components.java
+            artifactId 'eco'
+        }
+    }
+}
