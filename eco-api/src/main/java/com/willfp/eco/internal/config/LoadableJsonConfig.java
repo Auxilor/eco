@@ -1,22 +1,39 @@
 package com.willfp.eco.internal.config;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.config.Config;
+import com.willfp.eco.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration> implements LoadableConfig {
+@SuppressWarnings({"unchecked", "unused"})
+public abstract class LoadableJsonConfig extends JSONConfigWrapper implements LoadableConfig {
     /**
      * The physical config file, as stored on disk.
      */
@@ -30,7 +47,7 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
     private final EcoPlugin plugin;
 
     /**
-     * The full name of the config file (eg config.yml).
+     * The full name of the config file (eg config.json).
      */
     @Getter
     private final String name;
@@ -55,12 +72,12 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    protected LoadableYamlConfig(@NotNull final String configName,
+    protected LoadableJsonConfig(@NotNull final String configName,
                                  @NotNull final EcoPlugin plugin,
                                  @NotNull final String subDirectoryPath,
                                  @NotNull final Class<?> source) {
         this.plugin = plugin;
-        this.name = configName + ".yml";
+        this.name = configName + ".json";
         this.source = source;
         this.subDirectoryPath = subDirectoryPath;
 
@@ -74,7 +91,12 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
         }
 
         this.configFile = new File(directory, this.name);
-        init(YamlConfiguration.loadConfiguration(configFile));
+
+        try {
+            init(this.configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -105,6 +127,11 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
         }
     }
 
+    /**
+     * Get resource path as relative to base directory.
+     *
+     * @return The resource path.
+     */
     @Override
     public String getResourcePath() {
         String resourcePath;
@@ -118,6 +145,11 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
         return "/" + resourcePath;
     }
 
+    /**
+     * Get YamlConfiguration as found in jar.
+     *
+     * @return The YamlConfiguration.
+     */
     @Override
     public YamlConfiguration getConfigInJar() {
         InputStream newIn = source.getResourceAsStream(getResourcePath());
@@ -138,8 +170,25 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
         return newConfig;
     }
 
+    /**
+     * Save the config.
+     *
+     * @throws IOException If error in saving.
+     */
     @Override
     public void save() throws IOException {
-        this.getHandle().save(this.getConfigFile());
+        String json = this.getHandle().toJson(this.getValues());
+        configFile.delete();
+        Files.write(configFile.toPath(), json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+    }
+
+    /**
+     * Initialize the config.
+     *
+     * @param file The config file.
+     * @throws FileNotFoundException If the file doesn't exist.
+     */
+    public void init(@NotNull final File file) throws FileNotFoundException {
+        super.init(this.getHandle().fromJson(new FileReader(file), HashMap.class));
     }
 }

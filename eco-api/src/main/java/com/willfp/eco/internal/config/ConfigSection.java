@@ -7,7 +7,7 @@ public class ConfigSection extends ConfigWrapper<ConfigurationSection> {
     /**
      * Config section.
      *
-     * @param section    The section.
+     * @param section The section.
      */
     public ConfigSection(@NotNull final ConfigurationSection section) {
         this.init(section);
