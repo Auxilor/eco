@@ -59,7 +59,7 @@ public class EcoMenu implements Menu {
                 if (i == rows * 9) {
                     break;
                 }
-                ItemStack slotItem = item.getItemStack();
+                ItemStack slotItem = item.getItemStack(player);
                 ItemMeta meta = slotItem.getItemMeta();
                 if (meta != null) {
                     List<String> lore = meta.getLore();

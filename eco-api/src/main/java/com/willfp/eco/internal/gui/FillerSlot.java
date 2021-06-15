@@ -10,6 +10,6 @@ public class FillerSlot extends EcoSlot {
      * @param itemStack The ItemStack.
      */
     public FillerSlot(@NotNull final ItemStack itemStack) {
-        super(itemStack, null, null, null, null, null);
+        super((player) -> itemStack, null, null, null, null, null);
     }
 }
