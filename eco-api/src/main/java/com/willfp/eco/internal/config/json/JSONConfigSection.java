@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.config;
+package com.willfp.eco.internal.config.json;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,6 +1,6 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.internal.config.UpdatableYamlConfig;
+import com.willfp.eco.internal.config.yaml.UpdatableYamlConfig;
 import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 

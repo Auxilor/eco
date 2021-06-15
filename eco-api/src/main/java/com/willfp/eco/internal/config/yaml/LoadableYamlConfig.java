@@ -1,6 +1,7 @@
-package com.willfp.eco.internal.config;
+package com.willfp.eco.internal.config.yaml;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.internal.config.LoadableConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -103,6 +104,8 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
             }
         } catch (IOException ignored) {
         }
+
+        plugin.getConfigSaveHandler().addConfig(this);
     }
 
     @Override

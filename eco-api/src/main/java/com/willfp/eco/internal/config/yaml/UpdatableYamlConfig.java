@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.config;
+package com.willfp.eco.internal.config.yaml;
 
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.configuration.InvalidConfigurationException;

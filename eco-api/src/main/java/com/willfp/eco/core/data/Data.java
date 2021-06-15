@@ -2,7 +2,7 @@ package com.willfp.eco.core.data;
 
 import com.willfp.eco.core.config.BaseConfig;
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.internal.config.ConfigSection;
+import com.willfp.eco.internal.config.yaml.ConfigSection;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;

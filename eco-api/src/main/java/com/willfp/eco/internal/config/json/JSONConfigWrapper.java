@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.config;
+package com.willfp.eco.internal.config.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

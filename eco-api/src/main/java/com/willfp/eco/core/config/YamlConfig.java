@@ -1,6 +1,6 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.internal.config.ConfigWrapper;
+import com.willfp.eco.internal.config.yaml.ConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 

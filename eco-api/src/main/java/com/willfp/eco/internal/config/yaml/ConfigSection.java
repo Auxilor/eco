@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.config;
+package com.willfp.eco.internal.config.yaml;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;

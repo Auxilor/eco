@@ -1,6 +1,7 @@
-package com.willfp.eco.internal.config;
+package com.willfp.eco.internal.config.json;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.internal.config.LoadableConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -86,6 +87,8 @@ public abstract class LoadableJsonConfig extends JSONConfigWrapper implements Lo
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        plugin.getConfigSaveHandler().addConfig(this);
     }
 
     @Override

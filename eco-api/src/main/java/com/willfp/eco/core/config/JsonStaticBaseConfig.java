@@ -1,8 +1,7 @@
 package com.willfp.eco.core.config;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.internal.config.LoadableJsonConfig;
-import com.willfp.eco.internal.config.LoadableYamlConfig;
+import com.willfp.eco.internal.config.json.LoadableJsonConfig;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class JsonStaticBaseConfig extends LoadableJsonConfig {
