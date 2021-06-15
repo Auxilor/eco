@@ -2,35 +2,17 @@ package com.willfp.eco.internal.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.util.StringUtils;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
 public abstract class JSONConfigWrapper implements Config {
@@ -97,7 +79,12 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     @Nullable
     public Config getSubsectionOrNull(@NotNull final String path) {
-
+        if (values.containsKey(path)) {
+            Map<String, Object> subsection = (Map<String, Object>) values.get(path);
+            return new JSONConfigSection(subsection);
+        } else {
+            return null;
+        }
     }
 
     @Override

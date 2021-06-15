@@ -1,18 +1,11 @@
 package com.willfp.eco.internal.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.Config;
-import com.willfp.eco.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,11 +19,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
 public abstract class LoadableJsonConfig extends JSONConfigWrapper implements LoadableConfig {

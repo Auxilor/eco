@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.config;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
