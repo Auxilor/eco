@@ -12,9 +12,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @SuppressWarnings({"unchecked", "unused"})
 public abstract class JSONConfigWrapper implements JSONConfig {
@@ -94,7 +96,25 @@ public abstract class JSONConfigWrapper implements JSONConfig {
     @NotNull
     @Override
     public List<String> getKeys(final boolean deep) {
-        return new ArrayList<>(values.keySet());
+        if (deep) {
+            return new ArrayList<>(getDeepKeys(new HashSet<>(), ""));
+        } else {
+            return new ArrayList<>(values.keySet());
+        }
+    }
+
+    protected Set<String> getDeepKeys(@NotNull final Set<String> list,
+                                      @NotNull final String root) {
+        for (String key : values.keySet()) {
+            list.add(root + key);
+
+            if (values.get(key) instanceof Map) {
+                JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(key));
+                list.addAll(section.getDeepKeys(list, root + key + "."));
+            }
+        }
+
+        return list;
     }
 
     @Override
