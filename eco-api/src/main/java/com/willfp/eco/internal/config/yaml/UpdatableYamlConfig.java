@@ -5,7 +5,11 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -83,5 +87,24 @@ public abstract class UpdatableYamlConfig extends LoadableYamlConfig {
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public YamlConfiguration getConfigInJar() {
+        InputStream newIn = this.getSource().getResourceAsStream(getResourcePath());
+
+        if (newIn == null) {
+            throw new NullPointerException(this.getName() + " is null?");
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(newIn, StandardCharsets.UTF_8));
+        YamlConfiguration newConfig = new YamlConfiguration();
+
+        try {
+            newConfig.load(reader);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        return newConfig;
     }
 }

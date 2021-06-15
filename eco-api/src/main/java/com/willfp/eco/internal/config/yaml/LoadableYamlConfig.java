@@ -4,18 +4,14 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.internal.config.LoadableConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration> implements LoadableConfig {
     /**
@@ -105,7 +101,7 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
         } catch (IOException ignored) {
         }
 
-        plugin.getConfigSaveHandler().addConfig(this);
+        plugin.getConfigHandler().addConfig(this);
     }
 
     @Override
@@ -119,26 +115,6 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
         }
 
         return "/" + resourcePath;
-    }
-
-    @Override
-    public YamlConfiguration getConfigInJar() {
-        InputStream newIn = source.getResourceAsStream(getResourcePath());
-
-        if (newIn == null) {
-            throw new NullPointerException(name + " is null?");
-        }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(newIn, StandardCharsets.UTF_8));
-        YamlConfiguration newConfig = new YamlConfiguration();
-
-        try {
-            newConfig.load(reader);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        return newConfig;
     }
 
     @Override

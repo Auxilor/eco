@@ -4,20 +4,15 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.internal.config.LoadableConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
@@ -88,7 +83,7 @@ public abstract class LoadableJsonConfig extends JSONConfigWrapper implements Lo
             e.printStackTrace();
         }
 
-        plugin.getConfigSaveHandler().addConfig(this);
+        plugin.getConfigHandler().addConfig(this);
     }
 
     @Override
@@ -135,31 +130,6 @@ public abstract class LoadableJsonConfig extends JSONConfigWrapper implements Lo
         }
 
         return "/" + resourcePath;
-    }
-
-    /**
-     * Get YamlConfiguration as found in jar.
-     *
-     * @return The YamlConfiguration.
-     */
-    @Override
-    public YamlConfiguration getConfigInJar() {
-        InputStream newIn = source.getResourceAsStream(getResourcePath());
-
-        if (newIn == null) {
-            throw new NullPointerException(name + " is null?");
-        }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(newIn, StandardCharsets.UTF_8));
-        YamlConfiguration newConfig = new YamlConfiguration();
-
-        try {
-            newConfig.load(reader);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        return newConfig;
     }
 
     /**

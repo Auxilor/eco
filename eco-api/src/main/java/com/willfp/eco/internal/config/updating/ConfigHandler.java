@@ -1,20 +1,29 @@
 package com.willfp.eco.internal.config.updating;
 
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.config.ConfigUpdater;
+import com.willfp.eco.internal.config.LoadableConfig;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdatableClassException;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException;
-import com.willfp.eco.core.PluginDependent;
-import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ConfigHandler extends PluginDependent {
+    /**
+     * A set of all configs that can be saved.
+     */
+    private final List<LoadableConfig> configs = new ArrayList<>();
+
     /**
      * A set of all classes that can be updated.
      */
@@ -71,5 +80,26 @@ public class ConfigHandler extends PluginDependent {
         }
 
         updatableClasses.add(updatableClass);
+    }
+
+    /**
+     * Save all configs.
+     */
+    public void saveAllConfigs() {
+        try {
+            for (LoadableConfig config : configs) {
+                config.save();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Add new config to be saved.
+     * @param config The config.
+     */
+    public void addConfig(@NotNull final LoadableConfig config) {
+        configs.add(config);
     }
 }
