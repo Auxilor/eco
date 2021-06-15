@@ -2,6 +2,7 @@ package com.willfp.eco.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.willfp.eco.core.Prerequisite;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -81,5 +82,9 @@ public class TeamUtils {
         MATERIAL_COLORS.forcePut(Material.DIAMOND_ORE, ChatColor.AQUA);
         MATERIAL_COLORS.forcePut(Material.EMERALD_ORE, ChatColor.GREEN);
         MATERIAL_COLORS.forcePut(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
+
+        if (Prerequisite.v1_17.isMet()) {
+            MATERIAL_COLORS.forcePut(Material.COPPER_ORE, ChatColor.GOLD);
+        }
     }
 }
