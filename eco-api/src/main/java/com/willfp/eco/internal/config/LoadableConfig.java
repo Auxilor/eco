@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.config;
 
-import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -41,30 +40,9 @@ public interface LoadableConfig {
     File getConfigFile();
 
     /**
-     * Get the plugin.
-     *
-     * @return The plugin.
-     */
-    EcoPlugin getPlugin();
-
-    /**
      * Get the config name (including extension)
      *
      * @return The name.
      */
     String getName();
-
-    /**
-     * Get the subdirectory path.
-     *
-     * @return The path.
-     */
-    String getSubDirectoryPath();
-
-    /**
-     * Get the source/provider.
-     *
-     * @return The source.
-     */
-    Class<?> getSource();
 }

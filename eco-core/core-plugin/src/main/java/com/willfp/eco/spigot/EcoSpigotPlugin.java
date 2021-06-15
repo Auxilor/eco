@@ -14,6 +14,7 @@ import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
 import com.willfp.eco.spigot.config.DataYml;
+import com.willfp.eco.spigot.config.TestJson;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
 import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
@@ -26,7 +27,11 @@ import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
 import com.willfp.eco.spigot.gui.GUIListener;
-import com.willfp.eco.spigot.integrations.anticheat.*;
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan;
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention;
@@ -60,6 +65,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
      */
     private final DataYml dataYml;
 
+    private final TestJson testJson;
+
     /**
      * Create a new instance of eco.
      */
@@ -79,6 +86,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
         this.dataYml = new DataYml(this);
         Data.init(this.dataYml);
+
+        this.testJson = new TestJson(this);
     }
 
     @Override
@@ -90,6 +99,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
     public void disable() {
         try {
             Data.save(this.dataYml);
+            testJson.save();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,7 +117,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
     @Override
     public void postLoad() {
-
+        this.getLogger().info(testJson.get("quiz.sport.q1.options").toString());
     }
 
     @Override

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
 public abstract class JSONConfigWrapper implements Config {
@@ -29,6 +30,12 @@ public abstract class JSONConfigWrapper implements Config {
     private final Map<String, Object> values = new HashMap<>();
 
     /**
+     * All cached values.
+     */
+    @Getter
+    private final Map<String, Object> cache = new HashMap<>();
+
+    /**
      * Abstract config.
      */
     protected JSONConfigWrapper() {
@@ -42,12 +49,45 @@ public abstract class JSONConfigWrapper implements Config {
 
     @Override
     public final void clearCache() {
-        // Do nothing.
+        cache.clear();
     }
 
     @Override
     public boolean has(@NotNull final String path) {
-        return values.containsKey(path);
+        return getOfKnownType(path, Object.class) != null;
+    }
+
+    @Nullable
+    protected <T> T getOfKnownType(@NotNull final String path,
+                                   @NotNull final Class<T> clazz) {
+        return getOfKnownType(path, clazz, true);
+    }
+
+    @Nullable
+    protected <T> T getOfKnownType(@NotNull final String path,
+                                   @NotNull final Class<T> clazz,
+                                   final boolean isBase) {
+        String closestPath = path;
+
+        if (cache.containsKey(path) && isBase) {
+            return (T) cache.get(path);
+        }
+
+        if (path.contains(".")) {
+            String[] split = path.split("\\.");
+            closestPath = split[0];
+        }
+
+        if (values.get(closestPath) instanceof Map && !path.equals(closestPath)) {
+            JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(closestPath));
+            return section.getOfKnownType(path.substring(closestPath.length() + 1), clazz, false);
+        } else {
+            if (values.containsKey(closestPath)) {
+                return (T) values.get(closestPath);
+            } else {
+                return null;
+            }
+        }
     }
 
     @NotNull
@@ -59,13 +99,33 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     @Nullable
     public Object get(@NotNull final String path) {
-        return values.get(path);
+        return getOfKnownType(path, Object.class);
     }
 
     @Override
     public void set(@NotNull final String path,
                     @Nullable final Object object) {
-        values.put(path, object);
+        setRecursively(path, object, true);
+        clearCache();
+    }
+
+    protected void setRecursively(@NotNull final String path,
+                                  @Nullable final Object object,
+                                  final boolean isBase) {
+        String closestPath = path;
+
+        if (path.contains(".")) {
+            String[] split = path.split("\\.");
+            closestPath = split[0];
+        }
+
+        if (values.get(closestPath) instanceof Map && !path.equals(closestPath)) {
+            JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(closestPath));
+            section.setRecursively(path.substring(closestPath.length() + 1), object, false);
+            values.put(closestPath, section.getValues());
+        } else {
+            values.put(path, object);
+        }
     }
 
     @Override
@@ -89,12 +149,7 @@ public abstract class JSONConfigWrapper implements Config {
 
     @Override
     public int getInt(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (int) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getInt(path);
-        }
+        return Objects.requireNonNullElse(getOfKnownType(path, Integer.class), 0);
     }
 
     @Override
@@ -110,23 +165,13 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     public int getInt(@NotNull final String path,
                       final int def) {
-        if (values.containsKey(path)) {
-            return (int) values.get(path);
-        } else {
-            values.put(path, def);
-            return getInt(path);
-        }
+        return Objects.requireNonNullElse(getOfKnownType(path, Integer.class), def);
     }
 
     @Override
     @NotNull
     public List<Integer> getInts(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (List<Integer>) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getInts(path);
-        }
+        return (List<Integer>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>());
     }
 
     @Override
@@ -141,12 +186,7 @@ public abstract class JSONConfigWrapper implements Config {
 
     @Override
     public boolean getBool(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (Boolean) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getBool(path);
-        }
+        return Objects.requireNonNullElse(getOfKnownType(path, Boolean.class), false);
     }
 
     @Override
@@ -162,12 +202,7 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     @NotNull
     public List<Boolean> getBools(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (List<Boolean>) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getBools(path);
-        }
+        return (List<Boolean>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>());
     }
 
     @Override
@@ -183,12 +218,7 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     @NotNull
     public String getString(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (String) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getString(path);
-        }
+        return Objects.requireNonNullElse(getOfKnownType(path, String.class), "");
     }
 
     @Override
@@ -204,12 +234,7 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (List<String>) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getStrings(path);
-        }
+        return (List<String>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>());
     }
 
     @Override
@@ -224,12 +249,7 @@ public abstract class JSONConfigWrapper implements Config {
 
     @Override
     public double getDouble(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (double) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getDouble(path);
-        }
+        return Objects.requireNonNullElse(getOfKnownType(path, Double.class), 0D);
     }
 
     @Override
@@ -245,12 +265,7 @@ public abstract class JSONConfigWrapper implements Config {
     @Override
     @NotNull
     public List<Double> getDoubles(@NotNull final String path) {
-        if (values.containsKey(path)) {
-            return (List<Double>) values.get(path);
-        } else {
-            values.put(path, 0);
-            return getDoubles(path);
-        }
+        return (List<Double>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>());
     }
 
     @Override

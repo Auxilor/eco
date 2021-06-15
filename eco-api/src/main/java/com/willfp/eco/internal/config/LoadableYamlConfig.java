@@ -20,7 +20,7 @@ public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration
     /**
      * The physical config file, as stored on disk.
      */
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final File configFile;
 
     /**

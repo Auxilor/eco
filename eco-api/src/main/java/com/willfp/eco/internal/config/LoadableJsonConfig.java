@@ -26,7 +26,7 @@ public abstract class LoadableJsonConfig extends JSONConfigWrapper implements Lo
     /**
      * The physical config file, as stored on disk.
      */
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final File configFile;
 
     /**
