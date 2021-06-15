@@ -5,10 +5,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -136,6 +139,25 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta> {
      */
     public AbstractItemStackBuilder<T> setUnbreakable(final boolean unbreakable) {
         meta.setUnbreakable(unbreakable);
+
+        return this;
+    }
+
+    /**
+     * Set persistent meta key.
+     *
+     * @param key  The key.
+     * @param type The type.
+     * @param obj  The object.
+     * @param <A>  The type.
+     * @param <B>  The type.
+     * @return The persistent key.
+     */
+    public <A, B> AbstractItemStackBuilder<T> setPersistentKey(@NotNull final NamespacedKey key,
+                                                               @NotNull final PersistentDataType<A, B> type,
+                                                               @NotNull final B obj) {
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(key, type, obj);
 
         return this;
     }
