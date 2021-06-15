@@ -13,7 +13,7 @@ import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
-import com.willfp.eco.spigot.config.DataYml;
+import com.willfp.eco.spigot.config.DataJson;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
 import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
@@ -60,9 +60,9 @@ public class EcoSpigotPlugin extends EcoPlugin {
     private static EcoSpigotPlugin instance;
 
     /**
-     * data.yml.
+     * data.json.
      */
-    private final DataYml dataYml;
+    private final DataJson dataJson;
 
     /**
      * Create a new instance of eco.
@@ -81,8 +81,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
         TridentStackProxy tridentStackProxy = InternalProxyUtils.getProxy(TridentStackProxy.class);
         TridentUtils.initialize(tridentStackProxy::getTridentStack);
 
-        this.dataYml = new DataYml(this);
-        Data.init(this.dataYml);
+        this.dataJson = new DataJson(this);
+        Data.init(this.dataJson);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
     @Override
     public void disable() {
         try {
-            Data.save(this.dataYml);
+            Data.save(this.dataJson);
         } catch (IOException e) {
             e.printStackTrace();
         }

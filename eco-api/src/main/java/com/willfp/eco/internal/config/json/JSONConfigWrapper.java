@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings({"unchecked", "unused"})
-public abstract class JSONConfigWrapper implements JSONConfig {
+public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
@@ -145,7 +145,13 @@ public abstract class JSONConfigWrapper implements JSONConfig {
             section.setRecursively(path.substring(closestPath.length() + 1), object, false);
             values.put(closestPath, section.getValues());
         } else {
-            values.put(path, object);
+            Object obj = object;
+
+            if (object instanceof JSONConfig) {
+                obj = ((JSONConfigWrapper) object).getValues();
+            }
+
+            values.put(path, obj);
         }
     }
 
@@ -323,5 +329,10 @@ public abstract class JSONConfigWrapper implements JSONConfig {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public JSONConfigWrapper clone() {
+        return new JSONConfigSection(new HashMap<>(this.getValues()));
     }
 }

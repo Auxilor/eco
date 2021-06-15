@@ -1,12 +1,13 @@
 package com.willfp.eco.core.data;
 
-import com.willfp.eco.core.config.BaseConfig;
+import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.internal.config.yaml.ConfigSection;
+import com.willfp.eco.core.config.JSONConfig;
+import com.willfp.eco.core.config.JsonStaticBaseConfig;
+import com.willfp.eco.internal.config.LoadableConfig;
+import com.willfp.eco.internal.config.json.JSONConfigSection;
 import lombok.experimental.UtilityClass;
-import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,93 +21,21 @@ public class Data {
     /**
      * Instance of eco data.yml.
      */
-    private static BaseConfig dataYml = null;
+    private static JSONConfig datafile = null;
 
     /**
      * All cached player data.
      */
-    private static final Map<UUID, Config> PLAYER_DATA = new HashMap<>();
+    private static final Map<UUID, Map<EcoPlugin, JSONConfig>> PLAYER_DATA = new HashMap<>();
 
     /**
-     * Write an integer to a player's data.
+     * Initialize the player data with an instance of data.json.
      *
-     * @param player The player.
-     * @param key    The key.
-     * @param data   The data.
-     */
-    public void writeInt(@NotNull final OfflinePlayer player,
-                         @NotNull final NamespacedKey key,
-                         final int data) {
-        getPlayerConfig(player).set(key.toString(), data);
-    }
-
-    /**
-     * Write a string to a player's data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     * @param data   The data.
-     */
-    public void writeString(@NotNull final OfflinePlayer player,
-                            @NotNull final NamespacedKey key,
-                            @NotNull final String data) {
-        getPlayerConfig(player).set(key.toString(), data);
-    }
-
-    /**
-     * Write a double to a player's data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     * @param data   The data.
-     */
-    public void writeDouble(@NotNull final OfflinePlayer player,
-                            @NotNull final NamespacedKey key,
-                            final double data) {
-        getPlayerConfig(player).set(key.toString(), data);
-    }
-
-    /**
-     * Read an integer from a player's data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     */
-    public int readInt(@NotNull final OfflinePlayer player,
-                       @NotNull final NamespacedKey key) {
-        return getPlayerConfig(player).getInt(key.toString());
-    }
-
-    /**
-     * Read a string from a player's data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     */
-    public String readString(@NotNull final OfflinePlayer player,
-                             @NotNull final NamespacedKey key) {
-        return getPlayerConfig(player).getString(key.toString());
-    }
-
-    /**
-     * Read a double from a player's data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     */
-    public double readDouble(@NotNull final OfflinePlayer player,
-                             @NotNull final NamespacedKey key) {
-        return getPlayerConfig(player).getDouble(key.toString());
-    }
-
-    /**
-     * Initialize the player data with an instance of data.yml.
-     *
-     * @param config data.yml.
+     * @param config data.json.
      */
     @ApiStatus.Internal
-    public void init(@NotNull final BaseConfig config) {
-        dataYml = config;
+    public void init(@NotNull final JsonStaticBaseConfig config) {
+        datafile = config;
     }
 
     /**
@@ -116,25 +45,35 @@ public class Data {
      * @throws IOException Error during saving.
      */
     @ApiStatus.Internal
-    public void save(@NotNull final BaseConfig config) throws IOException {
-        for (Map.Entry<UUID, Config> entry : PLAYER_DATA.entrySet()) {
-            for (String key : entry.getValue().getKeys(false)) {
-                config.set("player-data." + entry.getKey().toString() + "." + key, entry.getValue().get(key));
-            }
+    public void save(@NotNull final Config config) throws IOException {
+        for (Map.Entry<UUID, Map<EcoPlugin, JSONConfig>> entry : PLAYER_DATA.entrySet()) {
+            entry.getValue().forEach((plugin, jsonConfig) -> {
+                for (String key : jsonConfig.getKeys(false)) {
+                    config.set("player-data." + plugin.getName().toLowerCase() + "." + entry.getKey().toString() + "." + key, jsonConfig);
+                }
+            });
         }
-        config.save();
+        ((LoadableConfig) config).save();
     }
 
-    private Config getPlayerConfig(@NotNull final OfflinePlayer player) {
-        Config config = PLAYER_DATA.get(player.getUniqueId());
+    /**
+     * Get the data for a player.
+     *
+     * @param player The player.
+     * @param plugin The plugin.
+     * @return The data.
+     */
+    public JSONConfig getData(@NotNull final OfflinePlayer player,
+                              @NotNull final EcoPlugin plugin) {
+        JSONConfig config = PLAYER_DATA.get(player.getUniqueId()).get(plugin);
 
         if (config == null) {
-            config = dataYml.getSubsectionOrNull("player-data." + player.getUniqueId());
+            config = (JSONConfig) datafile.getSubsectionOrNull("player-data." + plugin.getName().toLowerCase() + "." + player.getUniqueId());
             if (config == null) {
-                config = new ConfigSection(new YamlConfiguration());
+                config = new JSONConfigSection(new HashMap<>());
             }
-            PLAYER_DATA.put(player.getUniqueId(), config);
-            return getPlayerConfig(player);
+            PLAYER_DATA.get(player.getUniqueId()).put(plugin, config);
+            return getData(player, plugin);
         }
 
         return config;
