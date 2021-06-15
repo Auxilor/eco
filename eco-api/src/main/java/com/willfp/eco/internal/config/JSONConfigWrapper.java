@@ -3,6 +3,7 @@ package com.willfp.eco.internal.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.willfp.eco.core.config.Config;
+import com.willfp.eco.core.config.JSONConfig;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
-public abstract class JSONConfigWrapper implements Config {
+public abstract class JSONConfigWrapper implements JSONConfig {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
@@ -145,6 +146,32 @@ public abstract class JSONConfigWrapper implements Config {
         } else {
             return null;
         }
+    }
+
+    @Override
+    @NotNull
+    public List<JSONConfig> getSubsections(@NotNull final String path) {
+        List<JSONConfig> subsections = getSubsectionsOrNull(path);
+        Validate.notNull(subsections);
+        return subsections;
+    }
+
+    @Override
+    @Nullable
+    public List<JSONConfig> getSubsectionsOrNull(@NotNull final String path) {
+        List<Map<String, Object>> maps = (List<Map<String, Object>>) getOfKnownType(path, Object.class);
+
+        if (maps == null) {
+            return null;
+        }
+
+        List<JSONConfig> configs = new ArrayList<>();
+
+        for (Map<String, Object> map : maps) {
+            configs.add(new JSONConfigSection(map));
+        }
+
+        return configs;
     }
 
     @Override
