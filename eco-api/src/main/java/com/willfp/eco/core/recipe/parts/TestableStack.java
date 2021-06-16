@@ -11,7 +11,7 @@ public class TestableStack implements TestableItem {
     /**
      * The item.
      */
-    private final TestableItem item;
+    private final TestableItem handle;
 
     /**
      * The amount.
@@ -29,7 +29,7 @@ public class TestableStack implements TestableItem {
                          final int amount) {
         Validate.isTrue(!(item instanceof TestableStack));
 
-        this.item = item;
+        this.handle = item;
         this.amount = amount;
     }
 
@@ -41,12 +41,12 @@ public class TestableStack implements TestableItem {
      */
     @Override
     public boolean matches(@Nullable final ItemStack itemStack) {
-        return itemStack != null && item.matches(itemStack) && itemStack.getAmount() >= amount;
+        return itemStack != null && handle.matches(itemStack) && itemStack.getAmount() >= amount;
     }
 
     @Override
     public ItemStack getItem() {
-        ItemStack temp = item.getItem().clone();
+        ItemStack temp = handle.getItem().clone();
         temp.setAmount(amount);
         return temp;
     }
