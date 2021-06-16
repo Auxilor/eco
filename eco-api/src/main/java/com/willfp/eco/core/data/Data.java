@@ -65,6 +65,10 @@ public class Data {
      */
     public JSONConfig getData(@NotNull final OfflinePlayer player,
                               @NotNull final EcoPlugin plugin) {
+        if (!PLAYER_DATA.containsKey(player.getUniqueId())) {
+            PLAYER_DATA.put(player.getUniqueId(), new HashMap<>());
+        }
+
         JSONConfig config = PLAYER_DATA.get(player.getUniqueId()).get(plugin);
 
         if (config == null) {
