@@ -1,11 +1,16 @@
 package com.willfp.eco.core.recipe.parts;
 
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.internal.InternalInterfacing;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestableStack implements TestableItem {
     /**
@@ -47,7 +52,18 @@ public class TestableStack implements TestableItem {
     @Override
     public ItemStack getItem() {
         ItemStack temp = handle.getItem().clone();
-        temp.setAmount(amount);
+        ItemMeta meta = temp.getItemMeta();
+        assert meta != null;
+
+        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+        assert lore != null;
+        lore.add("");
+        String add = InternalInterfacing.getInstance().getLang().getString("multiple-in-craft");
+        add = add.replace("%amount%", String.valueOf(amount));
+        lore.add(add);
+        meta.setLore(lore);
+        temp.setItemMeta(meta);
+
         return temp;
     }
 }
