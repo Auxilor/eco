@@ -2,6 +2,7 @@ package com.willfp.eco.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.willfp.eco.core.Prerequisite;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,6 +11,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -17,7 +20,7 @@ public class TeamUtils {
     /**
      * Ore ChatColors.
      */
-    private static final BiMap<Material, ChatColor> MATERIAL_COLORS = HashBiMap.create();
+    private static final Map<Material, ChatColor> MATERIAL_COLORS = new HashMap<>();
 
     /**
      * All chat color teams.
@@ -73,13 +76,25 @@ public class TeamUtils {
             fromChatColor(value);
         }
 
-        MATERIAL_COLORS.forcePut(Material.COAL_ORE, ChatColor.BLACK);
-        MATERIAL_COLORS.forcePut(Material.IRON_ORE, ChatColor.GRAY);
-        MATERIAL_COLORS.forcePut(Material.GOLD_ORE, ChatColor.YELLOW);
-        MATERIAL_COLORS.forcePut(Material.LAPIS_ORE, ChatColor.BLUE);
-        MATERIAL_COLORS.forcePut(Material.REDSTONE_ORE, ChatColor.RED);
-        MATERIAL_COLORS.forcePut(Material.DIAMOND_ORE, ChatColor.AQUA);
-        MATERIAL_COLORS.forcePut(Material.EMERALD_ORE, ChatColor.GREEN);
-        MATERIAL_COLORS.forcePut(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
+        MATERIAL_COLORS.put(Material.COAL_ORE, ChatColor.BLACK);
+        MATERIAL_COLORS.put(Material.IRON_ORE, ChatColor.GRAY);
+        MATERIAL_COLORS.put(Material.GOLD_ORE, ChatColor.YELLOW);
+        MATERIAL_COLORS.put(Material.LAPIS_ORE, ChatColor.BLUE);
+        MATERIAL_COLORS.put(Material.REDSTONE_ORE, ChatColor.RED);
+        MATERIAL_COLORS.put(Material.DIAMOND_ORE, ChatColor.AQUA);
+        MATERIAL_COLORS.put(Material.EMERALD_ORE, ChatColor.GREEN);
+        MATERIAL_COLORS.put(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
+
+        if (Prerequisite.v1_17.isMet()) {
+            MATERIAL_COLORS.put(Material.COPPER_ORE, ChatColor.GOLD);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_COPPER_ORE, ChatColor.GOLD);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_COAL_ORE, ChatColor.BLACK);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_IRON_ORE, ChatColor.GRAY);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_GOLD_ORE, ChatColor.YELLOW);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_LAPIS_ORE, ChatColor.BLUE);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_REDSTONE_ORE, ChatColor.RED);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_DIAMOND_ORE, ChatColor.AQUA);
+            MATERIAL_COLORS.put(Material.DEEPSLATE_EMERALD_ORE, ChatColor.GREEN);
+        }
     }
 }
