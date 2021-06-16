@@ -63,6 +63,7 @@ public class TestableStack implements TestableItem {
         lore.add(add);
         meta.setLore(lore);
         temp.setItemMeta(meta);
+        temp.setAmount(amount);
 
         return temp;
     }

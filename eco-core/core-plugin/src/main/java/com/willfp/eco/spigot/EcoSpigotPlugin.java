@@ -177,7 +177,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new ArmorListener(),
                 new DispenserArmorListener(),
                 new EntityDeathByEntityListeners(this),
-                new ShapedRecipeListener(),
+                new ShapedRecipeListener(this),
                 new PlayerJumpListeners(),
                 new GUIListener(this)
         );
