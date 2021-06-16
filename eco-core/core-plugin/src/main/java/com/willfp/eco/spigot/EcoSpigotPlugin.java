@@ -25,6 +25,7 @@ import com.willfp.eco.spigot.eventlisteners.ArmorListener;
 import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
+import com.willfp.eco.spigot.eventlisteners.PlayerJumpListeners;
 import com.willfp.eco.spigot.gui.GUIListener;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
@@ -168,6 +169,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new DispenserArmorListener(),
                 new EntityDeathByEntityListeners(this),
                 new ShapedRecipeListener(),
+                new PlayerJumpListeners(),
                 new GUIListener(this)
         );
     }
