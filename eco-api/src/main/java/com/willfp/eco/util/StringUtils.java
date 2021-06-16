@@ -79,16 +79,16 @@ public class StringUtils {
                                                  @NotNull final Pattern pattern) {
         Matcher matcher = pattern.matcher(message);
 
-        StringBuffer buffer = new StringBuffer(message.length() + 4 * 8);
+        StringBuilder builder = new StringBuilder(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
-            matcher.appendReplacement(buffer, COLOR_CHAR + "x"
+            matcher.appendReplacement(builder, COLOR_CHAR + "x"
                     + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
                     + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
                     + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5));
         }
 
-        return matcher.appendTail(buffer).toString();
+        return matcher.appendTail(builder).toString();
     }
 
     /**
@@ -198,8 +198,7 @@ public class StringUtils {
             return (String) object;
         } else if (object instanceof Double) {
             return NumberUtils.format((Double) object);
-        } else if (object instanceof Collection<?>) {
-            Collection<?> c = (Collection<?>) object;
+        } else if (object instanceof Collection<?> c) {
             return c.stream().map(StringUtils::internalToString).collect(Collectors.joining(", "));
         } else {
             return String.valueOf(object);

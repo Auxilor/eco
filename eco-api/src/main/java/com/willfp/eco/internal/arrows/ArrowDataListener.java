@@ -31,14 +31,13 @@ public class ArrowDataListener extends PluginDependent implements Listener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLaunch(final ProjectileLaunchEvent event) {
-        if (!(event.getEntity() instanceof Arrow)) {
+        if (!(event.getEntity() instanceof Arrow arrow)) {
             return;
         }
         if (!(event.getEntity().getShooter() instanceof LivingEntity)) {
             return;
         }
 
-        Arrow arrow = (Arrow) event.getEntity();
         LivingEntity entity = (LivingEntity) arrow.getShooter();
 
         if (entity.getEquipment() == null) {

@@ -41,23 +41,12 @@ public class EcoSlot implements Slot {
 
     public void handleInventoryClick(@NotNull final InventoryClickEvent event) {
         switch (event.getClick()) {
-            case LEFT:
-                this.onLeftClick.accept(event, this);
-                break;
-            case RIGHT:
-                this.onRightClick.accept(event, this);
-                break;
-            case SHIFT_LEFT:
-                this.onShiftLeftClick.accept(event, this);
-                break;
-            case SHIFT_RIGHT:
-                this.onShiftRightClick.accept(event, this);
-                break;
-            case MIDDLE:
-                this.onMiddleClick.accept(event, this);
-                break;
-            default:
-                break;
+            case LEFT -> this.onLeftClick.accept(event, this);
+            case RIGHT -> this.onRightClick.accept(event, this);
+            case SHIFT_LEFT -> this.onShiftLeftClick.accept(event, this);
+            case SHIFT_RIGHT -> this.onShiftRightClick.accept(event, this);
+            case MIDDLE -> this.onMiddleClick.accept(event, this);
+            default -> { }
         }
     }
 

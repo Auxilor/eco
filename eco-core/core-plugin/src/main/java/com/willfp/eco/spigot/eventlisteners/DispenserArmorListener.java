@@ -12,8 +12,7 @@ public class DispenserArmorListener implements Listener {
     @EventHandler
     public void dispenseArmorEvent(@NotNull final BlockDispenseArmorEvent event) {
         ArmorType type = ArmorType.matchType(event.getItem());
-        if (type != null && event.getTargetEntity() instanceof Player) {
-            Player p = (Player) event.getTargetEntity();
+        if (type != null && event.getTargetEntity() instanceof Player p) {
             ArmorEquipEvent armorEquipEvent = new ArmorEquipEvent(p);
             Bukkit.getPluginManager().callEvent(armorEquipEvent);
         }

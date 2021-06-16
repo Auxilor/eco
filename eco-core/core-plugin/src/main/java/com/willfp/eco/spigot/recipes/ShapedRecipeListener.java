@@ -26,11 +26,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void complexRecipeListener(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
@@ -58,11 +56,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void complexRecipeListener(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
@@ -94,19 +90,15 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInEcoRecipe(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         CraftingRecipe craftingRecipe = Recipes.getRecipe(recipe.getKey());
 
-        if (!(craftingRecipe instanceof ShapedCraftingRecipe)) {
+        if (!(craftingRecipe instanceof ShapedCraftingRecipe shapedCraftingRecipe)) {
             return;
         }
-
-        ShapedCraftingRecipe shapedCraftingRecipe = (ShapedCraftingRecipe) craftingRecipe;
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
@@ -127,19 +119,15 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInEcoRecipe(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         CraftingRecipe craftingRecipe = Recipes.getRecipe(recipe.getKey());
 
-        if (!(craftingRecipe instanceof ShapedCraftingRecipe)) {
+        if (!(craftingRecipe instanceof ShapedCraftingRecipe shapedCraftingRecipe)) {
             return;
         }
-
-        ShapedCraftingRecipe shapedCraftingRecipe = (ShapedCraftingRecipe) craftingRecipe;
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
@@ -162,11 +150,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
@@ -187,11 +173,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
