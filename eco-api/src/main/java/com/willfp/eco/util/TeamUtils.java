@@ -85,7 +85,7 @@ public class TeamUtils {
         MATERIAL_COLORS.put(Material.EMERALD_ORE, ChatColor.GREEN);
         MATERIAL_COLORS.put(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
 
-        if (Prerequisite.v1_17.isMet()) {
+        if (Prerequisite.HAS_1_17.isMet()) {
             MATERIAL_COLORS.put(Material.COPPER_ORE, ChatColor.GOLD);
             MATERIAL_COLORS.put(Material.DEEPSLATE_COPPER_ORE, ChatColor.GOLD);
             MATERIAL_COLORS.put(Material.DEEPSLATE_COAL_ORE, ChatColor.BLACK);
