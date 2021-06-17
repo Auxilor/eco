@@ -11,7 +11,7 @@ public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta, SkullBuild
      * Create a new EnchantedBookBuilder.
      */
     public SkullBuilder() {
-        super(Material.ENCHANTED_BOOK);
+        super(Material.PLAYER_HEAD);
     }
 
     /**
