@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.willfp.eco.core.config.Config;
 import com.willfp.eco.core.config.JSONConfig;
+import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -272,7 +273,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
     @Override
     @NotNull
     public String getString(@NotNull final String path) {
-        return Objects.requireNonNullElse(getOfKnownType(path, String.class), "");
+        return StringUtils.translate(Objects.requireNonNullElse(getOfKnownType(path, String.class), ""));
     }
 
     @Override

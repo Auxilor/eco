@@ -40,6 +40,32 @@ public class StringUtils {
             .build();
 
     /**
+     * Translate a list of strings - converts Placeholders and Color codes.
+     *
+     * @param list The messages to translate.
+     * @param player  The player to translate placeholders with respect to.
+     * @return The message, translated.
+     */
+    public List<String> translateList(@NotNull final List<String> list,
+                                      @Nullable final Player player) {
+        list.replaceAll(s -> translate(s, player));
+
+        return list;
+    }
+
+    /**
+     * Translate a list of strings - converts Placeholders and Color codes.
+     *
+     * @param list The messages to translate.
+     * @return The message, translated.
+     */
+    public List<String> translateList(@NotNull final List<String> list) {
+        list.replaceAll(s -> translate(s, null));
+
+        return list;
+    }
+
+    /**
      * Translate a string - converts Placeholders and Color codes.
      *
      * @param message The message to translate.
