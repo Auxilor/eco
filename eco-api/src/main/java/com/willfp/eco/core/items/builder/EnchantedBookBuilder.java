@@ -6,7 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 
-public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentStorageMeta> {
+public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentStorageMeta, EnchantedBookBuilder> {
     /**
      * Create a new EnchantedBookBuilder.
      */
