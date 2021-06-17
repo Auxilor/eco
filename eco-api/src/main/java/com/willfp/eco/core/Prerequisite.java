@@ -25,9 +25,18 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.17
+     * Requires the server to be running 1.17.
      */
+    @Deprecated
     public static final Prerequisite v1_17 = new Prerequisite(
+            () -> ProxyConstants.NMS_VERSION.contains("17"),
+            "Requires server to be running 1.17+"
+    );
+
+    /**
+     * Requires the server to be running 1.17.
+     */
+    public static final Prerequisite HAS_1_17 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("17"),
             "Requires server to be running 1.17+"
     );
