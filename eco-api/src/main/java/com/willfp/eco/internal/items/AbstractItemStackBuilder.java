@@ -5,10 +5,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -124,6 +126,24 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta> {
      */
     public AbstractItemStackBuilder<T> addItemFlag(@NotNull final ItemFlag... itemFlags) {
         meta.addItemFlags(itemFlags);
+
+        return this;
+    }
+
+    /**
+     * Write meta key.
+     *
+     * @param key   The key.
+     * @param type  The type.
+     * @param value The value.
+     * @param <A>   The type.
+     * @param <B>   The type.
+     * @return The builder.
+     */
+    public <A, B> AbstractItemStackBuilder<T> writeMetaKey(@NotNull final NamespacedKey key,
+                                                           @NotNull final PersistentDataType<A, B> type,
+                                                           @NotNull final B value) {
+        meta.getPersistentDataContainer().set(key, type, value);
 
         return this;
     }
