@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,6 +157,18 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta> {
      */
     public AbstractItemStackBuilder<T> setUnbreakable(final boolean unbreakable) {
         meta.setUnbreakable(unbreakable);
+
+        return this;
+    }
+
+    /**
+     * Set custom model data.
+     *
+     * @param data The data.
+     * @return The builder.
+     */
+    public AbstractItemStackBuilder<T> setCustomModelData(@Nullable final Integer data) {
+        meta.setCustomModelData(data);
 
         return this;
     }
