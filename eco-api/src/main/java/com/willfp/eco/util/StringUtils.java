@@ -48,9 +48,12 @@ public class StringUtils {
      */
     public List<String> translateList(@NotNull final List<String> list,
                                       @Nullable final Player player) {
-        list.replaceAll(s -> translate(s, player));
+        List<String> translated = new ArrayList<>();
+        for (String string : list) {
+            translated.add(translate(string, player));
+        }
 
-        return list;
+        return translated;
     }
 
     /**
@@ -60,9 +63,7 @@ public class StringUtils {
      * @return The message, translated.
      */
     public List<String> translateList(@NotNull final List<String> list) {
-        list.replaceAll(s -> translate(s, null));
-
-        return list;
+        return translateList(list, null);
     }
 
     /**
