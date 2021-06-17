@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public abstract class LoadableYamlConfig extends ConfigWrapper<YamlConfiguration> implements LoadableConfig {
+public abstract class LoadableYamlConfig extends YamlConfigWrapper<YamlConfiguration> implements LoadableConfig {
     /**
      * The physical config file, as stored on disk.
      */

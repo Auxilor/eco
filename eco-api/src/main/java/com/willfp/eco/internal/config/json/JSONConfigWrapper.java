@@ -57,6 +57,11 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
     }
 
     @Override
+    public String toPlaintext() {
+        return this.getHandle().toJson(this.getValues());
+    }
+
+    @Override
     public boolean has(@NotNull final String path) {
         return getOfKnownType(path, Object.class) != null;
     }

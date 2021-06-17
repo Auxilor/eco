@@ -12,6 +12,13 @@ public interface Config {
     void clearCache();
 
     /**
+     * Convert the config into readable text.
+     *
+     * @return The plaintext.
+     */
+    String toPlaintext();
+
+    /**
      * Get if the config contains a key.
      *
      * @param path The key to check.
@@ -42,7 +49,7 @@ public interface Config {
      * Set an object in config.
      * Default implementations call {@link org.bukkit.configuration.file.YamlConfiguration#set(String, Object)}
      *
-     * @param path The path.
+     * @param path   The path.
      * @param object The object.
      */
     void set(@NotNull String path,

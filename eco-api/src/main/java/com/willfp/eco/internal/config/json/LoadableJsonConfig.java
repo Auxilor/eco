@@ -139,9 +139,8 @@ public abstract class LoadableJsonConfig extends JSONConfigWrapper implements Lo
      */
     @Override
     public void save() throws IOException {
-        String json = this.getHandle().toJson(this.getValues());
         configFile.delete();
-        Files.write(configFile.toPath(), json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        Files.write(configFile.toPath(), this.toPlaintext().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
     }
 
     /**

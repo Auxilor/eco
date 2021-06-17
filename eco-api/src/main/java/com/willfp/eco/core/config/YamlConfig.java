@@ -1,10 +1,10 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.internal.config.yaml.ConfigWrapper;
+import com.willfp.eco.internal.config.yaml.YamlConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class YamlConfig extends ConfigWrapper<YamlConfiguration> {
+public abstract class YamlConfig extends YamlConfigWrapper<YamlConfiguration> {
     /**
      * Config implementation for passing YamlConfigurations.
      * <p>
