@@ -210,7 +210,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
         if (cache.containsKey(path)) {
-            return (List<String>) cache.get(path);
+            return StringUtils.translateList((List<String>) cache.get(path));
         } else {
             cache.put(path, has(path) ? new ArrayList<>(handle.getStringList(path)) : new ArrayList<>());
             return getStrings(path);
