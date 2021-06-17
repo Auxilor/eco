@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends AbstractItemStackBuilder<T, U>> implements ItemBuilder<T, U> {
+public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends AbstractItemStackBuilder<T, U>> implements ItemBuilder {
     /**
      * The ItemMeta used while building.
      */

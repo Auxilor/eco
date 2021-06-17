@@ -4,7 +4,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,14 +11,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
+public interface ItemBuilder {
     /**
      * Set the ItemStack amount.
      *
      * @param amount The amount.
      * @return The builder.
      */
-    U setAmount(int amount);
+    ItemBuilder setAmount(int amount);
 
     /**
      * Set the ItemStack amount.
@@ -27,7 +26,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param amount The amount.
      * @return The builder.
      */
-    U setAmount(@NotNull Supplier<Integer> amount);
+    ItemBuilder setAmount(@NotNull Supplier<Integer> amount);
 
     /**
      * Add an enchantment to the item.
@@ -36,7 +35,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param level       The level.
      * @return The builder.r
      */
-    U addEnchantment(@NotNull Enchantment enchantment,
+    ItemBuilder addEnchantment(@NotNull Enchantment enchantment,
                      int level);
 
     /**
@@ -46,7 +45,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param level       The level.
      * @return The builder.
      */
-    U addEnchantment(@NotNull Supplier<Enchantment> enchantment,
+    ItemBuilder addEnchantment(@NotNull Supplier<Enchantment> enchantment,
                      @NotNull Supplier<Integer> level);
 
     /**
@@ -55,7 +54,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param name The name.
      * @return The builder.
      */
-    U setDisplayName(@NotNull String name);
+    ItemBuilder setDisplayName(@NotNull String name);
 
     /**
      * Set the item display name.
@@ -63,7 +62,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param name The name.
      * @return The builder.
      */
-    U setDisplayName(@NotNull Supplier<String> name);
+    ItemBuilder setDisplayName(@NotNull Supplier<String> name);
 
     /**
      * Add lore line.
@@ -71,7 +70,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param line The line.
      * @return The builder.
      */
-    U addLoreLine(@NotNull String line);
+    ItemBuilder addLoreLine(@NotNull String line);
 
     /**
      * Add lore line.
@@ -79,7 +78,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param line The line.
      * @return The builder.
      */
-    U addLoreLine(@NotNull Supplier<String> line);
+    ItemBuilder addLoreLine(@NotNull Supplier<String> line);
 
     /**
      * Add lore lines.
@@ -87,7 +86,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param lines The lines.
      * @return The builder.
      */
-    U addLoreLines(@NotNull List<String> lines);
+    ItemBuilder addLoreLines(@NotNull List<String> lines);
 
     /**
      * Add lore lines.
@@ -95,7 +94,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param lines The lines.
      * @return The builder.
      */
-    U addLoreLines(@NotNull Supplier<List<String>> lines);
+    ItemBuilder addLoreLines(@NotNull Supplier<List<String>> lines);
 
     /**
      * Add ItemFlags.
@@ -103,7 +102,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param itemFlags The flags.
      * @return The builder.
      */
-    U addItemFlag(@NotNull ItemFlag... itemFlags);
+    ItemBuilder addItemFlag(@NotNull ItemFlag... itemFlags);
 
     /**
      * Add ItemFlags.
@@ -111,7 +110,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param itemFlags The flags.
      * @return The builder.
      */
-    U addItemFlag(@NotNull Supplier<ItemFlag[]> itemFlags);
+    ItemBuilder addItemFlag(@NotNull Supplier<ItemFlag[]> itemFlags);
 
     /**
      * Write meta key.
@@ -123,7 +122,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param <B>   The type.
      * @return The builder.
      */
-    <A, B> U writeMetaKey(@NotNull NamespacedKey key,
+    <A, B> ItemBuilder writeMetaKey(@NotNull NamespacedKey key,
                           @NotNull PersistentDataType<A, B> type,
                           @NotNull B value);
 
@@ -137,7 +136,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param <B>   The type.
      * @return The builder.
      */
-    <A, B> U writeMetaKey(@NotNull Supplier<NamespacedKey> key,
+    <A, B> ItemBuilder writeMetaKey(@NotNull Supplier<NamespacedKey> key,
                           @NotNull Supplier<PersistentDataType<A, B>> type,
                           @NotNull Supplier<B> value);
 
@@ -147,7 +146,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param unbreakable If the item should be unbreakable.
      * @return The builder.
      */
-    U setUnbreakable(boolean unbreakable);
+    ItemBuilder setUnbreakable(boolean unbreakable);
 
     /**
      * Set unbreakable.
@@ -155,7 +154,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param unbreakable If the item should be unbreakable.
      * @return The builder.
      */
-    U setUnbreakable(@NotNull Supplier<Boolean> unbreakable);
+    ItemBuilder setUnbreakable(@NotNull Supplier<Boolean> unbreakable);
 
     /**
      * Set custom model data.
@@ -163,7 +162,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param data The data.
      * @return The builder.
      */
-    U setCustomModelData(@Nullable Integer data);
+    ItemBuilder setCustomModelData(@Nullable Integer data);
 
     /**
      * Set custom model data.
@@ -171,7 +170,7 @@ public interface ItemBuilder<T extends ItemMeta, U extends ItemBuilder<T, U>> {
      * @param data The data.
      * @return The builder.
      */
-    U setCustomModelData(@NotNull Supplier<Integer> data);
+    ItemBuilder setCustomModelData(@NotNull Supplier<Integer> data);
 
     /**
      * Build the item.
