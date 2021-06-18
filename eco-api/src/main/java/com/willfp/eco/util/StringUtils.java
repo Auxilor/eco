@@ -48,10 +48,6 @@ public class StringUtils {
      */
     public List<String> translateList(@NotNull final List<String> list,
                                       @Nullable final Player player) {
-        if (list.isEmpty()) {
-            return list;
-        }
-
         List<String> translated = new ArrayList<>();
         for (String string : list) {
             translated.add(translate(string, player));
