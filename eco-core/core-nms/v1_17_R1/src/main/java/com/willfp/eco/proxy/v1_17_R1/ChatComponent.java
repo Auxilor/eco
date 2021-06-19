@@ -22,11 +22,10 @@ import java.util.Arrays;
 public final class ChatComponent implements ChatComponentProxy {
     @Override
     public Object modifyComponent(@NotNull final Object object) {
-        if (!(object instanceof IChatBaseComponent)) {
+        if (!(object instanceof IChatBaseComponent chatComponent)) {
             return object;
         }
 
-        IChatBaseComponent chatComponent = (IChatBaseComponent) object;
         for (IChatBaseComponent iChatBaseComponent : chatComponent) {
             if (iChatBaseComponent == null) {
                 continue;

@@ -3,7 +3,7 @@ package com.willfp.eco.internal.config.yaml;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 
-public class ConfigSection extends ConfigWrapper<ConfigurationSection> {
+public class ConfigSection extends YamlConfigWrapper<ConfigurationSection> {
     /**
      * Config section.
      *

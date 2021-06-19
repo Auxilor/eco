@@ -1,15 +1,18 @@
 package com.willfp.eco.spigot.recipes;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
+import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -18,7 +21,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-public class ShapedRecipeListener implements Listener {
+public class ShapedRecipeListener extends PluginDependent implements Listener {
+    /**
+     * Pass an {@link EcoPlugin} in order to interface with it.
+     *
+     * @param plugin The plugin to manage.
+     */
+    public ShapedRecipeListener(@NotNull final EcoPlugin plugin) {
+        super(plugin);
+    }
+
     /**
      * Called on item craft.
      *
@@ -26,11 +38,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void complexRecipeListener(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
@@ -58,11 +68,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void complexRecipeListener(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
@@ -92,21 +100,51 @@ public class ShapedRecipeListener implements Listener {
      *
      * @param event The event to listen for.
      */
-    @EventHandler
-    public void preventUsingComplexPartInEcoRecipe(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void stackedRecipeListener(@NotNull final CraftItemEvent event) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
 
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
+        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+            return;
+        }
+
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        CraftingRecipe matched = Recipes.getMatch(matrix);
+
+        if (matched == null) {
+            return;
+        }
+
+        this.getPlugin().getScheduler().runLater(() -> {
+            for (int i = 0; i < 9; i++) {
+                ItemStack inMatrix = event.getInventory().getMatrix()[i];
+                TestableItem inRecipe = matched.getParts().get(i);
+
+                if (inRecipe instanceof TestableStack testableStack) {
+                    inMatrix.setAmount(inMatrix.getAmount() - (testableStack.getAmount() - 1));
+                }
+            }
+        }, 1);
+    }
+
+    /**
+     * Called on item craft.
+     *
+     * @param event The event to listen for.
+     */
+    @EventHandler
+    public void preventUsingComplexPartInEcoRecipe(@NotNull final PrepareItemCraftEvent event) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
+            return;
+        }
 
         CraftingRecipe craftingRecipe = Recipes.getRecipe(recipe.getKey());
 
-        if (!(craftingRecipe instanceof ShapedCraftingRecipe)) {
+        if (!(craftingRecipe instanceof ShapedCraftingRecipe shapedCraftingRecipe)) {
             return;
         }
-
-        ShapedCraftingRecipe shapedCraftingRecipe = (ShapedCraftingRecipe) craftingRecipe;
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
@@ -127,19 +165,15 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInEcoRecipe(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         CraftingRecipe craftingRecipe = Recipes.getRecipe(recipe.getKey());
 
-        if (!(craftingRecipe instanceof ShapedCraftingRecipe)) {
+        if (!(craftingRecipe instanceof ShapedCraftingRecipe shapedCraftingRecipe)) {
             return;
         }
-
-        ShapedCraftingRecipe shapedCraftingRecipe = (ShapedCraftingRecipe) craftingRecipe;
 
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
@@ -162,11 +196,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;
@@ -187,11 +219,9 @@ public class ShapedRecipeListener implements Listener {
      */
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe)) {
+        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
             return;
         }
-
-        ShapedRecipe recipe = (ShapedRecipe) event.getRecipe();
 
         if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
             return;

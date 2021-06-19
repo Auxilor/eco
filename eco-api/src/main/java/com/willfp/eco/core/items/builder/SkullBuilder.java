@@ -6,12 +6,12 @@ import org.bukkit.Material;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
-public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta> {
+public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta, SkullBuilder> {
     /**
      * Create a new EnchantedBookBuilder.
      */
     public SkullBuilder() {
-        super(Material.ENCHANTED_BOOK);
+        super(Material.PLAYER_HEAD);
     }
 
     /**

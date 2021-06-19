@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.items;
 
+import com.willfp.eco.core.items.builder.ItemBuilder;
 import com.willfp.eco.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,15 +11,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractItemStackBuilder<T extends ItemMeta> {
+public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends AbstractItemStackBuilder<T, U>> implements ItemBuilder {
     /**
      * The ItemMeta used while building.
      */
@@ -51,64 +53,63 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta> {
         assert meta != null;
     }
 
-    /**
-     * Set the ItemStack amount.
-     *
-     * @param amount The amount.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> setAmount(final int amount) {
+    @Override
+    public U setAmount(final int amount) {
         Validate.isTrue(amount >= 1 && amount <= base.getMaxStackSize());
         base.setAmount(amount);
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Add an enchantment to the item.
-     *
-     * @param enchantment The enchantment.
-     * @param level       The level.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> addEnchantment(@NotNull final Enchantment enchantment,
-                                                      final int level) {
+    @Override
+    public U setAmount(@NotNull final Supplier<Integer> amount) {
+        return setAmount(amount.get());
+    }
+
+    @Override
+    public U addEnchantment(@NotNull final Enchantment enchantment,
+                            final int level) {
         meta.addEnchant(enchantment, level, true);
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Set the item display name.
-     *
-     * @param name The name.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> setDisplayName(@NotNull final String name) {
+    @Override
+    public U addEnchantment(@NotNull final Supplier<Enchantment> enchantment,
+                            @NotNull final Supplier<Integer> level) {
+        return addEnchantment(enchantment.get(), level.get());
+    }
+
+    @Override
+    public U setDisplayName(@NotNull final String name) {
         meta.setDisplayName(StringUtils.translate(name));
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Add lore line.
-     *
-     * @param line The line.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> addLoreLine(@NotNull final String line) {
+    @Override
+    public U setDisplayName(@NotNull final Supplier<String> name) {
+        String result = name.get();
+
+        return result == null ? (U) this : setDisplayName(name.get());
+    }
+
+    @Override
+    public U addLoreLine(@NotNull final String line) {
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         assert lore != null;
         lore.add(StringUtils.translate(line));
         meta.setLore(lore);
 
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Add lore lines.
-     *
-     * @param lines The lines.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> addLoreLines(@NotNull final List<String> lines) {
+    @Override
+    public U addLoreLine(@NotNull final Supplier<String> line) {
+        String result = line.get();
+
+        return result == null ? (U) this : addLoreLine(line.get());
+    }
+
+    @Override
+    public U addLoreLines(@NotNull final List<String> lines) {
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         assert lore != null;
         for (String line : lines) {
@@ -116,57 +117,75 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta> {
         }
         meta.setLore(lore);
 
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Add ItemFlags.
-     *
-     * @param itemFlags The flags.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> addItemFlag(@NotNull final ItemFlag... itemFlags) {
+    @Override
+    public U addLoreLines(@NotNull final Supplier<List<String>> lines) {
+        List<String> result = lines.get();
+
+        return result == null ? (U) this : addLoreLines(lines.get());
+    }
+
+    @Override
+    public U addItemFlag(@NotNull final ItemFlag... itemFlags) {
         meta.addItemFlags(itemFlags);
 
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Set unbreakable.
-     *
-     * @param unbreakable If the item should be unbreakable.
-     * @return The builder.
-     */
-    public AbstractItemStackBuilder<T> setUnbreakable(final boolean unbreakable) {
+    @Override
+    public U addItemFlag(@NotNull final Supplier<ItemFlag[]> itemFlags) {
+        ItemFlag[] result = itemFlags.get();
+
+        return result == null ? (U) this : addItemFlag(result);
+    }
+
+    @Override
+    public <A, B> U writeMetaKey(@NotNull final NamespacedKey key,
+                                 @NotNull final PersistentDataType<A, B> type,
+                                 @NotNull final B value) {
+        meta.getPersistentDataContainer().set(key, type, value);
+
+        return (U) this;
+    }
+
+    @Override
+    public <A, B> U writeMetaKey(@NotNull final Supplier<NamespacedKey> key,
+                                 @NotNull final Supplier<PersistentDataType<A, B>> type,
+                                 @NotNull final Supplier<B> value) {
+        return writeMetaKey(key.get(), type.get(), value.get());
+    }
+
+    @Override
+    public U setUnbreakable(final boolean unbreakable) {
         meta.setUnbreakable(unbreakable);
 
-        return this;
+        return (U) this;
     }
 
-    /**
-     * Set persistent meta key.
-     *
-     * @param key  The key.
-     * @param type The type.
-     * @param obj  The object.
-     * @param <A>  The type.
-     * @param <B>  The type.
-     * @return The persistent key.
-     */
-    public <A, B> AbstractItemStackBuilder<T> setPersistentKey(@NotNull final NamespacedKey key,
-                                                               @NotNull final PersistentDataType<A, B> type,
-                                                               @NotNull final B obj) {
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(key, type, obj);
+    @Override
+    public U setUnbreakable(@NotNull final Supplier<Boolean> unbreakable) {
+        Boolean result = unbreakable.get();
 
-        return this;
+        return result == null ? (U) this : setUnbreakable(unbreakable);
     }
 
-    /**
-     * Build the item.
-     *
-     * @return The item.
-     */
+    @Override
+    public U setCustomModelData(@Nullable final Integer data) {
+        meta.setCustomModelData(data);
+
+        return (U) this;
+    }
+
+    @Override
+    public U setCustomModelData(@NotNull final Supplier<Integer> data) {
+        Integer result = data.get();
+
+        return result == null ? (U) this : setCustomModelData(result);
+    }
+
+    @Override
     public ItemStack build() {
         base.setItemMeta(meta);
 

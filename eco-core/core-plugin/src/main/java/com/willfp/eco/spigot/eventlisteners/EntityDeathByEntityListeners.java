@@ -41,11 +41,9 @@ public class EntityDeathByEntityListeners extends PluginDependent implements Lis
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(@NotNull final EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity)) {
+        if (!(event.getEntity() instanceof LivingEntity victim)) {
             return;
         }
-
-        LivingEntity victim = (LivingEntity) event.getEntity();
 
         if (victim.getHealth() > event.getFinalDamage()) {
             return;

@@ -2,12 +2,17 @@ package com.willfp.eco.core.recipe;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
+import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 @UtilityClass
 @SuppressWarnings("deprecation")
@@ -58,5 +63,30 @@ public class Recipes {
         }
 
         return null;
+    }
+
+    /**
+     * Create and register recipe.
+     *
+     * @param plugin        The plugin.
+     * @param key           The key.
+     * @param output        The output.
+     * @param recipeStrings The recipe.
+     * @return The recipe.
+     */
+    public CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
+                                                  @NotNull final String key,
+                                                  @NotNull final ItemStack output,
+                                                  @NotNull final List<String> recipeStrings) {
+        ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key).setOutput(output);
+
+        for (int i = 0; i < 9; i++) {
+            builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
+        }
+
+        ShapedCraftingRecipe recipe = builder.build();
+        recipe.register();
+
+        return recipe;
     }
 }

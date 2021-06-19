@@ -110,11 +110,10 @@ public class EcoExtensionLoader extends PluginDependent implements ExtensionLoad
             e.printStackTrace();
         }
 
-        if (!(object instanceof Extension)) {
+        if (!(object instanceof Extension extension)) {
             throw new MalformedExtensionException(extensionJar.getName() + " is invalid");
         }
 
-        Extension extension = (Extension) object;
         extension.setMetadata(metadata);
         extension.enable();
         extensions.add(extension);

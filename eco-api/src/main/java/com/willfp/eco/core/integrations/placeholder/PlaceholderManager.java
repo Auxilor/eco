@@ -52,7 +52,7 @@ public class PlaceholderManager {
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier) {
         Optional<PlaceholderEntry> matching = REGISTERED_PLACEHOLDERS.stream().filter(expansion -> expansion.getIdentifier().equalsIgnoreCase(identifier)).findFirst();
-        if (!matching.isPresent()) {
+        if (matching.isEmpty()) {
             return null;
         }
         PlaceholderEntry entry = matching.get();

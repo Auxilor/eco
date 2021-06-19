@@ -1,20 +1,29 @@
 package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.gui.slot.Slot;
+import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.internal.gui.FillerSlot;
 import com.willfp.eco.util.ListUtils;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class FillerMask {
+    /**
+     * Mask.
+     */
     @Getter
     private final List<List<Slot>> mask;
 
+    /**
+     * Create a new filler mask.
+     *
+     * @param material The mask material.
+     * @param pattern  The pattern.
+     */
     public FillerMask(@NotNull final Material material,
                       @NotNull final String... pattern) {
         if (material == Material.AIR) {
@@ -23,11 +32,9 @@ public class FillerMask {
 
         mask = ListUtils.create2DList(6, 9);
 
-        ItemStack itemStack = new ItemStack(material);
-        ItemMeta meta = itemStack.getItemMeta();
-        assert meta != null;
-        meta.setDisplayName("§r");
-        itemStack.setItemMeta(meta);
+        ItemStack itemStack = new ItemStackBuilder(material)
+                .setDisplayName("&r")
+                .build();
 
         int row = 0;
 

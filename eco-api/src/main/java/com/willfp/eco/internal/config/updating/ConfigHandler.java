@@ -44,15 +44,18 @@ public class ConfigHandler extends PluginDependent {
     public void callUpdate() {
         updatableClasses.forEach(clazz -> Arrays.stream(clazz.getDeclaredMethods()).forEach(method -> {
             if (method.isAnnotationPresent(ConfigUpdater.class)) {
-                if (method.getParameterTypes().length != 0) {
-                    throw new InvalidUpdateMethodException("Update method must not have parameters.");
-                }
                 if (!Modifier.isStatic(method.getModifiers())) {
                     throw new InvalidUpdateMethodException("Update method must be static.");
                 }
 
                 try {
-                    method.invoke(null);
+                    if (method.getParameterCount() == 0) {
+                        method.invoke(null);
+                    } else if (method.getParameterCount() == 1) {
+                        method.invoke(null, this.getPlugin());
+                    } else {
+                        throw new InvalidUpdateMethodException("Update method must have 0 parameters or a plugin parameter.");
+                    }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                     throw new InvalidUpdateMethodException("Update method generated an exception.");
@@ -69,7 +72,7 @@ public class ConfigHandler extends PluginDependent {
     public void registerUpdatableClass(@NotNull final Class<?> updatableClass) {
         boolean isValid = false;
         for (Method method : updatableClass.getDeclaredMethods()) {
-            if (Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 0 && method.isAnnotationPresent(ConfigUpdater.class)) {
+            if (Modifier.isStatic(method.getModifiers()) && (method.getParameterCount() == 0 || method.getParameterCount() == 1) && method.isAnnotationPresent(ConfigUpdater.class)) {
                 isValid = true;
                 break;
             }

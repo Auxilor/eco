@@ -121,8 +121,7 @@ public class DurabilityUtils {
             return;
         }
 
-        if (item.getItemMeta() instanceof Damageable) {
-            Damageable meta = (Damageable) item.getItemMeta();
+        if (item.getItemMeta() instanceof Damageable meta) {
             meta.setDamage(meta.getDamage() - repair);
 
             if (meta.getDamage() < 0) {

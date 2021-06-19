@@ -5,6 +5,7 @@ import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
-public abstract class ConfigWrapper<T extends ConfigurationSection> implements Config {
+public abstract class YamlConfigWrapper<T extends ConfigurationSection> implements Config {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
@@ -30,13 +31,22 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
     /**
      * Abstract config.
      */
-    protected ConfigWrapper() {
+    protected YamlConfigWrapper() {
 
     }
 
     protected Config init(@NotNull final T config) {
         this.handle = config;
         return this;
+    }
+
+    @Override
+    public String toPlaintext() {
+        YamlConfiguration temp = new YamlConfiguration();
+        for (String key : handle.getKeys(true)) {
+            temp.set(key, handle.get(key));
+        }
+        return temp.saveToString();
     }
 
     @Override
@@ -210,7 +220,7 @@ public abstract class ConfigWrapper<T extends ConfigurationSection> implements C
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
         if (cache.containsKey(path)) {
-            return (List<String>) cache.get(path);
+            return StringUtils.translateList((List<String>) cache.get(path));
         } else {
             cache.put(path, has(path) ? new ArrayList<>(handle.getStringList(path)) : new ArrayList<>());
             return getStrings(path);

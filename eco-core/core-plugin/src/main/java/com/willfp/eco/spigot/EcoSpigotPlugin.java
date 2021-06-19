@@ -3,6 +3,7 @@ package com.willfp.eco.spigot;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.AbstractCommand;
+import com.willfp.eco.core.config.base.LangYml;
 import com.willfp.eco.core.data.Data;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
@@ -10,6 +11,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
+import com.willfp.eco.internal.InternalInterfacing;
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
@@ -25,6 +27,7 @@ import com.willfp.eco.spigot.eventlisteners.ArmorListener;
 import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners;
+import com.willfp.eco.spigot.eventlisteners.PlayerJumpListeners;
 import com.willfp.eco.spigot.gui.GUIListener;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
@@ -83,6 +86,13 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
         this.dataJson = new DataJson(this);
         Data.init(this.dataJson);
+
+        InternalInterfacing.setInterfacing(new InternalInterfacing() {
+            @Override
+            public LangYml getLang() {
+                return EcoSpigotPlugin.getInstance().getLangYml();
+            }
+        });
     }
 
     @Override
@@ -167,7 +177,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new ArmorListener(),
                 new DispenserArmorListener(),
                 new EntityDeathByEntityListeners(this),
-                new ShapedRecipeListener(),
+                new ShapedRecipeListener(this),
+                new PlayerJumpListeners(),
                 new GUIListener(this)
         );
     }

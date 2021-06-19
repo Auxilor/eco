@@ -16,24 +16,72 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public interface Menu {
+    /**
+     * Get the amount of rows.
+     *
+     * @return
+     */
     int getRows();
 
+    /**
+     * Get slot at given row and column.
+     *
+     * @param row    The row.
+     * @param column The column.
+     * @return The row.
+     */
     Slot getSlot(int row,
                  int column);
 
+    /**
+     * Get the menu title.
+     *
+     * @return The title.
+     */
     String getTitle();
 
+    /**
+     * Open the inventory for the player.
+     *
+     * @param player The player.
+     * @return The inventory.
+     */
     Inventory open(@NotNull Player player);
 
+    /**
+     * Create a builder with a given amount of rows.
+     *
+     * @param rows The rows.
+     * @return The builder.
+     */
     static Builder builder(final int rows) {
         return new Builder(rows);
     }
 
     class Builder {
+        /**
+         * The amount of rows.
+         */
         private final int rows;
+
+        /**
+         * The title.
+         */
         private String title = "Menu";
+
+        /**
+         * The mask slots.
+         */
         private List<List<Slot>> maskSlots;
+
+        /**
+         * The slots.
+         */
         private final List<List<Slot>> slots;
+
+        /**
+         * The close event handler.
+         */
         private Consumer<InventoryCloseEvent> onClose = (event) -> {
         };
 

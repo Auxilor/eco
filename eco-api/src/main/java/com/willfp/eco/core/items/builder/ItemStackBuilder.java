@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackBuilder extends AbstractItemStackBuilder<ItemMeta> {
+public class ItemStackBuilder extends AbstractItemStackBuilder<ItemMeta, ItemStackBuilder> {
     /**
      * Create a new ItemStackBuilder.
      *
