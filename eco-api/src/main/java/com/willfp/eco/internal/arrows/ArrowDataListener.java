@@ -34,11 +34,10 @@ public class ArrowDataListener extends PluginDependent implements Listener {
         if (!(event.getEntity() instanceof Arrow arrow)) {
             return;
         }
-        if (!(event.getEntity().getShooter() instanceof LivingEntity)) {
+
+        if (!(arrow.getShooter() instanceof LivingEntity entity)) {
             return;
         }
-
-        LivingEntity entity = (LivingEntity) arrow.getShooter();
 
         if (entity.getEquipment() == null) {
             return;
