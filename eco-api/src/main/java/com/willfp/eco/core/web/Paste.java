@@ -1,5 +1,6 @@
 package com.willfp.eco.core.web;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -13,6 +14,7 @@ public class Paste {
     /**
      * The contents.
      */
+    @Getter
     private final String contents;
 
     /**
@@ -31,8 +33,8 @@ public class Paste {
      */
     public String getHastebinToken() {
         try {
-            String urly = "https://hastebin.com/documents";
-            URL obj = new URL(urly);
+            String url = "https://hastebin.com/documents";
+            URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
             con.setRequestMethod("POST");
@@ -65,5 +67,31 @@ public class Paste {
         }
 
         return "";
+    }
+
+    /**
+     * Get paste from hastebin.
+     *
+     * @param token The token.
+     * @return The paste.
+     */
+    public static Paste getFromHastebin(@NotNull final String token) {
+        try {
+            StringBuilder result = new StringBuilder();
+            URL url = new URL("https://hastebin.com/raw/" + token);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            try (var reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))) {
+                for (String line; (line = reader.readLine()) != null; ) {
+                    result.append(line);
+                }
+            }
+            return new Paste(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
