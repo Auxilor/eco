@@ -18,7 +18,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "unused"})
-public abstract class LoadableJsonConfig extends JSONConfigWrapper implements LoadableConfig {
+public abstract class LoadableJsonConfig extends JsonConfigWrapper implements LoadableConfig {
     /**
      * The physical config file, as stored on disk.
      */

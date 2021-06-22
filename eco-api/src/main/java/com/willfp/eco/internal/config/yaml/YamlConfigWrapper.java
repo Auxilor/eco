@@ -96,7 +96,7 @@ public abstract class YamlConfigWrapper<T extends ConfigurationSection> implemen
             if (raw == null) {
                 cache.put(path, null);
             } else {
-                cache.put(path, new ConfigSection(raw));
+                cache.put(path, new YamlConfigSection(raw));
             }
             return getSubsectionOrNull(path);
         }

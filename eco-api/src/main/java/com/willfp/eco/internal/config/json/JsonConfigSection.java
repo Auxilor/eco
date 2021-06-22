@@ -4,13 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-public class JSONConfigSection extends JSONConfigWrapper {
+public class JsonConfigSection extends JsonConfigWrapper {
     /**
      * Config section.
      *
      * @param values The values.
      */
-    public JSONConfigSection(@NotNull final Map<String, Object> values) {
+    public JsonConfigSection(@NotNull final Map<String, Object> values) {
         this.init(values);
     }
 }

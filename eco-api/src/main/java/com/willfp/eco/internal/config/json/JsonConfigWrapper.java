@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings({"unchecked", "unused"})
-public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
+public abstract class JsonConfigWrapper implements JSONConfig, Cloneable {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
@@ -42,7 +42,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
     /**
      * Abstract config.
      */
-    protected JSONConfigWrapper() {
+    protected JsonConfigWrapper() {
 
     }
 
@@ -88,7 +88,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
         }
 
         if (values.get(closestPath) instanceof Map && !path.equals(closestPath)) {
-            JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(closestPath));
+            JsonConfigSection section = new JsonConfigSection((Map<String, Object>) values.get(closestPath));
             return section.getOfKnownType(path.substring(closestPath.length() + 1), clazz, false);
         } else {
             if (values.containsKey(closestPath)) {
@@ -115,7 +115,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
             list.add(root + key);
 
             if (values.get(key) instanceof Map) {
-                JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(key));
+                JsonConfigSection section = new JsonConfigSection((Map<String, Object>) values.get(key));
                 list.addAll(section.getDeepKeys(list, root + key + "."));
             }
         }
@@ -147,14 +147,14 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
         }
 
         if (values.get(closestPath) instanceof Map && !path.equals(closestPath)) {
-            JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(closestPath));
+            JsonConfigSection section = new JsonConfigSection((Map<String, Object>) values.get(closestPath));
             section.setRecursively(path.substring(closestPath.length() + 1), object, false);
             values.put(closestPath, section.getValues());
         } else {
             Object obj = object;
 
             if (object instanceof JSONConfig) {
-                obj = ((JSONConfigWrapper) object).getValues();
+                obj = ((JsonConfigWrapper) object).getValues();
             }
 
             values.put(path, obj);
@@ -174,7 +174,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
     public Config getSubsectionOrNull(@NotNull final String path) {
         if (values.containsKey(path)) {
             Map<String, Object> subsection = (Map<String, Object>) values.get(path);
-            return new JSONConfigSection(subsection);
+            return new JsonConfigSection(subsection);
         } else {
             return null;
         }
@@ -200,7 +200,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
         List<JSONConfig> configs = new ArrayList<>();
 
         for (Map<String, Object> map : maps) {
-            configs.add(new JSONConfigSection(map));
+            configs.add(new JsonConfigSection(map));
         }
 
         return configs;
@@ -339,7 +339,7 @@ public abstract class JSONConfigWrapper implements JSONConfig, Cloneable {
     }
 
     @Override
-    public JSONConfigWrapper clone() {
-        return new JSONConfigSection(new HashMap<>(this.getValues()));
+    public JsonConfigWrapper clone() {
+        return new JsonConfigSection(new HashMap<>(this.getValues()));
     }
 }
