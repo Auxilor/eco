@@ -3,7 +3,6 @@ package com.willfp.eco.spigot;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.AbstractCommand;
-import com.willfp.eco.core.config.base.LangYml;
 import com.willfp.eco.core.data.Data;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
@@ -11,7 +10,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
-import com.willfp.eco.internal.InternalInterfacing;
+import com.willfp.eco.internal.Internals;
 import com.willfp.eco.proxy.proxies.BlockBreakProxy;
 import com.willfp.eco.proxy.proxies.SkullProxy;
 import com.willfp.eco.proxy.proxies.TridentStackProxy;
@@ -87,12 +86,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
         this.dataJson = new DataJson(this);
         Data.init(this.dataJson);
 
-        InternalInterfacing.setInterfacing(new InternalInterfacing() {
-            @Override
-            public LangYml getLang() {
-                return EcoSpigotPlugin.getInstance().getLangYml();
-            }
-        });
+        Internals.setInterfacing(new EcoInternals(this));
     }
 
     @Override
