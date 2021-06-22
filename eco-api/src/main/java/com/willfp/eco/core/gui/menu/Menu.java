@@ -19,7 +19,7 @@ public interface Menu {
     /**
      * Get the amount of rows.
      *
-     * @return
+     * @return The amount of rows.
      */
     int getRows();
 
