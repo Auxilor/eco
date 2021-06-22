@@ -2,6 +2,7 @@ package com.willfp.eco.internal.config.updating;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.config.ConfigHandler;
 import com.willfp.eco.core.config.ConfigUpdater;
 import com.willfp.eco.internal.config.LoadableConfig;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdatableClassException;
@@ -18,7 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ConfigHandler extends PluginDependent {
+public class EcoConfigHandler extends PluginDependent implements ConfigHandler {
     /**
      * A set of all configs that can be saved.
      */
@@ -34,13 +35,11 @@ public class ConfigHandler extends PluginDependent {
      *
      * @param plugin The plugin to manage.
      */
-    public ConfigHandler(@NotNull final EcoPlugin plugin) {
+    public EcoConfigHandler(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
-    /**
-     * Invoke all update methods.
-     */
+    @Override
     public void callUpdate() {
         updatableClasses.forEach(clazz -> Arrays.stream(clazz.getDeclaredMethods()).forEach(method -> {
             if (method.isAnnotationPresent(ConfigUpdater.class)) {
@@ -64,11 +63,7 @@ public class ConfigHandler extends PluginDependent {
         }));
     }
 
-    /**
-     * Register an updatable class.
-     *
-     * @param updatableClass The class with an update method.
-     */
+    @Override
     public void registerUpdatableClass(@NotNull final Class<?> updatableClass) {
         boolean isValid = false;
         for (Method method : updatableClass.getDeclaredMethods()) {
@@ -85,9 +80,7 @@ public class ConfigHandler extends PluginDependent {
         updatableClasses.add(updatableClass);
     }
 
-    /**
-     * Save all configs.
-     */
+    @Override
     public void saveAllConfigs() {
         try {
             for (LoadableConfig config : configs) {
@@ -98,10 +91,7 @@ public class ConfigHandler extends PluginDependent {
         }
     }
 
-    /**
-     * Add new config to be saved.
-     * @param config The config.
-     */
+    @Override
     public void addConfig(@NotNull final LoadableConfig config) {
         configs.add(config);
     }

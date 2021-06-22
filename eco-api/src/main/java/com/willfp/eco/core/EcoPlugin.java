@@ -3,7 +3,8 @@ package com.willfp.eco.core;
 import com.willfp.eco.core.command.AbstractCommand;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
-import com.willfp.eco.internal.config.updating.ConfigHandler;
+import com.willfp.eco.core.config.ConfigHandler;
+import com.willfp.eco.internal.config.updating.EcoConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.events.EventManager;
@@ -188,7 +189,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.metadataValueFactory = new EcoMetadataValueFactory(this);
         this.runnableFactory = new EcoRunnableFactory(this);
         this.extensionLoader = new EcoExtensionLoader(this);
-        this.configHandler = new ConfigHandler(this);
+        this.configHandler = new EcoConfigHandler(this);
         this.logger = new EcoLogger(this);
 
         this.langYml = new LangYml(this);
