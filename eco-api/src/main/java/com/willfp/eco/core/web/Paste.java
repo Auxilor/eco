@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 public class Paste {
     /**
@@ -61,6 +63,8 @@ public class Paste {
             responseString = responseString.replace("{\"key\":\"", "");
             responseString = responseString.replace("\"}", "");
 
+            responseString = URLDecoder.decode(responseString, StandardCharsets.UTF_8);
+
             return responseString;
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,11 +87,11 @@ public class Paste {
             conn.setRequestMethod("GET");
             try (var reader = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()))) {
-                for (String line; (line = reader.readLine()) != null; ) {
+                for (String line; (line = reader.readLine()) != null;) {
                     result.append(line);
                 }
             }
-            return new Paste(result.toString());
+            return new Paste(URLDecoder.decode(result.toString(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
         }
