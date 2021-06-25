@@ -339,7 +339,7 @@ public abstract class JsonConfigWrapper implements JSONConfig, Cloneable {
     }
 
     @Override
-    public JsonConfigWrapper clone() {
+    public JSONConfig clone() {
         return new JsonConfigSection(new HashMap<>(this.getValues()));
     }
 }
