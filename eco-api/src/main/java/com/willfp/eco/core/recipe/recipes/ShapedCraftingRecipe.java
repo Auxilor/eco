@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("deprecation")
 public final class ShapedCraftingRecipe extends PluginDependent implements CraftingRecipe {
     /**
      * Recipe parts.
