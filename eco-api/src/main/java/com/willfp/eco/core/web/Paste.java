@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class Paste {
@@ -44,7 +45,7 @@ public class Paste {
 
             con.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(contents);
+            wr.writeBytes(URLEncoder.encode(contents, StandardCharsets.UTF_8));
             wr.flush();
             wr.close();
 
@@ -62,8 +63,6 @@ public class Paste {
 
             responseString = responseString.replace("{\"key\":\"", "");
             responseString = responseString.replace("\"}", "");
-
-            responseString = URLDecoder.decode(responseString, StandardCharsets.UTF_8);
 
             return responseString;
         } catch (IOException e) {
