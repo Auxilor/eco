@@ -26,9 +26,11 @@ import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.logging.EcoLogger;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -195,6 +197,19 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
+     * Create a new plugin without proxy support.
+     *
+     * @param resourceId The spigot resource ID for the plugin.
+     * @param bStatsId   The bStats resource ID for the plugin.
+     * @param color      The color of the plugin (used in messages, such as &a, &b)
+     */
+    protected EcoPlugin(final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String color) {
+        this(resourceId, bStatsId, "", color);
+    }
+
+    /**
      * Create a new plugin.
      *
      * @param resourceId   The spigot resource ID for the plugin.
@@ -210,19 +225,6 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
-     * Create a new plugin without proxy support.
-     *
-     * @param resourceId   The spigot resource ID for the plugin.
-     * @param bStatsId     The bStats resource ID for the plugin.
-     * @param color        The color of the plugin (used in messages, such as &a, &b)
-     */
-    protected EcoPlugin(final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String color) {
-        this(resourceId, bStatsId, "", color);
-    }
-
-    /**
      * Create a new plugin.
      *
      * @param pluginName   The name of the plugin.
@@ -233,6 +235,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @deprecated pluginName is redundant.
      */
     @Deprecated
+    @SuppressWarnings("unused")
     protected EcoPlugin(@NotNull final String pluginName,
                         final int resourceId,
                         final int bStatsId,
@@ -267,7 +270,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         super.onEnable();
 
         this.getLogger().info("");
-        this.getLogger().info("Loading " + this.color + this.pluginName);
+        this.getLogger().info("Loading " + this.getColor() + this.getName());
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
 
@@ -278,7 +281,7 @@ public abstract class EcoPlugin extends JavaPlugin {
                 if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
                     this.outdated = true;
                     this.getScheduler().runTimer(() -> {
-                        this.getLogger().info("&c " + this.pluginName + " is out of date! (Version " + this.getDescription().getVersion() + ")");
+                        this.getLogger().info("&c " + this.getName() + " is out of date! (Version " + this.getDescription().getVersion() + ")");
                         this.getLogger().info("&cThe newest version is &f" + version);
                         this.getLogger().info("&cDownload the new version!");
                     }, 0, 864000);
@@ -287,7 +290,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         }
 
         if (this.getBStatsId() != 0) {
-            new Metrics(this, this.bStatsId);
+            new Metrics(this, this.getBStatsId());
         }
 
         Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toSet());
@@ -405,42 +408,68 @@ public abstract class EcoPlugin extends JavaPlugin {
 
     /**
      * The plugin-specific code to be executed on enable.
+     * <p>
+     * Override when needed.
      */
-    public abstract void enable();
+    public void enable() {
+
+    }
 
     /**
      * The plugin-specific code to be executed on disable.
+     * <p>
+     * Override when needed.
      */
-    public abstract void disable();
+    public void disable() {
+
+    }
 
     /**
      * The plugin-specific code to be executed on load.
+     * <p>
+     * This is executed before enabling.
+     * <p>
+     * Override when needed.
      */
-    public abstract void load();
+    public void load() {
+
+    }
 
     /**
      * The plugin-specific code to be executed on reload.
+     * <p>
+     * Override when needed.
      */
-    public abstract void onReload();
+    public void onReload() {
+
+    }
 
     /**
      * The plugin-specific code to be executed after the server is up.
+     * <p>
+     * Override when needed.
      */
-    public abstract void postLoad();
+    public void postLoad() {
+
+    }
 
     /**
      * The plugin-specific integrations to be tested and loaded.
      *
      * @return A list of integrations.
      */
-    public abstract List<IntegrationLoader> getIntegrationLoaders();
+    public List<IntegrationLoader> getIntegrationLoaders() {
+        return new ArrayList<>();
+    }
 
     /**
      * The command to be registered.
      *
      * @return A list of commands.
      */
-    public abstract List<AbstractCommand> getCommands();
+    public List<AbstractCommand> getCommands() {
+        return new ArrayList<>();
+    }
 
     /**
      * ProtocolLib packet adapters to be registered.
@@ -449,7 +478,9 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of packet adapters.
      */
-    public abstract List<AbstractPacketAdapter> getPacketAdapters();
+    public List<AbstractPacketAdapter> getPacketAdapters() {
+        return new ArrayList<>();
+    }
 
     /**
      * All listeners to be registered.
@@ -463,7 +494,9 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of all updatable classes.
      */
-    public abstract List<Class<?>> getUpdatableClasses();
+    public List<Class<?>> getUpdatableClasses() {
+        return new ArrayList<>();
+    }
 
     /**
      * Create the display module for the plugin.
@@ -472,12 +505,77 @@ public abstract class EcoPlugin extends JavaPlugin {
      */
     @Nullable
     protected DisplayModule createDisplayModule() {
+        Validate.isTrue(
+                this.getDisplayModule() == null,
+                "Display module exists!"
+        );
+
         return null;
     }
 
+    /**
+     * Get the plugin's logger.
+     *
+     * @return The logger.
+     */
     @NotNull
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    /**
+     * Get unwrapped config.
+     * Does not use eco config system, don't use.
+     *
+     * @return The bukkit config.
+     * @deprecated Use {@link EcoPlugin#getConfigYml()} instead.
+     */
+    @NotNull
+    @Override
+    @Deprecated
+    public final FileConfiguration getConfig() {
+        this.getLogger().warning("Call to default config method in eco plugin!");
+
+        return this.getConfigYml().getHandle();
+    }
+
+    /**
+     * Does not use eco config system, don't use.
+     *
+     * @deprecated Use eco config system.
+     */
+    @Override
+    @Deprecated
+    public final void saveConfig() {
+        this.getLogger().warning("Call to default config method in eco plugin!");
+
+        super.saveConfig();
+    }
+
+    /**
+     * Does not use eco config system, don't use.
+     *
+     * @deprecated Use eco config system.
+     */
+    @Override
+    @Deprecated
+    public final void saveDefaultConfig() {
+        this.getLogger().warning("Call to default config method in eco plugin!");
+
+        super.saveDefaultConfig();
+    }
+
+    /**
+     * Does not use eco config system, don't use.
+     *
+     * @deprecated Use eco config system.
+     */
+    @Override
+    @Deprecated
+    public final void reloadConfig() {
+        this.getLogger().warning("Call to default config method in eco plugin!");
+
+        super.reloadConfig();
     }
 }

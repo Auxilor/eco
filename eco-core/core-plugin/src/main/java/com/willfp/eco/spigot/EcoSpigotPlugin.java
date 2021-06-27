@@ -2,10 +2,8 @@ package com.willfp.eco.spigot;
 
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.command.AbstractCommand;
 import com.willfp.eco.core.data.Data;
 import com.willfp.eco.core.display.Display;
-import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
@@ -47,7 +45,6 @@ import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
 import lombok.Getter;
 import org.bukkit.event.Listener;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +67,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
      * Create a new instance of eco.
      */
     public EcoSpigotPlugin() {
-        super("eco", 87955, 10043, "com.willfp.eco.proxy", "&a");
+        super(87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
 
@@ -104,18 +101,8 @@ public class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public void load() {
-
-    }
-
-    @Override
     public void onReload() {
         new CollatedRunnable(this);
-    }
-
-    @Override
-    public void postLoad() {
-
     }
 
     @Override
@@ -140,11 +127,6 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 // Misc
                 new IntegrationLoader("mcMMO", () -> McmmoManager.register(new McmmoIntegrationImpl()))
         );
-    }
-
-    @Override
-    public List<AbstractCommand> getCommands() {
-        return new ArrayList<>();
     }
 
     @Override
@@ -175,16 +157,5 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new PlayerJumpListeners(),
                 new GUIListener(this)
         );
-    }
-
-    @Override
-    public List<Class<?>> getUpdatableClasses() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    @Nullable
-    protected DisplayModule createDisplayModule() {
-        return null;
     }
 }
