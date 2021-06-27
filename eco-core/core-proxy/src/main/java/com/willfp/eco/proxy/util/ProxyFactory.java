@@ -5,6 +5,7 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.proxy.AbstractProxy;
 import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.core.proxy.UnsupportedVersionException;
+import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;
@@ -30,6 +31,12 @@ public class ProxyFactory<T extends AbstractProxy> extends PluginDependent {
     public ProxyFactory(@NotNull final EcoPlugin plugin,
                         @NotNull final Class<T> proxyClass) {
         super(plugin);
+
+        Validate.isTrue(
+                !plugin.getProxyPackage().equalsIgnoreCase(""),
+                "Specified plugin has no proxy support!"
+        );
+
         this.proxyClass = proxyClass;
     }
 

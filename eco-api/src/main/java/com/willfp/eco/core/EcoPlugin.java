@@ -51,8 +51,11 @@ public abstract class EcoPlugin extends JavaPlugin {
 
     /**
      * The name of the plugin.
+     *
+     * @deprecated Pointless, use getName instead.
      */
     @Getter
+    @Deprecated
     private final String pluginName;
 
     /**
@@ -164,6 +167,62 @@ public abstract class EcoPlugin extends JavaPlugin {
     private boolean outdated = false;
 
     /**
+     * Create a new plugin without a specified color, proxy support, spigot, or bStats.
+     */
+    protected EcoPlugin() {
+        this("&f");
+    }
+
+    /**
+     * Create a new plugin without proxy support, spigot, or bStats.
+     *
+     * @param color The color.
+     */
+    protected EcoPlugin(@NotNull final String color) {
+        this("", color);
+    }
+
+
+    /**
+     * Create a new plugin unlinked to spigot and bStats.
+     *
+     * @param proxyPackage The package where proxy implementations are stored.
+     * @param color        The color of the plugin (used in messages, such as &a, &b)
+     */
+    protected EcoPlugin(@NotNull final String proxyPackage,
+                        @NotNull final String color) {
+        this(0, 0, proxyPackage, color);
+    }
+
+    /**
+     * Create a new plugin.
+     *
+     * @param resourceId   The spigot resource ID for the plugin.
+     * @param bStatsId     The bStats resource ID for the plugin.
+     * @param proxyPackage The package where proxy implementations are stored.
+     * @param color        The color of the plugin (used in messages, such as &a, &b)
+     */
+    protected EcoPlugin(final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String proxyPackage,
+                        @NotNull final String color) {
+        this("", resourceId, bStatsId, proxyPackage, color);
+    }
+
+    /**
+     * Create a new plugin without proxy support.
+     *
+     * @param resourceId   The spigot resource ID for the plugin.
+     * @param bStatsId     The bStats resource ID for the plugin.
+     * @param color        The color of the plugin (used in messages, such as &a, &b)
+     */
+    protected EcoPlugin(final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String color) {
+        this(resourceId, bStatsId, "", color);
+    }
+
+    /**
      * Create a new plugin.
      *
      * @param pluginName   The name of the plugin.
@@ -171,13 +230,15 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, such as &a, &b)
+     * @deprecated pluginName is redundant.
      */
+    @Deprecated
     protected EcoPlugin(@NotNull final String pluginName,
                         final int resourceId,
                         final int bStatsId,
                         @NotNull final String proxyPackage,
                         @NotNull final String color) {
-        this.pluginName = pluginName;
+        this.pluginName = this.getName();
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
@@ -210,20 +271,24 @@ public abstract class EcoPlugin extends JavaPlugin {
 
         this.getEventManager().registerListener(new ArrowDataListener(this));
 
-        new UpdateChecker(this).getVersion(version -> {
-            DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
-            DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
-            if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
-                this.outdated = true;
-                this.getScheduler().runTimer(() -> {
-                    this.getLogger().info("&c " + this.pluginName + " is out of date! (Version " + this.getDescription().getVersion() + ")");
-                    this.getLogger().info("&cThe newest version is &f" + version);
-                    this.getLogger().info("&cDownload the new version!");
-                }, 0, 864000);
-            }
-        });
+        if (this.getResourceId() != 0) {
+            new UpdateChecker(this).getVersion(version -> {
+                DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
+                DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
+                if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
+                    this.outdated = true;
+                    this.getScheduler().runTimer(() -> {
+                        this.getLogger().info("&c " + this.pluginName + " is out of date! (Version " + this.getDescription().getVersion() + ")");
+                        this.getLogger().info("&cThe newest version is &f" + version);
+                        this.getLogger().info("&cDownload the new version!");
+                    }, 0, 864000);
+                }
+            });
+        }
 
-        new Metrics(this, this.bStatsId);
+        if (this.getBStatsId() != 0) {
+            new Metrics(this, this.bStatsId);
+        }
 
         Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toSet());
 
