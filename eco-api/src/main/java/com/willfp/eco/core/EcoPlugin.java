@@ -418,6 +418,10 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getConfigHandler().saveAllConfigs();
 
         this.disable();
+
+        if (this.isSupportingExtensions()) {
+            this.getExtensionLoader().unloadExtensions();
+        }
     }
 
     /**
