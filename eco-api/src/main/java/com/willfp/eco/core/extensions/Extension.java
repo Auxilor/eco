@@ -71,7 +71,7 @@ public abstract class Extension {
      */
     public final String getName() {
         Validate.notNull(metadata, "Metadata cannot be null!");
-        return this.metadata.getName();
+        return this.metadata.name();
     }
 
     /**
@@ -81,6 +81,6 @@ public abstract class Extension {
      */
     public final String getVersion() {
         Validate.notNull(metadata, "Metadata cannot be null!");
-        return this.metadata.getVersion();
+        return this.metadata.version();
     }
 }
