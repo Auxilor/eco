@@ -7,7 +7,6 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.proxy.proxies.VillagerTradeProxy;
-import com.willfp.eco.spigot.InternalProxyUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -35,7 +34,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
                        @NotNull final PacketEvent event) {
         List<MerchantRecipe> recipes = new ArrayList<>();
 
-        if (((EcoPlugin) this.getPlugin()).getConfigYml().getBool("villager-display-fix")) {
+        if (this.getPlugin().getConfigYml().getBool("villager-display-fix")) {
             for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
                 ItemStack result = recipe.getResult();
                 ItemMeta meta = result.getItemMeta();
@@ -48,7 +47,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
         }
 
         for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
-            MerchantRecipe newRecipe = InternalProxyUtils.getProxy(VillagerTradeProxy.class).displayTrade(recipe);
+            MerchantRecipe newRecipe = this.getPlugin().getProxy(VillagerTradeProxy.class).displayTrade(recipe);
             recipes.add(newRecipe);
         }
 

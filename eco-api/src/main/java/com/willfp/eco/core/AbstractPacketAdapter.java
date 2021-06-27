@@ -142,6 +142,11 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
         onSend(event.getPacket(), event.getPlayer(), event);
     }
 
+    @Override
+    public final EcoPlugin getPlugin() {
+        return (EcoPlugin) super.getPlugin();
+    }
+
     /**
      * Register the packet adapter with ProtocolLib.
      */

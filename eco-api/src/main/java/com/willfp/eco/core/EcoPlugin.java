@@ -1,10 +1,9 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.AbstractCommand;
+import com.willfp.eco.core.config.ConfigHandler;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
-import com.willfp.eco.core.config.ConfigHandler;
-import com.willfp.eco.internal.config.updating.EcoConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.events.EventManager;
@@ -14,9 +13,12 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.proxy.AbstractProxy;
 import com.willfp.eco.core.scheduling.Scheduler;
+import com.willfp.eco.internal.Internals;
 import com.willfp.eco.internal.UpdateChecker;
 import com.willfp.eco.internal.arrows.ArrowDataListener;
+import com.willfp.eco.internal.config.updating.EcoConfigHandler;
 import com.willfp.eco.internal.events.EcoEventManager;
 import com.willfp.eco.internal.extensions.EcoExtensionLoader;
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory;
@@ -169,6 +171,12 @@ public abstract class EcoPlugin extends JavaPlugin {
     private boolean outdated = false;
 
     /**
+     * If the plugin supports extensions.
+     */
+    @Getter
+    private final boolean supportingExtensions;
+
+    /**
      * Create a new plugin without a specified color, proxy support, spigot, or bStats.
      */
     protected EcoPlugin() {
@@ -197,7 +205,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
-     * Create a new plugin without proxy support.
+     * Create a new plugin without proxy or extension support.
      *
      * @param resourceId The spigot resource ID for the plugin.
      * @param bStatsId   The bStats resource ID for the plugin.
@@ -210,7 +218,22 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
-     * Create a new plugin.
+     * Create a new plugin without proxy support.
+     *
+     * @param resourceId The spigot resource ID for the plugin.
+     * @param bStatsId   The bStats resource ID for the plugin.
+     * @param color      The color of the plugin (used in messages, such as &a, &b)
+     * @param supportingExtensions If the plugin supports extensions.
+     */
+    protected EcoPlugin(final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String color,
+                        final boolean supportingExtensions) {
+        this(resourceId, bStatsId, "", color, supportingExtensions);
+    }
+
+    /**
+     * Create a new plugin without extension support.
      *
      * @param resourceId   The spigot resource ID for the plugin.
      * @param bStatsId     The bStats resource ID for the plugin.
@@ -221,7 +244,24 @@ public abstract class EcoPlugin extends JavaPlugin {
                         final int bStatsId,
                         @NotNull final String proxyPackage,
                         @NotNull final String color) {
-        this("", resourceId, bStatsId, proxyPackage, color);
+        this(resourceId, bStatsId, proxyPackage, color, false);
+    }
+
+    /**
+     * Create a new plugin.
+     *
+     * @param resourceId           The spigot resource ID for the plugin.
+     * @param bStatsId             The bStats resource ID for the plugin.
+     * @param proxyPackage         The package where proxy implementations are stored.
+     * @param color                The color of the plugin (used in messages, such as &a, &b)
+     * @param supportingExtensions If the plugin supports extensions.
+     */
+    protected EcoPlugin(final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String proxyPackage,
+                        @NotNull final String color,
+                        final boolean supportingExtensions) {
+        this("", resourceId, bStatsId, proxyPackage, color, supportingExtensions);
     }
 
     /**
@@ -241,11 +281,34 @@ public abstract class EcoPlugin extends JavaPlugin {
                         final int bStatsId,
                         @NotNull final String proxyPackage,
                         @NotNull final String color) {
+        this(pluginName, resourceId, bStatsId, proxyPackage, color, false);
+    }
+
+    /**
+     * Create a new plugin.
+     *
+     * @param pluginName           The name of the plugin.
+     * @param resourceId           The spigot resource ID for the plugin.
+     * @param bStatsId             The bStats resource ID for the plugin.
+     * @param proxyPackage         The package where proxy implementations are stored.
+     * @param color                The color of the plugin (used in messages, such as &a, &b)
+     * @param supportingExtensions If the plugin supports extensions.
+     * @deprecated pluginName is redundant.
+     */
+    @Deprecated
+    @SuppressWarnings("unused")
+    protected EcoPlugin(@NotNull final String pluginName,
+                        final int resourceId,
+                        final int bStatsId,
+                        @NotNull final String proxyPackage,
+                        @NotNull final String color,
+                        final boolean supportingExtensions) {
         this.pluginName = this.getName();
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
         this.color = color;
+        this.supportingExtensions = supportingExtensions;
 
         this.scheduler = new EcoScheduler(this);
         this.eventManager = new EcoEventManager(this);
@@ -326,6 +389,17 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getScheduler().runLater(this::afterLoad, 1);
 
         this.updatableClasses.forEach(clazz -> this.getConfigHandler().registerUpdatableClass(clazz));
+
+        if (this.isSupportingExtensions()) {
+            this.getExtensionLoader().loadExtensions();
+
+            if (this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
+                this.getLogger().info("&cNo extensions found");
+            } else {
+                this.getLogger().info("Extensions Loaded:");
+                this.getExtensionLoader().getLoadedExtensions().forEach(extension -> this.getLogger().info("- " + extension.getName() + " v" + extension.getVersion()));
+            }
+        }
 
         this.enable();
 
@@ -511,6 +585,17 @@ public abstract class EcoPlugin extends JavaPlugin {
         );
 
         return null;
+    }
+
+    /**
+     * Get the implementation of a specified proxy.
+     *
+     * @param proxyClass The proxy interface.
+     * @param <T>        The type of the proxy.
+     * @return The proxy implementation.
+     */
+    public @NotNull final <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
+        return Internals.getInstance().getProxy(this, proxyClass);
     }
 
     /**
