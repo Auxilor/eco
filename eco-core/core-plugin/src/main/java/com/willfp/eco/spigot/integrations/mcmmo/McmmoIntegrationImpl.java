@@ -13,7 +13,7 @@ public class McmmoIntegrationImpl implements McmmoWrapper {
     /**
      * Disabled if mcmmo is outdated or missing classes.
      */
-    boolean disabled = false;
+    private boolean disabled = false;
 
     /**
      * Initialize mcMMO integration.

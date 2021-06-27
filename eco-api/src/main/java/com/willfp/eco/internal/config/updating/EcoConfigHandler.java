@@ -7,6 +7,7 @@ import com.willfp.eco.core.config.ConfigUpdater;
 import com.willfp.eco.internal.config.LoadableConfig;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdatableClassException;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException;
+import com.willfp.eco.internal.config.yaml.UpdatableYamlConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -94,5 +95,14 @@ public class EcoConfigHandler extends PluginDependent implements ConfigHandler {
     @Override
     public void addConfig(@NotNull final LoadableConfig config) {
         configs.add(config);
+    }
+
+    @Override
+    public void updateConfigs() {
+        for (LoadableConfig config : configs) {
+            if (config instanceof UpdatableYamlConfig updatableYamlConfig) {
+                updatableYamlConfig.update();
+            }
+        }
     }
 }

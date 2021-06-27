@@ -22,6 +22,11 @@ public interface ConfigHandler {
     void saveAllConfigs();
 
     /**
+     * Update all updatable configs.
+     */
+    void updateConfigs();
+
+    /**
      * Add new config to be saved.
      *
      * @param config The config.

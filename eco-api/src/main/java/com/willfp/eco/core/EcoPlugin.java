@@ -474,8 +474,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * Default code to be executed on plugin reload.
      */
     public final void reload() {
-        this.getConfigYml().update();
-        this.getLangYml().update();
+        this.getConfigHandler().updateConfigs();
 
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
