@@ -356,7 +356,8 @@ public abstract class EcoPlugin extends JavaPlugin {
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
             this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
-            this.getLogger().severe("Download the newest version to use this plugin!");
+            this.getLogger().severe("Download the newest version here:");
+            this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
