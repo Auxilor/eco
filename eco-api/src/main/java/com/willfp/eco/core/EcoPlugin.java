@@ -220,9 +220,9 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Create a new plugin without proxy support.
      *
-     * @param resourceId The spigot resource ID for the plugin.
-     * @param bStatsId   The bStats resource ID for the plugin.
-     * @param color      The color of the plugin (used in messages, such as &a, &b)
+     * @param resourceId           The spigot resource ID for the plugin.
+     * @param bStatsId             The bStats resource ID for the plugin.
+     * @param color                The color of the plugin (used in messages, such as &a, &b)
      * @param supportingExtensions If the plugin supports extensions.
      */
     protected EcoPlugin(final int resourceId,
@@ -350,6 +350,15 @@ public abstract class EcoPlugin extends JavaPlugin {
                     }, 0, 864000);
                 }
             });
+        }
+
+        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Internals.getInstance().getPlugin().getDescription().getVersion());
+        DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
+        if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
+            this.getLogger().severe("You are running an outdated version of eco!");
+            this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
+            this.getLogger().severe("Download the newest version to use this plugin!");
+            Bukkit.getPluginManager().disablePlugin(this);
         }
 
         if (this.getBStatsId() != 0) {
@@ -591,13 +600,23 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
+     * Get the minimum version of eco to use the plugin.
+     *
+     * @return The version.
+     */
+    protected String getMinimumEcoVersion() {
+        return "5.0.0";
+    }
+
+    /**
      * Get the implementation of a specified proxy.
      *
      * @param proxyClass The proxy interface.
      * @param <T>        The type of the proxy.
      * @return The proxy implementation.
      */
-    public @NotNull final <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
+    public @NotNull
+    final <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
         return Internals.getInstance().getProxy(this, proxyClass);
     }
 
