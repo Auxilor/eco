@@ -69,6 +69,7 @@ public class EcoSpigotPlugin extends EcoPlugin {
     public EcoSpigotPlugin() {
         super(87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
+        Internals.setInterfacing(new EcoInternals(this));
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
 
         SkullProxy skullProxy = instance.getProxy(SkullProxy.class);
@@ -82,8 +83,6 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
         this.dataJson = new DataJson(this);
         Data.init(this.dataJson);
-
-        Internals.setInterfacing(new EcoInternals(this));
     }
 
     @Override
