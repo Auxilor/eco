@@ -11,6 +11,10 @@ public final class BlockBreak implements BlockBreakProxy {
     @Override
     public void breakBlock(@NotNull final Player player,
                            @NotNull final Block block) {
+        if (!(player instanceof CraftPlayer)) {
+            return;
+        }
+
         ((CraftPlayer) player).getHandle().d.breakBlock(new BlockPosition(block.getX(), block.getY(), block.getZ()));
     }
 }
