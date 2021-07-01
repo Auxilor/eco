@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.proxy.proxies.AutoCraftProxy;
+import com.willfp.eco.spigot.ProxyUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ public class PacketAutoRecipe extends AbstractPacketAdapter {
         }
 
         try {
-            this.getPlugin().getProxy(AutoCraftProxy.class).modifyPacket(packet.getHandle());
+            ProxyUtils.getProxy(AutoCraftProxy.class).modifyPacket(packet.getHandle());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -13,7 +13,6 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.core.proxy.AbstractProxy;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.internal.Internals;
 import com.willfp.eco.internal.UpdateChecker;
@@ -606,18 +605,6 @@ public abstract class EcoPlugin extends JavaPlugin {
      */
     protected String getMinimumEcoVersion() {
         return "5.0.0";
-    }
-
-    /**
-     * Get the implementation of a specified proxy.
-     *
-     * @param proxyClass The proxy interface.
-     * @param <T>        The type of the proxy.
-     * @return The proxy implementation.
-     */
-    public @NotNull
-    final <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
-        return Internals.getInstance().getProxy(this, proxyClass);
     }
 
     /**

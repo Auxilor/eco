@@ -72,13 +72,13 @@ public class EcoSpigotPlugin extends EcoPlugin {
         Internals.setInterfacing(new EcoInternals(this));
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
 
-        SkullProxy skullProxy = instance.getProxy(SkullProxy.class);
+        SkullProxy skullProxy = ProxyUtils.getProxy(SkullProxy.class);
         SkullUtils.initialize(skullProxy::setSkullTexture);
 
-        BlockBreakProxy blockBreakProxy = instance.getProxy(BlockBreakProxy.class);
+        BlockBreakProxy blockBreakProxy = ProxyUtils.getProxy(BlockBreakProxy.class);
         BlockUtils.initialize(blockBreakProxy::breakBlock);
 
-        TridentStackProxy tridentStackProxy = instance.getProxy(TridentStackProxy.class);
+        TridentStackProxy tridentStackProxy = ProxyUtils.getProxy(TridentStackProxy.class);
         TridentUtils.initialize(tridentStackProxy::getTridentStack);
 
         this.dataJson = new DataJson(this);

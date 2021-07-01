@@ -7,6 +7,7 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.proxy.proxies.ChatComponentProxy;
+import com.willfp.eco.spigot.ProxyUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +34,7 @@ public class PacketChat extends AbstractPacketAdapter {
                 return;
             }
 
-            WrappedChatComponent newComponent = WrappedChatComponent.fromHandle(this.getPlugin().getProxy(ChatComponentProxy.class).modifyComponent(component.getHandle()));
+            WrappedChatComponent newComponent = WrappedChatComponent.fromHandle(ProxyUtils.getProxy(ChatComponentProxy.class).modifyComponent(component.getHandle()));
             packet.getChatComponents().write(i, newComponent);
         }
     }
