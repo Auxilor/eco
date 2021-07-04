@@ -4,19 +4,19 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class PluginDependent {
+public abstract class PluginDependent<T extends EcoPlugin> {
     /**
      * The {@link EcoPlugin} that is stored.
      */
     @Getter(AccessLevel.PROTECTED)
-    private final EcoPlugin plugin;
+    private final T plugin;
 
     /**
      * Pass an {@link EcoPlugin} in order to interface with it.
      *
      * @param plugin The plugin to manage.
      */
-    protected PluginDependent(@NotNull final EcoPlugin plugin) {
+    protected PluginDependent(@NotNull final T plugin) {
         this.plugin = plugin;
     }
 }
