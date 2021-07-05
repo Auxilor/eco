@@ -1,7 +1,7 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.AbstractCommand;
-import com.willfp.eco.core.command.impl.BaseCommand;
+import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.ConfigHandler;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
@@ -396,7 +396,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getListeners().forEach(listener -> this.getEventManager().registerListener(listener));
 
         this.getCommands().forEach(AbstractCommand::register);
-        this.getPluginCommands().forEach(BaseCommand::register);
+        this.getPluginCommands().forEach(PluginCommand::register);
 
         this.getScheduler().runLater(this::afterLoad, 1);
 
@@ -567,7 +567,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of commands.
      */
-    public List<BaseCommand> getPluginCommands() {
+    public List<PluginCommand> getPluginCommands() {
         return new ArrayList<>();
     }
 

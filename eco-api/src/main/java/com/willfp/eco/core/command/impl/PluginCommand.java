@@ -1,38 +1,32 @@
 package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.command.CommandBase;
-import com.willfp.eco.core.command.util.CommandUtils;
+import com.willfp.eco.internal.commands.HandledCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public abstract class BaseCommand extends HandledCommand implements CommandExecutor, TabCompleter {
+public abstract class PluginCommand extends HandledCommand implements CommandExecutor, TabCompleter {
     /**
      * Create a new command.
      * <p>
      * The command will not be registered until {@link this#register()} is called.
      * <p>
      * The name cannot be the same as an existing command as this will conflict.
+     *
      * @param name        The name used in execution.
      * @param permission  The permission required to execute the command.
      * @param playersOnly If only players should be able to execute this command.
      */
-    protected BaseCommand(@NotNull final String name,
-                          @NotNull final String permission,
-                          final boolean playersOnly) {
+    protected PluginCommand(@NotNull final String name,
+                            @NotNull final String permission,
+                            final boolean playersOnly) {
         super(name, permission, playersOnly);
     }
 
@@ -42,7 +36,7 @@ public abstract class BaseCommand extends HandledCommand implements CommandExecu
      * Requires the command name to exist, defined in plugin.yml.
      */
     public final void register() {
-        PluginCommand command = Bukkit.getPluginCommand(this.getName());
+        org.bukkit.command.PluginCommand command = Bukkit.getPluginCommand(this.getName());
         assert command != null;
         command.setExecutor(this);
         command.setTabCompleter(this);
@@ -67,25 +61,7 @@ public abstract class BaseCommand extends HandledCommand implements CommandExecu
             return false;
         }
 
-        if (!CommandUtils.canExecute(sender, this)) {
-            return true;
-        }
-
-        if (args.length > 0) {
-            for (CommandBase subcommand : this.getSubcommands()) {
-                if (subcommand.getName().equalsIgnoreCase(args[0])) {
-                    if (!CommandUtils.canExecute(sender, subcommand)) {
-                        return true;
-                    }
-
-                    subcommand.getHandler().onExecute(sender, Arrays.asList(Arrays.copyOfRange(args, 1, args.length)));
-
-                    return true;
-                }
-            }
-        }
-
-        this.getHandler().onExecute(sender, Arrays.asList(args));
+        this.handle(sender, args);
 
         return true;
     }
@@ -109,26 +85,6 @@ public abstract class BaseCommand extends HandledCommand implements CommandExecu
             return null;
         }
 
-        if (!sender.hasPermission(this.getPermission())) {
-            return null;
-        }
-
-        if (args.length > 0) {
-            List<String> completions = new ArrayList<>();
-
-            StringUtil.copyPartialMatches(
-                    args[0],
-                    this.getSubcommands().stream().map(CommandBase::getName).collect(Collectors.toList()),
-                    completions
-            );
-
-            Collections.sort(completions);
-
-            if (!completions.isEmpty()) {
-                return completions;
-            }
-        }
-
-        return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
+        return this.handleTabCompletion(sender, args);
     }
 }
