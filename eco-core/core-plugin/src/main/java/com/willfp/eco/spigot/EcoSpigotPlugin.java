@@ -31,7 +31,8 @@ import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan;
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX;
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX_V10;
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX_V11;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms;
@@ -44,7 +45,11 @@ import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
 import lombok.Getter;
+
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -114,7 +119,20 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new IntegrationLoader("Towny", () -> AntigriefManager.register(new AntigriefTowny())),
                 new IntegrationLoader("Lands", () -> AntigriefManager.register(new AntigriefLands(this))),
                 new IntegrationLoader("Kingdoms", () -> AntigriefManager.register(new AntigriefKingdoms())),
-                new IntegrationLoader("CombatLogX", () -> AntigriefManager.register(new AntigriefCombatLogX())),
+                new IntegrationLoader("CombatLogX", () -> {
+                    PluginManager pluginManager = Bukkit.getPluginManager();
+                    Plugin plugin_CombatLogX = pluginManager.getPlugin("CombatLogX");
+                    if (plugin_CombatLogX == null) return;
+
+                    String pluginVersion = plugin_CombatLogX.getDescription().getVersion();
+                    if (pluginVersion.startsWith("10")) {
+                        AntigriefManager.register(new AntigriefCombatLogX_V10());
+                    }
+
+                    if(pluginVersion.startsWith("11")) {
+                        AntigriefManager.register(new AntigriefCombatLogX_V11());
+                    }
+                }),
 
                 // Anticheat
                 new IntegrationLoader("AAC5", () -> AnticheatManager.register(this, new AnticheatAAC())),
