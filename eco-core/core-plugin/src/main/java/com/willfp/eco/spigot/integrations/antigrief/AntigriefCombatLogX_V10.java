@@ -1,40 +1,32 @@
 package com.willfp.eco.spigot.integrations.antigrief;
 
-import com.SirBlobman.combatlogx.api.ICombatLogX;
-import com.SirBlobman.combatlogx.api.expansion.Expansion;
-import com.SirBlobman.combatlogx.expansion.newbie.helper.NewbieHelper;
-import com.SirBlobman.combatlogx.expansion.newbie.helper.listener.ListenerPVP;
-import com.willfp.eco.spigot.EcoSpigotPlugin;
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
+import java.util.Optional;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import com.SirBlobman.combatlogx.api.ICombatLogX;
+import com.SirBlobman.combatlogx.api.expansion.Expansion;
+import com.SirBlobman.combatlogx.api.expansion.ExpansionManager;
+import com.SirBlobman.combatlogx.expansion.newbie.helper.NewbieHelper;
+import com.SirBlobman.combatlogx.expansion.newbie.helper.listener.ListenerPVP;
+import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public class AntigriefCombatLogX implements AntigriefWrapper {
+public class AntigriefCombatLogX_V10 implements AntigriefWrapper {
     /**
      * Instance of CombatLogX.
      */
-    private final ICombatLogX instance = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
-
-    /**
-     * PVPManager for CombatLogX NewbieHelper.
-     */
-    private ListenerPVP pvp = null;
+    private final ICombatLogX instance;
 
     /**
      * Create new CombatLogX antigrief.
      */
-    public AntigriefCombatLogX() {
-        assert instance != null;
-        EcoSpigotPlugin.getInstance().getScheduler().runLater(() -> {
-            Expansion expansionUncast = instance.getExpansionManager().getExpansionByName("NewbieHelper").orElse(null);
-            if (expansionUncast instanceof NewbieHelper) {
-                pvp = ((NewbieHelper) expansionUncast).getPVPListener();
-            }
-        }, 3);
+    public AntigriefCombatLogX_V10() {
+        this.instance = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
     }
 
     @Override
@@ -62,11 +54,16 @@ public class AntigriefCombatLogX implements AntigriefWrapper {
             return true;
         }
 
-        if (pvp == null) {
-            return true;
+        ExpansionManager expansionManager = this.instance.getExpansionManager();
+        Optional<Expansion> optionalExpansion = expansionManager.getExpansionByName("NewbieHelper");
+        if(optionalExpansion.isPresent()) {
+            Expansion expansion = optionalExpansion.get();
+            NewbieHelper newbieHelper = (NewbieHelper) expansion;
+            ListenerPVP pvpListener = newbieHelper.getPVPListener();
+            return (pvpListener.isPVPEnabled(player) && pvpListener.isPVPEnabled((Player) victim));
         }
 
-        return (pvp.isPVPEnabled(player) && pvp.isPVPEnabled((Player) victim));
+        return true;
     }
 
     @Override
