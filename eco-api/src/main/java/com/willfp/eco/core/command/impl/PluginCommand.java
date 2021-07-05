@@ -20,14 +20,16 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
      * <p>
      * The name cannot be the same as an existing command as this will conflict.
      *
+     * @param plugin      The plugin.
      * @param name        The name used in execution.
      * @param permission  The permission required to execute the command.
      * @param playersOnly If only players should be able to execute this command.
      */
-    protected PluginCommand(@NotNull final String name,
+    protected PluginCommand(@NotNull final EcoPlugin plugin,
+                            @NotNull final String name,
                             @NotNull final String permission,
                             final boolean playersOnly) {
-        super(name, permission, playersOnly);
+        super(plugin, name, permission, playersOnly);
     }
 
     /**

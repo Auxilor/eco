@@ -1,9 +1,11 @@
 package com.willfp.eco.internal.commands;
 
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.CommandHandler;
 import com.willfp.eco.core.command.TabCompleteHandler;
-import com.willfp.eco.core.command.util.CommandUtils;
+import com.willfp.eco.internal.commands.util.CommandUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
@@ -16,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class HandledCommand implements CommandBase {
+public abstract class HandledCommand extends PluginDependent<EcoPlugin> implements CommandBase {
     /**
      * The name of the command.
      */
@@ -50,13 +52,16 @@ public abstract class HandledCommand implements CommandBase {
      * <p>
      * The name cannot be the same as an existing command as this will conflict.
      *
+     * @param plugin      Instance of a plugin.
      * @param name        The name used in execution.
      * @param permission  The permission required to execute the command.
      * @param playersOnly If only players should be able to execute this command.
      */
-    protected HandledCommand(@NotNull final String name,
+    protected HandledCommand(@NotNull final EcoPlugin plugin,
+                             @NotNull final String name,
                              @NotNull final String permission,
                              final boolean playersOnly) {
+        super(plugin);
         this.name = name;
         this.permission = permission;
         this.playersOnly = playersOnly;
@@ -84,14 +89,14 @@ public abstract class HandledCommand implements CommandBase {
      */
     protected final void handle(@NotNull final CommandSender sender,
                                 @NotNull final String[] args) {
-        if (!CommandUtils.canExecute(sender, this)) {
+        if (!CommandUtils.canExecute(sender, this, this.getPlugin())) {
             return;
         }
 
         if (args.length > 0) {
             for (CommandBase subcommand : this.getSubcommands()) {
                 if (subcommand.getName().equalsIgnoreCase(args[0])) {
-                    if (!CommandUtils.canExecute(sender, subcommand)) {
+                    if (!CommandUtils.canExecute(sender, subcommand, this.getPlugin())) {
                         return;
                     }
 
