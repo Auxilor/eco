@@ -17,6 +17,15 @@ dependencies {
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
     compileOnly 'com.gmail.nossr50.mcMMO:mcMMO:2.1.157'
+
+    // CombatLogX V10 + NewbieHelper Expansion
+    compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
+    compileOnly 'com.SirBlobman.combatlogx.expansions:NewbieHelper:10.0.0.0-SNAPSHOT'
+
+    // CombatLogX V11 + NewbieHelper Expansion
+    compileOnly 'com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT'
+    compileOnly 'com.github.sirblobman.combatlogx.expansion:newbie-helper:11.0.0.0-SNAPSHOT'
+
     compileOnly fileTree(dir: '../../lib', include: ['*.jar'])
 }
 
