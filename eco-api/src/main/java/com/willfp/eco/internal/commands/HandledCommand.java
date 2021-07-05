@@ -6,9 +6,7 @@ import com.willfp.eco.core.command.TabCompleteHandler;
 import com.willfp.eco.core.command.util.CommandUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class HandledCommand implements CommandBase, CommandExecutor, TabCompleter {
+public abstract class HandledCommand implements CommandBase {
     /**
      * The name of the command.
      */
