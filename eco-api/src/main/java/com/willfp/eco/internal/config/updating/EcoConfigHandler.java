@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class EcoConfigHandler extends PluginDependent implements ConfigHandler {
+public class EcoConfigHandler extends PluginDependent<EcoPlugin> implements ConfigHandler {
     /**
      * A set of all configs that can be saved.
      */

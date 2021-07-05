@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class EcoEventManager extends PluginDependent implements EventManager {
+public class EcoEventManager extends PluginDependent<EcoPlugin> implements EventManager {
     /**
      * Manager class for event management.
      *

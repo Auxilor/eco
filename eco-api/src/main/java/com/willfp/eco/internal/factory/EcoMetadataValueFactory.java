@@ -6,7 +6,7 @@ import com.willfp.eco.core.factory.MetadataValueFactory;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
-public class EcoMetadataValueFactory extends PluginDependent implements MetadataValueFactory {
+public class EcoMetadataValueFactory extends PluginDependent<EcoPlugin> implements MetadataValueFactory {
     /**
      * Factory class to produce {@link FixedMetadataValue}s associated with an {@link EcoPlugin}.
      *

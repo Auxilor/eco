@@ -12,7 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class AntigriefLands extends PluginDependent implements AntigriefWrapper {
+public class AntigriefLands extends PluginDependent<EcoPlugin> implements AntigriefWrapper {
     /**
      * Lands integration.
      */

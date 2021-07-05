@@ -6,7 +6,7 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
-public class EcoNamespacedKeyFactory extends PluginDependent implements NamespacedKeyFactory {
+public class EcoNamespacedKeyFactory extends PluginDependent<EcoPlugin> implements NamespacedKeyFactory {
     /**
      * Factory class to produce {@link NamespacedKey}s associated with an {@link EcoPlugin}.
      *

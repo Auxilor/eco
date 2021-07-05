@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractCommand extends PluginDependent implements CommandExecutor {
+public abstract class AbstractCommand extends PluginDependent<EcoPlugin> implements CommandExecutor {
     /**
      * The name of the command
      * <p>

@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-public class ShapedRecipeListener extends PluginDependent implements Listener {
+public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements Listener {
     /**
      * Pass an {@link EcoPlugin} in order to interface with it.
      *

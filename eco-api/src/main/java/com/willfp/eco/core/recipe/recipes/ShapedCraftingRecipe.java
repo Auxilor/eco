@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class ShapedCraftingRecipe extends PluginDependent implements CraftingRecipe {
+public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> implements CraftingRecipe {
     /**
      * Recipe parts.
      */

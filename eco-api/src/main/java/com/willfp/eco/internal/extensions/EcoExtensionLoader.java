@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * Concrete implementation of {@link ExtensionLoader}.
  */
-public class EcoExtensionLoader extends PluginDependent implements ExtensionLoader {
+public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements ExtensionLoader {
     /**
      * All currently loaded extensions.
      */

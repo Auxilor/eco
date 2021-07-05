@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
 
-public class UpdateChecker extends PluginDependent {
+public class UpdateChecker extends PluginDependent<EcoPlugin> {
     /**
      * Create an update checker for the specified spigot resource id.
      *

@@ -1,24 +1,21 @@
 package com.willfp.eco.spigot.integrations.antigrief;
 
-import java.util.Optional;
-
+import com.SirBlobman.combatlogx.api.ICombatLogX;
+import com.SirBlobman.combatlogx.api.expansion.Expansion;
+import com.SirBlobman.combatlogx.api.expansion.ExpansionManager;
+import com.SirBlobman.combatlogx.expansion.newbie.helper.NewbieHelper;
+import com.SirBlobman.combatlogx.expansion.newbie.helper.listener.ListenerPVP;
+import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
-import com.github.sirblobman.combatlogx.api.ICombatLogX;
-import com.github.sirblobman.combatlogx.api.expansion.Expansion;
-import com.github.sirblobman.combatlogx.api.expansion.ExpansionManager;
-
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
-import combatlogx.expansion.newbie.helper.NewbieHelperExpansion;
-import combatlogx.expansion.newbie.helper.manager.PVPManager;
-import combatlogx.expansion.newbie.helper.manager.ProtectionManager;
 import org.jetbrains.annotations.NotNull;
 
-public class AntigriefCombatLogX_V11 implements AntigriefWrapper {
+import java.util.Optional;
+
+public class AntigriefCombatLogXV10 implements AntigriefWrapper {
     /**
      * Instance of CombatLogX.
      */
@@ -27,7 +24,7 @@ public class AntigriefCombatLogX_V11 implements AntigriefWrapper {
     /**
      * Create new CombatLogX antigrief.
      */
-    public AntigriefCombatLogX_V11() {
+    public AntigriefCombatLogXV10() {
         this.instance = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
     }
 
@@ -58,19 +55,12 @@ public class AntigriefCombatLogX_V11 implements AntigriefWrapper {
 
         // Only run checks if the NewbieHelper expansion is installed on the server.
         ExpansionManager expansionManager = this.instance.getExpansionManager();
-        Optional<Expansion> optionalExpansion = expansionManager.getExpansion("NewbieHelper");
+        Optional<Expansion> optionalExpansion = expansionManager.getExpansionByName("NewbieHelper");
         if(optionalExpansion.isPresent()) {
             Expansion expansion = optionalExpansion.get();
-            NewbieHelperExpansion newbieHelperExpansion = (NewbieHelperExpansion) expansion;
-
-            ProtectionManager protectionManager = newbieHelperExpansion.getProtectionManager();
-            PVPManager pvpManager = newbieHelperExpansion.getPVPManager();
-
-            Player victimPlayer = (Player) victim;
-            boolean victimProtected = protectionManager.isProtected(victimPlayer);
-            boolean victimDisabledPvP = pvpManager.isDisabled(victimPlayer);
-            boolean playerDisabledPvp = pvpManager.isDisabled(player);
-            return (!victimProtected && !victimDisabledPvP && !playerDisabledPvp);
+            NewbieHelper newbieHelper = (NewbieHelper) expansion;
+            ListenerPVP pvpListener = newbieHelper.getPVPListener();
+            return (pvpListener.isPVPEnabled(player) && pvpListener.isPVPEnabled((Player) victim));
         }
 
         return true;

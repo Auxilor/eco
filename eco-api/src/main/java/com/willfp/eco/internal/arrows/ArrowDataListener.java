@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class ArrowDataListener extends PluginDependent implements Listener {
+public class ArrowDataListener extends PluginDependent<EcoPlugin> implements Listener {
     /**
      * Listener to add metadata to arrows about the enchantments on the bow that shot them.
      *

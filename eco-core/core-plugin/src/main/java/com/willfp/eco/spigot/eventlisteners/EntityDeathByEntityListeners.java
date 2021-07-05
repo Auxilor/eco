@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class EntityDeathByEntityListeners extends PluginDependent implements Listener {
+public class EntityDeathByEntityListeners extends PluginDependent<EcoPlugin> implements Listener {
     /**
      * The events currently being built.
      */

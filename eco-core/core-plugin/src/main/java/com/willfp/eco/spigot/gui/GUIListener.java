@@ -13,7 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class GUIListener extends PluginDependent implements Listener {
+public class GUIListener extends PluginDependent<EcoPlugin> implements Listener {
     /**
      * Pass an {@link EcoPlugin} in order to interface with it.
      *

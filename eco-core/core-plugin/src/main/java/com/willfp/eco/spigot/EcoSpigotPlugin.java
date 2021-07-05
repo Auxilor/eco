@@ -31,8 +31,8 @@ import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan;
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan;
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX_V10;
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogX_V11;
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV10;
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms;
@@ -126,11 +126,11 @@ public class EcoSpigotPlugin extends EcoPlugin {
 
                     String pluginVersion = plugin_CombatLogX.getDescription().getVersion();
                     if (pluginVersion.startsWith("10")) {
-                        AntigriefManager.register(new AntigriefCombatLogX_V10());
+                        AntigriefManager.register(new AntigriefCombatLogXV10());
                     }
 
                     if(pluginVersion.startsWith("11")) {
-                        AntigriefManager.register(new AntigriefCombatLogX_V11());
+                        AntigriefManager.register(new AntigriefCombatLogXV11());
                     }
                 }),
 

@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public class EcoScheduler extends PluginDependent implements Scheduler {
+public class EcoScheduler extends PluginDependent<EcoPlugin> implements Scheduler {
     /**
      * Create a scheduler to manage the tasks of an {@link EcoPlugin}.
      *
