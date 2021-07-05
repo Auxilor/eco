@@ -1,6 +1,7 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.AbstractCommand;
+import com.willfp.eco.core.command.impl.BaseCommand;
 import com.willfp.eco.core.config.ConfigHandler;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
@@ -46,6 +47,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"deprecation", "DeprecatedIsStillUsed"})
 public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Loaded eco plugins.
@@ -394,6 +396,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getListeners().forEach(listener -> this.getEventManager().registerListener(listener));
 
         this.getCommands().forEach(AbstractCommand::register);
+        this.getPluginCommands().forEach(BaseCommand::register);
 
         this.getScheduler().runLater(this::afterLoad, 1);
 
@@ -549,11 +552,22 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
-     * The command to be registered.
+     * The commands to be registered.
+     *
+     * @return A list of commands.
+     * @deprecated Use {@link this#getPluginCommands()} instead.
+     */
+    @Deprecated
+    public List<AbstractCommand> getCommands() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * The commands to be registered.
      *
      * @return A list of commands.
      */
-    public List<AbstractCommand> getCommands() {
+    public List<BaseCommand> getPluginCommands() {
         return new ArrayList<>();
     }
 

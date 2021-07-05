@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 public abstract class AbstractTabCompleter implements TabCompleter {
     /**
      * The {@link AbstractCommand} that is tab-completed.

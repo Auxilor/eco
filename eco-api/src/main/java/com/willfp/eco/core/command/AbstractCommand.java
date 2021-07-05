@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
+@SuppressWarnings("DeprecatedIsStillUsed")
 public abstract class AbstractCommand extends PluginDependent<EcoPlugin> implements CommandExecutor {
     /**
      * The name of the command
