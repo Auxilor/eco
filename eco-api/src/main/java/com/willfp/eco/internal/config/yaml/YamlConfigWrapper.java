@@ -219,8 +219,15 @@ public abstract class YamlConfigWrapper<T extends ConfigurationSection> implemen
     @Override
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
+        return getStrings(path, true);
+    }
+
+    @Override
+    @NotNull
+    public List<String> getStrings(@NotNull final String path,
+                                   final boolean format) {
         if (cache.containsKey(path)) {
-            return StringUtils.translateList((List<String>) cache.get(path));
+            return format ? StringUtils.translateList((List<String>) cache.get(path)) : (List<String>) cache.get(path);
         } else {
             cache.put(path, has(path) ? new ArrayList<>(handle.getStringList(path)) : new ArrayList<>());
             return getStrings(path);

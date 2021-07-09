@@ -294,7 +294,16 @@ public abstract class JsonConfigWrapper implements JSONConfig, Cloneable {
     @Override
     @NotNull
     public List<String> getStrings(@NotNull final String path) {
-        return StringUtils.translateList((List<String>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>()));
+        return getStrings(path, true);
+    }
+
+    @Override
+    @NotNull
+    public List<String> getStrings(@NotNull final String path,
+                                   final boolean format) {
+        List<String> strings = (List<String>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>());
+
+        return format ? StringUtils.translateList(strings) : strings;
     }
 
     @Override

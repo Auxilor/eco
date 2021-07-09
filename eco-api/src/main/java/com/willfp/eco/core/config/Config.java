@@ -173,12 +173,25 @@ public interface Config {
 
     /**
      * Get a list of strings from config.
+     * <p>
+     * Formatted by default.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
     List<String> getStrings(@NotNull String path);
+
+    /**
+     * Get a list of strings from config.
+     *
+     * @param path The key to fetch the value from.
+     * @param format If the strings should be formatted.
+     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     */
+    @NotNull
+    List<String> getStrings(@NotNull String path,
+                            boolean format);
 
     /**
      * Get a list of strings from config.
