@@ -1,6 +1,5 @@
 package com.willfp.eco.core.items.builder;
 
-import com.willfp.eco.internal.items.AbstractItemStackBuilder;
 import com.willfp.eco.util.SkullUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.SkullMeta;

@@ -1,6 +1,5 @@
 package com.willfp.eco.core.items.builder;
 
-import com.willfp.eco.internal.items.AbstractItemStackBuilder;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

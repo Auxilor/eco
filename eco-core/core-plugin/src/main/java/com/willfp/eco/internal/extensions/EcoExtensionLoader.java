@@ -2,6 +2,7 @@ package com.willfp.eco.internal.extensions;
 
 
 import com.willfp.eco.core.extensions.Extension;
+import com.willfp.eco.core.extensions.ExtensionMetadata;
 import com.willfp.eco.core.extensions.MalformedExtensionException;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.PluginDependent;
