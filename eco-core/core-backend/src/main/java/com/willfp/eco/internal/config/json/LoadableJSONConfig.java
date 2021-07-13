@@ -18,7 +18,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class LoadableJsonConfig extends JsonConfigWrapper implements LoadableConfig {
+public class LoadableJSONConfig extends JSONConfigWrapper implements LoadableConfig {
     /**
      * The physical config file, as stored on disk.
      */
@@ -57,10 +57,10 @@ public class LoadableJsonConfig extends JsonConfigWrapper implements LoadableCon
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    public LoadableJsonConfig(@NotNull final String configName,
-                                 @NotNull final EcoPlugin plugin,
-                                 @NotNull final String subDirectoryPath,
-                                 @NotNull final Class<?> source) {
+    public LoadableJSONConfig(@NotNull final String configName,
+                              @NotNull final EcoPlugin plugin,
+                              @NotNull final String subDirectoryPath,
+                              @NotNull final Class<?> source) {
         this.plugin = plugin;
         this.name = configName + ".json";
         this.source = source;
