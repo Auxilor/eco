@@ -4,8 +4,8 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
 import com.willfp.eco.core.config.JSONConfig;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
-import com.willfp.eco.internal.config.json.JsonConfigSection;
-import com.willfp.eco.internal.config.json.LoadableJsonConfig;
+import com.willfp.eco.internal.config.json.JSONConfigSection;
+import com.willfp.eco.internal.config.json.LoadableJSONConfig;
 import com.willfp.eco.internal.config.yaml.LoadableYamlConfig;
 import com.willfp.eco.internal.config.yaml.UpdatableYamlConfig;
 import com.willfp.eco.internal.config.yaml.YamlConfigSection;
@@ -37,7 +37,7 @@ public class EcoConfigFactory implements ConfigFactory {
                                                @NotNull final EcoPlugin plugin,
                                                @NotNull final String subDirectoryPath,
                                                @NotNull final Class<?> source) {
-        return new LoadableJsonConfig(
+        return new LoadableJSONConfig(
                 configName,
                 plugin,
                 subDirectoryPath,
@@ -65,6 +65,6 @@ public class EcoConfigFactory implements ConfigFactory {
 
     @Override
     public JSONConfig createJSONConfig(@NotNull final Map<String, Object> values) {
-        return new JsonConfigSection(values);
+        return new JSONConfigSection(values);
     }
 }
