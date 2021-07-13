@@ -1,6 +1,5 @@
 package com.willfp.eco.core.extensions;
 
-import com.willfp.eco.internal.extensions.ExtensionMetadata;
 import com.willfp.eco.core.EcoPlugin;
 import lombok.AccessLevel;
 import lombok.Getter;

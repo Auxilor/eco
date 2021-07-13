@@ -1,6 +1,5 @@
 package com.willfp.eco.core.items.builder;
 
-import com.willfp.eco.internal.items.AbstractItemStackBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;

@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.extensions;
+package com.willfp.eco.core.extensions;
 
 import org.jetbrains.annotations.NotNull;
 
