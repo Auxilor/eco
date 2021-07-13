@@ -1,6 +1,5 @@
 package com.willfp.eco.core.gui.slot;
 
-import com.willfp.eco.internal.gui.EcoSlot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +24,7 @@ public interface Slot {
      * @return The builder.
      */
     static Builder builder(@NotNull final ItemStack itemStack) {
-        return new Builder((player) -> itemStack);
+        return new EcoSlotBuilder(player -> itemStack);
     }
 
     /**
@@ -35,71 +34,20 @@ public interface Slot {
      * @return The builder.
      */
     static Builder builder(@NotNull final Function<Player, ItemStack> provider) {
-        return new Builder(provider);
+        return new EcoSlotBuilder(provider);
     }
 
-    class Builder {
-        /**
-         * Provider.
-         */
-        private final Function<Player, ItemStack> provider;
+    interface Builder {
+        Builder onLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
 
-        /**
-         * Left click handler.
-         */
-        private BiConsumer<InventoryClickEvent, Slot> onLeftClick = null;
+        Builder onRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
 
-        /**
-         * Right click handler.
-         */
-        private BiConsumer<InventoryClickEvent, Slot> onRightClick = null;
+        Builder onShiftLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
 
-        /**
-         * Shift-Left-Click handler.
-         */
-        private BiConsumer<InventoryClickEvent, Slot> onShiftLeftClick = null;
+        Builder onShiftRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
 
-        /**
-         * Shift-Right-Click handler.
-         */
-        private BiConsumer<InventoryClickEvent, Slot> onShiftRightClick = null;
+        Builder onMiddleClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
 
-        /**
-         * Middle click handler.
-         */
-        private BiConsumer<InventoryClickEvent, Slot> onMiddleClick = null;
-
-        Builder(@NotNull final Function<Player, ItemStack> provider) {
-            this.provider = provider;
-        }
-
-        public Builder onLeftClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
-            this.onLeftClick = action;
-            return this;
-        }
-
-        public Builder onRightClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
-            this.onRightClick = action;
-            return this;
-        }
-
-        public Builder onShiftLeftClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
-            this.onShiftLeftClick = action;
-            return this;
-        }
-
-        public Builder onShiftRightClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
-            this.onShiftRightClick = action;
-            return this;
-        }
-
-        public Builder onMiddleClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
-            this.onMiddleClick = action;
-            return this;
-        }
-
-        public Slot build() {
-            return new EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick);
-        }
+        Slot build();
     }
 }

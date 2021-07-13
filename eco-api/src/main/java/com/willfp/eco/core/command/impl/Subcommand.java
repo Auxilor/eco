@@ -2,7 +2,6 @@ package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
-import com.willfp.eco.internal.commands.HandledCommand;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Subcommand extends HandledCommand {

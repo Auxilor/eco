@@ -1,6 +1,5 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.internal.config.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
 
 public interface ConfigHandler {

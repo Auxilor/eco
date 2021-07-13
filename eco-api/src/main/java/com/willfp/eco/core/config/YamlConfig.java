@@ -1,10 +1,11 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.internal.config.yaml.YamlConfigWrapper;
+import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.config.wrapper.YamlConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class YamlConfig extends YamlConfigWrapper<YamlConfiguration> {
+public abstract class YamlConfig extends YamlConfigWrapper {
     /**
      * Config implementation for passing YamlConfigurations.
      * <p>
@@ -13,6 +14,6 @@ public abstract class YamlConfig extends YamlConfigWrapper<YamlConfiguration> {
      * @param config     The YamlConfiguration handle.
      */
     public YamlConfig(@NotNull final YamlConfiguration config) {
-        init(config);
+        super(Eco.getHandler().getConfigFactory().createYamlConfig(config));
     }
 }

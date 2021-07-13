@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface Config {
+public interface Config extends Cloneable {
     /**
      * Clears cache.
      */
