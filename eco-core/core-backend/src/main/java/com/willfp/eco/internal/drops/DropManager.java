@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.drops;
 
-import com.willfp.eco.core.drops.AbstractDropQueue;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;

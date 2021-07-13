@@ -24,13 +24,12 @@ import com.willfp.eco.internal.factory.EcoRunnableFactory;
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.logging.EcoLogger;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
-import com.willfp.eco.spigot.EcoSpigotPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
 public class EcoHandler extends PluginDependent<EcoPlugin> implements Handler {
-    public EcoHandler(@NotNull final EcoSpigotPlugin plugin) {
+    public EcoHandler(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
