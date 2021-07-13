@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.drops.impl;
 
-import com.willfp.eco.core.drops.AbstractDropQueue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,7 +22,7 @@ public class FastCollatedDropQueue extends InternalDropQueue {
     public static final Map<Player, CollatedDrops> COLLATED_MAP = new ConcurrentHashMap<>();
 
     /**
-     * Backend implementation of {@link AbstractDropQueue}
+     * Backend implementation of {@link com.willfp.eco.core.drops.DropQueue}
      * {@link this#push()} adds to a map that creates a new {@link InternalDropQueue} at the end of every tick
      * <p>
      * The drops are not instantly pushed when called, instead the map is iterated over at the end of every tick. This massively improves performance.

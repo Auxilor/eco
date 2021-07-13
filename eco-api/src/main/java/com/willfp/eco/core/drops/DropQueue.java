@@ -10,9 +10,9 @@ import java.util.Collection;
 
 public class DropQueue {
     /**
-     * The internally used {@link AbstractDropQueue}.
+     * The internally used {@link DropQueue}.
      */
-    private final AbstractDropQueue handle;
+    private final DropQueue handle;
 
     /**
      * Create {@link DropQueue} linked to player.

@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.drops.impl;
 
-import com.willfp.eco.core.drops.AbstractDropQueue;
+import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.util.TelekinesisUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class InternalDropQueue implements AbstractDropQueue {
+public class InternalDropQueue extends DropQueue {
     /**
      * The items that the DropQueue stores.
      */
@@ -58,6 +58,7 @@ public class InternalDropQueue implements AbstractDropQueue {
      * @param player The player.
      */
     public InternalDropQueue(@NotNull final Player player) {
+        super(player);
         this.items = new ArrayList<>();
         this.xp = 0;
         this.player = player;
@@ -71,7 +72,7 @@ public class InternalDropQueue implements AbstractDropQueue {
      * @return The DropQueue.
      */
     @Override
-    public AbstractDropQueue addItem(@NotNull final ItemStack item) {
+    public DropQueue addItem(@NotNull final ItemStack item) {
         this.items.add(item);
         return this;
     }
@@ -83,7 +84,7 @@ public class InternalDropQueue implements AbstractDropQueue {
      * @return The DropQueue.
      */
     @Override
-    public AbstractDropQueue addItems(@NotNull final Collection<ItemStack> itemStacks) {
+    public DropQueue addItems(@NotNull final Collection<ItemStack> itemStacks) {
         this.items.addAll(itemStacks);
         return this;
     }
@@ -95,7 +96,7 @@ public class InternalDropQueue implements AbstractDropQueue {
      * @return The DropQueue.
      */
     @Override
-    public AbstractDropQueue addXP(final int amount) {
+    public DropQueue addXP(final int amount) {
         this.xp += amount;
         return this;
     }
@@ -107,7 +108,7 @@ public class InternalDropQueue implements AbstractDropQueue {
      * @return The DropQueue.
      */
     @Override
-    public AbstractDropQueue setLocation(@NotNull final Location location) {
+    public DropQueue setLocation(@NotNull final Location location) {
         this.loc = location;
         return this;
     }
@@ -118,7 +119,7 @@ public class InternalDropQueue implements AbstractDropQueue {
      * @return The DropQueue.
      */
     @Override
-    public AbstractDropQueue forceTelekinesis() {
+    public DropQueue forceTelekinesis() {
         this.hasTelekinesis = true;
         return this;
     }
@@ -126,6 +127,7 @@ public class InternalDropQueue implements AbstractDropQueue {
     /**
      * Push the queue.
      */
+    @Override
     public void push() {
         if (!hasTelekinesis) {
             hasTelekinesis = TelekinesisUtils.testPlayer(player);

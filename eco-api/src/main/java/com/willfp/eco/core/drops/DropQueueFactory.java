@@ -9,5 +9,5 @@ public interface DropQueueFactory {
      * @param player The player.
      * @return The Queue.
      */
-    AbstractDropQueue create(@NotNull Player player);
+    DropQueue create(@NotNull Player player);
 }
