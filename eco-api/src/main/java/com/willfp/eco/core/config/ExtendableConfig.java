@@ -1,10 +1,11 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.internal.config.yaml.UpdatableYamlConfig;
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.config.wrapper.YamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ExtendableConfig extends UpdatableYamlConfig {
+public abstract class ExtendableConfig extends YamlConfigWrapper {
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
      * <p>
@@ -23,6 +24,15 @@ public abstract class ExtendableConfig extends UpdatableYamlConfig {
                                @NotNull final Class<?> source,
                                @NotNull final String subDirectoryPath,
                                @NotNull final String... updateBlacklist) {
-        super(configName, plugin, subDirectoryPath, source, removeUnused, updateBlacklist);
+        super(
+                Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
+                        configName,
+                        plugin,
+                        subDirectoryPath,
+                        source,
+                        removeUnused,
+                        updateBlacklist
+                )
+        );
     }
 }

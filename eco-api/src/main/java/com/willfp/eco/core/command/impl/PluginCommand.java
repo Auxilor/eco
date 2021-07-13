@@ -1,7 +1,6 @@
 package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.internal.commands.HandledCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

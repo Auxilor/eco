@@ -15,18 +15,7 @@ import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.scheduling.Scheduler;
-import com.willfp.eco.internal.Internals;
-import com.willfp.eco.internal.UpdateChecker;
-import com.willfp.eco.internal.arrows.ArrowDataListener;
-import com.willfp.eco.internal.config.updating.EcoConfigHandler;
-import com.willfp.eco.internal.events.EcoEventManager;
-import com.willfp.eco.internal.extensions.EcoExtensionLoader;
-import com.willfp.eco.internal.factory.EcoMetadataValueFactory;
-import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory;
-import com.willfp.eco.internal.factory.EcoRunnableFactory;
-import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
-import com.willfp.eco.internal.logging.EcoLogger;
-import com.willfp.eco.internal.scheduling.EcoScheduler;
+import com.willfp.eco.core.web.UpdateChecker;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -311,14 +300,14 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.color = color;
         this.supportingExtensions = supportingExtensions;
 
-        this.scheduler = new EcoScheduler(this);
-        this.eventManager = new EcoEventManager(this);
-        this.namespacedKeyFactory = new EcoNamespacedKeyFactory(this);
-        this.metadataValueFactory = new EcoMetadataValueFactory(this);
-        this.runnableFactory = new EcoRunnableFactory(this);
-        this.extensionLoader = new EcoExtensionLoader(this);
-        this.configHandler = new EcoConfigHandler(this);
-        this.logger = new EcoLogger(this);
+        this.scheduler = Eco.getHandler().createScheduler(this);
+        this.eventManager = Eco.getHandler().createEventManager(this);
+        this.namespacedKeyFactory = Eco.getHandler().createNamespacedKeyFactory(this);
+        this.metadataValueFactory = Eco.getHandler().createMetadataValueFactory(this);
+        this.runnableFactory = Eco.getHandler().createRunnableFactory(this);
+        this.extensionLoader = Eco.getHandler().createExtensionLoader(this);
+        this.configHandler = Eco.getHandler().createConfigHandler(this);
+        this.logger = Eco.getHandler().createLogger(this);
 
         this.langYml = new LangYml(this);
         this.configYml = new ConfigYml(this);
@@ -336,8 +325,6 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getLogger().info("");
         this.getLogger().info("Loading " + this.getColor() + this.getName());
 
-        this.getEventManager().registerListener(new ArrowDataListener(this));
-
         if (this.getResourceId() != 0) {
             new UpdateChecker(this).getVersion(version -> {
                 DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
@@ -353,7 +340,7 @@ public abstract class EcoPlugin extends JavaPlugin {
             });
         }
 
-        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Internals.getInstance().getPlugin().getDescription().getVersion());
+        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getPlugin().getDescription().getVersion());
         DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
@@ -371,7 +358,7 @@ public abstract class EcoPlugin extends JavaPlugin {
 
         if (enabledPlugins.contains("PlaceholderAPI")) {
             this.loadedIntegrations.add("PlaceholderAPI");
-            PlaceholderManager.addIntegration(new PlaceholderIntegrationPAPI(this));
+            PlaceholderManager.addIntegration(Eco.getHandler().createPAPIIntegration(this));
         }
 
         this.getIntegrationLoaders().forEach((integrationLoader -> {
@@ -646,7 +633,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     public final FileConfiguration getConfig() {
         this.getLogger().warning("Call to default config method in eco plugin!");
 
-        return this.getConfigYml().getHandle();
+        return this.getConfigYml().getBukkitHandle();
     }
 
     /**

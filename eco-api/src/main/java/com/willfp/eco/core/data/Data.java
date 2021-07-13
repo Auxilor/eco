@@ -1,11 +1,11 @@
 package com.willfp.eco.core.data;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
 import com.willfp.eco.core.config.JSONConfig;
 import com.willfp.eco.core.config.JsonStaticBaseConfig;
-import com.willfp.eco.internal.config.LoadableConfig;
-import com.willfp.eco.internal.config.json.JsonConfigSection;
+import com.willfp.eco.core.config.LoadableConfig;
 import lombok.experimental.UtilityClass;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.ApiStatus;
@@ -74,7 +74,7 @@ public class Data {
         if (config == null) {
             config = (JSONConfig) datafile.getSubsectionOrNull("player-data." + plugin.getName().toLowerCase() + "." + player.getUniqueId());
             if (config == null) {
-                config = new JsonConfigSection(new HashMap<>());
+                config = Eco.getHandler().getConfigFactory().createJSONConfig(new HashMap<>());
             }
             PLAYER_DATA.get(player.getUniqueId()).put(plugin, config);
             return getData(player, plugin);
