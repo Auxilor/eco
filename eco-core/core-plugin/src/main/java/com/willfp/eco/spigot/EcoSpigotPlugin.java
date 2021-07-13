@@ -123,15 +123,18 @@ public class EcoSpigotPlugin extends EcoPlugin {
                 new IntegrationLoader("Kingdoms", () -> AntigriefManager.register(new AntigriefKingdoms())),
                 new IntegrationLoader("CombatLogX", () -> {
                     PluginManager pluginManager = Bukkit.getPluginManager();
-                    Plugin plugin_CombatLogX = pluginManager.getPlugin("CombatLogX");
-                    if (plugin_CombatLogX == null) return;
+                    Plugin combatLogXPlugin = pluginManager.getPlugin("CombatLogX");
 
-                    String pluginVersion = plugin_CombatLogX.getDescription().getVersion();
+                    if (combatLogXPlugin == null) {
+                        return;
+                    }
+
+                    String pluginVersion = combatLogXPlugin.getDescription().getVersion();
                     if (pluginVersion.startsWith("10")) {
                         AntigriefManager.register(new AntigriefCombatLogXV10());
                     }
 
-                    if(pluginVersion.startsWith("11")) {
+                    if (pluginVersion.startsWith("11")) {
                         AntigriefManager.register(new AntigriefCombatLogXV11());
                     }
                 }),
