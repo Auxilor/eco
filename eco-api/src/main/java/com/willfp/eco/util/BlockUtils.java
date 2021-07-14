@@ -64,7 +64,7 @@ public class BlockUtils {
         /*
         Prevent stack overflow.
          */
-        int cycles = (int) Math.ceil(limit / 2500D);
+        int cycles = (int) Math.ceil(limit / 1024D);
 
         int cap = limit;
         Block iterStart = start;
@@ -78,7 +78,7 @@ public class BlockUtils {
 
             blocks.addAll(pair.getSecond());
 
-            cap -= 2500;
+            cap -= 1024;
         }
 
         return blocks;
