@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class InternalDropQueue extends DropQueue {
+public class EcoDropQueue extends DropQueue {
     /**
      * The items that the DropQueue stores.
      */
@@ -57,7 +57,7 @@ public class InternalDropQueue extends DropQueue {
      *
      * @param player The player.
      */
-    public InternalDropQueue(@NotNull final Player player) {
+    public EcoDropQueue(@NotNull final Player player) {
         super(player);
         this.items = new ArrayList<>();
         this.xp = 0;

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FastCollatedDropQueue extends InternalDropQueue {
+public class EcoFastCollatedDropQueue extends EcoDropQueue {
     /**
      * The {@link CollatedDrops} linked to every player.
      * <p>
@@ -23,13 +23,13 @@ public class FastCollatedDropQueue extends InternalDropQueue {
 
     /**
      * Backend implementation of {@link com.willfp.eco.core.drops.DropQueue}
-     * {@link this#push()} adds to a map that creates a new {@link InternalDropQueue} at the end of every tick
+     * {@link this#push()} adds to a map that creates a new {@link EcoDropQueue} at the end of every tick
      * <p>
      * The drops are not instantly pushed when called, instead the map is iterated over at the end of every tick. This massively improves performance.
      *
      * @param player The player to link the queue with.
      */
-    public FastCollatedDropQueue(@NotNull final Player player) {
+    public EcoFastCollatedDropQueue(@NotNull final Player player) {
         super(player);
     }
 

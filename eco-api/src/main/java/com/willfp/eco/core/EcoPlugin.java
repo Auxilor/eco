@@ -13,6 +13,7 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
 import lombok.Getter;
@@ -156,6 +157,11 @@ public abstract class EcoPlugin extends JavaPlugin {
     private final boolean supportingExtensions;
 
     /**
+     * The proxy factory.
+     */
+    private final ProxyFactory proxyFactory;
+
+    /**
      * Create a new plugin without a specified color, proxy support, spigot, or bStats.
      */
     protected EcoPlugin() {
@@ -254,6 +260,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.extensionLoader = Eco.getHandler().createExtensionLoader(this);
         this.configHandler = Eco.getHandler().createConfigHandler(this);
         this.logger = Eco.getHandler().createLogger(this);
+        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.getHandler().createProxyFactory(this);
 
         this.langYml = new LangYml(this);
         this.configYml = new ConfigYml(this);
@@ -286,7 +293,7 @@ public abstract class EcoPlugin extends JavaPlugin {
             });
         }
 
-        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getPlugin().getDescription().getVersion());
+        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getEcoPlugin().getDescription().getVersion());
         DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
@@ -366,6 +373,9 @@ public abstract class EcoPlugin extends JavaPlugin {
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().unloadExtensions();
         }
+
+        this.getLogger().info("Cleaning up...");
+        Eco.getHandler().getCleaner().clean(this);
     }
 
     /**
@@ -552,6 +562,17 @@ public abstract class EcoPlugin extends JavaPlugin {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    /**
+     * Get the proxy factory.
+     *
+     * @return The proxy factory.
+     */
+    public ProxyFactory getProxyFactory() {
+        Validate.notNull(proxyFactory, "Plugin does not support proxy!");
+
+        return proxyFactory;
     }
 
     /**

@@ -2,7 +2,7 @@ package com.willfp.eco.core.proxy;
 
 import org.jetbrains.annotations.NotNull;
 
-public class UnsupportedVersionException extends RuntimeException {
+public class UnsupportedVersionException extends ProxyError {
     /**
      * Thrown if the server is running an unsupported NMS version.
      *

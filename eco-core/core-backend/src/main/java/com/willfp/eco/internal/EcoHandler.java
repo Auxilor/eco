@@ -13,6 +13,8 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
+import com.willfp.eco.core.proxy.Cleaner;
+import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.internal.config.EcoConfigFactory;
 import com.willfp.eco.internal.config.updating.EcoConfigHandler;
@@ -25,12 +27,15 @@ import com.willfp.eco.internal.factory.EcoRunnableFactory;
 import com.willfp.eco.internal.gui.EcoGUIFactory;
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.logging.EcoLogger;
+import com.willfp.eco.internal.proxy.EcoProxyFactory;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
 public class EcoHandler extends PluginDependent<EcoPlugin> implements Handler {
+    private Cleaner cleaner = null;
+
     public EcoHandler(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
@@ -81,7 +86,7 @@ public class EcoHandler extends PluginDependent<EcoPlugin> implements Handler {
     }
 
     @Override
-    public EcoPlugin getPlugin() {
+    public EcoPlugin getEcoPlugin() {
         return super.getPlugin();
     }
 
@@ -98,5 +103,18 @@ public class EcoHandler extends PluginDependent<EcoPlugin> implements Handler {
     @Override
     public GUIFactory getGUIFactory() {
         return new EcoGUIFactory();
+    }
+
+    @Override
+    public Cleaner getCleaner() {
+        if (cleaner == null) {
+            cleaner = new EcoCleaner();
+        }
+        return cleaner;
+    }
+
+    @Override
+    public ProxyFactory createProxyFactory(@NotNull final EcoPlugin plugin) {
+        return new EcoProxyFactory(plugin);
     }
 }

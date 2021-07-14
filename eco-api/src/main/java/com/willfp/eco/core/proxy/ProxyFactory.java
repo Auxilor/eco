@@ -1,0 +1,14 @@
+package com.willfp.eco.core.proxy;
+
+import org.jetbrains.annotations.NotNull;
+
+public interface ProxyFactory {
+    /**
+     * Get the proxy implementation.
+     *
+     * @param proxyClass The proxy class.
+     * @param <T>        The proxy class.
+     * @return The proxy implementation.
+     */
+    <T extends AbstractProxy> @NotNull T getProxy(@NotNull Class<T> proxyClass);
+}
