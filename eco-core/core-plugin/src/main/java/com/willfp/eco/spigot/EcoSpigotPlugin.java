@@ -1,7 +1,6 @@
 package com.willfp.eco.spigot;
 
 import com.willfp.eco.core.AbstractPacketAdapter;
-import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.data.Data;
 import com.willfp.eco.core.display.Display;
@@ -9,11 +8,10 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
-import com.willfp.eco.internal.EcoHandler;
+import com.willfp.eco.proxy.BlockBreakProxy;
+import com.willfp.eco.proxy.SkullProxy;
+import com.willfp.eco.proxy.TridentStackProxy;
 import com.willfp.eco.spigot.arrows.ArrowDataListener;
-import com.willfp.eco.proxy.proxies.BlockBreakProxy;
-import com.willfp.eco.proxy.proxies.SkullProxy;
-import com.willfp.eco.proxy.proxies.TridentStackProxy;
 import com.willfp.eco.spigot.config.DataJson;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
@@ -47,7 +45,6 @@ import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
 import com.willfp.eco.util.TridentUtils;
 import lombok.Getter;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -58,7 +55,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EcoSpigotPlugin extends EcoPlugin {
+public abstract class EcoSpigotPlugin extends EcoPlugin {
     /**
      * Instance of eco.
      */
@@ -76,7 +73,6 @@ public class EcoSpigotPlugin extends EcoPlugin {
     public EcoSpigotPlugin() {
         super(87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
-        Eco.setHandler(new EcoHandler(this));
         Display.setFinalizeKey(this.getNamespacedKeyFactory().create("finalized"));
 
         SkullProxy skullProxy = this.getProxyFactory().getProxy(SkullProxy.class);

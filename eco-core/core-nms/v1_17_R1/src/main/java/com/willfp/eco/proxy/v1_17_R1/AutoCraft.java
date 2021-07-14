@@ -1,6 +1,6 @@
 package com.willfp.eco.proxy.v1_17_R1;
 
-import com.willfp.eco.proxy.proxies.AutoCraftProxy;
+import com.willfp.eco.proxy.AutoCraftProxy;
 import net.minecraft.network.protocol.game.PacketPlayOutAutoRecipe;
 import net.minecraft.resources.MinecraftKey;
 import org.jetbrains.annotations.NotNull;

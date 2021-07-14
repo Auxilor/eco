@@ -1,9 +1,9 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.impl.PluginCommand;
-import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
+import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.events.EventManager;
@@ -246,6 +246,42 @@ public abstract class EcoPlugin extends JavaPlugin {
                         @NotNull final String proxyPackage,
                         @NotNull final String color,
                         final boolean supportingExtensions) {
+        /*
+        The handler must be initialized before any plugin's constructors
+        are called, as the constructors call Eco#getHandler().
+
+        To fix this, EcoSpigotPlugin an abstract class and the 'actual'
+        plugin class is EcoHandler - that way I can create the handler
+        before any plugins are loaded while still having a separation between
+        the plugin class and the handler class (for code clarity).
+
+        I don't really like the fact that the handler class *is* the
+        spigot plugin, but it is what it is.
+
+        There is probably a better way of doing it - maybe with
+        some sort of HandlerCreator interface in order to still have
+        a standalone handler class, but then there would be an interface
+        left in the API that doesn't really help anything.
+
+        The other alternative would be do use reflection to get a 'createHandler'
+        method that only exists in EcoSpigotPlugin - but that feels really dirty
+        and I'd rather only use reflection where necessary.
+        */
+
+        if (Eco.getHandler() == null && this instanceof Handler) {
+            /*
+            This code is only ever called by EcoSpigotPlugin (EcoHandler)
+            as it's the first plugin to load and it is a handler.
+
+            Any other plugins will never call this code as the handler
+            will have already been initialized.
+             */
+
+            Eco.setHandler((Handler) this);
+        }
+
+        assert Eco.getHandler() != null;
+
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
@@ -550,7 +586,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @return The version.
      */
     protected String getMinimumEcoVersion() {
-        return "5.0.0";
+        return "6.0.0";
     }
 
     /**

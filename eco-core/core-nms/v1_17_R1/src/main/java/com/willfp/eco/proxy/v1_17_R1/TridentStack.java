@@ -1,6 +1,6 @@
 package com.willfp.eco.proxy.v1_17_R1;
 
-import com.willfp.eco.proxy.proxies.TridentStackProxy;
+import com.willfp.eco.proxy.TridentStackProxy;
 import org.bukkit.entity.Trident;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
