@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-abstract class ConfigWrapper<T extends Config> implements Config {
+public abstract class ConfigWrapper<T extends Config> implements Config {
     /**
      * The config handle.
      */
