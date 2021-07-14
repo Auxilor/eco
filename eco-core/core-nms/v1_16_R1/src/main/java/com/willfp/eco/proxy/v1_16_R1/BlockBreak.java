@@ -1,6 +1,6 @@
 package com.willfp.eco.proxy.v1_16_R1;
 
-import com.willfp.eco.proxy.proxies.BlockBreakProxy;
+import com.willfp.eco.proxy.BlockBreakProxy;
 import net.minecraft.server.v1_16_R1.BlockPosition;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;

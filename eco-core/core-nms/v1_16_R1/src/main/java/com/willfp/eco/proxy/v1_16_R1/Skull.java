@@ -2,7 +2,7 @@ package com.willfp.eco.proxy.v1_16_R1;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import com.willfp.eco.proxy.proxies.SkullProxy;
+import com.willfp.eco.proxy.SkullProxy;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 

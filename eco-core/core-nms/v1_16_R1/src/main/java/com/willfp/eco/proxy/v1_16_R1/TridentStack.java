@@ -1,6 +1,6 @@
 package com.willfp.eco.proxy.v1_16_R1;
 
-import com.willfp.eco.proxy.proxies.TridentStackProxy;
+import com.willfp.eco.proxy.TridentStackProxy;
 import net.minecraft.server.v1_16_R1.EntityThrownTrident;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftTrident;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
