@@ -1,6 +1,5 @@
 package com.willfp.eco.core;
 
-import com.willfp.eco.core.command.AbstractCommand;
 import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.ConfigHandler;
 import com.willfp.eco.core.config.base.ConfigYml;
@@ -36,21 +35,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"deprecation", "DeprecatedIsStillUsed"})
 public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Loaded eco plugins.
      */
     public static final List<String> LOADED_ECO_PLUGINS = new ArrayList<>();
-
-    /**
-     * The name of the plugin.
-     *
-     * @deprecated Pointless, use getName instead.
-     */
-    @Getter
-    @Deprecated
-    private final String pluginName;
 
     /**
      * The spigot resource ID of the plugin.
@@ -251,49 +240,6 @@ public abstract class EcoPlugin extends JavaPlugin {
                         @NotNull final String proxyPackage,
                         @NotNull final String color,
                         final boolean supportingExtensions) {
-        this("", resourceId, bStatsId, proxyPackage, color, supportingExtensions);
-    }
-
-    /**
-     * Create a new plugin.
-     *
-     * @param pluginName   The name of the plugin.
-     * @param resourceId   The spigot resource ID for the plugin.
-     * @param bStatsId     The bStats resource ID for the plugin.
-     * @param proxyPackage The package where proxy implementations are stored.
-     * @param color        The color of the plugin (used in messages, such as &a, &b)
-     * @deprecated pluginName is redundant.
-     */
-    @Deprecated
-    @SuppressWarnings("unused")
-    protected EcoPlugin(@NotNull final String pluginName,
-                        final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String proxyPackage,
-                        @NotNull final String color) {
-        this(pluginName, resourceId, bStatsId, proxyPackage, color, false);
-    }
-
-    /**
-     * Create a new plugin.
-     *
-     * @param pluginName           The name of the plugin.
-     * @param resourceId           The spigot resource ID for the plugin.
-     * @param bStatsId             The bStats resource ID for the plugin.
-     * @param proxyPackage         The package where proxy implementations are stored.
-     * @param color                The color of the plugin (used in messages, such as &a, &b)
-     * @param supportingExtensions If the plugin supports extensions.
-     * @deprecated pluginName is redundant.
-     */
-    @Deprecated
-    @SuppressWarnings("unused")
-    protected EcoPlugin(@NotNull final String pluginName,
-                        final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String proxyPackage,
-                        @NotNull final String color,
-                        final boolean supportingExtensions) {
-        this.pluginName = this.getName();
         this.resourceId = resourceId;
         this.bStatsId = bStatsId;
         this.proxyPackage = proxyPackage;
@@ -382,7 +328,6 @@ public abstract class EcoPlugin extends JavaPlugin {
 
         this.getListeners().forEach(listener -> this.getEventManager().registerListener(listener));
 
-        this.getCommands().forEach(AbstractCommand::register);
         this.getPluginCommands().forEach(PluginCommand::register);
 
         this.getScheduler().runLater(this::afterLoad, 1);
@@ -466,7 +411,7 @@ public abstract class EcoPlugin extends JavaPlugin {
 
         this.reload();
 
-        this.getLogger().info("Loaded " + this.color + this.pluginName);
+        this.getLogger().info("Loaded " + this.color + this.getName());
     }
 
     /**
@@ -535,17 +480,6 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @return A list of integrations.
      */
     public List<IntegrationLoader> getIntegrationLoaders() {
-        return new ArrayList<>();
-    }
-
-    /**
-     * The commands to be registered.
-     *
-     * @return A list of commands.
-     * @deprecated Use {@link this#getPluginCommands()} instead.
-     */
-    @Deprecated
-    public List<AbstractCommand> getCommands() {
         return new ArrayList<>();
     }
 
