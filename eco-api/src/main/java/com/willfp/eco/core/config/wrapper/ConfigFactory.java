@@ -3,6 +3,8 @@ package com.willfp.eco.core.config.wrapper;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
 import com.willfp.eco.core.config.JSONConfig;
+import com.willfp.eco.core.config.LoadableJSONConfig;
+import com.willfp.eco.core.config.LoadableYamlConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,12 +21,12 @@ public interface ConfigFactory {
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param updateBlacklist  Substring of keys to not add/remove keys for.
      */
-    Config createUpdatableYamlConfig(@NotNull String configName,
-                                     @NotNull EcoPlugin plugin,
-                                     @NotNull String subDirectoryPath,
-                                     @NotNull Class<?> source,
-                                     boolean removeUnused,
-                                     @NotNull String... updateBlacklist);
+    LoadableYamlConfig createUpdatableYamlConfig(@NotNull String configName,
+                                                 @NotNull EcoPlugin plugin,
+                                                 @NotNull String subDirectoryPath,
+                                                 @NotNull Class<?> source,
+                                                 boolean removeUnused,
+                                                 @NotNull String... updateBlacklist);
 
     /**
      * JSON loadable config.
@@ -34,10 +36,10 @@ public interface ConfigFactory {
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    JSONConfig createLoadableJSONConfig(@NotNull String configName,
-                                        @NotNull EcoPlugin plugin,
-                                        @NotNull String subDirectoryPath,
-                                        @NotNull Class<?> source);
+    LoadableJSONConfig createLoadableJSONConfig(@NotNull String configName,
+                                                @NotNull EcoPlugin plugin,
+                                                @NotNull String subDirectoryPath,
+                                                @NotNull Class<?> source);
 
     /**
      * Yaml loadable config.
@@ -47,10 +49,10 @@ public interface ConfigFactory {
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    Config createLoadableYamlConfig(@NotNull String configName,
-                                    @NotNull EcoPlugin plugin,
-                                    @NotNull String subDirectoryPath,
-                                    @NotNull Class<?> source);
+    LoadableYamlConfig createLoadableYamlConfig(@NotNull String configName,
+                                                @NotNull EcoPlugin plugin,
+                                                @NotNull String subDirectoryPath,
+                                                @NotNull Class<?> source);
 
     /**
      * Yaml config.
