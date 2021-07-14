@@ -73,8 +73,6 @@ public class EcoMenu implements Menu {
             return getSlot(row, column);
         }
 
-        Validate.isTrue(slot instanceof EcoSlot, "Slot not instance of EcoSlot!");
-
         return slots.get(row - 1).get(column - 1);
     }
 

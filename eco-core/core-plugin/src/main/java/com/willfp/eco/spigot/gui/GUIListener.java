@@ -3,9 +3,11 @@ package com.willfp.eco.spigot.gui;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.gui.menu.Menu;
+import com.willfp.eco.core.gui.slot.Slot;
 import com.willfp.eco.internal.gui.menu.EcoMenu;
 import com.willfp.eco.internal.gui.menu.MenuHandler;
 import com.willfp.eco.internal.gui.slot.EcoSlot;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,9 +42,13 @@ public class GUIListener extends PluginDependent<EcoPlugin> implements Listener 
         int row = Math.floorDiv(event.getSlot(), 9);
         int column = event.getSlot() - (row * 9);
 
-        EcoSlot slot = (EcoSlot) menu.getSlot(row, column);
+        Slot slot = menu.getSlot(row, column);
+
+        Validate.isTrue(slot instanceof EcoSlot, "Slot not instance of EcoSlot!");
+
+        EcoSlot ecoSlot = (EcoSlot) menu.getSlot(row, column);
         event.setCancelled(true);
-        slot.handleInventoryClick(event);
+        ecoSlot.handleInventoryClick(event);
     }
 
     @EventHandler
@@ -51,12 +57,13 @@ public class GUIListener extends PluginDependent<EcoPlugin> implements Listener 
             return;
         }
 
-        EcoMenu menu = (EcoMenu) MenuHandler.getMenu(event.getInventory());
-        if (menu == null) {
-            return;
-        }
+        Menu menu = MenuHandler.getMenu(event.getInventory());
 
-        menu.handleClose(event);
+        Validate.isTrue(menu instanceof EcoMenu, "Menu not instance of EcoMenu!");
+
+        EcoMenu ecoMenu = (EcoMenu) menu;
+
+        ecoMenu.handleClose(event);
 
         this.getPlugin().getScheduler().run(() -> MenuHandler.unregisterMenu(event.getInventory()));
     }
