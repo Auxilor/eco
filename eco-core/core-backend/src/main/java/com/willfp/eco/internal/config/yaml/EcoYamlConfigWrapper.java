@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.config.yaml;
 
-import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.yaml.wrapper.WrappedYamlBukkitConfig;
+import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
@@ -18,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class YamlConfigWrapper<T extends ConfigurationSection> implements Config, WrappedYamlBukkitConfig<T> {
+public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Config {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
@@ -33,7 +32,7 @@ public class YamlConfigWrapper<T extends ConfigurationSection> implements Config
     /**
      * Abstract config.
      */
-    public YamlConfigWrapper() {
+    public EcoYamlConfigWrapper() {
 
     }
 
@@ -98,7 +97,7 @@ public class YamlConfigWrapper<T extends ConfigurationSection> implements Config
             if (raw == null) {
                 cache.put(path, null);
             } else {
-                cache.put(path, new YamlConfigSection(raw));
+                cache.put(path, new EcoYamlConfigSection(raw));
             }
             return getSubsectionOrNull(path);
         }
@@ -289,11 +288,6 @@ public class YamlConfigWrapper<T extends ConfigurationSection> implements Config
 
     @Override
     public Config clone() {
-        return new YamlConfigSection(YamlConfiguration.loadConfiguration(new StringReader(this.toPlaintext())));
-    }
-
-    @Override
-    public T getBukkitHandle() {
-        return handle;
+        return new EcoYamlConfigSection(YamlConfiguration.loadConfiguration(new StringReader(this.toPlaintext())));
     }
 }

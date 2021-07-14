@@ -2,8 +2,8 @@ package com.willfp.eco.internal.config.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.json.JSONConfig;
+import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class JSONConfigWrapper implements JSONConfig {
+public class EcoJSONConfigWrapper implements JSONConfig {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
@@ -42,7 +42,7 @@ public class JSONConfigWrapper implements JSONConfig {
     /**
      * Abstract config.
      */
-    public JSONConfigWrapper() {
+    public EcoJSONConfigWrapper() {
 
     }
 
@@ -88,7 +88,7 @@ public class JSONConfigWrapper implements JSONConfig {
         }
 
         if (values.get(closestPath) instanceof Map && !path.equals(closestPath)) {
-            JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(closestPath));
+            EcoJSONConfigSection section = new EcoJSONConfigSection((Map<String, Object>) values.get(closestPath));
             return section.getOfKnownType(path.substring(closestPath.length() + 1), clazz, false);
         } else {
             if (values.containsKey(closestPath)) {
@@ -115,7 +115,7 @@ public class JSONConfigWrapper implements JSONConfig {
             list.add(root + key);
 
             if (values.get(key) instanceof Map) {
-                JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(key));
+                EcoJSONConfigSection section = new EcoJSONConfigSection((Map<String, Object>) values.get(key));
                 list.addAll(section.getDeepKeys(list, root + key + "."));
             }
         }
@@ -147,14 +147,14 @@ public class JSONConfigWrapper implements JSONConfig {
         }
 
         if (values.get(closestPath) instanceof Map && !path.equals(closestPath)) {
-            JSONConfigSection section = new JSONConfigSection((Map<String, Object>) values.get(closestPath));
+            EcoJSONConfigSection section = new EcoJSONConfigSection((Map<String, Object>) values.get(closestPath));
             section.setRecursively(path.substring(closestPath.length() + 1), object, false);
             values.put(closestPath, section.getValues());
         } else {
             Object obj = object;
 
             if (object instanceof JSONConfig) {
-                obj = ((JSONConfigWrapper) object).getValues();
+                obj = ((EcoJSONConfigWrapper) object).getValues();
             }
 
             values.put(path, obj);
@@ -174,7 +174,7 @@ public class JSONConfigWrapper implements JSONConfig {
     public Config getSubsectionOrNull(@NotNull final String path) {
         if (values.containsKey(path)) {
             Map<String, Object> subsection = (Map<String, Object>) values.get(path);
-            return new JSONConfigSection(subsection);
+            return new EcoJSONConfigSection(subsection);
         } else {
             return null;
         }
@@ -200,7 +200,7 @@ public class JSONConfigWrapper implements JSONConfig {
         List<JSONConfig> configs = new ArrayList<>();
 
         for (Map<String, Object> map : maps) {
-            configs.add(new JSONConfigSection(map));
+            configs.add(new EcoJSONConfigSection(map));
         }
 
         return configs;
@@ -349,6 +349,6 @@ public class JSONConfigWrapper implements JSONConfig {
 
     @Override
     public JSONConfig clone() {
-        return new JSONConfigSection(new HashMap<>(this.getValues()));
+        return new EcoJSONConfigSection(new HashMap<>(this.getValues()));
     }
 }

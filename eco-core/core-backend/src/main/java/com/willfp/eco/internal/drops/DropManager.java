@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 @UtilityClass
 public final class DropManager {
     /**
-     * The currently used type, or implementation, of {@link AbstractDropQueue}.
+     * The currently used type, or implementation, of {@link com.willfp.eco.core.drops.DropQueue}.
      * <p>
      * Default is {@link DropQueueType#COLLATED}, however this can be changed.
      */

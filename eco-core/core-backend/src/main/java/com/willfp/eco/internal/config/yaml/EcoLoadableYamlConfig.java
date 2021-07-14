@@ -1,7 +1,8 @@
 package com.willfp.eco.internal.config.yaml;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.yaml.wrapper.WrappedYamlBukkitConfig;
+import com.willfp.eco.core.config.interfaces.LoadableConfig;
+import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class LoadableYamlConfig extends YamlConfigWrapper<YamlConfiguration> implements com.willfp.eco.core.config.yaml.LoadableYamlConfig, WrappedYamlBukkitConfig<YamlConfiguration> {
+public class EcoLoadableYamlConfig extends EcoYamlConfigWrapper<YamlConfiguration> implements WrappedYamlConfiguration, LoadableConfig {
     /**
      * The physical config file, as stored on disk.
      */
@@ -52,7 +53,7 @@ public class LoadableYamlConfig extends YamlConfigWrapper<YamlConfiguration> imp
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    public LoadableYamlConfig(@NotNull final String configName,
+    public EcoLoadableYamlConfig(@NotNull final String configName,
                                  @NotNull final EcoPlugin plugin,
                                  @NotNull final String subDirectoryPath,
                                  @NotNull final Class<?> source) {

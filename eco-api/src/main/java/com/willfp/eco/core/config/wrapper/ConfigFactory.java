@@ -1,10 +1,8 @@
 package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.json.JSONConfig;
-import com.willfp.eco.core.config.json.LoadableJSONConfig;
-import com.willfp.eco.core.config.yaml.LoadableYamlConfig;
+import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +19,7 @@ public interface ConfigFactory {
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param updateBlacklist  Substring of keys to not add/remove keys for.
      */
-    LoadableYamlConfig createUpdatableYamlConfig(@NotNull String configName,
+    Config createUpdatableYamlConfig(@NotNull String configName,
                                                  @NotNull EcoPlugin plugin,
                                                  @NotNull String subDirectoryPath,
                                                  @NotNull Class<?> source,
@@ -36,7 +34,7 @@ public interface ConfigFactory {
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    LoadableJSONConfig createLoadableJSONConfig(@NotNull String configName,
+    JSONConfig createLoadableJSONConfig(@NotNull String configName,
                                                 @NotNull EcoPlugin plugin,
                                                 @NotNull String subDirectoryPath,
                                                 @NotNull Class<?> source);
@@ -49,7 +47,7 @@ public interface ConfigFactory {
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    LoadableYamlConfig createLoadableYamlConfig(@NotNull String configName,
+    Config createLoadableYamlConfig(@NotNull String configName,
                                                 @NotNull EcoPlugin plugin,
                                                 @NotNull String subDirectoryPath,
                                                 @NotNull Class<?> source);

@@ -1,14 +1,13 @@
 package com.willfp.eco.core.config.yaml;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.config.Config;
 import com.willfp.eco.core.config.yaml.wrapper.YamlConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.StringReader;
 
-public class YamlConfig extends YamlConfigWrapper<Config> {
+public class YamlConfig extends YamlConfigWrapper {
     /**
      * Config implementation for passing YamlConfigurations.
      * <p>

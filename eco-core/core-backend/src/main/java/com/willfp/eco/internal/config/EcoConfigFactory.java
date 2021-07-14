@@ -1,14 +1,14 @@
 package com.willfp.eco.internal.config;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.json.JSONConfig;
+import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
-import com.willfp.eco.internal.config.json.JSONConfigSection;
-import com.willfp.eco.internal.config.json.LoadableJSONConfig;
-import com.willfp.eco.internal.config.yaml.LoadableYamlConfig;
-import com.willfp.eco.internal.config.yaml.UpdatableYamlConfig;
-import com.willfp.eco.internal.config.yaml.YamlConfigSection;
+import com.willfp.eco.internal.config.json.EcoJSONConfigSection;
+import com.willfp.eco.internal.config.json.EcoLoadableJSONConfig;
+import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig;
+import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig;
+import com.willfp.eco.internal.config.yaml.EcoYamlConfigSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,13 +16,13 @@ import java.util.Map;
 
 public class EcoConfigFactory implements ConfigFactory {
     @Override
-    public com.willfp.eco.core.config.yaml.LoadableYamlConfig createUpdatableYamlConfig(@NotNull final String configName,
-                                                                                        @NotNull final EcoPlugin plugin,
-                                                                                        @NotNull final String subDirectoryPath,
-                                                                                        @NotNull final Class<?> source,
-                                                                                        final boolean removeUnused,
-                                                                                        @NotNull final String... updateBlacklist) {
-        return new UpdatableYamlConfig(
+    public Config createUpdatableYamlConfig(@NotNull final String configName,
+                                            @NotNull final EcoPlugin plugin,
+                                            @NotNull final String subDirectoryPath,
+                                            @NotNull final Class<?> source,
+                                            final boolean removeUnused,
+                                            @NotNull final String... updateBlacklist) {
+        return new EcoUpdatableYamlConfig(
                 configName,
                 plugin,
                 subDirectoryPath,
@@ -33,11 +33,11 @@ public class EcoConfigFactory implements ConfigFactory {
     }
 
     @Override
-    public com.willfp.eco.core.config.json.LoadableJSONConfig createLoadableJSONConfig(@NotNull final String configName,
-                                                                                       @NotNull final EcoPlugin plugin,
-                                                                                       @NotNull final String subDirectoryPath,
-                                                                                       @NotNull final Class<?> source) {
-        return new LoadableJSONConfig(
+    public JSONConfig createLoadableJSONConfig(@NotNull final String configName,
+                                               @NotNull final EcoPlugin plugin,
+                                               @NotNull final String subDirectoryPath,
+                                               @NotNull final Class<?> source) {
+        return new EcoLoadableJSONConfig(
                 configName,
                 plugin,
                 subDirectoryPath,
@@ -46,11 +46,11 @@ public class EcoConfigFactory implements ConfigFactory {
     }
 
     @Override
-    public com.willfp.eco.core.config.yaml.LoadableYamlConfig createLoadableYamlConfig(@NotNull final String configName,
-                                                                                       @NotNull final EcoPlugin plugin,
-                                                                                       @NotNull final String subDirectoryPath,
-                                                                                       @NotNull final Class<?> source) {
-        return new LoadableYamlConfig(
+    public Config createLoadableYamlConfig(@NotNull final String configName,
+                                           @NotNull final EcoPlugin plugin,
+                                           @NotNull final String subDirectoryPath,
+                                           @NotNull final Class<?> source) {
+        return new EcoLoadableYamlConfig(
                 configName,
                 plugin,
                 subDirectoryPath,
@@ -60,11 +60,11 @@ public class EcoConfigFactory implements ConfigFactory {
 
     @Override
     public Config createYamlConfig(@NotNull final YamlConfiguration config) {
-        return new YamlConfigSection(config);
+        return new EcoYamlConfigSection(config);
     }
 
     @Override
     public JSONConfig createJSONConfig(@NotNull final Map<String, Object> values) {
-        return new JSONConfigSection(values);
+        return new EcoJSONConfigSection(values);
     }
 }

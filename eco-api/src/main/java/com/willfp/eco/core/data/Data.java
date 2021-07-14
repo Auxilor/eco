@@ -2,10 +2,10 @@ package com.willfp.eco.core.data;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.json.JSONConfig;
-import com.willfp.eco.core.config.json.JsonStaticBaseConfig;
-import com.willfp.eco.core.config.LoadableConfig;
+import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
+import com.willfp.eco.core.config.json.JSONStaticBaseConfig;
+import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import lombok.experimental.UtilityClass;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.ApiStatus;
@@ -34,7 +34,7 @@ public class Data {
      * @param config data.json.
      */
     @ApiStatus.Internal
-    public void init(@NotNull final JsonStaticBaseConfig config) {
+    public void init(@NotNull final JSONStaticBaseConfig config) {
         datafile = config;
     }
 

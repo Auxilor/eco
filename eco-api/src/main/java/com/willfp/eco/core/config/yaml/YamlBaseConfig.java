@@ -6,7 +6,6 @@ import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
-
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
      * <p>

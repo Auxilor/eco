@@ -1,19 +1,19 @@
 package com.willfp.eco.core.config.json.wrapper;
 
-import com.willfp.eco.core.config.json.JSONConfig;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.core.config.wrapper.ConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class JSONConfigWrapper<T extends JSONConfig> extends ConfigWrapper<T> implements JSONConfig {
+public abstract class JSONConfigWrapper extends ConfigWrapper<JSONConfig> implements JSONConfig {
     /**
      * Create a config wrapper.
      *
      * @param handle The handle.
      */
-    public JSONConfigWrapper(@NotNull final T handle) {
+    protected JSONConfigWrapper(@NotNull final JSONConfig handle) {
         super(handle);
     }
 
