@@ -1,4 +1,4 @@
-package com.willfp.eco.core.gui;
+package com.willfp.eco.internal.gui.menu;
 
 import com.willfp.eco.core.gui.menu.Menu;
 import lombok.experimental.UtilityClass;

@@ -1,5 +1,6 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.Eco;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +25,7 @@ public interface Slot {
      * @return The builder.
      */
     static Builder builder(@NotNull final ItemStack itemStack) {
-        return new EcoSlotBuilder(player -> itemStack);
+        return Eco.getHandler().getGUIFactory().createSlotBuilder(player -> itemStack);
     }
 
     /**
@@ -34,7 +35,7 @@ public interface Slot {
      * @return The builder.
      */
     static Builder builder(@NotNull final Function<Player, ItemStack> provider) {
-        return new EcoSlotBuilder(provider);
+        return Eco.getHandler().getGUIFactory().createSlotBuilder(provider);
     }
 
     interface Builder {

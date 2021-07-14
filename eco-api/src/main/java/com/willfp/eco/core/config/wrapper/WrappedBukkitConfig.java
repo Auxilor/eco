@@ -1,4 +1,4 @@
-package com.willfp.eco.core.config.wrapper.bukkit;
+package com.willfp.eco.core.config.wrapper;
 
 import org.bukkit.configuration.ConfigurationSection;
 

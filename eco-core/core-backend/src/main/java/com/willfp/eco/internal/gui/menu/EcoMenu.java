@@ -1,9 +1,13 @@
-package com.willfp.eco.core.gui.menu;
+package com.willfp.eco.internal.gui.menu;
 
-import com.willfp.eco.core.gui.MenuHandler;
+import com.willfp.eco.core.gui.menu.Menu;
+import com.willfp.eco.core.gui.slot.FillerSlot;
 import com.willfp.eco.core.gui.slot.Slot;
+import com.willfp.eco.internal.gui.slot.EcoFillerSlot;
+import com.willfp.eco.internal.gui.slot.EcoSlot;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-class EcoMenu implements Menu {
+public class EcoMenu implements Menu {
     /**
      * The amount of rows.
      */
@@ -38,10 +42,10 @@ class EcoMenu implements Menu {
      */
     private final Consumer<InventoryCloseEvent> onClose;
 
-    EcoMenu(final int rows,
-            @NotNull final List<List<Slot>> slots,
-            @NotNull final String title,
-            @NotNull final Consumer<InventoryCloseEvent> onClose) {
+    public EcoMenu(final int rows,
+                   @NotNull final List<List<Slot>> slots,
+                   @NotNull final String title,
+                   @NotNull final Consumer<InventoryCloseEvent> onClose) {
         this.rows = rows;
         this.slots = slots;
         this.title = title;
@@ -58,6 +62,18 @@ class EcoMenu implements Menu {
         if (column < 1 || column > 9) {
             throw new IllegalArgumentException("Invalid column number!");
         }
+
+        Slot slot = slots.get(row - 1).get(column - 1);
+        if (slot instanceof FillerSlot fillerSlot) {
+            slots.get(row - 1).set(
+                    column - 1,
+                    new EcoFillerSlot(fillerSlot.getItemStack())
+            );
+
+            return getSlot(row, column);
+        }
+
+        Validate.isTrue(slot instanceof EcoSlot, "Slot not instance of EcoSlot!");
 
         return slots.get(row - 1).get(column - 1);
     }
