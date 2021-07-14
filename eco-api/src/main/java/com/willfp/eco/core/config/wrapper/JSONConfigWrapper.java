@@ -6,13 +6,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class JSONConfigWrapper extends ConfigWrapper<JSONConfig> implements JSONConfig {
+public abstract class JSONConfigWrapper<T extends JSONConfig> extends ConfigWrapper<T> implements JSONConfig {
     /**
      * Create a config wrapper.
      *
      * @param handle The handle.
      */
-    public JSONConfigWrapper(@NotNull final JSONConfig handle) {
+    public JSONConfigWrapper(@NotNull final T handle) {
         super(handle);
     }
 

@@ -2,12 +2,12 @@ package com.willfp.eco.core.config;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.wrapper.YamlConfigWrapper;
+import com.willfp.eco.core.config.wrapper.LoadableYamlConfigWrapper;
 import com.willfp.eco.core.config.wrapper.WrappedBukkitConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseConfig extends YamlConfigWrapper {
+public abstract class BaseConfig extends LoadableYamlConfigWrapper {
 
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).

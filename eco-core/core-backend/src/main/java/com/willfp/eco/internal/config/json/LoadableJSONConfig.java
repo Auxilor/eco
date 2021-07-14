@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.config.json;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.LoadableConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +17,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class LoadableJSONConfig extends JSONConfigWrapper implements LoadableConfig {
+public class LoadableJSONConfig extends JSONConfigWrapper implements com.willfp.eco.core.config.LoadableJSONConfig {
     /**
      * The physical config file, as stored on disk.
      */
