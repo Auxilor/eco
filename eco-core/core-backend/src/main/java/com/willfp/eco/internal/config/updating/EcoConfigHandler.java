@@ -4,10 +4,10 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.updating.ConfigUpdater;
-import com.willfp.eco.core.config.LoadableConfig;
+import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdatableClassException;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException;
-import com.willfp.eco.internal.config.yaml.UpdatableYamlConfig;
+import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class EcoConfigHandler extends PluginDependent<EcoPlugin> implements Conf
     @Override
     public void updateConfigs() {
         for (LoadableConfig config : configs) {
-            if (config instanceof UpdatableYamlConfig updatableYamlConfig) {
+            if (config instanceof EcoUpdatableYamlConfig updatableYamlConfig) {
                 updatableYamlConfig.update();
             }
         }

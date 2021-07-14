@@ -1,4 +1,4 @@
-package com.willfp.eco.core.config;
+package com.willfp.eco.core.config.interfaces;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

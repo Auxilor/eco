@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class UpdatableYamlConfig extends LoadableYamlConfig {
+public class EcoUpdatableYamlConfig extends EcoLoadableYamlConfig {
     /**
      * Whether keys not in the base config should be removed on update.
      */
@@ -35,7 +35,7 @@ public class UpdatableYamlConfig extends LoadableYamlConfig {
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param updateBlacklist  Substring of keys to not add/remove keys for.
      */
-    public UpdatableYamlConfig(@NotNull final String configName,
+    public EcoUpdatableYamlConfig(@NotNull final String configName,
                                   @NotNull final EcoPlugin plugin,
                                   @NotNull final String subDirectoryPath,
                                   @NotNull final Class<?> source,

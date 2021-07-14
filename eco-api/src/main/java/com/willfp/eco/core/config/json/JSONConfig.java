@@ -1,30 +1,20 @@
 package com.willfp.eco.core.config.json;
 
-import com.willfp.eco.core.config.Config;
+import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.config.json.wrapper.JSONConfigWrapper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Map;
 
-public interface JSONConfig extends Config {
+public class JSONConfig extends JSONConfigWrapper {
     /**
-     * Get a list of subsections from config.
+     * Config implementation for passing maps.
+     * <p>
+     * Does not automatically update.
      *
-     * @param path The key to fetch the value from.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     * @param values The map of values.
      */
-    @NotNull
-    List<JSONConfig> getSubsections(@NotNull String path);
-
-    /**
-     * Get a list of subsections from config.
-     *
-     * @param path The key to fetch the value from.
-     * @return The found value, or null if not found.
-     */
-    @Nullable
-    List<JSONConfig> getSubsectionsOrNull(@NotNull String path);
-    
-    @Override
-    JSONConfig clone();
+    public JSONConfig(@NotNull final Map<String, Object> values) {
+        super(Eco.getHandler().getConfigFactory().createJSONConfig(values));
+    }
 }

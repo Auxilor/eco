@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.config.json;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class LoadableJSONConfig extends JSONConfigWrapper implements com.willfp.eco.core.config.json.LoadableJSONConfig {
+public class EcoLoadableJSONConfig extends EcoJSONConfigWrapper implements LoadableConfig {
     /**
      * The physical config file, as stored on disk.
      */
@@ -56,10 +57,10 @@ public class LoadableJSONConfig extends JSONConfigWrapper implements com.willfp.
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    public LoadableJSONConfig(@NotNull final String configName,
-                              @NotNull final EcoPlugin plugin,
-                              @NotNull final String subDirectoryPath,
-                              @NotNull final Class<?> source) {
+    public EcoLoadableJSONConfig(@NotNull final String configName,
+                                 @NotNull final EcoPlugin plugin,
+                                 @NotNull final String subDirectoryPath,
+                                 @NotNull final Class<?> source) {
         this.plugin = plugin;
         this.name = configName + ".json";
         this.source = source;

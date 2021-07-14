@@ -1,6 +1,6 @@
 package com.willfp.eco.core.config.wrapper;
 
-import com.willfp.eco.core.config.Config;
+import com.willfp.eco.core.config.interfaces.Config;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

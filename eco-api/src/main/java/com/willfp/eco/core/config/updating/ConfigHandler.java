@@ -1,6 +1,6 @@
 package com.willfp.eco.core.config.updating;
 
-import com.willfp.eco.core.config.LoadableConfig;
+import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
 
 public interface ConfigHandler {

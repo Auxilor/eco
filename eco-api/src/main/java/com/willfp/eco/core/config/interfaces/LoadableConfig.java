@@ -1,4 +1,4 @@
-package com.willfp.eco.core.config;
+package com.willfp.eco.core.config.interfaces;
 
 import java.io.File;
 import java.io.IOException;
