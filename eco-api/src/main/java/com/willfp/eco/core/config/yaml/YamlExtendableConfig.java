@@ -1,12 +1,11 @@
-package com.willfp.eco.core.config;
+package com.willfp.eco.core.config.yaml;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.wrapper.LoadableYamlConfigWrapper;
-import com.willfp.eco.core.config.wrapper.YamlConfigWrapper;
+import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ExtendableConfig extends LoadableYamlConfigWrapper {
+public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
      * <p>
@@ -19,12 +18,12 @@ public abstract class ExtendableConfig extends LoadableYamlConfigWrapper {
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
      */
-    protected ExtendableConfig(@NotNull final String configName,
-                               final boolean removeUnused,
-                               @NotNull final EcoPlugin plugin,
-                               @NotNull final Class<?> source,
-                               @NotNull final String subDirectoryPath,
-                               @NotNull final String... updateBlacklist) {
+    protected YamlExtendableConfig(@NotNull final String configName,
+                                   final boolean removeUnused,
+                                   @NotNull final EcoPlugin plugin,
+                                   @NotNull final Class<?> source,
+                                   @NotNull final String subDirectoryPath,
+                                   @NotNull final String... updateBlacklist) {
         super(
                 Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
                         configName,

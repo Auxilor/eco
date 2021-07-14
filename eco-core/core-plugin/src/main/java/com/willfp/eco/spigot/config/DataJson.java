@@ -1,6 +1,6 @@
 package com.willfp.eco.spigot.config;
 
-import com.willfp.eco.core.config.JsonStaticBaseConfig;
+import com.willfp.eco.core.config.json.JsonStaticBaseConfig;
 import com.willfp.eco.spigot.EcoSpigotPlugin;
 import org.jetbrains.annotations.NotNull;
 

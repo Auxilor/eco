@@ -1,8 +1,8 @@
-package com.willfp.eco.core.config.wrapper;
+package com.willfp.eco.core.config.yaml.wrapper;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-public interface WrappedBukkitConfig<T extends ConfigurationSection> {
+public interface WrappedYamlBukkitConfig<T extends ConfigurationSection> {
     /**
      * Get the ConfigurationSection handle.
      *

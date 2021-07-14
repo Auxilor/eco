@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.config.yaml;
 
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.wrapper.WrappedBukkitConfig;
+import com.willfp.eco.core.config.yaml.wrapper.WrappedYamlBukkitConfig;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class YamlConfigWrapper<T extends ConfigurationSection> implements Config, WrappedBukkitConfig<T> {
+public class YamlConfigWrapper<T extends ConfigurationSection> implements Config, WrappedYamlBukkitConfig<T> {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
