@@ -150,4 +150,9 @@ abstract class ConfigWrapper<T extends Config> implements Config {
     public @Nullable List<Double> getDoublesOrNull(@NotNull final String path) {
         return handle.getDoublesOrNull(path);
     }
+
+    @Override
+    public Config clone() {
+        return handle.clone();
+    }
 }
