@@ -3,8 +3,6 @@ package com.willfp.eco.core.config.yaml;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
-import com.willfp.eco.core.config.yaml.wrapper.WrappedYamlBukkitConfig;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
@@ -55,10 +53,5 @@ public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
                         removeUnused
                 )
         );
-    }
-
-    @Override
-    public YamlConfiguration getBukkitHandle() {
-        return (YamlConfiguration) ((WrappedYamlBukkitConfig<?>) this.getHandle()).getBukkitHandle();
     }
 }

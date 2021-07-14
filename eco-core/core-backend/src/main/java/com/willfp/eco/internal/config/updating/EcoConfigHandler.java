@@ -2,8 +2,8 @@ package com.willfp.eco.internal.config.updating;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
-import com.willfp.eco.core.config.ConfigHandler;
-import com.willfp.eco.core.config.ConfigUpdater;
+import com.willfp.eco.core.config.updating.ConfigHandler;
+import com.willfp.eco.core.config.updating.ConfigUpdater;
 import com.willfp.eco.core.config.LoadableConfig;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdatableClassException;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException;

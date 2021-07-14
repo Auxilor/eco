@@ -1,6 +1,6 @@
 package com.willfp.eco.core;
 
-import com.willfp.eco.core.config.ConfigHandler;
+import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
 import com.willfp.eco.core.drops.DropQueueFactory;
 import com.willfp.eco.core.events.EventManager;

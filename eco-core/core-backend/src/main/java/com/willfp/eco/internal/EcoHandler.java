@@ -3,7 +3,7 @@ package com.willfp.eco.internal;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.Handler;
 import com.willfp.eco.core.PluginDependent;
-import com.willfp.eco.core.config.ConfigHandler;
+import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
 import com.willfp.eco.core.drops.DropQueueFactory;
 import com.willfp.eco.core.events.EventManager;

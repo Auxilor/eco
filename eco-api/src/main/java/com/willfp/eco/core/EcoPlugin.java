@@ -1,7 +1,7 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.impl.PluginCommand;
-import com.willfp.eco.core.config.ConfigHandler;
+import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
 import com.willfp.eco.core.display.Display;

@@ -14,4 +14,10 @@ public abstract class YamlConfigWrapper<T extends Config> extends ConfigWrapper<
     public YamlConfigWrapper(@NotNull final T handle) {
         super(handle);
     }
+
+
+    @Override
+    public YamlConfiguration getBukkitHandle() {
+        return (YamlConfiguration) ((WrappedYamlBukkitConfig<?>) this.getHandle()).getBukkitHandle();
+    }
 }
