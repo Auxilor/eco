@@ -1,14 +1,10 @@
 package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Consumer;
 
 public interface Menu {
     /**
@@ -49,21 +45,7 @@ public interface Menu {
      * @param rows The rows.
      * @return The builder.
      */
-    static Builder builder(final int rows) {
+    static MenuBuilder builder(final int rows) {
         return Eco.getHandler().getGUIFactory().createMenuBuilder(rows);
-    }
-
-    interface Builder {
-        Builder setTitle(@NotNull String title);
-
-        Builder setSlot(int row,
-                        int column,
-                        @NotNull Slot slot);
-
-        Builder setMask(@NotNull FillerMask mask);
-
-        Builder onClose(@NotNull Consumer<InventoryCloseEvent> action);
-
-        Menu build();
     }
 }

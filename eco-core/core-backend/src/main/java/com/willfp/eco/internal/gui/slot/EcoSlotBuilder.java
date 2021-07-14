@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.gui.slot;
 
 import com.willfp.eco.core.gui.slot.Slot;
+import com.willfp.eco.core.gui.slot.SlotBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class EcoSlotBuilder implements Slot.Builder {
+public class EcoSlotBuilder implements SlotBuilder {
     /**
      * Provider.
      */
@@ -44,27 +45,27 @@ public class EcoSlotBuilder implements Slot.Builder {
         this.provider = provider;
     }
 
-    public Slot.Builder onLeftClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
+    public SlotBuilder onLeftClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
         this.onLeftClick = action;
         return this;
     }
 
-    public Slot.Builder onRightClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
+    public SlotBuilder onRightClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
         this.onRightClick = action;
         return this;
     }
 
-    public Slot.Builder onShiftLeftClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
+    public SlotBuilder onShiftLeftClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
         this.onShiftLeftClick = action;
         return this;
     }
 
-    public Slot.Builder onShiftRightClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
+    public SlotBuilder onShiftRightClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
         this.onShiftRightClick = action;
         return this;
     }
 
-    public Slot.Builder onMiddleClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
+    public SlotBuilder onMiddleClick(@NotNull final BiConsumer<InventoryClickEvent, Slot> action) {
         this.onMiddleClick = action;
         return this;
     }
