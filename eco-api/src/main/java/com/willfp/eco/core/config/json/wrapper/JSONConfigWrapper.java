@@ -1,6 +1,7 @@
-package com.willfp.eco.core.config.wrapper;
+package com.willfp.eco.core.config.json.wrapper;
 
-import com.willfp.eco.core.config.JSONConfig;
+import com.willfp.eco.core.config.json.JSONConfig;
+import com.willfp.eco.core.config.wrapper.ConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

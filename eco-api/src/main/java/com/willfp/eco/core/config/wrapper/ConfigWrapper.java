@@ -14,7 +14,7 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Getter
     private final T handle;
 
-    ConfigWrapper(@NotNull final T handle) {
+    protected ConfigWrapper(@NotNull final T handle) {
         this.handle = handle;
     }
 

@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.config.yaml;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.wrapper.WrappedBukkitConfig;
+import com.willfp.eco.core.config.yaml.wrapper.WrappedYamlBukkitConfig;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class LoadableYamlConfig extends YamlConfigWrapper<YamlConfiguration> implements com.willfp.eco.core.config.LoadableYamlConfig, WrappedBukkitConfig<YamlConfiguration> {
+public class LoadableYamlConfig extends YamlConfigWrapper<YamlConfiguration> implements com.willfp.eco.core.config.yaml.LoadableYamlConfig, WrappedYamlBukkitConfig<YamlConfiguration> {
     /**
      * The physical config file, as stored on disk.
      */

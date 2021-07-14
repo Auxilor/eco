@@ -2,9 +2,9 @@ package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.JSONConfig;
-import com.willfp.eco.core.config.LoadableJSONConfig;
-import com.willfp.eco.core.config.LoadableYamlConfig;
+import com.willfp.eco.core.config.json.JSONConfig;
+import com.willfp.eco.core.config.json.LoadableJSONConfig;
+import com.willfp.eco.core.config.yaml.LoadableYamlConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 

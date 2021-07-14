@@ -2,7 +2,7 @@ package com.willfp.eco.internal.config;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.JSONConfig;
+import com.willfp.eco.core.config.json.JSONConfig;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
 import com.willfp.eco.internal.config.json.JSONConfigSection;
 import com.willfp.eco.internal.config.json.LoadableJSONConfig;
@@ -16,12 +16,12 @@ import java.util.Map;
 
 public class EcoConfigFactory implements ConfigFactory {
     @Override
-    public com.willfp.eco.core.config.LoadableYamlConfig createUpdatableYamlConfig(@NotNull final String configName,
-                                                                                   @NotNull final EcoPlugin plugin,
-                                                                                   @NotNull final String subDirectoryPath,
-                                                                                   @NotNull final Class<?> source,
-                                                                                   final boolean removeUnused,
-                                                                                   @NotNull final String... updateBlacklist) {
+    public com.willfp.eco.core.config.yaml.LoadableYamlConfig createUpdatableYamlConfig(@NotNull final String configName,
+                                                                                        @NotNull final EcoPlugin plugin,
+                                                                                        @NotNull final String subDirectoryPath,
+                                                                                        @NotNull final Class<?> source,
+                                                                                        final boolean removeUnused,
+                                                                                        @NotNull final String... updateBlacklist) {
         return new UpdatableYamlConfig(
                 configName,
                 plugin,
@@ -33,10 +33,10 @@ public class EcoConfigFactory implements ConfigFactory {
     }
 
     @Override
-    public com.willfp.eco.core.config.LoadableJSONConfig createLoadableJSONConfig(@NotNull final String configName,
-                                                                                  @NotNull final EcoPlugin plugin,
-                                                                                  @NotNull final String subDirectoryPath,
-                                                                                  @NotNull final Class<?> source) {
+    public com.willfp.eco.core.config.json.LoadableJSONConfig createLoadableJSONConfig(@NotNull final String configName,
+                                                                                       @NotNull final EcoPlugin plugin,
+                                                                                       @NotNull final String subDirectoryPath,
+                                                                                       @NotNull final Class<?> source) {
         return new LoadableJSONConfig(
                 configName,
                 plugin,
@@ -46,10 +46,10 @@ public class EcoConfigFactory implements ConfigFactory {
     }
 
     @Override
-    public com.willfp.eco.core.config.LoadableYamlConfig createLoadableYamlConfig(@NotNull final String configName,
-                                                                                  @NotNull final EcoPlugin plugin,
-                                                                                  @NotNull final String subDirectoryPath,
-                                                                                  @NotNull final Class<?> source) {
+    public com.willfp.eco.core.config.yaml.LoadableYamlConfig createLoadableYamlConfig(@NotNull final String configName,
+                                                                                       @NotNull final EcoPlugin plugin,
+                                                                                       @NotNull final String subDirectoryPath,
+                                                                                       @NotNull final Class<?> source) {
         return new LoadableYamlConfig(
                 configName,
                 plugin,

@@ -1,13 +1,13 @@
-package com.willfp.eco.core.config;
+package com.willfp.eco.core.config.yaml;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.wrapper.LoadableYamlConfigWrapper;
-import com.willfp.eco.core.config.wrapper.WrappedBukkitConfig;
+import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
+import com.willfp.eco.core.config.yaml.wrapper.WrappedYamlBukkitConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseConfig extends LoadableYamlConfigWrapper {
+public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
 
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
@@ -19,10 +19,10 @@ public abstract class BaseConfig extends LoadableYamlConfigWrapper {
      * @param plugin          The plugin.
      * @param updateBlacklist Substring of keys to not add/remove keys for.
      */
-    protected BaseConfig(@NotNull final String configName,
-                         final boolean removeUnused,
-                         @NotNull final EcoPlugin plugin,
-                         @NotNull final String... updateBlacklist) {
+    protected YamlBaseConfig(@NotNull final String configName,
+                             final boolean removeUnused,
+                             @NotNull final EcoPlugin plugin,
+                             @NotNull final String... updateBlacklist) {
         super(
                 Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
                         configName,
@@ -43,9 +43,9 @@ public abstract class BaseConfig extends LoadableYamlConfigWrapper {
      * @param removeUnused Whether keys not present in the default config should be removed on update.
      * @param plugin       The plugin.
      */
-    protected BaseConfig(@NotNull final String configName,
-                         final boolean removeUnused,
-                         @NotNull final EcoPlugin plugin) {
+    protected YamlBaseConfig(@NotNull final String configName,
+                             final boolean removeUnused,
+                             @NotNull final EcoPlugin plugin) {
         super(
                 Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
                         configName,
@@ -59,6 +59,6 @@ public abstract class BaseConfig extends LoadableYamlConfigWrapper {
 
     @Override
     public YamlConfiguration getBukkitHandle() {
-        return (YamlConfiguration) ((WrappedBukkitConfig<?>) this.getHandle()).getBukkitHandle();
+        return (YamlConfiguration) ((WrappedYamlBukkitConfig<?>) this.getHandle()).getBukkitHandle();
     }
 }

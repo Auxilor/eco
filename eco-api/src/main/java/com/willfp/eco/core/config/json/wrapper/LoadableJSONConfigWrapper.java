@@ -1,19 +1,19 @@
-package com.willfp.eco.core.config.wrapper;
+package com.willfp.eco.core.config.json.wrapper;
 
 import com.willfp.eco.core.config.LoadableConfig;
-import com.willfp.eco.core.config.LoadableYamlConfig;
+import com.willfp.eco.core.config.json.LoadableJSONConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 
-public abstract class LoadableYamlConfigWrapper extends YamlConfigWrapper<LoadableYamlConfig> implements LoadableConfig {
+public abstract class LoadableJSONConfigWrapper extends JSONConfigWrapper<LoadableJSONConfig> implements LoadableConfig {
     /**
      * Create a config wrapper.
      *
      * @param handle The handle.
      */
-    public LoadableYamlConfigWrapper(@NotNull final LoadableYamlConfig handle) {
+    public LoadableJSONConfigWrapper(@NotNull final LoadableJSONConfig handle) {
         super(handle);
     }
 

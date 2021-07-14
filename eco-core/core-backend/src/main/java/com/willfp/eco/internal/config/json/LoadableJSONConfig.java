@@ -17,7 +17,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class LoadableJSONConfig extends JSONConfigWrapper implements com.willfp.eco.core.config.LoadableJSONConfig {
+public class LoadableJSONConfig extends JSONConfigWrapper implements com.willfp.eco.core.config.json.LoadableJSONConfig {
     /**
      * The physical config file, as stored on disk.
      */

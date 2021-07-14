@@ -3,7 +3,7 @@ package com.willfp.eco.internal.config.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.JSONConfig;
+import com.willfp.eco.core.config.json.JSONConfig;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
