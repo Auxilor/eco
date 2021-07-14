@@ -47,7 +47,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
         }
 
         for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
-            MerchantRecipe newRecipe = ProxyUtils.getProxy(VillagerTradeProxy.class).displayTrade(recipe);
+            MerchantRecipe newRecipe = this.getPlugin().getProxyFactory().getProxy(VillagerTradeProxy.class).displayTrade(recipe);
             recipes.add(newRecipe);
         }
 
