@@ -185,7 +185,7 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      *
-     * @param path The key to fetch the value from.
+     * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
@@ -236,4 +236,11 @@ public interface Config extends Cloneable {
      */
     @Nullable
     List<Double> getDoublesOrNull(@NotNull String path);
+
+    /**
+     * Clone the config.
+     *
+     * @return The clone.
+     */
+    Config clone();
 }

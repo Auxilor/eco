@@ -23,4 +23,7 @@ public interface JSONConfig extends Config {
      */
     @Nullable
     List<JSONConfig> getSubsectionsOrNull(@NotNull String path);
+    
+    @Override
+    JSONConfig clone();
 }
