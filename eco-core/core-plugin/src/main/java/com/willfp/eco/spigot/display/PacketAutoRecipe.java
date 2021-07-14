@@ -33,7 +33,7 @@ public class PacketAutoRecipe extends AbstractPacketAdapter {
         }
 
         try {
-            ProxyUtils.getProxy(AutoCraftProxy.class).modifyPacket(packet.getHandle());
+            this.getPlugin().getProxyFactory().getProxy(AutoCraftProxy.class).modifyPacket(packet.getHandle());
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
