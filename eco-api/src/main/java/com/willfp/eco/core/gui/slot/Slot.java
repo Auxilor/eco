@@ -2,11 +2,9 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public interface Slot {
@@ -24,7 +22,7 @@ public interface Slot {
      * @param itemStack The ItemStack.
      * @return The builder.
      */
-    static Builder builder(@NotNull final ItemStack itemStack) {
+    static SlotBuilder builder(@NotNull final ItemStack itemStack) {
         return Eco.getHandler().getGUIFactory().createSlotBuilder(player -> itemStack);
     }
 
@@ -34,21 +32,7 @@ public interface Slot {
      * @param provider The provider.
      * @return The builder.
      */
-    static Builder builder(@NotNull final Function<Player, ItemStack> provider) {
+    static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {
         return Eco.getHandler().getGUIFactory().createSlotBuilder(provider);
-    }
-
-    interface Builder {
-        Builder onLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
-
-        Builder onRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
-
-        Builder onShiftLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
-
-        Builder onShiftRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
-
-        Builder onMiddleClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
-
-        Slot build();
     }
 }

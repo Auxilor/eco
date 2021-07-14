@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.gui.menu;
 
 import com.willfp.eco.core.gui.menu.Menu;
+import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
 import com.willfp.eco.internal.gui.slot.EcoFillerSlot;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class EcoMenuBuilder implements Menu.Builder {
+public class EcoMenuBuilder implements MenuBuilder {
 
     /**
      * The amount of rows.
@@ -49,13 +50,13 @@ public class EcoMenuBuilder implements Menu.Builder {
     }
 
     @Override
-    public Menu.Builder setTitle(@NotNull final String title) {
+    public MenuBuilder setTitle(@NotNull final String title) {
         this.title = StringUtils.translate(title);
         return this;
     }
 
     @Override
-    public Menu.Builder setSlot(final int row,
+    public MenuBuilder setSlot(final int row,
                                 final int column,
                                 @NotNull final Slot slot) {
         if (row < 1 || row > this.rows) {
@@ -71,13 +72,13 @@ public class EcoMenuBuilder implements Menu.Builder {
     }
 
     @Override
-    public Menu.Builder setMask(@NotNull final FillerMask mask) {
+    public MenuBuilder setMask(@NotNull final FillerMask mask) {
         this.maskSlots = mask.getMask();
         return this;
     }
 
     @Override
-    public Menu.Builder onClose(@NotNull final Consumer<InventoryCloseEvent> action) {
+    public MenuBuilder onClose(@NotNull final Consumer<InventoryCloseEvent> action) {
         this.onClose = action;
         return this;
     }
