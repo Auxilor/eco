@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.StringReader;
 
-public abstract class YamlConfig extends YamlConfigWrapper<Config> {
+public class YamlConfig extends YamlConfigWrapper<Config> {
     /**
      * Config implementation for passing YamlConfigurations.
      * <p>
