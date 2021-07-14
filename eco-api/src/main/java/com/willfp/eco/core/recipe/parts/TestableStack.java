@@ -58,7 +58,7 @@ public class TestableStack implements TestableItem {
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         assert lore != null;
         lore.add("");
-        String add = Eco.getHandler().getPlugin().getLangYml().getString("multiple-in-craft");
+        String add = Eco.getHandler().getEcoPlugin().getLangYml().getString("multiple-in-craft");
         add = add.replace("%amount%", String.valueOf(amount));
         lore.add(add);
         meta.setLore(lore);

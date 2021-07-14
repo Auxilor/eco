@@ -1,8 +1,8 @@
 package com.willfp.eco.spigot.drops;
 
 
-import com.willfp.eco.internal.drops.impl.FastCollatedDropQueue;
-import com.willfp.eco.internal.drops.impl.InternalDropQueue;
+import com.willfp.eco.internal.drops.impl.EcoFastCollatedDropQueue;
+import com.willfp.eco.internal.drops.impl.EcoDropQueue;
 import com.willfp.eco.core.EcoPlugin;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -25,15 +25,15 @@ public class CollatedRunnable {
      */
     public CollatedRunnable(@NotNull final EcoPlugin plugin) {
         runnableTask = plugin.getScheduler().runTimer(() -> {
-            for (Map.Entry<Player, FastCollatedDropQueue.CollatedDrops> entry : FastCollatedDropQueue.COLLATED_MAP.entrySet()) {
-                new InternalDropQueue(entry.getKey())
+            for (Map.Entry<Player, EcoFastCollatedDropQueue.CollatedDrops> entry : EcoFastCollatedDropQueue.COLLATED_MAP.entrySet()) {
+                new EcoDropQueue(entry.getKey())
                         .setLocation(entry.getValue().getLocation())
                         .addItems(entry.getValue().getDrops())
                         .addXP(entry.getValue().getXp())
                         .push();
-                FastCollatedDropQueue.COLLATED_MAP.remove(entry.getKey());
+                EcoFastCollatedDropQueue.COLLATED_MAP.remove(entry.getKey());
             }
-            FastCollatedDropQueue.COLLATED_MAP.clear();
+            EcoFastCollatedDropQueue.COLLATED_MAP.clear();
         }, 0, 1);
     }
 }

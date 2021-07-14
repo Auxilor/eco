@@ -10,6 +10,8 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
+import com.willfp.eco.core.proxy.Cleaner;
+import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import org.jetbrains.annotations.NotNull;
 
@@ -89,11 +91,19 @@ public interface Handler {
     PlaceholderIntegration createPAPIIntegration(@NotNull EcoPlugin plugin);
 
     /**
+     * Create a proxy factory.
+     *
+     * @param plugin The plugin.
+     * @return The factory.
+     */
+    ProxyFactory createProxyFactory(@NotNull EcoPlugin plugin);
+
+    /**
      * Get eco Spigot plugin.
      *
      * @return The plugin.
      */
-    EcoPlugin getPlugin();
+    EcoPlugin getEcoPlugin();
 
     /**
      * Get config factory.
@@ -115,4 +125,11 @@ public interface Handler {
      * @return The factory.
      */
     GUIFactory getGUIFactory();
+
+    /**
+     * Get cleaner.
+     *
+     * @return The cleaner.
+     */
+    Cleaner getCleaner();
 }
