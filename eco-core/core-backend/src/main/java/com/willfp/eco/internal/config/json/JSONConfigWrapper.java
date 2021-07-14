@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings({"unchecked", "unused"})
-public class JSONConfigWrapper implements JSONConfig, Cloneable {
+public class JSONConfigWrapper implements JSONConfig {
     /**
      * The linked {@link ConfigurationSection} where values are physically stored.
      */
