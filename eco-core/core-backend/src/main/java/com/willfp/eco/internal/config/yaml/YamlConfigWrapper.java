@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.config.yaml;
 
 import com.willfp.eco.core.config.Config;
-import com.willfp.eco.core.config.wrapper.bukkit.WrappedBukkitConfig;
+import com.willfp.eco.core.config.wrapper.WrappedBukkitConfig;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;

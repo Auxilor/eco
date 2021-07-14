@@ -11,6 +11,7 @@ import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
+import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.internal.config.EcoConfigFactory;
@@ -21,6 +22,7 @@ import com.willfp.eco.internal.extensions.EcoExtensionLoader;
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory;
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory;
 import com.willfp.eco.internal.factory.EcoRunnableFactory;
+import com.willfp.eco.internal.gui.EcoGUIFactory;
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.logging.EcoLogger;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
@@ -91,5 +93,10 @@ public class EcoHandler extends PluginDependent<EcoPlugin> implements Handler {
     @Override
     public DropQueueFactory getDropQueueFactory() {
         return new EcoDropQueueFactory();
+    }
+
+    @Override
+    public GUIFactory getGUIFactory() {
+        return new EcoGUIFactory();
     }
 }

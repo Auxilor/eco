@@ -8,6 +8,7 @@ import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
+import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.scheduling.Scheduler;
 import org.jetbrains.annotations.NotNull;
@@ -107,4 +108,11 @@ public interface Handler {
      * @return The factory.
      */
     DropQueueFactory getDropQueueFactory();
+
+    /**
+     * Get GUI factory.
+     *
+     * @return The factory.
+     */
+    GUIFactory getGUIFactory();
 }

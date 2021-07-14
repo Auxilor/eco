@@ -2,13 +2,12 @@ package com.willfp.eco.core.config;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.wrapper.bukkit.WrappedBukkitConfig;
 import com.willfp.eco.core.config.wrapper.YamlConfigWrapper;
-import com.willfp.eco.core.config.wrapper.bukkit.WrappedYamlConfiguration;
+import com.willfp.eco.core.config.wrapper.WrappedBukkitConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseConfig extends YamlConfigWrapper implements WrappedBukkitConfig<YamlConfiguration> {
+public abstract class BaseConfig extends YamlConfigWrapper {
 
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
@@ -60,6 +59,6 @@ public abstract class BaseConfig extends YamlConfigWrapper implements WrappedBuk
 
     @Override
     public YamlConfiguration getBukkitHandle() {
-        return ((WrappedYamlConfiguration) this.getHandle()).getBukkitHandle();
+        return (YamlConfiguration) ((WrappedBukkitConfig<?>) this.getHandle()).getBukkitHandle();
     }
 }

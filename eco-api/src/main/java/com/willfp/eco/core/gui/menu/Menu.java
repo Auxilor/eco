@@ -1,5 +1,6 @@
 package com.willfp.eco.core.gui.menu;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
@@ -49,15 +50,15 @@ public interface Menu {
      * @return The builder.
      */
     static Builder builder(final int rows) {
-        return new EcoMenuBuilder(rows);
+        return Eco.getHandler().getGUIFactory().createMenuBuilder(rows);
     }
 
     interface Builder {
         Builder setTitle(@NotNull String title);
 
         Builder setSlot(int row,
-                               int column,
-                               @NotNull Slot slot);
+                        int column,
+                        @NotNull Slot slot);
 
         Builder setMask(@NotNull FillerMask mask);
 

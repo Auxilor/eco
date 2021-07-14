@@ -1,5 +1,6 @@
-package com.willfp.eco.core.gui.slot;
+package com.willfp.eco.internal.gui.slot;
 
+import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -8,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-class EcoSlotBuilder implements Slot.Builder {
+public class EcoSlotBuilder implements Slot.Builder {
     /**
      * Provider.
      */
@@ -39,7 +40,7 @@ class EcoSlotBuilder implements Slot.Builder {
      */
     private BiConsumer<InventoryClickEvent, Slot> onMiddleClick = null;
 
-    EcoSlotBuilder(@NotNull final Function<Player, ItemStack> provider) {
+    public EcoSlotBuilder(@NotNull final Function<Player, ItemStack> provider) {
         this.provider = provider;
     }
 

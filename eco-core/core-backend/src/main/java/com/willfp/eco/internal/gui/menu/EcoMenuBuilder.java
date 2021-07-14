@@ -1,8 +1,9 @@
-package com.willfp.eco.core.gui.menu;
+package com.willfp.eco.internal.gui.menu;
 
+import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.FillerMask;
-import com.willfp.eco.core.gui.slot.FillerSlot;
 import com.willfp.eco.core.gui.slot.Slot;
+import com.willfp.eco.internal.gui.slot.EcoFillerSlot;
 import com.willfp.eco.util.ListUtils;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.Material;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-class EcoMenuBuilder implements Menu.Builder {
+public class EcoMenuBuilder implements Menu.Builder {
 
     /**
      * The amount of rows.
@@ -41,7 +42,7 @@ class EcoMenuBuilder implements Menu.Builder {
     private Consumer<InventoryCloseEvent> onClose = (event) -> {
     };
 
-    EcoMenuBuilder(final int rows) {
+    public EcoMenuBuilder(final int rows) {
         this.rows = rows;
         this.slots = ListUtils.create2DList(rows, 9);
         this.maskSlots = ListUtils.create2DList(rows, 9);
@@ -96,7 +97,7 @@ class EcoMenuBuilder implements Menu.Builder {
         for (List<Slot> finalSlot : finalSlots) {
             for (int j = 0; j < finalSlot.size(); j++) {
                 if (finalSlot.get(j) == null) {
-                    finalSlot.set(j, new FillerSlot(new ItemStack(Material.AIR)));
+                    finalSlot.set(j, new EcoFillerSlot(new ItemStack(Material.AIR)));
                 }
             }
         }

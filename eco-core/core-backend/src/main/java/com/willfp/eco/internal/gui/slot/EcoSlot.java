@@ -1,5 +1,6 @@
-package com.willfp.eco.core.gui.slot;
+package com.willfp.eco.internal.gui.slot;
 
+import com.willfp.eco.core.gui.slot.Slot;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-class EcoSlot implements Slot {
+public class EcoSlot implements Slot {
     /**
      * The item provider.
      */
@@ -42,12 +43,12 @@ class EcoSlot implements Slot {
      */
     private final BiConsumer<InventoryClickEvent, Slot> onMiddleClick;
 
-    EcoSlot(@NotNull final Function<Player, ItemStack> provider,
-            @Nullable final BiConsumer<InventoryClickEvent, Slot> onLeftClick,
-            @Nullable final BiConsumer<InventoryClickEvent, Slot> onRightClick,
-            @Nullable final BiConsumer<InventoryClickEvent, Slot> onShiftLeftClick,
-            @Nullable final BiConsumer<InventoryClickEvent, Slot> onShiftRightClick,
-            @Nullable final BiConsumer<InventoryClickEvent, Slot> onMiddleClick) {
+    public EcoSlot(@NotNull final Function<Player, ItemStack> provider,
+                   @Nullable final BiConsumer<InventoryClickEvent, Slot> onLeftClick,
+                   @Nullable final BiConsumer<InventoryClickEvent, Slot> onRightClick,
+                   @Nullable final BiConsumer<InventoryClickEvent, Slot> onShiftLeftClick,
+                   @Nullable final BiConsumer<InventoryClickEvent, Slot> onShiftRightClick,
+                   @Nullable final BiConsumer<InventoryClickEvent, Slot> onMiddleClick) {
         this.provider = provider;
         this.onLeftClick = onLeftClick == null ? ((event, slot) -> {
         }) : onLeftClick;
