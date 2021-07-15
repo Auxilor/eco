@@ -1,7 +1,8 @@
 package com.willfp.eco.core.recipe.parts;
 
-import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.util.NamespacedKeyUtils;
+import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
@@ -58,7 +59,7 @@ public class TestableStack implements TestableItem {
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         assert lore != null;
         lore.add("");
-        String add = Eco.getHandler().getEcoPlugin().getLangYml().getString("multiple-in-craft");
+        String add = StringUtils.getLocalizedString(NamespacedKeyUtils.createEcoKey("multiple-in-craft"));
         add = add.replace("%amount%", String.valueOf(amount));
         lore.add(add);
         meta.setLore(lore);

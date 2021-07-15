@@ -1,2 +1,7 @@
+#
+# eco
+# by Auxilor
+#
+
 disable-display-on-villagers: false
 villager-display-fix: false

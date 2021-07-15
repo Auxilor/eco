@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 @UtilityClass
 public class LocalizationUtils {
-    public LocalizedString getStringFromKey(@NotNull final NamespacedKey key) {
+    public EcoLocalizedString getStringFromKey(@NotNull final NamespacedKey key) {
         Validate.isTrue(EcoPlugin.getPluginNames().contains(key.getNamespace()));
 
         EcoPlugin source = EcoPlugin.getPlugin(key.getNamespace());
@@ -18,9 +18,9 @@ public class LocalizationUtils {
         String message = source.getLangYml().getStringOrNull("messages." + key.getKey());
 
         if (message == null) {
-            return new LocalizedString(source, key.getKey());
+            return new EcoLocalizedString(source, key.getKey());
         } else {
-            return new LocalizedMessage(source, key.getKey());
+            return new EcoLocalizedMessage(source, key.getKey());
         }
     }
 }
