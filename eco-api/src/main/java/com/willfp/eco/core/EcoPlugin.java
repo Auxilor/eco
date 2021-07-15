@@ -38,11 +38,6 @@ import java.util.stream.Collectors;
 
 public abstract class EcoPlugin extends JavaPlugin {
     /**
-     * Loaded eco plugins.
-     */
-    public static final List<String> LOADED_ECO_PLUGINS = new ArrayList<>();
-
-    /**
      * The spigot resource ID of the plugin.
      */
     @Getter
@@ -301,7 +296,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.langYml = new LangYml(this);
         this.configYml = new ConfigYml(this);
 
-        LOADED_ECO_PLUGINS.add(this.getName().toLowerCase());
+        Eco.getHandler().addNewPlugin(this);
     }
 
     /**
@@ -664,5 +659,24 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getLogger().warning("Call to default config method in eco plugin!");
 
         super.reloadConfig();
+    }
+
+    /**
+     * Get an EcoPlugin by name.
+     *
+     * @param pluginName The name.
+     * @return The plugin.
+     */
+    public static EcoPlugin getPlugin(@NotNull final String pluginName) {
+        return Eco.getHandler().getPluginByName(pluginName);
+    }
+
+    /**
+     * Get all EcoPlugin names.
+     *
+     * @return The set of names.
+     */
+    public static Set<String> getPluginNames() {
+        return new HashSet<>(Eco.getHandler().getLoadedPlugins());
     }
 }

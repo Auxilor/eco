@@ -16,6 +16,8 @@ public class EcoCleaner implements Cleaner {
             factory.clean();
         }
 
+        Plugins.LOADED_ECO_PLUGINS.remove(plugin.getName().toLowerCase());
+
         if (plugin.getClass().getClassLoader() instanceof URLClassLoader urlClassLoader) {
             try {
                 urlClassLoader.close();
