@@ -8,6 +8,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
+import com.willfp.eco.internal.drops.DropManager;
 import com.willfp.eco.proxy.BlockBreakProxy;
 import com.willfp.eco.proxy.SkullProxy;
 import com.willfp.eco.proxy.TridentStackProxy;
@@ -175,6 +176,13 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
                 new PlayerJumpListeners(),
                 new GUIListener(this),
                 new ArrowDataListener(this)
+        );
+    }
+
+    @Override
+    public List<Class<?>> getUpdatableClasses() {
+        return Arrays.asList(
+                DropManager.class
         );
     }
 }
