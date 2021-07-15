@@ -5,7 +5,7 @@ import com.willfp.eco.core.PluginDependent;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-public class LocalizedString extends PluginDependent<EcoPlugin> {
+public class EcoLocalizedString extends PluginDependent<EcoPlugin> {
     /**
      * The message ID.
      */
@@ -18,8 +18,8 @@ public class LocalizedString extends PluginDependent<EcoPlugin> {
      * @param plugin The plugin.
      * @param id     The message id.
      */
-    public LocalizedString(@NotNull final EcoPlugin plugin,
-                           @NotNull final String id) {
+    public EcoLocalizedString(@NotNull final EcoPlugin plugin,
+                              @NotNull final String id) {
         super(plugin);
 
         this.id = id;

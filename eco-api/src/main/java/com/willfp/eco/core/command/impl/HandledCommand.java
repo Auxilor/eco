@@ -5,6 +5,7 @@ import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.CommandHandler;
 import com.willfp.eco.core.command.TabCompleteHandler;
+import com.willfp.eco.util.StringUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
@@ -168,7 +169,7 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
                                      @NotNull final CommandBase command,
                                      @NotNull final EcoPlugin plugin) {
         if (command.isPlayersOnly() && !(sender instanceof Player)) {
-            sender.sendMessage(plugin.getLangYml().getMessage("not-player"));
+            sender.sendMessage(StringUtils.getLocalizedString(plugin.getNamespacedKeyFactory().create("not-player")));
             return false;
         }
 
