@@ -10,7 +10,6 @@ loadbefore:
   - StatTrackers
   - EcoArmor
   - EcoBosses
-  - EcoSkills
 depend:
   - ProtocolLib
 softdepend:
