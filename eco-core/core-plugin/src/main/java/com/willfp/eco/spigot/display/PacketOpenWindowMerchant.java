@@ -34,6 +34,11 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
                        @NotNull final PacketEvent event) {
         List<MerchantRecipe> recipes = new ArrayList<>();
 
+
+        /*
+        This awful, awful bit of code exists to fix a bug that existed in EcoEnchants
+        for too many versions.
+         */
         if (this.getPlugin().getConfigYml().getBool("villager-display-fix")) {
             for (MerchantRecipe recipe : packet.getMerchantRecipeLists().read(0)) {
                 ItemStack result = recipe.getResult();

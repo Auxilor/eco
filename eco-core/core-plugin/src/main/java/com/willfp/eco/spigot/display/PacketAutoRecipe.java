@@ -24,7 +24,7 @@ public class PacketAutoRecipe extends AbstractPacketAdapter {
     @Override
     public void onSend(@NotNull final PacketContainer packet,
                        @NotNull final Player player) {
-        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(packet.getMinecraftKeys().getValues().get(0).getFullKey().split(":")[0])) {
+        if (!EcoPlugin.getPluginNames().contains(packet.getMinecraftKeys().getValues().get(0).getFullKey().split(":")[0])) {
             return;
         }
 
