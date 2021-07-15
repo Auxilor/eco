@@ -27,6 +27,7 @@ public class StringUtils {
      */
     private static final List<Pattern> GRADIENT_PATTERNS = new ImmutableList.Builder<Pattern>()
             .add(Pattern.compile("<GRADIENT:([0-9A-Fa-f]{6})>(.*?)</GRADIENT:([0-9A-Fa-f]{6})>"))
+            .add(Pattern.compile("<gradient:([0-9A-Fa-f]{6})>(.*?)</gradient:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("<G:([0-9A-Fa-f]{6})>(.*?)</G:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("<#:([0-9A-Fa-f]{6})>(.*?)</#:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("\\{#:([0-9A-Fa-f]{6})}(.*?)\\{/#:([0-9A-Fa-f]{6})}"))
@@ -142,6 +143,9 @@ public class StringUtils {
         if (processedString.contains("&n")) {
             modifiers.add(ChatColor.UNDERLINE);
         }
+        if (processedString.contains("&m")) {
+            modifiers.add(ChatColor.STRIKETHROUGH);
+        }
         if (processedString.contains("&k")) {
             modifiers.add(ChatColor.MAGIC);
         }
@@ -149,6 +153,7 @@ public class StringUtils {
         processedString = processedString.replace("&o", "");
         processedString = processedString.replace("&n", "");
         processedString = processedString.replace("&k", "");
+        processedString = processedString.replace("&m", "");
 
         StringBuilder stringBuilder = new StringBuilder();
         ChatColor[] colors = getGradientColors(start, end, processedString.length());
