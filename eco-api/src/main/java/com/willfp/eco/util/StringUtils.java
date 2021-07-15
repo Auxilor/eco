@@ -1,9 +1,11 @@
 package com.willfp.eco.util;
 
 import com.google.common.collect.ImmutableList;
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +44,8 @@ public class StringUtils {
     /**
      * Translate a list of strings - converts Placeholders and Color codes.
      *
-     * @param list The messages to translate.
-     * @param player  The player to translate placeholders with respect to.
+     * @param list   The messages to translate.
+     * @param player The player to translate placeholders with respect to.
      * @return The message, translated.
      */
     public List<String> translateList(@NotNull final List<String> list,
@@ -245,5 +247,15 @@ public class StringUtils {
             return string.substring(prefix.length());
         }
         return string;
+    }
+
+    /**
+     * Get a localized string.
+     *
+     * @param key The key.
+     * @return The string.
+     */
+    public String getLocalizedString(@NotNull final NamespacedKey key) {
+        return Eco.getHandler().getLocalizedString(key);
     }
 }

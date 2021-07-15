@@ -13,8 +13,10 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public interface Handler {
@@ -132,4 +134,34 @@ public interface Handler {
      * @return The cleaner.
      */
     Cleaner getCleaner();
+
+    /**
+     * Get a localized string.
+     *
+     * @param key The key.
+     * @return The string.
+     */
+    String getLocalizedString(@NotNull NamespacedKey key);
+
+    /**
+     * Add new plugin.
+     *
+     * @param plugin The plugin.
+     */
+    void addNewPlugin(@NotNull EcoPlugin plugin);
+
+    /**
+     * Get plugin by name.
+     *
+     * @param name The name.
+     * @return The plugin.
+     */
+    EcoPlugin getPluginByName(@NotNull String name);
+
+    /**
+     * Get all loaded eco plugins.
+     *
+     * @return A list of plugin names in lowercase.
+     */
+    List<String> getLoadedPlugins();
 }
