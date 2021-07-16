@@ -6,7 +6,7 @@
 - Every method and field must have a javadoc attached.
 
 2. Use lombok wherever possible.
-- @Getter, @Setter, @ToString, @EqualsAndHashCode, @UtilityClass are the most important.
+- @Getter, @Setter, @UtilityClass only.
 
 3. Use JetBrains annotations
 - Every parameter should be annotated with @NotNull or @Nullable
