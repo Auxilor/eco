@@ -109,7 +109,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public List<IntegrationLoader> getIntegrationLoaders() {
+    public List<IntegrationLoader> loadIntegrationLoaders() {
         return Arrays.asList(
                 // AntiGrief
                 new IntegrationLoader("WorldGuard", () -> AntigriefManager.register(new AntigriefWorldGuard())),
@@ -149,7 +149,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public List<AbstractPacketAdapter> getPacketAdapters() {
+    public List<AbstractPacketAdapter> loadPacketAdapters() {
         List<AbstractPacketAdapter> adapters = new ArrayList<>(Arrays.asList(
                 new PacketAutoRecipe(this),
                 new PacketChat(this),
@@ -166,7 +166,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public List<Listener> getListeners() {
+    public List<Listener> loadListeners() {
         return Arrays.asList(
                 new NaturalExpGainListeners(),
                 new ArmorListener(),
@@ -180,7 +180,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public List<Class<?>> getUpdatableClasses() {
+    public List<Class<?>> loadUpdatableClasses() {
         return Arrays.asList(
                 DropManager.class
         );

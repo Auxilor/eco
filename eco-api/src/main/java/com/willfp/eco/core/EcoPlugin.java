@@ -345,7 +345,7 @@ public abstract class EcoPlugin extends JavaPlugin {
             PlaceholderManager.addIntegration(Eco.getHandler().createPAPIIntegration(this));
         }
 
-        this.getIntegrationLoaders().forEach((integrationLoader -> {
+        this.loadIntegrationLoaders().forEach((integrationLoader -> {
             if (enabledPlugins.contains(integrationLoader.getPluginName())) {
                 this.loadedIntegrations.add(integrationLoader.getPluginName());
                 integrationLoader.load();
@@ -356,17 +356,17 @@ public abstract class EcoPlugin extends JavaPlugin {
 
         Prerequisite.update();
 
-        this.getPacketAdapters().forEach(abstractPacketAdapter -> {
+        this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
             if (!abstractPacketAdapter.isPostLoad()) {
                 abstractPacketAdapter.register();
             }
         });
 
-        updatableClasses.addAll(this.getUpdatableClasses());
+        updatableClasses.addAll(this.loadUpdatableClasses());
 
-        this.getListeners().forEach(listener -> this.getEventManager().registerListener(listener));
+        this.loadListeners().forEach(listener -> this.getEventManager().registerListener(listener));
 
-        this.getPluginCommands().forEach(PluginCommand::register);
+        this.loadPluginCommands().forEach(PluginCommand::register);
 
         this.getScheduler().runLater(this::afterLoad, 1);
 
@@ -429,7 +429,7 @@ public abstract class EcoPlugin extends JavaPlugin {
             Display.registerDisplayModule(this.getDisplayModule());
         }
 
-        this.getPacketAdapters().forEach(abstractPacketAdapter -> {
+        this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
             if (abstractPacketAdapter.isPostLoad()) {
                 abstractPacketAdapter.register();
             }
@@ -520,7 +520,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of integrations.
      */
-    public List<IntegrationLoader> getIntegrationLoaders() {
+    protected List<IntegrationLoader> loadIntegrationLoaders() {
         return new ArrayList<>();
     }
 
@@ -529,7 +529,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of commands.
      */
-    public List<PluginCommand> getPluginCommands() {
+    protected List<PluginCommand> loadPluginCommands() {
         return new ArrayList<>();
     }
 
@@ -540,7 +540,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of packet adapters.
      */
-    public List<AbstractPacketAdapter> getPacketAdapters() {
+    protected List<AbstractPacketAdapter> loadPacketAdapters() {
         return new ArrayList<>();
     }
 
@@ -549,14 +549,14 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return A list of all listeners.
      */
-    public abstract List<Listener> getListeners();
+    protected abstract List<Listener> loadListeners();
 
     /**
      * All updatable classes.
      *
      * @return A list of all updatable classes.
      */
-    public List<Class<?>> getUpdatableClasses() {
+    protected List<Class<?>> loadUpdatableClasses() {
         return new ArrayList<>();
     }
 
@@ -580,7 +580,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @return The version.
      */
-    protected String getMinimumEcoVersion() {
+    public String getMinimumEcoVersion() {
         return "6.0.0";
     }
 
