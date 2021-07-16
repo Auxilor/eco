@@ -10,7 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @UtilityClass
 @SuppressWarnings("deprecation")
@@ -85,5 +87,14 @@ public final class Items {
             }
         }
         return false;
+    }
+
+    /**
+     * Get all registered custom items.
+     *
+     * @return A set of all items.
+     */
+    public Set<CustomItem> getCustomItems() {
+        return new HashSet<>(REGISTRY.values());
     }
 }
