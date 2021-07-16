@@ -2,7 +2,6 @@ package com.willfp.eco.spigot;
 
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.data.Data;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
@@ -13,7 +12,6 @@ import com.willfp.eco.proxy.BlockBreakProxy;
 import com.willfp.eco.proxy.SkullProxy;
 import com.willfp.eco.proxy.TridentStackProxy;
 import com.willfp.eco.spigot.arrows.ArrowDataListener;
-import com.willfp.eco.spigot.config.DataJson;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
 import com.willfp.eco.spigot.display.PacketOpenWindowMerchant;
@@ -51,7 +49,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,11 +59,6 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
      */
     @Getter
     private static EcoSpigotPlugin instance;
-
-    /**
-     * data.json.
-     */
-    private final DataJson dataJson;
 
     /**
      * Create a new instance of eco.
@@ -84,23 +76,11 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
 
         TridentStackProxy tridentStackProxy = this.getProxyFactory().getProxy(TridentStackProxy.class);
         TridentUtils.initialize(tridentStackProxy::getTridentStack);
-
-        this.dataJson = new DataJson(this);
-        Data.init(this.dataJson);
     }
 
     @Override
     public void handleEnable() {
         new CollatedRunnable(this);
-    }
-
-    @Override
-    public void handleDisable() {
-        try {
-            Data.save(this.dataJson);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
