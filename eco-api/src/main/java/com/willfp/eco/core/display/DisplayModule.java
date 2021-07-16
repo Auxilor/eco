@@ -60,7 +60,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      *
      * @return The plugin name.
      */
-    final String getPluginName() {
+    public final String getPluginName() {
         return super.getPlugin().getName();
     }
 }

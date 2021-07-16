@@ -74,6 +74,16 @@ public abstract class Extension {
     }
 
     /**
+     * Get the author of the extension.
+     *
+     * @return The author of the metadata attached to the extension.
+     */
+    public final String getAuthor() {
+        Validate.notNull(metadata, "Metadata cannot be null!");
+        return this.metadata.author();
+    }
+
+    /**
      * Get the version of the extension.
      *
      * @return The version of the metadata attached to the extension.

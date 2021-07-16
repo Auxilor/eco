@@ -97,10 +97,12 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
         String mainClass = extensionYml.getString("main");
         String name = extensionYml.getString("name");
         String version = extensionYml.getString("version");
+        String author = extensionYml.getString("author");
         Validate.notNull(name, "Name is missing!");
         Validate.notNull(version, "Version is missing!");
+        Validate.notNull(author, "Author is missing!");
 
-        ExtensionMetadata metadata = new ExtensionMetadata(version, name);
+        ExtensionMetadata metadata = new ExtensionMetadata(version, name, author);
 
         Class<?> cls;
         Object object = null;
