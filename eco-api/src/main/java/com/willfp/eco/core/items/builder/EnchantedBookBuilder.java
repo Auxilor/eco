@@ -5,6 +5,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentStorageMeta, EnchantedBookBuilder> {
     /**
      * Create a new EnchantedBookBuilder.
@@ -24,5 +26,16 @@ public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentSt
                                                      final int level) {
         this.getMeta().addStoredEnchant(enchantment, level, true);
         return this;
+    }
+    /**
+     * Add an enchantment to the item.
+     *
+     * @param enchantment The enchantment.
+     * @param level       The level.
+     * @return The builder.
+     */
+    public EnchantedBookBuilder addStoredEnchantment(@NotNull final Supplier<Enchantment> enchantment,
+                                                     final Supplier<Integer> level) {
+        return this.addStoredEnchantment(enchantment.get(), level.get());
     }
 }

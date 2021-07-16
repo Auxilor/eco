@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta, SkullBuilder> {
     /**
      * Create a new EnchantedBookBuilder.
@@ -23,5 +25,15 @@ public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta, SkullBuild
         SkullUtils.setSkullTexture(this.getMeta(), texture);
 
         return this;
+    }
+
+    /**
+     * Set skull texture.
+     *
+     * @param texture The texture.
+     * @return The builder.
+     */
+    public SkullBuilder setSkullTexture(@NotNull final Supplier<String> texture) {
+        return this.setSkullTexture(texture.get());
     }
 }
