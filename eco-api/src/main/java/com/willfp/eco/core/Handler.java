@@ -13,7 +13,6 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -134,14 +133,6 @@ public interface Handler {
      * @return The cleaner.
      */
     Cleaner getCleaner();
-
-    /**
-     * Get a localized string.
-     *
-     * @param key The key.
-     * @return The string.
-     */
-    String getLocalizedString(@NotNull NamespacedKey key);
 
     /**
      * Add new plugin.
