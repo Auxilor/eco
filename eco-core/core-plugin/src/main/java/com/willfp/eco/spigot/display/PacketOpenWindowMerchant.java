@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.proxy.VillagerTradeProxy;
-import org.bukkit.NamespacedKey;
+import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -45,7 +45,7 @@ public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
                 ItemMeta meta = result.getItemMeta();
                 if (meta != null) {
                     meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS);
-                    meta.getPersistentDataContainer().remove(NamespacedKey.fromString("ecoenchants:ecoenchantlore-skip"));
+                    meta.getPersistentDataContainer().remove(NamespacedKeyUtils.create("ecoenchants", "ecoenchantlore-skip"));
                     result.setItemMeta(meta);
                 }
             }
