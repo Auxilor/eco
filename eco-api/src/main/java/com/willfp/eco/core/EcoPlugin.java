@@ -544,15 +544,6 @@ public abstract class EcoPlugin extends JavaPlugin {
     protected abstract List<Listener> loadListeners();
 
     /**
-     * All updatable classes.
-     *
-     * @return A list of all updatable classes.
-     */
-    protected List<Class<?>> loadUpdatableClasses() {
-        return new ArrayList<>();
-    }
-
-    /**
      * Create the display module for the plugin.
      *
      * @return The display module, or null.
