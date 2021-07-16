@@ -11,9 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * Event triggered when entity is killed by entity.
- */
 public class EntityDeathByEntityEvent extends Event {
     /**
      * Internal, for bukkit.

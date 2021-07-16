@@ -2,10 +2,6 @@ package com.willfp.eco.core.extensions;
 
 import java.util.Set;
 
-/**
- * Interface for extension loader.
- * Some external plugins may modify extension loading for internal server purposes.
- */
 public interface ExtensionLoader {
 
     /**
