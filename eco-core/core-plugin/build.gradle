@@ -18,6 +18,7 @@ dependencies {
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
     compileOnly 'com.gmail.nossr50.mcMMO:mcMMO:2.1.157'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'

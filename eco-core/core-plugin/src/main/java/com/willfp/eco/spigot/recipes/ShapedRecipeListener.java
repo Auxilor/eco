@@ -42,7 +42,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
-        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (!EcoPlugin.getPluginNames().contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -72,7 +72,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
-        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (!EcoPlugin.getPluginNames().contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -106,7 +106,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
-        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (!EcoPlugin.getPluginNames().contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -200,7 +200,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
-        if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (EcoPlugin.getPluginNames().contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -223,7 +223,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
-        if (EcoPlugin.LOADED_ECO_PLUGINS.contains(recipe.getKey().getNamespace())) {
+        if (EcoPlugin.getPluginNames().contains(recipe.getKey().getNamespace())) {
             return;
         }
 
@@ -244,7 +244,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
      */
     @EventHandler
     public void preventLearningDisplayedRecipes(@NotNull final PlayerRecipeDiscoverEvent event) {
-        if (!EcoPlugin.LOADED_ECO_PLUGINS.contains(event.getRecipe().getNamespace())) {
+        if (!EcoPlugin.getPluginNames().contains(event.getRecipe().getNamespace())) {
             return;
         }
 
