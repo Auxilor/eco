@@ -90,12 +90,12 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public void enable() {
+    public void handleEnable() {
         new CollatedRunnable(this);
     }
 
     @Override
-    public void disable() {
+    public void handleDisable() {
         try {
             Data.save(this.dataJson);
         } catch (IOException e) {
@@ -104,7 +104,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public void onReload() {
+    public void handleReload() {
         new CollatedRunnable(this);
     }
 
