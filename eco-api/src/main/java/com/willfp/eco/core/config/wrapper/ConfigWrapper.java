@@ -9,7 +9,14 @@ import java.util.List;
 
 public abstract class ConfigWrapper<T extends Config> implements Config {
     /**
-     * The config handle.
+     * Configs from eco have an internal implementation,
+     * which is the handle.
+     * <p>
+     * The handle should only ever be used if you want to
+     * do something <i>interesting</i> config-wise with some
+     * internals.
+     * <p>
+     * In general use, though, the handle isn't necessary.
      */
     @Getter
     private final T handle;
