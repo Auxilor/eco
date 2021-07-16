@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMeta, LeatherArmorBuilder> {
     /**
      * Create a new ItemStackBuilder.
@@ -36,5 +38,14 @@ public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMe
         this.getMeta().setColor(bukkitColor);
 
         return this;
+    }
+    /**
+     * Set leather color.
+     *
+     * @param color The color.
+     * @return The builder.
+     */
+    public LeatherArmorBuilder setColor(@NotNull final Supplier<java.awt.Color> color) {
+        return this.setColor(color.get());
     }
 }
