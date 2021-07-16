@@ -17,4 +17,16 @@ public class NamespacedKeyUtils {
     public NamespacedKey createEcoKey(@NotNull final String string) {
         return Objects.requireNonNull(NamespacedKey.fromString("eco:" + string));
     }
+
+    /**
+     * Create a NamespacedKey with any namespace and key.
+     *
+     * @param namespace The namespace.
+     * @param key       The key.
+     * @return The key.
+     */
+    public NamespacedKey create(@NotNull final String namespace,
+                                @NotNull final String key) {
+        return Objects.requireNonNull(NamespacedKey.fromString(namespace + ":" + key));
+    }
 }
