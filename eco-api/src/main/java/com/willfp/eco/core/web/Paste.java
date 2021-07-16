@@ -71,7 +71,7 @@ public class Paste {
 
                 responseHandler.accept(responseString);
             } catch (IOException e) {
-                e.printStackTrace();
+                responseHandler.accept(e.getMessage());
             }
 
             responseHandler.accept("");
