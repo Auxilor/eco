@@ -33,7 +33,7 @@ public class PacketChat extends AbstractPacketAdapter {
                 return;
             }
 
-            WrappedChatComponent newComponent = WrappedChatComponent.fromHandle(this.getPlugin().getProxyFactory().getProxy(ChatComponentProxy.class).modifyComponent(component.getHandle()));
+            WrappedChatComponent newComponent = WrappedChatComponent.fromHandle(this.getPlugin().getProxy(ChatComponentProxy.class).modifyComponent(component.getHandle()));
             packet.getChatComponents().write(i, newComponent);
         }
     }
