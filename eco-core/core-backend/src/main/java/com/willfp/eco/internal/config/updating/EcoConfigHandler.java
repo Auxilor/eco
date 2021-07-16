@@ -21,10 +21,15 @@ import java.util.List;
 public class EcoConfigHandler extends PluginDependent<EcoPlugin> implements ConfigHandler {
     private final List<LoadableConfig> configs = new ArrayList<>();
 
-    private final Reflections reflections = new Reflections(this.getPlugin().getClass().getPackageName(), new MethodAnnotationsScanner());
+    private final Reflections reflections;
 
     public EcoConfigHandler(@NotNull final EcoPlugin plugin) {
         super(plugin);
+
+        this.reflections = new Reflections(
+                this.getPlugin().getClass().getClassLoader(),
+                new MethodAnnotationsScanner()
+        );
     }
 
     @Override
