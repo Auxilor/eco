@@ -7,7 +7,6 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
-import com.willfp.eco.internal.drops.DropManager;
 import com.willfp.eco.proxy.BlockBreakProxy;
 import com.willfp.eco.proxy.SkullProxy;
 import com.willfp.eco.proxy.TridentStackProxy;
@@ -79,17 +78,17 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public void handleEnable() {
+    protected void handleEnable() {
         new CollatedRunnable(this);
     }
 
     @Override
-    public void handleReload() {
+    protected void handleReload() {
         new CollatedRunnable(this);
     }
 
     @Override
-    public List<IntegrationLoader> loadIntegrationLoaders() {
+    protected List<IntegrationLoader> loadIntegrationLoaders() {
         return Arrays.asList(
                 // AntiGrief
                 new IntegrationLoader("WorldGuard", () -> AntigriefManager.register(new AntigriefWorldGuard())),
@@ -129,7 +128,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public List<AbstractPacketAdapter> loadPacketAdapters() {
+    protected List<AbstractPacketAdapter> loadPacketAdapters() {
         List<AbstractPacketAdapter> adapters = new ArrayList<>(Arrays.asList(
                 new PacketAutoRecipe(this),
                 new PacketChat(this),
@@ -146,7 +145,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
-    public List<Listener> loadListeners() {
+    protected List<Listener> loadListeners() {
         return Arrays.asList(
                 new NaturalExpGainListeners(),
                 new ArmorListener(),
@@ -156,13 +155,6 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
                 new PlayerJumpListeners(),
                 new GUIListener(this),
                 new ArrowDataListener(this)
-        );
-    }
-
-    @Override
-    public List<Class<?>> loadUpdatableClasses() {
-        return Arrays.asList(
-                DropManager.class
         );
     }
 }
