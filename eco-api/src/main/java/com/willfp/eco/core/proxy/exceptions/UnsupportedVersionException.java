@@ -1,4 +1,4 @@
-package com.willfp.eco.core.proxy;
+package com.willfp.eco.core.proxy.exceptions;
 
 import org.jetbrains.annotations.NotNull;
 
