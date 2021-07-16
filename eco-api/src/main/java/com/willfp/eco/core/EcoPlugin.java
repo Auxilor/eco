@@ -383,7 +383,7 @@ public abstract class EcoPlugin extends JavaPlugin {
             }
         }
 
-        this.enable();
+        this.handleEnable();
 
         this.getLogger().info("");
     }
@@ -399,7 +399,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getScheduler().cancelAll();
         this.getConfigHandler().saveAllConfigs();
 
-        this.disable();
+        this.handleDisable();
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().unloadExtensions();
@@ -416,7 +416,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     public final void onLoad() {
         super.onLoad();
 
-        this.load();
+        this.handleLoad();
     }
 
     /**
@@ -448,7 +448,7 @@ public abstract class EcoPlugin extends JavaPlugin {
             this.getLogger().severe("");
         }
 
-        this.postLoad();
+        this.handleAfterLoad();
 
         this.reload();
 
@@ -465,7 +465,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
         this.getScheduler().cancelAll();
 
-        this.onReload();
+        this.handleReload();
     }
 
     /**
@@ -473,7 +473,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * <p>
      * Override when needed.
      */
-    public void enable() {
+    protected void handleEnable() {
 
     }
 
@@ -482,7 +482,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * <p>
      * Override when needed.
      */
-    public void disable() {
+    protected void handleDisable() {
 
     }
 
@@ -493,7 +493,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * <p>
      * Override when needed.
      */
-    public void load() {
+    protected void handleLoad() {
 
     }
 
@@ -502,7 +502,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * <p>
      * Override when needed.
      */
-    public void onReload() {
+    protected void handleReload() {
 
     }
 
@@ -511,7 +511,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * <p>
      * Override when needed.
      */
-    public void postLoad() {
+    protected void handleAfterLoad() {
 
     }
 
