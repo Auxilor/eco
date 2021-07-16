@@ -68,11 +68,6 @@ public abstract class EcoPlugin extends JavaPlugin {
     private final Set<String> loadedIntegrations = new HashSet<>();
 
     /**
-     * Set of classes to be processed on config update.
-     */
-    private final List<Class<?>> updatableClasses = new ArrayList<>();
-
-    /**
      * The internal plugin scheduler.
      */
     @Getter
@@ -362,15 +357,11 @@ public abstract class EcoPlugin extends JavaPlugin {
             }
         });
 
-        updatableClasses.addAll(this.loadUpdatableClasses());
-
         this.loadListeners().forEach(listener -> this.getEventManager().registerListener(listener));
 
         this.loadPluginCommands().forEach(PluginCommand::register);
 
         this.getScheduler().runLater(this::afterLoad, 1);
-
-        this.updatableClasses.forEach(clazz -> this.getConfigHandler().registerUpdatableClass(clazz));
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();
