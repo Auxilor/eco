@@ -2,9 +2,6 @@ package com.willfp.eco.core.extensions;
 
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Called when the extension is made incorrectly.
- */
 public class MalformedExtensionException extends RuntimeException {
 
     /**
