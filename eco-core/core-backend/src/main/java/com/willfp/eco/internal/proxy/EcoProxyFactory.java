@@ -23,8 +23,6 @@ public class EcoProxyFactory extends PluginDependent<EcoPlugin> implements Proxy
      * All supported NMS versions.
      */
     private static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "v1_16_R1",
-            "v1_16_R2",
             "v1_16_R3",
             "v1_17_R1"
     );
