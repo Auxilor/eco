@@ -10,13 +10,6 @@ public interface ConfigHandler {
     void callUpdate();
 
     /**
-     * Register an updatable class.
-     *
-     * @param updatableClass The class with an update method.
-     */
-    void registerUpdatableClass(@NotNull Class<?> updatableClass);
-
-    /**
      * Save all configs.
      */
     void saveAllConfigs();

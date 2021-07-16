@@ -26,3 +26,5 @@ softdepend:
   - PlaceholderAPI
   - mcMMO
   - CombatLogX
+libraries:
+  - org.reflections:reflections:0.9.12
