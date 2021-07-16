@@ -26,12 +26,10 @@ import com.willfp.eco.internal.factory.EcoMetadataValueFactory;
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory;
 import com.willfp.eco.internal.factory.EcoRunnableFactory;
 import com.willfp.eco.internal.gui.EcoGUIFactory;
-import com.willfp.eco.internal.i18n.LocalizationUtils;
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.logging.EcoLogger;
 import com.willfp.eco.internal.proxy.EcoProxyFactory;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
-import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -122,11 +120,6 @@ public final class EcoHandler extends EcoSpigotPlugin implements Handler {
     @Override
     public ProxyFactory createProxyFactory(@NotNull final EcoPlugin plugin) {
         return new EcoProxyFactory(plugin);
-    }
-
-    @Override
-    public String getLocalizedString(@NotNull final NamespacedKey key) {
-        return LocalizationUtils.getStringFromKey(key).toString();
     }
 
     @Override

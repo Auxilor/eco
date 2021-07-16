@@ -1,16 +1,14 @@
 package com.willfp.eco.util;
 
 import com.google.common.collect.ImmutableList;
-import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -252,15 +250,5 @@ public class StringUtils {
             return string.substring(prefix.length());
         }
         return string;
-    }
-
-    /**
-     * Get a localized string.
-     *
-     * @param key The key.
-     * @return The string.
-     */
-    public String getLocalizedString(@NotNull final NamespacedKey key) {
-        return Eco.getHandler().getLocalizedString(key);
     }
 }
