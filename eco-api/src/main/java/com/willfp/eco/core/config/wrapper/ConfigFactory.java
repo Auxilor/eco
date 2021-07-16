@@ -20,11 +20,11 @@ public interface ConfigFactory {
      * @param updateBlacklist  Substring of keys to not add/remove keys for.
      */
     Config createUpdatableYamlConfig(@NotNull String configName,
-                                                 @NotNull EcoPlugin plugin,
-                                                 @NotNull String subDirectoryPath,
-                                                 @NotNull Class<?> source,
-                                                 boolean removeUnused,
-                                                 @NotNull String... updateBlacklist);
+                                     @NotNull EcoPlugin plugin,
+                                     @NotNull String subDirectoryPath,
+                                     @NotNull Class<?> source,
+                                     boolean removeUnused,
+                                     @NotNull String... updateBlacklist);
 
     /**
      * JSON loadable config.
@@ -35,9 +35,9 @@ public interface ConfigFactory {
      * @param source           The class that owns the resource.
      */
     JSONConfig createLoadableJSONConfig(@NotNull String configName,
-                                                @NotNull EcoPlugin plugin,
-                                                @NotNull String subDirectoryPath,
-                                                @NotNull Class<?> source);
+                                        @NotNull EcoPlugin plugin,
+                                        @NotNull String subDirectoryPath,
+                                        @NotNull Class<?> source);
 
     /**
      * Yaml loadable config.
@@ -48,9 +48,9 @@ public interface ConfigFactory {
      * @param source           The class that owns the resource.
      */
     Config createLoadableYamlConfig(@NotNull String configName,
-                                                @NotNull EcoPlugin plugin,
-                                                @NotNull String subDirectoryPath,
-                                                @NotNull Class<?> source);
+                                    @NotNull EcoPlugin plugin,
+                                    @NotNull String subDirectoryPath,
+                                    @NotNull Class<?> source);
 
     /**
      * Yaml config.
