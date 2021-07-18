@@ -278,7 +278,15 @@ public class EcoJSONConfigWrapper implements JSONConfig {
     @Override
     @NotNull
     public String getString(@NotNull final String path) {
-        return StringUtils.translate(Objects.requireNonNullElse(getOfKnownType(path, String.class), ""));
+        return getString(path, true);
+    }
+
+    @Override
+    @NotNull
+    public String getString(@NotNull final String path,
+                            final boolean format) {
+        String string = Objects.requireNonNullElse(getOfKnownType(path, String.class), "");
+        return format ? StringUtils.translate(string) : string;
     }
 
     @Override
@@ -286,6 +294,17 @@ public class EcoJSONConfigWrapper implements JSONConfig {
     public String getStringOrNull(@NotNull final String path) {
         if (has(path)) {
             return getString(path);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Nullable
+    public String getStringOrNull(@NotNull final String path,
+                                  final boolean format) {
+        if (has(path)) {
+            return getString(path, format);
         } else {
             return null;
         }
@@ -311,6 +330,16 @@ public class EcoJSONConfigWrapper implements JSONConfig {
     public List<String> getStringsOrNull(@NotNull final String path) {
         if (has(path)) {
             return getStrings(path);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public @Nullable List<String> getStringsOrNull(@NotNull final String path,
+                                                   final boolean format) {
+        if (has(path)) {
+            return getStrings(path, format);
         } else {
             return null;
         }

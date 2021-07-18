@@ -118,8 +118,20 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
+    public @NotNull String getString(@NotNull final String path,
+                                     final boolean format) {
+        return handle.getString(path, format);
+    }
+
+    @Override
     public @Nullable String getStringOrNull(@NotNull final String path) {
         return handle.getStringOrNull(path);
+    }
+
+    @Override
+    public @Nullable String getStringOrNull(@NotNull final String path,
+                                            final boolean format) {
+        return handle.getStringOrNull(path, format);
     }
 
     @Override
@@ -136,6 +148,12 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Override
     public @Nullable List<String> getStringsOrNull(@NotNull final String path) {
         return handle.getStringsOrNull(path);
+    }
+
+    @Override
+    public @Nullable List<String> getStringsOrNull(@NotNull final String path,
+                                                   final boolean format) {
+        return handle.getStringsOrNull(path, format);
     }
 
     @Override
