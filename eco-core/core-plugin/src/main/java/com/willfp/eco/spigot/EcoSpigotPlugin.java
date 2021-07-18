@@ -6,6 +6,7 @@ import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
+import com.willfp.eco.core.integrations.customitems.CustomItemsManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
 import com.willfp.eco.proxy.BlockBreakProxy;
 import com.willfp.eco.proxy.SkullProxy;
@@ -37,6 +38,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
+import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener;
 import com.willfp.eco.util.BlockUtils;
@@ -121,6 +123,9 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
                 new IntegrationLoader("NoCheatPlus", () -> AnticheatManager.register(this, new AnticheatNCP())),
                 new IntegrationLoader("Spartan", () -> AnticheatManager.register(this, new AnticheatSpartan())),
                 new IntegrationLoader("Vulcan", () -> AnticheatManager.register(this, new AnticheatVulcan())),
+
+                // Custom Items
+                new IntegrationLoader("Oraxen", () -> CustomItemsManager.register(new CustomItemsOraxen())),
 
                 // Misc
                 new IntegrationLoader("mcMMO", () -> McmmoManager.register(new McmmoIntegrationImpl()))
