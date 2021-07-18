@@ -208,10 +208,32 @@ public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Con
     }
 
     @Override
+    public @NotNull String getString(@NotNull final String path,
+                                     final boolean format) {
+        if (cache.containsKey(path)) {
+            return (String) cache.get(path);
+        } else {
+            String string = Objects.requireNonNull(handle.getString(path, ""));
+            cache.put(path, format ? StringUtils.translate(string) : string);
+            return getString(path);
+        }
+    }
+
+    @Override
     @Nullable
     public String getStringOrNull(@NotNull final String path) {
         if (has(path)) {
             return getString(path);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public @Nullable String getStringOrNull(@NotNull final String path,
+                                            final boolean format) {
+        if (has(path)) {
+            return getString(path, format);
         } else {
             return null;
         }
@@ -240,6 +262,16 @@ public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Con
     public List<String> getStringsOrNull(@NotNull final String path) {
         if (has(path)) {
             return getStrings(path);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public @Nullable List<String> getStringsOrNull(@NotNull final String path,
+                                                   final boolean format) {
+        if (has(path)) {
+            return getStrings(path, format);
         } else {
             return null;
         }

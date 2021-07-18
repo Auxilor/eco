@@ -165,11 +165,33 @@ public interface Config extends Cloneable {
     /**
      * Get a string from config.
      *
+     * @param path   The key to fetch the value from.
+     * @param format If the string should be formatted.
+     * @return The found value, or an empty string if not found.
+     */
+    @NotNull
+    String getString(@NotNull String path,
+                     boolean format);
+
+    /**
+     * Get a string from config.
+     *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
      */
     @Nullable
     String getStringOrNull(@NotNull String path);
+
+    /**
+     * Get a string from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param format If the string should be formatted.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    String getStringOrNull(@NotNull String path,
+                           boolean format);
 
     /**
      * Get a list of strings from config.
@@ -201,6 +223,17 @@ public interface Config extends Cloneable {
      */
     @Nullable
     List<String> getStringsOrNull(@NotNull String path);
+
+    /**
+     * Get a list of strings from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param format If the strings should be formatted.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    List<String> getStringsOrNull(@NotNull String path,
+                                  boolean format);
 
     /**
      * Get a decimal from config.
