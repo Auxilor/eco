@@ -20,6 +20,11 @@ dependencies {
     compileOnly 'com.gmail.nossr50.mcMMO:mcMMO:2.1.157'
     compileOnly 'me.clip:placeholderapi:2.10.9'
 
+    // TODO: Find the actual repo and way of installing things. Environment variables seem like a pain.
+    compileOnly 'io.th0rgal:oraxen:1.83.1'
+
+    compileOnly 'com.github.LoneDev6:API-ItemsAdder:2.3.8'
+
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
     compileOnly 'com.SirBlobman.combatlogx.expansions:NewbieHelper:10.0.0.0-SNAPSHOT'
