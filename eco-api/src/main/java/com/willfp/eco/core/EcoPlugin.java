@@ -150,6 +150,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * The proxy factory.
      */
+    @Getter
     private final ProxyFactory proxyFactory;
 
     /**
