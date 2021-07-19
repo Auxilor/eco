@@ -51,7 +51,7 @@ public class EcoMenuBuilder implements MenuBuilder {
 
     @Override
     public MenuBuilder setTitle(@NotNull final String title) {
-        this.title = StringUtils.translate(title);
+        this.title = StringUtils.format(title);
         return this;
     }
 

@@ -41,41 +41,41 @@ public class StringUtils {
             .build();
 
     /**
-     * Translate a list of strings - converts Placeholders and Color codes.
+     * Format a list of strings - converts Placeholders and Color codes.
      *
-     * @param list   The messages to translate.
+     * @param list   The messages to format.
      * @param player The player to translate placeholders with respect to.
-     * @return The message, translated.
+     * @return The message, format.
      */
-    public List<String> translateList(@NotNull final List<String> list,
-                                      @Nullable final Player player) {
+    public List<String> formatList(@NotNull final List<String> list,
+                                   @Nullable final Player player) {
         List<String> translated = new ArrayList<>();
         for (String string : list) {
-            translated.add(translate(string, player));
+            translated.add(format(string, player));
         }
 
         return translated;
     }
 
     /**
-     * Translate a list of strings - converts Placeholders and Color codes.
+     * Format a list of strings - converts Placeholders and Color codes.
      *
-     * @param list The messages to translate.
-     * @return The message, translated.
+     * @param list The messages to format.
+     * @return The message, formatted.
      */
-    public List<String> translateList(@NotNull final List<String> list) {
-        return translateList(list, null);
+    public List<String> formatList(@NotNull final List<String> list) {
+        return formatList(list, null);
     }
 
     /**
-     * Translate a string - converts Placeholders and Color codes.
+     * Format a string - converts Placeholders and Color codes.
      *
-     * @param message The message to translate.
+     * @param message The message to format.
      * @param player  The player to translate placeholders with respect to.
-     * @return The message, translated.
+     * @return The message, formatted.
      */
-    public String translate(@NotNull final String message,
-                            @Nullable final Player player) {
+    public String format(@NotNull final String message,
+                         @Nullable final Player player) {
         String processedMessage = message;
         processedMessage = translateGradients(processedMessage);
         processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
@@ -85,14 +85,14 @@ public class StringUtils {
     }
 
     /**
-     * Translate a string without respect to a player.
+     * Format a string without respect to a player.
      *
      * @param message The message to translate.
-     * @return The message, translated.
-     * @see StringUtils#translate(String, Player)
+     * @return The message, formatted.
+     * @see StringUtils#format(String, Player)
      */
-    public String translate(@NotNull final String message) {
-        return translate(message, null);
+    public String format(@NotNull final String message) {
+        return format(message, null);
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {

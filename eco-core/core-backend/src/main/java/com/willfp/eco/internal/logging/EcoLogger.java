@@ -17,16 +17,16 @@ public class EcoLogger extends Logger {
 
     @Override
     public void info(@NotNull final String msg) {
-        super.info(StringUtils.translate(msg));
+        super.info(StringUtils.format(msg));
     }
 
     @Override
     public void warning(@NotNull final String msg) {
-        super.warning(StringUtils.translate(msg));
+        super.warning(StringUtils.format(msg));
     }
 
     @Override
     public void severe(@NotNull final String msg) {
-        super.severe(StringUtils.translate(msg));
+        super.severe(StringUtils.format(msg));
     }
 }
