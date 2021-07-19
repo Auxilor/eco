@@ -90,6 +90,11 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     }
 
     @Override
+    protected void handleAfterLoad() {
+        CustomItemsManager.registerAllItems();
+    }
+
+    @Override
     protected List<IntegrationLoader> loadIntegrationLoaders() {
         return Arrays.asList(
                 // AntiGrief
