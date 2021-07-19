@@ -79,7 +79,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
 
     @Override
     public U setDisplayName(@NotNull final String name) {
-        meta.setDisplayName(StringUtils.translate(name));
+        meta.setDisplayName(StringUtils.format(name));
         return (U) this;
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
     public U addLoreLine(@NotNull final String line) {
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         assert lore != null;
-        lore.add(StringUtils.translate(line));
+        lore.add(StringUtils.format(line));
         meta.setLore(lore);
 
         return (U) this;
@@ -112,7 +112,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
         assert lore != null;
         for (String line : lines) {
-            lore.add(StringUtils.translate(line));
+            lore.add(StringUtils.format(line));
         }
         meta.setLore(lore);
 

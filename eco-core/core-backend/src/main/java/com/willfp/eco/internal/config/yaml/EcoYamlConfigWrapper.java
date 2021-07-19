@@ -202,7 +202,7 @@ public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Con
         if (cache.containsKey(path)) {
             return (String) cache.get(path);
         } else {
-            cache.put(path, StringUtils.translate(Objects.requireNonNull(handle.getString(path, ""))));
+            cache.put(path, StringUtils.format(Objects.requireNonNull(handle.getString(path, ""))));
             return getString(path);
         }
     }
@@ -214,7 +214,7 @@ public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Con
             return (String) cache.get(path);
         } else {
             String string = Objects.requireNonNull(handle.getString(path, ""));
-            cache.put(path, format ? StringUtils.translate(string) : string);
+            cache.put(path, format ? StringUtils.format(string) : string);
             return getString(path);
         }
     }
@@ -250,7 +250,7 @@ public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Con
     public List<String> getStrings(@NotNull final String path,
                                    final boolean format) {
         if (cache.containsKey(path)) {
-            return format ? StringUtils.translateList((List<String>) cache.get(path)) : (List<String>) cache.get(path);
+            return format ? StringUtils.formatList((List<String>) cache.get(path)) : (List<String>) cache.get(path);
         } else {
             cache.put(path, has(path) ? new ArrayList<>(handle.getStringList(path)) : new ArrayList<>());
             return getStrings(path);

@@ -4,10 +4,8 @@ import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.FillerSlot;
 import com.willfp.eco.core.gui.slot.Slot;
 import com.willfp.eco.internal.gui.slot.EcoFillerSlot;
-import com.willfp.eco.internal.gui.slot.EcoSlot;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -90,7 +88,7 @@ public class EcoMenu implements Menu {
                 if (meta != null) {
                     List<String> lore = meta.getLore();
                     if (lore != null) {
-                        lore.replaceAll(s -> StringUtils.translate(s, player));
+                        lore.replaceAll(s -> StringUtils.format(s, player));
                         meta.setLore(lore);
                     }
                     slotItem.setItemMeta(meta);

@@ -286,7 +286,7 @@ public class EcoJSONConfigWrapper implements JSONConfig {
     public String getString(@NotNull final String path,
                             final boolean format) {
         String string = Objects.requireNonNullElse(getOfKnownType(path, String.class), "");
-        return format ? StringUtils.translate(string) : string;
+        return format ? StringUtils.format(string) : string;
     }
 
     @Override
@@ -322,7 +322,7 @@ public class EcoJSONConfigWrapper implements JSONConfig {
                                    final boolean format) {
         List<String> strings = (List<String>) Objects.requireNonNullElse(getOfKnownType(path, Object.class), new ArrayList<>());
 
-        return format ? StringUtils.translateList(strings) : strings;
+        return format ? StringUtils.formatList(strings) : strings;
     }
 
     @Override
