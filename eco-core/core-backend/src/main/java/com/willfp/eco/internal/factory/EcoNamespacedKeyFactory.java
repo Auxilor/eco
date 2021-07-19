@@ -15,6 +15,7 @@ public class EcoNamespacedKeyFactory extends PluginDependent<EcoPlugin> implemen
     public EcoNamespacedKeyFactory(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
+
     @Override
     public NamespacedKey create(@NotNull final String key) {
         return new NamespacedKey(this.getPlugin(), key);
