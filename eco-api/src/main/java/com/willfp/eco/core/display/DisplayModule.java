@@ -1,7 +1,7 @@
 package com.willfp.eco.core.display;
 
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

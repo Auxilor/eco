@@ -1,7 +1,7 @@
 package com.willfp.eco.core.config.base;
 
-import com.willfp.eco.core.config.yaml.YamlBaseConfig;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.config.yaml.YamlBaseConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,10 +1,10 @@
 package com.willfp.eco.internal.factory;
 
+import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.scheduling.RunnableTask;
 import com.willfp.eco.internal.scheduling.EcoRunnableTask;
-import com.willfp.eco.core.PluginDependent;
-import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;

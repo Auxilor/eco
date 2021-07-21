@@ -1,8 +1,8 @@
 package com.willfp.eco.spigot.integrations.antigrief;
 
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper;
 import me.angeschossen.lands.api.integration.LandsIntegration;
 import me.angeschossen.lands.api.land.Area;
 import me.angeschossen.lands.api.role.enums.RoleSetting;

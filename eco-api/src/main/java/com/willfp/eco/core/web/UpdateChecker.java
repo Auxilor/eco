@@ -1,7 +1,7 @@
 package com.willfp.eco.core.web;
 
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginDependent;
 import org.bukkit.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,9 +1,9 @@
 package com.willfp.eco.spigot.drops;
 
 
-import com.willfp.eco.internal.drops.impl.EcoFastCollatedDropQueue;
-import com.willfp.eco.internal.drops.impl.EcoDropQueue;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.internal.drops.impl.EcoDropQueue;
+import com.willfp.eco.internal.drops.impl.EcoFastCollatedDropQueue;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;

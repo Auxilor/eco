@@ -2,8 +2,8 @@ package com.willfp.eco.internal.drops;
 
 import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.core.drops.DropQueueFactory;
-import com.willfp.eco.internal.drops.impl.EcoFastCollatedDropQueue;
 import com.willfp.eco.internal.drops.impl.EcoDropQueue;
+import com.willfp.eco.internal.drops.impl.EcoFastCollatedDropQueue;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
