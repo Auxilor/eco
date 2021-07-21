@@ -13,5 +13,5 @@ public interface DropQueueFactory {
      * @param player The player.
      * @return The Queue.
      */
-    DropQueue create(@NotNull Player player);
+    InternalDropQueue create(@NotNull Player player);
 }

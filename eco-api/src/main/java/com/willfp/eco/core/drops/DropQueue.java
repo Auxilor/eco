@@ -21,7 +21,7 @@ public class DropQueue {
     /**
      * The internally used {@link DropQueue}.
      */
-    private final DropQueue handle;
+    private final InternalDropQueue handle;
 
     /**
      * @param player The player.

@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.drops.impl;
 
-import com.willfp.eco.core.drops.DropQueue;
+import com.willfp.eco.core.drops.InternalDropQueue;
 import com.willfp.eco.util.TelekinesisUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class EcoDropQueue extends DropQueue {
+public class EcoDropQueue implements InternalDropQueue {
     @Getter(AccessLevel.PROTECTED)
     private final List<ItemStack> items;
     
@@ -38,7 +38,6 @@ public class EcoDropQueue extends DropQueue {
     private boolean hasTelekinesis = false;
 
     public EcoDropQueue(@NotNull final Player player) {
-        super(player);
         this.items = new ArrayList<>();
         this.xp = 0;
         this.player = player;
@@ -46,31 +45,31 @@ public class EcoDropQueue extends DropQueue {
     }
 
     @Override
-    public DropQueue addItem(@NotNull final ItemStack item) {
+    public InternalDropQueue addItem(@NotNull final ItemStack item) {
         this.items.add(item);
         return this;
     }
 
     @Override
-    public DropQueue addItems(@NotNull final Collection<ItemStack> itemStacks) {
+    public InternalDropQueue addItems(@NotNull final Collection<ItemStack> itemStacks) {
         this.items.addAll(itemStacks);
         return this;
     }
 
     @Override
-    public DropQueue addXP(final int amount) {
+    public InternalDropQueue addXP(final int amount) {
         this.xp += amount;
         return this;
     }
 
     @Override
-    public DropQueue setLocation(@NotNull final Location location) {
+    public InternalDropQueue setLocation(@NotNull final Location location) {
         this.loc = location;
         return this;
     }
 
     @Override
-    public DropQueue forceTelekinesis() {
+    public InternalDropQueue forceTelekinesis() {
         this.hasTelekinesis = true;
         return this;
     }
