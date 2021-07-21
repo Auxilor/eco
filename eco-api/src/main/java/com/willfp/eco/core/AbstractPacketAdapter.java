@@ -64,28 +64,6 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      *
      * @param packet The packet.
      * @param player The player.
-     */
-    public void onReceive(@NotNull final PacketContainer packet,
-                          @NotNull final Player player) {
-        // Empty rather than abstract as implementations don't need both
-    }
-
-    /**
-     * THe code that should be executed once the packet has been sent.
-     *
-     * @param packet The packet.
-     * @param player The player.
-     */
-    public void onSend(@NotNull final PacketContainer packet,
-                       @NotNull final Player player) {
-        // Empty rather than abstract as implementations don't need both
-    }
-
-    /**
-     * The code that should be executed once the packet has been received.
-     *
-     * @param packet The packet.
-     * @param player The player.
      * @param event  The event.
      */
     public void onReceive(@NotNull final PacketContainer packet,
@@ -122,7 +100,6 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
             return;
         }
 
-        onReceive(event.getPacket(), event.getPlayer());
         onReceive(event.getPacket(), event.getPlayer(), event);
     }
 
@@ -141,7 +118,6 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
             return;
         }
 
-        onSend(event.getPacket(), event.getPlayer());
         onSend(event.getPacket(), event.getPlayer(), event);
     }
 

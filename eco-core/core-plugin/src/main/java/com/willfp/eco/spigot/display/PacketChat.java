@@ -3,6 +3,7 @@ package com.willfp.eco.spigot.display;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
@@ -17,7 +18,8 @@ public class PacketChat extends AbstractPacketAdapter {
 
     @Override
     public void onSend(@NotNull final PacketContainer packet,
-                       @NotNull final Player player) {
+                       @NotNull final Player player,
+                       @NotNull final PacketEvent event) {
         for (int i = 0; i < packet.getChatComponents().size(); i++) {
             WrappedChatComponent component = packet.getChatComponents().read(i);
             if (component == null) {
