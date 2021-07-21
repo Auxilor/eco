@@ -19,7 +19,8 @@ eco is a standalone plugin, so you will need to install it on any servers that h
 and specify it as a dependency in your plugin.yml:
 
 ```yaml
-depend: [RedLib]
+depend:
+  - eco
 ```
 
 eco is available from any of these places:
