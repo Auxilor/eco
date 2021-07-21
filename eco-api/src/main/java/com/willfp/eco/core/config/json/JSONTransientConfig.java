@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Raw JSON config with a map of values at its core.
  */
-public class JSONConfig extends JSONConfigWrapper {
+public class JSONTransientConfig extends JSONConfigWrapper {
     /**
      * Config implementation for passing maps.
      * <p>
@@ -17,7 +17,7 @@ public class JSONConfig extends JSONConfigWrapper {
      *
      * @param values The map of values.
      */
-    public JSONConfig(@NotNull final Map<String, Object> values) {
+    public JSONTransientConfig(@NotNull final Map<String, Object> values) {
         super(Eco.getHandler().getConfigFactory().createJSONConfig(values));
     }
 }

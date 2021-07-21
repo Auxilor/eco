@@ -12,18 +12,18 @@ import java.io.StringReader;
  * <p>
  * Does not automatically update.
  */
-public class YamlConfig extends YamlConfigWrapper {
+public class YamlTransientConfig extends YamlConfigWrapper {
     /**
      * @param config     The YamlConfiguration handle.
      */
-    public YamlConfig(@NotNull final YamlConfiguration config) {
+    public YamlTransientConfig(@NotNull final YamlConfiguration config) {
         super(Eco.getHandler().getConfigFactory().createYamlConfig(config));
     }
 
     /**
      * @param contents     The contents of the config.
      */
-    public YamlConfig(@NotNull final String contents) {
+    public YamlTransientConfig(@NotNull final String contents) {
         super(Eco.getHandler().getConfigFactory().createYamlConfig(YamlConfiguration.loadConfiguration(new StringReader(contents))));
     }
 }
