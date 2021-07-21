@@ -141,4 +141,4 @@ Here's a list of some (not all) of the features of eco:
 
 ## License
 
-*Click here to read [the entire license](https://github.com/Auxilor/EcoEnchants/blob/master/LICENSE.md).*
+*Click here to read [the entire license](https://github.com/Auxilor/eco/blob/master/LICENSE.md).*
