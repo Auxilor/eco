@@ -1,24 +1,20 @@
 package com.willfp.eco.internal.scheduling;
 
-import com.willfp.eco.internal.factory.EcoRunnableFactory;
-import com.willfp.eco.core.scheduling.RunnableTask;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.scheduling.RunnableTask;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class EcoRunnableTask extends BukkitRunnable implements RunnableTask {
-    
     private final EcoPlugin plugin;
 
-    
     @ApiStatus.Internal
     public EcoRunnableTask(@NotNull final EcoPlugin plugin) {
         this.plugin = plugin;
     }
 
-    
     protected final EcoPlugin getPlugin() {
         return this.plugin;
     }
