@@ -128,7 +128,6 @@ Here's a list of some (not all) of the features of eco:
         - Placeholder Support
     - Get a scoreboard team from any color
     - Telekinesis (Drops straight to inventory) system
-    - Get Trident ItemStack (1.16.5)
     - More vector options
 - Update checker
 - bStats integration
