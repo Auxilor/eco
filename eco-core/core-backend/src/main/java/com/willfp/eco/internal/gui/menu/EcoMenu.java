@@ -18,26 +18,14 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class EcoMenu implements Menu {
-    /**
-     * The amount of rows.
-     */
     @Getter
     private final int rows;
 
-    /**
-     * 2D list of slots.
-     */
     private final List<List<Slot>> slots;
 
-    /**
-     * Menu title.
-     */
     @Getter
     private final String title;
 
-    /**
-     * Handler on close.
-     */
     private final Consumer<InventoryCloseEvent> onClose;
 
     public EcoMenu(final int rows,

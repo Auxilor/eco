@@ -15,44 +15,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class EcoLoadableYamlConfig extends EcoYamlConfigWrapper<YamlConfiguration> implements WrappedYamlConfiguration, LoadableConfig {
-    /**
-     * The physical config file, as stored on disk.
-     */
     @Getter
     private final File configFile;
-
-    /**
-     * Plugin handle.
-     */
+    
     @Getter(AccessLevel.PROTECTED)
     private final EcoPlugin plugin;
 
-    /**
-     * The full name of the config file (eg config.yml).
-     */
     @Getter
     private final String name;
-
-    /**
-     * The subdirectory path.
-     */
+    
     @Getter(AccessLevel.PROTECTED)
     private final String subDirectoryPath;
 
-    /**
-     * The provider of the config.
-     */
     @Getter(AccessLevel.PROTECTED)
     private final Class<?> source;
 
-    /**
-     * Abstract config.
-     *
-     * @param configName       The name of the config
-     * @param plugin           The plugin.
-     * @param subDirectoryPath The subdirectory path.
-     * @param source           The class that owns the resource.
-     */
     public EcoLoadableYamlConfig(@NotNull final String configName,
                                  @NotNull final EcoPlugin plugin,
                                  @NotNull final String subDirectoryPath,

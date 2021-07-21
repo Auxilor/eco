@@ -15,26 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EcoUpdatableYamlConfig extends EcoLoadableYamlConfig {
-    /**
-     * Whether keys not in the base config should be removed on update.
-     */
     private final boolean removeUnused;
 
-    /**
-     * List of blacklisted update keys.
-     */
     private final List<String> updateBlacklist;
 
-    /**
-     * Updatable config.
-     *
-     * @param configName       The name of the config
-     * @param plugin           The plugin.
-     * @param subDirectoryPath The subdirectory path.
-     * @param source           The class that owns the resource.
-     * @param removeUnused     Whether keys not present in the default config should be removed on update.
-     * @param updateBlacklist  Substring of keys to not add/remove keys for.
-     */
     public EcoUpdatableYamlConfig(@NotNull final String configName,
                                   @NotNull final EcoPlugin plugin,
                                   @NotNull final String subDirectoryPath,
@@ -49,11 +33,6 @@ public class EcoUpdatableYamlConfig extends EcoLoadableYamlConfig {
         update();
     }
 
-    /**
-     * Update the config.
-     * <p>
-     * Writes missing values, however removes comments due to how configs are stored internally in bukkit.
-     */
     public void update() {
         super.clearCache();
         try {

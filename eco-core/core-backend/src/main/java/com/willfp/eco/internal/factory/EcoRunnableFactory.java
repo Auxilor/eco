@@ -10,11 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 public class EcoRunnableFactory extends PluginDependent<EcoPlugin> implements RunnableFactory {
-    /**
-     * Factory class to produce {@link RunnableTask}s associated with an {@link EcoPlugin}.
-     *
-     * @param plugin The plugin that this factory creates runnables for.
-     */
     public EcoRunnableFactory(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }

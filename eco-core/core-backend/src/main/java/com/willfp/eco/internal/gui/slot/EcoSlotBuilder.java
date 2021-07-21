@@ -11,34 +11,16 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class EcoSlotBuilder implements SlotBuilder {
-    /**
-     * Provider.
-     */
     private final Function<Player, ItemStack> provider;
 
-    /**
-     * Left click handler.
-     */
     private BiConsumer<InventoryClickEvent, Slot> onLeftClick = null;
 
-    /**
-     * Right click handler.
-     */
     private BiConsumer<InventoryClickEvent, Slot> onRightClick = null;
 
-    /**
-     * Shift-Left-Click handler.
-     */
     private BiConsumer<InventoryClickEvent, Slot> onShiftLeftClick = null;
 
-    /**
-     * Shift-Right-Click handler.
-     */
     private BiConsumer<InventoryClickEvent, Slot> onShiftRightClick = null;
 
-    /**
-     * Middle click handler.
-     */
     private BiConsumer<InventoryClickEvent, Slot> onMiddleClick = null;
 
     public EcoSlotBuilder(@NotNull final Function<Player, ItemStack> provider) {

@@ -14,28 +14,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EcoFastCollatedDropQueue extends EcoDropQueue {
-    /**
-     * The {@link CollatedDrops} linked to every player.
-     * <p>
-     * Cleared and updated every tick.
-     */
     public static final Map<Player, CollatedDrops> COLLATED_MAP = new ConcurrentHashMap<>();
 
-    /**
-     * Backend implementation of {@link com.willfp.eco.core.drops.DropQueue}
-     * {@link this#push()} adds to a map that creates a new {@link EcoDropQueue} at the end of every tick
-     * <p>
-     * The drops are not instantly pushed when called, instead the map is iterated over at the end of every tick. This massively improves performance.
-     *
-     * @param player The player to link the queue with.
-     */
     public EcoFastCollatedDropQueue(@NotNull final Player player) {
         super(player);
     }
 
-    /**
-     * Queues the drops to be managed by the runnable.
-     */
     @Override
     public void push() {
         CollatedDrops fetched = COLLATED_MAP.get(getPlayer());
@@ -43,28 +27,16 @@ public class EcoFastCollatedDropQueue extends EcoDropQueue {
         COLLATED_MAP.put(this.getPlayer(), collatedDrops);
     }
 
-    /**
-     * The items, location, and xp linked to a player's drops.
-     */
     @ToString
     public static final class CollatedDrops {
-        /**
-         * A collection of all ItemStacks to be dropped at the end of the tick.
-         */
         @Getter
         private final List<ItemStack> drops;
 
-        /**
-         * The location to drop the items at.
-         */
         @Getter
         @Setter
         @Accessors(chain = true)
         private Location location;
 
-        /**
-         * The xp to give to the player.
-         */
         @Getter
         private int xp;
 
@@ -76,23 +48,11 @@ public class EcoFastCollatedDropQueue extends EcoDropQueue {
             this.xp = xp;
         }
 
-        /**
-         * Add {@link ItemStack}s to the queue.
-         *
-         * @param toAdd The items to add.
-         * @return The instance of the {@link CollatedDrops}.
-         */
         public CollatedDrops addDrops(@NotNull final List<ItemStack> toAdd) {
             drops.addAll(toAdd);
             return this;
         }
 
-        /**
-         * Add xp to the queue.
-         *
-         * @param xp The amount of xp to add.
-         * @return The instance of the {@link CollatedDrops}.
-         */
         public CollatedDrops addXp(final int xp) {
             this.xp += xp;
             return this;
