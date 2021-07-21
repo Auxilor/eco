@@ -54,6 +54,10 @@ public class GUIListener extends PluginDependent<EcoPlugin> implements Listener 
 
         Menu menu = MenuHandler.getMenu(event.getInventory());
 
+        if (menu == null) {
+            return;
+        }
+
         Validate.isTrue(menu instanceof EcoMenu, "Menu not instance of EcoMenu!");
 
         EcoMenu ecoMenu = (EcoMenu) menu;
