@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * PluginCommands are the class to be used instead of CommandExecutor.
  * <p>
- * The command will not be registered until {@link this#register()} is called.
+ * The command will not be registered until register() is called.
  * <p>
  * The name cannot be the same as an existing command as this will conflict.
  */

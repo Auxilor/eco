@@ -106,6 +106,9 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         return new Builder(plugin, key);
     }
 
+    /**
+     * Builder for recipes.
+     */
     public static final class Builder {
         /**
          * The recipe parts.
