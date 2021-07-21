@@ -11,17 +11,8 @@ import java.util.Objects;
 import java.util.Set;
 
 public class NaturalExpGainListeners implements Listener {
-    /**
-     * The events currently being built.
-     */
     private final Set<NaturalExpGainBuilder> events = new HashSet<>();
-
-    /**
-     * Called when the player's xp level changes.
-     * Used to store properties.
-     *
-     * @param event The event to listen for.
-     */
+    
     @EventHandler
     public void playerChange(@NotNull final PlayerExpChangeEvent event) {
         NaturalExpGainBuilder builder = new NaturalExpGainBuilder(NaturalExpGainBuilder.BuildReason.PLAYER);
@@ -49,12 +40,6 @@ public class NaturalExpGainListeners implements Listener {
         events.remove(builder);
     }
 
-    /**
-     * Called when an xp bottle breaks.
-     * Used to remove some built events to ensure only natural events are pushed.
-     *
-     * @param event The even to listen for.
-     */
     @EventHandler
     public void onExpBottle(@NotNull final ExpBottleEvent event) {
         NaturalExpGainBuilder builtEvent = new NaturalExpGainBuilder(NaturalExpGainBuilder.BuildReason.BOTTLE);

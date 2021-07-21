@@ -12,17 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class CollatedRunnable {
-    /**
-     * The {@link BukkitTask} that the runnable represents.
-     */
     @Getter
     private final BukkitTask runnableTask;
-
-    /**
-     * Create and run a new runnable to process collated drops.
-     *
-     * @param plugin The {@link EcoPlugin} that manages the processing.
-     */
+    
     public CollatedRunnable(@NotNull final EcoPlugin plugin) {
         runnableTask = plugin.getScheduler().runTimer(() -> {
             for (Map.Entry<Player, EcoFastCollatedDropQueue.CollatedDrops> entry : EcoFastCollatedDropQueue.COLLATED_MAP.entrySet()) {

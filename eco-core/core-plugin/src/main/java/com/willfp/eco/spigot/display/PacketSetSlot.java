@@ -9,11 +9,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketSetSlot extends AbstractPacketAdapter {
-    /**
-     * Instantiate a new listener for {@link PacketType.Play.Server#SET_SLOT}.
-     *
-     * @param plugin The plugin to listen through.
-     */
     public PacketSetSlot(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.SET_SLOT, false);
     }

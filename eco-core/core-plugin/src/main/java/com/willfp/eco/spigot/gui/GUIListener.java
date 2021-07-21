@@ -16,11 +16,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class GUIListener extends PluginDependent<EcoPlugin> implements Listener {
-    /**
-     * Pass an {@link EcoPlugin} in order to interface with it.
-     *
-     * @param plugin The plugin to manage.
-     */
     public GUIListener(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }

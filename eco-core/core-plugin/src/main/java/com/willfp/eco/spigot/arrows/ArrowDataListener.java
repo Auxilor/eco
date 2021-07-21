@@ -14,21 +14,11 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class ArrowDataListener extends PluginDependent<EcoPlugin> implements Listener {
-    /**
-     * Listener to add metadata to arrows about the enchantments on the bow that shot them.
-     *
-     * @param plugin The {@link EcoPlugin} that registered the listener.
-     */
     @ApiStatus.Internal
     public ArrowDataListener(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
-
-    /**
-     * Listener for arrows being shot by entities.
-     *
-     * @param event The {@link ProjectileLaunchEvent} passed by spigot.
-     */
+    
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLaunch(final ProjectileLaunchEvent event) {
         if (!(event.getEntity() instanceof Arrow arrow)) {

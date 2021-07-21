@@ -13,37 +13,22 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 class EntityDeathByEntityBuilder {
-    /**
-     * The killed {@link LivingEntity}.
-     */
     @Getter
     @Setter
     private LivingEntity victim = null;
-
-    /**
-     * The killer.
-     */
+    
     @Getter
     @Setter
     private Entity damager;
-
-    /**
-     * The associated {@link EntityDeathEvent}.
-     */
+    
     @Getter
     @Setter
     private EntityDeathEvent deathEvent;
 
-    /**
-     * The drops to create.
-     */
     @Getter
     @Setter
     private List<ItemStack> drops;
 
-    /**
-     * The experience to drop.
-     */
     @Getter
     @Setter
     private int xp = 0;

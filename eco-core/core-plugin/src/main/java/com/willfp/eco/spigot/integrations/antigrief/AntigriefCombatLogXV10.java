@@ -16,14 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public class AntigriefCombatLogXV10 implements AntigriefWrapper {
-    /**
-     * Instance of CombatLogX.
-     */
     private final ICombatLogX instance;
-
-    /**
-     * Create new CombatLogX antigrief.
-     */
+    
     public AntigriefCombatLogXV10() {
         this.instance = (ICombatLogX) Bukkit.getPluginManager().getPlugin("CombatLogX");
     }

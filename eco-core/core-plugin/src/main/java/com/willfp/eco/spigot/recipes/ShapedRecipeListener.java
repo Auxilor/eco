@@ -22,20 +22,10 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
 public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements Listener {
-    /**
-     * Pass an {@link EcoPlugin} in order to interface with it.
-     *
-     * @param plugin The plugin to manage.
-     */
     public ShapedRecipeListener(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
-    /**
-     * Called on item craft.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler
     public void complexRecipeListener(@NotNull final PrepareItemCraftEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -61,11 +51,6 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         }
     }
 
-    /**
-     * Called on item craft.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler
     public void complexRecipeListener(@NotNull final CraftItemEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -94,12 +79,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             event.setCancelled(true);
         }
     }
-
-    /**
-     * Called on item craft.
-     *
-     * @param event The event to listen for.
-     */
+    
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void stackedRecipeListener(@NotNull final CraftItemEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -129,11 +109,6 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         }, 1);
     }
 
-    /**
-     * Called on item craft.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler
     public void preventUsingComplexPartInEcoRecipe(@NotNull final PrepareItemCraftEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -157,12 +132,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             }
         }
     }
-
-    /**
-     * Called on item craft.
-     *
-     * @param event The event to listen for.
-     */
+    
     @EventHandler
     public void preventUsingComplexPartInEcoRecipe(@NotNull final CraftItemEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -188,12 +158,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             }
         }
     }
-
-    /**
-     * Prevents using talismans in recipes.
-     *
-     * @param event The event to listen for.
-     */
+    
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final PrepareItemCraftEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -212,11 +177,6 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         }
     }
 
-    /**
-     * Prevents using talismans in recipes.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final CraftItemEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -237,11 +197,6 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         }
     }
 
-    /**
-     * Prevents learning displayed recipes.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler
     public void preventLearningDisplayedRecipes(@NotNull final PlayerRecipeDiscoverEvent event) {
         if (!EcoPlugin.getPluginNames().contains(event.getRecipe().getNamespace())) {
