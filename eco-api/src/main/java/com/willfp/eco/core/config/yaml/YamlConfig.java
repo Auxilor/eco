@@ -7,12 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.StringReader;
 
+/**
+ * Config implementation for passing YamlConfigurations.
+ * <p>
+ * Does not automatically update.
+ */
 public class YamlConfig extends YamlConfigWrapper {
     /**
-     * Config implementation for passing YamlConfigurations.
-     * <p>
-     * Does not automatically update.
-     *
      * @param config     The YamlConfiguration handle.
      */
     public YamlConfig(@NotNull final YamlConfiguration config) {
@@ -20,10 +21,6 @@ public class YamlConfig extends YamlConfigWrapper {
     }
 
     /**
-     * Config implementation for passing YamlConfigurations.
-     * <p>
-     * Does not automatically update.
-     *
      * @param contents     The contents of the config.
      */
     public YamlConfig(@NotNull final String contents) {

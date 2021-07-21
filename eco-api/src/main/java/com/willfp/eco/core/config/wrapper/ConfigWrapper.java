@@ -7,6 +7,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Configs from eco have an internal implementation,
+ * which is the handle.
+ * <p>
+ * This class handles them.
+ *
+ * @param <T> The type of the handle.
+ */
 public abstract class ConfigWrapper<T extends Config> implements Config {
     /**
      * Configs from eco have an internal implementation,

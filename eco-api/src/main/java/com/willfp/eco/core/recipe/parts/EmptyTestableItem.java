@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Air or null items.
+ */
 public class EmptyTestableItem implements TestableItem {
     /**
      * Create a new empty recipe part.

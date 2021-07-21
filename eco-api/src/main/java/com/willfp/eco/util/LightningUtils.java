@@ -5,6 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Utilities / API methods for lightning.
+ */
 @UtilityClass
 public class LightningUtils {
     /**

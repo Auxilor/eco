@@ -6,6 +6,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Event similar to {@link PlayerExpChangeEvent}, except it
+ * isn't called if the exp is from a bottle.
+ */
 public class NaturalExpGainEvent extends Event {
     /**
      * Internal bukkit.

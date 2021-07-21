@@ -3,6 +3,11 @@ package com.willfp.eco.core.config.updating;
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Every {@link com.willfp.eco.core.EcoPlugin} has a config handler.
+ * <p>
+ * Handles updating and saving configs.
+ */
 public interface ConfigHandler {
     /**
      * Invoke all update methods.

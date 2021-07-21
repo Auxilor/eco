@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 
 import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
 
+/**
+ * Utilities / API methods for strings.
+ */
 @UtilityClass
 public class StringUtils {
     /**

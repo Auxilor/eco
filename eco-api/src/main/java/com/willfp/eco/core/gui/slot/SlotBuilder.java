@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 
+/**
+ * Builder to create slots.
+ */
 public interface SlotBuilder {
     /**
      * Set click handler.

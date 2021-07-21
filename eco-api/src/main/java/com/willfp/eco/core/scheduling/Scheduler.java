@@ -4,6 +4,9 @@ import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Thread scheduler to handle tasks and asynchronous code.
+ */
 public interface Scheduler {
     /**
      * Run the task after a specified tick delay.

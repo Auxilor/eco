@@ -4,6 +4,9 @@ import com.willfp.eco.core.integrations.Integration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Wrapper class for anticheat integrations.
+ */
 public interface AnticheatWrapper extends Integration {
     /**
      * Exempt a player from checks.

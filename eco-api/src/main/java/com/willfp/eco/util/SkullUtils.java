@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 
+/**
+ * Utilities / API methods for player heads.
+ */
 @UtilityClass
 public class SkullUtils {
     /**

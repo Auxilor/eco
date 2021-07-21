@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+/**
+ * Builder for player heads.
+ */
 public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta, SkullBuilder> {
     /**
      * Create a new EnchantedBookBuilder.

@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Wrapper to handle the backend loadable yaml config implementations.
+ */
 public abstract class LoadableYamlConfigWrapper extends YamlConfigWrapper implements LoadableConfig {
     /**
      * Create a config wrapper.

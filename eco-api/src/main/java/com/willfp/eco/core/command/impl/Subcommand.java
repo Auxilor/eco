@@ -4,6 +4,9 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Subcommands can be added to PluginCommands or to other Subcommands.
+ */
 public abstract class Subcommand extends HandledCommand {
     /**
      * Create subcommand.
@@ -23,7 +26,7 @@ public abstract class Subcommand extends HandledCommand {
     /**
      * Create subcommand.
      *
-     * @param plugin      The plugin.
+     * @param plugin The plugin.
      * @param name   The name of the subcommand.
      * @param parent The parent command.
      */

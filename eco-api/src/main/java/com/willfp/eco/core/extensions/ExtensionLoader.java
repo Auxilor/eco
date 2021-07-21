@@ -2,8 +2,10 @@ package com.willfp.eco.core.extensions;
 
 import java.util.Set;
 
+/**
+ * Internal component to manage loading and unloading extensions.
+ */
 public interface ExtensionLoader {
-
     /**
      * Load all extensions.
      */

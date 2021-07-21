@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Event called when an entity is killed by another entity.
+ * <p>
+ * Not sure why spigot doesn't have this event normally.
+ */
 public class EntityDeathByEntityEvent extends Event {
     /**
      * Internal, for bukkit.

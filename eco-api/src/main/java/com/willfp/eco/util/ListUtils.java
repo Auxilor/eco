@@ -5,6 +5,9 @@ import lombok.experimental.UtilityClass;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utilities / API methods for lists.
+ */
 @UtilityClass
 public class ListUtils {
     /**

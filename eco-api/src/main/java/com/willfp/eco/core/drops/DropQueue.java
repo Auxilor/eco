@@ -8,6 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+/**
+ * A {@link DropQueue} is a set of drops linked to player.
+ * <p>
+ * All drops should be passed through a drop queue for telekinesis integration.
+ * <p>
+ * It functions essentially as a builder class, and runs very quickly.
+ *
+ * @see com.willfp.eco.util.TelekinesisUtils
+ */
 public class DropQueue {
     /**
      * The internally used {@link DropQueue}.
@@ -15,10 +24,6 @@ public class DropQueue {
     private final DropQueue handle;
 
     /**
-     * Create {@link DropQueue} linked to player.
-     * <p>
-     * All drops should be passed through a drop queue for telekinesis integration.
-     *
      * @param player The player.
      */
     public DropQueue(@NotNull final Player player) {

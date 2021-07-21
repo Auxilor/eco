@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Utilities / API methods for teams.
+ */
 @UtilityClass
 public class TeamUtils {
     /**

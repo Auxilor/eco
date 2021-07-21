@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
+/**
+ * Utilities / API methods for tridents.
+ */
 @UtilityClass
 public class TridentUtils {
     /**

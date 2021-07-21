@@ -12,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Stacks of items.
+ */
 public class TestableStack implements TestableItem {
     /**
      * The item.

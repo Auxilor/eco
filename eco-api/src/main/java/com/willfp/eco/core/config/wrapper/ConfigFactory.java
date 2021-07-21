@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+/**
+ * Internal component to create backend config implementations.
+ */
 public interface ConfigFactory {
     /**
      * Updatable config.

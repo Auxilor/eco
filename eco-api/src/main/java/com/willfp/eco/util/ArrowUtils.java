@@ -9,11 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Utilities / API methods for arrows.
+ */
 @UtilityClass
 public class ArrowUtils {
 
     /**
      * Get the bow from an arrow.
+     *
      * @param arrow The arrow.
      * @return The bow.
      */

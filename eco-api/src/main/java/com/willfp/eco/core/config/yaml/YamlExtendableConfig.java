@@ -5,12 +5,17 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Config implementation for configs present in one of two places:
+ * <ul>
+ *     <li>Plugin base directory (eg config.yml, lang.yml)</li>
+ *     <li>Other extension's configs</li>
+ * </ul>
+ * <p>
+ * Automatically updates.
+ */
 public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
     /**
-     * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
-     * <p>
-     * Automatically updates.
-     *
      * @param configName       The name of the config
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param plugin           The plugin.

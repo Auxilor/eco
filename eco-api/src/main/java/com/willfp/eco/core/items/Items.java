@@ -3,6 +3,7 @@ package com.willfp.eco.core.items;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
+import com.willfp.eco.util.NamespacedKeyUtils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -14,8 +15,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Class to manage all custom and vanilla items.
+ */
 @UtilityClass
-@SuppressWarnings("deprecation")
 public final class Items {
     /**
      * All recipe parts.
@@ -53,7 +56,7 @@ public final class Items {
         }
 
         if (split.length == 2) {
-            CustomItem part = REGISTRY.get(new NamespacedKey(split[0], split[1]));
+            CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
 
             if (part == null) {
                 Material material = Material.getMaterial(split[0].toUpperCase());
@@ -67,7 +70,7 @@ public final class Items {
         }
 
         if (split.length == 3) {
-            CustomItem part = REGISTRY.get(new NamespacedKey(split[0], split[1]));
+            CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
             return part == null ? new EmptyTestableItem() : new TestableStack(part, Integer.parseInt(split[2]));
         }
 

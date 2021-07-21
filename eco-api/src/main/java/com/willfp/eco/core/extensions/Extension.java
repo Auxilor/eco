@@ -6,6 +6,17 @@ import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An extension is a separate jar file that hooks into the base plugin jar.
+ * <p>
+ * If you take PlaceholderAPI as an example, the PAPI expansions are identical to
+ * extensions.
+ * <p>
+ * Syntactically, extensions are very similar to plugins in their own right, except that
+ * they are loaded by another plugin.
+ *
+ * @see <a href="https://ecoenchants.polymart.org">EcoEnchants extension examples.</a>
+ */
 public abstract class Extension {
     /**
      * The {@link EcoPlugin} that this extension is for.

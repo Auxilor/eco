@@ -10,6 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * A prerequisite is a requirement for something.
+ * <p>
+ * For example, you can require the server to have paper or be a specific version,
+ * or have some other dependency.
+ */
 public class Prerequisite {
     /**
      * All existing prerequisites are registered on creation.

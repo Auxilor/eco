@@ -1,5 +1,8 @@
 package com.willfp.eco.core.display;
 
+/**
+ * The priority (order) of display modules.
+ */
 public enum DisplayPriority {
     /**
      * Ran first.

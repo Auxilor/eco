@@ -14,6 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Utility class to manage and register crafting recipes.
+ */
 @UtilityClass
 @SuppressWarnings("deprecation")
 public class Recipes {

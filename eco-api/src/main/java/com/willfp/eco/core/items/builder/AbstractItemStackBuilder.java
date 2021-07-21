@@ -18,6 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Abstract item builder class to build items.
+ *
+ * @param <T> The meta type.
+ * @param <U> Itself.
+ */
 @SuppressWarnings("unchecked")
 public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends AbstractItemStackBuilder<T, U>> implements ItemBuilder {
     /**

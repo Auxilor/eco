@@ -4,6 +4,9 @@ import com.willfp.eco.core.config.yaml.YamlBaseConfig;
 import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Default plugin lang.yml.
+ */
 public class LangYml extends YamlBaseConfig {
     /**
      * Lang.yml.

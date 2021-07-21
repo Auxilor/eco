@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+/**
+ * Class to build enchanted books.
+ */
 public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentStorageMeta, EnchantedBookBuilder> {
     /**
      * Create a new EnchantedBookBuilder.
@@ -27,6 +30,7 @@ public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentSt
         this.getMeta().addStoredEnchant(enchantment, level, true);
         return this;
     }
+
     /**
      * Add an enchantment to the item.
      *

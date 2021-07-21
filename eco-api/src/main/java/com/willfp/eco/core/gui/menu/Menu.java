@@ -6,6 +6,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * GUI version of {@link Inventory}.
+ * <p>
+ * A menu contains slots and is 1-indexed. (Top row has index 1, bottom row has index 6).
+ */
 public interface Menu {
     /**
      * Get the amount of rows.

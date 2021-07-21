@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Utilities / API methods for numbers.
+ */
 @UtilityClass
 public class NumberUtils {
     /**

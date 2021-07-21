@@ -5,6 +5,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Builder for any item stack.
+ */
 public class ItemStackBuilder extends AbstractItemStackBuilder<ItemMeta, ItemStackBuilder> {
     /**
      * Create a new ItemStackBuilder.

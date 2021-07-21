@@ -8,6 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
+/**
+ * Utilities / API methods for telekinesis.
+ * <p>
+ * Telekinesis means that all drops and xp go straight to a player's inventory
+ * rather than dropping on the ground.
+ */
 @UtilityClass
 public final class TelekinesisUtils {
     /**

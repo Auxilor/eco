@@ -2,6 +2,9 @@ package com.willfp.eco.core.command;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Interface for all command implementations.
+ */
 public interface CommandBase {
     /**
      * Get command name.

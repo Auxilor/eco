@@ -2,6 +2,9 @@ package com.willfp.eco.core.recipe.recipes;
 
 import lombok.Getter;
 
+/**
+ * Positions in a 3x3 crafting recipe.
+ */
 public enum RecipePosition {
     /**
      * Top left of matrix.

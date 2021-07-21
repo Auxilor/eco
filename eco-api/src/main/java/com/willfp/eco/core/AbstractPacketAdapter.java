@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 
+/**
+ * Wrapper class for ProtocolLib packets.
+ */
 public abstract class AbstractPacketAdapter extends PacketAdapter {
     /**
      * The packet type to listen for.

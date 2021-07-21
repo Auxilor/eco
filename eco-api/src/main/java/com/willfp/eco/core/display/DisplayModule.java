@@ -6,6 +6,9 @@ import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Class for all plugin-specific client-side item display modules.
+ */
 public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
     /**
      * The priority of the module.
