@@ -19,29 +19,15 @@ import java.util.List;
 import java.util.Map;
 
 public class EcoProxyFactory extends PluginDependent<EcoPlugin> implements ProxyFactory {
-    /**
-     * All supported NMS versions.
-     */
     private static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
             "v1_16_R3",
             "v1_17_R1"
     );
 
-    /**
-     * The proxy class loader.
-     */
     private final ClassLoader proxyClassLoader;
 
-    /**
-     * Cached proxy implementations in order to not perform expensive reflective class-finding.
-     */
     private final Map<Class<? extends AbstractProxy>, AbstractProxy> cache = new IdentityHashMap<>();
 
-    /**
-     * Create a new Proxy Factory for a specific type.
-     *
-     * @param plugin The plugin to create proxies for.
-     */
     public EcoProxyFactory(@NotNull final EcoPlugin plugin) {
         super(plugin);
 
@@ -53,13 +39,6 @@ public class EcoProxyFactory extends PluginDependent<EcoPlugin> implements Proxy
         this.proxyClassLoader = plugin.getClass().getClassLoader();
     }
 
-    /**
-     * Get the implementation of a proxy.
-     *
-     * @param <T>        The proxy class.
-     * @param proxyClass The proxy class.
-     * @return The proxy implementation.
-     */
     @Override
     public <T extends AbstractProxy> @NotNull T getProxy(@NotNull final Class<T> proxyClass) {
         try {

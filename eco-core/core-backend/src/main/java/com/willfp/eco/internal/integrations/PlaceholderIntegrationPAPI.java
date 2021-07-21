@@ -10,16 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlaceholderIntegrationPAPI extends PlaceholderExpansion implements PlaceholderIntegration {
-    /**
-     * The linked plugin.
-     */
     private final EcoPlugin plugin;
 
-    /**
-     * Create a new PlaceholderAPI integration.
-     *
-     * @param plugin The plugin to manage placeholders for.
-     */
     public PlaceholderIntegrationPAPI(@NotNull final EcoPlugin plugin) {
         this.plugin = plugin;
     }

@@ -23,23 +23,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements ExtensionLoader {
-    /**
-     * All currently loaded extensions.
-     */
     private final Set<Extension> extensions = new HashSet<>();
 
-    /**
-     * Create a new extension loader and link it to a specific {@link EcoPlugin}.
-     *
-     * @param plugin The plugin to manage
-     */
     public EcoExtensionLoader(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
-    /**
-     * Load all present extensions.
-     */
     @Override
     public void loadExtensions() {
         File dir = new File(this.getPlugin().getDataFolder(), "/extensions");
@@ -119,20 +108,12 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
         extensions.add(extension);
     }
 
-    /**
-     * Unload all existing extensions.
-     */
     @Override
     public void unloadExtensions() {
         extensions.forEach(Extension::disable);
         extensions.clear();
     }
 
-    /**
-     * Returns all loaded extensions.
-     *
-     * @return A {@link Set} of all loaded extensions.
-     */
     @Override
     public Set<Extension> getLoadedExtensions() {
         return extensions;

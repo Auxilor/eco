@@ -9,28 +9,16 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class EcoRunnableTask extends BukkitRunnable implements RunnableTask {
-    /**
-     * The linked {@link EcoPlugin} to associate runnables with.
-     */
+    
     private final EcoPlugin plugin;
 
-    /**
-     * Creates a new {@link EcoRunnableTask}.
-     * <p>
-     * Cannot be instantiated normally, use {@link EcoRunnableFactory}.
-     *
-     * @param plugin The {@link EcoPlugin} to associate runnables with.
-     */
+    
     @ApiStatus.Internal
     public EcoRunnableTask(@NotNull final EcoPlugin plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Get the {@link EcoPlugin} that created this runnable.
-     *
-     * @return The linked plugin.
-     */
+    
     protected final EcoPlugin getPlugin() {
         return this.plugin;
     }

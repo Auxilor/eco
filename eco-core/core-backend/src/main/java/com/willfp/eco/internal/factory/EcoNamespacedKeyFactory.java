@@ -7,11 +7,6 @@ import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 public class EcoNamespacedKeyFactory extends PluginDependent<EcoPlugin> implements NamespacedKeyFactory {
-    /**
-     * Factory class to produce {@link NamespacedKey}s associated with an {@link EcoPlugin}.
-     *
-     * @param plugin The plugin that this factory creates keys for.
-     */
     public EcoNamespacedKeyFactory(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }

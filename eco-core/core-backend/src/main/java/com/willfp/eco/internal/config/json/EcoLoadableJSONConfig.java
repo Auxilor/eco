@@ -19,44 +19,21 @@ import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class EcoLoadableJSONConfig extends EcoJSONConfigWrapper implements LoadableConfig {
-    /**
-     * The physical config file, as stored on disk.
-     */
     @Getter
     private final File configFile;
-
-    /**
-     * Plugin handle.
-     */
+    
     @Getter(AccessLevel.PROTECTED)
     private final EcoPlugin plugin;
-
-    /**
-     * The full name of the config file (eg config.json).
-     */
+    
     @Getter
     private final String name;
 
-    /**
-     * The subdirectory path.
-     */
     @Getter(AccessLevel.PROTECTED)
     private final String subDirectoryPath;
 
-    /**
-     * The provider of the config.
-     */
     @Getter(AccessLevel.PROTECTED)
     private final Class<?> source;
 
-    /**
-     * Abstract config.
-     *
-     * @param configName       The name of the config
-     * @param plugin           The plugin.
-     * @param subDirectoryPath The subdirectory path.
-     * @param source           The class that owns the resource.
-     */
     public EcoLoadableJSONConfig(@NotNull final String configName,
                                  @NotNull final EcoPlugin plugin,
                                  @NotNull final String subDirectoryPath,
@@ -114,11 +91,7 @@ public class EcoLoadableJSONConfig extends EcoJSONConfigWrapper implements Loada
         }
     }
 
-    /**
-     * Get resource path as relative to base directory.
-     *
-     * @return The resource path.
-     */
+    
     @Override
     public String getResourcePath() {
         String resourcePath;
@@ -132,23 +105,14 @@ public class EcoLoadableJSONConfig extends EcoJSONConfigWrapper implements Loada
         return "/" + resourcePath;
     }
 
-    /**
-     * Save the config.
-     *
-     * @throws IOException If error in saving.
-     */
+    
     @Override
     public void save() throws IOException {
         configFile.delete();
         Files.write(configFile.toPath(), this.toPlaintext().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
     }
 
-    /**
-     * Initialize the config.
-     *
-     * @param file The config file.
-     * @throws FileNotFoundException If the file doesn't exist.
-     */
+    
     public void init(@NotNull final File file) throws FileNotFoundException {
         super.init(this.getHandle().fromJson(new FileReader(file), HashMap.class));
     }

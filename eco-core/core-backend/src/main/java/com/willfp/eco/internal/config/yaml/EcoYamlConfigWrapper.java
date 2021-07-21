@@ -18,20 +18,11 @@ import java.util.Objects;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class EcoYamlConfigWrapper<T extends ConfigurationSection> implements Config {
-    /**
-     * The linked {@link ConfigurationSection} where values are physically stored.
-     */
     @Getter
     private T handle = null;
-
-    /**
-     * Cached values for faster reading.
-     */
+    
     private final Map<String, Object> cache = new HashMap<>();
-
-    /**
-     * Abstract config.
-     */
+    
     public EcoYamlConfigWrapper() {
 
     }

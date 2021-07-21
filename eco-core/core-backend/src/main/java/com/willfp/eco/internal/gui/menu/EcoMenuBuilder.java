@@ -16,30 +16,14 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class EcoMenuBuilder implements MenuBuilder {
-
-    /**
-     * The amount of rows.
-     */
     private final int rows;
 
-    /**
-     * The title.
-     */
     private String title = "Menu";
 
-    /**
-     * The mask slots.
-     */
     private List<List<Slot>> maskSlots;
 
-    /**
-     * The slots.
-     */
     private final List<List<Slot>> slots;
 
-    /**
-     * The close event handler.
-     */
     private Consumer<InventoryCloseEvent> onClose = (event) -> {
     };
 

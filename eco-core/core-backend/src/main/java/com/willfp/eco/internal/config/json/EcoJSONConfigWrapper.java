@@ -7,7 +7,6 @@ import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,27 +20,15 @@ import java.util.Set;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class EcoJSONConfigWrapper implements JSONConfig {
-    /**
-     * The linked {@link ConfigurationSection} where values are physically stored.
-     */
     @Getter
     private final Gson handle = new GsonBuilder().setPrettyPrinting().create();
-
-    /**
-     * All stored values.
-     */
+    
     @Getter
     private final Map<String, Object> values = new HashMap<>();
 
-    /**
-     * All cached values.
-     */
     @Getter
     private final Map<String, Object> cache = new HashMap<>();
-
-    /**
-     * Abstract config.
-     */
+    
     public EcoJSONConfigWrapper() {
 
     }
