@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * <p>
  * It is recommended to view the source code for this class to
  * gain a better understanding of how it works.
- *
+ * <p>
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
