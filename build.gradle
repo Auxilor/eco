@@ -86,12 +86,10 @@ allprojects {
         onlyIf { !sourceSets.main.allSource.files.isEmpty() }
     }
 
-    /*
     java {
         sourceCompatibility = JavaVersion.VERSION_16
         targetCompatibility = JavaVersion.VERSION_16
     }
-     */
 
     compileJava.options.encoding = 'UTF-8'
     compileJava.dependsOn clean
