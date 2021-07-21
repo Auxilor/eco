@@ -6,9 +6,17 @@
 
 <h4 align="center">eco - Simplify spigot development.</h4>
 
-# Installation for Development
+### Plugin Information
+- Requires ProtocolLib to be installed: get the latest version [here](https://www.spigotmc.org/resources/protocollib.1997/)
+- Supports 1.16.5+
 
-eco is a standalone plugin, so you will need to install it on any servers that have plugins which depend on it, and specify it as a dependency in your plugin.yml like this:
+### bStats
+<img src="https://bstats.org/signatures/bukkit/eco.svg" width="512">
+
+# Information for development
+
+eco is a standalone plugin, so you will need to install it on any servers that have plugins which depend on it,
+and specify it as a dependency in your plugin.yml:
 
 ```yaml
 depend: [RedLib]
