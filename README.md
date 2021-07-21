@@ -18,6 +18,8 @@
 ## Javadoc
 The 6.0.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.0.0/javadoc/)
 
+## Plugin Information
+
 eco is a standalone plugin, so you will need to install it on any servers that have plugins which depend on it,
 and specify it as a dependency in your plugin.yml:
 
