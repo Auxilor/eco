@@ -1,4 +1,5 @@
-jdk:
-  - openjdk16
+jdk: openjdk16
 before_install:
   - echo "test"
+  - sdk install java 16.0.1-open
+  - sdk use java 16.0.1-open
