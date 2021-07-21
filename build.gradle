@@ -68,6 +68,7 @@ allprojects {
         exclude group: "org.codehaus.plexus", module: "plexus-utils"
         exclude group: "com.mojang", module: "brigadier"
         exclude group: "org.kitteh", module: "paste-gg-api"
+        exclude group: "org.kitteh", module: "pastegg"
         exclude group: "org.spongepowered", module: "configurate-hocon"
         exclude group: "com.darkblade12", module: "particleeffect"
         exclude group: "com.github.cryptomorin", module: "XSeries"
