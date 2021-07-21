@@ -17,6 +17,11 @@ import org.jetbrains.annotations.NotNull;
 public class ArmorEquipEvent extends PlayerEvent {
     private static final HandlerList HANDLERS = new HandlerList();
 
+    /**
+     * Create a new ArmorEquipEvent.
+     *
+     * @param player The player.
+     */
     public ArmorEquipEvent(@NotNull final Player player) {
         super(player);
     }
@@ -33,6 +38,11 @@ public class ArmorEquipEvent extends PlayerEvent {
         return HANDLERS;
     }
 
+    /**
+     * Bukkit parity.
+     *
+     * @return The handler list.
+     */
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }
