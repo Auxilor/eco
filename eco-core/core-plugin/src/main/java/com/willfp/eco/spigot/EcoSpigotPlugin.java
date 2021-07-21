@@ -10,7 +10,6 @@ import com.willfp.eco.core.integrations.customitems.CustomItemsManager;
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager;
 import com.willfp.eco.proxy.BlockBreakProxy;
 import com.willfp.eco.proxy.SkullProxy;
-import com.willfp.eco.proxy.TridentStackProxy;
 import com.willfp.eco.spigot.arrows.ArrowDataListener;
 import com.willfp.eco.spigot.display.PacketAutoRecipe;
 import com.willfp.eco.spigot.display.PacketChat;
@@ -43,7 +42,6 @@ import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener;
 import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
-import com.willfp.eco.util.TridentUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -68,9 +66,6 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
 
         BlockBreakProxy blockBreakProxy = this.getProxy(BlockBreakProxy.class);
         BlockUtils.initialize(blockBreakProxy::breakBlock);
-
-        TridentStackProxy tridentStackProxy = this.getProxy(TridentStackProxy.class);
-        TridentUtils.initialize(tridentStackProxy::getTridentStack);
     }
 
     @Override
