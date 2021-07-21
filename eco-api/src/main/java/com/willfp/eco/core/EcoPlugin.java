@@ -37,6 +37,21 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * EcoPlugin is the base plugin class for eco-based plugins.
+ * <p>
+ * It functions as a replacement for {@link JavaPlugin}.
+ * <p>
+ * EcoPlugin is a lot more powerful than {@link JavaPlugin} and
+ * contains many methods to reduce boilerplate code and reduce
+ * plugin complexity.
+ * <p>
+ * It is recommended to view the source code for this class to
+ * gain a better understanding of how it works.
+ *
+ * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
+ * be cancelled.</b>
+ */
 public abstract class EcoPlugin extends JavaPlugin {
     /**
      * The spigot resource ID of the plugin.
@@ -597,7 +612,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * Does not use eco config system, don't use.
      *
      * @return The bukkit config.
-     * @deprecated Use {@link EcoPlugin#getConfigYml()} instead.
+     * @deprecated Use getConfigYml() instead.
      */
     @NotNull
     @Override

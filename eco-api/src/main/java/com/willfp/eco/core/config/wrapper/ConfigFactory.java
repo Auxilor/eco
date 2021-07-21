@@ -21,6 +21,7 @@ public interface ConfigFactory {
      * @param source           The class that owns the resource.
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param updateBlacklist  Substring of keys to not add/remove keys for.
+     * @return The config implementation.
      */
     Config createUpdatableYamlConfig(@NotNull String configName,
                                      @NotNull EcoPlugin plugin,
@@ -36,6 +37,7 @@ public interface ConfigFactory {
      * @param plugin           The plugin.
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
+     * @return The config implementation.
      */
     JSONConfig createLoadableJSONConfig(@NotNull String configName,
                                         @NotNull EcoPlugin plugin,
@@ -49,6 +51,7 @@ public interface ConfigFactory {
      * @param plugin           The plugin.
      * @param subDirectoryPath The subdirectory path.
      * @param source           The class that owns the resource.
+     * @return The config implementation.
      */
     Config createLoadableYamlConfig(@NotNull String configName,
                                     @NotNull EcoPlugin plugin,
@@ -59,6 +62,7 @@ public interface ConfigFactory {
      * Yaml config.
      *
      * @param config The handle.
+     * @return The config implementation.
      */
     Config createYamlConfig(@NotNull YamlConfiguration config);
 
@@ -66,6 +70,7 @@ public interface ConfigFactory {
      * JSON config.
      *
      * @param values The values.
+     * @return The config implementation.
      */
     JSONConfig createJSONConfig(@NotNull Map<String, Object> values);
 }

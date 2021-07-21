@@ -172,6 +172,14 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
         return (sender, args) -> new ArrayList<>();
     }
 
+    /**
+     * If a sender can execute the command.
+     *
+     * @param sender  The sender.
+     * @param command The command.
+     * @param plugin  The plugin.
+     * @return If the sender can execute.
+     */
     public static boolean canExecute(@NotNull final CommandSender sender,
                                      @NotNull final CommandBase command,
                                      @NotNull final EcoPlugin plugin) {

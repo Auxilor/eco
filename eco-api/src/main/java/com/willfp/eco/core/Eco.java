@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Base class to hold the handler.
  *
- * @see Eco#getHandler()
+ * @see Handler
  */
 @UtilityClass
 public class Eco {
