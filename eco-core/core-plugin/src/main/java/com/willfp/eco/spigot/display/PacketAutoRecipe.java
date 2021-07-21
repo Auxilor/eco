@@ -3,6 +3,7 @@ package com.willfp.eco.spigot.display;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.proxy.AutoCraftProxy;
@@ -18,7 +19,8 @@ public class PacketAutoRecipe extends AbstractPacketAdapter {
 
     @Override
     public void onSend(@NotNull final PacketContainer packet,
-                       @NotNull final Player player) {
+                       @NotNull final Player player,
+                       @NotNull final PacketEvent event) {
         if (!EcoPlugin.getPluginNames().contains(packet.getMinecraftKeys().getValues().get(0).getFullKey().split(":")[0])) {
             return;
         }
