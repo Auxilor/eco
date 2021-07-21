@@ -75,7 +75,6 @@ allprojects {
 
     shadowJar {
         relocate('org.bstats.bukkit', 'com.willfp.eco.shaded.bstats')
-        relocate('org.apache.maven', 'com.willfp.eco.shaded.maven')
     }
 
     jar {
