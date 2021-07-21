@@ -49,7 +49,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
     }
 
     /**
-     * Create varargs to pass back to itemstack after reverting, but before display.
+     * Create varargs to pass back to ItemStack after reverting, but before display.
      *
      * @param itemStack The itemStack.
      * @return The plugin-specific varargs.

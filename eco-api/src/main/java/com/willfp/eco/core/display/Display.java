@@ -21,7 +21,7 @@ import java.util.Map;
 @UtilityClass
 public class Display {
     /**
-     * The prefix for lore lines.
+     * The prefix for client-side lore lines.
      */
     public static final String PREFIX = "§z";
 
@@ -54,7 +54,7 @@ public class Display {
      * Display on ItemStacks.
      *
      * @param itemStack The item.
-     * @return The itemstack.
+     * @return The ItemStack.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
         if (!itemStack.hasItemMeta()) {
@@ -93,7 +93,7 @@ public class Display {
      * Display on ItemStacks and then finalize.
      *
      * @param itemStack The item.
-     * @return The itemstack.
+     * @return The ItemStack.
      */
     public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
         return finalize(display(itemStack));
@@ -103,7 +103,7 @@ public class Display {
      * Revert on ItemStacks.
      *
      * @param itemStack The item.
-     * @return The itemstack.
+     * @return The ItemStack.
      */
     public ItemStack revert(@NotNull final ItemStack itemStack) {
         if (Display.isFinalized(itemStack)) {
@@ -141,7 +141,7 @@ public class Display {
      * Finalize an ItemStacks.
      *
      * @param itemStack The item.
-     * @return The itemstack.
+     * @return The ItemStack.
      */
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
@@ -165,7 +165,7 @@ public class Display {
      * Unfinalize an ItemStacks.
      *
      * @param itemStack The item.
-     * @return The itemstack.
+     * @return The ItemStack.
      */
     public ItemStack unfinalize(@NotNull final ItemStack itemStack) {
         Validate.notNull(finalizeKey, "Key cannot be null!");
