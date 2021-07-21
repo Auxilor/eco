@@ -1,0 +1,4 @@
+jdk:
+  - openjdk16
+before_install:
+  - echo "test"
