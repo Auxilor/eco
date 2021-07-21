@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * @see Eco#getHandler().
+ * @see Eco
  */
 public interface Handler {
     /**
