@@ -18,21 +18,10 @@ import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class PlayerJumpListeners implements Listener {
-    /**
-     * For jump listeners.
-     */
     private static final Set<UUID> PREVIOUS_PLAYERS_ON_GROUND = new HashSet<>();
 
-    /**
-     * For jump listeners.
-     */
     private static final DecimalFormat FORMAT = new DecimalFormat("0.00");
-
-    /**
-     * Called when a player jumps.
-     *
-     * @param event The event to listen for.
-     */
+    
     @EventHandler(ignoreCancelled = true)
     public void onJump(@NotNull final PlayerMoveEvent event) {
         if (McmmoManager.isFake(event)) {

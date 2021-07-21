@@ -19,11 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PacketOpenWindowMerchant extends AbstractPacketAdapter {
-    /**
-     * Instantiate a new listener for {@link PacketType.Play.Server#OPEN_WINDOW_MERCHANT}.
-     *
-     * @param plugin The plugin to listen through.
-     */
     public PacketOpenWindowMerchant(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.OPEN_WINDOW_MERCHANT, ListenerPriority.MONITOR, true);
     }

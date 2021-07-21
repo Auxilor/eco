@@ -11,9 +11,6 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 public final class Skull implements SkullProxy {
-    /**
-     * Cached method to set the gameProfile.
-     */
     private Method setProfile = null;
 
     @Override

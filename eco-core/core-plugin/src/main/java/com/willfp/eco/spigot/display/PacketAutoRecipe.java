@@ -12,11 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 
 public class PacketAutoRecipe extends AbstractPacketAdapter {
-    /**
-     * Instantiate a new listener for {@link PacketType.Play.Server#SET_SLOT}.
-     *
-     * @param plugin The plugin to listen through.
-     */
     public PacketAutoRecipe(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.AUTO_RECIPE, false);
     }

@@ -10,14 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 
 public final class VillagerTrade implements VillagerTradeProxy {
-    /**
-     * Handle.
-     */
     private final Field handle;
 
-    /**
-     * Create new Villager Trade.
-     */
     public VillagerTrade() {
         try {
             handle = CraftMerchantRecipe.class.getDeclaredField("handle");

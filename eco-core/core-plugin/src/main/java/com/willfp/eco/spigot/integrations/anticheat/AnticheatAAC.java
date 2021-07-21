@@ -11,14 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class AnticheatAAC implements AnticheatWrapper, Listener {
-    /**
-     * AAC exemption for eco.
-     */
     private final AACExemption ecoExemption = new AACExemption("eco");
 
-    /**
-     * AAC api.
-     */
     private final AACAPI api = Objects.requireNonNull(Bukkit.getServicesManager().load(AACAPI.class));
 
     @Override

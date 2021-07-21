@@ -14,13 +14,6 @@ public enum ArmorType {
         this.slot = slot;
     }
 
-    /**
-     * Attempts to match the ArmorType for the specified ItemStack.
-     *
-     * @param itemStack The ItemStack to parse the type of.
-     *
-     * @return The parsed ArmorType, or null if not found.
-     */
     public static ArmorType matchType(final ItemStack itemStack) {
         if (ArmorListener.isAirOrNull(itemStack)) {
             return null;

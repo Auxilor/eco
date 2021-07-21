@@ -18,27 +18,13 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class EntityDeathByEntityListeners extends PluginDependent<EcoPlugin> implements Listener {
-    /**
-     * The events currently being built.
-     */
     private final Set<EntityDeathByEntityBuilder> events = new HashSet<>();
 
-    /**
-     * Create a listener associated with an {@link EcoPlugin}.
-     *
-     * @param plugin The plugin to associate with.
-     */
     @ApiStatus.Internal
     public EntityDeathByEntityListeners(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 
-    /**
-     * Called when an entity is damaged by another entity.
-     * Used to find the damager.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler(priority = EventPriority.HIGH)
     public void onEntityDamage(@NotNull final EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof LivingEntity victim)) {
@@ -57,12 +43,6 @@ public class EntityDeathByEntityListeners extends PluginDependent<EcoPlugin> imp
         this.getPlugin().getScheduler().runLater(() -> events.remove(builtEvent), 1);
     }
 
-    /**
-     * Called when an entity is killed.
-     * Used to find the killer and associate the event.
-     *
-     * @param event The event to listen for.
-     */
     @EventHandler
     public void onEntityDeath(@NotNull final EntityDeathEvent event) {
         LivingEntity victim = event.getEntity();

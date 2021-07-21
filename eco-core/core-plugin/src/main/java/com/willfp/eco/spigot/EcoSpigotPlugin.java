@@ -55,15 +55,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class EcoSpigotPlugin extends EcoPlugin {
-    /**
-     * Instance of eco.
-     */
     @Getter
     private static EcoSpigotPlugin instance;
-
-    /**
-     * Create a new instance of eco.
-     */
+    
     public EcoSpigotPlugin() {
         super(87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;

@@ -13,9 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class AnticheatVulcan implements AnticheatWrapper, Listener {
-    /**
-     * Currently exempt players.
-     */
     private final Set<UUID> exempt = new HashSet<>();
 
     @Override

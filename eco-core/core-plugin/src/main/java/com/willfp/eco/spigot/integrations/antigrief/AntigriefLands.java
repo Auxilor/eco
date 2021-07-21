@@ -13,16 +13,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class AntigriefLands extends PluginDependent<EcoPlugin> implements AntigriefWrapper {
-    /**
-     * Lands integration.
-     */
     private final LandsIntegration landsIntegration = new LandsIntegration(this.getPlugin());
-
-    /**
-     * Instantiate new lands integration.
-     *
-     * @param plugin The integration provider.
-     */
+    
     public AntigriefLands(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }

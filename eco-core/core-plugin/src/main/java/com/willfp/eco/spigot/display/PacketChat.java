@@ -11,11 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class PacketChat extends AbstractPacketAdapter {
-    /**
-     * Instantiate a new listener for {@link PacketType.Play.Server#CHAT}.
-     *
-     * @param plugin The plugin to listen through.
-     */
     public PacketChat(@NotNull final EcoPlugin plugin) {
         super(plugin, PacketType.Play.Server.CHAT, ListenerPriority.MONITOR, true);
     }

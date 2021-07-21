@@ -10,14 +10,8 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 public class McmmoIntegrationImpl implements McmmoWrapper {
-    /**
-     * Disabled if mcmmo is outdated or missing classes.
-     */
     private boolean disabled = false;
 
-    /**
-     * Initialize mcMMO integration.
-     */
     public McmmoIntegrationImpl() {
         if (!ClassUtils.exists("com.gmail.nossr50.events.fake.FakeEvent")) {
             disabled = true;
