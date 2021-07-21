@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+/**
+ * Builder to create menus.
+ */
 public interface MenuBuilder {
     /**
      * Set the menu title.

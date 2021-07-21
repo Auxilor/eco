@@ -2,6 +2,9 @@ package com.willfp.eco.core.events;
 
 import org.bukkit.event.Listener;
 
+/**
+ * Manages listeners for a plugin.
+ */
 public interface EventManager {
     /**
      * Register a listener with bukkit.

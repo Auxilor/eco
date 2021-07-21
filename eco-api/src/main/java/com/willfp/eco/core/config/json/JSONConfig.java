@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
+/**
+ * Raw JSON config with a map of values at its core.
+ */
 public class JSONConfig extends JSONConfigWrapper {
     /**
      * Config implementation for passing maps.

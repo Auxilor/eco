@@ -8,6 +8,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
+/**
+ * A {@link PlaceholderEntry} is a placeholder in and of itself.
+ * <p>
+ * It should be fairly straightforward.
+ */
 public class PlaceholderEntry {
     /**
      * The name of the placeholder, used in lookups.

@@ -8,6 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
+/**
+ * Internal component used by {@link com.willfp.eco.core.gui.menu.Menu#builder(int)}
+ * and {@link com.willfp.eco.core.gui.slot.Slot#builder(ItemStack)}.
+ */
 public interface GUIFactory {
     /**
      * Create slot builder.

@@ -18,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * @see Eco#getHandler().
+ */
 public interface Handler {
     /**
      * Create a scheduler.

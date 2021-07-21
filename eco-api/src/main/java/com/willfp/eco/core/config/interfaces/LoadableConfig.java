@@ -3,6 +3,9 @@ package com.willfp.eco.core.config.interfaces;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Interface for configs that physically exist as files in plugins.
+ */
 public interface LoadableConfig {
     /**
      * Create the file.

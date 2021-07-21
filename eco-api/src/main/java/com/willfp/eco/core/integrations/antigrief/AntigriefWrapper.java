@@ -6,6 +6,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+/**
+ * Wrapper class for antigrief integrations.
+ */
 public interface AntigriefWrapper extends Integration {
     /**
      * Can player break block.

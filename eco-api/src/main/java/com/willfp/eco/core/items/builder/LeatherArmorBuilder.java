@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
+/**
+ * Builder for leather armor.
+ */
 public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMeta, LeatherArmorBuilder> {
     /**
      * Create a new ItemStackBuilder.
@@ -39,6 +42,7 @@ public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMe
 
         return this;
     }
+
     /**
      * Set leather color.
      *

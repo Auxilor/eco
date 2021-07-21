@@ -3,6 +3,11 @@ package com.willfp.eco.core.integrations;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An integration loader runs a runnable only if a specific plugin is present on the server.
+ * <p>
+ * Used by {@link com.willfp.eco.core.EcoPlugin} to load integrations.
+ */
 public class IntegrationLoader {
     /**
      * The lambda to be ran if the plugin is present.

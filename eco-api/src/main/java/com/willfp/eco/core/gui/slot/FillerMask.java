@@ -9,6 +9,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Mask of filler slots.
+ * <p>
+ * A pattern consists of 1s and 0s, where a 1 is a filler slot,
+ * and a 0 isn't.
+ * <p>
+ * For example, creating a filler mask for a single-chest sized menu would look like this:
+ * <p>
+ * new FillerMask(
+ * material,
+ * "11111111"
+ * "10000001"
+ * "11111111"
+ * );
+ */
 public class FillerMask {
     /**
      * Mask.

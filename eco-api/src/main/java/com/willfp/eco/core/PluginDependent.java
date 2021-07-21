@@ -4,6 +4,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Quick DI class to manage passing eco plugins.
+ *
+ * @param <T> The eco plugin type.
+ */
 public abstract class PluginDependent<T extends EcoPlugin> {
     /**
      * The {@link EcoPlugin} that is stored.

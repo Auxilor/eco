@@ -10,6 +10,8 @@
     <suppress files="[\\/]internal[\\/]" checks="JavadocVariable"/>
     <suppress files="[\\/]eco[\\/]spigot[\\/]" checks="MissingJavadocMethod"/>
     <suppress files="[\\/]eco[\\/]spigot[\\/]" checks="JavadocVariable"/>
+    <suppress files="[\\/]eco[\\/]proxy[\\/]" checks="MissingJavadocMethod"/>
+    <suppress files="[\\/]eco[\\/]proxy[\\/]" checks="JavadocVariable"/>
 
     <!-- Modified version of library -->
     <suppress files="ArmorEquipEvent.java" checks="JavadocVariable"/>

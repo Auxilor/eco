@@ -10,6 +10,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Class to handle placeholder integrations.
+ */
 @UtilityClass
 public class PlaceholderManager {
     /**

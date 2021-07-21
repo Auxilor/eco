@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * Class to check for updates of a plugin on spigot.
+ */
 public class UpdateChecker extends PluginDependent<EcoPlugin> {
     /**
      * Create an update checker for the specified spigot resource id.

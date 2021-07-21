@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+/**
+ * Utilities / API methods for {@link NamespacedKey}s.
+ */
 @UtilityClass
 public class NamespacedKeyUtils {
     /**

@@ -174,7 +174,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * Create a new plugin unlinked to spigot and bStats.
      *
      * @param proxyPackage The package where proxy implementations are stored.
-     * @param color        The color of the plugin (used in messages, such as &a, &b)
+     * @param color        The color of the plugin (used in messages, using standard formatting)
      */
     protected EcoPlugin(@NotNull final String proxyPackage,
                         @NotNull final String color) {
@@ -186,7 +186,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @param resourceId The spigot resource ID for the plugin.
      * @param bStatsId   The bStats resource ID for the plugin.
-     * @param color      The color of the plugin (used in messages, such as &a, &b)
+     * @param color      The color of the plugin (used in messages, using standard formatting)
      */
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
@@ -199,7 +199,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      *
      * @param resourceId           The spigot resource ID for the plugin.
      * @param bStatsId             The bStats resource ID for the plugin.
-     * @param color                The color of the plugin (used in messages, such as &a, &b)
+     * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
      */
     protected EcoPlugin(final int resourceId,
@@ -215,7 +215,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @param resourceId   The spigot resource ID for the plugin.
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
-     * @param color        The color of the plugin (used in messages, such as &a, &b)
+     * @param color        The color of the plugin (used in messages, using standard formatting)
      */
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
@@ -230,7 +230,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @param resourceId           The spigot resource ID for the plugin.
      * @param bStatsId             The bStats resource ID for the plugin.
      * @param proxyPackage         The package where proxy implementations are stored.
-     * @param color                The color of the plugin (used in messages, such as &a, &b)
+     * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
      */
     protected EcoPlugin(final int resourceId,

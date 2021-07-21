@@ -6,6 +6,9 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Event called when a player jumps.
+ */
 public class PlayerJumpEvent extends PlayerMoveEvent {
     /**
      * Internal bukkit.

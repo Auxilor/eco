@@ -11,13 +11,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * PluginCommands are the class to be used instead of CommandExecutor.
+ * <p>
+ * The command will not be registered until {@link this#register()} is called.
+ * <p>
+ * The name cannot be the same as an existing command as this will conflict.
+ */
 public abstract class PluginCommand extends HandledCommand implements CommandExecutor, TabCompleter {
     /**
      * Create a new command.
-     * <p>
-     * The command will not be registered until {@link this#register()} is called.
-     * <p>
-     * The name cannot be the same as an existing command as this will conflict.
      *
      * @param plugin      The plugin.
      * @param name        The name used in execution.

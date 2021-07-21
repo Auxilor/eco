@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Wrapper to handle the backend loadable JSON config implementations.
+ */
 public abstract class LoadableJSONConfigWrapper extends JSONConfigWrapper implements LoadableConfig {
     /**
      * Create a config wrapper.

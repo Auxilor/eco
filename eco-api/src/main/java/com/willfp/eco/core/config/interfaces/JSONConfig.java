@@ -5,6 +5,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * JSON configs have extra methods compared to yaml configs.
+ * <p>
+ * If you need to use them, then use JSONConfig instead.
+ */
 public interface JSONConfig extends Config {
     /**
      * Get a list of subsections from config.
@@ -23,7 +28,7 @@ public interface JSONConfig extends Config {
      */
     @Nullable
     List<JSONConfig> getSubsectionsOrNull(@NotNull String path);
-    
+
     @Override
     JSONConfig clone();
 }

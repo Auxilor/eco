@@ -8,6 +8,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
+/**
+ * A custom item has 3 components:
+ *
+ * <ul>
+ *     <li>The key to identify it</li>
+ *     <li>The test to check if any item is this custom item</li>
+ *     <li>The actual custom item {@link ItemStack}</li>
+ * </ul>
+ */
 public class CustomItem implements TestableItem {
     /**
      * The key.

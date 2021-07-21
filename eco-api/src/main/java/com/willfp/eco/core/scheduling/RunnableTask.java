@@ -3,6 +3,9 @@ package com.willfp.eco.core.scheduling;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Bukkit Task handler.
+ */
 public interface RunnableTask extends Runnable {
     /**
      * Run the task.

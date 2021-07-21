@@ -5,6 +5,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * All canfigs implement this interface.
+ * <p>
+ * Contains all methods that must exist in yaml and json configurations.
+ */
 public interface Config extends Cloneable {
     /**
      * Clears cache.

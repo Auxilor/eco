@@ -3,6 +3,9 @@ package com.willfp.eco.util;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Utilities / API methods for classes.
+ */
 @UtilityClass
 public class ClassUtils {
     /**

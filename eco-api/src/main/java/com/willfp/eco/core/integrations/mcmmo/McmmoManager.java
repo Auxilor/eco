@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class to handle mcmmo integrations.
+ */
 @UtilityClass
 public class McmmoManager {
     /**

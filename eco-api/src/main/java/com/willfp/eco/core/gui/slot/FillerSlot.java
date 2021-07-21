@@ -5,6 +5,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * A filler slot is a slot that does nothing when clicked.
+ * <p>
+ * Useful for backgrounds.
+ */
 public class FillerSlot implements Slot {
     /**
      * The ItemStack.

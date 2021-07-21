@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * Wrapper to handle the backend JSON config implementations.
+ */
 public abstract class JSONConfigWrapper extends ConfigWrapper<JSONConfig> implements JSONConfig {
     /**
      * Create a config wrapper.

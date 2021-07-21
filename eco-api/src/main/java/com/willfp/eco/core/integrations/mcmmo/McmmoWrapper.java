@@ -4,6 +4,9 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Wrapper class for mcmmo integrations.
+ */
 public interface McmmoWrapper {
     /**
      * Get bonus drop count of block.

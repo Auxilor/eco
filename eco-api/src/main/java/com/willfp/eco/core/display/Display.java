@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class to manage client-side item display.
+ */
 @UtilityClass
 public class Display {
     /**

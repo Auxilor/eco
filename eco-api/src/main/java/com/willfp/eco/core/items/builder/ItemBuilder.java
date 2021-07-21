@@ -11,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Interface for all item builders.
+ */
 public interface ItemBuilder {
     /**
      * Set the ItemStack amount.
@@ -36,7 +39,7 @@ public interface ItemBuilder {
      * @return The builder.r
      */
     ItemBuilder addEnchantment(@NotNull Enchantment enchantment,
-                     int level);
+                               int level);
 
     /**
      * Add an enchantment to the item.
@@ -46,7 +49,7 @@ public interface ItemBuilder {
      * @return The builder.
      */
     ItemBuilder addEnchantment(@NotNull Supplier<Enchantment> enchantment,
-                     @NotNull Supplier<Integer> level);
+                               @NotNull Supplier<Integer> level);
 
     /**
      * Set the item display name.
@@ -123,8 +126,8 @@ public interface ItemBuilder {
      * @return The builder.
      */
     <A, B> ItemBuilder writeMetaKey(@NotNull NamespacedKey key,
-                          @NotNull PersistentDataType<A, B> type,
-                          @NotNull B value);
+                                    @NotNull PersistentDataType<A, B> type,
+                                    @NotNull B value);
 
     /**
      * Write meta key.
@@ -137,8 +140,8 @@ public interface ItemBuilder {
      * @return The builder.
      */
     <A, B> ItemBuilder writeMetaKey(@NotNull Supplier<NamespacedKey> key,
-                          @NotNull Supplier<PersistentDataType<A, B>> type,
-                          @NotNull Supplier<B> value);
+                                    @NotNull Supplier<PersistentDataType<A, B>> type,
+                                    @NotNull Supplier<B> value);
 
     /**
      * Set unbreakable.

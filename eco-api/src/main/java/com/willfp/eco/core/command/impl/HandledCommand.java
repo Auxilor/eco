@@ -18,6 +18,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Abstract class for commands that can be handled.
+ * <p>
+ * Handled commands have a method to pass in raw input from bukkit commands
+ * in order to execute the command-specific code. It's essentially an internal
+ * layer, hence why it's a package-private class.
+ */
 abstract class HandledCommand extends PluginDependent<EcoPlugin> implements CommandBase {
     /**
      * The name of the command.
@@ -115,6 +122,7 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
      *
      * @param sender The sender.
      * @param args   The arguments.
+     * @return The tab completion results.
      */
     protected final List<String> handleTabCompletion(@NotNull final CommandSender sender,
                                                      @NotNull final String[] args) {

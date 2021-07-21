@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
+/**
+ * A slot is an item in a GUI that can handle clicks.
+ */
 public interface Slot {
     /**
      * Get the ItemStack that would be shown to a player.

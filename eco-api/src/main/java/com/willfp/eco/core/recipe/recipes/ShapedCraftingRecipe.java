@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Shaped 3x3 crafting recipe.
+ */
 public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> implements CraftingRecipe {
     /**
      * Recipe parts.

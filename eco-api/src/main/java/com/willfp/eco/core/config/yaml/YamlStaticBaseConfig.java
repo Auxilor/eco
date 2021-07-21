@@ -5,6 +5,9 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Non-updatable yaml config that exists within a plugin jar.
+ */
 public abstract class YamlStaticBaseConfig extends LoadableYamlConfigWrapper {
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).

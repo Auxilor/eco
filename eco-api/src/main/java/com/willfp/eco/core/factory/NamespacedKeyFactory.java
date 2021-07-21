@@ -3,6 +3,9 @@ package com.willfp.eco.core.factory;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Factory to create {@link NamespacedKey}s for a plugin.
+ */
 public interface NamespacedKeyFactory {
     /**
      * Create an {@link NamespacedKey} associated with an {@link com.willfp.eco.core.EcoPlugin}.

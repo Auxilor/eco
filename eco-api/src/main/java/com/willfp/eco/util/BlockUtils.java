@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+/**
+ * Utilities / API methods for blocks.
+ */
 @UtilityClass
 public class BlockUtils {
     /**

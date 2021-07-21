@@ -2,6 +2,9 @@ package com.willfp.eco.core.proxy;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Factory to make proxies.
+ */
 public interface ProxyFactory {
     /**
      * Get the proxy implementation.

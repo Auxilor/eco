@@ -6,6 +6,9 @@ import com.willfp.eco.core.config.wrapper.ConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Wrapper to handle the backend yaml config implementations.
+ */
 public abstract class YamlConfigWrapper extends ConfigWrapper<Config> implements WrappedYamlConfiguration {
     /**
      * Create a config wrapper.

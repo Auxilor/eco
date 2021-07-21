@@ -4,6 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Two values.
+ *
+ * @param <A> The first value type.
+ * @param <B> The second value type.
+ */
 public class Pair<A, B> {
     /**
      * The first item in the tuple.

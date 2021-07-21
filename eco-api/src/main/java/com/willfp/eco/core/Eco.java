@@ -6,6 +6,11 @@ import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Base class to hold the handler.
+ *
+ * @see Eco#getHandler()
+ */
 @UtilityClass
 public class Eco {
     /**

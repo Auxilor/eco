@@ -5,6 +5,9 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.json.wrapper.LoadableJSONConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Non-updatable JSON config that exists within a plugin jar.
+ */
 public abstract class JSONStaticBaseConfig extends LoadableJSONConfigWrapper {
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.json, lang.json).

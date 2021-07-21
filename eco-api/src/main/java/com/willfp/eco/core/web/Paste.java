@@ -15,6 +15,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+/**
+ * A string that works with internet access, specifically
+ * to upload and download from hastebin.
+ */
 public class Paste {
     /**
      * The contents.

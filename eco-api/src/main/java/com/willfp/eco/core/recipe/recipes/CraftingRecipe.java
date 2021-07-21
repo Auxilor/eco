@@ -7,6 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Any crafting recipe.
+ * <p>
+ * A crafting recipe consists of {@link TestableItem}s.
+ */
 public interface CraftingRecipe {
     /**
      * Test matrix against recipe.

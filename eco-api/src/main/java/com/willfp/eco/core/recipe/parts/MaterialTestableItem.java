@@ -7,6 +7,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Default vanilla items.
+ */
 public class MaterialTestableItem implements TestableItem {
     /**
      * The material.

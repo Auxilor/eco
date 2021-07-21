@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class to handle custom item integrations.
+ */
 @UtilityClass
 public class CustomItemsManager {
     /**
