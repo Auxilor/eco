@@ -5,6 +5,7 @@ import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +50,17 @@ public class EcoLoadableYamlConfig extends EcoYamlConfigWrapper<YamlConfiguratio
         }
 
         this.configFile = new File(directory, this.name);
+
+        this.getPlugin().getConfigHandler().addConfig(this);
         init(YamlConfiguration.loadConfiguration(configFile));
+    }
+
+    public void reloadFromFile() {
+        try {
+            this.getHandle().load(this.getConfigFile());
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

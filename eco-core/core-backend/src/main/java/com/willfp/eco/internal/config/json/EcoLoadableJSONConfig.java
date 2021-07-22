@@ -63,6 +63,14 @@ public class EcoLoadableJSONConfig extends EcoJSONConfigWrapper implements Loada
         plugin.getConfigHandler().addConfig(this);
     }
 
+    public void reloadFromFile() {
+        try {
+            init(this.configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void createFile() {
         String resourcePath = getResourcePath();

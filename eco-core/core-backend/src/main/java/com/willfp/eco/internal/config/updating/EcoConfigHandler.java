@@ -5,7 +5,9 @@ import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.updating.ConfigUpdater;
+import com.willfp.eco.internal.config.json.EcoLoadableJSONConfig;
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException;
+import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig;
 import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
@@ -75,6 +77,12 @@ public class EcoConfigHandler extends PluginDependent<EcoPlugin> implements Conf
         for (LoadableConfig config : configs) {
             if (config instanceof EcoUpdatableYamlConfig updatableYamlConfig) {
                 updatableYamlConfig.update();
+            }
+            if (config instanceof EcoLoadableYamlConfig ecoLoadableYamlConfig) {
+                ecoLoadableYamlConfig.reloadFromFile();
+            }
+            if (config instanceof EcoLoadableJSONConfig ecoLoadableJSONConfig) {
+                ecoLoadableJSONConfig.reloadFromFile();
             }
         }
     }
