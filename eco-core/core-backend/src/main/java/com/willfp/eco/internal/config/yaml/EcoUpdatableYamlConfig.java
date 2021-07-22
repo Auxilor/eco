@@ -30,6 +30,8 @@ public class EcoUpdatableYamlConfig extends EcoLoadableYamlConfig {
         this.updateBlacklist = new ArrayList<>(Arrays.asList(updateBlacklist));
         this.updateBlacklist.removeIf(String::isEmpty);
 
+        plugin.getConfigHandler().addConfig(this);
+
         update();
     }
 
