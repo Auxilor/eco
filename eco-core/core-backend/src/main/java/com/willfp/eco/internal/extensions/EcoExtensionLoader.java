@@ -82,14 +82,17 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
         }
 
         if (name == null) {
+            this.getPlugin().getLogger().warning(extensionJar.getName() + " doesn't have a name!");
             name = "Unnamed Extension " + extensionJar.getName();
         }
 
         if (version == null) {
+            this.getPlugin().getLogger().warning(extensionJar.getName() + " doesn't have a version!");
             version = "1.0.0";
         }
 
         if (author == null) {
+            this.getPlugin().getLogger().warning(extensionJar.getName() + " doesn't have an author!");
             author = "Unnamed Author";
         }
 
