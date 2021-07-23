@@ -3,11 +3,12 @@ package com.willfp.eco.internal.extensions;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.config.yaml.YamlTransientConfig;
 import com.willfp.eco.core.extensions.Extension;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.extensions.ExtensionMetadata;
 import com.willfp.eco.core.extensions.MalformedExtensionException;
-import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +18,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,12 +49,12 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
             try {
                 loadExtension(extensionJar);
             } catch (MalformedExtensionException e) {
-                this.getPlugin().getLogger().severe(extensionJar.getName() + " caused MalformedExtensionException: " + e.getMessage());
+                this.getPlugin().getLogger().warning(extensionJar.getName() + " caused an error!");
             }
         }
     }
 
-    private void loadExtension(@NotNull final File extensionJar) {
+    private void loadExtension(@NotNull final File extensionJar) throws MalformedExtensionException {
         URL url = null;
         try {
             url = extensionJar.toURI().toURL();
@@ -71,22 +70,28 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
             throw new MalformedExtensionException("No extension.yml found in " + extensionJar.getName());
         }
 
-        YamlConfiguration extensionYml = YamlConfiguration.loadConfiguration(new InputStreamReader(ymlIn));
+        Config extensionYml = new YamlTransientConfig(YamlConfiguration.loadConfiguration(new InputStreamReader(ymlIn)));
 
-        Set<String> keys = extensionYml.getKeys(false);
-        ArrayList<String> required = new ArrayList<>(Arrays.asList("main", "name", "version"));
-        required.removeAll(keys);
-        if (!required.isEmpty()) {
-            throw new MalformedExtensionException("Invalid extension.yml found in " + extensionJar.getName() + " - Missing: " + String.join(", ", required));
+        String mainClass = extensionYml.getStringOrNull("main");
+        String name = extensionYml.getStringOrNull("name");
+        String version = extensionYml.getStringOrNull("version");
+        String author = extensionYml.getStringOrNull("author");
+
+        if (mainClass == null) {
+            throw new MalformedExtensionException("Invalid extension.yml found in " + extensionJar.getName());
         }
 
-        String mainClass = extensionYml.getString("main");
-        String name = extensionYml.getString("name");
-        String version = extensionYml.getString("version");
-        String author = extensionYml.getString("author");
-        Validate.notNull(name, "Name is missing!");
-        Validate.notNull(version, "Version is missing!");
-        Validate.notNull(author, "Author is missing!");
+        if (name == null) {
+            name = "Unnamed Extension " + extensionJar.getName();
+        }
+
+        if (version == null) {
+            version = "1.0.0";
+        }
+
+        if (author == null) {
+            author = "Unnamed Author";
+        }
 
         ExtensionMetadata metadata = new ExtensionMetadata(version, name, author);
 
