@@ -116,8 +116,9 @@ public class EcoLoadableJSONConfig extends EcoJSONConfigWrapper implements Loada
     
     @Override
     public void save() throws IOException {
-        configFile.delete();
-        Files.write(configFile.toPath(), this.toPlaintext().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        if (configFile.delete()) {
+            Files.write(configFile.toPath(), this.toPlaintext().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        }
     }
 
     
