@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
+@SuppressWarnings("unused")
 public abstract class EcoPlugin extends JavaPlugin {
     /**
      * The spigot resource ID of the plugin.
@@ -464,7 +465,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     }
 
     /**
-     * Default code to be executed on plugin reload.
+     * Reload the plugin.
      */
     public final void reload() {
         this.getConfigHandler().updateConfigs();
@@ -474,6 +475,19 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.getScheduler().cancelAll();
 
         this.handleReload();
+    }
+
+    /**
+     * Reload the plugin and return the time taken to reload.
+     *
+     * @return The time.
+     */
+    public final long reloadWithTime() {
+        long startTime = System.currentTimeMillis();
+
+        this.reload();
+
+        return System.currentTimeMillis() - startTime;
     }
 
     /**
