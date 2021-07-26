@@ -70,7 +70,7 @@ public final class Items {
         String[] split = args[0].toLowerCase().split(":");
 
         if (split.length == 1) {
-            Material material = Material.getMaterial(key.toUpperCase());
+            Material material = Material.getMaterial(args[0].toUpperCase());
             if (material == null || material == Material.AIR) {
                 return new EmptyTestableItem();
             }
@@ -111,6 +111,10 @@ public final class Items {
             int level = Integer.parseInt(enchantArgSplit[1]);
 
             requiredEnchantments.put(enchantment, level);
+        }
+
+        if (requiredEnchantments.isEmpty()) {
+            return item;
         }
 
         ItemBuilder builder = new ItemStackBuilder(item.getItem());
