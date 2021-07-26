@@ -8,6 +8,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
+/**
+ * Existing testable items with an extra filter.
+ *
+ * @see com.willfp.eco.core.items.CustomItem
+ */
 public class ModifiedTestableItem implements TestableItem {
     /**
      * The item.
