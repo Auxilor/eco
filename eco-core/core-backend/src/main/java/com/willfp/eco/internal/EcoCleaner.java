@@ -1,6 +1,8 @@
 package com.willfp.eco.internal;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.items.CustomItem;
+import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.internal.proxy.EcoProxyFactory;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +19,12 @@ public class EcoCleaner implements Cleaner {
         }
 
         Plugins.LOADED_ECO_PLUGINS.remove(plugin.getName().toLowerCase());
+
+        for (CustomItem customItem : Items.getCustomItems()) {
+            if (customItem.getKey().getNamespace().equalsIgnoreCase(plugin.getName().toLowerCase())) {
+                Items.removeCustomItem(customItem.getKey());
+            }
+        }
 
         if (plugin.getClass().getClassLoader() instanceof URLClassLoader urlClassLoader) {
             try {

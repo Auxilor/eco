@@ -37,6 +37,15 @@ public final class Items {
     }
 
     /**
+     * Remove an item.
+     *
+     * @param key The key of the recipe part.
+     */
+    public void removeCustomItem(@NotNull final NamespacedKey key) {
+        REGISTRY.remove(key);
+    }
+
+    /**
      * Lookup item from string.
      * <p>
      * Used for recipes.
