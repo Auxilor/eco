@@ -112,6 +112,10 @@ public class BlockUtils {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(blockBreakConsumer, "Must be initialized!");
 
+        if (block.getLocation().getY() < 0 || block.getLocation().getY() > 256) {
+            return;
+        }
+
         blockBreakConsumer.accept(player, block);
     }
 
