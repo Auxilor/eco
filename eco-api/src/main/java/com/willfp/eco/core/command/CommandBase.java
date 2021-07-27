@@ -43,9 +43,23 @@ public interface CommandBase {
     CommandHandler getHandler();
 
     /**
+     * Set the handler.
+     *
+     * @param handler The handler.
+     */
+    void setHandler(@NotNull CommandHandler handler);
+
+    /**
      * Get the tab completer.
      *
      * @return The tab completer.
      */
     TabCompleteHandler getTabCompleter();
+
+    /**
+     * Set the tab completer.
+     *
+     * @param handler The handler.
+     */
+    void setTabCompleter(@NotNull TabCompleteHandler handler);
 }

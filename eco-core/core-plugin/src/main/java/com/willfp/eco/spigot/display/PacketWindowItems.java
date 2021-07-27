@@ -22,7 +22,7 @@ public class PacketWindowItems extends AbstractPacketAdapter {
             if (itemStacks == null) {
                 return null;
             }
-            itemStacks.forEach(Display::display);
+            itemStacks.forEach(item -> Display.display(item, player));
             return itemStacks;
         });
     }

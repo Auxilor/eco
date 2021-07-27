@@ -3,12 +3,14 @@ package com.willfp.eco.core.display;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +59,18 @@ public class Display {
      * @return The ItemStack.
      */
     public ItemStack display(@NotNull final ItemStack itemStack) {
+        return display(itemStack, null);
+    }
+
+    /**
+     * Display on ItemStacks.
+     *
+     * @param itemStack The item.
+     * @param player    The player.
+     * @return The ItemStack.
+     */
+    public ItemStack display(@NotNull final ItemStack itemStack,
+                             @Nullable final Player player) {
         if (!itemStack.hasItemMeta()) {
             return itemStack; // return early if there's no customization of the item
         }
@@ -83,6 +97,9 @@ public class Display {
             for (DisplayModule module : modules) {
                 Object[] varargs = pluginVarArgs.get(module.getPluginName());
                 module.display(itemStack, varargs);
+                if (player != null) {
+                    module.display(itemStack, player, varargs);
+                }
             }
         }
 
@@ -96,7 +113,19 @@ public class Display {
      * @return The ItemStack.
      */
     public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
-        return finalize(display(itemStack));
+        return finalize(display(itemStack, null));
+    }
+
+    /**
+     * Display on ItemStacks and then finalize.
+     *
+     * @param itemStack The item.
+     * @param player    The player.
+     * @return The ItemStack.
+     */
+    public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack,
+                                        @Nullable final Player player) {
+        return finalize(display(itemStack, player));
     }
 
     /**

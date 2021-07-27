@@ -7,6 +7,7 @@ import com.willfp.eco.core.command.CommandHandler;
 import com.willfp.eco.core.command.TabCompleteHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -47,6 +48,20 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
      */
     @Getter
     private final boolean playersOnly;
+
+    /**
+     * The actual code to be executed in the command.
+     */
+    @Getter
+    @Setter
+    private CommandHandler handler = (sender, args) -> { };
+
+    /**
+     * The tab completion code to be executed in the command.
+     */
+    @Getter
+    @Setter
+    private TabCompleteHandler tabCompleter = (sender, args) -> new ArrayList<>();
 
     /**
      * All subcommands for the command.
@@ -162,14 +177,6 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
         }
 
         return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
-    }
-
-    @Override
-    public abstract CommandHandler getHandler();
-
-    @Override
-    public TabCompleteHandler getTabCompleter() {
-        return (sender, args) -> new ArrayList<>();
     }
 
     /**

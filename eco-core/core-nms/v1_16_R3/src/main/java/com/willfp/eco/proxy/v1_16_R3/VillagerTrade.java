@@ -3,6 +3,7 @@ package com.willfp.eco.proxy.v1_16_R3;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.proxy.VillagerTradeProxy;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,8 @@ public final class VillagerTrade implements VillagerTradeProxy {
     }
 
     @Override
-    public MerchantRecipe displayTrade(@NotNull final MerchantRecipe recipe) {
+    public MerchantRecipe displayTrade(@NotNull final MerchantRecipe recipe,
+                                       @NotNull final Player player) {
         CraftMerchantRecipe oldRecipe = (CraftMerchantRecipe) recipe;
 
         CraftMerchantRecipe newRecipe = new CraftMerchantRecipe(
@@ -38,7 +40,7 @@ public final class VillagerTrade implements VillagerTradeProxy {
         );
 
         for (ItemStack ingredient : recipe.getIngredients()) {
-            newRecipe.addIngredient(Display.display(ingredient.clone()));
+            newRecipe.addIngredient(Display.display(ingredient.clone(), player));
         }
 
         getHandle(newRecipe).setSpecialPrice(getHandle(oldRecipe).getSpecialPrice());

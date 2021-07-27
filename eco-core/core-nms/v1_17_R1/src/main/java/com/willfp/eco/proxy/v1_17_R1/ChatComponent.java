@@ -14,6 +14,7 @@ import net.minecraft.network.chat.ChatModifier;
 import net.minecraft.network.chat.IChatBaseComponent;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,8 @@ import java.util.Arrays;
 
 public final class ChatComponent implements ChatComponentProxy {
     @Override
-    public Object modifyComponent(@NotNull final Object object) {
+    public Object modifyComponent(@NotNull final Object object,
+                                  @NotNull final Player player) {
         if (!(object instanceof IChatBaseComponent chatComponent)) {
             return object;
         }
@@ -31,25 +33,26 @@ public final class ChatComponent implements ChatComponentProxy {
                 continue;
             }
 
-            modifyBaseComponent(iChatBaseComponent);
+            modifyBaseComponent(iChatBaseComponent, player);
         }
 
         return chatComponent;
     }
 
-    private void modifyBaseComponent(@NotNull final IChatBaseComponent component) {
+    private void modifyBaseComponent(@NotNull final IChatBaseComponent component,
+                                     @NotNull final Player player) {
         for (IChatBaseComponent sibling : component.getSiblings()) {
             if (sibling == null) {
                 continue;
             }
 
-            modifyBaseComponent(sibling);
+            modifyBaseComponent(sibling, player);
         }
         if (component instanceof ChatMessage) {
             Arrays.stream(((ChatMessage) component).getArgs())
                     .filter(o -> o instanceof IChatBaseComponent)
                     .map(o -> (IChatBaseComponent) o)
-                    .forEach(this::modifyBaseComponent);
+                    .forEach(o -> modifyBaseComponent(o, player));
         }
 
         ChatHoverable hoverable = component.getChatModifier().getHoverEvent();
@@ -70,7 +73,7 @@ public final class ChatComponent implements ChatComponentProxy {
         String tag = json.getAsJsonObject().get("tag").toString();
         ItemStack itemStack = getFromTag(tag, id);
 
-        Display.displayAndFinalize(itemStack);
+        Display.displayAndFinalize(itemStack, player);
 
         json.getAsJsonObject().remove("tag");
         String newTag = toJson(itemStack);

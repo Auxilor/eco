@@ -18,6 +18,6 @@ public class PacketSetSlot extends AbstractPacketAdapter {
     public void onSend(@NotNull final PacketContainer packet,
                        @NotNull final Player player,
                        @NotNull final PacketEvent event) {
-        packet.getItemModifier().modify(0, Display::display);
+        packet.getItemModifier().modify(0, item -> Display.display(item, player));
     }
 }
