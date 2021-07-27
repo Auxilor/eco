@@ -15,6 +15,9 @@ import org.jetbrains.annotations.NotNull;
  * so you can check a tick later to see the new contents.
  */
 public class ArmorEquipEvent extends PlayerEvent {
+    /**
+     * Bukkit parity.
+     */
     private static final HandlerList HANDLERS = new HandlerList();
 
     /**

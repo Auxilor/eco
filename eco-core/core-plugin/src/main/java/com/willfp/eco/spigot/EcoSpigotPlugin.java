@@ -18,6 +18,7 @@ import com.willfp.eco.spigot.display.PacketSetCreativeSlot;
 import com.willfp.eco.spigot.display.PacketSetSlot;
 import com.willfp.eco.spigot.display.PacketWindowItems;
 import com.willfp.eco.spigot.drops.CollatedRunnable;
+import com.willfp.eco.spigot.eventlisteners.ArmorChangeEventListeners;
 import com.willfp.eco.spigot.eventlisteners.ArmorListener;
 import com.willfp.eco.spigot.eventlisteners.DispenserArmorListener;
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners;
@@ -55,7 +56,7 @@ import java.util.List;
 public abstract class EcoSpigotPlugin extends EcoPlugin {
     @Getter
     private static EcoSpigotPlugin instance;
-    
+
     public EcoSpigotPlugin() {
         super(87955, 10043, "com.willfp.eco.proxy", "&a");
         instance = this;
@@ -153,7 +154,8 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
                 new ShapedRecipeListener(this),
                 new PlayerJumpListeners(),
                 new GUIListener(this),
-                new ArrowDataListener(this)
+                new ArrowDataListener(this),
+                new ArmorChangeEventListeners(this)
         );
     }
 }
