@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * The armor change event <b>does</> contain information about the event.</b>
+ * The armor change event <b>does</b> contain information about the event.
  * <p>
  * Unlike {@link ArmorEquipEvent}, it is called the next tick and contains previous and current armor contents.
  */
