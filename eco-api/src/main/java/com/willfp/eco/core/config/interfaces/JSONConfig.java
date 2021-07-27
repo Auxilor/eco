@@ -29,6 +29,27 @@ public interface JSONConfig extends Config {
     @Nullable
     List<JSONConfig> getSubsectionsOrNull(@NotNull String path);
 
+
+    /**
+     * Get subsection from config.
+     *
+     * @param path The key to check.
+     * @return The subsection. Throws NPE if not found.
+     */
+    @Override
+    @NotNull
+    JSONConfig getSubsection(@NotNull String path);
+
+    /**
+     * Get subsection from config.
+     *
+     * @param path The key to check.
+     * @return The subsection, or null if not found.
+     */
+    @Override
+    @Nullable
+    JSONConfig getSubsectionOrNull(@NotNull String path);
+
     @Override
     JSONConfig clone();
 }

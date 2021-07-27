@@ -2,7 +2,6 @@ package com.willfp.eco.internal.config.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
@@ -150,15 +149,15 @@ public class EcoJSONConfigWrapper implements JSONConfig {
 
     @Override
     @NotNull
-    public Config getSubsection(@NotNull final String path) {
-        Config subsection = getSubsectionOrNull(path);
+    public JSONConfig getSubsection(@NotNull final String path) {
+        JSONConfig subsection = getSubsectionOrNull(path);
         Validate.notNull(subsection);
         return subsection;
     }
 
     @Override
     @Nullable
-    public Config getSubsectionOrNull(@NotNull final String path) {
+    public JSONConfig getSubsectionOrNull(@NotNull final String path) {
         if (values.containsKey(path)) {
             Map<String, Object> subsection = (Map<String, Object>) values.get(path);
             return new EcoJSONConfigSection(subsection);
@@ -171,8 +170,7 @@ public class EcoJSONConfigWrapper implements JSONConfig {
     @NotNull
     public List<JSONConfig> getSubsections(@NotNull final String path) {
         List<JSONConfig> subsections = getSubsectionsOrNull(path);
-        Validate.notNull(subsections);
-        return subsections;
+        return subsections == null ? new ArrayList<>() : subsections;
     }
 
     @Override

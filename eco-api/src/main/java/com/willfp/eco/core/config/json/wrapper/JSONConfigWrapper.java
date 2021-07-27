@@ -32,6 +32,16 @@ public abstract class JSONConfigWrapper extends ConfigWrapper<JSONConfig> implem
     }
 
     @Override
+    public @NotNull JSONConfig getSubsection(@NotNull final String path) {
+        return this.getHandle().getSubsection(path);
+    }
+
+    @Override
+    public @Nullable JSONConfig getSubsectionOrNull(@NotNull final String path) {
+        return this.getHandle().getSubsectionOrNull(path);
+    }
+
+    @Override
     public JSONConfig clone() {
         return this.getHandle().clone();
     }
