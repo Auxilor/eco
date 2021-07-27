@@ -3,7 +3,9 @@ package com.willfp.eco.util;
 import com.willfp.eco.core.tuples.Pair;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -112,7 +114,11 @@ public class BlockUtils {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(blockBreakConsumer, "Must be initialized!");
 
-        if (block.getLocation().getY() < 0 || block.getLocation().getY() > 256) {
+        Location location = block.getLocation();
+        World world = location.getWorld();
+        assert world != null;
+
+        if (location.getY() < world.getMinHeight() || location.getY() > world.getMaxHeight()) {
             return;
         }
 
