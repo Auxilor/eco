@@ -13,16 +13,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements ExtensionLoader {
-    private final Set<Extension> extensions = new HashSet<>();
+    private final Map<Extension, ClassLoader> extensions = new HashMap<>();
 
     public EcoExtensionLoader(@NotNull final EcoPlugin plugin) {
         super(plugin);
@@ -62,9 +64,9 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
             e.printStackTrace();
         }
 
-        ClassLoader cl = new URLClassLoader(new URL[]{url}, this.getPlugin().getClass().getClassLoader());
+        ClassLoader classLoader = new URLClassLoader(new URL[]{url}, this.getPlugin().getClass().getClassLoader());
 
-        InputStream ymlIn = cl.getResourceAsStream("extension.yml");
+        InputStream ymlIn = classLoader.getResourceAsStream("extension.yml");
 
         if (ymlIn == null) {
             throw new MalformedExtensionException("No extension.yml found in " + extensionJar.getName());
@@ -101,7 +103,7 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
         Class<?> cls;
         Object object = null;
         try {
-            cls = cl.loadClass(mainClass);
+            cls = classLoader.loadClass(mainClass);
             object = cls.getConstructor(EcoPlugin.class).newInstance(this.getPlugin());
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
@@ -113,17 +115,24 @@ public class EcoExtensionLoader extends PluginDependent<EcoPlugin> implements Ex
 
         extension.setMetadata(metadata);
         extension.enable();
-        extensions.add(extension);
+        extensions.put(extension, classLoader);
     }
 
     @Override
     public void unloadExtensions() {
-        extensions.forEach(Extension::disable);
+        extensions.keySet().forEach(Extension::disable);
+        for (ClassLoader loader : extensions.values()) {
+            try {
+                ((URLClassLoader) loader).close();
+            } catch (IOException e) {
+                // Do nothing.
+            }
+        }
         extensions.clear();
     }
 
     @Override
     public Set<Extension> getLoadedExtensions() {
-        return extensions;
+        return extensions.keySet();
     }
 }
