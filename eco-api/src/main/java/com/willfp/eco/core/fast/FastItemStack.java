@@ -29,12 +29,6 @@ public interface FastItemStack {
     int getLevelOnItem(@NotNull Enchantment enchantment,
                        boolean checkStored);
 
-    /**
-     * Get bukkit ItemStack again.
-     *
-     * @return The ItemStack.
-     */
-    ItemStack unwrap();
 
     /**
      * Wrap an ItemStack to create a FastItemStack.

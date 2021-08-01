@@ -1,26 +1,23 @@
 package com.willfp.eco.proxy.v1_16_R3.fast;
 
 import com.willfp.eco.core.fast.FastItemStack;
-import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import net.minecraft.server.v1_16_R3.ItemEnchantedBook;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.Items;
 import net.minecraft.server.v1_16_R3.NBTBase;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NBTTagList;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class NMSFastItemStack implements FastItemStack {
+public class EcoFastItemStack implements FastItemStack {
     private final ItemStack handle;
 
-    public NMSFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
+    public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
         this.handle = FastItemStackUtils.getNMSStack(itemStack);
     }
 
@@ -57,9 +54,5 @@ public class NMSFastItemStack implements FastItemStack {
             return '\uffff' & compound.getShort("lvl");
         }
         return 0;
-    }
-    @Override
-    public org.bukkit.inventory.ItemStack unwrap() {
-        return CraftItemStack.asCraftMirror(handle);
     }
 }
