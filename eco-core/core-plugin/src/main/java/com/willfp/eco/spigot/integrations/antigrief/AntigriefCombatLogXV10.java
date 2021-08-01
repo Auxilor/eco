@@ -50,7 +50,7 @@ public class AntigriefCombatLogXV10 implements AntigriefWrapper {
         // Only run checks if the NewbieHelper expansion is installed on the server.
         ExpansionManager expansionManager = this.instance.getExpansionManager();
         Optional<Expansion> optionalExpansion = expansionManager.getExpansionByName("NewbieHelper");
-        if(optionalExpansion.isPresent()) {
+        if (optionalExpansion.isPresent()) {
             Expansion expansion = optionalExpansion.get();
             NewbieHelper newbieHelper = (NewbieHelper) expansion;
             ListenerPVP pvpListener = newbieHelper.getPVPListener();
