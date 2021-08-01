@@ -10,6 +10,7 @@ import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.proxy.Cleaner;
@@ -30,6 +31,8 @@ import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI;
 import com.willfp.eco.internal.logging.EcoLogger;
 import com.willfp.eco.internal.proxy.EcoProxyFactory;
 import com.willfp.eco.internal.scheduling.EcoScheduler;
+import com.willfp.eco.proxy.FastItemStackFactoryProxy;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -135,5 +138,10 @@ public final class EcoHandler extends EcoSpigotPlugin implements Handler {
     @Override
     public EcoPlugin getPluginByName(@NotNull final String name) {
         return Plugins.LOADED_ECO_PLUGINS.get(name.toLowerCase());
+    }
+
+    @Override
+    public FastItemStack createFastItemStack(@NotNull final ItemStack itemStack) {
+        return this.getProxy(FastItemStackFactoryProxy.class).create(itemStack);
     }
 }

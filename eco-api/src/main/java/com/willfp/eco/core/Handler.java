@@ -8,11 +8,13 @@ import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -158,4 +160,12 @@ public interface Handler {
      * @return A list of plugin names in lowercase.
      */
     List<String> getLoadedPlugins();
+
+    /**
+     * Create a FastItemStack.
+     *
+     * @param itemStack The base ItemStack.
+     * @return The FastItemStack.
+     */
+    FastItemStack createFastItemStack(@NotNull ItemStack itemStack);
 }
