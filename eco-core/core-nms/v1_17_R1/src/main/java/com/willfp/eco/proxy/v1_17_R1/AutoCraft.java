@@ -1,8 +1,8 @@
 package com.willfp.eco.proxy.v1_17_R1;
 
 import com.willfp.eco.proxy.AutoCraftProxy;
-import net.minecraft.network.protocol.game.PacketPlayOutAutoRecipe;
-import net.minecraft.resources.MinecraftKey;
+import net.minecraft.network.protocol.game.ClientboundPlaceGhostRecipePacket;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -10,10 +10,10 @@ import java.lang.reflect.Field;
 public final class AutoCraft implements AutoCraftProxy {
     @Override
     public void modifyPacket(@NotNull final Object packet) throws NoSuchFieldException, IllegalAccessException {
-        PacketPlayOutAutoRecipe recipePacket = (PacketPlayOutAutoRecipe) packet;
+        ClientboundPlaceGhostRecipePacket recipePacket = (ClientboundPlaceGhostRecipePacket) packet;
         Field fKey = recipePacket.getClass().getDeclaredField("b");
         fKey.setAccessible(true);
-        MinecraftKey key = (MinecraftKey) fKey.get(recipePacket);
-        fKey.set(recipePacket, new MinecraftKey(key.getNamespace(), key.getKey() + "_displayed"));
+        ResourceLocation key = (ResourceLocation) fKey.get(recipePacket);
+        fKey.set(recipePacket, new ResourceLocation(key.getNamespace(), key.getPath() + "_displayed"));
     }
 }

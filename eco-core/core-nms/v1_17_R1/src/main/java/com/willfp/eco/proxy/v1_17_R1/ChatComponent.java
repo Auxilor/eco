@@ -6,12 +6,12 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.proxy.ChatComponentProxy;
-import net.minecraft.nbt.MojangsonParser;
-import net.minecraft.network.chat.ChatBaseComponent;
-import net.minecraft.network.chat.ChatHoverable;
-import net.minecraft.network.chat.ChatMessage;
-import net.minecraft.network.chat.ChatModifier;
-import net.minecraft.network.chat.IChatBaseComponent;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -24,11 +24,11 @@ public final class ChatComponent implements ChatComponentProxy {
     @Override
     public Object modifyComponent(@NotNull final Object object,
                                   @NotNull final Player player) {
-        if (!(object instanceof IChatBaseComponent chatComponent)) {
+        if (!(object instanceof Component chatComponent)) {
             return object;
         }
 
-        for (IChatBaseComponent iChatBaseComponent : chatComponent) {
+        for (Component iChatBaseComponent : chatComponent) {
             if (iChatBaseComponent == null) {
                 continue;
             }
@@ -39,30 +39,31 @@ public final class ChatComponent implements ChatComponentProxy {
         return chatComponent;
     }
 
-    private void modifyBaseComponent(@NotNull final IChatBaseComponent component,
+    private void modifyBaseComponent(@NotNull final Component component,
                                      @NotNull final Player player) {
-        for (IChatBaseComponent sibling : component.getSiblings()) {
+        for (Component sibling : component.getSiblings()) {
             if (sibling == null) {
                 continue;
             }
 
             modifyBaseComponent(sibling, player);
         }
-        if (component instanceof ChatMessage) {
-            Arrays.stream(((ChatMessage) component).getArgs())
-                    .filter(o -> o instanceof IChatBaseComponent)
-                    .map(o -> (IChatBaseComponent) o)
+
+        if (component instanceof TranslatableComponent baseComponent) {
+            Arrays.stream(baseComponent.getArgs())
+                    .filter(o -> o instanceof Component)
+                    .map(o -> (Component) o)
                     .forEach(o -> modifyBaseComponent(o, player));
         }
 
-        ChatHoverable hoverable = component.getChatModifier().getHoverEvent();
+        HoverEvent hoverable = component.getStyle().getHoverEvent();
 
         if (hoverable == null) {
             return;
         }
 
-        JsonObject jsonObject = hoverable.b();
-        JsonElement json = hoverable.b().get("contents");
+        JsonObject jsonObject = hoverable.serialize();
+        JsonElement json = jsonObject.get("contents");
         if (json.getAsJsonObject().get("id") == null) {
             return;
         }
@@ -81,11 +82,11 @@ public final class ChatComponent implements ChatComponentProxy {
 
         jsonObject.remove("contents");
         jsonObject.add("contents", json);
-        ChatHoverable newHoverable = ChatHoverable.a(jsonObject);
-        ChatModifier modifier = component.getChatModifier();
-        modifier = modifier.setChatHoverable(newHoverable);
+        HoverEvent newHoverable = HoverEvent.deserialize(jsonObject);
+        Style modifier = component.getStyle();
+        modifier = modifier.withHoverEvent(newHoverable);
 
-        ((ChatBaseComponent) component).setChatModifier(modifier);
+        ((BaseComponent) component).setStyle(modifier);
     }
 
     private static ItemStack getFromTag(@NotNull final String jsonTag,
@@ -105,7 +106,7 @@ public final class ChatComponent implements ChatComponentProxy {
         net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(itemStack);
 
         try {
-            nmsStack.setTag(MojangsonParser.parse(processedJsonTag));
+            nmsStack.setTag(TagParser.parseTag(processedJsonTag));
         } catch (CommandSyntaxException e) {
             e.printStackTrace();
         }

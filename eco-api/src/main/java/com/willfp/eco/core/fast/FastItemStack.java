@@ -5,7 +5,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,18 +30,11 @@ public interface FastItemStack {
                        boolean checkStored);
 
     /**
-     * Get the lore of the item.
+     * Get bukkit ItemStack again.
      *
-     * @return The lore.
+     * @return The ItemStack.
      */
-    List<String> getLore();
-
-    /**
-     * Set the lore of the item.
-     *
-     * @param lore The lore.
-     */
-    void setLore(@NotNull List<String> lore);
+    ItemStack unwrap();
 
     /**
      * Wrap an ItemStack to create a FastItemStack.

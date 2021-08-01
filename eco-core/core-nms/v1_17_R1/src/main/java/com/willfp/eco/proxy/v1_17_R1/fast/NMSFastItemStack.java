@@ -1,20 +1,18 @@
-package com.willfp.eco.proxy.v1_16_R3.fast;
+package com.willfp.eco.proxy.v1_17_R1.fast;
 
 import com.willfp.eco.core.fast.FastItemStack;
-import net.minecraft.server.v1_16_R3.IChatBaseComponent;
-import net.minecraft.server.v1_16_R3.ItemEnchantedBook;
-import net.minecraft.server.v1_16_R3.ItemStack;
-import net.minecraft.server.v1_16_R3.Items;
-import net.minecraft.server.v1_16_R3.NBTBase;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagList;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NMSFastItemStack implements FastItemStack {
@@ -26,11 +24,11 @@ public class NMSFastItemStack implements FastItemStack {
 
     @Override
     public Map<Enchantment, Integer> getEnchantmentsOnItem(final boolean checkStored) {
-        NBTTagList enchantmentNBT = checkStored && handle.getItem() == Items.ENCHANTED_BOOK ? ItemEnchantedBook.d(handle) : handle.getEnchantments();
+        ListTag enchantmentNBT = checkStored && handle.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(handle) : handle.getEnchantmentTags();
         Map<Enchantment, Integer> foundEnchantments = new HashMap<>();
 
-        for (NBTBase base : enchantmentNBT) {
-            NBTTagCompound compound = (NBTTagCompound) base;
+        for (Tag base : enchantmentNBT) {
+            CompoundTag compound = (CompoundTag) base;
             String key = compound.getString("id");
             int level = '\uffff' & compound.getShort("lvl");
 
@@ -45,10 +43,10 @@ public class NMSFastItemStack implements FastItemStack {
     @Override
     public int getLevelOnItem(@NotNull final Enchantment enchantment,
                               final boolean checkStored) {
-        NBTTagList enchantmentNBT = checkStored && handle.getItem() == Items.ENCHANTED_BOOK ? ItemEnchantedBook.d(handle) : handle.getEnchantments();
+        ListTag enchantmentNBT = checkStored && handle.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(handle) : handle.getEnchantmentTags();
 
-        for (NBTBase base : enchantmentNBT) {
-            NBTTagCompound compound = (NBTTagCompound) base;
+        for (Tag base : enchantmentNBT) {
+            CompoundTag compound = (CompoundTag) base;
             String key = compound.getString("id");
             if (!key.equals(enchantment.getKey().toString())) {
                 continue;
@@ -58,6 +56,7 @@ public class NMSFastItemStack implements FastItemStack {
         }
         return 0;
     }
+
     @Override
     public org.bukkit.inventory.ItemStack unwrap() {
         return CraftItemStack.asCraftMirror(handle);

@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url "https://repo.jpenilla.xyz/snapshots/" }
+    }
+}
+
 rootProject.name = 'eco'
 
 // Core
