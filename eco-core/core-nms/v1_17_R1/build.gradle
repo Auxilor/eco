@@ -14,6 +14,14 @@ specialGradle {
     specialSourceVersion.set("1.10.0")
 }
 
-tasks {
-    build.dependsOn productionMappedJar
+buildTools {
+    quiet.set(true);
 }
+
+configurations.create('mapped')
+
+artifacts {
+    mapped jar.outputs.files.files.toArray()[0]
+}
+
+build.dependsOn productionMappedJar

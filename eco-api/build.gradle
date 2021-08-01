@@ -17,8 +17,6 @@ java {
     withJavadocJar()
 }
 
-compileJava.options.encoding = 'UTF-8'
-compileJava.dependsOn clean
 
 build.dependsOn publishToMavenLocal
 
