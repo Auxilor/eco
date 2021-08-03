@@ -77,4 +77,11 @@ public class PlaceholderEntry {
     public boolean requiresPlayer() {
         return requiresPlayer;
     }
+
+    /**
+     * Register the placeholder.
+     */
+    public void register() {
+        PlaceholderManager.registerPlaceholder(this);
+    }
 }
