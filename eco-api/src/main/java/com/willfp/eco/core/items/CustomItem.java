@@ -27,7 +27,7 @@ public class CustomItem implements TestableItem {
     /**
      * The test for ItemStacks to pass.
      */
-    private final Predicate<ItemStack> test;
+    private final Predicate<@NotNull ItemStack> test;
 
     /**
      * Example Item: what the user should see.
@@ -42,7 +42,7 @@ public class CustomItem implements TestableItem {
      * @param item The example ItemStacks.
      */
     public CustomItem(@NotNull final NamespacedKey key,
-                      @NotNull final Predicate<ItemStack> test,
+                      @NotNull final Predicate<@NotNull ItemStack> test,
                       @NotNull final ItemStack item) {
         this.key = key;
         this.test = test;
@@ -51,6 +51,10 @@ public class CustomItem implements TestableItem {
 
     @Override
     public boolean matches(@Nullable final ItemStack itemStack) {
+        if (itemStack == null) {
+            return false;
+        }
+
         return test.test(itemStack);
     }
 
