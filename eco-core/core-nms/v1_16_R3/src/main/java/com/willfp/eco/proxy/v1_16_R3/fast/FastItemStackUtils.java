@@ -1,7 +1,6 @@
 package com.willfp.eco.proxy.v1_16_R3.fast;
 
 import lombok.experimental.UtilityClass;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -15,14 +14,14 @@ public class FastItemStackUtils {
 
     public net.minecraft.server.v1_16_R3.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
         if (!(itemStack instanceof CraftItemStack)) {
-            Bukkit.getLogger().warning("Not CraftItemStack - set methods will not work!");
             return CraftItemStack.asNMSCopy(itemStack);
-        }
-        try {
-            return (net.minecraft.server.v1_16_R3.ItemStack) field.get(itemStack);
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-            return null;
+        } else {
+            try {
+                return (net.minecraft.server.v1_16_R3.ItemStack) field.get(itemStack);
+            } catch (ReflectiveOperationException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 

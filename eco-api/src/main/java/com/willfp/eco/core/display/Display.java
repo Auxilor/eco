@@ -77,7 +77,7 @@ public class Display {
             return itemStack; // return early if there's no customization of the item
         }
 
-        Bukkit.getLogger().info(FastItemStack.wrap(itemStack).isModifyingInstance() ? "CIS!" : "Not CIS :(");
+        Bukkit.getLogger().info((FastItemStack.wrap(itemStack).isModifyingInstance() == (FastItemStack.wrap(itemStack).unwrap() == itemStack)) + " amogus?");
 
         Map<String, Object[]> pluginVarArgs = new HashMap<>();
 

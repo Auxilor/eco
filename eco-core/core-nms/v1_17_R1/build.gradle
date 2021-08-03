@@ -24,4 +24,5 @@ artifacts {
     mapped jar.outputs.files.files.toArray()[0]
 }
 
+productionMappedJar.mustRunAfter(clean)
 build.dependsOn productionMappedJar

@@ -18,10 +18,17 @@ import java.util.Map;
 public class EcoFastItemStack implements FastItemStack {
     private final ItemStack handle;
     private final boolean isCIS;
+    private final CraftItemStack cis;
 
     public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
         this.handle = FastItemStackUtils.getNMSStack(itemStack);
-        this.isCIS = itemStack instanceof CraftItemStack;
+        if (itemStack instanceof CraftItemStack craftItemStack) {
+            this.isCIS = true;
+            this.cis = craftItemStack;
+        } else {
+            this.isCIS = false;
+            this.cis = null;
+        }
     }
 
     @Override
@@ -61,7 +68,7 @@ public class EcoFastItemStack implements FastItemStack {
 
     @Override
     public org.bukkit.inventory.ItemStack unwrap() {
-        return CraftItemStack.asCraftMirror(handle);
+        return this.isCIS ? cis : CraftItemStack.asCraftMirror(handle);
     }
 
     @Override
