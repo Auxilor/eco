@@ -1,17 +1,17 @@
-package com.willfp.eco.proxy.v1_17_R1.fast;
+package com.willfp.eco.proxy.v1_16_R3.fast;
 
-import com.willfp.eco.core.fast.FastItemStack;
+import com.willfp.eco.internal.fast.EcoFastItemStack;
 import com.willfp.eco.util.StringUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.EnchantedBookItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey;
+import net.minecraft.server.v1_16_R3.ItemEnchantedBook;
+import net.minecraft.server.v1_16_R3.ItemStack;
+import net.minecraft.server.v1_16_R3.Items;
+import net.minecraft.server.v1_16_R3.NBTBase;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import net.minecraft.server.v1_16_R3.NBTTagList;
+import net.minecraft.server.v1_16_R3.NBTTagString;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,30 +21,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EcoFastItemStack implements FastItemStack {
-    private final ItemStack handle;
-    private final boolean isCIS;
-    private final org.bukkit.inventory.ItemStack bukkit;
+public class NMSFastItemStack extends EcoFastItemStack<ItemStack> {
     private List<String> loreCache = null;
 
-    public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
-        this.handle = FastItemStackUtils.getNMSStack(itemStack);
-        if (itemStack instanceof CraftItemStack craftItemStack) {
-            this.isCIS = true;
-            this.bukkit = craftItemStack;
-        } else {
-            this.isCIS = false;
-            this.bukkit = itemStack;
-        }
+    public NMSFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
+        super(FastItemStackUtils.getNMSStack(itemStack), itemStack);
     }
 
     @Override
     public Map<Enchantment, Integer> getEnchantmentsOnItem(final boolean checkStored) {
-        ListTag enchantmentNBT = checkStored && handle.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(handle) : handle.getEnchantmentTags();
+        NBTTagList enchantmentNBT = checkStored && this.getHandle().getItem() == Items.ENCHANTED_BOOK ? ItemEnchantedBook.d(this.getHandle()) : this.getHandle().getEnchantments();
         Map<Enchantment, Integer> foundEnchantments = new HashMap<>();
 
-        for (Tag base : enchantmentNBT) {
-            CompoundTag compound = (CompoundTag) base;
+        for (NBTBase base : enchantmentNBT) {
+            NBTTagCompound compound = (NBTTagCompound) base;
             String key = compound.getString("id");
             int level = '\uffff' & compound.getShort("lvl");
 
@@ -59,10 +49,10 @@ public class EcoFastItemStack implements FastItemStack {
     @Override
     public int getLevelOnItem(@NotNull final Enchantment enchantment,
                               final boolean checkStored) {
-        ListTag enchantmentNBT = checkStored && handle.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(handle) : handle.getEnchantmentTags();
+        NBTTagList enchantmentNBT = checkStored && this.getHandle().getItem() == Items.ENCHANTED_BOOK ? ItemEnchantedBook.d(this.getHandle()) : this.getHandle().getEnchantments();
 
-        for (Tag base : enchantmentNBT) {
-            CompoundTag compound = (CompoundTag) base;
+        for (NBTBase base : enchantmentNBT) {
+            NBTTagCompound compound = (NBTTagCompound) base;
             String key = compound.getString("id");
             if (!key.equals(enchantment.getKey().toString())) {
                 continue;
@@ -84,15 +74,15 @@ public class EcoFastItemStack implements FastItemStack {
             }
         }
 
-        CompoundTag displayTag = handle.getOrCreateTagElement("display");
-        if (!displayTag.contains("Lore")) {
-            displayTag.put("Lore", new ListTag());
+        NBTTagCompound displayTag = this.getHandle().a("display");
+        if (!displayTag.hasKey("Lore")) {
+            displayTag.set("Lore", new NBTTagList());
         }
 
-        ListTag loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
+        NBTTagList loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
         loreTag.clear();
         for (String s : jsonLore) {
-            loreTag.add(StringTag.valueOf(s));
+            loreTag.add(NBTTagString.a(s));
         }
 
         apply();
@@ -111,15 +101,14 @@ public class EcoFastItemStack implements FastItemStack {
         }
 
         loreCache = lore;
-
         return lore;
     }
 
     private List<String> getLoreJSON() {
-        CompoundTag displayTag = handle.getOrCreateTagElement("display");
+        NBTTagCompound displayTag = this.getHandle().a("display");
 
-        if (displayTag.contains("Lore")) {
-            ListTag loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
+        if (displayTag.hasKey("Lore")) {
+            NBTTagList loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
             List<String> lore = new ArrayList<>(loreTag.size());
             for (int i = 0; i < loreTag.size(); i++) {
                 lore.add(loreTag.getString(i));
@@ -131,8 +120,8 @@ public class EcoFastItemStack implements FastItemStack {
     }
 
     public void apply() {
-        if (!this.isCIS) {
-            bukkit.setItemMeta(CraftItemStack.asCraftMirror(handle).getItemMeta());
+        if (!(this.getBukkit() instanceof CraftItemStack)) {
+            this.getBukkit().setItemMeta(CraftItemStack.asCraftMirror(this.getHandle()).getItemMeta());
         }
     }
 }
