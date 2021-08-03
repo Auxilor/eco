@@ -29,3 +29,5 @@ softdepend:
 libraries:
   - org.reflections:reflections:0.9.12
   - org.apache.maven:maven-artifact:3.0.3
+  - net.kyori:adventure-text-serializer-gson:4.8.1
+  - net.kyori:adventure-text-serializer-legacy:4.8.1

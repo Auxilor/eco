@@ -1,9 +1,7 @@
 package com.willfp.eco.proxy.v1_16_R3.fast;
 
 import com.willfp.eco.core.fast.FastItemStack;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_16_R3.IChatBaseComponent;
+import com.willfp.eco.util.StringUtils;
 import net.minecraft.server.v1_16_R3.ItemEnchantedBook;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.Items;
@@ -12,7 +10,6 @@ import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NBTTagList;
 import net.minecraft.server.v1_16_R3.NBTTagString;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -83,7 +80,7 @@ public class EcoFastItemStack implements FastItemStack {
         List<String> jsonLore = new ArrayList<>();
         if (lore != null) {
             for (String s : lore) {
-                jsonLore.add(ComponentSerializer.toString(TextComponent.fromLegacyText(s)));
+                jsonLore.add(StringUtils.legacyToJson(s));
             }
         }
 
@@ -110,8 +107,7 @@ public class EcoFastItemStack implements FastItemStack {
         List<String> lore = new ArrayList<>();
 
         for (String s : this.getLoreJSON()) {
-            IChatBaseComponent component = IChatBaseComponent.ChatSerializer.a(s);
-            lore.add(CraftChatMessage.fromComponent(component));
+            lore.add(StringUtils.jsonToLegacy(s));
         }
 
         loreCache = lore;
