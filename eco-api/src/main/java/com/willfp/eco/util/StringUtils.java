@@ -126,14 +126,6 @@ public class StringUtils {
         return matcher.appendTail(builder).toString();
     }
 
-    /**
-     * Colors a string with a gradient.
-     *
-     * @param string The string to color.
-     * @param start  The start color.
-     * @param end    The end color.
-     * @return The string, colored.
-     */
     private static String processGradients(@NotNull final String string,
                                            @NotNull final Color start,
                                            @NotNull final Color end) {
@@ -171,14 +163,6 @@ public class StringUtils {
         return stringBuilder.toString();
     }
 
-    /**
-     * Creates chatColors for gradients.
-     *
-     * @param start The start color.
-     * @param end   The end color.
-     * @param step  How many colors are returned.
-     * @return Array of chat colors.
-     */
     private static ChatColor[] getGradientColors(@NotNull final Color start,
                                                  @NotNull final Color end,
                                                  final int step) {
@@ -199,12 +183,6 @@ public class StringUtils {
         return colors;
     }
 
-    /**
-     * Add gradients to a string.
-     *
-     * @param string The string.
-     * @return The string, colorized.
-     */
     private static String translateGradients(@NotNull final String string) {
         String processedString = string;
         for (Pattern pattern : GRADIENT_PATTERNS) {
