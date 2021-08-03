@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +17,11 @@ import java.util.Map;
 
 public class EcoFastItemStack implements FastItemStack {
     private final ItemStack handle;
+    private final boolean isCMS;
 
     public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
         this.handle = FastItemStackUtils.getNMSStack(itemStack);
+        this.isCMS = itemStack instanceof CraftItemStack;
     }
 
     @Override
@@ -54,5 +57,15 @@ public class EcoFastItemStack implements FastItemStack {
             return '\uffff' & compound.getShort("lvl");
         }
         return 0;
+    }
+
+    @Override
+    public org.bukkit.inventory.ItemStack unwrap() {
+        return CraftItemStack.asCraftMirror(handle);
+    }
+
+    @Override
+    public boolean isModifyingInstance() {
+        return isCMS;
     }
 }

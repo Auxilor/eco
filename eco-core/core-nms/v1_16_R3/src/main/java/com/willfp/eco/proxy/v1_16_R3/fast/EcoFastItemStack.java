@@ -7,6 +7,7 @@ import net.minecraft.server.v1_16_R3.Items;
 import net.minecraft.server.v1_16_R3.NBTBase;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NBTTagList;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
@@ -16,9 +17,11 @@ import java.util.Map;
 
 public class EcoFastItemStack implements FastItemStack {
     private final ItemStack handle;
+    private final boolean isCMS;
 
     public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
         this.handle = FastItemStackUtils.getNMSStack(itemStack);
+        this.isCMS = itemStack instanceof CraftItemStack;
     }
 
     @Override
@@ -54,5 +57,15 @@ public class EcoFastItemStack implements FastItemStack {
             return '\uffff' & compound.getShort("lvl");
         }
         return 0;
+    }
+
+    @Override
+    public org.bukkit.inventory.ItemStack unwrap() {
+        return CraftItemStack.asCraftMirror(handle);
+    }
+
+    @Override
+    public boolean isModifyingInstance() {
+        return isCMS;
     }
 }

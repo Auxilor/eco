@@ -9,6 +9,10 @@ import java.util.Map;
 
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.
+ * <p>
+ * If the ItemStack wrapped is a CraftItemStack, then the instance will be modified, allowing for set methods to work.
+ * <p>
+ * Otherwise, the FastItemStack must then be unwrapped to get a bukkit copy.
  */
 public interface FastItemStack {
     /**
@@ -28,6 +32,22 @@ public interface FastItemStack {
      */
     int getLevelOnItem(@NotNull Enchantment enchantment,
                        boolean checkStored);
+
+    /**
+     * Unwrap an ItemStack.
+     *
+     * @return The bukkit ItemStack.
+     */
+    ItemStack unwrap();
+
+    /**
+     * If the FastItemStack modifies the actual ItemStack instance or a copy.
+     * <p>
+     * If a copy, then {@link FastItemStack#unwrap()} must be called in order to obtain the modified Bukkit ItemStack.
+     *
+     * @return If the ItemStack wrapped is a CraftItemStack, allowing for direct modification.
+     */
+    boolean isModifyingInstance();
 
     /**
      * Wrap an ItemStack to create a FastItemStack.
