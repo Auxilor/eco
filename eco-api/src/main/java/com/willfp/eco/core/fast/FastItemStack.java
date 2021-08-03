@@ -12,7 +12,9 @@ import java.util.Map;
  * <p>
  * If the ItemStack wrapped is a CraftItemStack, then the instance will be modified, allowing for set methods to work.
  * <p>
- * Otherwise, the FastItemStack must then be unwrapped to get a bukkit copy.
+ * Otherwise, apply() must be called in order to apply the changes.
+ * <p>
+ * apply() <b>will</b> call getItemMeta and setItemMeta which will hurt performance, however this will still be faster.
  */
 public interface FastItemStack {
     /**
@@ -34,20 +36,15 @@ public interface FastItemStack {
                        boolean checkStored);
 
     /**
-     * Unwrap an ItemStack.
-     *
-     * @return The bukkit ItemStack.
-     */
-    ItemStack unwrap();
-
-    /**
-     * If the FastItemStack modifies the actual ItemStack instance or a copy.
+     * Apply the changes made in FastItemStack.
      * <p>
-     * If a copy, then {@link FastItemStack#unwrap()} must be called in order to obtain the modified Bukkit ItemStack.
-     *
-     * @return If the ItemStack wrapped is a CraftItemStack, allowing for direct modification.
+     * If the ItemStack was a CraftItemStack, then no code will run - the changes are automatically applied.
+     * <p>
+     * If the ItemStack wasn't a CraftItemStack, then the unwrapped ItemStack's ItemMeta will be applied to the original ItemStack.
+     * <p>
+     * You should <b>always</b> call apply() if you have used any set methods.
      */
-    boolean isModifyingInstance();
+    void apply();
 
     /**
      * Wrap an ItemStack to create a FastItemStack.
