@@ -17,11 +17,11 @@ import java.util.Map;
 
 public class EcoFastItemStack implements FastItemStack {
     private final ItemStack handle;
-    private final boolean isCMS;
+    private final boolean isCIS;
 
     public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
         this.handle = FastItemStackUtils.getNMSStack(itemStack);
-        this.isCMS = itemStack instanceof CraftItemStack;
+        this.isCIS = itemStack instanceof CraftItemStack;
     }
 
     @Override
@@ -66,6 +66,6 @@ public class EcoFastItemStack implements FastItemStack {
 
     @Override
     public boolean isModifyingInstance() {
-        return isCMS;
+        return isCIS;
     }
 }

@@ -1,7 +1,9 @@
 package com.willfp.eco.core.display;
 
+import com.willfp.eco.core.fast.FastItemStack;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,6 +76,8 @@ public class Display {
         if (!itemStack.hasItemMeta()) {
             return itemStack; // return early if there's no customization of the item
         }
+
+        Bukkit.getLogger().info(FastItemStack.wrap(itemStack).isModifyingInstance() ? "CIS!" : "Not CIS :(");
 
         Map<String, Object[]> pluginVarArgs = new HashMap<>();
 
