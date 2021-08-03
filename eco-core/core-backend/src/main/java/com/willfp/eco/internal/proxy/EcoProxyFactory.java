@@ -32,7 +32,7 @@ public class EcoProxyFactory extends PluginDependent<EcoPlugin> implements Proxy
         super(plugin);
 
         Validate.isTrue(
-                !plugin.getProxyPackage().equalsIgnoreCase(""),
+                !plugin.getProxyPackage().isEmpty(),
                 "Specified plugin has no proxy support!"
         );
 
