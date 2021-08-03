@@ -1,18 +1,27 @@
 package com.willfp.eco.proxy.v1_16_R3.fast;
 
 import com.willfp.eco.core.fast.FastItemStack;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
+import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import net.minecraft.server.v1_16_R3.ItemEnchantedBook;
 import net.minecraft.server.v1_16_R3.ItemStack;
 import net.minecraft.server.v1_16_R3.Items;
 import net.minecraft.server.v1_16_R3.NBTBase;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NBTTagList;
+import net.minecraft.server.v1_16_R3.NBTTagString;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EcoFastItemStack implements FastItemStack {
@@ -67,6 +76,55 @@ public class EcoFastItemStack implements FastItemStack {
     }
 
     @Override
+    public void setLore(@Nullable final List<String> lore) {
+        List<String> jsonLore = new ArrayList<>();
+        if (lore != null) {
+            for (String s : lore) {
+                jsonLore.add(ComponentSerializer.toString(TextComponent.fromLegacyText(s)));
+            }
+        }
+
+        NBTTagCompound displayTag = handle.a("display");
+        if (!displayTag.hasKey("Lore")) {
+            displayTag.set("Lore", new NBTTagList());
+        }
+
+        NBTTagList loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
+        loreTag.clear();
+        for (String s : jsonLore) {
+            loreTag.add(NBTTagString.a(s));
+        }
+
+        apply();
+    }
+
+    @Override
+    public List<String> getLore() {
+        List<String> lore = new ArrayList<>();
+
+        for (String s : this.getLoreJSON()) {
+            IChatBaseComponent component = IChatBaseComponent.ChatSerializer.a(s);
+            lore.add(CraftChatMessage.fromComponent(component));
+        }
+
+        return lore;
+    }
+
+    private List<String> getLoreJSON() {
+        NBTTagCompound displayTag = handle.a("display");
+
+        if (displayTag.hasKey("Lore")) {
+            NBTTagList loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING);
+            List<String> lore = new ArrayList<>(loreTag.size());
+            for (int i = 0; i < loreTag.size(); i++) {
+                lore.add(loreTag.getString(i));
+            }
+            return lore;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     public void apply() {
         if (!this.isCIS) {
             bukkit.setItemMeta(CraftItemStack.asCraftMirror(handle).getItemMeta());

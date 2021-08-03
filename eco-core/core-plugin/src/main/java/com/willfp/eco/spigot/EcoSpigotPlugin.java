@@ -3,6 +3,7 @@ package com.willfp.eco.spigot;
 import com.willfp.eco.core.AbstractPacketAdapter;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.display.Display;
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
@@ -43,14 +44,19 @@ import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener;
 import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
+import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class EcoSpigotPlugin extends EcoPlugin {
@@ -67,6 +73,19 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
 
         BlockBreakProxy blockBreakProxy = this.getProxy(BlockBreakProxy.class);
         BlockUtils.initialize(blockBreakProxy::breakBlock);
+
+
+        // Run static init with CIS.
+        Inventory inventory = Bukkit.createInventory(null, 9);
+        inventory.addItem(new ItemStack(Material.ACACIA_DOOR));
+        ItemStack testItem = inventory.getItem(0);
+        assert testItem != null;
+        FastItemStack.wrap(testItem);
+        List<String> testLore = Collections.singletonList(StringUtils.format("&e&lTest&r &a&lTest!&r <gradient:000000>123456789</gradient:ffffff>"));
+
+        FastItemStack.wrap(testItem).setLore(testLore);
+
+        Bukkit.getLogger().info(FastItemStack.wrap(testItem).getLore().toString());
     }
 
     @Override

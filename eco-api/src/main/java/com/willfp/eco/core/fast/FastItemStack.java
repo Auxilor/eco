@@ -5,16 +5,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.
- * <p>
- * If the ItemStack wrapped is a CraftItemStack, then the instance will be modified, allowing for set methods to work.
- * <p>
- * Otherwise, apply() must be called in order to apply the changes.
- * <p>
- * apply() <b>will</b> call getItemMeta and setItemMeta which will hurt performance, however this will still be faster.
  */
 public interface FastItemStack {
     /**
@@ -36,15 +31,18 @@ public interface FastItemStack {
                        boolean checkStored);
 
     /**
-     * Apply the changes made in FastItemStack.
-     * <p>
-     * If the ItemStack was a CraftItemStack, then no code will run - the changes are automatically applied.
-     * <p>
-     * If the ItemStack wasn't a CraftItemStack, then the unwrapped ItemStack's ItemMeta will be applied to the original ItemStack.
-     * <p>
-     * You should <b>always</b> call apply() if you have used any set methods.
+     * Set the item lore.
+     *
+     * @param lore The lore.
      */
-    void apply();
+    void setLore(@NotNull List<String> lore);
+
+    /**
+     * Get the item lore.
+     *
+     * @return The lore.
+     */
+    List<String> getLore();
 
     /**
      * Wrap an ItemStack to create a FastItemStack.
