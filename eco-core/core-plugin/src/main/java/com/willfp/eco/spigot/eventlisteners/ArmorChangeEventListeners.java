@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 public class ArmorChangeEventListeners extends PluginDependent<EcoPlugin> implements Listener {
     /**
      * Pass an {@link EcoPlugin} in order to interface with it.
