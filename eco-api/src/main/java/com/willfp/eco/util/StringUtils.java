@@ -31,6 +31,8 @@ public class StringUtils {
     private static final List<Pattern> GRADIENT_PATTERNS = new ImmutableList.Builder<Pattern>()
             .add(Pattern.compile("<GRADIENT:([0-9A-Fa-f]{6})>(.*?)</GRADIENT:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("<gradient:([0-9A-Fa-f]{6})>(.*?)</gradient:([0-9A-Fa-f]{6})>"))
+            .add(Pattern.compile("<GRADIENT:#([0-9A-Fa-f]{6})>(.*?)</GRADIENT:#([0-9A-Fa-f]{6})>"))
+            .add(Pattern.compile("<gradient:#([0-9A-Fa-f]{6})>(.*?)</gradient:#([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("<G:([0-9A-Fa-f]{6})>(.*?)</G:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("<#:([0-9A-Fa-f]{6})>(.*?)</#:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("\\{#:([0-9A-Fa-f]{6})}(.*?)\\{/#:([0-9A-Fa-f]{6})}"))
