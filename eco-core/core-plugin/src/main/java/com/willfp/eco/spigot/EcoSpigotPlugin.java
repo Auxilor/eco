@@ -51,6 +51,7 @@ import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -73,19 +74,6 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
 
         BlockBreakProxy blockBreakProxy = this.getProxy(BlockBreakProxy.class);
         BlockUtils.initialize(blockBreakProxy::breakBlock);
-
-
-        // Run static init with CIS.
-        Inventory inventory = Bukkit.createInventory(null, 9);
-        inventory.addItem(new ItemStack(Material.ACACIA_DOOR));
-        ItemStack testItem = inventory.getItem(0);
-        assert testItem != null;
-        FastItemStack.wrap(testItem);
-        List<String> testLore = Collections.singletonList(StringUtils.format("&e&lTest&r &a&lTest!&r <gradient:000000>123456789</gradient:ffffff>"));
-
-        FastItemStack.wrap(testItem).setLore(testLore);
-
-        Bukkit.getLogger().info(FastItemStack.wrap(testItem).getLore().toString());
     }
 
     @Override
@@ -101,6 +89,113 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
     @Override
     protected void handleAfterLoad() {
         CustomItemsManager.registerAllItems();
+
+
+
+        // Run static init with CIS.
+        Inventory inventory = Bukkit.createInventory(null, 9);
+        inventory.addItem(new ItemStack(Material.ACACIA_DOOR));
+        ItemStack testItem = inventory.getItem(0);
+        assert testItem != null;
+        FastItemStack.wrap(testItem);
+        List<String> testLore = Collections.singletonList(StringUtils.format("&e&lTest&r &a&lTest!&r <gradient:000000>123456789</gradient:ffffff>"));
+
+        int iter = 20_000;
+        long start = System.currentTimeMillis();
+
+        Bukkit.getLogger().info("FastItemStack lore test, 20000 iterations");
+
+        Bukkit.getLogger().info(" SET LORE ");
+
+        // DEFAULT
+
+        for (int i = 0; i < iter; i++) {
+            ItemMeta meta = testItem.getItemMeta();
+            meta.setLore(testLore);
+            testItem.setItemMeta(meta);
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms  DEFAULT");
+        start = System.currentTimeMillis();
+
+        // FASTITEMSTACK
+
+        for (int i = 0; i < iter; i++) {
+            FastItemStack.wrap(testItem).setLore(testLore);
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms FASTITEMSTACK");
+        start = System.currentTimeMillis();
+
+        // DEFAULT CACHE
+        {
+            ItemMeta meta = testItem.getItemMeta();
+            assert meta != null;
+            for (int i = 0; i < iter; i++) {
+                meta.setLore(testLore);
+            }
+            testItem.setItemMeta(meta);
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms DEFAULT CACHE");
+        start = System.currentTimeMillis();
+
+        // FASTITEMSTACK CACHE
+
+        {
+            FastItemStack fastItemStack = FastItemStack.wrap(testItem);
+            for (int i = 0; i < iter; i++) {
+                fastItemStack.setLore(testLore);
+            }
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms FASTITEMSTACK CACHE");
+
+
+        // GET LORE
+
+        start = System.currentTimeMillis();
+        Bukkit.getLogger().info(" GET LORE ");
+
+        // DEFAULT
+
+        for (int i = 0; i < iter; i++) {
+            ItemMeta meta = testItem.getItemMeta();
+            meta.getLore();
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms  DEFAULT");
+        start = System.currentTimeMillis();
+
+        // FASTITEMSTACK
+
+        for (int i = 0; i < iter; i++) {
+            FastItemStack.wrap(testItem).getLore();
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms FASTITEMSTACK");
+        start = System.currentTimeMillis();
+
+        // DEFAULT CACHE
+
+        ItemMeta meta = testItem.getItemMeta();
+        assert meta != null;
+        for (int i = 0; i < iter; i++) {
+            meta.getLore();
+        }
+        testItem.setItemMeta(meta);
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms DEFAULT CACHE");
+        start = System.currentTimeMillis();
+
+        // FASTITEMSTACK CACHE
+
+        FastItemStack fastItemStack = FastItemStack.wrap(testItem);
+        for (int i = 0; i < iter; i++) {
+            fastItemStack.getLore();
+        }
+
+        Bukkit.getLogger().info(System.currentTimeMillis() - start + "ms FASTITEMSTACK CACHE");
     }
 
     @Override

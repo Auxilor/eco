@@ -28,6 +28,7 @@ public class EcoFastItemStack implements FastItemStack {
     private final ItemStack handle;
     private final boolean isCIS;
     private final org.bukkit.inventory.ItemStack bukkit;
+    private List<String> loreCache = null;
 
     public EcoFastItemStack(@NotNull final org.bukkit.inventory.ItemStack itemStack) {
         this.handle = FastItemStackUtils.getNMSStack(itemStack);
@@ -77,6 +78,8 @@ public class EcoFastItemStack implements FastItemStack {
 
     @Override
     public void setLore(@Nullable final List<String> lore) {
+        loreCache = null;
+
         List<String> jsonLore = new ArrayList<>();
         if (lore != null) {
             for (String s : lore) {
@@ -100,12 +103,18 @@ public class EcoFastItemStack implements FastItemStack {
 
     @Override
     public List<String> getLore() {
+        if (loreCache != null) {
+            return loreCache;
+        }
+
         List<String> lore = new ArrayList<>();
 
         for (String s : this.getLoreJSON()) {
             Component component = Component.Serializer.fromJson(s);
             lore.add(CraftChatMessage.fromComponent(component));
         }
+
+        loreCache = lore;
 
         return lore;
     }
