@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * The event is called before the player's inventory actually updates,
  * so you can check a tick later to see the new contents.
  */
+@Deprecated
 public class ArmorEquipEvent extends PlayerEvent {
     /**
      * Bukkit parity.
