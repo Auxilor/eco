@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("deprecation")
 public class DispenserArmorListener implements Listener {
     @EventHandler
     public void dispenseArmorEvent(@NotNull final BlockDispenseArmorEvent event) {
