@@ -4,12 +4,6 @@ main: com.willfp.eco.spigot.EcoHandler
 api-version: 1.16
 authors: [Auxilor]
 website: willfp.com
-loadbefore:
-  - EcoEnchants
-  - Talismans
-  - StatTrackers
-  - EcoArmor
-  - EcoBosses
 depend:
   - ProtocolLib
 softdepend:
