@@ -24,16 +24,16 @@ import java.util.List;
 public class EcoDropQueue implements InternalDropQueue {
     @Getter(AccessLevel.PROTECTED)
     private final List<ItemStack> items;
-    
+
     @Getter(AccessLevel.PROTECTED)
     private int xp;
-    
+
     @Getter(AccessLevel.PROTECTED)
     private final Player player;
 
     @Getter(AccessLevel.PROTECTED)
     private Location loc;
-    
+
     @Getter(AccessLevel.PROTECTED)
     private boolean hasTelekinesis = false;
 
