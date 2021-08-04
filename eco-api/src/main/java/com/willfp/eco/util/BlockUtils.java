@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import com.willfp.eco.core.tuples.Pair;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -32,12 +31,10 @@ public class BlockUtils {
      */
     private BiConsumer<Player, Block> blockBreakConsumer = null;
 
-    private Pair<Block, Set<Block>> getNearbyBlocksRecursively(@NotNull final Block start,
-                                                               @NotNull final List<Material> allowedMaterials,
-                                                               @NotNull final Set<Block> blocks,
-                                                               final int limit) {
-        Block last = start;
-
+    private Set<Block> getNearbyBlocks(@NotNull final Block start,
+                                       @NotNull final List<Material> allowedMaterials,
+                                       @NotNull final Set<Block> blocks,
+                                       final int limit) {
         for (BlockFace face : BlockFace.values()) {
             Block block = start.getRelative(face);
             if (blocks.contains(block)) {
@@ -46,44 +43,13 @@ public class BlockUtils {
 
             if (allowedMaterials.contains(block.getType())) {
                 blocks.add(block);
-                last = block;
 
-                if (blocks.size() > limit) {
-                    return new Pair<>(last, blocks);
+                if (blocks.size() > limit || blocks.size() > 2500) {
+                    return blocks;
                 }
 
-                Pair<Block, Set<Block>> pair = getNearbyBlocksRecursively(last, allowedMaterials, blocks, limit);
-                assert pair.getSecond() != null;
-
-                blocks.addAll(pair.getSecond());
+                blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
             }
-        }
-
-        return new Pair<>(last, blocks);
-    }
-
-    private Set<Block> getNearbyBlocks(@NotNull final Block start,
-                                       @NotNull final List<Material> allowedMaterials,
-                                       @NotNull final Set<Block> blocks,
-                                       final int limit) {
-        /*
-        Prevent stack overflow.
-         */
-        int cycles = (int) Math.ceil(limit / 1024D);
-
-        int cap = limit;
-        Block iterStart = start;
-
-        for (int i = 0; i < cycles; i++) {
-            assert iterStart != null;
-
-            Pair<Block, Set<Block>> pair = getNearbyBlocksRecursively(iterStart, allowedMaterials, blocks, cap);
-            assert pair.getSecond() != null;
-            iterStart = pair.getFirst();
-
-            blocks.addAll(pair.getSecond());
-
-            cap -= 1024;
         }
 
         return blocks;
