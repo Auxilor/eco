@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class for all plugin-specific client-side item display modules.
@@ -48,7 +49,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      * @param args      Optional args for display.
      */
     protected void display(@NotNull final ItemStack itemStack,
-                           @NotNull final Player player,
+                           @Nullable final Player player,
                            @NotNull final Object... args) {
         // Technically optional.
     }

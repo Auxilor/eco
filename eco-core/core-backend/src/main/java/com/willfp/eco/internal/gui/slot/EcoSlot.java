@@ -12,6 +12,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class EcoSlot implements Slot {
+    private static final BiConsumer<InventoryClickEvent, Slot> NOOP = ((event, slot) -> { });
+
     @Getter
     private final Function<Player, ItemStack> provider;
 
@@ -32,16 +34,11 @@ public class EcoSlot implements Slot {
                    @Nullable final BiConsumer<InventoryClickEvent, Slot> onShiftRightClick,
                    @Nullable final BiConsumer<InventoryClickEvent, Slot> onMiddleClick) {
         this.provider = provider;
-        this.onLeftClick = onLeftClick == null ? ((event, slot) -> {
-        }) : onLeftClick;
-        this.onRightClick = onRightClick == null ? ((event, slot) -> {
-        }) : onRightClick;
-        this.onShiftLeftClick = onShiftLeftClick == null ? ((event, slot) -> {
-        }) : onShiftLeftClick;
-        this.onShiftRightClick = onShiftRightClick == null ? ((event, slot) -> {
-        }) : onShiftRightClick;
-        this.onMiddleClick = onMiddleClick == null ? ((event, slot) -> {
-        }) : onMiddleClick;
+        this.onLeftClick = onLeftClick == null ? NOOP : onLeftClick;
+        this.onRightClick = onRightClick == null ? NOOP : onRightClick;
+        this.onShiftLeftClick = onShiftLeftClick == null ? NOOP : onShiftLeftClick;
+        this.onShiftRightClick = onShiftRightClick == null ? NOOP : onShiftRightClick;
+        this.onMiddleClick = onMiddleClick == null ? NOOP : onMiddleClick;
     }
 
     public void handleInventoryClick(@NotNull final InventoryClickEvent event) {
