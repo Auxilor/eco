@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * The event is called before the player's inventory actually updates,
  * so you can check a tick later to see the new contents.
+ *
+ * @see ArmorChangeEvent
  */
 @Deprecated
 public class ArmorEquipEvent extends PlayerEvent {
