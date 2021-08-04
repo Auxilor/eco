@@ -17,4 +17,9 @@ public abstract class EcoFastItemStack<T> implements FastItemStack {
         this.handle = handle;
         this.bukkit = bukkit;
     }
+
+    @Override
+    public ItemStack unwrap() {
+        return this.getBukkit();
+    }
 }
