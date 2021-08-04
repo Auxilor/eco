@@ -34,7 +34,7 @@ public class Prerequisite {
      * Requires the server to be running an implementation of paper.
      */
     public static final Prerequisite HAS_VAULT = new Prerequisite(
-            () -> ClassUtils.exists("net.milkbowl.vault.economy.Economy;"),
+            () -> ClassUtils.exists("net.milkbowl.vault.economy.Economy"),
             "Requires server to have vault"
     );
 
