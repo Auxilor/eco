@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitTask
 class CollatedRunnable(plugin: EcoPlugin) {
     private val runnableTask: BukkitTask = plugin.scheduler.runTimer({
         for ((key, value) in EcoFastCollatedDropQueue.COLLATED_MAP) {
-            EcoDropQueue(key!!)
+            EcoDropQueue(key)
                 .setLocation(value.location)
                 .addItems(value.drops)
                 .addXP(value.xp)

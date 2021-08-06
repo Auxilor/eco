@@ -19,7 +19,6 @@ class EcoLogger(plugin: EcoPlugin) : Logger(plugin.name, null as String?) {
     }
 
     init {
-        val prefix = plugin.description.prefix
         parent = plugin.server.logger
         this.level = Level.ALL
     }
