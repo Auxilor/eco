@@ -13,9 +13,9 @@ import java.util.function.Consumer
 
 class EcoMenu(
     private val rows: Int,
-    val slots: List<MutableList<Slot?>>,
+    private val slots: List<MutableList<Slot>>,
     private val title: String,
-    val onClose: Consumer<InventoryCloseEvent>
+    private val onClose: Consumer<InventoryCloseEvent>
 ): Menu {
 
     override fun getSlot(row: Int, column: Int): Slot {
