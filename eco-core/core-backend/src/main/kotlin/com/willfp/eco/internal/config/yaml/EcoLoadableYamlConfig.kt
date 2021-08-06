@@ -3,8 +3,6 @@ package com.willfp.eco.internal.config.yaml
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration
-import lombok.AccessLevel
-import lombok.Getter
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
@@ -14,7 +12,7 @@ import java.io.OutputStream
 
 open class EcoLoadableYamlConfig(
     configName: String,
-    @field:Getter(AccessLevel.PROTECTED) private val plugin: EcoPlugin,
+    private val plugin: EcoPlugin,
     private val subDirectoryPath: String,
     val source: Class<*>
 ) : EcoYamlConfigWrapper<YamlConfiguration>(), WrappedYamlConfiguration, LoadableConfig {

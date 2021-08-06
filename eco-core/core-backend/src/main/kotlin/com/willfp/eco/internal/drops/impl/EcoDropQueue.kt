@@ -2,8 +2,6 @@ package com.willfp.eco.internal.drops.impl
 
 import com.willfp.eco.core.drops.InternalDropQueue
 import com.willfp.eco.util.TelekinesisUtils
-import lombok.AccessLevel
-import lombok.Getter
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -20,7 +18,6 @@ open class EcoDropQueue(player: Player) : InternalDropQueue {
     val player: Player
     var loc: Location
 
-    @Getter(AccessLevel.PROTECTED)
     private var hasTelekinesis = false
     override fun addItem(item: ItemStack): InternalDropQueue {
         items.add(item)
