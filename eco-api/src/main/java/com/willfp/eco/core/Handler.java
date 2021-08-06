@@ -168,4 +168,11 @@ public interface Handler {
      * @return The FastItemStack.
      */
     FastItemStack createFastItemStack(@NotNull ItemStack itemStack);
+
+    /**
+     * Register bStats metrics.
+     *
+     * @param plugin The plugin.
+     */
+    void registerBStats(@NotNull EcoPlugin plugin);
 }

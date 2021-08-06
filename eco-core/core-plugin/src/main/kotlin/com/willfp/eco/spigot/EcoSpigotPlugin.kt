@@ -24,9 +24,11 @@ import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.SkullUtils
 import org.bukkit.Bukkit
 import org.bukkit.block.Block
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.inventory.meta.SkullMeta
+import java.io.File
 
 abstract class EcoSpigotPlugin : EcoPlugin(
     87955,
@@ -42,6 +44,12 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         val blockBreakProxy = getProxy(BlockBreakProxy::class.java)
         BlockUtils.initialize { player: Player, block: Block -> blockBreakProxy.breakBlock(player, block) }
+
+        val bStatsFolder = File(this.dataFolder.parentFile, "bStats")
+        val configFile = File(bStatsFolder, "config.yml")
+        val config = YamlConfiguration.loadConfiguration(configFile)
+        config.set("enabled", true)
+        config.save(configFile)
     }
 
     override fun handleEnable() {

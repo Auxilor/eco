@@ -20,7 +20,6 @@ import com.willfp.eco.core.web.UpdateChecker;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
@@ -348,7 +347,7 @@ public abstract class EcoPlugin extends JavaPlugin {
         }
 
         if (this.getBStatsId() != 0) {
-            new Metrics(this, this.getBStatsId());
+            Eco.getHandler().registerBStats(this);
         }
 
         Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toSet());

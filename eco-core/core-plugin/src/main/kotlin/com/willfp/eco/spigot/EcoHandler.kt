@@ -32,7 +32,10 @@ import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
+import org.bstats.bukkit.Metrics
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
+import java.io.File
 import java.util.logging.Logger
 
 @Suppress("UNUSED")
@@ -113,5 +116,18 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun createFastItemStack(itemStack: ItemStack): FastItemStack {
         return getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
+    }
+
+    override fun registerBStats(plugin: EcoPlugin) {
+        val bStatsFolder = File(plugin.dataFolder.parentFile, "bStats")
+        val configFile = File(bStatsFolder, "config.yml")
+        val config = YamlConfiguration.loadConfiguration(configFile)
+
+        if (config.isSet("serverUuid")) {
+            config.set("enabled", this.ecoPlugin.configYml.getBool("enable-bstats"))
+            config.save(configFile)
+        }
+
+        Metrics(plugin, plugin.bStatsId)
     }
 }

@@ -12,3 +12,7 @@ villager-display-fix: false
 # that originate from the same player on the same tick are dropped together.
 # Disable it if it changes drop mechanics too much for you.
 use-fast-collated-drops: true
+
+# bStats is important and you should keep it enabled.
+# This option is only here because of compliance with data protection laws.
+enable-bstats: true

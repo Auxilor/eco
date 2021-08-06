@@ -79,7 +79,7 @@ allprojects {
     }
 
     shadowJar {
-        relocate('org.bstats.bukkit', 'com.willfp.eco.shaded.bstats')
+        relocate('org.bstats', 'com.willfp.eco.shaded.bstats')
     }
 
     jar {
