@@ -1,9 +1,7 @@
-package com.willfp.eco.proxy.v1_17_R1
 
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.proxy.VillagerTradeProxy
-import net.minecraft.world.item.trading.MerchantOffer
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftMerchantRecipe
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MerchantRecipe
 import java.lang.reflect.Field
@@ -27,13 +25,13 @@ class VillagerTrade : VillagerTradeProxy {
         for (ingredient in recipe.getIngredients()) {
             newRecipe.addIngredient(Display.display(ingredient.clone(), player))
         }
-        getHandle(newRecipe).specialPriceDiff = getHandle(oldRecipe).specialPriceDiff
+        getHandle(newRecipe).specialPrice = getHandle(oldRecipe).specialPrice
         return newRecipe
     }
 
-    private fun getHandle(recipe: CraftMerchantRecipe): MerchantOffer {
+    private fun getHandle(recipe: CraftMerchantRecipe): net.minecraft.server.v1_16_R3.MerchantRecipe {
         try {
-            return handle[recipe] as MerchantOffer
+            return handle[recipe] as net.minecraft.server.v1_16_R3.MerchantRecipe
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
         }
