@@ -10,6 +10,7 @@ import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.proxy.BlockBreakProxy
+import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.display.*
@@ -24,9 +25,11 @@ import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.SkullUtils
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 
 abstract class EcoSpigotPlugin : EcoPlugin(
@@ -61,6 +64,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             logger.severe("----------------------------")
             logger.severe("")
         }
+
+        this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
     }
 
     override fun handleReload() {
