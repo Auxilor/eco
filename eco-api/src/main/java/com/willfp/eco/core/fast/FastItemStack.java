@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public interface FastItemStack {
      *
      * @param lore The lore.
      */
-    void setLore(@NotNull List<String> lore);
+    void setLore(@Nullable List<String> lore);
 
     /**
      * Get the item lore.
