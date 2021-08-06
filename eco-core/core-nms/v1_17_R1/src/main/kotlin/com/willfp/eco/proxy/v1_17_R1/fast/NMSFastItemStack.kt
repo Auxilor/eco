@@ -12,10 +12,11 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
+import java.lang.reflect.Field
 import kotlin.experimental.and
 
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
-    FastItemStackUtils.getNMSStack(itemStack), itemStack
+    getNMSStack(itemStack), itemStack
 ) {
     private var loreCache: List<String>? = null
 
@@ -118,6 +119,30 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     private fun apply() {
         if (bukkit !is CraftItemStack) {
             bukkit.itemMeta = CraftItemStack.asCraftMirror(handle).itemMeta
+        }
+    }
+
+    companion object {
+        private var field: Field
+
+        init {
+            lateinit var temp: Field
+            try {
+                val handleField = CraftItemStack::class.java.getDeclaredField("handle")
+                handleField.isAccessible = true
+                temp = handleField
+            } catch (e: ReflectiveOperationException) {
+                e.printStackTrace()
+            }
+            field = temp
+        }
+
+        fun getNMSStack(itemStack: org.bukkit.inventory.ItemStack): ItemStack {
+            return if (itemStack !is CraftItemStack) {
+                CraftItemStack.asNMSCopy(itemStack)
+            } else {
+                field[itemStack] as ItemStack
+            }
         }
     }
 }
