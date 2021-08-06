@@ -61,6 +61,10 @@ allprojects {
         annotationProcessor 'org.projectlombok:lombok:1.18.20'
         testCompileOnly 'org.projectlombok:lombok:1.18.20'
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+        // Test
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     }
 
     tasks.withType(JavaCompile) {
@@ -94,6 +98,18 @@ allprojects {
         sourceCompatibility = JavaVersion.VERSION_16
         targetCompatibility = JavaVersion.VERSION_16
         withSourcesJar()
+    }
+
+    test {
+        useJUnitPlatform()
+
+        // Always run tests, even when nothing changed.
+        dependsOn cleanTest
+
+        // Show test results.
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
 
     compileJava.options.encoding = 'UTF-8'
