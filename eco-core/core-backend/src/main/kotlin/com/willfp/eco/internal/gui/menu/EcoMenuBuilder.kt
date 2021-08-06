@@ -45,20 +45,24 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val finalSlots = maskSlots
+        val finalSlots: MutableList<MutableList<Slot>> = ArrayList()
+
+        for (maskRow in maskSlots) {
+            val row = ArrayList<Slot>()
+            for (slot in maskRow) {
+                row.add(slot ?: EcoFillerSlot(ItemStack(Material.AIR)))
+            }
+            finalSlots.add(ArrayList())
+            finalSlots.add(row)
+        }
+
         for (i in slots.indices) {
             for (j in slots[i].indices) {
                 val slot = slots[i][j]
                 finalSlots[i][j] = slot
             }
         }
-        for (finalSlot in finalSlots) {
-            for (j in finalSlot.indices) {
-                if (finalSlot[j] == null) {
-                    finalSlot[j] = EcoFillerSlot(ItemStack(Material.AIR))
-                }
-            }
-        }
+
         return EcoMenu(rows, finalSlots, title, onClose)
     }
 
