@@ -26,7 +26,7 @@ class EcoConfigHandler(
     override fun callUpdate() {
         for (method in reflections.getMethodsAnnotatedWith(ConfigUpdater::class.java)) {
             if (!Modifier.isStatic(method.modifiers)) {
-                throw InvalidUpdateMethodException("Update method must be static.")
+                throw InvalidUpdateMethodException("Update method in ${method.declaringClass.name} must be static.")
             }
 
             try {

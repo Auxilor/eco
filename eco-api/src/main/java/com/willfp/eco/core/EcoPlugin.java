@@ -405,7 +405,6 @@ public abstract class EcoPlugin extends JavaPlugin {
 
         this.getEventManager().unregisterAllListeners();
         this.getScheduler().cancelAll();
-        this.getConfigHandler().saveAllConfigs();
 
         this.handleDisable();
 
