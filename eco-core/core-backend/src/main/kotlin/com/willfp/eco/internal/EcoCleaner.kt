@@ -9,7 +9,7 @@ import java.net.URLClassLoader
 class EcoCleaner: Cleaner {
     override fun clean(plugin: EcoPlugin) {
         if (plugin.proxyPackage.isNotEmpty()) {
-            val factory = plugin.proxyFactory as EcoProxyFactory;
+            val factory = plugin.proxyFactory as EcoProxyFactory
             factory.clean()
         }
 

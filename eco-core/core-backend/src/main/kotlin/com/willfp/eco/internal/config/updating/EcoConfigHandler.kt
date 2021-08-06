@@ -30,12 +30,10 @@ class EcoConfigHandler(
             }
 
             try {
-                if (method.parameterCount == 0) {
-                    method.invoke(null)
-                } else if (method.parameterCount == 1) {
-                    method.invoke(null, this.plugin)
-                } else {
-                    throw InvalidUpdateMethodException("Update method must have 0 parameters or a plugin parameter.")
+                when (method.parameterCount) {
+                    0 -> method.invoke(null)
+                    1 -> method.invoke(null, this.plugin)
+                    else -> throw InvalidUpdateMethodException("Update method must have 0 parameters or a plugin parameter.")
                 }
             } catch (e: ReflectiveOperationException) {
                 e.printStackTrace()

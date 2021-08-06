@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.extensions;
+package com.willfp.eco.internal.extensions
 
 import com.google.common.collect.ImmutableSet
 import com.willfp.eco.core.EcoPlugin
@@ -18,7 +18,7 @@ import java.net.URLClassLoader
 class EcoExtensionLoader(
     plugin: EcoPlugin
 ) : PluginDependent<EcoPlugin>(plugin), ExtensionLoader {
-    private val extensions: MutableMap<Extension, URLClassLoader> = HashMap();
+    private val extensions: MutableMap<Extension, URLClassLoader> = HashMap()
 
     override fun loadExtensions() {
         val dir = File(this.plugin.dataFolder, "/extensions")
@@ -51,7 +51,7 @@ class EcoExtensionLoader(
             e.printStackTrace()
         }
 
-        val classLoader = URLClassLoader(arrayOf(url), this.plugin::class.java.classLoader);
+        val classLoader = URLClassLoader(arrayOf(url), this.plugin::class.java.classLoader)
         val ymlIn = classLoader.getResourceAsStream("extension.yml")
             ?: throw MalformedExtensionException ("No extension.yml found in " + extensionJar.name)
 
@@ -64,22 +64,22 @@ class EcoExtensionLoader(
 
 
         if (mainClass == null) {
-            throw MalformedExtensionException ("Invalid extension.yml found in " + extensionJar.name);
+            throw MalformedExtensionException ("Invalid extension.yml found in " + extensionJar.name)
         }
 
         if (name == null) {
-            this.plugin.logger.warning(extensionJar.name + " doesn't have a name!");
-            name = "Unnamed Extension " + extensionJar.name;
+            this.plugin.logger.warning(extensionJar.name + " doesn't have a name!")
+            name = "Unnamed Extension " + extensionJar.name
         }
 
         if (version == null) {
-            this.plugin.logger.warning(extensionJar.name + " doesn't have a version!");
-            version = "1.0.0";
+            this.plugin.logger.warning(extensionJar.name + " doesn't have a version!")
+            version = "1.0.0"
         }
 
         if (author == null) {
-            this.plugin.logger.warning(extensionJar.name + " doesn't have an author!");
-            author = "Unnamed Author";
+            this.plugin.logger.warning(extensionJar.name + " doesn't have an author!")
+            author = "Unnamed Author"
         }
 
         val metadata = ExtensionMetadata(version, name, author)

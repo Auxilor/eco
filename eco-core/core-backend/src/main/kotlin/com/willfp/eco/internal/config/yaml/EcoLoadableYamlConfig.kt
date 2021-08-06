@@ -39,18 +39,15 @@ open class EcoLoadableYamlConfig(
         if (!outDir.exists()) {
             outDir.mkdirs()
         }
-        try {
-            if (!outFile.exists()) {
-                val out: OutputStream = FileOutputStream(outFile)
-                val buf = ByteArray(1024)
-                var len: Int
-                while (inputStream.read(buf).also { len = it } > 0) {
-                    out.write(buf, 0, len)
-                }
-                out.close()
-                inputStream.close()
+        if (!outFile.exists()) {
+            val out: OutputStream = FileOutputStream(outFile)
+            val buf = ByteArray(1024)
+            var len: Int
+            while (inputStream.read(buf).also { len = it } > 0) {
+                out.write(buf, 0, len)
             }
-        } catch (ignored: IOException) {
+            out.close()
+            inputStream.close()
         }
         plugin.configHandler.addConfig(this)
     }

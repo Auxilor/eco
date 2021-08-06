@@ -35,6 +35,7 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
 
+@Suppress("UNUSED")
 class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
 

@@ -7,7 +7,6 @@ object DropManager {
     var type = DropQueueType.COLLATED
 
     @ConfigUpdater
-    @JvmStatic
     fun update(plugin: EcoPlugin) {
         type = if (plugin.configYml.getBool("use-fast-collated-drops")) DropQueueType.COLLATED else DropQueueType.STANDARD
     }

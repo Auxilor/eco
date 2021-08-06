@@ -20,11 +20,11 @@ class EcoMenu(
 
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
-            throw IllegalArgumentException("Invalid row number!");
+            throw IllegalArgumentException("Invalid row number!")
         }
 
         if (column < 1 || column > 9) {
-            throw IllegalArgumentException("Invalid column number!");
+            throw IllegalArgumentException("Invalid column number!")
         }
 
         val slot = slots[row - 1][column - 1]

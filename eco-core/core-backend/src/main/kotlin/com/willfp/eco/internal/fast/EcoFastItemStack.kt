@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.fast;
+package com.willfp.eco.internal.fast
 
 import com.willfp.eco.core.fast.FastItemStack
 import org.bukkit.inventory.ItemStack

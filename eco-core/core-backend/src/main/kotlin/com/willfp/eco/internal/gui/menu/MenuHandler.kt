@@ -4,7 +4,7 @@ import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.inventory.Inventory
 
 object MenuHandler {
-    private val MENUS: MutableMap<Inventory, Menu> = HashMap();
+    private val MENUS: MutableMap<Inventory, Menu> = HashMap()
 
     fun registerMenu(
         inventory: Inventory,
