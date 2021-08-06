@@ -25,4 +25,5 @@ artifacts {
 }
 
 productionMappedJar.mustRunAfter(clean)
+productionMappedJar.mustRunAfter(compileKotlin)
 build.dependsOn productionMappedJar
