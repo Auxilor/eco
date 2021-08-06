@@ -1,6 +1,7 @@
 package com.willfp.eco.spigot
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.Handler
 import com.willfp.eco.core.config.updating.ConfigHandler
 import com.willfp.eco.core.config.wrapper.ConfigFactory
 import com.willfp.eco.core.drops.DropQueueFactory
@@ -34,85 +35,85 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
 
-class EcoHandler : EcoSpigotPlugin() {
+class EcoHandler : EcoSpigotPlugin(), Handler {
     private var cleaner: Cleaner? = null
 
-    fun createScheduler(plugin: EcoPlugin): Scheduler {
+    override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)
     }
 
-    fun createEventManager(plugin: EcoPlugin): EventManager {
+    override fun createEventManager(plugin: EcoPlugin): EventManager {
         return EcoEventManager(plugin)
     }
 
-    fun createNamespacedKeyFactory(plugin: EcoPlugin): NamespacedKeyFactory {
+    override fun createNamespacedKeyFactory(plugin: EcoPlugin): NamespacedKeyFactory {
         return EcoNamespacedKeyFactory(plugin)
     }
 
-    fun createMetadataValueFactory(plugin: EcoPlugin): MetadataValueFactory {
+    override fun createMetadataValueFactory(plugin: EcoPlugin): MetadataValueFactory {
         return EcoMetadataValueFactory(plugin)
     }
 
-    fun createRunnableFactory(plugin: EcoPlugin): RunnableFactory {
+    override fun createRunnableFactory(plugin: EcoPlugin): RunnableFactory {
         return EcoRunnableFactory(plugin)
     }
 
-    fun createExtensionLoader(plugin: EcoPlugin): ExtensionLoader {
+    override fun createExtensionLoader(plugin: EcoPlugin): ExtensionLoader {
         return EcoExtensionLoader(plugin)
     }
 
-    fun createConfigHandler(plugin: EcoPlugin): ConfigHandler {
+    override fun createConfigHandler(plugin: EcoPlugin): ConfigHandler {
         return EcoConfigHandler(plugin)
     }
 
-    fun createLogger(plugin: EcoPlugin): Logger {
+    override fun createLogger(plugin: EcoPlugin): Logger {
         return EcoLogger(plugin)
     }
 
-    fun createPAPIIntegration(plugin: EcoPlugin): PlaceholderIntegration {
+    override fun createPAPIIntegration(plugin: EcoPlugin): PlaceholderIntegration {
         return PlaceholderIntegrationPAPI(plugin)
     }
 
-    fun getEcoPlugin(): EcoPlugin {
+    override fun getEcoPlugin(): EcoPlugin {
         return this
     }
 
-    fun getConfigFactory(): ConfigFactory {
+    override fun getConfigFactory(): ConfigFactory {
         return EcoConfigFactory()
     }
 
-    fun getDropQueueFactory(): DropQueueFactory {
+    override fun getDropQueueFactory(): DropQueueFactory {
         return EcoDropQueueFactory()
     }
 
-    fun getGUIFactory(): GUIFactory {
+    override fun getGUIFactory(): GUIFactory {
         return EcoGUIFactory()
     }
 
-    fun getCleaner(): Cleaner {
+    override fun getCleaner(): Cleaner {
         if (cleaner == null) {
             cleaner = EcoCleaner()
         }
         return cleaner as Cleaner
     }
 
-    fun createProxyFactory(plugin: EcoPlugin): ProxyFactory {
+    override fun createProxyFactory(plugin: EcoPlugin): ProxyFactory {
         return EcoProxyFactory(plugin)
     }
 
-    fun addNewPlugin(plugin: EcoPlugin) {
+    override fun addNewPlugin(plugin: EcoPlugin) {
         Plugins.LOADED_ECO_PLUGINS[plugin.name.lowercase()] = plugin
     }
 
-    fun getLoadedPlugins(): List<String> {
+    override fun getLoadedPlugins(): List<String> {
         return ArrayList(Plugins.LOADED_ECO_PLUGINS.keys)
     }
 
-    fun getPluginByName(name: String): EcoPlugin? {
+    override fun getPluginByName(name: String): EcoPlugin? {
         return Plugins.LOADED_ECO_PLUGINS[name.lowercase()]
     }
 
-    fun createFastItemStack(itemStack: ItemStack): FastItemStack {
+    override fun createFastItemStack(itemStack: ItemStack): FastItemStack {
         return getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
     }
 }
