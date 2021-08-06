@@ -21,8 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements Listener {
-    public ShapedRecipeListener(@NotNull final EcoPlugin plugin) {
+public class test extends PluginDependent<EcoPlugin> implements Listener {
+    public test(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
 

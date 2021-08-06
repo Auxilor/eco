@@ -615,7 +615,7 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @param <T>        The proxy type.
      * @return The proxy.
      */
-    public <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
+    public final <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
         Validate.notNull(proxyFactory, "Plugin does not support proxy!");
 
         return proxyFactory.getProxy(proxyClass);

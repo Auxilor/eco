@@ -25,3 +25,4 @@ libraries:
   - org.apache.maven:maven-artifact:3.0.3
   - net.kyori:adventure-text-serializer-gson:4.8.1
   - net.kyori:adventure-text-serializer-legacy:4.8.1
+  - org.jetbrains.kotlin:kotlin-stdlib:1.5.21

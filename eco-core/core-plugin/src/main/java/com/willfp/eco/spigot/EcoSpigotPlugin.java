@@ -40,7 +40,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny;
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard;
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen;
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl;
-import com.willfp.eco.spigot.recipes.ShapedRecipeListener;
+import com.willfp.eco.spigot.recipes.test;
 import com.willfp.eco.util.BlockUtils;
 import com.willfp.eco.util.SkullUtils;
 import lombok.Getter;
@@ -151,7 +151,7 @@ public abstract class EcoSpigotPlugin extends EcoPlugin {
                 new ArmorListener(),
                 new DispenserArmorListener(),
                 new EntityDeathByEntityListeners(this),
-                new ShapedRecipeListener(this),
+                new test(this),
                 new PlayerJumpListeners(),
                 new GUIListener(this),
                 new ArrowDataListener(this),
