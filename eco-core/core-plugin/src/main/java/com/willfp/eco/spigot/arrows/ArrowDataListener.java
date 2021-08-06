@@ -10,11 +10,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class ArrowDataListener extends PluginDependent<EcoPlugin> implements Listener {
-    @ApiStatus.Internal
     public ArrowDataListener(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }

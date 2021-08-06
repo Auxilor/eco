@@ -1,69 +1,45 @@
-package com.willfp.eco.spigot.gui;
+package com.willfp.eco.spigot.gui
 
-import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.PluginDependent;
-import com.willfp.eco.core.gui.menu.Menu;
-import com.willfp.eco.core.gui.slot.Slot;
-import com.willfp.eco.internal.gui.menu.EcoMenu;
-import com.willfp.eco.internal.gui.menu.MenuHandler;
-import com.willfp.eco.internal.gui.slot.EcoSlot;
-import org.apache.commons.lang.Validate;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.jetbrains.annotations.NotNull;
+import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginDependent
+import com.willfp.eco.internal.gui.menu.EcoMenu
+import com.willfp.eco.internal.gui.menu.MenuHandler
+import com.willfp.eco.internal.gui.slot.EcoSlot
+import org.apache.commons.lang.Validate
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 
-public class GUIListener extends PluginDependent<EcoPlugin> implements Listener {
-    public GUIListener(@NotNull final EcoPlugin plugin) {
-        super(plugin);
+class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Listener {
+    @EventHandler
+    fun handleSlotClick(event: InventoryClickEvent) {
+        if (event.whoClicked !is Player) {
+            return
+        }
+        if (event.clickedInventory == null) {
+            return
+        }
+        val menu = MenuHandler.getMenu(event.clickedInventory!!) ?: return
+        val row = Math.floorDiv(event.slot, 9)
+        val column = event.slot - row * 9
+        val slot = menu.getSlot(row, column)
+        Validate.isTrue(slot is EcoSlot, "Slot not instance of EcoSlot!")
+        val ecoSlot = menu.getSlot(row, column) as EcoSlot
+        event.isCancelled = true
+        ecoSlot.handleInventoryClick(event)
     }
 
     @EventHandler
-    public void handleSlotClick(@NotNull final InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) {
-            return;
+    fun handleClose(event: InventoryCloseEvent) {
+        if (event.player !is Player) {
+            return
         }
-
-        if (event.getClickedInventory() == null) {
-            return;
-        }
-        Menu menu = MenuHandler.getMenu(event.getClickedInventory());
-        if (menu == null) {
-            return;
-        }
-
-        int row = Math.floorDiv(event.getSlot(), 9);
-        int column = event.getSlot() - (row * 9);
-
-        Slot slot = menu.getSlot(row, column);
-
-        Validate.isTrue(slot instanceof EcoSlot, "Slot not instance of EcoSlot!");
-
-        EcoSlot ecoSlot = (EcoSlot) menu.getSlot(row, column);
-        event.setCancelled(true);
-        ecoSlot.handleInventoryClick(event);
-    }
-
-    @EventHandler
-    public void handleClose(@NotNull final InventoryCloseEvent event) {
-        if (!(event.getPlayer() instanceof Player)) {
-            return;
-        }
-
-        Menu menu = MenuHandler.getMenu(event.getInventory());
-
-        if (menu == null) {
-            return;
-        }
-
-        Validate.isTrue(menu instanceof EcoMenu, "Menu not instance of EcoMenu!");
-
-        EcoMenu ecoMenu = (EcoMenu) menu;
-
-        ecoMenu.handleClose(event);
-
-        this.getPlugin().getScheduler().run(() -> MenuHandler.unregisterMenu(event.getInventory()));
+        val menu = MenuHandler.getMenu(event.inventory) ?: return
+        Validate.isTrue(menu is EcoMenu, "Menu not instance of EcoMenu!")
+        val ecoMenu = menu as EcoMenu
+        ecoMenu.handleClose(event)
+        plugin.scheduler.run { MenuHandler.unregisterMenu(event.inventory) }
     }
 }

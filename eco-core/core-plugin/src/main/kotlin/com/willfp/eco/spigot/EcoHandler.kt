@@ -36,7 +36,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
 
 class EcoHandler : EcoSpigotPlugin(), Handler {
-    private var cleaner: Cleaner? = null
+    private val cleaner = EcoCleaner()
 
     override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)
@@ -91,10 +91,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     }
 
     override fun getCleaner(): Cleaner {
-        if (cleaner == null) {
-            cleaner = EcoCleaner()
-        }
-        return cleaner as Cleaner
+        return cleaner
     }
 
     override fun createProxyFactory(plugin: EcoPlugin): ProxyFactory {

@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class EntityDeathByEntityListeners extends PluginDependent<EcoPlugin> implements Listener {
     private final Set<EntityDeathByEntityBuilder> events = new HashSet<>();
 
-    @ApiStatus.Internal
     public EntityDeathByEntityListeners(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }

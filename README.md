@@ -99,7 +99,7 @@ Here's a list of some (not all) of the features of eco:
     - ArmorEquipEvent
     - EntityDeathByEntityEvent
     - NaturalExpGainEvent
-- Plugin extensions (Plugins for plugins)
+- Plugin extensions (com.willfp.eco.internal.Plugins for plugins)
 - GUI System
 - Integration system for external plugins
     - Anticheat support
