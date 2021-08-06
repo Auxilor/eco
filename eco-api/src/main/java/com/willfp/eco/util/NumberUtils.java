@@ -131,7 +131,7 @@ public class NumberUtils {
         if (numeral.isEmpty()) {
             return 0;
         }
-        for (Map.Entry<Integer, String> entry : NUMERALS.entrySet()) {
+        for (Map.Entry<Integer, String> entry : NUMERALS.descendingMap().entrySet()) {
             if (numeral.startsWith(entry.getValue())) {
                 return entry.getKey() + fromNumeral(numeral.substring(entry.getValue().length()));
             }
