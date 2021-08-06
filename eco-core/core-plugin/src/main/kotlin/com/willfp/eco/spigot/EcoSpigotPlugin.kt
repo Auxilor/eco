@@ -8,6 +8,7 @@ import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
+import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.proxy.BlockBreakProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
@@ -64,6 +65,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleReload() {
         CollatedRunnable(this)
+        DropManager.update(this)
     }
 
     override fun handleAfterLoad() {
