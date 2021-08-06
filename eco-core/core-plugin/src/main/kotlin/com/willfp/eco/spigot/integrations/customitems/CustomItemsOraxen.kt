@@ -13,9 +13,9 @@ class CustomItemsOraxen : CustomItemsWrapper {
         for (item in OraxenItems.getItems()) {
             val stack = item.build()
             val id: String = OraxenItems.getIdByItem(item)
-            val key: NamespacedKey = NamespacedKeyUtils.create("oraxen", id.toLowerCase())
+            val key: NamespacedKey = NamespacedKeyUtils.create("oraxen", id.lowercase())
             CustomItem(
-                key, Predicate { test: ItemStack? ->
+                key, Predicate { test: ItemStack ->
                     val oraxenId: String = OraxenItems.getIdByItem(test) ?: return@Predicate false
                     oraxenId.equals(id, ignoreCase = true)
                 },

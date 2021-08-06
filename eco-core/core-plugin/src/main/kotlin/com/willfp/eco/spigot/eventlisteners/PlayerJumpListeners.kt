@@ -27,7 +27,7 @@ class PlayerJumpListeners : Listener {
             jumpVelocity = FORMAT.format(jumpVelocity.toDouble()).replace(',', '.').toFloat()
             if (event.player.location.block.type != Material.LADDER && PREVIOUS_PLAYERS_ON_GROUND.contains(player.uniqueId)
                 && !player.isOnGround
-                && java.lang.Float.compare(player.velocity.y.toFloat(), jumpVelocity) == 0
+                && player.velocity.y.toFloat().compareTo(jumpVelocity) == 0
             ) {
                 Bukkit.getPluginManager().callEvent(PlayerJumpEvent(event))
             }

@@ -18,7 +18,7 @@ class AntigriefTowny : AntigriefWrapper {
         player: Player,
         block: Block
     ): Boolean {
-        val world = TownyUniverse.getInstance().worldMap[block.location.world!!.name] ?: return true
+        TownyUniverse.getInstance().worldMap[block.location.world!!.name] ?: return true
         return if (TownyAPI.getInstance().isWilderness(block)) {
             true
         } else PlayerCacheUtil.getCachePermission(
@@ -39,7 +39,7 @@ class AntigriefTowny : AntigriefWrapper {
         player: Player,
         location: Location
     ): Boolean {
-        val world = TownyUniverse.getInstance().worldMap[location.world!!.name] ?: return true
+        TownyUniverse.getInstance().worldMap[location.world?.name] ?: return true
         return if (TownyAPI.getInstance().isWilderness(location)) {
             true
         } else PlayerCacheUtil.getCachePermission(player, location, Material.TNT, TownyPermission.ActionType.ITEM_USE)
@@ -49,7 +49,7 @@ class AntigriefTowny : AntigriefWrapper {
         player: Player,
         block: Block
     ): Boolean {
-        val world = TownyUniverse.getInstance().worldMap[block.location.world!!.name] ?: return true
+        TownyUniverse.getInstance().worldMap[block.location.world?.name] ?: return true
         return if (TownyAPI.getInstance().isWilderness(block)) {
             true
         } else PlayerCacheUtil.getCachePermission(player, block.location, block.type, TownyPermission.ActionType.BUILD)
@@ -59,7 +59,7 @@ class AntigriefTowny : AntigriefWrapper {
         player: Player,
         victim: LivingEntity
     ): Boolean {
-        val world = TownyUniverse.getInstance().worldMap[victim.location.world!!.name] ?: return true
+        val world = TownyUniverse.getInstance().worldMap[victim.location.world?.name] ?: return true
         if (TownyAPI.getInstance().isWilderness(victim.location)) {
             return if (victim is Player) {
                 world.isPVP
@@ -69,14 +69,14 @@ class AntigriefTowny : AntigriefWrapper {
         }
         if (victim is Player) {
             try {
-                val town: Town = WorldCoord.parseWorldCoord(victim.getLocation()).getTownBlock().getTown()
-                return town.isPVP()
+                val town: Town = WorldCoord.parseWorldCoord(victim.getLocation()).townBlock.town
+                return town.isPVP
             } catch (ignored: Exception) {
                 // If exception, no town was found, thus return true.
             }
         } else {
             try {
-                val town: Town = WorldCoord.parseWorldCoord(victim.location).getTownBlock().getTown()
+                val town: Town = WorldCoord.parseWorldCoord(victim.location).townBlock.town
                 return town.hasMobs()
             } catch (ignored: Exception) {
                 // If exception, no town was found, thus return true.

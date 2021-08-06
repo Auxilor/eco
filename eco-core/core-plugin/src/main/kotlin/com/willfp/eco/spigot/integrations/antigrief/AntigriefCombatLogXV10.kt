@@ -12,7 +12,8 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 class AntigriefCombatLogXV10 : AntigriefWrapper {
-    private val instance: ICombatLogX?
+    private val instance: ICombatLogX = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX
+
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -43,12 +44,12 @@ class AntigriefCombatLogXV10 : AntigriefWrapper {
         }
 
         // Only run checks if the NewbieHelper expansion is installed on the server.
-        val expansionManager = instance!!.expansionManager
+        val expansionManager = instance.expansionManager
         val optionalExpansion = expansionManager.getExpansionByName<Expansion>("NewbieHelper")
         if (optionalExpansion.isPresent) {
             val expansion = optionalExpansion.get()
             val newbieHelper: NewbieHelper = expansion as NewbieHelper
-            val pvpListener: ListenerPVP = newbieHelper.getPVPListener()
+            val pvpListener: ListenerPVP = newbieHelper.pvpListener
             return pvpListener.isPVPEnabled(player) && pvpListener.isPVPEnabled(victim)
         }
         return true
@@ -58,7 +59,4 @@ class AntigriefCombatLogXV10 : AntigriefWrapper {
         return "CombatLogX"
     }
 
-    init {
-        instance = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX?
-    }
 }

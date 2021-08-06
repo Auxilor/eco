@@ -12,7 +12,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 class AntigriefCombatLogXV11 : AntigriefWrapper {
-    private val instance: ICombatLogX?
+    private val instance: ICombatLogX = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -43,16 +43,15 @@ class AntigriefCombatLogXV11 : AntigriefWrapper {
         }
 
         // Only run checks if the NewbieHelper expansion is installed on the server.
-        val expansionManager = instance!!.expansionManager
+        val expansionManager = instance.expansionManager
         val optionalExpansion = expansionManager.getExpansion("NewbieHelper")
         if (optionalExpansion.isPresent) {
             val expansion = optionalExpansion.get()
             val newbieHelperExpansion: NewbieHelperExpansion = expansion as NewbieHelperExpansion
-            val protectionManager: ProtectionManager = newbieHelperExpansion.getProtectionManager()
-            val pvpManager: PVPManager = newbieHelperExpansion.getPVPManager()
-            val victimPlayer = victim
-            val victimProtected: Boolean = protectionManager.isProtected(victimPlayer)
-            val victimDisabledPvP: Boolean = pvpManager.isDisabled(victimPlayer)
+            val protectionManager: ProtectionManager = newbieHelperExpansion.protectionManager
+            val pvpManager: PVPManager = newbieHelperExpansion.pvpManager
+            val victimProtected: Boolean = protectionManager.isProtected(victim)
+            val victimDisabledPvP: Boolean = pvpManager.isDisabled(victim)
             val playerDisabledPvp: Boolean = pvpManager.isDisabled(player)
             return !victimProtected && !victimDisabledPvP && !playerDisabledPvp
         }
@@ -63,7 +62,4 @@ class AntigriefCombatLogXV11 : AntigriefWrapper {
         return "CombatLogX"
     }
 
-    init {
-        instance = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX?
-    }
 }

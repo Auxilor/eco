@@ -17,7 +17,7 @@ class AntigriefFactionsUUID : AntigriefWrapper {
         val flocation = FLocation(block.location)
         val faction: Faction = Board.getInstance().getFactionAt(flocation)
         return if (!faction.hasAccess(fplayer, PermissibleAction.DESTROY)) {
-            fplayer.isAdminBypassing()
+            fplayer.isAdminBypassing
         } else true
     }
 
@@ -38,7 +38,7 @@ class AntigriefFactionsUUID : AntigriefWrapper {
         val flocation = FLocation(block.location)
         val faction: Faction = Board.getInstance().getFactionAt(flocation)
         return if (!faction.hasAccess(fplayer, PermissibleAction.BUILD)) {
-            fplayer.isAdminBypassing()
+            fplayer.isAdminBypassing
         } else true
     }
 
@@ -50,12 +50,12 @@ class AntigriefFactionsUUID : AntigriefWrapper {
         val flocation = FLocation(victim.location)
         val faction: Faction = Board.getInstance().getFactionAt(flocation)
         if (victim is Player) {
-            if (faction.isPeaceful()) {
-                return fplayer.isAdminBypassing()
+            if (faction.isPeaceful) {
+                return fplayer.isAdminBypassing
             }
         } else {
             if (faction.hasAccess(fplayer, PermissibleAction.DESTROY)) {
-                return fplayer.isAdminBypassing()
+                return fplayer.isAdminBypassing
             }
         }
         return true

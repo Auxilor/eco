@@ -6,15 +6,10 @@ import me.konsolas.aac.api.AACExemption
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
-import java.util.*
 
 class AnticheatAAC : AnticheatWrapper, Listener {
     private val ecoExemption = AACExemption("eco")
-    private val api = Objects.requireNonNull(
-        Bukkit.getServicesManager().load(
-            AACAPI::class.java
-        )
-    )!!
+    private val api = Bukkit.getServicesManager().load(AACAPI::class.java)!!
 
     override fun getPluginName(): String {
         return "AAC"

@@ -13,7 +13,7 @@ class AntigriefGriefPrevention : AntigriefWrapper {
         player: Player,
         block: Block
     ): Boolean {
-        val claim: Claim = GriefPrevention.instance.dataStore.getClaimAt(block.location, false, null)
+        val claim: Claim? = GriefPrevention.instance.dataStore.getClaimAt(block.location, false, null)
         return if (claim != null) {
             claim.allowBreak(player, block.type) == null
         } else true
@@ -23,17 +23,15 @@ class AntigriefGriefPrevention : AntigriefWrapper {
         player: Player,
         location: Location
     ): Boolean {
-        val claim: Claim = GriefPrevention.instance.dataStore.getClaimAt(location, false, null)
-        return if (claim != null) {
-            claim.areExplosivesAllowed
-        } else true
+        val claim: Claim? = GriefPrevention.instance.dataStore.getClaimAt(location, false, null)
+        return claim?.areExplosivesAllowed ?: true
     }
 
     override fun canPlaceBlock(
         player: Player,
         block: Block
     ): Boolean {
-        val claim: Claim = GriefPrevention.instance.dataStore.getClaimAt(block.location, false, null)
+        val claim: Claim? = GriefPrevention.instance.dataStore.getClaimAt(block.location, false, null)
         return if (claim != null) {
             claim.allowBuild(player, block.type) == null
         } else true
@@ -43,11 +41,11 @@ class AntigriefGriefPrevention : AntigriefWrapper {
         player: Player,
         victim: LivingEntity
     ): Boolean {
-        val claim: Claim = GriefPrevention.instance.dataStore.getClaimAt(victim.location, false, null)
+        val claim: Claim? = GriefPrevention.instance.dataStore.getClaimAt(victim.location, false, null)
         return if (victim is Player) {
             claim == null
         } else {
-            if (claim != null && claim.ownerID != null) {
+            if (claim?.ownerID != null) {
                 claim.ownerID == player.uniqueId
             } else true
         }

@@ -28,11 +28,11 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.inventory.meta.SkullMeta
 
-abstract class EcoSpigotPlugin: EcoPlugin(
-        87955,
-        10043,
-        "com.willfp.eco.proxy",
-        "&a"
+abstract class EcoSpigotPlugin : EcoPlugin(
+    87955,
+    10043,
+    "com.willfp.eco.proxy",
+    "&a"
 ) {
     init {
         Display.setFinalizeKey(namespacedKeyFactory.create("finalized"))
@@ -57,41 +57,48 @@ abstract class EcoSpigotPlugin: EcoPlugin(
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
-        return listOf( // AntiGrief
-                IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
-                IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
-                IntegrationLoader("FactionsUUID") { AntigriefManager.register(AntigriefFactionsUUID()) },
-                IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
-                IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
-                IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
-                IntegrationLoader("CombatLogX") {
-                    val pluginManager = Bukkit.getPluginManager()
-                    val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
-                    val pluginVersion = combatLogXPlugin.description.version
-                    if (pluginVersion.startsWith("10")) {
-                        AntigriefManager.register(AntigriefCombatLogXV10())
-                    }
-                    if (pluginVersion.startsWith("11")) {
-                        AntigriefManager.register(AntigriefCombatLogXV11())
-                    }
-                },  // Anticheat
-                IntegrationLoader("AAC5") { AnticheatManager.register(this, AnticheatAAC()) },
-                IntegrationLoader("Matrix") { AnticheatManager.register(this, AnticheatMatrix()) },
-                IntegrationLoader("NoCheatPlus") { AnticheatManager.register(this, AnticheatNCP()) },
-                IntegrationLoader("Spartan") { AnticheatManager.register(this, AnticheatSpartan()) },
-                IntegrationLoader("Vulcan") { AnticheatManager.register(this, AnticheatVulcan()) },  // Custom Items
-                IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },  // Misc
-                IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) }
+        return listOf(
+            // AntiGrief
+            IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
+            IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
+            IntegrationLoader("FactionsUUID") { AntigriefManager.register(AntigriefFactionsUUID()) },
+            IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
+            IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
+            IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
+            IntegrationLoader("CombatLogX") {
+                val pluginManager = Bukkit.getPluginManager()
+                val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
+                val pluginVersion = combatLogXPlugin.description.version
+                if (pluginVersion.startsWith("10")) {
+                    AntigriefManager.register(AntigriefCombatLogXV10())
+                }
+                if (pluginVersion.startsWith("11")) {
+                    AntigriefManager.register(AntigriefCombatLogXV11())
+                }
+            },
+
+            // Anticheat
+            IntegrationLoader("AAC5") { AnticheatManager.register(this, AnticheatAAC()) },
+            IntegrationLoader("Matrix") { AnticheatManager.register(this, AnticheatMatrix()) },
+            IntegrationLoader("NoCheatPlus") { AnticheatManager.register(this, AnticheatNCP()) },
+            IntegrationLoader("Spartan") { AnticheatManager.register(this, AnticheatSpartan()) },
+            IntegrationLoader("Vulcan") { AnticheatManager.register(this, AnticheatVulcan()) },
+
+            // Custom Items
+            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
+
+            // Misc
+            IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) }
         )
     }
 
     override fun loadPacketAdapters(): List<AbstractPacketAdapter> {
         val adapters = mutableListOf(
-                PacketAutoRecipe(this),
-                PacketChat(this),
-                PacketSetCreativeSlot(this),
-                PacketSetSlot(this),
-                PacketWindowItems(this)
+            PacketAutoRecipe(this),
+            PacketChat(this),
+            PacketSetCreativeSlot(this),
+            PacketSetSlot(this),
+            PacketWindowItems(this)
         )
 
         if (!configYml.getBool("disable-display-on-villagers")) {
@@ -103,15 +110,15 @@ abstract class EcoSpigotPlugin: EcoPlugin(
 
     override fun loadListeners(): List<Listener> {
         return listOf(
-                NaturalExpGainListeners(),
-                ArmorListener(),
-                DispenserArmorListener(),
-                EntityDeathByEntityListeners(this),
-                ShapedRecipeListener(this),
-                PlayerJumpListeners(),
-                GUIListener(this),
-                ArrowDataListener(this),
-                ArmorChangeEventListeners(this)
+            NaturalExpGainListeners(),
+            ArmorListener(),
+            DispenserArmorListener(),
+            EntityDeathByEntityListeners(this),
+            ShapedRecipeListener(this),
+            PlayerJumpListeners(),
+            GUIListener(this),
+            ArrowDataListener(this),
+            ArmorChangeEventListeners(this)
         )
     }
 }

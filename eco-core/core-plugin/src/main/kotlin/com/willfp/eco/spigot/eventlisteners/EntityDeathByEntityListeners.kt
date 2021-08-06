@@ -13,18 +13,18 @@ import java.util.concurrent.atomic.AtomicReference
 class EntityDeathByEntityListeners(
     plugin: EcoPlugin
 ) : PluginDependent<EcoPlugin>(plugin), Listener {
-    private val events = HashSet<EntityDeathByEntityBuilder>();
+    private val events = HashSet<EntityDeathByEntityBuilder>()
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDamage(event: EntityDamageByEntityEvent) {
         if ((event.entity !is LivingEntity)) {
-            return;
+            return
         }
 
         val victim = event.entity as LivingEntity
 
         if (victim.health > event.finalDamage) {
-            return;
+            return
         }
 
         val builtEvent = EntityDeathByEntityBuilder()
@@ -51,15 +51,15 @@ class EntityDeathByEntityListeners(
         }
 
         if (atomicBuiltEvent.get() == null) {
-            return;
+            return
         }
 
-        val builtEvent = atomicBuiltEvent.get();
-        events.remove(builtEvent);
+        val builtEvent = atomicBuiltEvent.get()
+        events.remove(builtEvent)
         builtEvent.drops = drops
         builtEvent.xp = xp
         builtEvent.deathEvent = event
 
-        builtEvent.push();
+        builtEvent.push()
     }
 }

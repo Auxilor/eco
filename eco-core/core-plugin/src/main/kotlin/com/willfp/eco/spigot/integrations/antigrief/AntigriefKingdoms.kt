@@ -18,10 +18,10 @@ class AntigriefKingdoms : AntigriefWrapper {
         block: Block
     ): Boolean {
         val kp: KingdomPlayer = KingdomPlayer.getKingdomPlayer(player)
-        if (kp.isAdmin()) {
+        if (kp.isAdmin) {
             return true
         }
-        val kingdom: Kingdom = kp.getKingdom() ?: return false
+        val kingdom: Kingdom = kp.kingdom ?: return false
         val land = Land.getLand(block) ?: return true
         val permission: DefaultKingdomPermission =
             if (land.isNexusLand) DefaultKingdomPermission.NEXUS_BUILD else DefaultKingdomPermission.BUILD

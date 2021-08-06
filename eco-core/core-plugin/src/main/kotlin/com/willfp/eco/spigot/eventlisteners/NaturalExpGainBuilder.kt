@@ -7,7 +7,7 @@ import org.bukkit.Location
 import org.bukkit.event.player.PlayerExpChangeEvent
 
 internal class NaturalExpGainBuilder(var reason: BuildReason) {
-    var cancelled = false
+    private var cancelled = false
     var event: PlayerExpChangeEvent? = null
     var location: Location? = null
 
