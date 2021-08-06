@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.BiConsumer
 import java.util.function.Function
 
-class EcoSlot(
+open class EcoSlot(
     val provider: Function<Player, ItemStack>,
     private val onLeftClick: BiConsumer<InventoryClickEvent, Slot>,
     private val onRightClick: BiConsumer<InventoryClickEvent, Slot>,

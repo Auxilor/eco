@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.config.json
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.util.StringUtils
@@ -8,7 +9,7 @@ import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 open class EcoJSONConfigWrapper : JSONConfig {
-    private val handle = GsonBuilder().setPrettyPrinting().create()
+    val handle: Gson = GsonBuilder().setPrettyPrinting().create()
 
     val values: MutableMap<String, Any?> = HashMap()
 
@@ -53,7 +54,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         }
         return if (values[closestPath] is Map<*, *> && path != closestPath) {
             val section =
-                EcoJSONConfigSection((values[closestPath] as Map<String?, Any?>?)!!)
+                EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!)
             section.getOfKnownType(path.substring(closestPath.length + 1), clazz, false)
         } else {
             if (values.containsKey(closestPath)) {
@@ -79,7 +80,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         for (key in values.keys) {
             list.add(root + key)
             if (values[key] is Map<*, *>) {
-                val section = EcoJSONConfigSection((values[key] as Map<String?, Any?>?)!!)
+                val section = EcoJSONConfigSection((values[key] as Map<String, Any?>?)!!)
                 list.addAll(section.getDeepKeys(list, "$root$key."))
             }
         }
@@ -108,7 +109,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
             closestPath = split[0]
         }
         if (values[closestPath] is Map<*, *> && path != closestPath) {
-            val section = EcoJSONConfigSection((values[closestPath] as Map<String?, Any?>?)!!)
+            val section = EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!)
             section.setRecursively(path.substring(closestPath.length + 1), obj)
             values[closestPath] = section.values
         } else {

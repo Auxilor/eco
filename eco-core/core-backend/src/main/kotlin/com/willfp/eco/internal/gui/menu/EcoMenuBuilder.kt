@@ -49,9 +49,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
         for (i in slots.indices) {
             for (j in slots[i].indices) {
                 val slot = slots[i][j]
-                if (slot != null) {
-                    finalSlots[i][j] = slot
-                }
+                finalSlots[i][j] = slot
             }
         }
         for (finalSlot in finalSlots) {

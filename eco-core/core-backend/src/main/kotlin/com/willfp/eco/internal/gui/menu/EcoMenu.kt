@@ -13,7 +13,7 @@ import java.util.function.Consumer
 
 class EcoMenu(
     private val rows: Int,
-    val slots: MutableList<MutableList<Slot>>,
+    val slots: List<MutableList<Slot?>>,
     private val title: String,
     val onClose: Consumer<InventoryCloseEvent>
 ): Menu {
