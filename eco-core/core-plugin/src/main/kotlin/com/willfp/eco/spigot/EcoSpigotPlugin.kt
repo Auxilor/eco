@@ -24,11 +24,9 @@ import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.SkullUtils
 import org.bukkit.Bukkit
 import org.bukkit.block.Block
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.inventory.meta.SkullMeta
-import java.io.File
 
 abstract class EcoSpigotPlugin : EcoPlugin(
     87955,
@@ -44,16 +42,24 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         val blockBreakProxy = getProxy(BlockBreakProxy::class.java)
         BlockUtils.initialize { player: Player, block: Block -> blockBreakProxy.breakBlock(player, block) }
-
-        val bStatsFolder = File(this.dataFolder.parentFile, "bStats")
-        val configFile = File(bStatsFolder, "config.yml")
-        val config = YamlConfiguration.loadConfiguration(configFile)
-        config.set("enabled", true)
-        config.save(configFile)
     }
 
     override fun handleEnable() {
         CollatedRunnable(this)
+
+        if (!this.configYml.getBool("enable-bstats")) {
+            logger.severe("")
+            logger.severe("----------------------------")
+            logger.severe("")
+            logger.severe("Looks like you've disabled bStats!")
+            logger.severe("This means that information about java version,")
+            logger.severe("player count, server version, and other data")
+            logger.severe("isn't able to be used to ensure that support isn't dropped!")
+            logger.severe("Enable bStats in /plugins/eco/config.yml and /plugins/bStats/config.yml")
+            logger.severe("")
+            logger.severe("----------------------------")
+            logger.severe("")
+        }
     }
 
     override fun handleReload() {
