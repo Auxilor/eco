@@ -56,7 +56,7 @@ abstract class EcoSpigotPlugin: EcoPlugin(
         CustomItemsManager.registerAllItems()
     }
 
-    override fun loadIntegrationLoaders(): List<IntegrationLoader?> {
+    override fun loadIntegrationLoaders(): List<IntegrationLoader> {
         return listOf( // AntiGrief
                 IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
                 IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
