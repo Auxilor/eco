@@ -10,9 +10,9 @@ import java.lang.reflect.Field;
 
 @UtilityClass
 public class FastItemStackUtils {
-    private final Field field;
+    private static final Field field;
 
-    public net.minecraft.world.item.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
+    public static net.minecraft.world.item.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
         if (!(itemStack instanceof CraftItemStack)) {
             return CraftItemStack.asNMSCopy(itemStack);
         } else {
