@@ -54,7 +54,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         val jsonLore: MutableList<String> = ArrayList()
         if (lore != null) {
             for (s in lore) {
-                jsonLore.add(StringUtils.legacyToJson("§r§f$s"))
+                jsonLore.add(StringUtils.legacyToJson(s))
             }
         }
         val displayTag = handle.a("display")
