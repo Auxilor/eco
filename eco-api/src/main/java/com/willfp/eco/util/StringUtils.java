@@ -3,6 +3,8 @@ package com.willfp.eco.util;
 import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -242,7 +244,11 @@ public class StringUtils {
      * @return The JSON String.
      */
     public String legacyToJson(@NotNull final String legacy) {
-        return GsonComponentSerializer.gson().serialize(LegacyComponentSerializer.legacySection().deserialize(legacy));
+        return GsonComponentSerializer.gson().serialize(
+                Component.empty().decoration(TextDecoration.ITALIC, false).append(
+                        LegacyComponentSerializer.legacySection().deserialize(legacy)
+                )
+        );
     }
 
     /**
@@ -252,6 +258,8 @@ public class StringUtils {
      * @return The legacy string.
      */
     public String jsonToLegacy(@NotNull final String json) {
-        return LegacyComponentSerializer.legacySection().serialize(GsonComponentSerializer.gson().deserialize(json));
+        return LegacyComponentSerializer.legacySection().serialize(
+                GsonComponentSerializer.gson().deserialize(json)
+        );
     }
 }
