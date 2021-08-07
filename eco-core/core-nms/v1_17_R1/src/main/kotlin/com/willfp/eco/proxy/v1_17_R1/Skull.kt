@@ -8,16 +8,16 @@ import java.lang.reflect.Method
 import java.util.*
 
 class Skull : SkullProxy {
-    private var setProfile: Method? = null
+    private lateinit var setProfile: Method
 
     override fun setSkullTexture(
         meta: SkullMeta,
         base64: String
     ) {
         try {
-            if (setProfile == null) {
+            if (!this::setProfile.isInitialized) {
                 setProfile = meta.javaClass.getDeclaredMethod("setProfile", GameProfile::class.java)
-                setProfile!!.isAccessible = true
+                setProfile.isAccessible = true
             }
             val uuid = UUID(
                 base64.substring(base64.length - 20).hashCode().toLong(),
@@ -25,7 +25,7 @@ class Skull : SkullProxy {
             )
             val profile = GameProfile(uuid, "eco")
             profile.properties.put("textures", Property("textures", base64))
-            setProfile!!.invoke(meta, profile)
+            setProfile.invoke(meta, profile)
         } catch (e: ReflectiveOperationException) {
             e.printStackTrace()
         }
