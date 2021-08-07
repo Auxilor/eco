@@ -31,11 +31,9 @@ import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
-import proxy.FastItemStackFactoryProxy
-import org.bstats.bukkit.Metrics
-import org.bukkit.configuration.file.YamlConfiguration
+import com.willfp.eco.spigot.integrations.bstats.MetricHandler
 import org.bukkit.inventory.ItemStack
-import java.io.File
+import proxy.FastItemStackFactoryProxy
 import java.util.logging.Logger
 
 @Suppress("UNUSED")
@@ -119,15 +117,6 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     }
 
     override fun registerBStats(plugin: EcoPlugin) {
-        val bStatsFolder = File(plugin.dataFolder.parentFile, "bStats")
-        val configFile = File(bStatsFolder, "config.yml")
-        val config = YamlConfiguration.loadConfiguration(configFile)
-
-        if (config.isSet("serverUuid")) {
-            config.set("enabled", this.ecoPlugin.configYml.getBool("enable-bstats"))
-            config.save(configFile)
-        }
-
-        Metrics(plugin, plugin.bStatsId)
+        MetricHandler.createMetrics(plugin, this.ecoPlugin)
     }
 }
