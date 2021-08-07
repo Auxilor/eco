@@ -59,7 +59,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             logger.severe("This means that information about java version,")
             logger.severe("player count, server version, and other data")
             logger.severe("isn't able to be used to ensure that support isn't dropped!")
-            logger.severe("Enable bStats in /plugins/eco/config.yml and /plugins/bStats/config.yml")
+            logger.severe("Enable bStats in /plugins/eco/config.yml")
             logger.severe("")
             logger.severe("----------------------------")
             logger.severe("")
