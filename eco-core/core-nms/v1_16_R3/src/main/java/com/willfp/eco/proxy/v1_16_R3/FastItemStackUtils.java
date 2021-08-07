@@ -8,14 +8,15 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 
 public class FastItemStackUtils {
-    private static final Field field;
+    private static final Field FIELD;
 
     public static net.minecraft.server.v1_16_R3.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
         if (!(itemStack instanceof CraftItemStack)) {
             return CraftItemStack.asNMSCopy(itemStack);
         } else {
             try {
-                return (net.minecraft.server.v1_16_R3.ItemStack) field.get(itemStack);
+                net.minecraft.server.v1_16_R3.ItemStack nms = (net.minecraft.server.v1_16_R3.ItemStack) FIELD.get(itemStack);
+                return nms == null ? CraftItemStack.asNMSCopy(itemStack) : nms;
             } catch (ReflectiveOperationException e) {
                 e.printStackTrace();
                 return null;
@@ -37,6 +38,6 @@ public class FastItemStackUtils {
         assert temp != null;
         Validate.notNull(temp, "Error occurred in initialization!");
 
-        field = temp;
+        FIELD = temp;
     }
 }

@@ -10,14 +10,15 @@ import java.lang.reflect.Field;
 
 @UtilityClass
 public class FastItemStackUtils {
-    private static final Field field;
+    private static final Field FIELD;
 
     public static net.minecraft.world.item.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
         if (!(itemStack instanceof CraftItemStack)) {
             return CraftItemStack.asNMSCopy(itemStack);
         } else {
             try {
-                return (net.minecraft.world.item.ItemStack) field.get(itemStack);
+                net.minecraft.world.item.ItemStack nms = (net.minecraft.world.item.ItemStack) FIELD.get(itemStack);
+                return nms == null ? CraftItemStack.asNMSCopy(itemStack) : nms;
             } catch (ReflectiveOperationException e) {
                 e.printStackTrace();
                 return null;
@@ -39,6 +40,6 @@ public class FastItemStackUtils {
         assert temp != null;
         Validate.notNull(temp, "Error occurred in initialization!");
 
-        field = temp;
+        FIELD = temp;
     }
 }
