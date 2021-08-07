@@ -1,7 +1,7 @@
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
-import com.willfp.eco.proxy.SkullProxy
+import proxy.SkullProxy
 import org.bukkit.inventory.meta.SkullMeta
 import java.lang.reflect.Method
 import java.util.*

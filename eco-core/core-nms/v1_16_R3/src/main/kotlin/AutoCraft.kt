@@ -1,5 +1,5 @@
 
-import com.willfp.eco.proxy.AutoCraftProxy
+import proxy.AutoCraftProxy
 import net.minecraft.server.v1_16_R3.MinecraftKey
 import net.minecraft.server.v1_16_R3.PacketPlayOutAutoRecipe
 

@@ -1,6 +1,6 @@
 
 import com.willfp.eco.core.display.Display
-import com.willfp.eco.proxy.VillagerTradeProxy
+import proxy.VillagerTradeProxy
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MerchantRecipe

@@ -7,7 +7,7 @@ import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.proxy.ChatComponentProxy
+import proxy.ChatComponentProxy
 import org.bukkit.entity.Player
 
 class PacketChat(plugin: EcoPlugin) :

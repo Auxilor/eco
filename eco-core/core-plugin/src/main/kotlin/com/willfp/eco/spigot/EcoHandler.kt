@@ -31,7 +31,7 @@ import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
-import com.willfp.eco.proxy.FastItemStackFactoryProxy
+import proxy.FastItemStackFactoryProxy
 import org.bstats.bukkit.Metrics
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack

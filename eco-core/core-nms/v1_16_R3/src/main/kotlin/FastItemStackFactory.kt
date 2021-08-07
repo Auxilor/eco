@@ -1,6 +1,6 @@
 
 import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.proxy.FastItemStackFactoryProxy
+import proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.v1_16_R3.NMSFastItemStack
 import org.bukkit.inventory.ItemStack
 

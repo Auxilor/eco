@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.willfp.eco.core.display.Display;
-import com.willfp.eco.proxy.ChatComponentProxy;
+import proxy.ChatComponentProxy;
 import net.minecraft.server.v1_16_R3.ChatBaseComponent;
 import net.minecraft.server.v1_16_R3.ChatHoverable;
 import net.minecraft.server.v1_16_R3.ChatMessage;
@@ -22,10 +22,10 @@ import java.util.Arrays;
 
 public final class ChatComponent implements ChatComponentProxy {
     @Override
-    public Object modifyComponent(@NotNull final Object object,
+    public Object modifyComponent(@NotNull final Object obj,
                                   @NotNull final Player player) {
-        if (!(object instanceof IChatBaseComponent chatComponent)) {
-            return object;
+        if (!(obj instanceof IChatBaseComponent chatComponent)) {
+            return obj;
         }
 
         for (IChatBaseComponent iChatBaseComponent : chatComponent) {

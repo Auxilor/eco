@@ -1,5 +1,5 @@
 
-import com.willfp.eco.proxy.BlockBreakProxy
+import proxy.BlockBreakProxy
 import net.minecraft.server.v1_16_R3.BlockPosition
 import org.bukkit.block.Block
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
