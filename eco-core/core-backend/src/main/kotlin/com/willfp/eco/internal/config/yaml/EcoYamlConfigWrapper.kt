@@ -151,26 +151,28 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     }
 
     override fun getString(path: String): String {
-        return if (cache.containsKey(path)) {
-            (cache[path] as String)
-        } else {
-            cache[path] = StringUtils.format(
-                handle.getString(path, "")!!
-            )
-            getString(path)
-        }
+        return getString(path, true)
     }
 
     override fun getString(
         path: String,
         format: Boolean
     ): String {
-        return if (cache.containsKey(path)) {
-            (cache[path] as String)
+        if (format) {
+            return if (cache.containsKey("$path\$FMT")) {
+                cache["$path\$FMT"] as String
+            } else {
+                val string: String = handle.getString(path, "")!!
+                cache["$path\$FMT"] = StringUtils.format(string)
+                getString(path, format)
+            }
         } else {
-            val string: String = handle.getString(path, "")!!
-            cache[path] = if (format) StringUtils.format(string) else string
-            getString(path)
+            return if (cache.containsKey(path)) {
+                cache[path] as String
+            } else {
+                cache[path] = handle.getString(path, "")!!
+                getString(path)
+            }
         }
     }
 
@@ -201,12 +203,21 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         path: String,
         format: Boolean
     ): List<String> {
-        return if (cache.containsKey(path)) {
-            if (format) StringUtils.formatList((cache[path] as List<String>)) else cache[path] as List<String>
+        if (format) {
+            return if (cache.containsKey("$path\$FMT")) {
+                cache["$path\$FMT"] as List<String>
+            } else {
+                cache["$path\$FMT"] = StringUtils.formatList(if (has(path)) ArrayList(handle.getStringList(path)) else ArrayList<String>())
+                getStrings(path, true)
+            }
         } else {
-            cache[path] =
-                if (has(path)) ArrayList(handle.getStringList(path)) else ArrayList<Any>()
-            getStrings(path)
+            return if (cache.containsKey(path)) {
+                cache[path] as List<String>
+            } else {
+                cache[path] =
+                    if (has(path)) ArrayList(handle.getStringList(path)) else ArrayList<Any>()
+                getStrings(path, false)
+            }
         }
     }
 
