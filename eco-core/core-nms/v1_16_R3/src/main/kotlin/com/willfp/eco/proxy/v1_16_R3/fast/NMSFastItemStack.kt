@@ -1,6 +1,7 @@
 package com.willfp.eco.proxy.v1_16_R3.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
+import com.willfp.eco.proxy.v1_16_R3.FastItemStackUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.server.v1_16_R3.*
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack

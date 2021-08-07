@@ -1,6 +1,7 @@
 package com.willfp.eco.proxy.v1_17_R1.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
+import com.willfp.eco.proxy.v1_17_R1.FastItemStackUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag

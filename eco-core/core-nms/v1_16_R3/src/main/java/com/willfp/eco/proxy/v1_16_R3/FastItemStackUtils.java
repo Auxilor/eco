@@ -1,8 +1,8 @@
-package com.willfp.eco.proxy.v1_17_R1.fast;
+package com.willfp.eco.proxy.v1_16_R3;
 
 import lombok.experimental.UtilityClass;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.Validate;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,12 +12,12 @@ import java.lang.reflect.Field;
 public class FastItemStackUtils {
     private final Field field;
 
-    public net.minecraft.world.item.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
+    public net.minecraft.server.v1_16_R3.ItemStack getNMSStack(@NotNull final ItemStack itemStack) {
         if (!(itemStack instanceof CraftItemStack)) {
             return CraftItemStack.asNMSCopy(itemStack);
         } else {
             try {
-                return (net.minecraft.world.item.ItemStack) field.get(itemStack);
+                return (net.minecraft.server.v1_16_R3.ItemStack) field.get(itemStack);
             } catch (ReflectiveOperationException e) {
                 e.printStackTrace();
                 return null;
