@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.willfp.eco.core.display.Display;
-import proxy.ChatComponentProxy;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
@@ -17,8 +16,7 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
+import proxy.ChatComponentProxy;
 
 public final class ChatComponent implements ChatComponentProxy {
     @Override
@@ -50,10 +48,11 @@ public final class ChatComponent implements ChatComponentProxy {
         }
 
         if (component instanceof TranslatableComponent baseComponent) {
-            Arrays.stream(baseComponent.getArgs())
-                    .filter(o -> o instanceof Component)
-                    .map(o -> (Component) o)
-                    .forEach(o -> modifyBaseComponent(o, player));
+            for (Object arg : baseComponent.getArgs()) {
+                if (arg instanceof Component) {
+                    modifyBaseComponent((Component) arg, player);
+                }
+            }
         }
 
         HoverEvent hoverable = component.getStyle().getHoverEvent();

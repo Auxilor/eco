@@ -91,7 +91,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
         val lore: MutableList<String> = ArrayList()
 
-        for (s in loreJSON) {
+        for (s in getLoreJSON()) {
             lore.add(StringUtils.jsonToLegacy(s))
         }
 
@@ -99,22 +99,21 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         return lore
     }
 
-    private val loreJSON: List<String>
-        get() {
-            val displayTag = handle.getOrCreateTagElement("display")
-            return if (displayTag.contains("Lore")) {
-                val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
-                val lore: MutableList<String> = ArrayList(loreTag.size)
+    private fun getLoreJSON(): List<String> {
+        val displayTag = handle.getOrCreateTagElement("display")
+        return if (displayTag.contains("Lore")) {
+            val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
+            val lore: MutableList<String> = ArrayList(loreTag.size)
 
-                for (i in loreTag.indices) {
-                    lore.add(loreTag.getString(i))
-                }
-
-                lore
-            } else {
-                ArrayList()
+            for (i in loreTag.indices) {
+                lore.add(loreTag.getString(i))
             }
+
+            lore
+        } else {
+            ArrayList()
         }
+    }
 
     private fun apply() {
         if (bukkit !is CraftItemStack) {
