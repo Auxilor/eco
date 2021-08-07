@@ -16,7 +16,7 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import proxy.ChatComponentProxy;
+import com.willfp.eco.proxy.ChatComponentProxy;
 
 public final class ChatComponent implements ChatComponentProxy {
     @Override

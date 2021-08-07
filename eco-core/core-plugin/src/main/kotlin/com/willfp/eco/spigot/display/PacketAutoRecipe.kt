@@ -6,7 +6,7 @@ import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
 import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
-import proxy.AutoCraftProxy
+import com.willfp.eco.proxy.AutoCraftProxy
 import org.bukkit.entity.Player
 import java.lang.reflect.InvocationTargetException
 

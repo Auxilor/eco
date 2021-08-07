@@ -2,7 +2,7 @@ package com.willfp.eco.proxy.v1_16_R3
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import org.bukkit.inventory.meta.SkullMeta
-import proxy.SkullProxy
+import com.willfp.eco.proxy.SkullProxy
 import java.lang.reflect.Method
 import java.util.*
 

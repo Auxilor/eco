@@ -33,7 +33,7 @@ import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.spigot.integrations.bstats.MetricHandler
 import org.bukkit.inventory.ItemStack
-import proxy.FastItemStackFactoryProxy
+import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import java.util.logging.Logger
 
 @Suppress("UNUSED")

@@ -3,7 +3,7 @@ import com.willfp.eco.core.display.Display
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MerchantRecipe
-import proxy.VillagerTradeProxy
+import com.willfp.eco.proxy.VillagerTradeProxy
 import java.lang.reflect.Field
 
 class VillagerTrade : VillagerTradeProxy {

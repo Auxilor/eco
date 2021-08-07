@@ -2,7 +2,7 @@ package com.willfp.eco.proxy.v1_17_R1
 
 import net.minecraft.network.protocol.game.ClientboundPlaceGhostRecipePacket
 import net.minecraft.resources.ResourceLocation
-import proxy.AutoCraftProxy
+import com.willfp.eco.proxy.AutoCraftProxy
 
 class AutoCraft : AutoCraftProxy {
     @Throws(NoSuchFieldException::class, IllegalAccessException::class)

@@ -9,9 +9,9 @@ import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.internal.drops.DropManager
-import proxy.BlockBreakProxy
-import proxy.FastItemStackFactoryProxy
-import proxy.SkullProxy
+import com.willfp.eco.proxy.BlockBreakProxy
+import com.willfp.eco.proxy.FastItemStackFactoryProxy
+import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.drops.CollatedRunnable

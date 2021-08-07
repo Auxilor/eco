@@ -1,4 +1,4 @@
-package proxy
+package com.willfp.eco.proxy
 
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.proxy.AbstractProxy
