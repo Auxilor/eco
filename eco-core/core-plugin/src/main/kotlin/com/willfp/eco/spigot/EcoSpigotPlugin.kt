@@ -51,6 +51,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun handleEnable() {
         CollatedRunnable(this)
 
+        this.logger.info("Ignore messages about deprecated events!")
+
         if (!this.configYml.getBool("enable-bstats")) {
             logger.severe("")
             logger.severe("----------------------------")
