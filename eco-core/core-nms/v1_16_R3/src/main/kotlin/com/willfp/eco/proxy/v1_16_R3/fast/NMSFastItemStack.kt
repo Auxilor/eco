@@ -11,7 +11,7 @@ import java.lang.reflect.Field
 import kotlin.experimental.and
 
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
-    getNMSStack(itemStack)!!, itemStack
+    FastItemStackUtils.getNMSStack(itemStack), itemStack
 ) {
     private var loreCache: List<String>? = null
     override fun getEnchantmentsOnItem(checkStored: Boolean): Map<Enchantment, Int> {
