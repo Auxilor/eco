@@ -1,6 +1,7 @@
 package com.willfp.eco.core.fast;
 
 import com.willfp.eco.core.Eco;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.
@@ -58,7 +60,7 @@ public interface FastItemStack {
      * @param itemStack The ItemStack.
      * @return The FastItemStack.
      */
-    static FastItemStack wrap(@NotNull final ItemStack itemStack) {
-        return Eco.getHandler().createFastItemStack(itemStack);
+    static FastItemStack wrap(final ItemStack itemStack) {
+        return Eco.getHandler().createFastItemStack(Objects.requireNonNullElseGet(itemStack, () -> new ItemStack(Material.AIR)));
     }
 }
