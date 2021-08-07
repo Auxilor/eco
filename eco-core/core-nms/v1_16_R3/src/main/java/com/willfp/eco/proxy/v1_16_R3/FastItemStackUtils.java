@@ -19,7 +19,7 @@ public class FastItemStackUtils {
                 return nms == null ? CraftItemStack.asNMSCopy(itemStack) : nms;
             } catch (ReflectiveOperationException e) {
                 e.printStackTrace();
-                return null;
+                return net.minecraft.server.v1_16_R3.ItemStack.b;
             }
         }
     }
