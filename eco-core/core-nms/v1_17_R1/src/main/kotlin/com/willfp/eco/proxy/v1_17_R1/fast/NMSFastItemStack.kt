@@ -16,7 +16,7 @@ import java.lang.reflect.Field
 import kotlin.experimental.and
 
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
-    getNMSStack(itemStack), itemStack
+    getNMSStack(itemStack)!!, itemStack
 ) {
     private var loreCache: List<String>? = null
 
@@ -136,11 +136,11 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             field = temp
         }
 
-        fun getNMSStack(itemStack: org.bukkit.inventory.ItemStack): ItemStack {
+        fun getNMSStack(itemStack: org.bukkit.inventory.ItemStack): ItemStack? {
             return if (itemStack !is CraftItemStack) {
                 CraftItemStack.asNMSCopy(itemStack)
             } else {
-                field[itemStack] as ItemStack
+                field.get(itemStack) as ItemStack
             }
         }
     }
