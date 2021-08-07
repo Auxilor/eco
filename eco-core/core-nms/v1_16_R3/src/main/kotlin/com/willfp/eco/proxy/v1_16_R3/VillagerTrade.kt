@@ -1,9 +1,9 @@
-
+package com.willfp.eco.proxy.v1_16_R3
 import com.willfp.eco.core.display.Display
-import proxy.VillagerTradeProxy
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MerchantRecipe
+import proxy.VillagerTradeProxy
 import java.lang.reflect.Field
 
 class VillagerTrade : VillagerTradeProxy {

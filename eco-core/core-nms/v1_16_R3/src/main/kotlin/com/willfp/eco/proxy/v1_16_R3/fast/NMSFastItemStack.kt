@@ -1,4 +1,4 @@
-package com.willfp.eco.proxy.v1_16_R3
+package com.willfp.eco.proxy.v1_16_R3.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
 import com.willfp.eco.util.StringUtils

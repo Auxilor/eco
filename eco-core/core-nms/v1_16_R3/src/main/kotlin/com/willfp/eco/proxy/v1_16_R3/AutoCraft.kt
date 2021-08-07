@@ -1,4 +1,4 @@
-
+package com.willfp.eco.proxy.v1_16_R3
 import proxy.AutoCraftProxy
 import net.minecraft.server.v1_16_R3.MinecraftKey
 import net.minecraft.server.v1_16_R3.PacketPlayOutAutoRecipe

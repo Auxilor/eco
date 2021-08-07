@@ -1,4 +1,4 @@
-
+package com.willfp.eco.proxy.v1_16_R3
 import proxy.BlockBreakProxy
 import net.minecraft.server.v1_16_R3.BlockPosition
 import org.bukkit.block.Block
