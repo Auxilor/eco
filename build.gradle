@@ -5,15 +5,6 @@ plugins {
     id 'java'
 }
 
-dependencies {
-    implementation project(":eco-api")
-    implementation project(":eco-core:core-plugin")
-    implementation project(":eco-core:core-proxy")
-    implementation project(":eco-core:core-backend")
-    implementation project(":eco-core:core-nms:v1_16_R3")
-    implementation project(path: ":eco-core:core-nms:v1_17_R1", configuration: 'mapped')
-}
-
 allprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
@@ -21,8 +12,8 @@ allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     repositories {
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
 
         // NMS (for jitpack compilation)
@@ -54,7 +45,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly 'org.jetbrains:annotations:19.0.0'
+        compileOnly 'org.jetbrains:annotations:21.0.1'
 
         // Lombok
         compileOnly 'org.projectlombok:lombok:1.18.20'
@@ -116,6 +107,15 @@ allprojects {
     compileJava.dependsOn clean
 
     build.dependsOn shadowJar
+}
+
+dependencies {
+    implementation project(":eco-api")
+    implementation project(":eco-core:core-plugin")
+    implementation project(":eco-core:core-proxy")
+    implementation project(":eco-core:core-backend")
+    implementation project(":eco-core:core-nms:v1_16_R3")
+    implementation project(path: ":eco-core:core-nms:v1_17_R1", configuration: 'mapped')
 }
 
 group = 'com.willfp'
