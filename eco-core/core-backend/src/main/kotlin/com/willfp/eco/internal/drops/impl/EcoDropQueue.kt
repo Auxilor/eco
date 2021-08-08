@@ -79,7 +79,7 @@ open class EcoDropQueue(player: Player) : InternalDropQueue {
     }
 
     init {
-        items = ArrayList()
+        items = mutableListOf()
         xp = 0
         this.player = player
         loc = player.location

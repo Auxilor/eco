@@ -45,14 +45,14 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val finalSlots: MutableList<MutableList<Slot>> = ArrayList()
+        val finalSlots: MutableList<MutableList<Slot>> = mutableListOf()
 
         for (maskRow in maskSlots) {
             val row = ArrayList<Slot>()
             for (slot in maskRow) {
                 row.add(slot ?: EcoFillerSlot(ItemStack(Material.AIR)))
             }
-            finalSlots.add(ArrayList())
+            finalSlots.add(mutableListOf())
             finalSlots.add(row)
         }
 

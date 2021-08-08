@@ -138,13 +138,13 @@ open class EcoJSONConfigWrapper : JSONConfig {
 
     override fun getSubsections(path: String): List<JSONConfig> {
         val subsections = getSubsectionsOrNull(path)
-        return subsections ?: ArrayList()
+        return subsections ?: mutableListOf()
     }
 
     override fun getSubsectionsOrNull(path: String): List<JSONConfig>? {
         val maps = getOfKnownType(path, Any::class.java) as List<Map<String, Any>>?
             ?: return null
-        val configs: MutableList<JSONConfig> = ArrayList()
+        val configs: MutableList<JSONConfig> = mutableListOf()
         for (map in maps) {
             configs.add(EcoJSONConfigSection(map))
         }
