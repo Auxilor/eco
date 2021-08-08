@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items.builder;
 
+import com.willfp.eco.core.fast.FastItemStack;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -181,4 +182,8 @@ public interface ItemBuilder {
      * @return The item.
      */
     ItemStack build();
+
+    default FastItemStack buildFast() {
+        return FastItemStack.wrap(this.build());
+    }
 }
