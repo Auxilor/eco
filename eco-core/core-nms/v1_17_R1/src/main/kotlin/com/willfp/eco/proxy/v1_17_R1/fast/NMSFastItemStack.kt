@@ -59,7 +59,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
     override fun setLore(lore: List<String>?) {
         loreCache = null
-        val jsonLore: MutableList<String> = ArrayList()
+        val jsonLore: MutableList<String> = mutableListOf()
 
         if (lore != null) {
             for (s in lore) {
@@ -89,7 +89,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             return loreCache as List<String>
         }
 
-        val lore: MutableList<String> = ArrayList()
+        val lore: MutableList<String> = mutableListOf()
 
         for (s in getLoreJSON()) {
             lore.add(StringUtils.jsonToLegacy(s))
@@ -111,7 +111,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
             lore
         } else {
-            ArrayList()
+            mutableListOf()
         }
     }
 
