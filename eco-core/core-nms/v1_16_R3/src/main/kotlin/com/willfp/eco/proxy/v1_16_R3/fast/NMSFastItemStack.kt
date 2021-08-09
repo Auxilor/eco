@@ -96,6 +96,14 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         }
     }
 
+    override fun getRepairCost(): Int {
+        return handle.repairCost;
+    }
+
+    override fun setRepairCost(cost: Int) {
+        handle.repairCost = cost;
+    }
+
     private fun apply() {
         if (bukkit !is CraftItemStack) {
             bukkit.itemMeta = CraftItemStack.asCraftMirror(handle).itemMeta

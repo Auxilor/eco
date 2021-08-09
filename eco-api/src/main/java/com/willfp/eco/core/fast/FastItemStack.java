@@ -47,6 +47,22 @@ public interface FastItemStack {
      */
     List<String> getLore();
 
+
+    /**
+     * Set the rework penalty.
+     *
+     * @param cost      The rework penalty to set.
+     * @return The item, with the rework penalty applied.
+     */
+    void setRepairCost(int cost);
+
+    /**
+     * Get the rework penalty.
+     *.
+     * @return The rework penalty found on the item.
+     */
+    int getRepairCost();
+
     /**
      * Get the Bukkit ItemStack again.
      *
