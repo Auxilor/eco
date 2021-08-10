@@ -52,7 +52,6 @@ public interface FastItemStack {
      * Set the rework penalty.
      *
      * @param cost      The rework penalty to set.
-     * @return The item, with the rework penalty applied.
      */
     void setRepairCost(int cost);
 

@@ -207,7 +207,8 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
             return if (cache.containsKey("$path\$FMT")) {
                 cache["$path\$FMT"] as List<String>
             } else {
-                cache["$path\$FMT"] = StringUtils.formatList(if (has(path)) ArrayList(handle.getStringList(path)) else ArrayList<String>())
+                val list = if (has(path)) handle.getStringList(path) else ArrayList()
+                cache["$path\$FMT"] = StringUtils.formatList(list);
                 getStrings(path, true)
             }
         } else {
