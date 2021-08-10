@@ -8,7 +8,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +45,15 @@ public class StringUtils {
             .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + ""))
             .add(Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}"))
             .add(Pattern.compile("<#" + "([A-Fa-f0-9]{6})" + ">"))
+            .build();
+
+    /**
+     * Legacy serializer.
+     */
+    private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
+            .character('\u00a7')
+            .useUnusualXRepeatedCharacterHexFormat()
+            .hexColors()
             .build();
 
     /**
@@ -245,14 +253,11 @@ public class StringUtils {
      * @return The JSON String.
      */
     public String legacyToJson(@NotNull final String legacy) {
-        String json = GsonComponentSerializer.gson().serialize(
+        return GsonComponentSerializer.gson().serialize(
                 Component.empty().decoration(TextDecoration.ITALIC, false).append(
-                        LegacyComponentSerializer.legacySection().deserialize(legacy)
+                        LEGACY_COMPONENT_SERIALIZER.deserialize(legacy)
                 )
         );
-
-        Bukkit.getLogger().info(legacy + " -> " + json);
-        return json;
     }
 
     /**
@@ -262,11 +267,8 @@ public class StringUtils {
      * @return The legacy string.
      */
     public String jsonToLegacy(@NotNull final String json) {
-        String legacy = LegacyComponentSerializer.legacySection().serialize(
+        return LEGACY_COMPONENT_SERIALIZER.serialize(
                 GsonComponentSerializer.gson().deserialize(json)
         );
-
-        Bukkit.getLogger().info(json + " -> " + legacy);
-        return legacy;
     }
 }
