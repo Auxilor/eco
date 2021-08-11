@@ -4,20 +4,28 @@ import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.inventory.Inventory
 
 object MenuHandler {
-    private val MENUS: MutableMap<Inventory, Menu> = HashMap()
+    private val MENUS: MutableMap<ExtendedInventory, EcoMenu> = HashMap()
+    private val INVS: MutableMap<Inventory, ExtendedInventory> = HashMap()
 
     fun registerMenu(
         inventory: Inventory,
-        menu: Menu
+        menu: EcoMenu
     ) {
-        MENUS[inventory] = menu
+        val extendedInventory = ExtendedInventory(inventory, menu)
+        INVS[inventory] = extendedInventory
+        MENUS[extendedInventory] = menu
     }
 
     fun unregisterMenu(inventory: Inventory) {
-        MENUS.remove(inventory)
+        MENUS.remove(INVS[inventory])
+        INVS.remove(inventory)
     }
 
     fun getMenu(inventory: Inventory): Menu? {
-        return MENUS[inventory]
+        return MENUS[INVS[inventory]]
+    }
+
+    fun getExtendedInventory(inventory: Inventory): ExtendedInventory {
+        return INVS[inventory]!!
     }
 }

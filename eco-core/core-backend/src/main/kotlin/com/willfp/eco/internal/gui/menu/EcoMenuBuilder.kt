@@ -3,6 +3,7 @@ package com.willfp.eco.internal.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.slot.FillerMask
+import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.slot.EcoFillerSlot
 import com.willfp.eco.util.ListUtils
@@ -58,7 +59,10 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
 
         for (i in slots.indices) {
             for (j in slots[i].indices) {
-                val slot = slots[i][j]
+                var slot = slots[i][j]
+                if (slot is FillerSlot) {
+                    slot = EcoFillerSlot(slot.itemStack)
+                }
                 finalSlots[i][j] = slot
             }
         }

@@ -1,14 +1,13 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.internal.gui.slot.EcoFillerSlot
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
 class EcoMenu(
@@ -17,7 +16,6 @@ class EcoMenu(
     private val title: String,
     private val onClose: Consumer<InventoryCloseEvent>
 ): Menu {
-
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
             throw IllegalArgumentException("Invalid row number!")
@@ -27,14 +25,7 @@ class EcoMenu(
             throw IllegalArgumentException("Invalid column number!")
         }
 
-        val slot = slots[row - 1][column - 1]
-        if (slot is FillerSlot) {
-            slots[row - 1][column - 1] = EcoFillerSlot(slot.itemStack)
-
-            return getSlot(row, column)
-        }
-
-        return slot
+        return slots[row - 1][column - 1]
     }
 
     override fun open(player: Player): Inventory {
@@ -76,5 +67,10 @@ class EcoMenu(
 
     override fun getTitle(): String {
         return title
+    }
+
+    override fun getCaptiveItems(player: Player): MutableList<ItemStack> {
+        val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
+        return inventory.captiveItems
     }
 }

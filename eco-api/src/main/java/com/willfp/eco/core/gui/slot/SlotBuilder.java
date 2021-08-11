@@ -50,6 +50,13 @@ public interface SlotBuilder {
     SlotBuilder onMiddleClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
 
     /**
+     * Set slot to be a captive slot.
+     *
+     * @return The builder.
+     */
+    SlotBuilder setCaptive();
+
+    /**
      * Build the slot.
      *
      * @return The slot.

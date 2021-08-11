@@ -4,7 +4,10 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * GUI version of {@link Inventory}.
@@ -43,6 +46,14 @@ public interface Menu {
      * @return The inventory.
      */
     Inventory open(@NotNull Player player);
+
+    /**
+     * Get captive items.
+     *
+     * @param player The player.
+     * @return The items.
+     */
+    List<ItemStack> getCaptiveItems(@NotNull Player player);
 
     /**
      * Create a builder with a given amount of rows.

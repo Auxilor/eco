@@ -9,6 +9,8 @@ import java.util.function.BiConsumer
 import java.util.function.Function
 
 class EcoSlotBuilder(private val provider: Function<Player, ItemStack>) : SlotBuilder {
+    private var captive = false;
+
     private var onLeftClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
     private var onRightClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
     private var onShiftLeftClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
@@ -40,7 +42,16 @@ class EcoSlotBuilder(private val provider: Function<Player, ItemStack>) : SlotBu
         return this
     }
 
+    override fun setCaptive(): SlotBuilder {
+        captive = true
+        return this
+    }
+
     override fun build(): Slot {
-        return EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick)
+        return if (captive) {
+            EcoCaptivatorSlot(provider)
+        } else {
+            EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick)
+        }
     }
 }
