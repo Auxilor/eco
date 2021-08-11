@@ -5,6 +5,7 @@ import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
 import com.willfp.eco.internal.gui.slot.EcoSlot
+import com.willfp.eco.util.MenuUtils
 import org.apache.commons.lang.Validate
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -22,8 +23,9 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
             return
         }
         val menu = MenuHandler.getMenu(event.clickedInventory!!) ?: return
-        val row = Math.floorDiv(event.slot, 9)
-        val column = event.slot - row * 9
+        val rowColumn = MenuUtils.convertSlotToRowColumn(event.slot)
+        val row = rowColumn.first!!
+        val column = rowColumn.second!!
         val slot = menu.getSlot(row, column)
         Validate.isTrue(slot is EcoSlot, "Slot not instance of EcoSlot!")
         val ecoSlot = menu.getSlot(row, column) as EcoSlot

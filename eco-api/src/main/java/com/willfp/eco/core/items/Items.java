@@ -60,6 +60,18 @@ public final class Items {
      * @return The found testable item, or an empty item if not found.
      */
     public TestableItem lookup(@NotNull final String key) {
+        if (key.contains("?")) {
+            String[] options = key.split("\\?");
+            for (String option : options) {
+                TestableItem lookup = lookup(option);
+                if (!(lookup instanceof EmptyTestableItem)) {
+                    return lookup;
+                }
+            }
+
+            return new EmptyTestableItem();
+        }
+
         String[] args = key.split(" ");
         if (args.length == 0) {
             return new EmptyTestableItem();
