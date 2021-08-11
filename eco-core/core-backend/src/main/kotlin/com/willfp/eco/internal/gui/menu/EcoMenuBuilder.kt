@@ -16,7 +16,7 @@ import java.util.function.Consumer
 class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     private var title = "Menu"
     private var maskSlots: List<MutableList<Slot?>>
-    private val slots: List<MutableList<Slot>> = ListUtils.create2DList(rows, 9)
+    private val slots: List<MutableList<Slot?>> = ListUtils.create2DList(rows, 9)
     private var onClose = Consumer { _: InventoryCloseEvent -> }
 
     override fun setTitle(title: String): MenuBuilder {
@@ -46,15 +46,14 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val finalSlots: MutableList<MutableList<Slot>> = ArrayList()
+        val tempSlots: MutableList<MutableList<Slot>> = ListUtils.create2DList(rows, 9);
 
         for (maskRow in maskSlots) {
             val row = ArrayList<Slot>()
             for (slot in maskRow) {
                 row.add(slot ?: EcoFillerSlot(ItemStack(Material.AIR)))
             }
-            finalSlots.add(ArrayList())
-            finalSlots.add(row)
+            tempSlots.add(row)
         }
 
         for (i in slots.indices) {
@@ -63,11 +62,14 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
                 if (slot is FillerSlot) {
                     slot = EcoFillerSlot(slot.itemStack)
                 }
-                finalSlots[i][j] = slot
+                if (slot == null && maskSlots[i][j] != null) {
+                    slot = EcoFillerSlot(ItemStack(Material.AIR))
+                }
+                tempSlots[i][j] = slot ?: EcoFillerSlot(ItemStack(Material.AIR))
             }
         }
 
-        return EcoMenu(rows, finalSlots, title, onClose)
+        return EcoMenu(rows, tempSlots, title, onClose)
     }
 
     init {

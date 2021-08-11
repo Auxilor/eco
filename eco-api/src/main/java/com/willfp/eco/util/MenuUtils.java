@@ -17,6 +17,6 @@ public class MenuUtils {
     public Pair<Integer, Integer> convertSlotToRowColumn(final int slot) {
         int row = Math.floorDiv(slot, 9);
         int column = slot - row * 9;
-        return new Pair<>(row, column);
+        return new Pair<>(row + 1, column + 1);
     }
 }
