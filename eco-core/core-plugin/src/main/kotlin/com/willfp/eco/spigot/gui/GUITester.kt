@@ -12,7 +12,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.inventory.ItemStack
 
 class GUITester(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Listener {
-    val menu: Menu = Menu.builder(3)
+    private val menu: Menu = Menu.builder(3)
         .setMask(FillerMask(
             Material.BLACK_STAINED_GLASS_PANE,
             "111111111",

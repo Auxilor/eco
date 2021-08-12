@@ -49,7 +49,7 @@ class EcoSlotBuilder(private val provider: Function<Player, ItemStack>) : SlotBu
 
     override fun build(): Slot {
         return if (captive) {
-            EcoCaptivatorSlot(provider)
+            EcoCaptivatorSlot()
         } else {
             EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick)
         }

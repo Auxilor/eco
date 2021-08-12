@@ -9,7 +9,7 @@ import java.util.function.BiConsumer
 import java.util.function.Function
 
 open class EcoSlot(
-    val provider: Function<Player, ItemStack>,
+    private val provider: Function<Player, ItemStack>,
     private val onLeftClick: BiConsumer<InventoryClickEvent, Slot>,
     private val onRightClick: BiConsumer<InventoryClickEvent, Slot>,
     private val onShiftLeftClick: BiConsumer<InventoryClickEvent, Slot>,

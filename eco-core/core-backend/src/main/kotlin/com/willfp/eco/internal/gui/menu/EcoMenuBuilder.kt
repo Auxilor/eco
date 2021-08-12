@@ -46,30 +46,30 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val tempSlots: MutableList<MutableList<Slot>> = ListUtils.create2DList(rows, 9);
-
-        for (maskRow in maskSlots) {
-            val row = ArrayList<Slot>()
-            for (slot in maskRow) {
-                row.add(slot ?: EcoFillerSlot(ItemStack(Material.AIR)))
-            }
-            tempSlots.add(row)
-        }
+        val tempSlots: MutableList<MutableList<Slot?>> = ArrayList(maskSlots)
 
         for (i in slots.indices) {
             for (j in slots[i].indices) {
-                var slot = slots[i][j]
-                if (slot is FillerSlot) {
-                    slot = EcoFillerSlot(slot.itemStack)
-                }
-                if (slot == null && maskSlots[i][j] != null) {
-                    slot = EcoFillerSlot(ItemStack(Material.AIR))
-                }
-                tempSlots[i][j] = slot ?: EcoFillerSlot(ItemStack(Material.AIR))
+                val slot = slots[i][j] ?: continue
+                tempSlots[i][j] = slot
             }
         }
 
-        return EcoMenu(rows, tempSlots, title, onClose)
+        val finalSlots: MutableList<MutableList<Slot>> = ArrayList()
+
+        for (row in tempSlots) {
+            val tempRow = ArrayList<Slot>()
+            for (slot in row) {
+                var tempSlot = slot
+                if (tempSlot is FillerSlot) {
+                    tempSlot = EcoFillerSlot(tempSlot.itemStack)
+                }
+                tempRow.add(tempSlot ?: EcoFillerSlot(ItemStack(Material.AIR)))
+            }
+            finalSlots.add(tempRow)
+        }
+
+        return EcoMenu(rows, finalSlots, title, onClose)
     }
 
     init {
