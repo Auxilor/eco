@@ -26,7 +26,7 @@ public interface Slot {
      * @return The builder.
      */
     static SlotBuilder builder(@NotNull final ItemStack itemStack) {
-        return Eco.getHandler().getGUIFactory().createSlotBuilder(player -> itemStack);
+        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> itemStack);
     }
 
     /**
@@ -35,7 +35,18 @@ public interface Slot {
      * @param provider The provider.
      * @return The builder.
      */
+    @Deprecated
     static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {
+        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> provider.apply(player));
+    }
+
+    /**
+     * Create a builder for a player-specific ItemStack.
+     *
+     * @param provider The provider.
+     * @return The builder.
+     */
+    static SlotBuilder builder(@NotNull final SlotProvider provider) {
         return Eco.getHandler().getGUIFactory().createSlotBuilder(provider);
     }
 }

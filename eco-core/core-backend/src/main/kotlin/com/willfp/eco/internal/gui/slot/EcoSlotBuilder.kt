@@ -2,42 +2,39 @@ package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
-import org.bukkit.entity.Player
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.ItemStack
-import java.util.function.BiConsumer
-import java.util.function.Function
+import com.willfp.eco.core.gui.slot.SlotHandler
+import com.willfp.eco.core.gui.slot.SlotProvider
 
-class EcoSlotBuilder(private val provider: Function<Player, ItemStack>) : SlotBuilder {
+class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captive = false;
 
-    private var onLeftClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
-    private var onRightClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
-    private var onShiftLeftClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
-    private var onShiftRightClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
-    private var onMiddleClick: BiConsumer<InventoryClickEvent, Slot> = BiConsumer { _, _ -> run { } }
+    private var onLeftClick = SlotHandler { _, _, _ -> run { } }
+    private var onRightClick = SlotHandler { _, _, _ -> run { } }
+    private var onShiftLeftClick = SlotHandler { _, _, _ -> run { } }
+    private var onShiftRightClick = SlotHandler { _, _, _ -> run { } }
+    private var onMiddleClick = SlotHandler { _, _, _ -> run { } }
 
-    override fun onLeftClick(action: BiConsumer<InventoryClickEvent, Slot>): SlotBuilder {
+    override fun onLeftClick(action: SlotHandler): SlotBuilder {
         onLeftClick = action
         return this
     }
 
-    override fun onRightClick(action: BiConsumer<InventoryClickEvent, Slot>): SlotBuilder {
+    override fun onRightClick(action: SlotHandler): SlotBuilder {
         onRightClick = action
         return this
     }
 
-    override fun onShiftLeftClick(action: BiConsumer<InventoryClickEvent, Slot>): SlotBuilder {
+    override fun onShiftLeftClick(action: SlotHandler): SlotBuilder {
         onShiftLeftClick = action
         return this
     }
 
-    override fun onShiftRightClick(action: BiConsumer<InventoryClickEvent, Slot>): SlotBuilder {
+    override fun onShiftRightClick(action: SlotHandler): SlotBuilder {
         onShiftRightClick = action
         return this
     }
 
-    override fun onMiddleClick(action: BiConsumer<InventoryClickEvent, Slot>): SlotBuilder {
+    override fun onMiddleClick(action: SlotHandler): SlotBuilder {
         onMiddleClick = action
         return this
     }

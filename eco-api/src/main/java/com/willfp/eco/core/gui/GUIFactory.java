@@ -2,11 +2,9 @@ package com.willfp.eco.core.gui;
 
 import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
-import org.bukkit.entity.Player;
+import com.willfp.eco.core.gui.slot.SlotProvider;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Function;
 
 /**
  * Internal component used by {@link com.willfp.eco.core.gui.menu.Menu#builder(int)}
@@ -19,7 +17,7 @@ public interface GUIFactory {
      * @param provider The provider.
      * @return The builder.
      */
-    SlotBuilder createSlotBuilder(@NotNull Function<Player, ItemStack> provider);
+    SlotBuilder createSlotBuilder(@NotNull SlotProvider provider);
 
     /**
      * Create menu builder.

@@ -15,7 +15,18 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    SlotBuilder onLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
+    @Deprecated
+    default SlotBuilder onLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
+        return onLeftClick((event, slot, menu) -> action.accept(event, slot));
+    }
+
+    /**
+     * Set click handler.
+     *
+     * @param handler The handler.
+     * @return The builder.
+     */
+    SlotBuilder onLeftClick(@NotNull SlotHandler handler);
 
     /**
      * Set click handler.
@@ -23,7 +34,18 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    SlotBuilder onRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
+    @Deprecated
+    default SlotBuilder onRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
+        return onRightClick((event, slot, menu) -> action.accept(event, slot));
+    }
+
+    /**
+     * Set click handler.
+     *
+     * @param handler The handler.
+     * @return The builder.
+     */
+    SlotBuilder onRightClick(@NotNull SlotHandler handler);
 
     /**
      * Set click handler.
@@ -31,7 +53,18 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    SlotBuilder onShiftLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
+    @Deprecated
+    default SlotBuilder onShiftLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
+        return onShiftLeftClick((event, slot, menu) -> action.accept(event, slot));
+    }
+
+    /**
+     * Set click handler.
+     *
+     * @param handler The handler.
+     * @return The builder.
+     */
+    SlotBuilder onShiftLeftClick(@NotNull SlotHandler handler);
 
     /**
      * Set click handler.
@@ -39,7 +72,18 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    SlotBuilder onShiftRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
+    @Deprecated
+    default SlotBuilder onShiftRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
+        return onShiftRightClick((event, slot, menu) -> action.accept(event, slot));
+    }
+
+    /**
+     * Set click handler.
+     *
+     * @param handler The handler.
+     * @return The builder.
+     */
+    SlotBuilder onShiftRightClick(@NotNull SlotHandler handler);
 
     /**
      * Set click handler.
@@ -47,7 +91,18 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    SlotBuilder onMiddleClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action);
+    @Deprecated
+    default SlotBuilder onMiddleClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
+        return onMiddleClick((event, slot, menu) -> action.accept(event, slot));
+    }
+
+    /**
+     * Set click handler.
+     *
+     * @param handler The handler.
+     * @return The builder.
+     */
+    SlotBuilder onMiddleClick(@NotNull SlotHandler handler);
 
     /**
      * Set slot to be a captive slot.
