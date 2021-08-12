@@ -6,6 +6,7 @@ import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.slot.EcoFillerSlot
+import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Material
@@ -55,16 +56,16 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
             }
         }
 
-        val finalSlots: MutableList<MutableList<Slot>> = ArrayList()
+        val finalSlots: MutableList<MutableList<EcoSlot>> = ArrayList()
 
         for (row in tempSlots) {
-            val tempRow = ArrayList<Slot>()
+            val tempRow = ArrayList<EcoSlot>()
             for (slot in row) {
                 var tempSlot = slot
                 if (tempSlot is FillerSlot) {
                     tempSlot = EcoFillerSlot(tempSlot.itemStack)
                 }
-                tempRow.add(tempSlot ?: EcoFillerSlot(ItemStack(Material.AIR)))
+                tempRow.add((tempSlot ?: EcoFillerSlot(ItemStack(Material.AIR))) as EcoSlot)
             }
             finalSlots.add(tempRow)
         }

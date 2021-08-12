@@ -38,6 +38,13 @@ open class EcoSlot(
         return provider.provide(player, MenuHandler.getMenu(player.openInventory.topInventory)!!)
     }
 
+    fun getItemStack(
+        player: Player,
+        menu: Menu
+    ): ItemStack {
+        return provider.provide(player, menu)
+    }
+
     override fun isCaptive(): Boolean {
         return false
     }

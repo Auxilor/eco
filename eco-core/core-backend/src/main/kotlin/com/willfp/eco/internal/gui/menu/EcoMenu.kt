@@ -2,6 +2,7 @@ package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot.Slot
+import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -12,7 +13,7 @@ import java.util.function.Consumer
 
 class EcoMenu(
     private val rows: Int,
-    private val slots: List<MutableList<Slot>>,
+    private val slots: List<MutableList<EcoSlot>>,
     private val title: String,
     private val onClose: Consumer<InventoryCloseEvent>
 ): Menu {
@@ -37,7 +38,7 @@ class EcoMenu(
                 if (i == rows * 9) {
                     break
                 }
-                val slotItem = item.getItemStack(player)
+                val slotItem = item.getItemStack(player, this)
                 val meta = slotItem.itemMeta
                 if (meta != null) {
                     val lore = meta.lore
