@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
+import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.slot.FillerMask
@@ -10,7 +11,6 @@ import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Material
-import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
@@ -18,7 +18,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     private var title = "Menu"
     private var maskSlots: List<MutableList<Slot?>>
     private val slots: List<MutableList<Slot?>> = ListUtils.create2DList(rows, 9)
-    private var onClose = Consumer { _: InventoryCloseEvent -> }
+    private var onClose = CloseHandler { _, _ -> }
 
     override fun setTitle(title: String): MenuBuilder {
         this.title = StringUtils.format(title)
@@ -36,12 +36,17 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
         return this
     }
 
+    override fun modfiy(modifier: Consumer<MenuBuilder>): MenuBuilder {
+        modifier.accept(this)
+        return this
+    }
+
     override fun setMask(mask: FillerMask): MenuBuilder {
         maskSlots = mask.mask
         return this
     }
 
-    override fun onClose(action: Consumer<InventoryCloseEvent>): MenuBuilder {
+    override fun onClose(action: CloseHandler): MenuBuilder {
         onClose = action
         return this
     }

@@ -1,6 +1,7 @@
 package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,15 @@ public interface Slot {
     /**
      * Create a builder for an ItemStack.
      *
+     * @return The builder.
+     */
+    static SlotBuilder builder() {
+        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> new ItemStack(Material.AIR));
+    }
+
+    /**
+     * Create a builder for an ItemStack.
+     *
      * @param itemStack The ItemStack.
      * @return The builder.
      */
@@ -42,7 +52,6 @@ public interface Slot {
      * @param provider The provider.
      * @return The builder.
      */
-    @Deprecated
     static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {
         return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> provider.apply(player));
     }

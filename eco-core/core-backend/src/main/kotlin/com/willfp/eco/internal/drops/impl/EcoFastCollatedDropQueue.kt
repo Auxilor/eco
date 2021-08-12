@@ -10,11 +10,14 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
         val fetched = COLLATED_MAP[player]
 
         if (fetched == null) {
-            COLLATED_MAP[player] = CollatedDrops(items, loc, xp)
+            COLLATED_MAP[player] = CollatedDrops(items, loc, xp, hasTelekinesis)
         } else {
             fetched.addDrops(items)
             fetched.location = loc
             fetched.addXp(xp)
+            if (this.hasTelekinesis) {
+                fetched.forceTelekinesis()
+            }
 
             COLLATED_MAP[player] = fetched
         }
@@ -23,8 +26,10 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
     class CollatedDrops(
         val drops: MutableList<ItemStack>,
         var location: Location,
-        var xp: Int
+        var xp: Int,
+        var telekinetic: Boolean
     ) {
+
         fun addDrops(toAdd: List<ItemStack>): CollatedDrops {
             drops.addAll(toAdd)
             return this
@@ -33,6 +38,10 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
         fun addXp(xp: Int): CollatedDrops {
             this.xp += xp
             return this
+        }
+
+        fun forceTelekinesis() {
+            telekinetic = true
         }
     }
 

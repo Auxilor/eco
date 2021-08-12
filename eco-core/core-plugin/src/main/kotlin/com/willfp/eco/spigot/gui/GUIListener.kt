@@ -63,6 +63,10 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
 
         val inv = player.openInventory.topInventory
 
+        if (inv == event.clickedInventory) {
+            return
+        }
+
         val menu = MenuHandler.getMenu(inv) ?: return
 
         val rowColumn = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())

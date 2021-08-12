@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
+import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.slot.EcoSlot
@@ -9,13 +10,12 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import java.util.function.Consumer
 
 class EcoMenu(
     private val rows: Int,
     private val slots: List<MutableList<EcoSlot>>,
     private val title: String,
-    private val onClose: Consumer<InventoryCloseEvent>
+    private val onClose: CloseHandler
 ): Menu {
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
@@ -59,7 +59,7 @@ class EcoMenu(
     }
 
     fun handleClose(event: InventoryCloseEvent) {
-        onClose.accept(event)
+        onClose.handle(event, this)
     }
 
     override fun getRows(): Int {

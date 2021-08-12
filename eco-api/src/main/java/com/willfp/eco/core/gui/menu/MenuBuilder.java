@@ -32,6 +32,14 @@ public interface MenuBuilder {
                         @NotNull Slot slot);
 
     /**
+     * Run function to modify the builder.
+     *
+     * @param modifier The modifier.
+     * @return The builder.
+     */
+    MenuBuilder modfiy(@NotNull Consumer<MenuBuilder> modifier);
+
+    /**
      * Set the menu mask.
      *
      * @param mask The mask.
@@ -45,7 +53,18 @@ public interface MenuBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    MenuBuilder onClose(@NotNull Consumer<InventoryCloseEvent> action);
+    default MenuBuilder onClose(@NotNull Consumer<InventoryCloseEvent> action) {
+        onClose((event, menu) -> action.accept(event));
+        return this;
+    }
+
+    /**
+     * Set the menu close handler.
+     *
+     * @param action The handler.
+     * @return The builder.
+     */
+    MenuBuilder onClose(@NotNull CloseHandler action);
 
     /**
      * Build the menu.

@@ -17,8 +17,8 @@ open class EcoDropQueue(player: Player) : InternalDropQueue {
     var xp: Int
     val player: Player
     var loc: Location
+    var hasTelekinesis = false
 
-    private var hasTelekinesis = false
     override fun addItem(item: ItemStack): InternalDropQueue {
         items.add(item)
         return this

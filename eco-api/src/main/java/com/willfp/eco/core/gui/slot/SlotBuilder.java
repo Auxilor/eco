@@ -15,7 +15,6 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    @Deprecated
     default SlotBuilder onLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
         return onLeftClick((event, slot, menu) -> action.accept(event, slot));
     }
@@ -34,7 +33,6 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    @Deprecated
     default SlotBuilder onRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
         return onRightClick((event, slot, menu) -> action.accept(event, slot));
     }
@@ -53,7 +51,6 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    @Deprecated
     default SlotBuilder onShiftLeftClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
         return onShiftLeftClick((event, slot, menu) -> action.accept(event, slot));
     }
@@ -72,7 +69,6 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    @Deprecated
     default SlotBuilder onShiftRightClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
         return onShiftRightClick((event, slot, menu) -> action.accept(event, slot));
     }
@@ -91,7 +87,6 @@ public interface SlotBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    @Deprecated
     default SlotBuilder onMiddleClick(@NotNull BiConsumer<InventoryClickEvent, Slot> action) {
         return onMiddleClick((event, slot, menu) -> action.accept(event, slot));
     }

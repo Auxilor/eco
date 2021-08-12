@@ -17,6 +17,6 @@ public interface SlotHandler {
      * @param menu  The menu.
      */
     void handle(@NotNull InventoryClickEvent event,
-                     @NotNull Slot slot,
-                     @NotNull Menu menu);
+                @NotNull Slot slot,
+                @NotNull Menu menu);
 }
