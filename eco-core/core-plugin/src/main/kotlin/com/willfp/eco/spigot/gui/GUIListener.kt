@@ -13,6 +13,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 
@@ -47,6 +48,31 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
 
         plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory).refresh(player) }
         plugin.scheduler.runLater({ Bukkit.getLogger().info(menu.getCaptiveItems(player).toString()) }, 1)
+    }
+
+    @EventHandler
+    fun handleShiftClick(event: InventoryClickEvent) {
+        if (!(event.click == ClickType.SHIFT_RIGHT || event.click == ClickType.SHIFT_LEFT)) {
+            return
+        }
+
+        val player = event.whoClicked
+        if (player !is Player) {
+            return
+        }
+
+        val inv = player.openInventory.topInventory
+
+        val menu = MenuHandler.getMenu(inv) ?: return
+
+        val rowColumn = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())
+        val row = rowColumn.first!!
+        val column = rowColumn.second!!
+        val slot = menu.getSlot(row, column)
+
+        if (!slot.isCaptive) {
+            event.isCancelled = true
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)

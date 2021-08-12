@@ -20,4 +20,8 @@ class EcoCaptivatorSlot : EcoSlot(
             event.isCancelled = false
         }
     }
+
+    override fun isCaptive(): Boolean {
+        return true
+    }
 }

@@ -20,6 +20,13 @@ public interface Slot {
     ItemStack getItemStack(@NotNull Player player);
 
     /**
+     * If the slot is captive. (Can items be placed in it).
+     *
+     * @return If captive.
+     */
+    boolean isCaptive();
+
+    /**
      * Create a builder for an ItemStack.
      *
      * @param itemStack The ItemStack.

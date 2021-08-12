@@ -30,4 +30,9 @@ public class FillerSlot implements Slot {
     public ItemStack getItemStack(@NotNull final Player player) {
         return itemStack;
     }
+
+    @Override
+    public boolean isCaptive() {
+        return false;
+    }
 }
