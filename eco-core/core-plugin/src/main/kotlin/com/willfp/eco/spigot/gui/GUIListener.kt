@@ -8,7 +8,6 @@ import com.willfp.eco.internal.gui.menu.MenuHandler
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.MenuUtils
 import org.apache.commons.lang.Validate
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -47,7 +46,6 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
         val menu = MenuHandler.getMenu(player.openInventory.topInventory) ?: return
 
         plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory)!!.refresh(player) }
-        plugin.scheduler.runLater({ Bukkit.getLogger().info(menu.getCaptiveItems(player).toString()) }, 1)
     }
 
     @EventHandler
