@@ -72,6 +72,7 @@ class EcoMenu(
 
     override fun getCaptiveItems(player: Player): MutableList<ItemStack> {
         val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
+        inventory ?: return ArrayList()
         return inventory.captiveItems
     }
 }

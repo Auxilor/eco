@@ -34,7 +34,7 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
         event.isCancelled = true
         ecoSlot.handleInventoryClick(event, menu)
 
-        plugin.scheduler.run{ MenuHandler.getExtendedInventory(event.clickedInventory!!).refresh(player) }
+        plugin.scheduler.run{ MenuHandler.getExtendedInventory(event.clickedInventory!!)!!.refresh(player) }
     }
 
     @EventHandler
@@ -46,7 +46,7 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
 
         val menu = MenuHandler.getMenu(player.openInventory.topInventory) ?: return
 
-        plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory).refresh(player) }
+        plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory)!!.refresh(player) }
         plugin.scheduler.runLater({ Bukkit.getLogger().info(menu.getCaptiveItems(player).toString()) }, 1)
     }
 

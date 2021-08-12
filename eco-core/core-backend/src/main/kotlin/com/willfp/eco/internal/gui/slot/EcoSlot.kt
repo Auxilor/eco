@@ -47,7 +47,9 @@ open class EcoSlot(
         player: Player,
         menu: Menu
     ): ItemStack {
-        return provider.provide(player, menu)
+        val prev = provider.provide(player, menu)
+        modifier.provide(player, menu, prev)
+        return prev
     }
 
     override fun isCaptive(): Boolean {

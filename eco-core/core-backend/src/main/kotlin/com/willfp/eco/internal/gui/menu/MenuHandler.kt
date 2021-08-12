@@ -25,7 +25,7 @@ object MenuHandler {
         return MENUS[INVS[inventory]]
     }
 
-    fun getExtendedInventory(inventory: Inventory): ExtendedInventory {
-        return INVS[inventory]!!
+    fun getExtendedInventory(inventory: Inventory): ExtendedInventory? {
+        return INVS[inventory]
     }
 }

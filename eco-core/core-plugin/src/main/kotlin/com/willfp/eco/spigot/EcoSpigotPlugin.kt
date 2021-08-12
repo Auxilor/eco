@@ -17,7 +17,6 @@ import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.drops.CollatedRunnable
 import com.willfp.eco.spigot.eventlisteners.*
 import com.willfp.eco.spigot.gui.GUIListener
-import com.willfp.eco.spigot.gui.GUITester
 import com.willfp.eco.spigot.integrations.anticheat.*
 import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
@@ -142,8 +141,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             PlayerJumpListeners(),
             GUIListener(this),
             ArrowDataListener(this),
-            ArmorChangeEventListeners(this),
-            GUITester(this)
+            ArmorChangeEventListeners(this)
         )
     }
 }

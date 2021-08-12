@@ -8,5 +8,6 @@ class EcoFillerSlot(itemStack: ItemStack) : EcoSlot(
     { _, _, _ -> },
     { _, _, _ -> },
     { _, _, _ -> },
+    { _, _, _ -> },
     { _, _, _ -> }
 )
