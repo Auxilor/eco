@@ -135,10 +135,6 @@ public class Display {
             unfinalize(itemStack);
         }
 
-        if (!itemStack.hasItemMeta()) {
-            return itemStack;
-        }
-
         ItemMeta meta = itemStack.getItemMeta();
 
         if (meta == null) {
