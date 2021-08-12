@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 
 class EcoMenu(
     private val rows: Int,
-    private val slots: List<MutableList<EcoSlot>>,
+    val slots: List<MutableList<EcoSlot>>,
     private val title: String,
     private val onClose: CloseHandler
 ): Menu {

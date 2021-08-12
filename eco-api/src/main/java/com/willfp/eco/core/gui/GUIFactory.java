@@ -2,7 +2,7 @@ package com.willfp.eco.core.gui;
 
 import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
-import com.willfp.eco.core.gui.slot.SlotProvider;
+import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.Eco
-import com.willfp.eco.core.gui.slot.SlotHandler
+import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
@@ -11,7 +11,8 @@ class EcoCaptivatorSlot : EcoSlot(
     allowMovingItem,
     allowMovingItem,
     allowMovingItem,
-    allowMovingItem
+    allowMovingItem,
+    { _, _, _ -> }
 ) {
     companion object {
         val plugin = Eco.getHandler().ecoPlugin!!

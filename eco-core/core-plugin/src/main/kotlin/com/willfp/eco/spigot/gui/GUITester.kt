@@ -4,7 +4,6 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -28,7 +27,13 @@ class GUITester(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Listene
                 .build()
         ).modfiy { builder ->
             run {
-                val slot = FillerSlot(ItemStack(Material.RED_STAINED_GLASS_PANE))
+                val slot = Slot.builder(ItemStack(Material.RED_STAINED_GLASS_PANE))
+                    .setModifier{ player, menu, prev -> run {
+                        if (menu.getCaptiveItems(player).isNotEmpty()) {
+                            prev.type = Material.GREEN_STAINED_GLASS_PANE
+                        }
+                    }}
+                    .build()
                 for (i in 3..8) {
                     builder.setSlot(2, i, slot)
                 }

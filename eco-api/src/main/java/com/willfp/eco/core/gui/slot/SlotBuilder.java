@@ -1,5 +1,7 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.gui.slot.functional.SlotHandler;
+import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -98,6 +100,14 @@ public interface SlotBuilder {
      * @return The builder.
      */
     SlotBuilder onMiddleClick(@NotNull SlotHandler handler);
+
+    /**
+     * Modify the ItemStack.
+     *
+     * @param modifier The modifier.
+     * @return The builder.
+     */
+    SlotBuilder setModifier(@NotNull SlotModifier modifier);
 
     /**
      * Set slot to be a captive slot.

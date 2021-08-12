@@ -1,6 +1,7 @@
 package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

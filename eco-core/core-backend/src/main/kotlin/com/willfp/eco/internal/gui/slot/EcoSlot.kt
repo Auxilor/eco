@@ -2,8 +2,9 @@ package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.core.gui.slot.SlotHandler
-import com.willfp.eco.core.gui.slot.SlotProvider
+import com.willfp.eco.core.gui.slot.functional.SlotHandler
+import com.willfp.eco.core.gui.slot.functional.SlotModifier
+import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.internal.gui.menu.MenuHandler
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -16,7 +17,8 @@ open class EcoSlot(
     private val onRightClick: SlotHandler,
     private val onShiftLeftClick: SlotHandler,
     private val onShiftRightClick: SlotHandler,
-    private val onMiddleClick: SlotHandler
+    private val onMiddleClick: SlotHandler,
+    private val modifier: SlotModifier
 ) : Slot {
 
     fun handleInventoryClick(
@@ -35,7 +37,10 @@ open class EcoSlot(
     }
 
     override fun getItemStack(player: Player): ItemStack {
-        return provider.provide(player, MenuHandler.getMenu(player.openInventory.topInventory)!!)
+        val menu = MenuHandler.getMenu(player.openInventory.topInventory)!!
+        val prev = provider.provide(player, menu)
+        modifier.provide(player, menu, prev)
+        return prev
     }
 
     fun getItemStack(

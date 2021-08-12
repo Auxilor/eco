@@ -1,4 +1,4 @@
-package com.willfp.eco.core.gui.slot;
+package com.willfp.eco.core.gui.slot.functional;
 
 import com.willfp.eco.core.gui.menu.Menu;
 import org.bukkit.entity.Player;
