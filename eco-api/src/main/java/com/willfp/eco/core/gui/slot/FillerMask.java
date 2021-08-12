@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,35 +40,46 @@ public class FillerMask {
      */
     public FillerMask(@NotNull final Material material,
                       @NotNull final String... pattern) {
-        if (material == Material.AIR) {
-            throw new IllegalArgumentException("Material cannot be air!");
+        this(new MaskMaterials(material), pattern);
+    }
+
+    /**
+     * Create a new filler mask.
+     *
+     * @param materials The mask materials.
+     * @param pattern  The pattern.
+     */
+    public FillerMask(@NotNull final MaskMaterials materials,
+                      @NotNull final String... pattern) {
+        if (Arrays.stream(materials.materials()).anyMatch(material -> material == Material.AIR)) {
+            throw new IllegalArgumentException("Materials cannot be air!");
         }
 
         mask = ListUtils.create2DList(6, 9);
 
-        ItemStack itemStack = new ItemStackBuilder(material)
-                .setDisplayName("&r")
-                .build();
+        for (int i = 0; i < materials.materials().length; i++) {
+            ItemStack itemStack = new ItemStackBuilder(materials.materials()[i])
+                    .setDisplayName("&r")
+                    .build();
 
-        int row = 0;
+            int row = 0;
 
-        for (String patternRow : pattern) {
-            int column = 0;
-            if (patternRow.length() != 9) {
-                throw new IllegalArgumentException("Invalid amount of columns in pattern!");
-            }
-            for (char c : patternRow.toCharArray()) {
-                if (c == '0') {
-                    mask.get(row).set(column, null);
-                } else if (c == '1') {
-                    mask.get(row).set(column, new FillerSlot(itemStack));
-                } else {
-                    throw new IllegalArgumentException("Invalid character in pattern! (Must only be 0 and 1)");
+            for (String patternRow : pattern) {
+                int column = 0;
+                if (patternRow.length() != 9) {
+                    throw new IllegalArgumentException("Invalid amount of columns in pattern!");
                 }
+                for (char c : patternRow.toCharArray()) {
+                    if (c == '0') {
+                        mask.get(row).set(column, null);
+                    } else if (c == Character.forDigit(i + 1, 10)) {
+                        mask.get(row).set(column, new FillerSlot(itemStack));
+                    }
 
-                column++;
+                    column++;
+                }
+                row++;
             }
-            row++;
         }
     }
 }
