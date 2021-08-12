@@ -71,10 +71,6 @@ public class Display {
      */
     public ItemStack display(@NotNull final ItemStack itemStack,
                              @Nullable final Player player) {
-        if (!itemStack.hasItemMeta()) {
-            return itemStack; // return early if there's no customization of the item
-        }
-
         Map<String, Object[]> pluginVarArgs = new HashMap<>();
 
         for (DisplayPriority priority : DisplayPriority.values()) {

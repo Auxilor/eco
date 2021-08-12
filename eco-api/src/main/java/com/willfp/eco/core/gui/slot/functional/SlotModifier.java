@@ -17,7 +17,7 @@ public interface SlotModifier {
      * @param menu     The menu.
      * @param previous The previous ItemStack.
      */
-    void provide(@NotNull Player player,
-                 @NotNull Menu menu,
-                 @NotNull ItemStack previous);
+    void modify(@NotNull Player player,
+                @NotNull Menu menu,
+                @NotNull ItemStack previous);
 }

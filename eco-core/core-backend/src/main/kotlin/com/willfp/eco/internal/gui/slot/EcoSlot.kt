@@ -39,7 +39,7 @@ open class EcoSlot(
     override fun getItemStack(player: Player): ItemStack {
         val menu = MenuHandler.getMenu(player.openInventory.topInventory)!!
         val prev = provider.provide(player, menu)
-        modifier.provide(player, menu, prev)
+        modifier.modify(player, menu, prev)
         return prev
     }
 
@@ -48,7 +48,7 @@ open class EcoSlot(
         menu: Menu
     ): ItemStack {
         val prev = provider.provide(player, menu)
-        modifier.provide(player, menu, prev)
+        modifier.modify(player, menu, prev)
         return prev
     }
 
