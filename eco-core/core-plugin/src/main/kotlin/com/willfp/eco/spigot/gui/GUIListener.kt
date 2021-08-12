@@ -43,7 +43,7 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
             return
         }
 
-        val menu = MenuHandler.getMenu(player.openInventory.topInventory) ?: return
+        MenuHandler.getMenu(player.openInventory.topInventory) ?: return
 
         plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory)!!.refresh(player) }
     }
