@@ -44,8 +44,9 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
         }
 
         MenuHandler.getMenu(player.openInventory.topInventory) ?: return
+        MenuHandler.getExtendedInventory(player.openInventory.topInventory) ?: return
 
-        plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory)!!.refresh(player) }
+        plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory)?.refresh(player) }
     }
 
     @EventHandler
