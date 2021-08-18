@@ -158,8 +158,17 @@ Here's a list of some (not all) of the features of eco:
 
 <h1 align="center">
   <br>
+    <a href="http://gamersupps.gg?afmc=Auxilor" target="_blank">
+      <img src="https://i.imgur.com/uFDpBAC.png" alt="supps banner">
+    </a>
+  <br>
+</h1>
+
+<h1 align="center">
+  <br>
     <a href="https://dedimc.promo/Auxilor" target="_blank">
       <img src="https://i.imgur.com/zdDLhFA.png" alt="dedimc banner">
     </a>
   <br>
 </h1>
+
