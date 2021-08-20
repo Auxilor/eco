@@ -33,7 +33,13 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
         event.isCancelled = true
         ecoSlot.handleInventoryClick(event, menu)
 
-        plugin.scheduler.run{ MenuHandler.getExtendedInventory(event.clickedInventory!!)!!.refresh(player) }
+        if (event.clickedInventory == null) {
+            return
+        }
+
+        val extendedInventory = MenuHandler.getExtendedInventory(event.clickedInventory!!) ?: return
+
+        plugin.scheduler.run{ extendedInventory.refresh(player) }
     }
 
     @EventHandler
