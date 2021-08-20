@@ -2,12 +2,16 @@ package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.slot.Slot;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * GUI version of {@link Inventory}.
@@ -54,6 +58,42 @@ public interface Menu {
      * @return The items.
      */
     List<ItemStack> getCaptiveItems(@NotNull Player player);
+
+    /**
+     * Write data.
+     *
+     * @param player The player.
+     * @param key    The key.
+     * @param type   The type.
+     * @param value  The value.
+     * @param <T>    The type.
+     * @param <Z>    The type.
+     */
+    <T, Z> void writeData(@NotNull Player player,
+                          @NotNull NamespacedKey key,
+                          @NotNull PersistentDataType<T, Z> type,
+                          @NotNull Z value);
+
+    /**
+     * Read data.
+     *
+     * @param player The player.
+     * @param key    The key.
+     * @param type   The type.
+     * @param <T>    The type.
+     * @param <Z>    The type.
+     */
+    @Nullable <T, Z> T readData(@NotNull Player player,
+                                @NotNull NamespacedKey key,
+                                @NotNull PersistentDataType<T, Z> type);
+
+    /**
+     * Get all data keys for a player.
+     *
+     * @param player The player.
+     * @return The keys.
+     */
+    Set<NamespacedKey> getKeys(@NotNull Player player);
 
     /**
      * Create a builder with a given amount of rows.

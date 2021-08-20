@@ -3,6 +3,7 @@ package com.willfp.eco.internal.gui.menu
 import com.willfp.eco.internal.gui.slot.EcoCaptivatorSlot
 import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.StringUtils
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -12,6 +13,7 @@ class ExtendedInventory(
     private val menu: EcoMenu
 ) {
     val captiveItems: MutableList<ItemStack> = ArrayList()
+    val data: MutableMap<NamespacedKey, Any> = HashMap()
 
     fun refresh(player: Player) {
         captiveItems.clear()

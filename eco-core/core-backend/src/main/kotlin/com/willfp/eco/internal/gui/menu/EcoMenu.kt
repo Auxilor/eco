@@ -6,11 +6,14 @@ import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 
+@Suppress("UNCHECKED_CAST")
 class EcoMenu(
     private val rows: Int,
     val slots: List<MutableList<EcoSlot>>,
@@ -74,5 +77,28 @@ class EcoMenu(
         val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
         inventory ?: return ArrayList()
         return inventory.captiveItems
+    }
+
+    override fun <T : Any, Z : Any> writeData(
+        player: Player,
+        key: NamespacedKey,
+        type: PersistentDataType<T, Z>,
+        value: Z
+    ) {
+        val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
+        inventory ?: return
+        inventory.data[key] = value
+    }
+
+    override fun <T : Any, Z : Any> readData(player: Player, key: NamespacedKey, type: PersistentDataType<T, Z>): T? {
+        val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
+        inventory ?: return null
+        return inventory.data[key] as T?
+    }
+
+    override fun getKeys(player: Player): MutableSet<NamespacedKey> {
+        val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
+        inventory ?: return HashSet()
+        return inventory.data.keys
     }
 }

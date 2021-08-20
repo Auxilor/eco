@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
  *
  * @see ArmorChangeEvent
  */
-@Deprecated
 public class ArmorEquipEvent extends PlayerEvent {
     /**
      * Bukkit parity.
