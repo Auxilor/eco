@@ -82,6 +82,7 @@ public interface Menu {
      * @param type   The type.
      * @param <T>    The type.
      * @param <Z>    The type.
+     * @return The data.
      */
     @Nullable <T, Z> T readData(@NotNull Player player,
                                 @NotNull NamespacedKey key,

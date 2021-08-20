@@ -88,6 +88,7 @@ class EcoMenu(
         val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
         inventory ?: return
         inventory.data[key] = value
+        inventory.refresh(player)
     }
 
     override fun <T : Any, Z : Any> readData(player: Player, key: NamespacedKey, type: PersistentDataType<T, Z>): T? {
