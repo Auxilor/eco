@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items;
 
+import com.willfp.eco.core.items.builder.EnchantedBookBuilder;
 import com.willfp.eco.core.items.builder.ItemBuilder;
 import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
@@ -129,9 +131,17 @@ public final class Items {
             return item;
         }
 
-        ItemBuilder builder = new ItemStackBuilder(item.getItem());
-        requiredEnchantments.forEach(builder::addEnchantment);
-        ItemStack example = builder.build();
+        ItemStack example = item.getItem();
+
+        if (example.getItemMeta() instanceof EnchantmentStorageMeta storageMeta) {
+            requiredEnchantments.forEach((enchantment, integer) -> storageMeta.addStoredEnchant(enchantment, integer, true));
+            example.setItemMeta(storageMeta);
+        } else {
+            ItemMeta meta = example.getItemMeta();
+            assert meta != null;
+            requiredEnchantments.forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
+            example.setItemMeta(meta);
+        }
 
         return new ModifiedTestableItem(
                 item,
@@ -144,12 +154,23 @@ public final class Items {
 
                     assert meta != null;
 
-                    for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-                        if (!meta.hasEnchant(entry.getKey())) {
-                            return false;
+                    if (meta instanceof EnchantmentStorageMeta storageMeta) {
+                        for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
+                            if (!storageMeta.hasStoredEnchant(entry.getKey())) {
+                                return false;
+                            }
+                            if (storageMeta.getStoredEnchantLevel(entry.getKey()) < entry.getValue()) {
+                                return false;
+                            }
                         }
-                        if (meta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
-                            return false;
+                    } else {
+                        for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
+                            if (!meta.hasEnchant(entry.getKey())) {
+                                return false;
+                            }
+                            if (meta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
+                                return false;
+                            }
                         }
                     }
 
