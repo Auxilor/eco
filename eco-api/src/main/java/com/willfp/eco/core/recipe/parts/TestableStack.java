@@ -19,6 +19,7 @@ public class TestableStack implements TestableItem {
     /**
      * The item.
      */
+    @Getter
     private final TestableItem handle;
 
     /**

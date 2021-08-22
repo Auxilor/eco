@@ -17,6 +17,7 @@ public class ModifiedTestableItem implements TestableItem {
     /**
      * The item.
      */
+    @Getter
     private final TestableItem handle;
 
     /**

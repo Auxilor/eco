@@ -6,6 +6,7 @@ import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
+import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
@@ -130,6 +131,22 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
                     return;
                 }
             }
+            if (part instanceof ModifiedTestableItem modified) {
+                if (modified.getHandle() instanceof MaterialTestableItem) {
+                    if (Items.isCustomItem(itemStack)) {
+                        event.getInventory().setResult(new ItemStack(Material.AIR));
+                        return;
+                    }
+                }
+            }
+            if (part instanceof TestableStack modified) {
+                if (modified.getHandle() instanceof MaterialTestableItem) {
+                    if (Items.isCustomItem(itemStack)) {
+                        event.getInventory().setResult(new ItemStack(Material.AIR));
+                        return;
+                    }
+                }
+            }
         }
     }
     
@@ -154,6 +171,24 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
                     event.setResult(Event.Result.DENY);
                     event.setCancelled(true);
                     return;
+                }
+            }
+            if (part instanceof ModifiedTestableItem modified) {
+                if (modified.getHandle() instanceof MaterialTestableItem) {
+                    if (Items.isCustomItem(itemStack)) {
+                        event.getInventory().setResult(new ItemStack(Material.AIR));
+                        event.setResult(Event.Result.DENY);
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+            if (part instanceof TestableStack modified) {
+                if (modified.getHandle() instanceof MaterialTestableItem) {
+                    if (Items.isCustomItem(itemStack)) {
+                        event.getInventory().setResult(new ItemStack(Material.AIR));
+                        return;
+                    }
                 }
             }
         }
