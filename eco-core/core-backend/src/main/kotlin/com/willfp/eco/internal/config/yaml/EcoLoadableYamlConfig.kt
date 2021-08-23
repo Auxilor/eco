@@ -31,7 +31,6 @@ open class EcoLoadableYamlConfig(
     }
 
     final override fun createFile() {
-        val resourcePath = resourcePath
         val inputStream = source.getResourceAsStream(resourcePath)!!
         val outFile = File(this.plugin.dataFolder, resourcePath)
         val lastIndex = resourcePath.lastIndexOf('/')
@@ -41,11 +40,7 @@ open class EcoLoadableYamlConfig(
         }
         if (!outFile.exists()) {
             val out: OutputStream = FileOutputStream(outFile)
-            val buf = ByteArray(1024)
-            var len: Int
-            while (inputStream.read(buf).also { len = it } > 0) {
-                out.write(buf, 0, len)
-            }
+            inputStream.copyTo(out, 1024)
             out.close()
             inputStream.close()
         }
