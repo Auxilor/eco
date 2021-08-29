@@ -13,6 +13,7 @@ import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
 
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
@@ -114,6 +115,49 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             ArrayList()
         }
     }
+
+    override fun addItemFlags(vararg hideFlags: ItemFlag) {
+        for (flag in hideFlags) {
+            this.flagBits = this.flagBits or getBitModifier(flag)
+        }
+    }
+
+    override fun removeItemFlags(vararg hideFlags: ItemFlag) {
+        for (flag in hideFlags) {
+            this.flagBits = this.flagBits and getBitModifier(flag)
+        }
+    }
+
+    override fun getItemFlags(): MutableSet<ItemFlag> {
+        val flags = mutableSetOf<ItemFlag>()
+
+        var flagArr: Array<ItemFlag>
+        val size = ItemFlag.values().also { flagArr = it }.size
+
+        for (i in 0 until size) {
+            val flag = flagArr[i]
+            if (this.hasItemFlag(flag)) {
+                flags.add(flag)
+            }
+        }
+
+        return flags
+    }
+
+    override fun hasItemFlag(flag: ItemFlag): Boolean {
+        val bitModifier = getBitModifier(flag)
+        return this.flagBits and bitModifier == bitModifier
+    }
+
+    private var flagBits: Int
+        get() =
+            if (handle.hasTag() && handle.tag!!.contains(
+                    "HideFlags",
+                    99
+                )
+            ) handle.tag!!.getInt("HideFlags") else 0
+        set(value) =
+            handle.orCreateTag.putInt("HideFlags", value)
 
     override fun getRepairCost(): Int {
         return handle.baseRepairCost;

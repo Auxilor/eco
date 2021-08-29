@@ -3,6 +3,7 @@ package com.willfp.eco.core.fast;
 import com.willfp.eco.core.Eco;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.
@@ -51,16 +53,46 @@ public interface FastItemStack {
     /**
      * Set the rework penalty.
      *
-     * @param cost      The rework penalty to set.
+     * @param cost The rework penalty to set.
      */
     void setRepairCost(int cost);
 
     /**
      * Get the rework penalty.
-     *.
+     * .
+     *
      * @return The rework penalty found on the item.
      */
     int getRepairCost();
+
+    /**
+     * Add ItemFlags.
+     *
+     * @param hideFlags The flags.
+     */
+    void addItemFlags(ItemFlag... hideFlags);
+
+    /**
+     * Remove ItemFlags.
+     *
+     * @param hideFlags The flags.
+     */
+    void removeItemFlags(ItemFlag... hideFlags);
+
+    /**
+     * Get the ItemFlags.
+     *
+     * @return The flags.
+     */
+    Set<ItemFlag> getItemFlags();
+
+    /**
+     * Test the item for a flag.
+     *
+     * @param flag The flag.
+     * @return If the flag is present.
+     */
+    boolean hasItemFlag(ItemFlag flag);
 
     /**
      * Get the Bukkit ItemStack again.
