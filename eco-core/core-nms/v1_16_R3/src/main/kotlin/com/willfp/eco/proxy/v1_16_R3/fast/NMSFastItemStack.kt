@@ -101,12 +101,16 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         for (flag in hideFlags) {
             this.flagBits = this.flagBits or getBitModifier(flag)
         }
+
+        apply()
     }
 
     override fun removeItemFlags(vararg hideFlags: ItemFlag) {
         for (flag in hideFlags) {
             this.flagBits = this.flagBits and getBitModifier(flag)
         }
+
+        apply()
     }
 
     override fun getItemFlags(): MutableSet<ItemFlag> {
