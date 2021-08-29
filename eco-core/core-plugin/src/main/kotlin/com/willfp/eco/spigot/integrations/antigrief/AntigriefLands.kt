@@ -1,7 +1,6 @@
 package com.willfp.eco.spigot.integrations.antigrief
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import me.angeschossen.lands.api.integration.LandsIntegration
 import me.angeschossen.lands.api.role.enums.RoleSetting
@@ -10,8 +9,8 @@ import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class AntigriefLands(plugin: EcoPlugin) : PluginDependent<EcoPlugin?>(plugin), AntigriefWrapper {
-    private val landsIntegration = LandsIntegration(this.plugin!!)
+class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
+    private val landsIntegration = LandsIntegration(this.plugin)
     override fun canBreakBlock(
         player: Player,
         block: Block

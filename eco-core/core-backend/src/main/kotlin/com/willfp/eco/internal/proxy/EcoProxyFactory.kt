@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.proxy
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.proxy.AbstractProxy
 import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.core.proxy.ProxyFactory
@@ -11,8 +10,8 @@ import java.net.URLClassLoader
 import java.util.*
 
 class EcoProxyFactory(
-    plugin: EcoPlugin
-) : PluginDependent<EcoPlugin>(plugin), ProxyFactory {
+    private val plugin: EcoPlugin
+) : ProxyFactory {
     private val proxyClassLoader: ClassLoader = plugin::class.java.classLoader
     private val cache: MutableMap<Class<out AbstractProxy>, AbstractProxy> = IdentityHashMap()
 

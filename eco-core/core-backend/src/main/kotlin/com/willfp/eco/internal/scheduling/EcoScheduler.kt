@@ -1,12 +1,11 @@
 package com.willfp.eco.internal.scheduling
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.scheduling.Scheduler
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
 
-class EcoScheduler(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Scheduler {
+class EcoScheduler(private val plugin: EcoPlugin) : Scheduler {
     override fun runLater(
         runnable: Runnable,
         ticksLater: Long

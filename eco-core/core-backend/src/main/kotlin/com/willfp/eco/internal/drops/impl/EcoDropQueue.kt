@@ -14,7 +14,7 @@ import org.bukkit.util.Vector
 
 open class EcoDropQueue(player: Player) : InternalDropQueue {
     val items = mutableListOf<ItemStack>()
-    var xp: Int
+    var xp: Int = 0
     val player: Player
     var loc: Location
     var hasTelekinesis = false
@@ -79,7 +79,6 @@ open class EcoDropQueue(player: Player) : InternalDropQueue {
     }
 
     init {
-        xp = 0
         this.player = player
         loc = player.location
     }

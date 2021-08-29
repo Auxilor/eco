@@ -1,7 +1,6 @@
 package com.willfp.eco.spigot.gui
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
@@ -16,7 +15,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 
-class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Listener {
+class GUIListener(private val plugin: EcoPlugin) : Listener {
     @EventHandler
     fun handleSlotClick(event: InventoryClickEvent) {
         val player = event.whoClicked
@@ -39,7 +38,7 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
 
         val extendedInventory = MenuHandler.getExtendedInventory(event.clickedInventory!!) ?: return
 
-        plugin.scheduler.run{ extendedInventory.refresh(player) }
+        plugin.scheduler.run { extendedInventory.refresh(player) }
     }
 
     @EventHandler
@@ -52,7 +51,7 @@ class GUIListener(plugin: EcoPlugin) : PluginDependent<EcoPlugin>(plugin), Liste
         MenuHandler.getMenu(player.openInventory.topInventory) ?: return
         MenuHandler.getExtendedInventory(player.openInventory.topInventory) ?: return
 
-        plugin.scheduler.run{ MenuHandler.getExtendedInventory(player.openInventory.topInventory)?.refresh(player) }
+        plugin.scheduler.run { MenuHandler.getExtendedInventory(player.openInventory.topInventory)?.refresh(player) }
     }
 
     @EventHandler

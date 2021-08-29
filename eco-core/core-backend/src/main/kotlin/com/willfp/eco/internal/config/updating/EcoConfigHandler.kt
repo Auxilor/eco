@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.config.updating
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.updating.ConfigHandler
 import com.willfp.eco.core.config.updating.ConfigUpdater
@@ -14,8 +13,8 @@ import org.reflections.scanners.MethodAnnotationsScanner
 import java.lang.reflect.Modifier
 
 class EcoConfigHandler(
-    plugin: EcoPlugin
-) : PluginDependent<EcoPlugin>(plugin), ConfigHandler {
+    private val plugin: EcoPlugin
+) : ConfigHandler {
     private val reflections: Reflections = Reflections(
         this.plugin::class.java.classLoader,
         MethodAnnotationsScanner()

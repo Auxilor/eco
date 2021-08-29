@@ -1,7 +1,6 @@
 package com.willfp.eco.spigot.arrows
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import org.bukkit.Material
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.LivingEntity
@@ -11,8 +10,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.ProjectileLaunchEvent
 
 class ArrowDataListener(
-    plugin: EcoPlugin
-) : PluginDependent<EcoPlugin>(plugin), Listener {
+    private val plugin: EcoPlugin
+) : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onLaunch(event:ProjectileLaunchEvent) {

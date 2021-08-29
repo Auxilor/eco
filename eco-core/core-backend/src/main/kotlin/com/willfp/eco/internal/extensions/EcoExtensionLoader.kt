@@ -2,7 +2,6 @@ package com.willfp.eco.internal.extensions
 
 import com.google.common.collect.ImmutableSet
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginDependent
 import com.willfp.eco.core.config.yaml.YamlTransientConfig
 import com.willfp.eco.core.extensions.Extension
 import com.willfp.eco.core.extensions.ExtensionLoader
@@ -16,8 +15,8 @@ import java.net.URL
 import java.net.URLClassLoader
 
 class EcoExtensionLoader(
-    plugin: EcoPlugin
-) : PluginDependent<EcoPlugin>(plugin), ExtensionLoader {
+    private val plugin: EcoPlugin
+) : ExtensionLoader {
     private val extensions = mutableMapOf<Extension, URLClassLoader>()
 
     override fun loadExtensions() {
@@ -43,7 +42,7 @@ class EcoExtensionLoader(
 
     @Throws(MalformedExtensionException::class)
     private fun loadExtension(extensionJar: File) {
-        lateinit var url : URL
+        lateinit var url: URL
 
         try {
             url = extensionJar.toURI().toURL()
@@ -53,7 +52,7 @@ class EcoExtensionLoader(
 
         val classLoader = URLClassLoader(arrayOf(url), this.plugin::class.java.classLoader)
         val ymlIn = classLoader.getResourceAsStream("extension.yml")
-            ?: throw MalformedExtensionException ("No extension.yml found in " + extensionJar.name)
+            ?: throw MalformedExtensionException("No extension.yml found in " + extensionJar.name)
 
         val extensionYml = YamlTransientConfig(YamlConfiguration.loadConfiguration(InputStreamReader(ymlIn)))
 
@@ -64,7 +63,7 @@ class EcoExtensionLoader(
 
 
         if (mainClass == null) {
-            throw MalformedExtensionException ("Invalid extension.yml found in " + extensionJar.name)
+            throw MalformedExtensionException("Invalid extension.yml found in " + extensionJar.name)
         }
 
         if (name == null) {
