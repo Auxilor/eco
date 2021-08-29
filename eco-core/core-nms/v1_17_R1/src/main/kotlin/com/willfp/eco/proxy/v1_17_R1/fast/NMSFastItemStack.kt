@@ -164,11 +164,11 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             handle.orCreateTag.putInt("HideFlags", value)
 
     override fun getRepairCost(): Int {
-        return handle.baseRepairCost;
+        return handle.baseRepairCost
     }
 
     override fun setRepairCost(cost: Int) {
-        handle.setRepairCost(cost);
+        handle.setRepairCost(cost)
     }
 
     private fun apply() {
