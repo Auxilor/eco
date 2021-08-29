@@ -148,7 +148,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         for (map in maps) {
             configs.add(EcoJSONConfigSection(map))
         }
-        return configs
+        return configs.toMutableList()
     }
 
     override fun getInt(path: String): Int {
@@ -170,11 +170,11 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return Objects.requireNonNullElse(getOfKnownType(path, Int::class.java), def)
     }
 
-    override fun getInts(path: String): List<Int> {
-        return Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<Int>
+    override fun getInts(path: String): MutableList<Int> {
+        return (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<Int>).toMutableList()
     }
 
-    override fun getIntsOrNull(path: String): List<Int>? {
+    override fun getIntsOrNull(path: String): MutableList<Int>? {
         return if (has(path)) {
             getInts(path)
         } else {
@@ -194,11 +194,11 @@ open class EcoJSONConfigWrapper : JSONConfig {
         }
     }
 
-    override fun getBools(path: String): List<Boolean> {
-        return Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<Boolean>
+    override fun getBools(path: String): MutableList<Boolean> {
+        return (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<Boolean>).toMutableList()
     }
 
-    override fun getBoolsOrNull(path: String): List<Boolean>? {
+    override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
         return if (has(path)) {
             getBools(path)
         } else {
@@ -206,64 +206,44 @@ open class EcoJSONConfigWrapper : JSONConfig {
         }
     }
 
-    override fun getString(path: String): String {
-        return getString(path, true)
-    }
-
     override fun getString(
         path: String,
-        format: Boolean
+        format: Boolean,
+        option: StringUtils.FormatOption
     ): String {
         val string = getOfKnownType(path, String::class.java) ?: ""
-        return if (format) StringUtils.format(string) else string
-    }
-
-    override fun getStringOrNull(path: String): String? {
-        return if (has(path)) {
-            getString(path)
-        } else {
-            null
-        }
+        return if (format) StringUtils.format(string, option) else string
     }
 
     override fun getStringOrNull(
         path: String,
-        format: Boolean
+        format: Boolean,
+        option: StringUtils.FormatOption
     ): String? {
         return if (has(path)) {
-            getString(path, format)
+            getString(path, format, option)
         } else {
             null
         }
-    }
-
-    override fun getStrings(path: String): List<String> {
-        return getStrings(path, true)
     }
 
     override fun getStrings(
         path: String,
-        format: Boolean
-    ): List<String> {
+        format: Boolean,
+        option: StringUtils.FormatOption
+    ): MutableList<String> {
         val strings =
-            Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<String>
-        return if (format) StringUtils.formatList(strings) else strings
-    }
-
-    override fun getStringsOrNull(path: String): List<String>? {
-        return if (has(path)) {
-            getStrings(path)
-        } else {
-            null
-        }
+            (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<String>).toMutableList()
+        return if (format) StringUtils.formatList(strings, option) else strings
     }
 
     override fun getStringsOrNull(
         path: String,
-        format: Boolean
-    ): List<String>? {
+        format: Boolean,
+        option: StringUtils.FormatOption
+    ): MutableList<String>? {
         return if (has(path)) {
-            getStrings(path, format)
+            getStrings(path, format, option)
         } else {
             null
         }
@@ -281,11 +261,11 @@ open class EcoJSONConfigWrapper : JSONConfig {
         }
     }
 
-    override fun getDoubles(path: String): List<Double> {
-        return Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<Double>
+    override fun getDoubles(path: String): MutableList<Double> {
+        return (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), ArrayList<Any>()) as List<Double>).toMutableList()
     }
 
-    override fun getDoublesOrNull(path: String): List<Double>? {
+    override fun getDoublesOrNull(path: String): MutableList<Double>? {
         return if (has(path)) {
             getDoubles(path)
         } else {

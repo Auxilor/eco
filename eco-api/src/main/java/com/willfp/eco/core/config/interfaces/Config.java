@@ -1,5 +1,6 @@
 package com.willfp.eco.core.config.interfaces;
 
+import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -165,7 +166,9 @@ public interface Config extends Cloneable {
      * @return The found value, or an empty string if not found.
      */
     @NotNull
-    String getString(@NotNull String path);
+    default String getString(@NotNull String path) {
+        return getString(path, true);
+    }
 
     /**
      * Get a string from config.
@@ -175,8 +178,36 @@ public interface Config extends Cloneable {
      * @return The found value, or an empty string if not found.
      */
     @NotNull
+    default String getString(@NotNull String path,
+                             boolean format) {
+        return this.getString(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Get a string from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param option The format option.
+     * @return The found value, or an empty string if not found.
+     */
+    @NotNull
+    default String getString(@NotNull String path,
+                             @NotNull final StringUtils.FormatOption option) {
+        return this.getString(path, true, option);
+    }
+
+    /**
+     * Get a string from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param format If the string should be formatted.
+     * @param option The format option.
+     * @return The found value, or an empty string if not found.
+     */
+    @NotNull
     String getString(@NotNull String path,
-                     boolean format);
+                     boolean format,
+                     @NotNull StringUtils.FormatOption option);
 
     /**
      * Get a string from config.
@@ -185,7 +216,9 @@ public interface Config extends Cloneable {
      * @return The found value, or null if not found.
      */
     @Nullable
-    String getStringOrNull(@NotNull String path);
+    default String getStringOrNull(@NotNull String path) {
+        return getStringOrNull(path, true);
+    }
 
     /**
      * Get a string from config.
@@ -195,8 +228,36 @@ public interface Config extends Cloneable {
      * @return The found value, or null if not found.
      */
     @Nullable
+    default String getStringOrNull(@NotNull String path,
+                                   boolean format) {
+        return this.getStringOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Get a string from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param option The format option.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    default String getStringOrNull(@NotNull String path,
+                                   @NotNull StringUtils.FormatOption option) {
+        return this.getStringOrNull(path, true, option);
+    }
+
+    /**
+     * Get a string from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param format If the string should be formatted.
+     * @param option The format option.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
     String getStringOrNull(@NotNull String path,
-                           boolean format);
+                           boolean format,
+                           @NotNull StringUtils.FormatOption option);
 
     /**
      * Get a list of strings from config.
@@ -207,7 +268,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<String> getStrings(@NotNull String path);
+    default List<String> getStrings(@NotNull String path) {
+        return getStrings(path, true);
+    }
 
     /**
      * Get a list of strings from config.
@@ -217,8 +280,36 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
+    default List<String> getStrings(@NotNull String path,
+                                    boolean format) {
+        return this.getStrings(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Get a list of strings from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param option The format option.
+     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     */
+    @Nullable
+    default List<String> getStrings(@NotNull String path,
+                                    @NotNull StringUtils.FormatOption option) {
+        return getStrings(path, true, option);
+    }
+
+    /**
+     * Get a list of strings from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param format If the strings should be formatted.
+     * @param option The option.
+     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     */
+    @NotNull
     List<String> getStrings(@NotNull String path,
-                            boolean format);
+                            boolean format,
+                            @NotNull StringUtils.FormatOption option);
 
     /**
      * Get a list of strings from config.
@@ -227,7 +318,9 @@ public interface Config extends Cloneable {
      * @return The found value, or null if not found.
      */
     @Nullable
-    List<String> getStringsOrNull(@NotNull String path);
+    default List<String> getStringsOrNull(@NotNull String path) {
+        return getStringsOrNull(path, true);
+    }
 
     /**
      * Get a list of strings from config.
@@ -237,8 +330,36 @@ public interface Config extends Cloneable {
      * @return The found value, or null if not found.
      */
     @Nullable
+    default List<String> getStringsOrNull(@NotNull String path,
+                                          boolean format) {
+        return getStringsOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Get a list of strings from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param option The format option.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    default List<String> getStringsOrNull(@NotNull String path,
+                                          @NotNull StringUtils.FormatOption option) {
+        return getStringsOrNull(path, true, option);
+    }
+
+    /**
+     * Get a list of strings from config.
+     *
+     * @param path   The key to fetch the value from.
+     * @param format If the strings should be formatted.
+     * @param option The format option.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
     List<String> getStringsOrNull(@NotNull String path,
-                                  boolean format);
+                                  boolean format,
+                                  @NotNull StringUtils.FormatOption option);
 
     /**
      * Get a decimal from config.

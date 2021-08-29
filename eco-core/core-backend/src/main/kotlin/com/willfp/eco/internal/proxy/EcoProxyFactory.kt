@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.proxy;
+package com.willfp.eco.internal.proxy
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginDependent

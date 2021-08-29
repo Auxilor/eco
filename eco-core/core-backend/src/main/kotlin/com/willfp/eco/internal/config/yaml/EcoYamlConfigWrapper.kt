@@ -10,7 +10,7 @@ import java.io.StringReader
 @Suppress("UNCHECKED_CAST")
 open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     lateinit var handle: T
-    private val cache: MutableMap<String, Any?> = HashMap()
+    private val cache = mutableMapOf<String, Any?>()
 
     protected fun init(config: T): Config {
         handle = config
@@ -98,16 +98,16 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getInts(path: String): List<Int> {
+    override fun getInts(path: String): MutableList<Int> {
         return if (cache.containsKey(path)) {
-            cache[path] as List<Int>
+            (cache[path] as MutableList<Int>).toMutableList()
         } else {
             cache[path] = if (has(path)) ArrayList(handle.getIntegerList(path)) else ArrayList<Any>()
             getInts(path)
         }
     }
 
-    override fun getIntsOrNull(path: String): List<Int>? {
+    override fun getIntsOrNull(path: String): MutableList<Int>? {
         return if (has(path)) {
             getInts(path)
         } else {
@@ -132,9 +132,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getBools(path: String): List<Boolean> {
+    override fun getBools(path: String): MutableList<Boolean> {
         return if (cache.containsKey(path)) {
-            cache[path] as List<Boolean>
+            (cache[path] as MutableList<Boolean>).toMutableList()
         } else {
             cache[path] =
                 if (has(path)) ArrayList(handle.getBooleanList(path)) else ArrayList<Any>()
@@ -142,7 +142,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getBoolsOrNull(path: String): List<Boolean>? {
+    override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
         return if (has(path)) {
             getBools(path)
         } else {
@@ -150,92 +150,80 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getString(path: String): String {
-        return getString(path, true)
-    }
-
     override fun getString(
         path: String,
-        format: Boolean
+        format: Boolean,
+        option: StringUtils.FormatOption
     ): String {
-        if (format) {
+        if (format && option == StringUtils.FormatOption.WITHOUT_PLACEHOLDERS) {
             return if (cache.containsKey("$path\$FMT")) {
                 cache["$path\$FMT"] as String
             } else {
                 val string: String = handle.getString(path, "")!!
-                cache["$path\$FMT"] = StringUtils.format(string)
-                getString(path, format)
+                cache["$path\$FMT"] = StringUtils.format(string, option)
+                getString(path, format, option)
             }
         } else {
-            return if (cache.containsKey(path)) {
+            val string = if (cache.containsKey(path)) {
                 cache[path] as String
             } else {
                 cache[path] = handle.getString(path, "")!!
-                getString(path)
+                getString(path, format, option)
             }
-        }
-    }
 
-    override fun getStringOrNull(path: String): String? {
-        return if (has(path)) {
-            getString(path)
-        } else {
-            null
+            return if (format) StringUtils.format(string) else string
         }
     }
 
     override fun getStringOrNull(
         path: String,
-        format: Boolean
+        format: Boolean,
+        option: StringUtils.FormatOption
     ): String? {
         return if (has(path)) {
-            getString(path, format)
+            getString(path, format, option)
         } else {
             null
         }
-    }
-
-    override fun getStrings(path: String): List<String> {
-        return getStrings(path, true)
     }
 
     override fun getStrings(
         path: String,
-        format: Boolean
-    ): List<String> {
-        if (format) {
+        format: Boolean,
+        option: StringUtils.FormatOption
+    ): MutableList<String> {
+        if (format && option == StringUtils.FormatOption.WITHOUT_PLACEHOLDERS) {
             return if (cache.containsKey("$path\$FMT")) {
-                cache["$path\$FMT"] as List<String>
+                (cache["$path\$FMT"] as MutableList<String>).toMutableList()
             } else {
                 val list = if (has(path)) handle.getStringList(path) else ArrayList()
-                cache["$path\$FMT"] = StringUtils.formatList(list);
-                getStrings(path, true)
+                cache["$path\$FMT"] = StringUtils.formatList(list, option)
+                getStrings(path, true, option)
             }
         } else {
-            return if (cache.containsKey(path)) {
-                cache[path] as List<String>
+            val strings = if (cache.containsKey(path)) {
+                (cache[path] as MutableList<String>).toMutableList()
             } else {
                 cache[path] =
                     if (has(path)) ArrayList(handle.getStringList(path)) else ArrayList<Any>()
-                getStrings(path, false)
+                getStrings(path, false, option)
             }
-        }
-    }
 
-    override fun getStringsOrNull(path: String): List<String>? {
-        return if (has(path)) {
-            getStrings(path)
-        } else {
-            null
+            return if (format) {
+                StringUtils.formatList(strings, StringUtils.FormatOption.WITH_PLACEHOLDERS)
+            } else {
+                strings
+            }
         }
     }
 
     override fun getStringsOrNull(
         path: String,
-        format: Boolean
-    ): List<String>? {
+        format: Boolean,
+        option: StringUtils.FormatOption
+    ): MutableList<String>? {
         return if (has(path)) {
-            getStrings(path, format)
+            getStrings(path, format, option)
         } else {
             null
         }
@@ -258,16 +246,16 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getDoubles(path: String): List<Double> {
+    override fun getDoubles(path: String): MutableList<Double> {
         return if (cache.containsKey(path)) {
-            cache[path] as List<Double>
+            (cache[path] as MutableList<Double>).toMutableList()
         } else {
             cache[path] = if (has(path)) ArrayList(handle.getDoubleList(path)) else ArrayList<Any>()
             getDoubles(path)
         }
     }
 
-    override fun getDoublesOrNull(path: String): List<Double>? {
+    override fun getDoublesOrNull(path: String): MutableList<Double>? {
         return if (has(path)) {
             getDoubles(path)
         } else {

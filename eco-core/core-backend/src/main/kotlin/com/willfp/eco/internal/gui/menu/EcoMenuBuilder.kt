@@ -61,10 +61,10 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
             }
         }
 
-        val finalSlots: MutableList<MutableList<EcoSlot>> = ArrayList()
+        val finalSlots = mutableListOf<MutableList<EcoSlot>>()
 
         for (row in tempSlots) {
-            val tempRow = ArrayList<EcoSlot>()
+            val tempRow = mutableListOf<EcoSlot>()
             for (slot in row) {
                 var tempSlot = slot
                 if (tempSlot is FillerSlot) {

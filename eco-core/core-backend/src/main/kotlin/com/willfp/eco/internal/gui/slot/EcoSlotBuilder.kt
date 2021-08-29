@@ -8,7 +8,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider
 
 class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captive = false
-    var modifier: SlotModifier = SlotModifier{ player, menu, _ -> provider.provide(player, menu)}
+    private var modifier: SlotModifier = SlotModifier{ player, menu, _ -> provider.provide(player, menu)}
 
     private var onLeftClick =
         SlotHandler { _, _, _ -> run { } }

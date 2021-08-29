@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,7 +57,21 @@ public class StringUtils {
             .build();
 
     /**
-     * Format a list of strings - converts Placeholders and Color codes.
+     * Format a list of strings.
+     * <p>
+     * Converts color codes and placeholders.
+     *
+     * @param list The messages to format.
+     * @return The message, formatted.
+     */
+    public List<String> formatList(@NotNull final List<String> list) {
+        return formatList(list, (Player) null);
+    }
+
+    /**
+     * Format a list of strings.
+     * <p>
+     * Coverts color codes and placeholders for a player.
      *
      * @param list   The messages to format.
      * @param player The player to translate placeholders with respect to.
@@ -65,26 +79,61 @@ public class StringUtils {
      */
     public List<String> formatList(@NotNull final List<String> list,
                                    @Nullable final Player player) {
+        return formatList(list, player, FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Format a list of strings.
+     * <p>
+     * Converts color codes and placeholders if specified.
+     *
+     * @param list   The messages to format.
+     * @param option The format option.
+     * @return The message, formatted.
+     */
+    public List<String> formatList(@NotNull final List<String> list,
+                                   @NotNull final FormatOption option) {
+        return formatList(list, null, option);
+    }
+
+    /**
+     * Format a list of strings.
+     * <p>
+     * Coverts color codes and placeholders for a player if specified.
+     *
+     * @param list   The messages to format.
+     * @param player The player to translate placeholders with respect to.
+     * @param option The options.
+     * @return The message, format.
+     */
+    public List<String> formatList(@NotNull final List<String> list,
+                                   @Nullable final Player player,
+                                   @NotNull final FormatOption option) {
         List<String> translated = new ArrayList<>();
         for (String string : list) {
-            translated.add(format(string, player));
+            translated.add(format(string, player, option));
         }
 
         return translated;
     }
 
     /**
-     * Format a list of strings - converts Placeholders and Color codes.
+     * Format a string.
+     * <p>
+     * Converts color codes and placeholders.
      *
-     * @param list The messages to format.
+     * @param message The message to translate.
      * @return The message, formatted.
+     * @see StringUtils#format(String, Player)
      */
-    public List<String> formatList(@NotNull final List<String> list) {
-        return formatList(list, null);
+    public String format(@NotNull final String message) {
+        return format(message, (Player) null);
     }
 
     /**
-     * Format a string - converts Placeholders and Color codes.
+     * Format a string.
+     * <p>
+     * Converts color codes and placeholders for a player.
      *
      * @param message The message to format.
      * @param player  The player to translate placeholders with respect to.
@@ -92,23 +141,45 @@ public class StringUtils {
      */
     public String format(@NotNull final String message,
                          @Nullable final Player player) {
-        String processedMessage = message;
-        processedMessage = translateGradients(processedMessage);
-        processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
-        processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
-        return processedMessage;
+        return format(message, player, FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
-     * Format a string without respect to a player.
+     * Format a string.
+     * <p>
+     * Converts color codes and placeholders if specified.
      *
      * @param message The message to translate.
+     * @param option  The format option.
      * @return The message, formatted.
      * @see StringUtils#format(String, Player)
      */
-    public String format(@NotNull final String message) {
-        return format(message, null);
+    public String format(@NotNull final String message,
+                         @NotNull final FormatOption option) {
+        return format(message, null, option);
+    }
+
+    /**
+     * Format a string.
+     * <p>
+     * Coverts color codes and placeholders for a player if specified.
+     *
+     * @param message The message to format.
+     * @param player  The player to translate placeholders with respect to.
+     * @param option  The format options.
+     * @return The message, formatted.
+     */
+    public String format(@NotNull final String message,
+                         @Nullable final Player player,
+                         @NotNull final FormatOption option) {
+        String processedMessage = message;
+        processedMessage = translateGradients(processedMessage);
+        if (option == FormatOption.WITH_PLACEHOLDERS) {
+            processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
+        }
+        processedMessage = translateHexColorCodes(processedMessage);
+        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
+        return processedMessage;
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
@@ -270,5 +341,20 @@ public class StringUtils {
         return LEGACY_COMPONENT_SERIALIZER.serialize(
                 GsonComponentSerializer.gson().deserialize(json)
         );
+    }
+
+    /**
+     * Options for formatting.
+     */
+    public enum FormatOption {
+        /**
+         * Completely formatted.
+         */
+        WITH_PLACEHOLDERS,
+
+        /**
+         * Completely formatted without placeholders.
+         */
+        WITHOUT_PLACEHOLDERS
     }
 }
