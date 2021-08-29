@@ -102,7 +102,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         return if (cache.containsKey(path)) {
             (cache[path] as MutableList<Int>).toMutableList()
         } else {
-            cache[path] = if (has(path)) ArrayList(handle.getIntegerList(path)) else ArrayList<Any>()
+            cache[path] = if (has(path)) ArrayList(handle.getIntegerList(path)) else mutableListOf<Int>()
             getInts(path)
         }
     }
@@ -137,7 +137,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
             (cache[path] as MutableList<Boolean>).toMutableList()
         } else {
             cache[path] =
-                if (has(path)) ArrayList(handle.getBooleanList(path)) else ArrayList<Any>()
+                if (has(path)) ArrayList(handle.getBooleanList(path)) else mutableListOf<Boolean>()
             getBools(path)
         }
     }
@@ -196,7 +196,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
             return if (cache.containsKey("$path\$FMT")) {
                 (cache["$path\$FMT"] as MutableList<String>).toMutableList()
             } else {
-                val list = if (has(path)) handle.getStringList(path) else ArrayList()
+                val list = if (has(path)) handle.getStringList(path) else mutableListOf<String>()
                 cache["$path\$FMT"] = StringUtils.formatList(list, option)
                 getStrings(path, true, option)
             }
@@ -205,7 +205,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
                 (cache[path] as MutableList<String>).toMutableList()
             } else {
                 cache[path] =
-                    if (has(path)) ArrayList(handle.getStringList(path)) else ArrayList<Any>()
+                    if (has(path)) ArrayList(handle.getStringList(path)) else mutableListOf<String>()
                 getStrings(path, false, option)
             }
 
@@ -250,7 +250,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         return if (cache.containsKey(path)) {
             (cache[path] as MutableList<Double>).toMutableList()
         } else {
-            cache[path] = if (has(path)) ArrayList(handle.getDoubleList(path)) else ArrayList<Any>()
+            cache[path] = if (has(path)) ArrayList(handle.getDoubleList(path)) else emptyList<Double>()
             getDoubles(path)
         }
     }

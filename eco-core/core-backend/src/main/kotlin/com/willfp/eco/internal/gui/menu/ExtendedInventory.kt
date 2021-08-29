@@ -12,8 +12,8 @@ class ExtendedInventory(
     val inventory: Inventory,
     private val menu: EcoMenu
 ) {
-    val captiveItems: MutableList<ItemStack> = ArrayList()
-    val data: MutableMap<NamespacedKey, Any> = HashMap()
+    val captiveItems = mutableListOf<ItemStack>()
+    val data = mutableMapOf<NamespacedKey, Any>()
 
     fun refresh(player: Player) {
         captiveItems.clear()

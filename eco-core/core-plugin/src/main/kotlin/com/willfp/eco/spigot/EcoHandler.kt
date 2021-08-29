@@ -31,9 +31,9 @@ import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
+import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.spigot.integrations.bstats.MetricHandler
 import org.bukkit.inventory.ItemStack
-import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import java.util.logging.Logger
 
 @Suppress("UNUSED")
@@ -105,7 +105,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     }
 
     override fun getLoadedPlugins(): List<String> {
-        return ArrayList(Plugins.LOADED_ECO_PLUGINS.keys)
+        return Plugins.LOADED_ECO_PLUGINS.keys.toMutableList()
     }
 
     override fun getPluginByName(name: String): EcoPlugin? {

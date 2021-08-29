@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
 open class EcoDropQueue(player: Player) : InternalDropQueue {
-    val items: MutableList<ItemStack>
+    val items = mutableListOf<ItemStack>()
     var xp: Int
     val player: Player
     var loc: Location
@@ -79,7 +79,6 @@ open class EcoDropQueue(player: Player) : InternalDropQueue {
     }
 
     init {
-        items = ArrayList()
         xp = 0
         this.player = player
         loc = player.location

@@ -19,7 +19,7 @@ class PacketOpenWindowMerchant(plugin: EcoPlugin) :
         player: Player,
         event: PacketEvent
     ) {
-        val recipes: MutableList<MerchantRecipe> = ArrayList()
+        val recipes = mutableListOf<MerchantRecipe>()
 
 
         /*

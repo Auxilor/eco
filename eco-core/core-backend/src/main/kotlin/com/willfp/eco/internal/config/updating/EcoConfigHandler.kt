@@ -21,7 +21,7 @@ class EcoConfigHandler(
         MethodAnnotationsScanner()
     )
 
-    private val configs: MutableList<LoadableConfig> = ArrayList()
+    private val configs = mutableListOf<LoadableConfig>()
 
     override fun callUpdate() {
         for (method in reflections.getMethodsAnnotatedWith(ConfigUpdater::class.java)) {

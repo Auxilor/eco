@@ -18,7 +18,7 @@ import java.net.URLClassLoader
 class EcoExtensionLoader(
     plugin: EcoPlugin
 ) : PluginDependent<EcoPlugin>(plugin), ExtensionLoader {
-    private val extensions: MutableMap<Extension, URLClassLoader> = HashMap()
+    private val extensions = mutableMapOf<Extension, URLClassLoader>()
 
     override fun loadExtensions() {
         val dir = File(this.plugin.dataFolder, "/extensions")
