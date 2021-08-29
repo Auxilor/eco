@@ -1,8 +1,5 @@
 package com.willfp.eco.core.items;
 
-import com.willfp.eco.core.items.builder.EnchantedBookBuilder;
-import com.willfp.eco.core.items.builder.ItemBuilder;
-import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
@@ -16,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -193,6 +191,22 @@ public final class Items {
             }
         }
         return false;
+    }
+
+    /**
+     * Get custom item from item.
+     *
+     * @param itemStack The item.
+     * @return The custom item, or null if not exists.
+     */
+    @Nullable
+    public CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
+        for (CustomItem item : REGISTRY.values()) {
+            if (item.matches(itemStack)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     /**

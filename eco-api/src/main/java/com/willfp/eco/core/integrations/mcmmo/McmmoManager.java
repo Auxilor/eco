@@ -16,7 +16,7 @@ public class McmmoManager {
     /**
      * A set of all registered integrations.
      */
-    private final Set<McmmoWrapper> regsistered = new HashSet<>();
+    private final Set<McmmoWrapper> registered = new HashSet<>();
 
     /**
      * Register a new integration.
@@ -24,7 +24,7 @@ public class McmmoManager {
      * @param integration The integration to register.
      */
     public void register(@NotNull final McmmoWrapper integration) {
-        regsistered.add(integration);
+        registered.add(integration);
     }
 
     /**
@@ -34,7 +34,7 @@ public class McmmoManager {
      * @return The bonus drop count.
      */
     public int getBonusDropCount(@NotNull final Block block) {
-        for (McmmoWrapper mcmmoWrapper : regsistered) {
+        for (McmmoWrapper mcmmoWrapper : registered) {
             return mcmmoWrapper.getBonusDropCount(block);
         }
         return 0;
@@ -47,7 +47,7 @@ public class McmmoManager {
      * @return If the event is fake.
      */
     public boolean isFake(@NotNull final Event event) {
-        for (McmmoWrapper mcmmoWrapper : regsistered) {
+        for (McmmoWrapper mcmmoWrapper : registered) {
             return mcmmoWrapper.isFake(event);
         }
         return false;

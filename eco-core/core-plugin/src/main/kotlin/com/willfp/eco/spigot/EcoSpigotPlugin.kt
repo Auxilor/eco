@@ -8,6 +8,7 @@ import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
+import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.proxy.BlockBreakProxy
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
@@ -21,6 +22,7 @@ import com.willfp.eco.spigot.integrations.anticheat.*
 import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl
+import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.SkullUtils
@@ -109,6 +111,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
+
+            // Shop
+            IntegrationLoader("ShopGuiPlus") { ShopManager.register(ShopShopGuiPlus()) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) }

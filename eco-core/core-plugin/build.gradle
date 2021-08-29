@@ -20,6 +20,7 @@ dependencies {
     compileOnly 'com.gmail.nossr50.mcMMO:mcMMO:2.1.157'
     compileOnly 'me.clip:placeholderapi:2.10.9'
     compileOnly 'com.willfp:Oraxen:e1f4003d8d'
+    compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
 
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:2.3.8'
 
