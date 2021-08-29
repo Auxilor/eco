@@ -1,6 +1,7 @@
 package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.util.StringUtils;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -125,48 +126,33 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
         return handle.getBoolsOrNull(path);
     }
 
-    @Override
-    public @NotNull String getString(@NotNull final String path) {
-        return handle.getString(path);
-    }
 
     @Override
     public @NotNull String getString(@NotNull final String path,
-                                     final boolean format) {
-        return handle.getString(path, format);
-    }
-
-    @Override
-    public @Nullable String getStringOrNull(@NotNull final String path) {
-        return handle.getStringOrNull(path);
+                                     final boolean format,
+                                     @NotNull final StringUtils.FormatOption option) {
+        return handle.getString(path, format, option);
     }
 
     @Override
     public @Nullable String getStringOrNull(@NotNull final String path,
-                                            final boolean format) {
-        return handle.getStringOrNull(path, format);
-    }
-
-    @Override
-    public @NotNull List<String> getStrings(@NotNull final String path) {
-        return handle.getStrings(path);
+                                            final boolean format,
+                                            @NotNull final StringUtils.FormatOption option) {
+        return handle.getStringOrNull(path, format, option);
     }
 
     @Override
     public @NotNull List<String> getStrings(@NotNull final String path,
-                                            final boolean format) {
-        return handle.getStrings(path, format);
-    }
-
-    @Override
-    public @Nullable List<String> getStringsOrNull(@NotNull final String path) {
-        return handle.getStringsOrNull(path);
+                                            final boolean format,
+                                            @NotNull final StringUtils.FormatOption option) {
+        return handle.getStrings(path, format, option);
     }
 
     @Override
     public @Nullable List<String> getStringsOrNull(@NotNull final String path,
-                                                   final boolean format) {
-        return handle.getStringsOrNull(path, format);
+                                                   final boolean format,
+                                                   @NotNull final StringUtils.FormatOption option) {
+        return handle.getStringsOrNull(path, format, option);
     }
 
     @Override
