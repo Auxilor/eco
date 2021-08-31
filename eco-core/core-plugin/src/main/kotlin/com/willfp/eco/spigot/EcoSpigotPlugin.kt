@@ -121,19 +121,14 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun loadPacketAdapters(): List<AbstractPacketAdapter> {
-        val adapters = mutableListOf(
+        return listOf(
             PacketAutoRecipe(this),
             PacketChat(this),
             PacketSetCreativeSlot(this),
             PacketSetSlot(this),
-            PacketWindowItems(this)
+            PacketWindowItems(this),
+            PacketOpenWindowMerchant(this)
         )
-
-        if (!configYml.getBool("disable-display-on-villagers")) {
-            adapters.add(PacketOpenWindowMerchant(this))
-        }
-
-        return adapters
     }
 
     override fun loadListeners(): List<Listener> {
