@@ -2,6 +2,7 @@ package com.willfp.eco.core.config.base;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.yaml.YamlBaseConfig;
+import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,6 +43,18 @@ public class LangYml extends YamlBaseConfig {
      * @return The message with a prefix appended.
      */
     public String getMessage(@NotNull final String message) {
-        return getPrefix() + this.getString("messages." + message);
+        return getMessage(message, StringUtils.FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Get a chat message.
+     *
+     * @param message The key of the message.
+     * @param option  The format options.
+     * @return The message with a prefix appended.
+     */
+    public String getMessage(@NotNull final String message,
+                             @NotNull final StringUtils.FormatOption option) {
+        return getPrefix() + this.getString("messages." + message, option);
     }
 }
