@@ -63,6 +63,7 @@ class EcoMenu(
 
     fun handleClose(event: InventoryCloseEvent) {
         onClose.handle(event, this)
+        MenuHandler.unregisterMenu(event.inventory)
     }
 
     override fun getRows(): Int {
