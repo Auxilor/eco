@@ -20,6 +20,7 @@ import com.willfp.eco.spigot.eventlisteners.*
 import com.willfp.eco.spigot.gui.GUIListener
 import com.willfp.eco.spigot.integrations.anticheat.*
 import com.willfp.eco.spigot.integrations.antigrief.*
+import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
@@ -111,6 +112,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
+            IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
 
             // Shop
             IntegrationLoader("ShopGuiPlus") { ShopManager.register(ShopShopGuiPlus()) },

@@ -23,4 +23,8 @@ class CustomItemsOraxen : CustomItemsWrapper {
             ).register()
         }
     }
+
+    override fun getPluginName(): String {
+        return "Oraxen"
+    }
 }
