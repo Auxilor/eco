@@ -1,16 +1,19 @@
 package com.willfp.eco.core.recipe.recipes;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
+import com.willfp.eco.core.recipe.parts.TestableStack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -87,7 +90,23 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         displayedRecipe.shape("012", "345", "678");
         for (int i = 0; i < 9; i++) {
             char character = String.valueOf(i).toCharArray()[0];
-            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(parts.get(i).getItem()));
+            ItemStack item = parts.get(i).getItem();
+
+            if (parts.get(i) instanceof TestableStack) {
+                ItemMeta meta = item.getItemMeta();
+                assert meta != null;
+
+                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                assert lore != null;
+                lore.add("");
+                String add = Eco.getHandler().getEcoPlugin().getLangYml().getString("multiple-in-craft");
+                add = add.replace("%amount%", String.valueOf(item.getAmount()));
+                lore.add(add);
+                meta.setLore(lore);
+                item.setItemMeta(meta);
+            }
+
+            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(item));
         }
 
         Bukkit.getServer().addRecipe(shapedRecipe);
