@@ -79,6 +79,8 @@ public final class Items {
 
         TestableItem item = null;
 
+        int stackAmount = 1;
+
         String[] split = args[0].toLowerCase().split(":");
 
         if (split.length == 1) {
@@ -101,7 +103,8 @@ public final class Items {
                 if (material == null || material == Material.AIR) {
                     return new EmptyTestableItem();
                 }
-                item = new TestableStack(new MaterialTestableItem(material), Integer.parseInt(split[1]));
+                item = new MaterialTestableItem(material);
+                stackAmount = Integer.parseInt(split[1]);
             } else {
                 item = part;
             }
@@ -113,23 +116,24 @@ public final class Items {
          */
         if (split.length == 3) {
             CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
-            item = part == null ? new EmptyTestableItem() : new TestableStack(part, Integer.parseInt(split[2]));
+            if (part == null) {
+                return new EmptyTestableItem();
+            }
+            item = part;
+            stackAmount = Integer.parseInt(split[2]);
         }
 
         boolean usingNewStackFormat = false;
 
         if (args.length >= 2) {
-            if (!(item instanceof TestableStack)) {
-                try {
-                    int amount = Integer.parseInt(args[1]);
-                    usingNewStackFormat = true;
-                    item = item == null ? new EmptyTestableItem() : new TestableStack(item, amount);
-                } catch (NumberFormatException ignored) {
-                }
+            try {
+                stackAmount = Integer.parseInt(args[1]);
+                usingNewStackFormat = true;
+            } catch (NumberFormatException ignored) {
             }
         }
 
-        if (item == null || item instanceof EmptyTestableItem) {
+        if (item == null) {
             return new EmptyTestableItem();
         }
 
@@ -146,10 +150,6 @@ public final class Items {
             requiredEnchantments.put(enchantment, level);
         }
 
-        if (requiredEnchantments.isEmpty()) {
-            return item;
-        }
-
         ItemStack example = item.getItem();
 
         if (example.getItemMeta() instanceof EnchantmentStorageMeta storageMeta) {
@@ -162,41 +162,49 @@ public final class Items {
             example.setItemMeta(meta);
         }
 
-        return new ModifiedTestableItem(
-                item,
-                itemStack -> {
-                    if (!itemStack.hasItemMeta()) {
-                        return false;
-                    }
+        if (!requiredEnchantments.isEmpty()) {
+            item = new ModifiedTestableItem(
+                    item,
+                    itemStack -> {
+                        if (!itemStack.hasItemMeta()) {
+                            return false;
+                        }
 
-                    ItemMeta meta = itemStack.getItemMeta();
+                        ItemMeta meta = itemStack.getItemMeta();
 
-                    assert meta != null;
+                        assert meta != null;
 
-                    if (meta instanceof EnchantmentStorageMeta storageMeta) {
-                        for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-                            if (!storageMeta.hasStoredEnchant(entry.getKey())) {
-                                return false;
+                        if (meta instanceof EnchantmentStorageMeta storageMeta) {
+                            for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
+                                if (!storageMeta.hasStoredEnchant(entry.getKey())) {
+                                    return false;
+                                }
+                                if (storageMeta.getStoredEnchantLevel(entry.getKey()) < entry.getValue()) {
+                                    return false;
+                                }
                             }
-                            if (storageMeta.getStoredEnchantLevel(entry.getKey()) < entry.getValue()) {
-                                return false;
+                        } else {
+                            for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
+                                if (!meta.hasEnchant(entry.getKey())) {
+                                    return false;
+                                }
+                                if (meta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
+                                    return false;
+                                }
                             }
                         }
-                    } else {
-                        for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-                            if (!meta.hasEnchant(entry.getKey())) {
-                                return false;
-                            }
-                            if (meta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
-                                return false;
-                            }
-                        }
-                    }
 
-                    return true;
-                },
-                example
-        );
+                        return true;
+                    },
+                    example
+            );
+        }
+
+        if (stackAmount == 1) {
+            return item;
+        } else {
+            return new TestableStack(item, stackAmount);
+        }
     }
 
     /**

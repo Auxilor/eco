@@ -98,13 +98,64 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        boolean isStackedRecipe = false;
+
+        int upperBound = 64;
         for (int i = 0; i < 9; i++) {
             ItemStack inMatrix = event.getInventory().getMatrix()[i];
             TestableItem inRecipe = matched.getParts().get(i);
 
             if (inRecipe instanceof TestableStack testableStack) {
-                inMatrix.setAmount(inMatrix.getAmount() - (testableStack.getAmount() - 1));
+                int max = Math.floorDiv(inMatrix.getAmount(), testableStack.getAmount());
+                if (max < upperBound) {
+                    upperBound = max;
+                }
+                isStackedRecipe = true;
+            } else if (inMatrix != null) {
+                int max = inMatrix.getAmount();
+                if (max < upperBound) {
+                    upperBound = max;
+                }
             }
+        }
+
+        if (!isStackedRecipe) {
+            return;
+        }
+
+        int toGivePerRecipe = event.getRecipe().getResult().getAmount();
+        int maxStackSize = event.getRecipe().getResult().getMaxStackSize();
+        while (toGivePerRecipe * upperBound > maxStackSize) {
+            upperBound--;
+        }
+
+        for (int i = 0; i < 9; i++) {
+            ItemStack inMatrix = event.getInventory().getMatrix()[i];
+            TestableItem inRecipe = matched.getParts().get(i);
+
+            if (inRecipe instanceof TestableStack testableStack) {
+                if (event.isShiftClick()) {
+                    int amount = inMatrix.getAmount() + 1;
+                    for (int j = 0; j < upperBound; j++) {
+                        amount -= testableStack.getAmount();
+                    }
+                    inMatrix.setAmount(amount);
+                } else {
+                    inMatrix.setAmount(inMatrix.getAmount() - (testableStack.getAmount() - 1));
+                }
+            }
+        }
+
+        int finalUpperBound = upperBound;
+
+        if (event.isShiftClick()) {
+            ItemStack result = event.getInventory().getResult();
+            if (result == null) {
+                return;
+            }
+
+            result.setAmount(result.getAmount() * finalUpperBound);
+            event.getInventory().setResult(result);
         }
     }
 
