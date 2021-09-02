@@ -98,16 +98,14 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
-        this.getPlugin().getScheduler().runLater(() -> {
-            for (int i = 0; i < 9; i++) {
-                ItemStack inMatrix = event.getInventory().getMatrix()[i];
-                TestableItem inRecipe = matched.getParts().get(i);
+        for (int i = 0; i < 9; i++) {
+            ItemStack inMatrix = event.getInventory().getMatrix()[i];
+            TestableItem inRecipe = matched.getParts().get(i);
 
-                if (inRecipe instanceof TestableStack testableStack) {
-                    inMatrix.setAmount(inMatrix.getAmount() - (testableStack.getAmount() - 1));
-                }
+            if (inRecipe instanceof TestableStack testableStack) {
+                inMatrix.setAmount(inMatrix.getAmount() - (testableStack.getAmount() - 1));
             }
-        }, 1);
+        }
     }
 
     @EventHandler
