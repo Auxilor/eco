@@ -112,7 +112,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
-            IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
+            IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder(this)) },
 
             // Shop
             IntegrationLoader("ShopGuiPlus") { ShopManager.register(ShopShopGuiPlus()) },
