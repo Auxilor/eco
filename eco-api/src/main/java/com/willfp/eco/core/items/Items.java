@@ -92,6 +92,10 @@ public final class Items {
         if (split.length == 2) {
             CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
 
+            /*
+            Legacy id:amount format
+            This has been superceded by id amount
+             */
             if (part == null) {
                 Material material = Material.getMaterial(split[0].toUpperCase());
                 if (material == null || material == Material.AIR) {
@@ -103,16 +107,30 @@ public final class Items {
             }
         }
 
+        /*
+        Legacy namespace:id:amount format
+        This has been superceded by namespace:id amount
+         */
         if (split.length == 3) {
             CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
             item = part == null ? new EmptyTestableItem() : new TestableStack(part, Integer.parseInt(split[2]));
+        }
+
+        boolean usingNewStackFormat = false;
+
+        if (args.length >= 2) {
+            try {
+                int amount = Integer.parseInt(args[1]);
+                usingNewStackFormat = true;
+                item = item == null ? new EmptyTestableItem() : new TestableStack(item, amount);
+            } catch (NumberFormatException ignored) { }
         }
 
         if (item == null || item instanceof EmptyTestableItem) {
             return new EmptyTestableItem();
         }
 
-        String[] enchantArgs = Arrays.copyOfRange(args, 1, args.length);
+        String[] enchantArgs = Arrays.copyOfRange(args, usingNewStackFormat ? 2 : 1, args.length);
 
         Map<Enchantment, Integer> requiredEnchantments = new HashMap<>();
 
