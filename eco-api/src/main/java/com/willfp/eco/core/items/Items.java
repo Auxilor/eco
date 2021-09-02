@@ -119,11 +119,14 @@ public final class Items {
         boolean usingNewStackFormat = false;
 
         if (args.length >= 2) {
-            try {
-                int amount = Integer.parseInt(args[1]);
-                usingNewStackFormat = true;
-                item = item == null ? new EmptyTestableItem() : new TestableStack(item, amount);
-            } catch (NumberFormatException ignored) { }
+            if (!(item instanceof TestableStack)) {
+                try {
+                    int amount = Integer.parseInt(args[1]);
+                    usingNewStackFormat = true;
+                    item = item == null ? new EmptyTestableItem() : new TestableStack(item, amount);
+                } catch (NumberFormatException ignored) {
+                }
+            }
         }
 
         if (item == null || item instanceof EmptyTestableItem) {
