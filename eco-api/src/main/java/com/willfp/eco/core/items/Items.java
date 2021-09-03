@@ -1,28 +1,27 @@
 package com.willfp.eco.core.items;
 
+import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
-import com.willfp.eco.util.SkullUtils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 /**
  * Class to manage all custom and vanilla items.
@@ -35,14 +34,28 @@ public final class Items {
     private static final Map<NamespacedKey, CustomItem> REGISTRY = new ConcurrentHashMap<>();
 
     /**
-     * Register a new recipe part.
+     * All recipe parts.
+     */
+    private static final List<LookupArgParser> ARG_PARSERS = new ArrayList<>();
+
+    /**
+     * Register a new custom item.
      *
-     * @param key  The key of the recipe part.
-     * @param part The recipe part.
+     * @param key  The key of the item.
+     * @param part The item.
      */
     public void registerCustomItem(@NotNull final NamespacedKey key,
                                    @NotNull final CustomItem part) {
         REGISTRY.put(key, part);
+    }
+
+    /**
+     * Register a new arg parser.
+     *
+     * @param parser The parser.
+     */
+    public void registerArgParser(@NotNull final LookupArgParser parser) {
+        ARG_PARSERS.add(parser);
     }
 
     /**
@@ -161,95 +174,19 @@ public final class Items {
 
         String[] modifierArgs = Arrays.copyOfRange(args, usingNewStackFormat ? 2 : 1, args.length);
 
-        boolean hasModifiers = false;
-        Map<Enchantment, Integer> requiredEnchantments = new HashMap<>();
-        String skullTexture = null;
+        List<Predicate<ItemStack>> predicates = new ArrayList<>();
 
-        // Handle skull texture
-        for (String arg : modifierArgs) {
-            String[] argSplit = arg.split(":");
-            if (!argSplit[0].equalsIgnoreCase("texture")) {
-                continue;
-            }
-
-            if (argSplit.length < 2) {
-                continue;
-            }
-
-            skullTexture = argSplit[1];
-            hasModifiers = true;
+        for (LookupArgParser argParser : ARG_PARSERS) {
+            predicates.add(argParser.parseArguments(modifierArgs, meta));
         }
-
-        if (meta instanceof SkullMeta skullMeta && skullTexture != null) {
-            SkullUtils.setSkullTexture(skullMeta, skullTexture);
-        }
-
-        // Handle enchantment modifiers
-        for (String enchantArg : modifierArgs) {
-            String[] enchantArgSplit = enchantArg.split(":");
-
-            Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantArgSplit[0].toLowerCase()));
-            if (enchantment == null) {
-                continue;
-            }
-
-            if (enchantArgSplit.length < 2) {
-                continue;
-            }
-
-            int level = Integer.parseInt(enchantArgSplit[1]);
-
-            requiredEnchantments.put(enchantment, level);
-            hasModifiers = true;
-        }
-
-        if (meta instanceof EnchantmentStorageMeta storageMeta) {
-            requiredEnchantments.forEach((enchantment, integer) -> storageMeta.addStoredEnchant(enchantment, integer, true));
-        } else {
-            requiredEnchantments.forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
-        }
-
-        /*
-        The modifiers are then applied.
-         */
 
         example.setItemMeta(meta);
-
-        String finalSkullTexture = skullTexture; // I hate this, java.
-        if (hasModifiers) {
+        if (!predicates.isEmpty()) {
             item = new ModifiedTestableItem(
                     item,
                     test -> {
-                        if (!test.hasItemMeta()) {
-                            return false;
-                        }
-
-                        ItemMeta testMeta = test.getItemMeta();
-
-                        assert testMeta != null;
-
-                        if (testMeta instanceof EnchantmentStorageMeta storageMeta) {
-                            for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-                                if (!storageMeta.hasStoredEnchant(entry.getKey())) {
-                                    return false;
-                                }
-                                if (storageMeta.getStoredEnchantLevel(entry.getKey()) < entry.getValue()) {
-                                    return false;
-                                }
-                            }
-                        } else {
-                            for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-                                if (!testMeta.hasEnchant(entry.getKey())) {
-                                    return false;
-                                }
-                                if (testMeta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
-                                    return false;
-                                }
-                            }
-                        }
-
-                        if (testMeta instanceof SkullMeta skullMeta && finalSkullTexture != null) {
-                            if (!finalSkullTexture.equalsIgnoreCase(SkullUtils.getSkullTexture(skullMeta))) {
+                        for (Predicate<ItemStack> predicate : predicates) {
+                            if (!predicate.test(test)) {
                                 return false;
                             }
                         }

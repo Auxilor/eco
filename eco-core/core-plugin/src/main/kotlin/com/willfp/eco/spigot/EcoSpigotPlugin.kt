@@ -9,6 +9,9 @@ import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
+import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.items.args.EnchantmentArgParser
+import com.willfp.eco.core.items.args.TextureArgParser
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.proxy.BlockBreakProxy
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
@@ -44,6 +47,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 ) {
     init {
         Display.setFinalizeKey(namespacedKeyFactory.create("finalized"))
+
+        Items.registerArgParser(EnchantmentArgParser())
+        Items.registerArgParser(TextureArgParser())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
