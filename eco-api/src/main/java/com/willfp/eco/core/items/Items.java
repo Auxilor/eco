@@ -52,12 +52,27 @@ public final class Items {
     }
 
     /**
-     * Lookup item from string.
+     * This is the backbone of the entire eco item system.
      * <p>
-     * Used for recipes.
+     * You can lookup a TestableItem for any material, custom item,
+     * or item in general, and it will return it with any modifiers
+     * passed as parameters. This includes stack size (item amount)
+     * and enchantments that should be present on the item.
+     * <p>
+     * If you want to get an ItemStack instance from this, then just call
+     * {@link TestableItem#getItem()}.
+     * <p>
+     * The advantages of the testable item system are that there is the inbuilt
+     * {@link TestableItem#matches(ItemStack)} - this allows to check if any item
+     * is that testable item; which may sound negligible but actually it allows for
+     * much more power an flexibility. For example, you can have an item with an
+     * extra metadata tag, extra lore lines, different display name - and it
+     * will still work as long as the test passes. This is very important
+     * for custom crafting recipes where other plugins may add metadata
+     * values or the play may rename the item.
      *
-     * @param key The string to test.
-     * @return The found testable item, or an empty item if not found.
+     * @param key The lookup string.
+     * @return The testable item, or an {@link EmptyTestableItem}.
      */
     public TestableItem lookup(@NotNull final String key) {
         if (key.contains("?")) {
