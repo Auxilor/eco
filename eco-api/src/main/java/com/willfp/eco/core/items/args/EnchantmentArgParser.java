@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
+/**
+ * Parse enchantments.
+ */
 public class EnchantmentArgParser implements LookupArgParser {
     @Override
     public Predicate<ItemStack> parseArguments(@NotNull final String[] args,
