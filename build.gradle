@@ -51,6 +51,9 @@ allprojects {
 
         // CombatLogX
         maven { url 'https://nexus.sirblobman.xyz/repository/public/' }
+
+        // Head Database
+        maven { url 'https://mvn.intellectualsites.com/content/groups/public/' }
     }
 
     dependencies {
