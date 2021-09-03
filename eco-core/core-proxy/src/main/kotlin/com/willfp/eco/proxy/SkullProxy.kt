@@ -8,4 +8,8 @@ interface SkullProxy : AbstractProxy {
         meta: SkullMeta,
         base64: String
     )
+
+    fun getSkullTexture(
+        meta: SkullMeta
+    ): String?
 }

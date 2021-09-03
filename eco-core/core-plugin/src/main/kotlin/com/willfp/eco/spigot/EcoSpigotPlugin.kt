@@ -46,7 +46,10 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Display.setFinalizeKey(namespacedKeyFactory.create("finalized"))
 
         val skullProxy = getProxy(SkullProxy::class.java)
-        SkullUtils.initialize { meta: SkullMeta, base64: String -> skullProxy.setSkullTexture(meta, base64) }
+        SkullUtils.initialize(
+            { meta: SkullMeta, base64: String -> skullProxy.setSkullTexture(meta, base64) },
+            { meta: SkullMeta -> skullProxy.getSkullTexture(meta) }
+        )
 
         val blockBreakProxy = getProxy(BlockBreakProxy::class.java)
         BlockUtils.initialize { player: Player, block: Block -> blockBreakProxy.breakBlock(player, block) }

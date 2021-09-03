@@ -5,6 +5,7 @@ import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
+import com.willfp.eco.util.SkullUtils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -12,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class to manage all custom and vanilla items.
@@ -29,7 +32,7 @@ public final class Items {
     /**
      * All recipe parts.
      */
-    private static final Map<NamespacedKey, CustomItem> REGISTRY = new HashMap<>();
+    private static final Map<NamespacedKey, CustomItem> REGISTRY = new ConcurrentHashMap<>();
 
     /**
      * Register a new recipe part.
@@ -111,7 +114,7 @@ public final class Items {
 
             /*
             Legacy id:amount format
-            This has been superceded by id amount
+            This has been superseded by id amount
              */
             if (part == null) {
                 Material material = Material.getMaterial(split[0].toUpperCase());
@@ -127,7 +130,7 @@ public final class Items {
 
         /*
         Legacy namespace:id:amount format
-        This has been superceded by namespace:id amount
+        This has been superseded by namespace:id amount
          */
         if (split.length == 3) {
             CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
@@ -152,44 +155,80 @@ public final class Items {
             return new EmptyTestableItem();
         }
 
-        String[] enchantArgs = Arrays.copyOfRange(args, usingNewStackFormat ? 2 : 1, args.length);
+        ItemStack example = item.getItem();
+        ItemMeta meta = example.getItemMeta();
+        assert meta != null;
 
+        String[] modifierArgs = Arrays.copyOfRange(args, usingNewStackFormat ? 2 : 1, args.length);
+
+        boolean hasModifiers = false;
         Map<Enchantment, Integer> requiredEnchantments = new HashMap<>();
+        String skullTexture = null;
 
-        for (String enchantArg : enchantArgs) {
+        // Handle skull texture
+        for (String arg : modifierArgs) {
+            String[] argSplit = arg.split(":");
+            if (!argSplit[0].equalsIgnoreCase("texture")) {
+                continue;
+            }
+
+            if (argSplit.length < 2) {
+                continue;
+            }
+
+            skullTexture = argSplit[1];
+            hasModifiers = true;
+        }
+
+        if (meta instanceof SkullMeta skullMeta && skullTexture != null) {
+            SkullUtils.setSkullTexture(skullMeta, skullTexture);
+        }
+
+        // Handle enchantment modifiers
+        for (String enchantArg : modifierArgs) {
             String[] enchantArgSplit = enchantArg.split(":");
 
             Enchantment enchantment = Enchantment.getByKey(NamespacedKey.minecraft(enchantArgSplit[0].toLowerCase()));
+            if (enchantment == null) {
+                continue;
+            }
+
+            if (enchantArgSplit.length < 2) {
+                continue;
+            }
+
             int level = Integer.parseInt(enchantArgSplit[1]);
 
             requiredEnchantments.put(enchantment, level);
+            hasModifiers = true;
         }
 
-        ItemStack example = item.getItem();
-
-        if (example.getItemMeta() instanceof EnchantmentStorageMeta storageMeta) {
+        if (meta instanceof EnchantmentStorageMeta storageMeta) {
             requiredEnchantments.forEach((enchantment, integer) -> storageMeta.addStoredEnchant(enchantment, integer, true));
-            example.setItemMeta(storageMeta);
         } else {
-            ItemMeta meta = example.getItemMeta();
-            assert meta != null;
             requiredEnchantments.forEach((enchantment, integer) -> meta.addEnchant(enchantment, integer, true));
-            example.setItemMeta(meta);
         }
 
-        if (!requiredEnchantments.isEmpty()) {
+        /*
+        The modifiers are then applied.
+         */
+
+        example.setItemMeta(meta);
+
+        String finalSkullTexture = skullTexture; // I hate this, java.
+        if (hasModifiers) {
             item = new ModifiedTestableItem(
                     item,
-                    itemStack -> {
-                        if (!itemStack.hasItemMeta()) {
+                    test -> {
+                        if (!test.hasItemMeta()) {
                             return false;
                         }
 
-                        ItemMeta meta = itemStack.getItemMeta();
+                        ItemMeta testMeta = test.getItemMeta();
 
-                        assert meta != null;
+                        assert testMeta != null;
 
-                        if (meta instanceof EnchantmentStorageMeta storageMeta) {
+                        if (testMeta instanceof EnchantmentStorageMeta storageMeta) {
                             for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
                                 if (!storageMeta.hasStoredEnchant(entry.getKey())) {
                                     return false;
@@ -200,12 +239,18 @@ public final class Items {
                             }
                         } else {
                             for (Map.Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-                                if (!meta.hasEnchant(entry.getKey())) {
+                                if (!testMeta.hasEnchant(entry.getKey())) {
                                     return false;
                                 }
-                                if (meta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
+                                if (testMeta.getEnchantLevel(entry.getKey()) < entry.getValue()) {
                                     return false;
                                 }
+                            }
+                        }
+
+                        if (testMeta instanceof SkullMeta skullMeta && finalSkullTexture != null) {
+                            if (!finalSkullTexture.equalsIgnoreCase(SkullUtils.getSkullTexture(skullMeta))) {
+                                return false;
                             }
                         }
 

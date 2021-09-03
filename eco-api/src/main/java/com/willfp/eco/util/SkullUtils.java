@@ -7,6 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Utilities / API methods for player heads.
@@ -24,6 +25,11 @@ public class SkullUtils {
     private BiConsumer<SkullMeta, String> metaSetConsumer = null;
 
     /**
+     * The meta get function.
+     */
+    private Function<SkullMeta, String> metaGetConsumer = null;
+
+    /**
      * Set the texture of a skull from base64.
      *
      * @param meta   The meta to modify.
@@ -38,15 +44,31 @@ public class SkullUtils {
     }
 
     /**
+     * Get the texture of a skull - in base64.
+     *
+     * @param meta The meta to modify.
+     * @return The texture.
+     */
+    public String getSkullTexture(@NotNull final SkullMeta meta) {
+        Validate.isTrue(initialized, "Must be initialized!");
+        Validate.notNull(metaGetConsumer, "Must be initialized!");
+
+        return metaGetConsumer.apply(meta);
+    }
+
+    /**
      * Initialize the skull texture function.
      *
-     * @param function The function.
+     * @param function  The function.
+     * @param function2 Get function.
      */
     @ApiStatus.Internal
-    public void initialize(@NotNull final BiConsumer<SkullMeta, String> function) {
+    public void initialize(@NotNull final BiConsumer<SkullMeta, String> function,
+                           @NotNull final Function<SkullMeta, String> function2) {
         Validate.isTrue(!initialized, "Already initialized!");
 
         metaSetConsumer = function;
+        metaGetConsumer = function2;
         initialized = true;
     }
 }
