@@ -43,6 +43,7 @@ public class TeamUtils {
      * @param color The color to find the team for.
      * @return The team.
      */
+    @NotNull
     public Team fromChatColor(@NotNull final ChatColor color) {
         if (CHAT_COLOR_TEAMS.containsKey(color)) {
             return CHAT_COLOR_TEAMS.get(color);
@@ -70,6 +71,7 @@ public class TeamUtils {
      * @param material The material to find the team from.
      * @return The team.
      */
+    @NotNull
     public Team getMaterialColorTeam(@NotNull final Material material) {
         return fromChatColor(MATERIAL_COLORS.getOrDefault(material, ChatColor.WHITE));
     }

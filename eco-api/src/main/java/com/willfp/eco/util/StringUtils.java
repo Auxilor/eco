@@ -64,6 +64,7 @@ public class StringUtils {
      * @param list The messages to format.
      * @return The message, formatted.
      */
+    @NotNull
     public List<String> formatList(@NotNull final List<String> list) {
         return formatList(list, (Player) null);
     }
@@ -77,6 +78,7 @@ public class StringUtils {
      * @param player The player to translate placeholders with respect to.
      * @return The message, format.
      */
+    @NotNull
     public List<String> formatList(@NotNull final List<String> list,
                                    @Nullable final Player player) {
         return formatList(list, player, FormatOption.WITH_PLACEHOLDERS);
@@ -91,6 +93,7 @@ public class StringUtils {
      * @param option The format option.
      * @return The message, formatted.
      */
+    @NotNull
     public List<String> formatList(@NotNull final List<String> list,
                                    @NotNull final FormatOption option) {
         return formatList(list, null, option);
@@ -106,6 +109,7 @@ public class StringUtils {
      * @param option The options.
      * @return The message, format.
      */
+    @NotNull
     public List<String> formatList(@NotNull final List<String> list,
                                    @Nullable final Player player,
                                    @NotNull final FormatOption option) {
@@ -126,6 +130,7 @@ public class StringUtils {
      * @return The message, formatted.
      * @see StringUtils#format(String, Player)
      */
+    @NotNull
     public String format(@NotNull final String message) {
         return format(message, (Player) null);
     }
@@ -139,6 +144,7 @@ public class StringUtils {
      * @param player  The player to translate placeholders with respect to.
      * @return The message, formatted.
      */
+    @NotNull
     public String format(@NotNull final String message,
                          @Nullable final Player player) {
         return format(message, player, FormatOption.WITH_PLACEHOLDERS);
@@ -154,6 +160,7 @@ public class StringUtils {
      * @return The message, formatted.
      * @see StringUtils#format(String, Player)
      */
+    @NotNull
     public String format(@NotNull final String message,
                          @NotNull final FormatOption option) {
         return format(message, null, option);
@@ -169,6 +176,7 @@ public class StringUtils {
      * @param option  The format options.
      * @return The message, formatted.
      */
+    @NotNull
     public String format(@NotNull final String message,
                          @Nullable final Player player,
                          @NotNull final FormatOption option) {
@@ -284,6 +292,7 @@ public class StringUtils {
      * @param object The object to convert to string.
      * @return The object stringified.
      */
+    @NotNull
     public String internalToString(@Nullable final Object object) {
         if (object == null) {
             return "null";
@@ -309,6 +318,7 @@ public class StringUtils {
      * @param prefix The substring to remove.
      * @return The string with the prefix removed.
      */
+    @NotNull
     public String removePrefix(@NotNull final String string,
                                @NotNull final String prefix) {
         if (string.startsWith(prefix)) {
@@ -323,6 +333,7 @@ public class StringUtils {
      * @param legacy The legacy string.
      * @return The JSON String.
      */
+    @NotNull
     public String legacyToJson(@NotNull final String legacy) {
         return GsonComponentSerializer.gson().serialize(
                 Component.empty().decoration(TextDecoration.ITALIC, false).append(
@@ -337,6 +348,7 @@ public class StringUtils {
      * @param json The JSON string.
      * @return The legacy string.
      */
+    @NotNull
     public String jsonToLegacy(@NotNull final String json) {
         return LEGACY_COMPONENT_SERIALIZER.serialize(
                 GsonComponentSerializer.gson().deserialize(json)

@@ -5,6 +5,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -47,8 +48,9 @@ public class SkullUtils {
      * Get the texture of a skull - in base64.
      *
      * @param meta The meta to modify.
-     * @return The texture.
+     * @return The texture, potentially null.
      */
+    @Nullable
     public String getSkullTexture(@NotNull final SkullMeta meta) {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(metaGetConsumer, "Must be initialized!");

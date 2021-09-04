@@ -19,7 +19,7 @@ public class ArrowUtils {
      * Get the bow from an arrow.
      *
      * @param arrow The arrow.
-     * @return The bow.
+     * @return The bow, or null if no bow.
      */
     @Nullable
     public ItemStack getBow(@NotNull final Arrow arrow) {

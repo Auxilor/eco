@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import lombok.experimental.NonFinal;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
@@ -109,6 +110,7 @@ public class NumberUtils {
      * @param number The number to convert.
      * @return The number, converted to a roman numeral.
      */
+    @NotNull
     public String toNumeral(final int number) {
         if (number >= 1 && number <= 4096) {
             int l = NUMERALS.floorKey(number);
@@ -199,6 +201,7 @@ public class NumberUtils {
      * @param toFormat The number to format.
      * @return Formatted.
      */
+    @NotNull
     public String format(final double toFormat) {
         DecimalFormat df = new DecimalFormat("0.00");
         String formatted = df.format(toFormat);

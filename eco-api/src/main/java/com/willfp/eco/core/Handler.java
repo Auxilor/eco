@@ -30,6 +30,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The scheduler.
      */
+    @NotNull
     Scheduler createScheduler(@NotNull EcoPlugin plugin);
 
     /**
@@ -38,6 +39,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The event manager.
      */
+    @NotNull
     EventManager createEventManager(@NotNull EcoPlugin plugin);
 
     /**
@@ -46,6 +48,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The factory.
      */
+    @NotNull
     NamespacedKeyFactory createNamespacedKeyFactory(@NotNull EcoPlugin plugin);
 
     /**
@@ -54,6 +57,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The factory.
      */
+    @NotNull
     MetadataValueFactory createMetadataValueFactory(@NotNull EcoPlugin plugin);
 
     /**
@@ -62,6 +66,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The factory.
      */
+    @NotNull
     RunnableFactory createRunnableFactory(@NotNull EcoPlugin plugin);
 
     /**
@@ -70,6 +75,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The factory.
      */
+    @NotNull
     ExtensionLoader createExtensionLoader(@NotNull EcoPlugin plugin);
 
     /**
@@ -78,6 +84,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The handler.
      */
+    @NotNull
     ConfigHandler createConfigHandler(@NotNull EcoPlugin plugin);
 
     /**
@@ -86,6 +93,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The logger.
      */
+    @NotNull
     Logger createLogger(@NotNull EcoPlugin plugin);
 
     /**
@@ -94,6 +102,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The integration.
      */
+    @NotNull
     PlaceholderIntegration createPAPIIntegration(@NotNull EcoPlugin plugin);
 
     /**
@@ -102,6 +111,7 @@ public interface Handler {
      * @param plugin The plugin.
      * @return The factory.
      */
+    @NotNull
     ProxyFactory createProxyFactory(@NotNull EcoPlugin plugin);
 
     /**
@@ -109,6 +119,7 @@ public interface Handler {
      *
      * @return The plugin.
      */
+    @NotNull
     EcoPlugin getEcoPlugin();
 
     /**
@@ -116,6 +127,7 @@ public interface Handler {
      *
      * @return The factory.
      */
+    @NotNull
     ConfigFactory getConfigFactory();
 
     /**
@@ -123,6 +135,7 @@ public interface Handler {
      *
      * @return The factory.
      */
+    @NotNull
     DropQueueFactory getDropQueueFactory();
 
     /**
@@ -130,6 +143,7 @@ public interface Handler {
      *
      * @return The factory.
      */
+    @NotNull
     GUIFactory getGUIFactory();
 
     /**
@@ -137,6 +151,7 @@ public interface Handler {
      *
      * @return The cleaner.
      */
+    @NotNull
     Cleaner getCleaner();
 
     /**
@@ -152,6 +167,7 @@ public interface Handler {
      * @param name The name.
      * @return The plugin.
      */
+    @NotNull
     EcoPlugin getPluginByName(@NotNull String name);
 
     /**
@@ -159,6 +175,7 @@ public interface Handler {
      *
      * @return A list of plugin names in lowercase.
      */
+    @NotNull
     List<String> getLoadedPlugins();
 
     /**
@@ -167,6 +184,7 @@ public interface Handler {
      * @param itemStack The base ItemStack.
      * @return The FastItemStack.
      */
+    @NotNull
     FastItemStack createFastItemStack(@NotNull ItemStack itemStack);
 
     /**
