@@ -12,7 +12,7 @@ class CustomItemsHeadDatabase : CustomItemsWrapper {
 
     override fun registerAllItems() {
         for (categoryEnum in CategoryEnum.values()) {
-            for (head in api.getHeads(categoryEnum)) {
+            for (head in api.getHeads(categoryEnum).toList()) {
                 val stack = head.head
                 val id = head.id
                 val key = NamespacedKeyUtils.create("headdb", id.lowercase());
