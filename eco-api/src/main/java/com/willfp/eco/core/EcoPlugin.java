@@ -305,8 +305,8 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.logger = Eco.getHandler().createLogger(this);
         this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.getHandler().createProxyFactory(this);
 
-        this.langYml = new LangYml(this);
-        this.configYml = new ConfigYml(this);
+        this.langYml = this.createLangYml();
+        this.configYml = this.createConfigYml();
 
         Eco.getHandler().addNewPlugin(this);
     }
@@ -570,6 +570,28 @@ public abstract class EcoPlugin extends JavaPlugin {
      * @return A list of all listeners.
      */
     protected abstract List<Listener> loadListeners();
+
+    /**
+     * Useful for custom LangYml implementations.
+     * <p>
+     * Override if needed.
+     *
+     * @return lang.yml.
+     */
+    protected LangYml createLangYml() {
+        return new LangYml(this);
+    }
+
+    /**
+     * Useful for custom ConfigYml implementations.
+     * <p>
+     * Override if needed.
+     *
+     * @return config.yml.
+     */
+    protected ConfigYml createConfigYml() {
+        return new ConfigYml(this);
+    }
 
     /**
      * Create the display module for the plugin.
