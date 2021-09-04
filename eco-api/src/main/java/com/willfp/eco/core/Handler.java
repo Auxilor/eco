@@ -16,6 +16,7 @@ import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -167,7 +168,7 @@ public interface Handler {
      * @param name The name.
      * @return The plugin.
      */
-    @NotNull
+    @Nullable
     EcoPlugin getPluginByName(@NotNull String name);
 
     /**

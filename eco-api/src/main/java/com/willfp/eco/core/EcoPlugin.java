@@ -309,6 +309,23 @@ public abstract class EcoPlugin extends JavaPlugin {
         this.configYml = this.createConfigYml();
 
         Eco.getHandler().addNewPlugin(this);
+
+        /*
+        The minimum eco version check was moved here because it's very common
+        to add a lot of code in the constructor of plugins; meaning that the plugin
+        can throw errors without it being obvious to the user that the reason is
+        because they have an outdated version of eco installed.
+         */
+
+        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getEcoPlugin().getDescription().getVersion());
+        DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
+        if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
+            this.getLogger().severe("You are running an outdated version of eco!");
+            this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
+            this.getLogger().severe("Download the newest version here:");
+            this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
     }
 
     /**
@@ -334,16 +351,6 @@ public abstract class EcoPlugin extends JavaPlugin {
                     }, 0, 864000);
                 }
             });
-        }
-
-        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getEcoPlugin().getDescription().getVersion());
-        DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
-        if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
-            this.getLogger().severe("You are running an outdated version of eco!");
-            this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
-            this.getLogger().severe("Download the newest version here:");
-            this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
-            Bukkit.getPluginManager().disablePlugin(this);
         }
 
         if (this.getBStatsId() != 0) {
