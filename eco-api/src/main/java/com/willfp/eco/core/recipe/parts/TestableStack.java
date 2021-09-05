@@ -36,8 +36,6 @@ public class TestableStack implements TestableItem {
 
         this.handle = item;
         this.amount = amount;
-
-        Validate.isTrue(matches(getItem()), "The example must match the test!");
     }
 
     /**

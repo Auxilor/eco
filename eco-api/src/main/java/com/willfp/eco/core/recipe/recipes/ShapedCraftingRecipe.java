@@ -82,6 +82,10 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         ShapedRecipe shapedRecipe = new ShapedRecipe(this.getKey(), this.getOutput());
         shapedRecipe.shape("012", "345", "678");
         for (int i = 0; i < 9; i++) {
+            if (parts.get(i) instanceof EmptyTestableItem) {
+                continue;
+            }
+
             char character = String.valueOf(i).toCharArray()[0];
             shapedRecipe.setIngredient(character, parts.get(i).getItem().getType());
         }
@@ -89,6 +93,10 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         ShapedRecipe displayedRecipe = new ShapedRecipe(this.getDisplayedKey(), this.getOutput());
         displayedRecipe.shape("012", "345", "678");
         for (int i = 0; i < 9; i++) {
+            if (parts.get(i) instanceof EmptyTestableItem) {
+                continue;
+            }
+
             char character = String.valueOf(i).toCharArray()[0];
             ItemStack item = parts.get(i).getItem();
 

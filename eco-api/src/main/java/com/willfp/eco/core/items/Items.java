@@ -178,7 +178,10 @@ public final class Items {
         List<Predicate<ItemStack>> predicates = new ArrayList<>();
 
         for (LookupArgParser argParser : ARG_PARSERS) {
-            predicates.add(argParser.parseArguments(modifierArgs, meta));
+            Predicate<ItemStack> predicate = argParser.parseArguments(modifierArgs, meta);
+            if (predicate != null) {
+                predicates.add(argParser.parseArguments(modifierArgs, meta));
+            }
         }
 
         example.setItemMeta(meta);

@@ -45,8 +45,6 @@ public class ModifiedTestableItem implements TestableItem {
         this.handle = item;
         this.test = test;
         this.example = example;
-
-        Validate.isTrue(matches(getItem()), "The example must match the test!");
     }
 
     /**
