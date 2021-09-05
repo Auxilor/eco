@@ -31,7 +31,8 @@ public class TestableStack implements TestableItem {
      */
     public TestableStack(@NotNull final TestableItem item,
                          final int amount) {
-        Validate.isTrue(!(item instanceof TestableStack));
+        Validate.isTrue(!(item instanceof TestableStack), "You can't stack a stack!");
+        Validate.isTrue(!(item instanceof EmptyTestableItem), "You can't stack air!");
 
         this.handle = item;
         this.amount = amount;

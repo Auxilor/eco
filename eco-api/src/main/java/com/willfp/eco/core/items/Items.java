@@ -164,7 +164,8 @@ public final class Items {
             }
         }
 
-        if (item == null) {
+        // Marked as redundant but i am covering all bases here
+        if (item == null || item instanceof EmptyTestableItem) {
             return new EmptyTestableItem();
         }
 
@@ -197,7 +198,7 @@ public final class Items {
             );
         }
 
-        if (stackAmount == 1) {
+        if (stackAmount <= 1) {
             return item;
         } else {
             return new TestableStack(item, stackAmount);

@@ -6,7 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 
-class EcoEventManager constructor(private val plugin: EcoPlugin) : EventManager {
+class EcoEventManager (private val plugin: EcoPlugin) : EventManager {
     override fun registerListener(listener: Listener) {
         Bukkit.getPluginManager().registerEvents(listener, plugin)
     }
