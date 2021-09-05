@@ -1,6 +1,7 @@
 package com.willfp.eco.core.items;
 
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +48,8 @@ public class CustomItem implements TestableItem {
         this.key = key;
         this.test = test;
         this.item = item;
+
+        Validate.isTrue(matches(getItem()), "The item must match the test!");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.willfp.eco.core.recipe.parts;
 
 import com.willfp.eco.core.items.TestableItem;
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,6 +45,8 @@ public class ModifiedTestableItem implements TestableItem {
         this.handle = item;
         this.test = test;
         this.example = example;
+
+        Validate.isTrue(matches(getItem()), "The example must match the test!");
     }
 
     /**
