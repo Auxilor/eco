@@ -15,7 +15,7 @@ class EcoCaptivatorSlot : EcoSlot(
     { _, _, _ -> }
 ) {
     companion object {
-        val plugin = Eco.getHandler().ecoPlugin!!
+        val plugin = Eco.getHandler().ecoPlugin
 
         val allowMovingItem = SlotHandler { event, _, _ ->
             event.isCancelled = false
