@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
+/**
+ * Parse skull textures.
+ */
 public class TextureArgParser implements LookupArgParser {
     @Override
     public Predicate<ItemStack> parseArguments(@NotNull final String[] args,

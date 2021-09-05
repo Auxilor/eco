@@ -7,12 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
+/**
+ * An argument parser should generate the predicate as well
+ * as modify the ItemMeta for {@link TestableItem#getItem()}.
+ */
 public interface LookupArgParser {
     /**
      * Parse the arguments.
-     * <p>
-     * An argument parser should generate the predicate as well
-     * as modify the ItemMeta for {@link TestableItem#getItem()}
      *
      * @param args The arguments.
      * @param meta The ItemMeta to modify.
