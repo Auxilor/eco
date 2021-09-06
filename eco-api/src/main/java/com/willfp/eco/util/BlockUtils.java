@@ -63,6 +63,7 @@ public class BlockUtils {
      * @param limit            The maximum size of vein to return.
      * @return A set of all {@link Block}s.
      */
+    @NotNull
     public Set<Block> getVein(@NotNull final Block start,
                               @NotNull final List<Material> allowedMaterials,
                               final int limit) {

@@ -17,6 +17,7 @@ public class NamespacedKeyUtils {
      * @param string The string.
      * @return The key.
      */
+    @NotNull
     public NamespacedKey createEcoKey(@NotNull final String string) {
         return Objects.requireNonNull(NamespacedKey.fromString("eco:" + string));
     }
@@ -28,6 +29,7 @@ public class NamespacedKeyUtils {
      * @param key       The key.
      * @return The key.
      */
+    @NotNull
     public NamespacedKey create(@NotNull final String namespace,
                                 @NotNull final String key) {
         return Objects.requireNonNull(NamespacedKey.fromString(namespace + ":" + key));

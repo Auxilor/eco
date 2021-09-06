@@ -6,18 +6,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
 /**
- * Parse enchantments.
+ * Parses enchantment arguments.
  */
 public class EnchantmentArgParser implements LookupArgParser {
     @Override
-    public Predicate<ItemStack> parseArguments(@NotNull final String[] args,
-                                               @NotNull final ItemMeta meta) {
+    public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,
+                                                         @NotNull final ItemMeta meta) {
         Map<Enchantment, Integer> requiredEnchantments = new HashMap<>();
 
         for (String enchantArg : args) {
@@ -35,6 +36,10 @@ public class EnchantmentArgParser implements LookupArgParser {
             int level = Integer.parseInt(enchantArgSplit[1]);
 
             requiredEnchantments.put(enchantment, level);
+        }
+
+        if (requiredEnchantments.isEmpty()) {
+            return null;
         }
 
         if (meta instanceof EnchantmentStorageMeta storageMeta) {

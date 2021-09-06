@@ -1,6 +1,8 @@
 package com.willfp.eco.util;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,9 @@ public class ListUtils {
      * @param <T>     The type of the object stored in the list.
      * @return The list, filled will null objects.
      */
-    public <T> List<List<T>> create2DList(final int rows,
-                                          final int columns) {
+    @NotNull
+    public <@Nullable T> List<List<T>> create2DList(final int rows,
+                                                    final int columns) {
         List<List<T>> list = new ArrayList<>(rows);
         while (list.size() < rows) {
             List<T> row = new ArrayList<>(columns);

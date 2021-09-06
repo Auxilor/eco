@@ -44,6 +44,7 @@ public class VectorUtils {
      * @param vec The vector to simplify.
      * @return The vector, simplified.
      */
+    @NotNull
     public Vector simplifyVector(@NotNull final Vector vec) {
         double x = Math.abs(vec.getX());
         double y = Math.abs(vec.getY());
@@ -76,6 +77,7 @@ public class VectorUtils {
      * @param radius The radius.
      * @return An array of {@link Vector}s.
      */
+    @NotNull
     public Vector[] getCircle(final int radius) {
         Vector[] cached = CIRCLE_CACHE.get(radius);
         if (cached != null) {
@@ -112,6 +114,7 @@ public class VectorUtils {
      * @param radius The radius of the square.
      * @return An array of {@link Vector}s.
      */
+    @NotNull
     public Vector[] getSquare(final int radius) {
         List<Vector> vectors = new ArrayList<>();
 
@@ -136,6 +139,7 @@ public class VectorUtils {
      * @param radius The radius of the cube.
      * @return An array of {@link Vector}s.
      */
+    @NotNull
     public Vector[] getCube(final int radius) {
         List<Vector> vectors = new ArrayList<>();
 

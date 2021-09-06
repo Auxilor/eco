@@ -5,16 +5,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
 /**
- * Parse skull texture.
+ * Parse skull textures.
  */
 public class TextureArgParser implements LookupArgParser {
     @Override
-    public Predicate<ItemStack> parseArguments(@NotNull final String[] args,
-                                               @NotNull final ItemMeta meta) {
+    public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,
+                                                         @NotNull final ItemMeta meta) {
         String skullTexture = null;
 
         for (String arg : args) {
@@ -32,6 +33,10 @@ public class TextureArgParser implements LookupArgParser {
 
         if (meta instanceof SkullMeta skullMeta && skullTexture != null) {
             SkullUtils.setSkullTexture(skullMeta, skullTexture);
+        }
+
+        if (skullTexture == null) {
+            return null;
         }
 
         String finalSkullTexture = skullTexture;

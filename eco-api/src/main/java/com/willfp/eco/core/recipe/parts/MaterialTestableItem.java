@@ -2,6 +2,7 @@ package com.willfp.eco.core.recipe.parts;
 
 import com.willfp.eco.core.items.TestableItem;
 import lombok.Getter;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,8 @@ public class MaterialTestableItem implements TestableItem {
      * @param material The material.
      */
     public MaterialTestableItem(@NotNull final Material material) {
+        Validate.isTrue(material != Material.AIR, "You can't have air as the type!");
+
         this.material = material;
     }
 

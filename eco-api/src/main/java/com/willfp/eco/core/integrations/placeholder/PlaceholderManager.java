@@ -5,7 +5,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,7 +20,7 @@ public class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final Set<PlaceholderEntry> REGISTERED_PLACEHOLDERS = new HashSet<>();
+    private static final Map<String, PlaceholderEntry> REGISTERED_PLACEHOLDERS = new HashMap<>();
 
     /**
      * All registered placeholder integrations.
@@ -41,8 +43,8 @@ public class PlaceholderManager {
      * @param expansion The {@link PlaceholderEntry} to register.
      */
     public static void registerPlaceholder(@NotNull final PlaceholderEntry expansion) {
-        REGISTERED_PLACEHOLDERS.removeIf(placeholderEntry -> placeholderEntry.getIdentifier().equalsIgnoreCase(expansion.getIdentifier()));
-        REGISTERED_PLACEHOLDERS.add(expansion);
+        REGISTERED_PLACEHOLDERS.remove(expansion.getIdentifier());
+        REGISTERED_PLACEHOLDERS.put(expansion.getIdentifier(), expansion);
     }
 
     /**
@@ -54,14 +56,15 @@ public class PlaceholderManager {
      */
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier) {
-        Optional<PlaceholderEntry> matching = REGISTERED_PLACEHOLDERS.stream().filter(expansion -> expansion.getIdentifier().equalsIgnoreCase(identifier)).findFirst();
-        if (matching.isEmpty()) {
+        PlaceholderEntry entry = REGISTERED_PLACEHOLDERS.get(identifier.toLowerCase());
+        if (entry == null) {
             return "";
         }
-        PlaceholderEntry entry = matching.get();
+
         if (player == null && entry.requiresPlayer()) {
             return "";
         }
+
         return entry.getResult(player);
     }
 
@@ -74,8 +77,10 @@ public class PlaceholderManager {
      */
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
-        AtomicReference<String> translatedReference = new AtomicReference<>(text);
-        REGISTERED_INTEGRATIONS.forEach(placeholderIntegration -> translatedReference.set(placeholderIntegration.translate(translatedReference.get(), player)));
-        return translatedReference.get();
+        String processed = text;
+        for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
+            processed = integration.translate(processed, player);
+        }
+        return processed;
     }
 }
