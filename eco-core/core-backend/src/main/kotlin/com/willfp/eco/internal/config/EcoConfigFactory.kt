@@ -6,6 +6,7 @@ import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.core.config.wrapper.ConfigFactory
 import com.willfp.eco.internal.config.json.EcoJSONConfigSection
 import com.willfp.eco.internal.config.json.EcoLoadableJSONConfig
+import com.willfp.eco.internal.config.json.EcoUpdatableJSONConfig
 import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoYamlConfigSection
@@ -21,6 +22,24 @@ class EcoConfigFactory : ConfigFactory {
         vararg updateBlacklist: String
     ): Config {
         return EcoUpdatableYamlConfig(
+            configName,
+            plugin,
+            subDirectoryPath,
+            source,
+            removeUnused,
+            *updateBlacklist
+        )
+    }
+
+    override fun createUpdatableJSONConfig(
+        configName: String,
+        plugin: EcoPlugin,
+        subDirectoryPath: String,
+        source: Class<*>,
+        removeUnused: Boolean,
+        vararg updateBlacklist: String
+    ): JSONConfig {
+        return EcoUpdatableJSONConfig(
             configName,
             plugin,
             subDirectoryPath,

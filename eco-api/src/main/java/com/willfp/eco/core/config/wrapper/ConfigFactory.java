@@ -31,6 +31,24 @@ public interface ConfigFactory {
                                      @NotNull String... updateBlacklist);
 
     /**
+     * Updatable config.
+     *
+     * @param configName       The name of the config
+     * @param plugin           The plugin.
+     * @param subDirectoryPath The subdirectory path.
+     * @param source           The class that owns the resource.
+     * @param removeUnused     Whether keys not present in the default config should be removed on update.
+     * @param updateBlacklist  Substring of keys to not add/remove keys for.
+     * @return The config implementation.
+     */
+    JSONConfig createUpdatableJSONConfig(@NotNull String configName,
+                                         @NotNull EcoPlugin plugin,
+                                         @NotNull String subDirectoryPath,
+                                         @NotNull Class<?> source,
+                                         boolean removeUnused,
+                                         @NotNull String... updateBlacklist);
+
+    /**
      * JSON loadable config.
      *
      * @param configName       The name of the config

@@ -5,6 +5,7 @@ import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.updating.ConfigHandler
 import com.willfp.eco.core.config.updating.ConfigUpdater
 import com.willfp.eco.internal.config.json.EcoLoadableJSONConfig
+import com.willfp.eco.internal.config.json.EcoUpdatableJSONConfig
 import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException
 import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
@@ -55,6 +56,7 @@ class EcoConfigHandler(
         for (config in configs) {
             when (config) {
                 is EcoUpdatableYamlConfig -> config.update()
+                is EcoUpdatableJSONConfig -> config.update()
                 is EcoLoadableYamlConfig -> config.reloadFromFile()
                 is EcoLoadableJSONConfig -> config.reloadFromFile()
             }
