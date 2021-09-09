@@ -1,5 +1,6 @@
 package com.willfp.eco.core.display;
 
+import com.willfp.eco.core.fast.FastItemStack;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.NamespacedKey;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public class Display {
     /**
      * All registered display modules.
      */
-    private static final Map<DisplayPriority, List<DisplayModule>> MODULES = new HashMap<>();
+    private static final Map<DisplayPriority, List<DisplayModule>> MODULES = new LinkedHashMap<>();
 
     /**
      * NamespacedKey for finalizing.
@@ -135,17 +137,11 @@ public class Display {
             unfinalize(itemStack);
         }
 
-        ItemMeta meta = itemStack.getItemMeta();
+        FastItemStack fast = FastItemStack.wrap(itemStack);
+        List<String> lore = fast.getLore();
 
-        if (meta == null) {
-            return itemStack;
-        }
-
-        List<String> lore = meta.getLore();
-
-        if (lore != null && lore.removeIf(line -> line.startsWith(Display.PREFIX))) { // only apply lore modification if needed
-            meta.setLore(lore);
-            itemStack.setItemMeta(meta);
+        if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(Display.PREFIX))) { // Only modify lore if needed.
+            fast.setLore(lore);
         }
 
         for (DisplayPriority priority : DisplayPriority.values()) {
