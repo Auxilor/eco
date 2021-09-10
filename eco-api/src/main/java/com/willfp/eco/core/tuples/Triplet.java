@@ -34,4 +34,15 @@ public class Triplet<A, B, C> extends Pair<A, B> {
 
         this.third = third;
     }
+
+    /**
+     * component3 exists to allow a pair to be destructured by kotlin.
+     * The default kotlin pair already has this, however there is no default
+     * pair in java so this exists for parity.
+     *
+     * @return First.
+     */
+    public C component3() {
+        return third;
+    }
 }

@@ -73,9 +73,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val menu = MenuHandler.getMenu(inv) ?: return
 
-        val rowColumn = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())
-        val row = rowColumn.first!!
-        val column = rowColumn.second!!
+        val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())
         val slot = menu.getSlot(row, column)
 
         if (!slot.isCaptive) {
