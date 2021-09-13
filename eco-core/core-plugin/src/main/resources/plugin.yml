@@ -21,7 +21,7 @@ softdepend:
   - PlaceholderAPI
   - mcMMO
   - CombatLogX
-  - ShopGuiPlus
+  - ShopGUIPlus
   - ItemsAdder
   - Oraxen
   - HeadDatabase
