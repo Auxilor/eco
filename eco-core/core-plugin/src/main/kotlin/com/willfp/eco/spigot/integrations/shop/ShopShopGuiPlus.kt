@@ -28,4 +28,8 @@ class ShopShopGuiPlus : ShopWrapper {
             return Items.getCustomItem(itemStack1)?.key == Items.getCustomItem(itemStack2)?.key
         }
     }
+
+    override fun getPluginName(): String {
+        return "ShopGUIPlus"
+    }
 }
