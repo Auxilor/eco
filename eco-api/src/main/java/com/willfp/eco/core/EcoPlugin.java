@@ -357,15 +357,18 @@ public abstract class EcoPlugin extends JavaPlugin {
             Eco.getHandler().registerBStats(this);
         }
 
-        Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toSet());
+        Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
+                .map(Plugin::getName)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
 
-        if (enabledPlugins.contains("PlaceholderAPI")) {
+        if (enabledPlugins.contains("PlaceholderAPI".toLowerCase())) {
             this.loadedIntegrations.add("PlaceholderAPI");
             PlaceholderManager.addIntegration(Eco.getHandler().createPAPIIntegration(this));
         }
 
         this.loadIntegrationLoaders().forEach((integrationLoader -> {
-            if (enabledPlugins.contains(integrationLoader.getPluginName())) {
+            if (enabledPlugins.contains(integrationLoader.getPluginName().toLowerCase())) {
                 this.loadedIntegrations.add(integrationLoader.getPluginName());
                 integrationLoader.load();
             }

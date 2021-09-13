@@ -89,6 +89,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleAfterLoad() {
         CustomItemsManager.registerAllItems()
+        ShopManager.registerEcoProvider()
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
@@ -124,7 +125,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder(this)) },
 
             // Shop
-            IntegrationLoader("ShopGuiPlus") { ShopManager.register(ShopShopGuiPlus()) },
+            IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) }
