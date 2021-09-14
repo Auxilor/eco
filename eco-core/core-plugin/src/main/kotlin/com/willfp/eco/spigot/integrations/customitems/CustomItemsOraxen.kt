@@ -6,13 +6,15 @@ import com.willfp.eco.util.NamespacedKeyUtils
 import io.th0rgal.oraxen.items.OraxenItems
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
+import java.util.*
 import java.util.function.Predicate
 
 class CustomItemsOraxen : CustomItemsWrapper {
     override fun registerAllItems() {
         for (item in OraxenItems.getItems()) {
             val stack = item.build()
-            val id: String = OraxenItems.getIdByItem(item)
+            val id: String = Objects.requireNonNullElse(OraxenItems.getIdByItem(item), "")
+            if (id.isEmpty()) continue
             val key: NamespacedKey = NamespacedKeyUtils.create("oraxen", id.lowercase())
             CustomItem(
                 key, Predicate { test: ItemStack ->
