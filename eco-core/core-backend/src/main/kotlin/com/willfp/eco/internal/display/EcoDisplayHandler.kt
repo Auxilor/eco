@@ -49,7 +49,7 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
 
         Display.revert(itemStack)
 
-        val meta = itemStack.itemMeta ?: return itemStack
+        itemStack.itemMeta ?: return itemStack
 
         for (priority in DisplayPriority.values()) {
             val modules = registeredModules[priority] ?: continue
