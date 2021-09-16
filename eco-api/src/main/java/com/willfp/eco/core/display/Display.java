@@ -1,23 +1,11 @@
 package com.willfp.eco.core.display;
 
-import com.willfp.eco.core.fast.FastItemStack;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang.Validate;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Utility class to manage client-side item display.
@@ -30,29 +18,9 @@ public class Display {
     public static final String PREFIX = "§z";
 
     /**
-     * All registered display modules.
+     * The display handler.
      */
-    private static final Map<DisplayPriority, List<DisplayModule>> MODULES = new LinkedHashMap<>();
-
-    /**
-     * NamespacedKey for finalizing.
-     */
-    private static NamespacedKey finalizeKey = null;
-
-    /**
-     * Register display module.
-     *
-     * @param module The module.
-     */
-    public void registerDisplayModule(@NotNull final DisplayModule module) {
-        List<DisplayModule> modules = MODULES.get(module.getPriority());
-
-        modules.removeIf(module1 -> module1.getPluginName().equalsIgnoreCase(module.getPluginName()));
-
-        modules.add(module);
-
-        MODULES.put(module.getPriority(), modules);
-    }
+    public static DisplayHandler handler = null;
 
     /**
      * Display on ItemStacks.
@@ -73,35 +41,7 @@ public class Display {
      */
     public ItemStack display(@NotNull final ItemStack itemStack,
                              @Nullable final Player player) {
-        Map<String, Object[]> pluginVarArgs = new HashMap<>();
-
-        for (DisplayPriority priority : DisplayPriority.values()) {
-            List<DisplayModule> modules = MODULES.get(priority);
-            for (DisplayModule module : modules) {
-                pluginVarArgs.put(module.getPluginName(), module.generateVarArgs(itemStack));
-            }
-        }
-
-        revert(itemStack);
-
-        ItemMeta meta = itemStack.getItemMeta();
-
-        if (meta == null) {
-            return itemStack;
-        }
-
-        for (DisplayPriority priority : DisplayPriority.values()) {
-            List<DisplayModule> modules = MODULES.get(priority);
-            for (DisplayModule module : modules) {
-                Object[] varargs = pluginVarArgs.get(module.getPluginName());
-                module.display(itemStack, varargs);
-                if (player != null) {
-                    module.display(itemStack, player, varargs);
-                }
-            }
-        }
-
-        return itemStack;
+        return handler.display(itemStack, player);
     }
 
     /**
@@ -133,25 +73,7 @@ public class Display {
      * @return The ItemStack.
      */
     public ItemStack revert(@NotNull final ItemStack itemStack) {
-        if (Display.isFinalized(itemStack)) {
-            unfinalize(itemStack);
-        }
-
-        FastItemStack fast = FastItemStack.wrap(itemStack);
-        List<String> lore = fast.getLore();
-
-        if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(Display.PREFIX))) { // Only modify lore if needed.
-            fast.setLore(lore);
-        }
-
-        for (DisplayPriority priority : DisplayPriority.values()) {
-            List<DisplayModule> modules = MODULES.get(priority);
-            for (DisplayModule module : modules) {
-                module.revert(itemStack);
-            }
-        }
-
-        return itemStack;
+        return handler.revert(itemStack);
     }
 
     /**
@@ -161,21 +83,7 @@ public class Display {
      * @return The ItemStack.
      */
     public ItemStack finalize(@NotNull final ItemStack itemStack) {
-        Validate.notNull(finalizeKey, "Key cannot be null!");
-
-        if (itemStack.getType().getMaxStackSize() > 1) {
-            return itemStack;
-        }
-
-        ItemMeta meta = itemStack.getItemMeta();
-        if (meta == null) {
-            return itemStack;
-        }
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(finalizeKey, PersistentDataType.INTEGER, 1);
-        itemStack.setItemMeta(meta);
-        return itemStack;
+        return handler.finalize(itemStack);
     }
 
     /**
@@ -185,18 +93,7 @@ public class Display {
      * @return The ItemStack.
      */
     public ItemStack unfinalize(@NotNull final ItemStack itemStack) {
-        Validate.notNull(finalizeKey, "Key cannot be null!");
-
-        ItemMeta meta = itemStack.getItemMeta();
-
-        if (meta == null) {
-            return itemStack;
-        }
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.remove(finalizeKey);
-        itemStack.setItemMeta(meta);
-        return itemStack;
+        return handler.unfinalize(itemStack);
     }
 
     /**
@@ -206,31 +103,56 @@ public class Display {
      * @return If finalized.
      */
     public boolean isFinalized(@NotNull final ItemStack itemStack) {
-        Validate.notNull(finalizeKey, "Key cannot be null!");
-
-        ItemMeta meta = itemStack.getItemMeta();
-
-        if (meta == null) {
-            return false;
-        }
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        return container.has(finalizeKey, PersistentDataType.INTEGER);
+        return handler.isFinalized(itemStack);
     }
 
     /**
-     * Set key to be used for finalization.
+     * Register a new display module.
      *
-     * @param finalizeKey The key.
+     * @param module The module.
      */
-    @ApiStatus.Internal
-    public static void setFinalizeKey(@NotNull final NamespacedKey finalizeKey) {
-        Display.finalizeKey = finalizeKey;
+    public void registerDisplayModule(@NotNull final DisplayModule module) {
+        handler.registerDisplayModule(module);
     }
 
-    static {
-        for (DisplayPriority priority : DisplayPriority.values()) {
-            MODULES.put(priority, new ArrayList<>());
+    @ApiStatus.Internal
+    public static void init(@NotNull final DisplayHandler handler) {
+        if (Display.handler != null) {
+            throw new IllegalArgumentException("Already Initialized!");
+        }
+        Display.handler = handler;
+    }
+
+    /**
+     * Extremely janky method - also internal, so don't use it. <b>This method is
+     * NOT part of the API and may be removed at any time!</b>
+     * <p>
+     * This calls a display module with the specified parameters, now
+     * you might ask why I need a static java method when the DisplayHandler
+     * implementation could just call it itself? Well, kotlin doesn't really
+     * like dealing with vararg ambiguity, and so while kotlin can't figure out
+     * what is and isn't a vararg when I call display with a player, java can.
+     * <p>
+     * Because of this, I need to have this part of the code in java.
+     *
+     * <b>Don't call this method as part of your plugins!</b>
+     * <p>
+     * No, seriously - don't. This skips a bunch of checks and you'll almost
+     * definitely break something.
+     *
+     * @param module    The display module.
+     * @param itemStack The ItemStack.
+     * @param player    The player.
+     * @param args      The args.
+     */
+    @ApiStatus.Internal
+    public static void callDisplayModule(@NotNull final DisplayModule module,
+                                         @NotNull final ItemStack itemStack,
+                                         @Nullable final Player player,
+                                         @NotNull Object... args) {
+        module.display(itemStack, args);
+        if (player != null) {
+            module.display(itemStack, player, args);
         }
     }
 }

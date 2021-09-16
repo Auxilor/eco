@@ -12,6 +12,7 @@ import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.args.EnchantmentArgParser
 import com.willfp.eco.core.items.args.TextureArgParser
+import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.proxy.BlockBreakProxy
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
@@ -45,8 +46,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     "&a"
 ) {
     init {
-        Display.setFinalizeKey(namespacedKeyFactory.create("finalized"))
-
         Items.registerArgParser(EnchantmentArgParser())
         Items.registerArgParser(TextureArgParser())
 
@@ -58,6 +57,12 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         val blockBreakProxy = getProxy(BlockBreakProxy::class.java)
         BlockUtils.initialize { player: Player, block: Block -> blockBreakProxy.breakBlock(player, block) }
+
+        postInit()
+    }
+
+    private fun postInit() {
+        Display.handler = EcoDisplayHandler(this)
     }
 
     override fun handleEnable() {
