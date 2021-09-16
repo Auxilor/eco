@@ -20,43 +20,11 @@ public interface DisplayHandler {
      * Display on ItemStacks.
      *
      * @param itemStack The item.
-     * @return The ItemStack.
-     */
-    default ItemStack display(@NotNull final ItemStack itemStack) {
-        return display(itemStack, null);
-    }
-
-    /**
-     * Display on ItemStacks.
-     *
-     * @param itemStack The item.
      * @param player    The player.
      * @return The ItemStack.
      */
     ItemStack display(@NotNull final ItemStack itemStack,
                       @Nullable final Player player);
-
-    /**
-     * Display on ItemStacks and then finalize.
-     *
-     * @param itemStack The item.
-     * @return The ItemStack.
-     */
-    default ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
-        return finalize(display(itemStack, null));
-    }
-
-    /**
-     * Display on ItemStacks and then finalize.
-     *
-     * @param itemStack The item.
-     * @param player    The player.
-     * @return The ItemStack.
-     */
-    default ItemStack displayAndFinalize(@NotNull final ItemStack itemStack,
-                                         @Nullable final Player player) {
-        return finalize(display(itemStack, player));
-    }
 
     /**
      * Revert on ItemStacks.
