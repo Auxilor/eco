@@ -150,11 +150,12 @@ public class Display {
      * @param player    The player.
      * @param args      The args.
      */
+    @SuppressWarnings("checkstyle:FinalParameters")
     @ApiStatus.Internal
     public static void callDisplayModule(@NotNull final DisplayModule module,
                                          @NotNull final ItemStack itemStack,
                                          @Nullable final Player player,
-                                         @NotNull Object... args) {
+                                         @NotNull final Object... args) {
         module.display(itemStack, args);
         if (player != null) {
             module.display(itemStack, player, args);
