@@ -13,6 +13,7 @@ import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
+import com.willfp.eco.core.requirement.RequirementFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -194,4 +195,11 @@ public interface Handler {
      * @param plugin The plugin.
      */
     void registerBStats(@NotNull EcoPlugin plugin);
+
+    /**
+     * Get the requirement factory.
+     *
+     * @return The factory.
+     */
+    RequirementFactory getRequirementFactory();
 }
