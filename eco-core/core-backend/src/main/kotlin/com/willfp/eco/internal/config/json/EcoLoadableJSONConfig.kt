@@ -8,11 +8,11 @@ import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
 @Suppress("UNCHECKED_CAST")
-class EcoLoadableJSONConfig(
+open class EcoLoadableJSONConfig(
     configName: String,
     private val plugin: EcoPlugin,
     private val subDirectoryPath: String,
-    private val source: Class<*>
+    val source: Class<*>
 ) : EcoJSONConfigWrapper(), LoadableConfig {
 
     private val configFile: File
@@ -65,7 +65,7 @@ class EcoLoadableJSONConfig(
 
     @Throws(FileNotFoundException::class)
     fun init(file: File) {
-        super.init(handle.fromJson(FileReader(file), Map::class.java) as @NotNull MutableMap<String, Any>)
+        super.init(handle.fromJson(FileReader(file), Map::class.java) as MutableMap<String, Any>)
     }
 
     override fun getName(): String {

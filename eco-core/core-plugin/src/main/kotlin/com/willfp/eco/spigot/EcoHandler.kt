@@ -15,6 +15,7 @@ import com.willfp.eco.core.gui.GUIFactory
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import com.willfp.eco.core.proxy.Cleaner
 import com.willfp.eco.core.proxy.ProxyFactory
+import com.willfp.eco.core.requirement.RequirementFactory
 import com.willfp.eco.core.scheduling.Scheduler
 import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.Plugins
@@ -30,6 +31,7 @@ import com.willfp.eco.internal.gui.EcoGUIFactory
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
+import com.willfp.eco.internal.requirement.EcoRequirementFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.spigot.integrations.bstats.MetricHandler
@@ -39,6 +41,7 @@ import java.util.logging.Logger
 @Suppress("UNUSED")
 class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
+    private val requirementFactory = EcoRequirementFactory()
 
     override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)
@@ -118,5 +121,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun registerBStats(plugin: EcoPlugin) {
         MetricHandler.createMetrics(plugin, this.ecoPlugin)
+    }
+
+    override fun getRequirementFactory(): RequirementFactory {
+        return requirementFactory
     }
 }

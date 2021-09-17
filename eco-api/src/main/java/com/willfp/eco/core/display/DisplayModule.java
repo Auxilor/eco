@@ -36,8 +36,8 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      * @param itemStack The item.
      * @param args      Optional args for display.
      */
-    protected void display(@NotNull final ItemStack itemStack,
-                           @NotNull final Object... args) {
+    public void display(@NotNull final ItemStack itemStack,
+                        @NotNull final Object... args) {
         // Technically optional.
     }
 
@@ -48,9 +48,9 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      * @param player    The player.
      * @param args      Optional args for display.
      */
-    protected void display(@NotNull final ItemStack itemStack,
-                           @Nullable final Player player,
-                           @NotNull final Object... args) {
+    public void display(@NotNull final ItemStack itemStack,
+                        @Nullable final Player player,
+                        @NotNull final Object... args) {
         // Technically optional.
     }
 
@@ -59,7 +59,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      *
      * @param itemStack The item.
      */
-    protected void revert(@NotNull final ItemStack itemStack) {
+    public void revert(@NotNull final ItemStack itemStack) {
         // Technically optional.
     }
 
@@ -69,7 +69,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      * @param itemStack The itemStack.
      * @return The plugin-specific varargs.
      */
-    protected Object[] generateVarArgs(@NotNull final ItemStack itemStack) {
+    public Object[] generateVarArgs(@NotNull final ItemStack itemStack) {
         return new Object[0];
     }
 
