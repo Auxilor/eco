@@ -115,6 +115,11 @@ public class Display {
         handler.registerDisplayModule(module);
     }
 
+    /**
+     * Initialize the display system.
+     *
+     * @param handler The handler.
+     */
     @ApiStatus.Internal
     public static void init(@NotNull final DisplayHandler handler) {
         if (Display.handler != null) {
