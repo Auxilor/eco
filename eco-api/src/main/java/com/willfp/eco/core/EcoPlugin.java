@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public abstract class EcoPlugin extends JavaPlugin {
     /**
-     * The spigot resource ID of the plugin.
+     * The polymart resource ID of the plugin.
      */
     @Getter
     private final int resourceId;
@@ -169,14 +169,14 @@ public abstract class EcoPlugin extends JavaPlugin {
     private final ProxyFactory proxyFactory;
 
     /**
-     * Create a new plugin without a specified color, proxy support, spigot, or bStats.
+     * Create a new plugin without a specified color, proxy support, polymart, or bStats.
      */
     protected EcoPlugin() {
         this("&f");
     }
 
     /**
-     * Create a new plugin without proxy support, spigot, or bStats.
+     * Create a new plugin without proxy support, polymart, or bStats.
      *
      * @param color The color.
      */
@@ -186,7 +186,7 @@ public abstract class EcoPlugin extends JavaPlugin {
 
 
     /**
-     * Create a new plugin unlinked to spigot and bStats.
+     * Create a new plugin unlinked to polymart and bStats.
      *
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, using standard formatting)
@@ -199,7 +199,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Create a new plugin without proxy or extension support.
      *
-     * @param resourceId The spigot resource ID for the plugin.
+     * @param resourceId The polymart resource ID for the plugin.
      * @param bStatsId   The bStats resource ID for the plugin.
      * @param color      The color of the plugin (used in messages, using standard formatting)
      */
@@ -212,7 +212,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Create a new plugin without proxy support.
      *
-     * @param resourceId           The spigot resource ID for the plugin.
+     * @param resourceId           The polymart resource ID for the plugin.
      * @param bStatsId             The bStats resource ID for the plugin.
      * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
@@ -227,7 +227,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Create a new plugin without extension support.
      *
-     * @param resourceId   The spigot resource ID for the plugin.
+     * @param resourceId   The polymart resource ID for the plugin.
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, using standard formatting)
@@ -242,7 +242,7 @@ public abstract class EcoPlugin extends JavaPlugin {
     /**
      * Create a new plugin.
      *
-     * @param resourceId           The spigot resource ID for the plugin.
+     * @param resourceId           The polymart resource ID for the plugin.
      * @param bStatsId             The bStats resource ID for the plugin.
      * @param proxyPackage         The package where proxy implementations are stored.
      * @param color                The color of the plugin (used in messages, using standard formatting)

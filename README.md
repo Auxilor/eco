@@ -16,7 +16,7 @@
 # Information for development
 
 ## Javadoc
-The 6.0.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.0.0/javadoc/)
+The 6.8.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.8.0/javadoc/)
 
 ## Plugin Information
 
@@ -31,7 +31,6 @@ depend:
 eco is available from any of these places:
 
 - [GitHub](https://github.com/Auxilor/eco/releases)
-- [Spigot](https://www.spigotmc.org/resources/eco.87955/)
 - [Polymart](https://polymart.org/resource/eco.773)
 - [Build it locally](https://github.com/Auxilor/eco#build-locally).
 
@@ -72,7 +71,7 @@ Maven:
 </dependency>
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.0.0`.
+Replace `Tag` with a release tag for eco, eg `6.8.0`.
 
 ## Build locally:
 

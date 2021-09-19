@@ -31,7 +31,9 @@ public class UpdateChecker extends PluginDependent<EcoPlugin> {
     public void getVersion(@NotNull final Consumer<? super String> consumer) {
         this.getPlugin().getScheduler().runAsync(() -> {
             try {
-                InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.getPlugin().getResourceId()).openStream();
+                InputStream inputStream = new URL(
+                        "https://api.polymart.org/v1/getResourceInfoSimple?key=version&resource_id=" + this.getPlugin().getResourceId()
+                ).openStream();
                 Scanner scanner = new Scanner(inputStream);
 
                 if (scanner.hasNext()) {
