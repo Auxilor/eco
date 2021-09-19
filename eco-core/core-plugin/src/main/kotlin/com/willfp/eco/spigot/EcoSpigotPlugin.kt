@@ -40,7 +40,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 
 abstract class EcoSpigotPlugin : EcoPlugin(
-    87955,
+    773,
     10043,
     "com.willfp.eco.proxy",
     "&a"
