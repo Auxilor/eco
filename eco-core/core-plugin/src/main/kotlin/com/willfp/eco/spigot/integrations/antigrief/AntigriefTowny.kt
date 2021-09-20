@@ -2,9 +2,7 @@ package com.willfp.eco.spigot.integrations.antigrief
 
 import com.palmergames.bukkit.towny.TownyAPI
 import com.palmergames.bukkit.towny.TownyUniverse
-import com.palmergames.bukkit.towny.`object`.Town
 import com.palmergames.bukkit.towny.`object`.TownyPermission
-import com.palmergames.bukkit.towny.`object`.WorldCoord
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil
 import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import org.bukkit.Location
@@ -67,22 +65,8 @@ class AntigriefTowny : AntigriefWrapper {
                 true
             }
         }
-        if (victim is Player) {
-            try {
-                val town: Town = WorldCoord.parseWorldCoord(victim.getLocation()).townBlock.town
-                return town.isPVP
-            } catch (ignored: Exception) {
-                // If exception, no town was found, thus return true.
-            }
-        } else {
-            try {
-                val town: Town = WorldCoord.parseWorldCoord(victim.location).townBlock.town
-                return town.hasMobs()
-            } catch (ignored: Exception) {
-                // If exception, no town was found, thus return true.
-            }
-        }
-        return true
+        val townBlock = TownyAPI.getInstance().getTownBlock(victim.location) ?: return true
+        return townBlock.permissions.pvp
     }
 
     override fun getPluginName(): String {
