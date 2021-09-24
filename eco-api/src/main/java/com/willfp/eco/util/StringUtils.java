@@ -336,10 +336,14 @@ public class  StringUtils {
      * @return The JSON String.
      */
     @NotNull
-    public String legacyToJson(@NotNull final String legacy) {
+    public String legacyToJson(@Nullable final String legacy) {
+        String processed = legacy;
+        if (legacy == null) {
+            processed = "";
+        }
         return GsonComponentSerializer.gson().serialize(
                 Component.empty().decoration(TextDecoration.ITALIC, false).append(
-                        LEGACY_COMPONENT_SERIALIZER.deserialize(legacy)
+                        LEGACY_COMPONENT_SERIALIZER.deserialize(processed)
                 )
         );
     }
