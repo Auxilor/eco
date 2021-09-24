@@ -150,7 +150,6 @@ public class Display {
      * @param player    The player.
      * @param args      The args.
      */
-    @SuppressWarnings("checkstyle:FinalParameters")
     @ApiStatus.Internal
     public static void callDisplayModule(@NotNull final DisplayModule module,
                                          @NotNull final ItemStack itemStack,
