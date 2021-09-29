@@ -15,3 +15,8 @@ use-fast-collated-drops: true
 # bStats is important and you should keep it enabled.
 # This option is only here because of compliance with data protection laws.
 enable-bstats: true
+
+# Some plugins use their own item display systems (eg Triton)
+# And must be ran after eco. Don't enable this unless you run a conflicting plugin
+# and have been told to enable it.
+use-lower-protocollib-priority: false

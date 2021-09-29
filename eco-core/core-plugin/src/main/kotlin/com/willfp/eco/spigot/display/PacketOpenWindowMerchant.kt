@@ -13,7 +13,10 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.MerchantRecipe
 
 class PacketOpenWindowMerchant(plugin: EcoPlugin) :
-    AbstractPacketAdapter(plugin, PacketType.Play.Server.OPEN_WINDOW_MERCHANT, ListenerPriority.MONITOR, true) {
+    AbstractPacketAdapter(plugin,
+        PacketType.Play.Server.OPEN_WINDOW_MERCHANT,
+        if (plugin.configYml.getBool("use-lower-protocollib-priority")) ListenerPriority.NORMAL else ListenerPriority.MONITOR,
+        true) {
     override fun onSend(
         packet: PacketContainer,
         player: Player,
