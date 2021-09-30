@@ -11,7 +11,10 @@ import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import org.apache.commons.lang.Validate
 import org.bukkit.Location
 import org.bukkit.block.Block
-import org.bukkit.entity.*
+import org.bukkit.entity.Animals
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Monster
+import org.bukkit.entity.Player
 
 class AntigriefWorldGuard : AntigriefWrapper {
     override fun canBreakBlock(
@@ -78,29 +81,21 @@ class AntigriefWorldGuard : AntigriefWrapper {
         val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
-        if (victim is Player) {
-            if (!query.testBuild(BukkitAdapter.adapt(victim.getLocation()), localPlayer, Flags.PVP)) {
-                return WorldGuard.getInstance().platform.sessionManager.hasBypass(
-                    localPlayer,
-                    BukkitAdapter.adapt(player.world)
-                )
-            }
-        } else if (victim is Animals) {
-            if (!query.testBuild(BukkitAdapter.adapt(victim.location), localPlayer, Flags.DAMAGE_ANIMALS)) {
-                return WorldGuard.getInstance().platform.sessionManager.hasBypass(
-                    localPlayer,
-                    BukkitAdapter.adapt(player.world)
-                )
-            }
-        } else if (victim is Monster) {
-            if (!query.testBuild(BukkitAdapter.adapt(victim.location), localPlayer, Flags.MOB_DAMAGE)) {
-                return WorldGuard.getInstance().platform.sessionManager.hasBypass(
-                    localPlayer,
-                    BukkitAdapter.adapt(player.world)
-                )
-            }
+        val flag = when(victim) {
+            is Player -> Flags.PVP
+            is Monster -> Flags.MOB_DAMAGE
+            is Animals -> Flags.DAMAGE_ANIMALS
+            else -> return true
         }
-        return true
+
+        return if (!query.testBuild(BukkitAdapter.adapt(victim.getLocation()), localPlayer, flag)) {
+            WorldGuard.getInstance().platform.sessionManager.hasBypass(
+                localPlayer,
+                BukkitAdapter.adapt(player.world)
+            )
+        } else {
+            true
+        }
     }
 
     override fun getPluginName(): String {
