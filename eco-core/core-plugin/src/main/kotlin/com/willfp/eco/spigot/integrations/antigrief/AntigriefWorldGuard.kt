@@ -11,8 +11,7 @@ import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import org.apache.commons.lang.Validate
 import org.bukkit.Location
 import org.bukkit.block.Block
-import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.Player
+import org.bukkit.entity.*
 
 class AntigriefWorldGuard : AntigriefWrapper {
     override fun canBreakBlock(
@@ -86,8 +85,15 @@ class AntigriefWorldGuard : AntigriefWrapper {
                     BukkitAdapter.adapt(player.world)
                 )
             }
-        } else {
+        } else if (victim is Animals) {
             if (!query.testBuild(BukkitAdapter.adapt(victim.location), localPlayer, Flags.DAMAGE_ANIMALS)) {
+                return WorldGuard.getInstance().platform.sessionManager.hasBypass(
+                    localPlayer,
+                    BukkitAdapter.adapt(player.world)
+                )
+            }
+        } else if (victim is Monster) {
+            if (!query.testBuild(BukkitAdapter.adapt(victim.location), localPlayer, Flags.MOB_DAMAGE)) {
                 return WorldGuard.getInstance().platform.sessionManager.hasBypass(
                     localPlayer,
                     BukkitAdapter.adapt(player.world)
