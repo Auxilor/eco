@@ -88,7 +88,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
             else -> return true
         }
 
-        return if (!query.testBuild(BukkitAdapter.adapt(victim.getLocation()), localPlayer, flag)) {
+        return if (!query.testBuild(BukkitAdapter.adapt(victim.location), localPlayer, flag)) {
             WorldGuard.getInstance().platform.sessionManager.hasBypass(
                 localPlayer,
                 BukkitAdapter.adapt(player.world)
