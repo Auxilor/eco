@@ -6,11 +6,12 @@ import org.apache.commons.lang.Validate
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
+import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
 open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     lateinit var handle: T
-    private val cache = mutableMapOf<String, Any?>()
+    private val cache = ConcurrentHashMap<String, Any?>()
 
     protected fun init(config: T): Config {
         handle = config

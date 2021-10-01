@@ -6,14 +6,15 @@ import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.util.StringUtils
 import org.apache.commons.lang.Validate
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
 open class EcoJSONConfigWrapper : JSONConfig {
     val handle: Gson = GsonBuilder().setPrettyPrinting().create()
 
-    val values = mutableMapOf<String, Any?>()
+    val values = ConcurrentHashMap<String, Any?>()
 
-    private val cache = mutableMapOf<String, Any>()
+    private val cache = ConcurrentHashMap<String, Any>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
