@@ -184,11 +184,11 @@ public class StringUtils {
                          @Nullable final Player player,
                          @NotNull final FormatOption option) {
         String processedMessage = message;
-        processedMessage = translateMiniMessage(processedMessage);
-        processedMessage = translateGradients(processedMessage);
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
+        processedMessage = translateMiniMessage(processedMessage);
+        processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         return processedMessage;
