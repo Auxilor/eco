@@ -15,6 +15,7 @@ import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.requirement.RequirementFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -201,5 +202,14 @@ public interface Handler {
      *
      * @return The factory.
      */
+    @NotNull
     RequirementFactory getRequirementFactory();
+
+    /**
+     * Get Adventure audiences.
+     *
+     * @return The audiences.
+     */
+    @NotNull
+    BukkitAudiences getAdventure();
 }

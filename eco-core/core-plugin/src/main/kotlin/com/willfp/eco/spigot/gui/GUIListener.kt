@@ -23,9 +23,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
             return
         }
         val menu = MenuHandler.getMenu(event.clickedInventory ?: return) ?: return
-        val rowColumn = MenuUtils.convertSlotToRowColumn(event.slot)
-        val row = rowColumn.first!!
-        val column = rowColumn.second!!
+        val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot)
         val slot = menu.getSlot(row, column)
         Validate.isTrue(slot is EcoSlot, "Slot not instance of EcoSlot!")
         val ecoSlot = menu.getSlot(row, column) as EcoSlot

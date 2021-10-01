@@ -35,6 +35,7 @@ import com.willfp.eco.internal.requirement.EcoRequirementFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.spigot.integrations.bstats.MetricHandler
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
 
@@ -42,6 +43,7 @@ import java.util.logging.Logger
 class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
     private val requirementFactory = EcoRequirementFactory()
+    private val adventure = BukkitAudiences.create(this);
 
     override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)
@@ -125,5 +127,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun getRequirementFactory(): RequirementFactory {
         return requirementFactory
+    }
+
+    override fun getAdventure(): BukkitAudiences {
+        return adventure
     }
 }

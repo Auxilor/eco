@@ -27,7 +27,7 @@ import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
  * Utilities / API methods for strings.
  */
 @UtilityClass
-public class  StringUtils {
+public class StringUtils {
     /**
      * Regexes for gradients.
      */
@@ -368,6 +368,33 @@ public class  StringUtils {
         return LEGACY_COMPONENT_SERIALIZER.serialize(
                 GsonComponentSerializer.gson().deserialize(json)
         );
+    }
+
+    /**
+     * Convert legacy (bukkit) text to Component.
+     *
+     * @param legacy The legacy text.
+     * @return The component.
+     */
+    @NotNull
+    public Component toComponent(@Nullable final String legacy) {
+        String processed = legacy;
+        if (legacy == null) {
+            processed = "";
+        }
+
+        return LEGACY_COMPONENT_SERIALIZER.deserialize(processed);
+    }
+
+    /**
+     * Convert Component to legacy (bukkit) text.
+     *
+     * @param component The component.
+     * @return The legacy text.
+     */
+    @NotNull
+    public String toLegacy(@NotNull final Component component) {
+        return LEGACY_COMPONENT_SERIALIZER.serialize(component);
     }
 
     /**

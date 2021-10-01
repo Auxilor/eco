@@ -18,9 +18,7 @@ class ExtendedInventory(
     fun refresh(player: Player) {
         captiveItems.clear()
         for (i in 0 until inventory.size) {
-            val pair = MenuUtils.convertSlotToRowColumn(i)
-            val row = pair.first!!
-            val column = pair.second!!
+            val (row, column) = MenuUtils.convertSlotToRowColumn(i)
             val slot = menu.getSlot(row, column)
             if (slot is EcoCaptivatorSlot) {
                 val defaultItem = slot.getItemStack(player)
