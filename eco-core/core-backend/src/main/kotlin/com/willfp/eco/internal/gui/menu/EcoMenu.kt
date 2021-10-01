@@ -22,11 +22,11 @@ class EcoMenu(
 ): Menu {
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
-            throw IllegalArgumentException("Invalid row number!")
+            return slots[0][0]
         }
 
         if (column < 1 || column > 9) {
-            throw IllegalArgumentException("Invalid column number!")
+            return slots[0][0]
         }
 
         return slots[row - 1][column - 1]

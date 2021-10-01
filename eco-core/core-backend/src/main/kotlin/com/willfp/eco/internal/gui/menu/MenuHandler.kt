@@ -2,10 +2,11 @@ package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.inventory.Inventory
+import java.util.*
 
 object MenuHandler {
-    private val menus = mutableMapOf<ExtendedInventory, EcoMenu>()
-    private val inventories = mutableMapOf<Inventory, ExtendedInventory>()
+    private val menus = WeakHashMap<ExtendedInventory, EcoMenu>()
+    private val inventories = WeakHashMap<Inventory, ExtendedInventory>()
 
     fun registerMenu(
         inventory: Inventory,
