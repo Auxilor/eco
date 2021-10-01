@@ -5,7 +5,7 @@ dependencies {
     implementation 'org.bstats:bstats-bukkit:1.7'
     compileOnly 'org.apache.maven:maven-artifact:3.0.3'
     compileOnly 'com.google.code.gson:gson:2.8.7'
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly project(":eco-core:core-proxy")
     compileOnly project(":eco-core:core-backend")
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.0-SNAPSHOT'
