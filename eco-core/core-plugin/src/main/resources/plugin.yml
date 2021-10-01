@@ -33,3 +33,4 @@ libraries:
   - net.kyori:adventure-text-serializer-legacy:4.8.1
   - org.jetbrains.kotlin:kotlin-stdlib:1.5.31
   - net.kyori:adventure-platform-bukkit:4.0.0
+  - net.kyori:adventure-api:4.9.1
