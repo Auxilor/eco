@@ -171,6 +171,68 @@ public class StringUtils {
     }
 
     /**
+     * Format a string to a component.
+     * <p>
+     * Converts color codes and placeholders.
+     *
+     * @param message The message to translate.
+     * @return The message, formatted, as a component.
+     * @see StringUtils#format(String, Player)
+     */
+    @NotNull
+    public Component formatToComponent(@NotNull final String message) {
+        return formatToComponent(message, (Player) null);
+    }
+
+    /**
+     * Format a string.
+     * <p>
+     * Converts color codes and placeholders for a player.
+     *
+     * @param message The message to format.
+     * @param player  The player to translate placeholders with respect to.
+     * @return The message, formatted.
+     */
+    @NotNull
+    public Component formatToComponent(@NotNull final String message,
+                                       @Nullable final Player player) {
+        return formatToComponent(message, player, FormatOption.WITH_PLACEHOLDERS);
+    }
+
+    /**
+     * Format a string to a component.
+     * <p>
+     * Converts color codes and placeholders if specified.
+     *
+     * @param message The message to translate.
+     * @param option  The format option.
+     * @return The message, formatted, as a component.
+     * @see StringUtils#format(String, Player)
+     */
+    @NotNull
+    public Component formatToComponent(@NotNull final String message,
+                                       @NotNull final FormatOption option) {
+        return formatToComponent(message, null, option);
+    }
+
+    /**
+     * Format a string to a component.
+     * <p>
+     * Coverts color codes and placeholders for a player if specified.
+     *
+     * @param message The message to format.
+     * @param player  The player to translate placeholders with respect to.
+     * @param option  The format options.
+     * @return The message, formatted, as a component.
+     */
+    @NotNull
+    public Component formatToComponent(@NotNull final String message,
+                                       @Nullable final Player player,
+                                       @NotNull final FormatOption option) {
+        return toComponent(format(message, player, option));
+    }
+
+    /**
      * Format a string.
      * <p>
      * Coverts color codes and placeholders for a player if specified.
