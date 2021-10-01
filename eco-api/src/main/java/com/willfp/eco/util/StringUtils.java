@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.markdown.DiscordFlavor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -195,7 +196,7 @@ public class StringUtils {
     }
 
     private static String translateMiniMessage(@NotNull final String message) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.get().parse(message));
+        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.withMarkdownFlavor(DiscordFlavor.get()).parse(message));
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
