@@ -32,6 +32,7 @@ import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.SkullUtils
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -68,6 +69,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleEnable() {
         CollatedRunnable(this)
+        (Eco.getHandler() as EcoHandler).adventure = BukkitAudiences.create(this)
 
         this.logger.info("Ignore messages about deprecated events!")
 

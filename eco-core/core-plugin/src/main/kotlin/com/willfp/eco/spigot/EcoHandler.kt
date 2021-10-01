@@ -43,7 +43,7 @@ import java.util.logging.Logger
 class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
     private val requirementFactory = EcoRequirementFactory()
-    private val adventure = BukkitAudiences.create(this);
+    private lateinit var adventure: BukkitAudiences
 
     override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)
@@ -131,5 +131,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun getAdventure(): BukkitAudiences {
         return adventure
+    }
+
+    fun setAdventure(adventure: BukkitAudiences) {
+        this.adventure = adventure
     }
 }
