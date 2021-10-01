@@ -1,6 +1,7 @@
 package com.willfp.eco.spigot
 
 import com.willfp.eco.core.AbstractPacketAdapter
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.integrations.IntegrationLoader
@@ -85,6 +86,10 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         }
 
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
+    }
+
+    override fun handleDisable() {
+        Eco.getHandler().adventure.close()
     }
 
     override fun handleReload() {
