@@ -263,6 +263,9 @@ public class  StringUtils {
                                                  @NotNull final Color end,
                                                  final int step) {
         ChatColor[] colors = new ChatColor[step];
+        if (step <= 1) {
+            return colors;
+        }
         int stepR = Math.abs(start.getRed() - end.getRed()) / (step - 1);
         int stepG = Math.abs(start.getGreen() - end.getGreen()) / (step - 1);
         int stepB = Math.abs(start.getBlue() - end.getBlue()) / (step - 1);
