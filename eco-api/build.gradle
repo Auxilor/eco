@@ -12,6 +12,7 @@ dependencies {
     compileOnly 'com.google.code.gson:gson:2.8.7'
     compileOnly 'net.kyori:adventure-text-serializer-gson:4.8.1'
     compileOnly 'net.kyori:adventure-text-serializer-legacy:4.8.1'
+    compileOnly 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
 }
 
 java {

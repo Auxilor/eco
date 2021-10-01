@@ -5,6 +5,7 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -183,6 +184,7 @@ public class  StringUtils {
                          @Nullable final Player player,
                          @NotNull final FormatOption option) {
         String processedMessage = message;
+        processedMessage = translateMiniMessage(processedMessage);
         processedMessage = translateGradients(processedMessage);
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
@@ -190,6 +192,10 @@ public class  StringUtils {
         processedMessage = translateHexColorCodes(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         return processedMessage;
+    }
+
+    private static String translateMiniMessage(@NotNull final String message) {
+        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.get().parse(message));
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
