@@ -87,6 +87,7 @@ allprojects {
 
     shadowJar {
         relocate('org.bstats', 'com.willfp.eco.shaded.bstats')
+        relocate('net.kyori', 'com.willfp.eco.shaded.kyori')
     }
 
     jar {

@@ -3,6 +3,7 @@ version rootProject.version
 
 dependencies {
     implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
     compileOnly 'org.apache.maven:maven-artifact:3.0.3'
     compileOnly 'com.google.code.gson:gson:2.8.7'
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
@@ -23,7 +24,6 @@ dependencies {
     compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:2.4.7'
     compileOnly 'me.arcaniax:HeadDatabase-API:1.2.0'
-    compileOnly 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
     compileOnly 'net.kyori:adventure-platform-bukkit:4.0.0'
 
     // CombatLogX V10 + NewbieHelper Expansion
