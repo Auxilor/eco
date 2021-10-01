@@ -250,8 +250,8 @@ public class StringUtils {
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
-        processedMessage = translateMiniMessage(processedMessage);
         processedMessage = translateGradients(processedMessage);
+        processedMessage = translateMiniMessage(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         return processedMessage;
