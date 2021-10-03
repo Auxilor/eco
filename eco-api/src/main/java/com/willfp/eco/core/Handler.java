@@ -210,6 +210,6 @@ public interface Handler {
      *
      * @return The audiences.
      */
-    @NotNull
+    @Nullable
     BukkitAudiences getAdventure();
 }
