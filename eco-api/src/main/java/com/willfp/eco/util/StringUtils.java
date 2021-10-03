@@ -1,6 +1,7 @@
 package com.willfp.eco.util;
 
 import com.google.common.collect.ImmutableList;
+import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
@@ -251,9 +252,11 @@ public class StringUtils {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
         processedMessage = translateGradients(processedMessage);
-        processedMessage = translateMiniMessage(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
+        if (Prerequisite.HAS_PAPER.isMet()) {
+            processedMessage = translateMiniMessage(processedMessage);
+        }
         return processedMessage;
     }
 

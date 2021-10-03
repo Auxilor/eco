@@ -25,6 +25,10 @@ softdepend:
   - ItemsAdder
   - Oraxen
 libraries:
-  - org.reflections:reflections:0.9.12
-  - org.apache.maven:maven-artifact:3.0.3
-  - org.jetbrains.kotlin:kotlin-stdlib:1.5.31
+  - 'org.reflections:reflections:0.9.12'
+  - 'org.apache.maven:maven-artifact:3.0.3'
+  - 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
+  - 'net.kyori:adventure-platform-bukkit:4.0.0'
+  - 'net.kyori:adventure-api:4.9.1'
+  - 'net.kyori:adventure-text-serializer-gson:4.8.1'
+  - 'net.kyori:adventure-text-serializer-legacy:4.8.1'
