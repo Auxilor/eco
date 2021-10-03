@@ -109,7 +109,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             // AntiGrief
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
-            IntegrationLoader("GriefDefender") { AntigriefManager.register(AntigriefGriefDefender()) },
             IntegrationLoader("FactionsUUID") { AntigriefManager.register(AntigriefFactionsUUID()) },
             IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
             IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
