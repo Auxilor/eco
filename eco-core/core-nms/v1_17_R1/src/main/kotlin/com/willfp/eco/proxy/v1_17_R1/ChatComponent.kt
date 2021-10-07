@@ -28,17 +28,14 @@ class ChatComponent : ChatComponentProxy {
             )
         ).asComponent() as BuildableComponent<*, *>
 
-        val newComponent = modifyBaseComponent(component, player)
+        val newComponent = component.toBuilder().mapChildrenDeep { modifyBaseComponent(it, player) as BuildableComponent<*, *> }.asComponent()
 
         return net.minecraft.network.chat.Component.Serializer.fromJson(
             gsonComponentSerializer.serialize(newComponent)
         ) ?: obj
     }
-    private fun <C: BuildableComponent<C, B>, B: ComponentBuilder<C, B>> modifyBaseComponent(baseComponent: BuildableComponent<C, B>, player: Player): Component {
-        val component = baseComponent.toBuilder().mapChildren {
-            modifyBaseComponent(it, player) as BuildableComponent<C, B>
-        }.asComponent()
 
+    private fun <C: BuildableComponent<C, B>, B: ComponentBuilder<C, B>> modifyBaseComponent(component: BuildableComponent<C, B>, player: Player): Component {
         val hoverEvent: HoverEvent<Any?> = component.style().hoverEvent() as HoverEvent<Any?>? ?: return component
 
         val showItem = hoverEvent.value()
@@ -68,6 +65,7 @@ class ChatComponent : ChatComponentProxy {
 
         val newHover = hoverEvent.value(newShowItem)
         val style = component.style().hoverEvent(newHover)
-        return component.style(style)
+        val newComponent = component.style(style)
+        return newComponent
     }
 }
