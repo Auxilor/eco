@@ -4,6 +4,7 @@ import com.willfp.eco.core.display.Display
 import com.willfp.eco.proxy.ChatComponentProxy
 import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentIteratorType
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.server.v1_16_R3.IChatBaseComponent
@@ -36,12 +37,19 @@ class ChatComponent : ChatComponentProxy {
 
     private fun modifyBaseComponent(baseComponent: Component, player: Player): Component {
         val children = mutableListOf<Component>()
-
-        for (child in baseComponent.children()) {
-            children.add(modifyBaseComponent(child, player))
+        val siblings = mutableListOf<Component>()
+        for (component in baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)) {
+            siblings.add(modifyBaseComponent(component, player))
         }
 
-        val component = baseComponent.children(children)
+        val processedComponent = Component.text()
+            .append(*siblings.toTypedArray())
+            .asComponent()
+
+        for (child in processedComponent.children()) {
+            children.add(modifyBaseComponent(child, player))
+        }
+        val component = processedComponent.children(children)
 
         val hoverEvent: HoverEvent<Any?> = component.style().hoverEvent() as HoverEvent<Any?>? ?: return component
 
