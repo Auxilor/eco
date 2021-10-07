@@ -36,18 +36,35 @@ class ChatComponent : ChatComponentProxy {
 
     private fun modifyBaseComponent(baseComponent: Component, player: Player): Component {
         val children = mutableListOf<Component>()
-        val siblings = mutableListOf<Component>()
-        for (component in baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)) {
-            siblings.add(modifyBaseComponent(component, player))
+
+        var componentSize = 0
+        val testIterator = baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)
+        while (testIterator.hasNext()) {
+            testIterator.next()
+            componentSize++
         }
 
-        val processedComponent = Component.text()
-            .append(*siblings.toTypedArray())
-            .asComponent()
+        val processedComponentBuilder = Component.text()
+
+        if (componentSize >= 2) {
+            val siblings = mutableListOf<Component>()
+
+            for (component in baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)) {
+                siblings.add(modifyBaseComponent(component, player))
+            }
+
+            processedComponentBuilder.append(*siblings.toTypedArray())
+                .asComponent()
+        } else {
+            processedComponentBuilder.append(baseComponent)
+        }
+
+        val processedComponent = processedComponentBuilder.asComponent()
 
         for (child in processedComponent.children()) {
             children.add(modifyBaseComponent(child, player))
         }
+
         val component = processedComponent.children(children)
 
         val hoverEvent: HoverEvent<Any?> = component.style().hoverEvent() as HoverEvent<Any?>? ?: return component
