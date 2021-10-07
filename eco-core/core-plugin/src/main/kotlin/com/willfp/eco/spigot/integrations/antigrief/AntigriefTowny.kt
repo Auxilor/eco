@@ -72,4 +72,16 @@ class AntigriefTowny : AntigriefWrapper {
     override fun getPluginName(): String {
         return "Towny"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is AntigriefWrapper) {
+            return false
+        }
+
+        return other.pluginName == this.pluginName
+    }
+
+    override fun hashCode(): Int {
+        return this.pluginName.hashCode()
+    }
 }

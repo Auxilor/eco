@@ -30,6 +30,16 @@ public class AntigriefManager {
     }
 
     /**
+     * Unregister an AntiGrief/Land Management integration.
+     *
+     * @param antigrief The integration to unregister.
+     */
+    public void unregister(@NotNull final AntigriefWrapper antigrief) {
+        registered.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
+        registered.remove(antigrief);
+    }
+
+    /**
      * Can player break block.
      *
      * @param player The player.

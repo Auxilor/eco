@@ -101,4 +101,16 @@ class AntigriefWorldGuard : AntigriefWrapper {
     override fun getPluginName(): String {
         return "WorldGuard"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is AntigriefWrapper) {
+            return false
+        }
+
+        return other.pluginName == this.pluginName
+    }
+
+    override fun hashCode(): Int {
+        return this.pluginName.hashCode()
+    }
 }

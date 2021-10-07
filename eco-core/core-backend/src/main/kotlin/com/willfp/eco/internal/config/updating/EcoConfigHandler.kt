@@ -12,7 +12,6 @@ import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import org.reflections.util.ConfigurationBuilder
-import java.lang.reflect.Modifier
 
 class EcoConfigHandler(
     private val plugin: EcoPlugin
@@ -27,10 +26,6 @@ class EcoConfigHandler(
 
     override fun callUpdate() {
         for (method in reflections.getMethodsAnnotatedWith(ConfigUpdater::class.java)) {
-            if (!Modifier.isStatic(method.modifiers)) {
-                throw InvalidUpdateMethodException("Update method in ${method.declaringClass.name} must be static.")
-            }
-
             try {
                 when (method.parameterCount) {
                     0 -> method.invoke(null)
