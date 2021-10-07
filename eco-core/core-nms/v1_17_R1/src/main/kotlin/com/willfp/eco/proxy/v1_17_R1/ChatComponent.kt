@@ -3,8 +3,9 @@ package com.willfp.eco.proxy.v1_17_R1
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.proxy.ChatComponentProxy
 import net.kyori.adventure.nbt.api.BinaryTagHolder
+import net.kyori.adventure.text.BuildableComponent
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentIteratorType
+import net.kyori.adventure.text.ComponentBuilder
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.TagParser
@@ -25,7 +26,7 @@ class ChatComponent : ChatComponentProxy {
             net.minecraft.network.chat.Component.Serializer.toJson(
                 obj
             )
-        ).asComponent()
+        ).asComponent() as BuildableComponent<*, *>
 
         val newComponent = modifyBaseComponent(component, player)
 
@@ -33,39 +34,10 @@ class ChatComponent : ChatComponentProxy {
             gsonComponentSerializer.serialize(newComponent)
         ) ?: obj
     }
-
-    private fun modifyBaseComponent(baseComponent: Component, player: Player): Component {
-        val children = mutableListOf<Component>()
-
-        var componentSize = 0
-        val testIterator = baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)
-        while (testIterator.hasNext()) {
-            testIterator.next()
-            componentSize++
-        }
-
-        val processedComponentBuilder = Component.text()
-
-        if (componentSize >= 2) {
-            val siblings = mutableListOf<Component>()
-
-            for (component in baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)) {
-                siblings.add(modifyBaseComponent(component, player))
-            }
-
-            processedComponentBuilder.append(*siblings.toTypedArray())
-                .asComponent()
-        } else {
-            processedComponentBuilder.append(baseComponent)
-        }
-
-        val processedComponent = processedComponentBuilder.asComponent()
-
-        for (child in processedComponent.children()) {
-            children.add(modifyBaseComponent(child, player))
-        }
-
-        val component = processedComponent.children(children)
+    private fun <C: BuildableComponent<C, B>, B: ComponentBuilder<C, B>> modifyBaseComponent(baseComponent: BuildableComponent<C, B>, player: Player): Component {
+        val component = baseComponent.toBuilder().mapChildren {
+            modifyBaseComponent(it, player) as BuildableComponent<C, B>
+        }.asComponent()
 
         val hoverEvent: HoverEvent<Any?> = component.style().hoverEvent() as HoverEvent<Any?>? ?: return component
 
