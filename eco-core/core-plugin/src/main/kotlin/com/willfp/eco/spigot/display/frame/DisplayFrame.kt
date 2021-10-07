@@ -17,7 +17,7 @@ data class DisplayFrame(val items: Map<Byte, Int>) {
     }
 }
 
-val frames = mutableMapOf<UUID, DisplayFrame>()
+private val frames = mutableMapOf<UUID, DisplayFrame>()
 
 var Player.lastDisplayFrame: DisplayFrame
     get() {
