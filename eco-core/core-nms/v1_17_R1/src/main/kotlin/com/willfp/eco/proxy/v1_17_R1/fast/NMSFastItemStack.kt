@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.world.item.EnchantedBookItem
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
@@ -168,6 +169,18 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
     override fun setRepairCost(cost: Int) {
         handle.setRepairCost(cost)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is NMSFastItemStack) {
+            return false
+        }
+
+        return other.hashCode() == this.hashCode()
+    }
+
+    override fun hashCode(): Int {
+        return handle.tag.hashCode() * 31 + Item.getId(handle.item)
     }
 
     private fun apply() {

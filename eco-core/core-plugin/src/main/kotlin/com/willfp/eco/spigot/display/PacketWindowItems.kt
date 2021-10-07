@@ -6,9 +6,11 @@ import com.comphenix.protocol.events.PacketEvent
 import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
+import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.spigot.display.frame.DisplayFrame
+import com.willfp.eco.spigot.display.frame.lastDisplayFrame
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.function.Consumer
 
 class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketType.Play.Server.WINDOW_ITEMS, false) {
     override fun onSend(
@@ -20,11 +22,21 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
             if (itemStacks == null) {
                 return@modify null
             }
-            itemStacks.forEach(Consumer { item: ItemStack ->
-                Display.display(
-                    item, player
-                )
-            })
+            val frameMap = mutableMapOf<Byte, Int>()
+
+            for (index in itemStacks.indices) {
+                frameMap[index.toByte()] = FastItemStack.wrap(itemStacks[index]).hashCode()
+            }
+
+            val newFrame = DisplayFrame(frameMap)
+
+            val changes = player.lastDisplayFrame.getChangedSlots(newFrame)
+
+            player.lastDisplayFrame = newFrame
+
+            for (index in changes) {
+                Display.display(itemStacks[index.toInt()], player)
+            }
             itemStacks
         }
     }

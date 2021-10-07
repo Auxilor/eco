@@ -150,6 +150,18 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         handle.repairCost = cost
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is NMSFastItemStack) {
+            return false
+        }
+
+        return other.hashCode() == this.hashCode()
+    }
+
+    override fun hashCode(): Int {
+        return handle.tag.hashCode() * 31 + Item.getId(handle.item)
+    }
+
     private fun apply() {
         if (bukkit !is CraftItemStack) {
             bukkit.itemMeta = CraftItemStack.asCraftMirror(handle).itemMeta
