@@ -22,7 +22,11 @@ import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.drops.CollatedRunnable
-import com.willfp.eco.spigot.eventlisteners.*
+import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners
+import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners
+import com.willfp.eco.spigot.eventlisteners.PlayerJumpListeners
+import com.willfp.eco.spigot.eventlisteners.armor.ArmorChangeEventListeners
+import com.willfp.eco.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.spigot.gui.GUIListener
 import com.willfp.eco.spigot.integrations.anticheat.*
 import com.willfp.eco.spigot.integrations.antigrief.*
@@ -163,7 +167,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         return listOf(
             NaturalExpGainListeners(),
             ArmorListener(),
-            DispenserArmorListener(),
             EntityDeathByEntityListeners(this),
             ShapedRecipeListener(this),
             PlayerJumpListeners(),
