@@ -11,15 +11,12 @@ import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
-import org.reflections.util.ConfigurationBuilder
 
 class EcoConfigHandler(
     private val plugin: EcoPlugin
 ) : ConfigHandler {
     private val reflections: Reflections = Reflections(
-        ConfigurationBuilder()
-            .addClassLoaders(this.plugin::class.java.classLoader)
-            .addScanners(Scanners.MethodsAnnotated)
+        Scanners.MethodsAnnotated
     )
 
     private val configs = mutableListOf<LoadableConfig>()
