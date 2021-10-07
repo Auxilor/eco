@@ -5,7 +5,6 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.NamespacedKeyUtils
 import dev.lone.itemsadder.api.CustomStack
 import org.bukkit.inventory.ItemStack
@@ -21,8 +20,8 @@ class CustomItemsItemsAdder : CustomItemsWrapper {
     }
 
     private class ItemsAdderProvider : ItemProvider("itemsadder") {
-        override fun provideForKey(key: String): TestableItem {
-            val item = CustomStack.getInstance("itemsadder:$key") ?: return EmptyTestableItem()
+        override fun provideForKey(key: String): TestableItem? {
+            val item = CustomStack.getInstance("itemsadder:$key") ?: return null
             val id = item.id
             val namespacedKey = NamespacedKeyUtils.create("itemsadder", key)
             val stack = item.itemStack
