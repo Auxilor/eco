@@ -8,14 +8,14 @@ dependencies {
     }
     compileOnly 'net.kyori:adventure-platform-bukkit:4.0.0'
     compileOnly 'net.kyori:adventure-api:4.9.1'
-    compileOnly 'net.kyori:adventure-text-serializer-gson:4.8.1'
+    compileOnly 'net.kyori:adventure-text-serializer-gson:4.9.2'
     compileOnly 'net.kyori:adventure-text-serializer-legacy:4.8.1'
     compileOnly 'org.apache.maven:maven-artifact:3.0.3'
     compileOnly 'com.google.code.gson:gson:2.8.7'
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly project(":eco-core:core-proxy")
     compileOnly project(":eco-core:core-backend")
-    compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.0-SNAPSHOT'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.1-SNAPSHOT'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.4-SNAPSHOT'
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
     compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.5.10'
@@ -24,7 +24,7 @@ dependencies {
     compileOnly 'com.github.angeschossen:LandsAPI:4.7.3'
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
-    compileOnly 'com.gmail.nossr50.mcMMO:mcMMO:2.1.157'
+    compileOnly 'com.gmail.nossr50.mcMMO:mcMMO:2.1.202'
     compileOnly 'me.clip:placeholderapi:2.10.10'
     compileOnly 'com.willfp:Oraxen:e1f4003d8d'
     compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
