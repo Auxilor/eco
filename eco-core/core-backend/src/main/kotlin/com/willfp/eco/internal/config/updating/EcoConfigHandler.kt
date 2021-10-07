@@ -10,7 +10,7 @@ import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodExc
 import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
 import org.reflections.Reflections
-import org.reflections.scanners.MethodAnnotationsScanner
+import org.reflections.scanners.Scanners
 import java.lang.reflect.Modifier
 
 class EcoConfigHandler(
@@ -18,7 +18,7 @@ class EcoConfigHandler(
 ) : ConfigHandler {
     private val reflections: Reflections = Reflections(
         this.plugin::class.java.classLoader,
-        MethodAnnotationsScanner()
+        Scanners.MethodsAnnotated
     )
 
     private val configs = mutableListOf<LoadableConfig>()

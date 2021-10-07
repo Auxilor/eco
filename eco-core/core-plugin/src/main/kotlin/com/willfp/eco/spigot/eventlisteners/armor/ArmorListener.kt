@@ -103,12 +103,6 @@ class ArmorListener : Listener {
             return
         }
         if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK) {
-            val player = e.player
-            if (e.useInteractedBlock() != Event.Result.DENY) {
-                if (e.clickedBlock != null && e.action == Action.RIGHT_CLICK_BLOCK && !player.isSneaking) {
-                    val mat = e.clickedBlock!!.type
-                }
-            }
             val newArmorType = ArmorType.matchType(e.item)
             if (newArmorType != null) {
                 if (newArmorType == ArmorType.HELMET && isAirOrNull(e.player.inventory.helmet) || newArmorType == ArmorType.CHESTPLATE && isAirOrNull(
