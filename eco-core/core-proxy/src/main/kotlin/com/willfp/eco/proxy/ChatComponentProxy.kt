@@ -7,5 +7,5 @@ interface ChatComponentProxy : AbstractProxy {
     fun modifyComponent(
         obj: Any,
         player: Player
-    ): Any?
+    ): Any
 }
