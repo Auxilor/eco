@@ -3,6 +3,7 @@ package com.willfp.eco.spigot
 import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
@@ -69,7 +70,10 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleEnable() {
         CollatedRunnable(this)
-        (Eco.getHandler() as EcoHandler).adventure = BukkitAudiences.create(this)
+
+        if (!Prerequisite.HAS_PAPER.isMet) {
+            (Eco.getHandler() as EcoHandler).setAdventure(BukkitAudiences.create(this))
+        }
 
         this.logger.info("Ignore messages about deprecated events!")
 
@@ -91,7 +95,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun handleDisable() {
-        Eco.getHandler().adventure.close()
+        Eco.getHandler().adventure?.close()
     }
 
     override fun handleReload() {

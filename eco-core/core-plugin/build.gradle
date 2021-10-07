@@ -29,7 +29,6 @@ dependencies {
     compileOnly 'com.willfp:Oraxen:e1f4003d8d'
     compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:2.4.7'
-    compileOnly 'me.arcaniax:HeadDatabase-API:1.2.0'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
