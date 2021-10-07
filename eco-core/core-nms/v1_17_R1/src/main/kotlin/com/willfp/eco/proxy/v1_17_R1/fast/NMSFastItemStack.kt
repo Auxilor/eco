@@ -1,7 +1,6 @@
 package com.willfp.eco.proxy.v1_17_R1.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
-import com.willfp.eco.proxy.v1_17_R1.FastItemStackUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -17,7 +16,7 @@ import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
 
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
-    FastItemStackUtils.getNMSStack(itemStack), itemStack
+    itemStack.getNMSStack(), itemStack
 ) {
     private var loreCache: List<String>? = null
 

@@ -1,7 +1,6 @@
 package com.willfp.eco.proxy.v1_16_R3.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
-import com.willfp.eco.proxy.v1_16_R3.FastItemStackUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.server.v1_16_R3.*
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
@@ -12,7 +11,7 @@ import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
 
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
-    FastItemStackUtils.getNMSStack(itemStack), itemStack
+    itemStack.getNMSStack(), itemStack
 ) {
     private var loreCache: List<String>? = null
     override fun getEnchantmentsOnItem(checkStored: Boolean): Map<Enchantment, Int> {
