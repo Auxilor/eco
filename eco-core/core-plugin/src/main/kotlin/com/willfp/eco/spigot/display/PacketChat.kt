@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 class PacketChat(plugin: EcoPlugin) :
     AbstractPacketAdapter(plugin,
         PacketType.Play.Server.CHAT,
-        if (plugin.configYml.getBool("use-lower-protocollib-priority")) ListenerPriority.NORMAL else ListenerPriority.MONITOR,
+        if (plugin.configYml.getBool("use-lower-protocollib-priority")) ListenerPriority.NORMAL else ListenerPriority.HIGHEST,
         true) {
     override fun onSend(
         packet: PacketContainer,
