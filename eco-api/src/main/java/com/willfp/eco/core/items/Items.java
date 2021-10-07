@@ -1,11 +1,13 @@
 package com.willfp.eco.core.items;
 
 import com.willfp.eco.core.items.args.LookupArgParser;
+import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
+import com.willfp.eco.util.NumberUtils;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,12 +18,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Class to manage all custom and vanilla items.
@@ -31,7 +33,12 @@ public final class Items {
     /**
      * All recipe parts.
      */
-    private static final Map<NamespacedKey, CustomItem> REGISTRY = new ConcurrentHashMap<>();
+    private static final Map<NamespacedKey, TestableItem> REGISTRY = new ConcurrentHashMap<>();
+
+    /**
+     * All item providers.
+     */
+    private static final Map<String, ItemProvider> PROVIDERS = new ConcurrentHashMap<>();
 
     /**
      * All recipe parts.
@@ -42,11 +49,20 @@ public final class Items {
      * Register a new custom item.
      *
      * @param key  The key of the item.
-     * @param part The item.
+     * @param item The item.
      */
     public void registerCustomItem(@NotNull final NamespacedKey key,
-                                   @NotNull final CustomItem part) {
-        REGISTRY.put(key, part);
+                                   @NotNull final TestableItem item) {
+        REGISTRY.put(key, item);
+    }
+
+    /**
+     * Register a new item provider.
+     *
+     * @param provider The provider.
+     */
+    public void registerItemProvider(@NotNull final ItemProvider provider) {
+        PROVIDERS.put(provider.getNamespace(), provider);
     }
 
     /**
@@ -123,7 +139,20 @@ public final class Items {
         }
 
         if (split.length == 2) {
-            CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
+            String namespace = split[0];
+            String keyID = split[1];
+            NamespacedKey namespacedKey = NamespacedKeyUtils.create(namespace, keyID);
+
+            TestableItem part = REGISTRY.get(namespacedKey);
+
+            if (part == null && PROVIDERS.containsKey(namespace)) {
+                ItemProvider provider = PROVIDERS.get(namespace);
+                item = provider.provideForKey(keyID);
+                if (item instanceof EmptyTestableItem || item == null) {
+                    return new EmptyTestableItem();
+                }
+                registerCustomItem(namespacedKey, item);
+            }
 
             /*
             Legacy id:amount format
@@ -146,7 +175,7 @@ public final class Items {
         This has been superseded by namespace:id amount
          */
         if (split.length == 3) {
-            CustomItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
+            TestableItem part = REGISTRY.get(NamespacedKeyUtils.create(split[0], split[1]));
             if (part == null) {
                 return new EmptyTestableItem();
             }
@@ -215,7 +244,7 @@ public final class Items {
      * @return If is recipe.
      */
     public boolean isCustomItem(@NotNull final ItemStack itemStack) {
-        for (CustomItem item : REGISTRY.values()) {
+        for (TestableItem item : REGISTRY.values()) {
             if (item.matches(itemStack)) {
                 return true;
             }
@@ -231,9 +260,9 @@ public final class Items {
      */
     @Nullable
     public CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
-        for (CustomItem item : REGISTRY.values()) {
+        for (TestableItem item : REGISTRY.values()) {
             if (item.matches(itemStack)) {
-                return item;
+                return getOrWrap(item);
             }
         }
         return null;
@@ -245,6 +274,27 @@ public final class Items {
      * @return A set of all items.
      */
     public Set<CustomItem> getCustomItems() {
-        return new HashSet<>(REGISTRY.values());
+        return REGISTRY.values().stream().map(Items::getOrWrap).collect(Collectors.toSet());
+    }
+
+    /**
+     * Return a CustomItem instance for a given TestableItem.
+     * <p>
+     * Used internally since 6.10.0 when the registration moved from {@link CustomItem}
+     * to {@link TestableItem} for added flexibility.
+     *
+     * @param item The item.
+     * @return The CustomItem.
+     */
+    public CustomItem getOrWrap(@NotNull final TestableItem item) {
+        if (item instanceof CustomItem) {
+            return (CustomItem) item;
+        } else {
+            return new CustomItem(
+                    NamespacedKeyUtils.createEcoKey("wrapped_" + NumberUtils.randInt(0, 100000)),
+                    item::matches,
+                    item.getItem()
+            );
+        }
     }
 }

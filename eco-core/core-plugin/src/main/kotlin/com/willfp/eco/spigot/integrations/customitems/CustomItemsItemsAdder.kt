@@ -1,36 +1,40 @@
 package com.willfp.eco.spigot.integrations.customitems
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
 import com.willfp.eco.core.items.CustomItem
+import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.items.TestableItem
+import com.willfp.eco.core.items.provider.ItemProvider
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.NamespacedKeyUtils
 import dev.lone.itemsadder.api.CustomStack
-import dev.lone.itemsadder.api.ItemsAdder
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 
-class CustomItemsItemsAdder(
-    private val plugin: EcoPlugin
-) : CustomItemsWrapper {
+class CustomItemsItemsAdder : CustomItemsWrapper {
     override fun registerAllItems() {
-        plugin.scheduler.runLater({
-            for (item in ItemsAdder.getAllItems()) {
-                val stack = item.itemStack
-                val id = item.id
-                val key = NamespacedKeyUtils.create("itemsadder", id.lowercase())
-                CustomItem(
-                    key,
-                    Predicate { test: ItemStack ->
-                        val customStack = CustomStack.byItemStack(test) ?: return@Predicate false
-                        customStack.id.equals(id, ignoreCase = true)
-                    },
-                    stack
-                ).register()
-            }
-        }, 2)
+        Items.registerItemProvider(ItemsAdderProvider())
     }
 
     override fun getPluginName(): String {
         return "ItemsAdder"
+    }
+
+    private class ItemsAdderProvider : ItemProvider("itemsadder") {
+        override fun provideForKey(key: String): TestableItem {
+            val item = CustomStack.getInstance("itemsadder:$key") ?: return EmptyTestableItem()
+            val id = item.id
+            val namespacedKey = NamespacedKeyUtils.create("itemsadder", key)
+            val stack = item.itemStack
+            return CustomItem(
+                namespacedKey,
+                Predicate { test: ItemStack ->
+                    val customStack = CustomStack.byItemStack(test) ?: return@Predicate false
+                    customStack.id.equals(id, ignoreCase = true)
+                },
+                stack
+            )
+        }
+
     }
 }

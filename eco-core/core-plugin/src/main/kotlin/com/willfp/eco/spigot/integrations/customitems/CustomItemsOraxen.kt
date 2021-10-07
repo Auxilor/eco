@@ -14,7 +14,9 @@ class CustomItemsOraxen : CustomItemsWrapper {
         for (item in OraxenItems.getItems()) {
             val stack = item.build()
             val id: String = Objects.requireNonNullElse(OraxenItems.getIdByItem(item), "")
-            if (id.isEmpty()) continue
+            if (id.isEmpty()) {
+                continue
+            }
             val key: NamespacedKey = NamespacedKeyUtils.create("oraxen", id.lowercase())
             CustomItem(
                 key, Predicate { test: ItemStack ->
