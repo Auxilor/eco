@@ -3,13 +3,14 @@ package com.willfp.eco.proxy.v1_16_R3
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.proxy.ChatComponentProxy
 import net.kyori.adventure.nbt.api.BinaryTagHolder
+import net.kyori.adventure.text.BuildableComponent
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentIteratorType
+import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.server.v1_16_R3.IChatBaseComponent
-import net.minecraft.server.v1_16_R3.ItemStack
 import net.minecraft.server.v1_16_R3.MojangsonParser
+import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 
@@ -26,49 +27,33 @@ class ChatComponent : ChatComponentProxy {
             IChatBaseComponent.ChatSerializer.a(
                 obj
             )
-        ).asComponent()
+        ).asComponent() as BuildableComponent<*, *>
 
         val newComponent = modifyBaseComponent(component, player)
 
         return IChatBaseComponent.ChatSerializer.a(
-            gsonComponentSerializer.serialize(newComponent)
+            gsonComponentSerializer.serialize(newComponent.asComponent())
         ) ?: obj
     }
 
     private fun modifyBaseComponent(baseComponent: Component, player: Player): Component {
-        val children = mutableListOf<Component>()
+        var component = baseComponent
 
-        var componentSize = 0
-        val testIterator = baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)
-        while (testIterator.hasNext()) {
-            testIterator.next()
-            componentSize++
-        }
-
-        val processedComponentBuilder = Component.text()
-
-        if (componentSize >= 2) {
-            val siblings = mutableListOf<Component>()
-
-            for (component in baseComponent.iterator(ComponentIteratorType.BREADTH_FIRST)) {
-                siblings.add(modifyBaseComponent(component, player))
+        if (component is TranslatableComponent) {
+            val args = mutableListOf<Component>()
+            for (arg in component.args()) {
+                args.add(modifyBaseComponent(arg, player))
             }
-
-            processedComponentBuilder.append(*siblings.toTypedArray())
-                .asComponent()
-        } else {
-            processedComponentBuilder.append(baseComponent)
+            component = component.args(args)
         }
 
-        val processedComponent = processedComponentBuilder.asComponent()
-
-        for (child in processedComponent.children()) {
+        val children = mutableListOf<Component>()
+        for (child in component.children()) {
             children.add(modifyBaseComponent(child, player))
         }
+        component = component.children(children)
 
-        val component = processedComponent.children(children)
-
-        val hoverEvent: HoverEvent<Any?> = component.style().hoverEvent() as HoverEvent<Any?>? ?: return component
+        val hoverEvent: HoverEvent<Any> = component.style().hoverEvent() as HoverEvent<Any>? ?: return component
 
         val showItem = hoverEvent.value()
 
@@ -76,24 +61,30 @@ class ChatComponent : ChatComponentProxy {
             return component
         }
 
-        val tagHolder = showItem.nbt() ?: return component
-
-        val newTag = BinaryTagHolder.of(
-            CraftItemStack.asNMSCopy(
-                Display.display(
-                    CraftItemStack.asBukkitCopy(
-                        ItemStack.a(
-                            MojangsonParser.parse(
-                                tagHolder.string()
-                            )
-                        )
-                    ),
-                    player
-                )
-            ).orCreateTag.toString()
+        val newShowItem = showItem.nbt(
+            BinaryTagHolder.of(
+                CraftItemStack.asNMSCopy(
+                    Display.display(
+                        CraftItemStack.asBukkitCopy(
+                            CraftItemStack.asNMSCopy(
+                                org.bukkit.inventory.ItemStack(
+                                    Material.matchMaterial(
+                                        showItem.item()
+                                            .toString()
+                                    ) ?: return component,
+                                    showItem.count()
+                                )
+                            ).apply {
+                                this.tag = MojangsonParser.parse(
+                                    showItem.nbt()?.string() ?: return component
+                                ) ?: return component
+                            }
+                        ),
+                        player
+                    )
+                ).orCreateTag.toString()
+            )
         )
-
-        val newShowItem = showItem.nbt(newTag);
 
         val newHover = hoverEvent.value(newShowItem)
         val style = component.style().hoverEvent(newHover)

@@ -5,13 +5,14 @@ import com.willfp.eco.proxy.ChatComponentProxy
 import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.BuildableComponent
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentBuilder
+import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.TagParser
-import net.minecraft.world.item.ItemStack
+import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 @Suppress("UNCHECKED_CAST")
 class ChatComponent : ChatComponentProxy {
@@ -28,15 +29,31 @@ class ChatComponent : ChatComponentProxy {
             )
         ).asComponent() as BuildableComponent<*, *>
 
-        val newComponent = component.toBuilder().mapChildrenDeep { modifyBaseComponent(it, player) as BuildableComponent<*, *> }.asComponent()
+        val newComponent = modifyBaseComponent(component, player)
 
         return net.minecraft.network.chat.Component.Serializer.fromJson(
-            gsonComponentSerializer.serialize(newComponent)
+            gsonComponentSerializer.serialize(newComponent.asComponent())
         ) ?: obj
     }
 
-    private fun <C: BuildableComponent<C, B>, B: ComponentBuilder<C, B>> modifyBaseComponent(component: BuildableComponent<C, B>, player: Player): Component {
-        val hoverEvent: HoverEvent<Any?> = component.style().hoverEvent() as HoverEvent<Any?>? ?: return component
+    private fun modifyBaseComponent(baseComponent: Component, player: Player): Component {
+        var component = baseComponent
+
+        if (component is TranslatableComponent) {
+            val args = mutableListOf<Component>()
+            for (arg in component.args()) {
+                args.add(modifyBaseComponent(arg, player))
+            }
+            component = component.args(args)
+        }
+
+        val children = mutableListOf<Component>()
+        for (child in component.children()) {
+            children.add(modifyBaseComponent(child, player))
+        }
+        component = component.children(children)
+
+        val hoverEvent: HoverEvent<Any> = component.style().hoverEvent() as HoverEvent<Any>? ?: return component
 
         val showItem = hoverEvent.value()
 
@@ -44,28 +61,33 @@ class ChatComponent : ChatComponentProxy {
             return component
         }
 
-        val tagHolder = showItem.nbt() ?: return component
-
-        val newTag = BinaryTagHolder.of(
-            CraftItemStack.asNMSCopy(
-                Display.display(
-                    CraftItemStack.asBukkitCopy(
-                        ItemStack.of(
-                            TagParser.parseTag(
-                                tagHolder.string()
-                            )
-                        )
-                    ),
-                    player
-                )
-            ).orCreateTag.toString()
+        val newShowItem = showItem.nbt(
+            BinaryTagHolder.of(
+                CraftItemStack.asNMSCopy(
+                    Display.display(
+                        CraftItemStack.asBukkitCopy(
+                            CraftItemStack.asNMSCopy(
+                                ItemStack(
+                                    Material.matchMaterial(
+                                        showItem.item()
+                                            .toString()
+                                    ) ?: return component,
+                                    showItem.count()
+                                )
+                            ).apply {
+                                this.tag = TagParser.parseTag(
+                                    showItem.nbt()?.string() ?: return component
+                                ) ?: return component
+                            }
+                        ),
+                        player
+                    )
+                ).orCreateTag.toString()
+            )
         )
-
-        val newShowItem = showItem.nbt(newTag);
 
         val newHover = hoverEvent.value(newShowItem)
         val style = component.style().hoverEvent(newHover)
-        val newComponent = component.style(style)
-        return newComponent
+        return component.style(style)
     }
 }
