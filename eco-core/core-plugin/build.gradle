@@ -15,7 +15,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly project(":eco-core:core-proxy")
     compileOnly project(":eco-core:core-backend")
-    compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.0-SNAPSHOT'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.1-SNAPSHOT'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.4-SNAPSHOT'
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
     compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.5.10'
