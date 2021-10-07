@@ -18,4 +18,12 @@ subprojects {
         compileOnly project(":eco-api")
         compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
     }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "16"
+        }
+        targetCompatibility = JavaVersion.VERSION_16
+        sourceCompatibility = JavaVersion.VERSION_16
+    }
 }

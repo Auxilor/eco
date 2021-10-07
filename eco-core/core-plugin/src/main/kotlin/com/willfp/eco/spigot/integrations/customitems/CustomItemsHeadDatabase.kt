@@ -50,9 +50,8 @@ class CustomItemsHeadDatabase(
                 head
             )
         }
-
         @EventHandler
-        fun onLoad(event: DatabaseLoadEvent) {
+        fun onLoad(@Suppress("UNUSED_PARAMETER") event: DatabaseLoadEvent) {
             api = HeadDatabaseAPI()
         }
     }
