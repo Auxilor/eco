@@ -18,24 +18,33 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         player: Player,
         event: PacketEvent
     ) {
+        val windowId = packet.integers.read(0)
+
         packet.itemListModifier.modify(0) { itemStacks: List<ItemStack>? ->
             if (itemStacks == null) {
                 return@modify null
             }
-            val frameMap = mutableMapOf<Byte, Int>()
 
-            for (index in itemStacks.indices) {
-                frameMap[index.toByte()] = FastItemStack.wrap(itemStacks[index]).hashCode()
-            }
+            if (windowId == 0) {
+                val frameMap = mutableMapOf<Byte, Int>()
 
-            val newFrame = DisplayFrame(frameMap)
+                for (index in itemStacks.indices) {
+                    frameMap[index.toByte()] = FastItemStack.wrap(itemStacks[index]).hashCode()
+                }
 
-            val changes = player.lastDisplayFrame.getChangedSlots(newFrame)
+                val newFrame = DisplayFrame(frameMap)
 
-            player.lastDisplayFrame = newFrame
+                val changes = player.lastDisplayFrame.getChangedSlots(newFrame)
 
-            for (index in changes) {
-                Display.display(itemStacks[index.toInt()], player)
+                player.lastDisplayFrame = newFrame
+
+                for (index in changes) {
+                    Display.display(itemStacks[index.toInt()], player)
+                }
+            } else {
+                itemStacks.forEach {
+                    Display.display(it, player)
+                }
             }
             itemStacks
         }
