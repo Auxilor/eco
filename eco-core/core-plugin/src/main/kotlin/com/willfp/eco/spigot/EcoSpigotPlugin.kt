@@ -21,6 +21,7 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.display.*
+import com.willfp.eco.spigot.display.frame.clearFrames
 import com.willfp.eco.spigot.drops.CollatedRunnable
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.spigot.eventlisteners.NaturalExpGainListeners
@@ -106,6 +107,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun handleReload() {
         CollatedRunnable(this)
         DropManager.update(this)
+        this.scheduler.runTimer(
+            { clearFrames() },
+            this.configYml.getInt("display-frame-ttl").toLong(),
+            this.configYml.getInt("display-frame-ttl").toLong()
+        )
     }
 
     override fun handleAfterLoad() {

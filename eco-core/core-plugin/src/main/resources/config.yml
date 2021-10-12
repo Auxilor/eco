@@ -20,3 +20,12 @@ enable-bstats: true
 # And must be ran after eco. Don't enable this unless you run a conflicting plugin
 # and have been told to enable it.
 use-lower-protocollib-priority: false
+
+# Display frames massively optimize PacketWindowItems, however some users have
+# reported display bugs by using it. If you have any problems with it, then you
+# should disable this option.
+use-display-frame: true
+
+# Time to live for a display frame. In other words, this is how frequent (in ticks)
+# that display frames will be cleared / deleted.
+display-frame-ttl: 17
