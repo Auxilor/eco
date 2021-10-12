@@ -1,8 +1,7 @@
 package com.willfp.eco.internal.config.json
 
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.LoadableConfig
-import org.jetbrains.annotations.NotNull
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
@@ -10,7 +9,7 @@ import java.nio.file.StandardOpenOption
 @Suppress("UNCHECKED_CAST")
 open class EcoLoadableJSONConfig(
     configName: String,
-    private val plugin: EcoPlugin,
+    private val plugin: PluginLike,
     private val subDirectoryPath: String,
     val source: Class<*>
 ) : EcoJSONConfigWrapper(), LoadableConfig {

@@ -1,10 +1,14 @@
 package com.willfp.eco.core.extensions;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginLike;
+import com.willfp.eco.core.config.updating.ConfigHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 /**
  * An extension is a separate jar file that hooks into the base plugin jar.
@@ -15,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
  * Syntactically, extensions are very similar to plugins in their own right, except that
  * they are loaded by another plugin.
  *
- * @see <a href="https://ecoenchants.polymart.org">EcoEnchants extension examples.</a>
+ * @see <a href="https://auxilor.polymart.org">Extension examples.</a>
  */
-public abstract class Extension {
+public abstract class Extension implements PluginLike {
     /**
      * The {@link EcoPlugin} that this extension is for.
      */
@@ -102,5 +106,15 @@ public abstract class Extension {
     public final String getVersion() {
         Validate.notNull(metadata, "Metadata cannot be null!");
         return this.metadata.version();
+    }
+
+    @Override
+    public File getDataFolder() {
+        return this.plugin.getDataFolder();
+    }
+
+    @Override
+    public ConfigHandler getConfigHandler() {
+        return this.plugin.getConfigHandler();
     }
 }

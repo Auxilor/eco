@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.config.yaml
 
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginLike
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.BufferedReader
@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets
 
 class EcoUpdatableYamlConfig(
     configName: String,
-    plugin: EcoPlugin,
+    plugin: PluginLike,
     subDirectoryPath: String,
     source: Class<*>,
     private val removeUnused: Boolean,
@@ -27,9 +27,9 @@ class EcoUpdatableYamlConfig(
             if (newConfig.getKeys(true) == this.handle.getKeys(true)) {
                 return
             }
-            newConfig.getKeys(true).forEach { key: String ->
+            newConfig.getKeys(true).forEach { key ->
                 if (!this.handle.getKeys(true).contains(key)) {
-                    if (updateBlacklist.stream().noneMatch { s: String -> key.contains(s) }) {
+                    if (updateBlacklist.stream().noneMatch { key.contains(it) }) {
                         this.handle.set(key, newConfig[key])
                     }
                 }
@@ -67,7 +67,7 @@ class EcoUpdatableYamlConfig(
         }
 
     init {
-        this.updateBlacklist.removeIf { obj: String -> obj.isEmpty() }
+        this.updateBlacklist.removeIf { it.isEmpty() }
         plugin.configHandler.addConfig(this)
         update()
     }

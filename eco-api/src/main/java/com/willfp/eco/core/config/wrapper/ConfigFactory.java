@@ -1,6 +1,6 @@
 package com.willfp.eco.core.config.wrapper;
 
-import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.interfaces.JSONConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,7 +24,7 @@ public interface ConfigFactory {
      * @return The config implementation.
      */
     Config createUpdatableYamlConfig(@NotNull String configName,
-                                     @NotNull EcoPlugin plugin,
+                                     @NotNull PluginLike plugin,
                                      @NotNull String subDirectoryPath,
                                      @NotNull Class<?> source,
                                      boolean removeUnused,
@@ -42,7 +42,7 @@ public interface ConfigFactory {
      * @return The config implementation.
      */
     JSONConfig createUpdatableJSONConfig(@NotNull String configName,
-                                         @NotNull EcoPlugin plugin,
+                                         @NotNull PluginLike plugin,
                                          @NotNull String subDirectoryPath,
                                          @NotNull Class<?> source,
                                          boolean removeUnused,
@@ -58,7 +58,7 @@ public interface ConfigFactory {
      * @return The config implementation.
      */
     JSONConfig createLoadableJSONConfig(@NotNull String configName,
-                                        @NotNull EcoPlugin plugin,
+                                        @NotNull PluginLike plugin,
                                         @NotNull String subDirectoryPath,
                                         @NotNull Class<?> source);
 
@@ -72,7 +72,7 @@ public interface ConfigFactory {
      * @return The config implementation.
      */
     Config createLoadableYamlConfig(@NotNull String configName,
-                                    @NotNull EcoPlugin plugin,
+                                    @NotNull PluginLike plugin,
                                     @NotNull String subDirectoryPath,
                                     @NotNull Class<?> source);
 

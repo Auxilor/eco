@@ -4,7 +4,7 @@ import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Every {@link com.willfp.eco.core.EcoPlugin} has a config handler.
+ * Every {@link com.willfp.eco.core.PluginLike} has a config handler.
  * <p>
  * Handles updating and saving configs.
  */

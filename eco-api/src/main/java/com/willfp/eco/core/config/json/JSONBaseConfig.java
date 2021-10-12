@@ -1,9 +1,8 @@
 package com.willfp.eco.core.config.json;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.json.wrapper.LoadableJSONConfigWrapper;
-import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,7 +19,7 @@ public abstract class JSONBaseConfig extends LoadableJSONConfigWrapper {
      */
     protected JSONBaseConfig(@NotNull final String configName,
                              final boolean removeUnused,
-                             @NotNull final EcoPlugin plugin,
+                             @NotNull final PluginLike plugin,
                              @NotNull final String... updateBlacklist) {
         super(
                 Eco.getHandler().getConfigFactory().createUpdatableJSONConfig(
@@ -40,7 +39,7 @@ public abstract class JSONBaseConfig extends LoadableJSONConfigWrapper {
      */
     protected JSONBaseConfig(@NotNull final String configName,
                              final boolean removeUnused,
-                             @NotNull final EcoPlugin plugin) {
+                             @NotNull final PluginLike plugin) {
         super(
                 Eco.getHandler().getConfigFactory().createUpdatableJSONConfig(
                         configName,

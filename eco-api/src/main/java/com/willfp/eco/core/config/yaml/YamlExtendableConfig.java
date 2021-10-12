@@ -1,7 +1,7 @@
 package com.willfp.eco.core.config.yaml;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
      */
     protected YamlExtendableConfig(@NotNull final String configName,
                                    final boolean removeUnused,
-                                   @NotNull final EcoPlugin plugin,
+                                   @NotNull final PluginLike plugin,
                                    @NotNull final Class<?> source,
                                    @NotNull final String subDirectoryPath,
                                    @NotNull final String... updateBlacklist) {

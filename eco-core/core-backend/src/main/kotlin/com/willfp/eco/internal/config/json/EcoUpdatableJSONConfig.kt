@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.config.json
 
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginLike
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.BufferedReader
@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets
 
 open class EcoUpdatableJSONConfig(
     configName: String,
-    plugin: EcoPlugin,
+    plugin: PluginLike,
     subDirectoryPath: String,
     source: Class<*>,
     private val removeUnused: Boolean,

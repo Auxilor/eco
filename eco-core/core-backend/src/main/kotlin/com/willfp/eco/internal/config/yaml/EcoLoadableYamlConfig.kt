@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.config.yaml
 
-import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration
 import org.bukkit.configuration.InvalidConfigurationException
@@ -12,7 +12,7 @@ import java.io.OutputStream
 
 open class EcoLoadableYamlConfig(
     configName: String,
-    private val plugin: EcoPlugin,
+    private val plugin: PluginLike,
     private val subDirectoryPath: String,
     val source: Class<*>
 ) : EcoYamlConfigWrapper<YamlConfiguration>(), WrappedYamlConfiguration, LoadableConfig {

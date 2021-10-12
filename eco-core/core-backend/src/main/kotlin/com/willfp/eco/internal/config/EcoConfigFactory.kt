@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.config
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.core.config.wrapper.ConfigFactory
@@ -15,7 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 class EcoConfigFactory : ConfigFactory {
     override fun createUpdatableYamlConfig(
         configName: String,
-        plugin: EcoPlugin,
+        plugin: PluginLike,
         subDirectoryPath: String,
         source: Class<*>,
         removeUnused: Boolean,
@@ -33,7 +34,7 @@ class EcoConfigFactory : ConfigFactory {
 
     override fun createUpdatableJSONConfig(
         configName: String,
-        plugin: EcoPlugin,
+        plugin: PluginLike,
         subDirectoryPath: String,
         source: Class<*>,
         removeUnused: Boolean,
@@ -51,7 +52,7 @@ class EcoConfigFactory : ConfigFactory {
 
     override fun createLoadableJSONConfig(
         configName: String,
-        plugin: EcoPlugin,
+        plugin: PluginLike,
         subDirectoryPath: String,
         source: Class<*>
     ): JSONConfig {
@@ -65,7 +66,7 @@ class EcoConfigFactory : ConfigFactory {
 
     override fun createLoadableYamlConfig(
         configName: String,
-        plugin: EcoPlugin,
+        plugin: PluginLike,
         subDirectoryPath: String,
         source: Class<*>
     ): Config {

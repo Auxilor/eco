@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * be cancelled.</b>
  */
 @SuppressWarnings("unused")
-public abstract class EcoPlugin extends JavaPlugin {
+public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The polymart resource ID of the plugin.
      */
