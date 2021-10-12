@@ -1,6 +1,7 @@
 package com.willfp.eco.core.config.yaml;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -20,5 +21,18 @@ public abstract class YamlStaticBaseConfig extends LoadableYamlConfigWrapper {
     protected YamlStaticBaseConfig(@NotNull final String configName,
                                    @NotNull final PluginLike plugin) {
         super(Eco.getHandler().getConfigFactory().createLoadableYamlConfig(configName, plugin, "", plugin.getClass()));
+    }
+
+    /**
+     * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
+     * <p>
+     * Does not automatically update.
+     *
+     * @param configName The name of the config
+     * @param plugin     The plugin.
+     */
+    protected YamlStaticBaseConfig(@NotNull final String configName,
+                                   @NotNull final EcoPlugin plugin) {
+        this(configName, (PluginLike) plugin);
     }
 }
