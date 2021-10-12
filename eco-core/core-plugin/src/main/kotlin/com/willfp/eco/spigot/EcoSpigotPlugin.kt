@@ -35,7 +35,7 @@ import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl
-import com.willfp.eco.spigot.integrations.multiverseinventories.MultiverseInventoriesEvent
+import com.willfp.eco.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
@@ -158,7 +158,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },
-            IntegrationLoader("Multiverse-Inventories") { this.eventManager.registerListener(MultiverseInventoriesEvent(this)) }
+            IntegrationLoader("Multiverse-Inventories") { this.eventManager.registerListener(MultiverseInventoriesIntegration(this)) }
         )
     }
 
