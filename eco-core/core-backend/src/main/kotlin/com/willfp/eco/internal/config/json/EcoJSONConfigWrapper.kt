@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.util.StringUtils
-import org.apache.commons.lang.Validate
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -124,8 +123,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
 
     override fun getSubsection(path: String): JSONConfig {
         val subsection = getSubsectionOrNull(path)
-        Validate.notNull(subsection)
-        return subsection!!
+        return subsection ?: EcoJSONConfigSection(emptyMap())
     }
 
     override fun getSubsectionOrNull(path: String): JSONConfig? {
