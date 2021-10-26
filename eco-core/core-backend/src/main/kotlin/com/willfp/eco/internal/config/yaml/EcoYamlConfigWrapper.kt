@@ -2,7 +2,6 @@ package com.willfp.eco.internal.config.yaml
 
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.util.StringUtils
-import org.apache.commons.lang.Validate
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
@@ -52,8 +51,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getSubsection(path: String): Config {
         val subsection = getSubsectionOrNull(path)
-        Validate.notNull(subsection)
-        return subsection!!
+        return subsection ?: EcoYamlConfigSection(YamlConfiguration())
     }
 
     override fun getSubsectionOrNull(path: String): Config? {

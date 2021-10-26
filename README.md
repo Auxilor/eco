@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://i.imgur.com/p5uR2Qp.png" alt="eco logo" width="256">
+  <img src="https://i.imgur.com/kU3ejCt.png" alt="eco logo" width="256">
   <br>
 </h1>
 

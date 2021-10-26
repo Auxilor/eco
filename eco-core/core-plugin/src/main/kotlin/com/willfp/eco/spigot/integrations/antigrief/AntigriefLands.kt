@@ -3,7 +3,6 @@ package com.willfp.eco.spigot.integrations.antigrief
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import me.angeschossen.lands.api.integration.LandsIntegration
-import me.angeschossen.lands.api.role.enums.RoleSetting
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
@@ -15,41 +14,32 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
         player: Player,
         block: Block
     ): Boolean {
-        val area = landsIntegration.getAreaByLoc(block.location)
-        return area?.canSetting(player, RoleSetting.BLOCK_BREAK, false) ?: true
+        val area = landsIntegration.getAreaByLoc(block.location) ?: return true
+        return area.isTrusted(player.uniqueId)
     }
 
     override fun canCreateExplosion(
         player: Player,
         location: Location
     ): Boolean {
-        val area = landsIntegration.getAreaByLoc(location)
-        return area?.canSetting(player, RoleSetting.BLOCK_IGNITE, false) ?: true
+        val area = landsIntegration.getAreaByLoc(location) ?: return true
+        return area.isTrusted(player.uniqueId)
     }
 
     override fun canPlaceBlock(
         player: Player,
         block: Block
     ): Boolean {
-        val area = landsIntegration.getAreaByLoc(block.location)
-        return area?.canSetting(player, RoleSetting.BLOCK_PLACE, false) ?: true
+        val area = landsIntegration.getAreaByLoc(block.location) ?: return true
+        return area.isTrusted(player.uniqueId)
     }
 
     override fun canInjure(
         player: Player,
         victim: LivingEntity
     ): Boolean {
-        val area = landsIntegration.getAreaByLoc(victim.location)
-        if (victim is Player) {
-            if (area != null) {
-                return area.canSetting(player, RoleSetting.ATTACK_PLAYER, false)
-            }
-        } else {
-            if (area != null) {
-                return area.canSetting(player, RoleSetting.ATTACK_ANIMAL, false)
-            }
-        }
-        return true
+        val area = landsIntegration.getAreaByLoc(victim.location) ?: return true
+        return area.isTrusted(player.uniqueId)
     }
 
     override fun getPluginName(): String {
