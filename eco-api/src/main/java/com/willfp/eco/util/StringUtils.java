@@ -77,6 +77,11 @@ public class StringUtils {
             .put("&n", UNDERLINE)
             .put("&m", STRIKETHROUGH)
             .put("&k", MAGIC)
+            .put("§l", BOLD)
+            .put("§o", ITALIC)
+            .put("§n", UNDERLINE)
+            .put("§m", STRIKETHROUGH)
+            .put("§k", MAGIC)
             .build();
 
     /**
@@ -269,9 +274,9 @@ public class StringUtils {
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
+        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         if (Prerequisite.HAS_PAPER.isMet()) {
             processedMessage = translateMiniMessage(processedMessage);
         }
