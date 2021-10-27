@@ -1,6 +1,7 @@
 package com.willfp.eco.util;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import lombok.experimental.UtilityClass;
@@ -19,11 +20,17 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static net.md_5.bungee.api.ChatColor.BOLD;
 import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
+import static net.md_5.bungee.api.ChatColor.ITALIC;
+import static net.md_5.bungee.api.ChatColor.MAGIC;
+import static net.md_5.bungee.api.ChatColor.STRIKETHROUGH;
+import static net.md_5.bungee.api.ChatColor.UNDERLINE;
 
 /**
  * Utilities / API methods for strings.
@@ -59,6 +66,22 @@ public class StringUtils {
             .character('\u00a7')
             .useUnusualXRepeatedCharacterHexFormat()
             .hexColors()
+            .build();
+
+    /**
+     * Color map.
+     */
+    private static final Map<String, ChatColor> COLOR_MAP = new ImmutableMap.Builder<String, ChatColor>()
+            .put("&l", BOLD)
+            .put("&o", ITALIC)
+            .put("&n", UNDERLINE)
+            .put("&m", STRIKETHROUGH)
+            .put("&k", MAGIC)
+            .put("§l", BOLD)
+            .put("§o", ITALIC)
+            .put("§n", UNDERLINE)
+            .put("§m", STRIKETHROUGH)
+            .put("§k", MAGIC)
             .build();
 
     /**
@@ -251,9 +274,9 @@ public class StringUtils {
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
+        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         if (Prerequisite.HAS_PAPER.isMet()) {
             processedMessage = translateMiniMessage(processedMessage);
         }
@@ -293,26 +316,12 @@ public class StringUtils {
                                            @NotNull final Color end) {
         String processedString = string;
         List<ChatColor> modifiers = new ArrayList<>();
-        if (processedString.contains("&l")) {
-            modifiers.add(ChatColor.BOLD);
+        for (Map.Entry<String, ChatColor> entry : COLOR_MAP.entrySet()) {
+            if (processedString.contains(entry.getKey())) {
+                modifiers.add(entry.getValue());
+            }
+            processedString = processedString.replace(entry.getKey(), "");
         }
-        if (processedString.contains("&o")) {
-            modifiers.add(ChatColor.ITALIC);
-        }
-        if (processedString.contains("&n")) {
-            modifiers.add(ChatColor.UNDERLINE);
-        }
-        if (processedString.contains("&m")) {
-            modifiers.add(ChatColor.STRIKETHROUGH);
-        }
-        if (processedString.contains("&k")) {
-            modifiers.add(ChatColor.MAGIC);
-        }
-        processedString = processedString.replace("&l", "");
-        processedString = processedString.replace("&o", "");
-        processedString = processedString.replace("&n", "");
-        processedString = processedString.replace("&k", "");
-        processedString = processedString.replace("&m", "");
 
         StringBuilder stringBuilder = new StringBuilder();
         ChatColor[] colors = getGradientColors(start, end, processedString.length());

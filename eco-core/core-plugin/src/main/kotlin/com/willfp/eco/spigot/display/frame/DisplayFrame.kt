@@ -1,20 +1,27 @@
 package com.willfp.eco.spigot.display.frame
 
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-data class DisplayFrame(val items: Map<Byte, Int>) {
+data class HashedItem(val hash: Int, val item: ItemStack)
+
+data class DisplayFrame(val items: Map<Byte, HashedItem>) {
     fun getChangedSlots(newFrame: DisplayFrame): List<Byte> {
         val changes = mutableListOf<Byte>()
 
-        for ((slot, hash) in newFrame.items) {
-            if (items[slot] != hash) {
+        for ((slot, data) in newFrame.items) {
+            if (items[slot]?.hash != data.hash) {
                 changes.add(slot)
             }
         }
 
         return changes
+    }
+
+    fun getItem(slot: Byte): ItemStack? {
+        return items[slot]?.item
     }
 
     companion object {

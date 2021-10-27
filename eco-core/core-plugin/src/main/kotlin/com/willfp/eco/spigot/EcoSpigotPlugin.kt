@@ -148,6 +148,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("NoCheatPlus") { AnticheatManager.register(this, AnticheatNCP()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(this, AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(this, AnticheatVulcan()) },
+            IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },

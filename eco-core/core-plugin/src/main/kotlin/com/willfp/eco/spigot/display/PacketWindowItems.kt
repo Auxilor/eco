@@ -8,6 +8,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.spigot.display.frame.DisplayFrame
+import com.willfp.eco.spigot.display.frame.HashedItem
 import com.willfp.eco.spigot.display.frame.lastDisplayFrame
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -24,26 +25,33 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
             player.lastDisplayFrame = DisplayFrame.EMPTY
         }
 
-        packet.itemListModifier.modify(0) { itemStacks: List<ItemStack>? ->
+        packet.itemListModifier.modify(0) { itemStacks: MutableList<ItemStack>? ->
             if (itemStacks == null) {
                 return@modify null
             }
 
             if (this.getPlugin().configYml.getBool("use-display-frame") && windowId == 0) {
-                val frameMap = mutableMapOf<Byte, Int>()
+                val frameMap = mutableMapOf<Byte, HashedItem>()
 
                 for (index in itemStacks.indices) {
-                    frameMap[index.toByte()] = FastItemStack.wrap(itemStacks[index]).hashCode()
+                    frameMap[index.toByte()] =
+                        HashedItem(FastItemStack.wrap(itemStacks[index]).hashCode(), itemStacks[index])
                 }
 
                 val newFrame = DisplayFrame(frameMap)
 
-                val changes = player.lastDisplayFrame.getChangedSlots(newFrame)
+                val lastFrame = player.lastDisplayFrame
 
                 player.lastDisplayFrame = newFrame
 
+                val changes = lastFrame.getChangedSlots(newFrame)
+
                 for (index in changes) {
                     Display.display(itemStacks[index.toInt()], player)
+                }
+
+                for (index in (itemStacks.indices subtract changes)) {
+                    itemStacks[index.toInt()] = lastFrame.getItem(index.toByte()) ?: itemStacks[index.toInt()]
                 }
             } else {
                 itemStacks.forEach { Display.display(it, player) }

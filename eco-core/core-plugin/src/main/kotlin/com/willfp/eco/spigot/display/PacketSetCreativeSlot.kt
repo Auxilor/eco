@@ -6,6 +6,8 @@ import com.comphenix.protocol.events.PacketEvent
 import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
+import com.willfp.eco.spigot.display.frame.DisplayFrame
+import com.willfp.eco.spigot.display.frame.lastDisplayFrame
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -21,5 +23,7 @@ class PacketSetCreativeSlot(plugin: EcoPlugin) :
                 itemStack!!
             )
         }
+
+        player.lastDisplayFrame = DisplayFrame.EMPTY
     }
 }
