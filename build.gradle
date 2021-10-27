@@ -25,6 +25,9 @@ allprojects {
         mavenLocal()
         maven { url 'https://jitpack.io' }
 
+        // SuperiorSkyblock2
+        maven { url 'https://repo.bg-software.com/repository/api/' }
+
         // NMS (for jitpack compilation)
         maven { url 'https://repo.codemc.org/repository/nms/' }
 
