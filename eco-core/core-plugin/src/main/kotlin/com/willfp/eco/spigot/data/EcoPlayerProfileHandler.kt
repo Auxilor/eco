@@ -22,6 +22,7 @@ class EcoPlayerProfileHandler(
         }
 
         val data = mutableMapOf<PersistentDataKey<*>, Any>()
+
         for (key in Eco.getHandler().keyRegistry.registeredKeys) {
             data[key] = handler.read(uuid, key.key) ?: key.defaultValue
         }
@@ -37,7 +38,8 @@ class EcoPlayerProfileHandler(
     }
 
     private fun writeToHandler(uuid: UUID) {
-        val profile = loaded[uuid] ?: return
+        val profile = load(uuid)
+
         for (key in Eco.getHandler().keyRegistry.registeredKeys) {
             handler.write(uuid, key.key, profile.read(key) ?: key.defaultValue)
         }
@@ -71,7 +73,9 @@ class EcoPlayerProfileHandler(
         if (plugin.configYml.getBool("autosave.log")) {
             plugin.logger.info("Auto-Saving player data!")
         }
+
         saveAll(async)
+
         if (plugin.configYml.getBool("autosave.log")) {
             plugin.logger.info("Saved player data!")
         }
