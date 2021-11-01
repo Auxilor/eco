@@ -73,13 +73,9 @@ public class Paste {
 
                     callback.accept(response);
                 }
-
-                callback.accept("");
             } catch (IOException e) {
                 callback.accept(e.getMessage());
             }
-
-            callback.accept("");
         });
     }
 
