@@ -6,6 +6,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.integrations.IntegrationLoader
+import com.willfp.eco.core.integrations.afk.AFKManager
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
@@ -35,6 +36,8 @@ import com.willfp.eco.spigot.eventlisteners.PlayerJumpListeners
 import com.willfp.eco.spigot.eventlisteners.armor.ArmorChangeEventListeners
 import com.willfp.eco.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.spigot.gui.GUIListener
+import com.willfp.eco.spigot.integrations.afk.AFKIntegrationCMI
+import com.willfp.eco.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.spigot.integrations.anticheat.*
 import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
@@ -183,6 +186,10 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
             IntegrationLoader("CMI") { HologramManager.register(HologramCMI()) },
             IntegrationLoader("GHolo") { HologramManager.register(HologramGHolo()) },
+
+            // AFK
+            IntegrationLoader("Essentials") { AFKManager.register(AFKIntegrationEssentials()) },
+            IntegrationLoader("CMI") { AFKManager.register(AFKIntegrationCMI()) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },
