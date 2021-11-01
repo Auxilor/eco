@@ -9,6 +9,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
+import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
@@ -39,6 +40,9 @@ import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.spigot.integrations.hologram.HologramCMI
+import com.willfp.eco.spigot.integrations.hologram.HologramGHolo
+import com.willfp.eco.spigot.integrations.hologram.HologramHolographicDisplays
 import com.willfp.eco.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
@@ -174,6 +178,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
+
+            // Hologram
+            IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
+            IntegrationLoader("CMI") { HologramManager.register(HologramCMI()) },
+            IntegrationLoader("GHolo") { HologramManager.register(HologramGHolo()) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },

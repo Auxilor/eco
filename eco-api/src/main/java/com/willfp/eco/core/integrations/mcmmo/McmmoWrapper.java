@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.mcmmo;
 
+import com.willfp.eco.core.integrations.Integration;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -7,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Wrapper class for mcmmo integrations.
  */
-public interface McmmoWrapper {
+public interface McmmoWrapper extends Integration {
     /**
      * Get bonus drop count of block.
      *
