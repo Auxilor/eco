@@ -18,7 +18,10 @@ public class Eco {
     @ApiStatus.Internal
     private Handler handler;
 
-
+    /**
+     * Set the handler.
+     * @param handler The handler.
+     */
     @ApiStatus.Internal
     public void setHandler(@NotNull final Handler handler) {
         Validate.isTrue(Eco.handler == null, "Already initialized!");
@@ -41,9 +44,6 @@ public class Eco {
      * that shouldn't be used in your plugins.
      *
      * @return The handler.
-     * @apiNote As of eco 6.12.0, the handler is no longer regarded as part
-     * of the eco API. It is scheduled to be made internal-only *somehow* at
-     * some point in the future.
      */
     @ApiStatus.Internal
     public Handler getHandler() {

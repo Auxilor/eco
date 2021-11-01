@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * Persistent data storage interface for players.
+ */
 public interface PlayerProfile {
     /**
      * Write a key to a player's persistent data.

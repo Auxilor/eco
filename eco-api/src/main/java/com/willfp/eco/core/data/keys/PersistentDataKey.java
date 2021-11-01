@@ -33,6 +33,7 @@ public class PersistentDataKey<T> {
      * Create a new Persistent Data Key.
      *
      * @param key          The key.
+     * @param type         The data type.
      * @param defaultValue The default value.
      */
     public PersistentDataKey(@NotNull final NamespacedKey key,
