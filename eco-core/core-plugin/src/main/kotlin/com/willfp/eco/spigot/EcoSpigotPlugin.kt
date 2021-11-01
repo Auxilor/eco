@@ -24,6 +24,7 @@ import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.data.DataListener
 import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
+import com.willfp.eco.spigot.data.PlayerBlockListener
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
@@ -223,7 +224,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
-            DataListener()
+            DataListener(),
+            PlayerBlockListener(this)
         )
     }
 }

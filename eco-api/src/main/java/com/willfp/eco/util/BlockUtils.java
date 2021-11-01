@@ -2,12 +2,14 @@ package com.willfp.eco.util;
 
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,6 +92,21 @@ public class BlockUtils {
         }
 
         blockBreakConsumer.accept(player, block);
+    }
+
+    /**
+     * Get if a block was placed by a player.
+     *
+     * @param block The block.
+     * @return If placed by a player.
+     */
+    public boolean isPlayerPlaced(@NotNull final Block block) {
+        Chunk chunk = block.getChunk();
+
+        return chunk.getPersistentDataContainer().has(
+                NamespacedKeyUtils.createEcoKey(Integer.toString(block.getLocation().hashCode(), 16)),
+                PersistentDataType.INTEGER
+        );
     }
 
     /**
