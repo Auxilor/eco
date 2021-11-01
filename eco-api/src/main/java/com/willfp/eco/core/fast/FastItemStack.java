@@ -107,7 +107,7 @@ public interface FastItemStack {
      * @param itemStack The ItemStack.
      * @return The FastItemStack.
      */
-    static FastItemStack wrap(final ItemStack itemStack) {
+    static FastItemStack wrap(@Nullable final ItemStack itemStack) {
         return Eco.getHandler().createFastItemStack(Objects.requireNonNullElseGet(itemStack, () -> new ItemStack(Material.AIR)));
     }
 }
