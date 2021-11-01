@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> The eco plugin type.
  */
-public abstract class PluginDependent<@NotNull T extends EcoPlugin> {
+public abstract class PluginDependent<T extends EcoPlugin> {
     /**
      * The {@link EcoPlugin} that is stored.
      */

@@ -19,6 +19,7 @@ import com.willfp.eco.core.requirement.RequirementFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,8 +27,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * @see Eco
+ * @see Eco#getHandler()
  */
+@ApiStatus.Internal
 public interface Handler {
     /**
      * Create a scheduler.
