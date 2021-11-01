@@ -13,7 +13,7 @@ class EcoKeyRegistry(
 
     override fun registerKey(key: PersistentDataKey<*>) {
         if (this.registry.containsKey(key.key)) {
-            throw IllegalArgumentException("Key is already registered!")
+            this.registry.remove(key.key)
         }
 
         validateKey(key)
