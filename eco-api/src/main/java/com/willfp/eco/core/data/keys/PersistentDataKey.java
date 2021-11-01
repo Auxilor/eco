@@ -53,4 +53,13 @@ public class PersistentDataKey<T> {
         Eco.getHandler().getKeyRegistry().registerKey(this);
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "PersistentDataKey{"
+                + "key=" + key
+                + ", defaultValue=" + defaultValue
+                + ", type=" + type
+                + '}';
+    }
 }

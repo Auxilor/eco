@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DoubleColumnType
 import org.jetbrains.exposed.sql.IntegerColumnType
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.VarCharColumnType
 import org.jetbrains.exposed.sql.insert
@@ -23,6 +24,8 @@ import java.util.UUID
 class MySQLDataHandler(
     plugin: EcoSpigotPlugin
 ) : DataHandler {
+    private val columns = mutableMapOf<String, Column<*>>()
+
     init {
         Database.connect(
             "jdbc:mysql://" +
@@ -40,8 +43,12 @@ class MySQLDataHandler(
     }
 
     override fun updateKeys() {
-        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-            registerColumn(key, Players)
+        transaction {
+            for (key in Eco.getHandler().keyRegistry.registeredKeys) {
+                registerColumn(key, Players)
+            }
+
+            SchemaUtils.createMissingTablesAndColumns(Players)
         }
     }
 
@@ -51,13 +58,9 @@ class MySQLDataHandler(
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
         transaction {
-            Players.select { Players.id eq uuid }.firstOrNull() ?: run {
-                Players.insert {
-                    it[id] = uuid
-                }
-            }
-            val column: Column<T> =
-                Players.columns.stream().filter { it.name == key.toString() }.findFirst().get() as Column<T>
+            getPlayer(uuid)
+            val column: Column<T> = getColumn(key.toString()) as Column<T>
+
             Players.update({ Players.id eq uuid }) {
                 it[column] = value
             }
@@ -67,32 +70,50 @@ class MySQLDataHandler(
     override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
         var value: T? = null
         transaction {
-            val player = Players.select { Players.id eq uuid }.firstOrNull() ?: return@transaction
-            value = player[Players.columns.stream().filter { it.name == key.toString() }.findFirst().get()] as T?
+            val player = getPlayer(uuid)
+            value = player[getColumn(key.toString())] as T?
         }
         return value
     }
 
-    object Players : UUIDTable("Eco_Players") {
+    object Players : UUIDTable("eco_players") {
 
     }
 
     private fun <T> registerColumn(key: PersistentDataKey<T>, table: UUIDTable) {
-        transaction {
-            table.apply {
-                when (key.type) {
-                    PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
-                        .default(key.defaultValue as Int)
-                    PersistentDataKeyType.DOUBLE -> registerColumn<Double>(key.key.toString(), DoubleColumnType())
-                        .default(key.defaultValue as Double)
-                    PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(key.key.toString(), BooleanColumnType())
-                        .default(key.defaultValue as Boolean)
-                    PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(128))
-                        .default(key.defaultValue as String)
+        table.apply {
+            when (key.type) {
+                PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
+                    .default(key.defaultValue as Int)
+                PersistentDataKeyType.DOUBLE -> registerColumn<Double>(key.key.toString(), DoubleColumnType())
+                    .default(key.defaultValue as Double)
+                PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(key.key.toString(), BooleanColumnType())
+                    .default(key.defaultValue as Boolean)
+                PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(128))
+                    .default(key.defaultValue as String)
 
-                    else -> throw NullPointerException("Null value found!")
-                }
+                else -> throw NullPointerException("Null value found!")
             }
         }
+    }
+
+    private fun getColumn(name: String): Column<*> {
+        val cached = columns[name]
+        if (cached != null) {
+            return cached
+        }
+
+        columns[name] = Players.columns.stream().filter { it.name == name }.findFirst().get()
+        return getColumn(name)
+    }
+
+    private fun getPlayer(uuid: UUID): ResultRow {
+        Players.select { Players.id eq uuid }.firstOrNull() ?: run {
+            Players.insert {
+                it[id] = uuid
+            }
+        }
+
+        return Players.select { Players.id eq uuid }.first()
     }
 }
