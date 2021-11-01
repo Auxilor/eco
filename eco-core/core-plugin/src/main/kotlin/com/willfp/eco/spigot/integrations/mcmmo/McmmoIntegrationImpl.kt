@@ -27,6 +27,10 @@ class McmmoIntegrationImpl : McmmoWrapper {
         } else event is FakeEvent
     }
 
+    override fun getPluginName(): String {
+        return "mcMMO"
+    }
+
     init {
         if (!ClassUtils.exists("com.gmail.nossr50.events.fake.FakeEvent")) {
             disabled = true
