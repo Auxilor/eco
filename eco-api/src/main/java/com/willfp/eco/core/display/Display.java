@@ -1,5 +1,6 @@
 package com.willfp.eco.core.display;
 
+import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,8 @@ public class Display {
     /**
      * The display handler.
      */
-    public static DisplayHandler handler = null;
+    @Setter
+    private static DisplayHandler handler = null;
 
     /**
      * Display on ItemStacks.

@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.config
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.config.interfaces.JSONConfig

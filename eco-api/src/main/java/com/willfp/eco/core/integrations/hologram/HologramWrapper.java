@@ -17,6 +17,6 @@ public interface HologramWrapper extends Integration {
      * @param contents The contents for the hologram.
      * @return The hologram.
      */
-    Hologram createHologram(@NotNull final Location location,
-                            @NotNull final List<String> contents);
+    Hologram createHologram(@NotNull Location location,
+                            @NotNull List<String> contents);
 }

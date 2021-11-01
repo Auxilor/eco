@@ -2,7 +2,12 @@ package com.willfp.eco.internal.config.json
 
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.LoadableConfig
-import java.io.*
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.io.IOException
+import java.io.OutputStream
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
@@ -76,7 +81,7 @@ open class EcoLoadableJSONConfig(
     }
 
     init {
-        val directory: File = File(this.plugin.dataFolder, subDirectoryPath)
+        val directory = File(this.plugin.dataFolder, subDirectoryPath)
         if (!directory.exists()) {
             directory.mkdirs()
         }

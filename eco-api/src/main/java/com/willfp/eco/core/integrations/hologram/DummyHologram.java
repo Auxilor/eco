@@ -14,7 +14,7 @@ class DummyHologram implements Hologram {
     }
 
     @Override
-    public void setContents(@NotNull List<String> contents) {
+    public void setContents(@NotNull final List<String> contents) {
         // Do nothing.
     }
 }

@@ -13,7 +13,7 @@ public interface KeyRegistry {
      *
      * @param key The key.
      */
-    void registerKey(@NotNull final PersistentDataKey<?> key);
+    void registerKey(@NotNull PersistentDataKey<?> key);
 
     /**
      * Get all registered keys.

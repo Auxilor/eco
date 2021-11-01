@@ -49,7 +49,7 @@ public class TextureArgParser implements LookupArgParser {
 
             assert testMeta != null;
 
-            if (testMeta instanceof SkullMeta skullMeta && finalSkullTexture != null) {
+            if (testMeta instanceof SkullMeta skullMeta) {
                 return finalSkullTexture.equalsIgnoreCase(SkullUtils.getSkullTexture(skullMeta));
             }
 

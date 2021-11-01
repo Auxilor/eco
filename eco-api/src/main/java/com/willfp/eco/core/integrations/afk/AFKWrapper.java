@@ -14,5 +14,5 @@ public interface AFKWrapper extends Integration {
      * @param player The player.
      * @return If afk.
      */
-    boolean isAfk(@NotNull final Player player);
+    boolean isAfk(@NotNull Player player);
 }

@@ -2,7 +2,6 @@ package com.willfp.eco.core.items;
 
 import com.willfp.eco.core.Eco;
 import lombok.Getter;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 /**
- * A custom item has 3 components:
+ * A custom item has 3 components.
  *
  * <ul>
  *     <li>The key to identify it</li>

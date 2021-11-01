@@ -34,7 +34,7 @@ public interface LoadableConfig {
     File getConfigFile();
 
     /**
-     * Get the config name (including extension)
+     * Get the config name (including extension).
      *
      * @return The name.
      */

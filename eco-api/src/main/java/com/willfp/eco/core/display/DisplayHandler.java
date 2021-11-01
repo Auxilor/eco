@@ -23,8 +23,8 @@ public interface DisplayHandler {
      * @param player    The player.
      * @return The ItemStack.
      */
-    ItemStack display(@NotNull final ItemStack itemStack,
-                      @Nullable final Player player);
+    ItemStack display(@NotNull ItemStack itemStack,
+                      @Nullable Player player);
 
     /**
      * Revert on ItemStacks.
@@ -32,7 +32,7 @@ public interface DisplayHandler {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    ItemStack revert(@NotNull final ItemStack itemStack);
+    ItemStack revert(@NotNull ItemStack itemStack);
 
     /**
      * Finalize an ItemStacks.
@@ -40,7 +40,7 @@ public interface DisplayHandler {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    ItemStack finalize(@NotNull final ItemStack itemStack);
+    ItemStack finalize(@NotNull ItemStack itemStack);
 
     /**
      * Unfinalize an ItemStacks.
@@ -48,7 +48,7 @@ public interface DisplayHandler {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    ItemStack unfinalize(@NotNull final ItemStack itemStack);
+    ItemStack unfinalize(@NotNull ItemStack itemStack);
 
     /**
      * If an item is finalized.
@@ -56,5 +56,5 @@ public interface DisplayHandler {
      * @param itemStack The item.
      * @return If finalized.
      */
-    boolean isFinalized(@NotNull final ItemStack itemStack);
+    boolean isFinalized(@NotNull ItemStack itemStack);
 }

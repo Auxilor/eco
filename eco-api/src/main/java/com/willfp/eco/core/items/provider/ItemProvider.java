@@ -36,5 +36,5 @@ public abstract class ItemProvider {
      * @return The TestableItem, or null if not found.
      */
     @Nullable
-    public abstract TestableItem provideForKey(@NotNull final String key);
+    public abstract TestableItem provideForKey(@NotNull String key);
 }
