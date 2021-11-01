@@ -26,9 +26,9 @@ public class UpdateChecker extends PluginDependent<EcoPlugin> {
     /**
      * Get the latest version of the plugin.
      *
-     * @param consumer The process to run after checking.
+     * @param callback The process to run after checking.
      */
-    public void getVersion(@NotNull final Consumer<? super String> consumer) {
+    public void getVersion(@NotNull final Consumer<? super String> callback) {
         this.getPlugin().getScheduler().runAsync(() -> {
             try {
                 InputStream inputStream = new URL(
@@ -37,7 +37,7 @@ public class UpdateChecker extends PluginDependent<EcoPlugin> {
                 Scanner scanner = new Scanner(inputStream);
 
                 if (scanner.hasNext()) {
-                    consumer.accept(scanner.next());
+                    callback.accept(scanner.next());
                 }
             } catch (IOException e) {
                 this.getPlugin().getLogger().warning("Failed to check for updates: " + e.getMessage());
