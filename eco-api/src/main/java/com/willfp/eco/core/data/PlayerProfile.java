@@ -10,6 +10,8 @@ import java.util.UUID;
 
 /**
  * Persistent data storage interface for players.
+ * <p>
+ * Profiles save automatically, so there is no need to save after changes.
  */
 public interface PlayerProfile {
     /**
