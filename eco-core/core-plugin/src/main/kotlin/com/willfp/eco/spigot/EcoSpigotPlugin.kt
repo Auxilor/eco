@@ -10,6 +10,7 @@ import com.willfp.eco.core.integrations.afk.AFKManager
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
+import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
@@ -62,6 +63,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.spigot.integrations.hologram.HologramCMI
 import com.willfp.eco.spigot.integrations.hologram.HologramGHolo
 import com.willfp.eco.spigot.integrations.hologram.HologramHolographicDisplays
@@ -72,6 +74,7 @@ import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.SkullUtils
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
+import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -210,6 +213,14 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             // AFK
             IntegrationLoader("Essentials") { AFKManager.register(AFKIntegrationEssentials()) },
             IntegrationLoader("CMI") { AFKManager.register(AFKIntegrationCMI()) },
+
+            // Economy
+            IntegrationLoader("Vault") {
+                val rsp = Bukkit.getServer().servicesManager.getRegistration(Economy::class.java)
+                if (rsp != null) {
+                    EconomyManager.register(EconomyVault(rsp.provider))
+                }
+            },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },
