@@ -29,3 +29,16 @@ use-display-frame: true
 # Time to live for a display frame. In other words, this is how frequent (in ticks)
 # that display frames will be cleared / deleted.
 display-frame-ttl: 17
+
+mysql:
+  enabled: false # Set to false, data.yml will be used instead.
+  host: localhost
+  port: 3306
+  database: database
+  user: username
+  password: passy
+
+autosave:
+  ticks: 20000 # The amount of ticks between autosaves
+  log: false # If auto-save messages should be sent to console
+  async: false # If saves should be performed asynchronously. May cause bugs without MySQL

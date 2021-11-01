@@ -20,6 +20,11 @@ import com.willfp.eco.proxy.BlockBreakProxy
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
+import com.willfp.eco.spigot.data.DataListener
+import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
+import com.willfp.eco.spigot.data.storage.DataHandler
+import com.willfp.eco.spigot.data.storage.MySQLDataHandler
+import com.willfp.eco.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.display.frame.clearFrames
 import com.willfp.eco.spigot.drops.CollatedRunnable
@@ -55,6 +60,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     "com.willfp.eco.proxy",
     "&a"
 ) {
+    lateinit var dataHandler: DataHandler
+
     init {
         Items.registerArgParser(EnchantmentArgParser())
         Items.registerArgParser(TextureArgParser())
@@ -73,6 +80,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     private fun postInit() {
         Display.handler = EcoDisplayHandler(this)
+
+        this.dataHandler = if (this.configYml.getBool("mysql.enabled"))
+            MySQLDataHandler(this) else YamlDataHandler(this)
     }
 
     override fun handleEnable() {
@@ -112,6 +122,14 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             { clearFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),
             this.configYml.getInt("display-frame-ttl").toLong()
+        )
+        this.scheduler.runTimer(
+            {
+                (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler)
+                    .autosave(this.configYml.getBool("autosave.async"))
+            },
+            this.configYml.getInt("autosave.ticks").toLong(),
+            this.configYml.getInt("autosave.ticks").toLong()
         )
     }
 
@@ -159,7 +177,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },
-            IntegrationLoader("Multiverse-Inventories") { this.eventManager.registerListener(MultiverseInventoriesIntegration(this)) }
+            IntegrationLoader("Multiverse-Inventories") {
+                this.eventManager.registerListener(
+                    MultiverseInventoriesIntegration(this)
+                )
+            }
         )
     }
 
@@ -183,7 +205,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             PlayerJumpListeners(),
             GUIListener(this),
             ArrowDataListener(this),
-            ArmorChangeEventListeners(this)
+            ArmorChangeEventListeners(this),
+            DataListener()
         )
     }
 }

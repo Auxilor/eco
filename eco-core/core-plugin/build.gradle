@@ -30,6 +30,10 @@ dependencies {
     compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:2.4.7'
     compileOnly 'com.arcaniax:HeadDatabase-API:1.3.0'
+    compileOnly 'org.jetbrains.exposed:exposed-core:0.34.1'
+    compileOnly 'org.jetbrains.exposed:exposed-dao:0.34.1'
+    compileOnly 'org.jetbrains.exposed:exposed-jdbc:0.34.1'
+    compileOnly 'mysql:mysql-connector-java:5.1.48'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
