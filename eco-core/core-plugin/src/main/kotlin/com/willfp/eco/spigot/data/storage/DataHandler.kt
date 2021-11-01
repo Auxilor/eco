@@ -8,4 +8,6 @@ interface DataHandler {
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T)
     fun <T> read(uuid: UUID, key: NamespacedKey): T?
+
+    fun updateKeys()
 }

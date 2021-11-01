@@ -15,6 +15,10 @@ class YamlDataHandler(
         dataYml.save()
     }
 
+    override fun updateKeys() {
+        // Do nothing
+    }
+
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
         dataYml.set("player.$uuid.$key", value)
     }

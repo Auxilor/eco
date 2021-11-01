@@ -26,12 +26,14 @@ class MySQLDataHandler(
             password = plugin.configYml.getString("mysql.password")
         )
 
-        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-            registerColumn(key, Players)
-        }
-
         transaction {
             SchemaUtils.create(Players)
+        }
+    }
+
+    override fun updateKeys() {
+        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
+            registerColumn(key, Players)
         }
     }
 

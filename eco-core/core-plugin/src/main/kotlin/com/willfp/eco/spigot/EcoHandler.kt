@@ -4,6 +4,8 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Handler
 import com.willfp.eco.core.config.updating.ConfigHandler
 import com.willfp.eco.core.config.wrapper.ConfigFactory
+import com.willfp.eco.core.data.PlayerProfileHandler
+import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.drops.DropQueueFactory
 import com.willfp.eco.core.events.EventManager
 import com.willfp.eco.core.extensions.ExtensionLoader
@@ -34,6 +36,8 @@ import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.requirement.EcoRequirementFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
+import com.willfp.eco.spigot.data.EcoKeyRegistry
+import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.spigot.integrations.bstats.MetricHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.inventory.ItemStack
@@ -44,6 +48,8 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
     private val requirementFactory = EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
+    private val keyRegistry = EcoKeyRegistry(this)
+    private val playerProfileHandler = EcoPlayerProfileHandler(this)
 
     override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)
@@ -131,6 +137,14 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun getAdventure(): BukkitAudiences? {
         return adventure
+    }
+
+    override fun getKeyRegistry(): KeyRegistry {
+        return keyRegistry
+    }
+
+    override fun getPlayerProfileHandler(): PlayerProfileHandler {
+        return playerProfileHandler
     }
 
     fun setAdventure(adventure: BukkitAudiences) {
