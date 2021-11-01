@@ -42,18 +42,9 @@ public class PersistentDataKey<T> {
         this.key = key;
         this.defaultValue = defaultValue;
         this.type = type;
-    }
 
-    /**
-     * Register the key with the server.
-     *
-     * @return The key, registered.
-     */
-    public PersistentDataKey<T> register() {
         Eco.getHandler().getKeyRegistry().registerKey(this);
-        return this;
     }
-
     @Override
     public String toString() {
         return "PersistentDataKey{"

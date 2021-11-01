@@ -25,7 +25,7 @@ public class PlayerUtils {
             NamespacedKeyUtils.createEcoKey("player_name"),
             PersistentDataKeyType.STRING,
             "Unknown Player"
-    ).register();
+    );
 
     /**
      * Get the audience from a player.
