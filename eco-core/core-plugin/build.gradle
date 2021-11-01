@@ -19,7 +19,7 @@ dependencies {
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT'
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
     compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.5.10'
-    compileOnly 'com.github.cryptomorin:kingdoms:1.11.18'
+    compileOnly 'com.github.cryptomorin:kingdoms:1.11.9'
     compileOnly 'com.github.TownyAdvanced:Towny:0.97.2.6'
     compileOnly 'com.github.angeschossen:LandsAPI:5.15.2'
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
