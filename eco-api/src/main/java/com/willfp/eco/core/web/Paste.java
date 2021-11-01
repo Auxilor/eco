@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,7 +12,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
@@ -40,45 +40,46 @@ public class Paste {
      * <p>
      * Runs asynchronously to avoid hangups.
      *
-     * @param responseHandler The consumer to accept the response token.
+     * @param callback The consumer to accept the response token.
      */
-    public void getHastebinToken(@NotNull final Consumer<String> responseHandler) {
+    public void getHastebinToken(@NotNull final Consumer<String> callback) {
         Eco.getHandler().getEcoPlugin().getScheduler().runAsync(() -> {
             try {
-                String url = "https://hastebin.com/documents";
-                URL obj = new URL(url);
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                byte[] postData = contents.getBytes(StandardCharsets.UTF_8);
+                int postDataLength = postData.length;
 
-                con.setRequestMethod("POST");
-                con.setRequestProperty("Content-Type", "application/json");
+                String requestURL = "https://hastebin.com/documents";
+                URL url = new URL(requestURL);
+                HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+                conn.setDoOutput(true);
+                conn.setInstanceFollowRedirects(false);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("User-Agent", "eco-Hastebin");
+                conn.setRequestProperty("Content-Length", Integer.toString(postDataLength));
+                conn.setUseCaches(false);
 
-                con.setDoOutput(true);
-                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-                wr.writeBytes(URLEncoder.encode(contents, StandardCharsets.UTF_8));
-                wr.flush();
-                wr.close();
+                String response;
+                DataOutputStream wr;
 
-                BufferedReader iny = new BufferedReader(
-                        new InputStreamReader(con.getInputStream()));
-                String output;
-                StringBuilder responseBuilder = new StringBuilder();
+                wr = new DataOutputStream(conn.getOutputStream());
+                wr.write(postData);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                response = reader.readLine();
 
-                while ((output = iny.readLine()) != null) {
-                    responseBuilder.append(output);
+                assert response != null;
+
+                if (response.contains("\"key\"")) {
+                    response = response.substring(response.indexOf(":") + 2, response.length() - 2);
+
+                    callback.accept(response);
                 }
-                iny.close();
 
-                String responseString = responseBuilder.toString();
-
-                responseString = responseString.replace("{\"key\":\"", "");
-                responseString = responseString.replace("\"}", "");
-
-                responseHandler.accept(responseString);
+                callback.accept("");
             } catch (IOException e) {
-                responseHandler.accept(e.getMessage());
+                callback.accept(e.getMessage());
             }
 
-            responseHandler.accept("");
+            callback.accept("");
         });
     }
 
