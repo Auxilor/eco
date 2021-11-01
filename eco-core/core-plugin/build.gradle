@@ -36,6 +36,7 @@ dependencies {
     compileOnly 'mysql:mysql-connector-java:8.0.25'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0'
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'
+    compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'

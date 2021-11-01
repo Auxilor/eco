@@ -35,12 +35,12 @@ class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
 
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
         if (SuperiorSkyblockAPI.getPlayer(player).hasBypassModeEnabled()) return true
-        return when {
-            victim is Player -> SuperiorSkyblockAPI.getPlayer(player).canHit(SuperiorSkyblockAPI.getPlayer(victim)).equals(HitActionResult.SUCCESS)
-            victim is Animals -> {
+        return when (victim) {
+            is Player -> SuperiorSkyblockAPI.getPlayer(player).canHit(SuperiorSkyblockAPI.getPlayer(victim)).equals(HitActionResult.SUCCESS)
+            is Animals -> {
                 return SuperiorSkyblockAPI.getPlayer(player).hasPermission(IslandPrivilege.getByName("ANIMAL_DAMAGE"))
             }
-            victim is Monster -> {
+            is Monster -> {
                 return SuperiorSkyblockAPI.getPlayer(player).hasPermission(IslandPrivilege.getByName("MONSTER_DAMAGE"))
             }
             else -> true
