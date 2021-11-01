@@ -148,6 +148,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
         return listOf(
             // AntiGrief
+            IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
             IntegrationLoader("FactionsUUID") { AntigriefManager.register(AntigriefFactionsUUID()) },
