@@ -36,8 +36,9 @@ class Skull : SkullProxy {
             profile = meta.javaClass.getDeclaredField("profile")
             profile.isAccessible = true
         }
-        val profile = profile[meta] as GameProfile?
-        val property = profile?.properties?.get("textures") as Property?
-        return property?.value
+        val profile = profile[meta] as GameProfile? ?: return null
+        val properties = profile.properties ?: return null
+        val prop = properties["textures"] ?: return null
+        return prop.toMutableList().firstOrNull()?.name
     }
 }
