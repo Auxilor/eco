@@ -5,11 +5,19 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.BooleanColumnType
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DoubleColumnType
+import org.jetbrains.exposed.sql.IntegerColumnType
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.VarCharColumnType
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import org.jetbrains.exposed.sql.update
+import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
@@ -66,8 +74,7 @@ class MySQLDataHandler(
     }
 
     object Players : UUIDTable("Eco_Players") {
-        override val id: Column<EntityID<UUID>> = uuid("id")
-            .entityId()
+
     }
 
     private fun <T> registerColumn(key: PersistentDataKey<T>, table: UUIDTable) {
