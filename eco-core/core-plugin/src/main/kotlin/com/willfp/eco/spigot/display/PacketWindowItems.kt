@@ -16,7 +16,6 @@ import com.willfp.eco.util.ServerUtils
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -24,7 +23,7 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
     private val ignorePacketList = ConcurrentHashMap.newKeySet<String>()
     private val playerRates = ConcurrentHashMap<String, Int>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-display-thread-%d").build()
-    private val executor: ExecutorService = Executors.newCachedThreadPool(threadFactory)
+    private val executor = Executors.newCachedThreadPool(threadFactory)
     private val scheduledExecutor = Executors.newSingleThreadScheduledExecutor(threadFactory)
 
     override fun onSend(
