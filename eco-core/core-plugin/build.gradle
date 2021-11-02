@@ -38,6 +38,7 @@ dependencies {
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+    compileOnly 'com.google.guava:guava:31.0.1-jre'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'

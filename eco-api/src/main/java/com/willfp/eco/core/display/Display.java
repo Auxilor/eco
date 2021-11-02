@@ -1,6 +1,5 @@
 package com.willfp.eco.core.display;
 
-import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +20,6 @@ public class Display {
     /**
      * The display handler.
      */
-    @Setter
     private static DisplayHandler handler = null;
 
     /**
@@ -161,5 +159,30 @@ public class Display {
         if (player != null) {
             module.display(itemStack, player, args);
         }
+    }
+
+    /**
+     * Set the display handler.
+     * <p>
+     * Internal API component, you will cause bugs if you create your own handler.
+     *
+     * @param handler The handler.
+     */
+    @ApiStatus.Internal
+    public static void setHandler(@NotNull final DisplayHandler handler) {
+        Display.handler = handler;
+    }
+
+    /**
+     * Get the display handler.
+     * <p>
+     * In plugins, there is never any reason to use the display handler directly,
+     * this is for internal use only.
+     *
+     * @return The handler.
+     */
+    @ApiStatus.Internal
+    public static DisplayHandler getHandler() {
+        return handler;
     }
 }
