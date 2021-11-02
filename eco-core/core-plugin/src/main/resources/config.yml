@@ -51,6 +51,9 @@ async-display:
   # If async display should always be used.
   enabled: false
 
+  # Log errors that occur in async processing.
+  log-errors: true
+
   # If the server is running under heavy load (below a certain TPS value), enable
   # async display automatically. This can prevent some server crashes under load.
   emergency:
