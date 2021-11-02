@@ -41,19 +41,19 @@ class AntigriefBentoBox : AntigriefWrapper {
         victim: LivingEntity
     ): Boolean {
         val island = BentoBox.getInstance().islandsManager.getIslandAt(victim.location).orElse(null) ?: return true
-        return if (victim is Player) {
-            island.isAllowed(
-                User.getInstance(player), when (victim.world.environment) {
-                    World.Environment.NORMAL -> Flags.PVP_OVERWORLD
-                    World.Environment.NETHER -> Flags.PVP_NETHER
-                    World.Environment.THE_END -> Flags.PVP_END
-                    else -> Flags.PVP_OVERWORLD
-                }
-            )
-        } else if (victim is Monster) {
-            island.isAllowed(User.getInstance(player), Flags.HURT_MONSTERS)
-        } else {
-            island.isAllowed(User.getInstance(player), Flags.HURT_ANIMALS)
+        return when (victim) {
+            is Player -> {
+                island.isAllowed(
+                    User.getInstance(player), when (victim.world.environment) {
+                        World.Environment.NORMAL -> Flags.PVP_OVERWORLD
+                        World.Environment.NETHER -> Flags.PVP_NETHER
+                        World.Environment.THE_END -> Flags.PVP_END
+                        else -> Flags.PVP_OVERWORLD
+                    }
+                )
+            }
+            is Monster -> island.isAllowed(User.getInstance(player), Flags.HURT_MONSTERS)
+            else -> island.isAllowed(User.getInstance(player), Flags.HURT_ANIMALS)
         }
     }
 
