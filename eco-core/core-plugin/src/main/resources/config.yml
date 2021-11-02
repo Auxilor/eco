@@ -52,9 +52,14 @@ async-display:
   ratelimit:
     # If rate limit async display should be used.
     enabled: true
-    # The amount of window items packets per second needed to enable async display
+    # The amount of window items packets per timeframe needed to enable async display
     # for a specified player.
     cutoff: 5
+    # The length of the timeframe in seconds.
+    # Cutoff 5, Timeframe 1 means that if there are more than 5 window items packets
+    # being sent per second for a player, then that player should have their packets
+    # handled asynchronously.
+    timeframe: 1
 
 mysql:
   enabled: false # Set to false, data.yml will be used instead.

@@ -80,9 +80,11 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         modifyRateValueBy(player, 1)
 
-        scheduledExecutor.schedule({
-            modifyRateValueBy(player, -1)
-        }, 1, TimeUnit.SECONDS)
+        scheduledExecutor.schedule(
+            { modifyRateValueBy(player, -1) },
+            this.getPlugin().configYml.getInt("async-display.ratelimit.timeframe").toLong(),
+            TimeUnit.SECONDS
+        )
     }
 
     private fun usingAsync(player: Player): Boolean {
