@@ -45,7 +45,11 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         if (usingAsync()) {
             executor.execute {
-                modifyWindowItems(itemStacks, windowId, player)
+                try {
+                    modifyWindowItems(itemStacks, windowId, player)
+                } catch (e: Exception) {
+                    // Don't do anything, just accept defeat
+                }
 
                 val newPacket = packet.deepClone()
                 newPacket.itemListModifier.write(0, itemStacks)
