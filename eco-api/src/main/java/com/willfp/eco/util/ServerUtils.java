@@ -25,7 +25,13 @@ public class ServerUtils {
     public double getTps() {
         Validate.notNull(tpsSupplier, "Not initialized!");
 
-        return tpsSupplier.get();
+        double tps = tpsSupplier.get();
+
+        if (tps > 20) {
+            return 20;
+        } else {
+            return tps;
+        }
     }
 
     /**
