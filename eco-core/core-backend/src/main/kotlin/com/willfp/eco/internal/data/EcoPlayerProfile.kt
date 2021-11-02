@@ -10,8 +10,8 @@ class EcoPlayerProfile(
         this.data[key] = value
     }
 
-    override fun <T : Any?> read(key: PersistentDataKey<T>): T? {
+    override fun <T : Any> read(key: PersistentDataKey<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return this.data[key] as T?
+        return this.data[key] as T? ?: key.defaultValue
     }
 }

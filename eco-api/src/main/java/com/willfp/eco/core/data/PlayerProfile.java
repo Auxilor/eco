@@ -4,7 +4,6 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -29,9 +28,9 @@ public interface PlayerProfile {
      *
      * @param key The key.
      * @param <T> The type of the key.
-     * @return The value, or null if not found.
+     * @return The value, or the default value if not found.
      */
-    <T> @Nullable T read(@NotNull PersistentDataKey<T> key);
+    <T> @NotNull T read(@NotNull PersistentDataKey<T> key);
 
     /**
      * Load a player profile.
