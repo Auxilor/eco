@@ -75,4 +75,4 @@ async-display:
     # Cutoff 5, Timeframe 1 means that if there are more than 5 window items packets
     # being sent per second for a player, then that player should have their packets
     # handled asynchronously.
-    timeframe: 1
+    timeframe: 2
