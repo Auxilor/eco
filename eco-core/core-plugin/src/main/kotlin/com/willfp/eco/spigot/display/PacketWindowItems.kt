@@ -18,12 +18,14 @@ import org.bukkit.inventory.ItemStack
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketType.Play.Server.WINDOW_ITEMS, false) {
     private val ignorePacketList = ConcurrentHashMap.newKeySet<String>()
-    private val executor: ExecutorService = Executors.newCachedThreadPool(
-        ThreadFactoryBuilder().setNameFormat("eco-display-thread-%d").build()
-    )
+    private val playerRates = ConcurrentHashMap<String, Int>()
+    private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-display-thread-%d").build()
+    private val executor: ExecutorService = Executors.newCachedThreadPool(threadFactory)
+    private val scheduledExecutor = Executors.newSingleThreadScheduledExecutor(threadFactory)
 
     override fun onSend(
         packet: PacketContainer,
@@ -43,7 +45,9 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         val itemStacks = packet.itemListModifier.read(0) ?: return
 
-        if (usingAsync()) {
+        handleRateLimit(player)
+
+        if (usingAsync(player)) {
             executor.execute {
                 try {
                     modifyWindowItems(itemStacks, windowId, player)
@@ -63,12 +67,41 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         }
     }
 
-    private fun usingAsync(): Boolean {
-        if (this.getPlugin().configYml.getBool("use-async.display")) {
+    private fun handleRateLimit(player: Player) {
+        fun modifyRateValueBy(player: Player, amount: Int) {
+            val name = player.name
+            val current = playerRates[name] ?: 0
+            val new = current + amount
+            if (new <= 0) {
+                playerRates.remove(name)
+            } else {
+                playerRates[name] = new
+            }
+        }
+
+        modifyRateValueBy(player, 1)
+
+        scheduledExecutor.schedule({
+            modifyRateValueBy(player, -1)
+        }, 1, TimeUnit.SECONDS)
+    }
+
+    private fun usingAsync(player: Player): Boolean {
+        if (this.getPlugin().configYml.getBool("async-display.enabled")) {
             return true
         }
 
-        if (this.getPlugin().configYml.getBool("use-emergency-async-display") && ServerUtils.getTps() < 18) {
+        if (
+            this.getPlugin().configYml.getBool("async-display.emergency.enabled")
+            && ServerUtils.getTps() <= this.getPlugin().configYml.getDouble("async-display.emergency.cutoff")
+        ) {
+            return true
+        }
+
+        if (
+            this.getPlugin().configYml.getBool("async-display.ratelimit.enabled")
+            && (playerRates[player.name] ?: 0) >= this.getPlugin().configYml.getInt("async-display.ratelimit.cutoff")
+        ) {
             return true
         }
 

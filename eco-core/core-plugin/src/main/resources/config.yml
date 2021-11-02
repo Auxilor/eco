@@ -34,12 +34,27 @@ display-frame-ttl: 17
 # some bugs and is considered experimental, however it has been tested without
 # any apparent issues. Enable this if performance is absolutely crucial or if you
 # are experiencing severe display lag.
-use-async-display: false
+async-display:
+  # If async display should always be used.
+  enabled: false
 
-# If someone seems to be trying to lag out the server, or if the server is running
-# under heavy load, (below 18 TPS) async display will kick in automatically. This
-# can prevent some server crashes under load.
-use-emergency-async-display: true
+  # If the server is running under heavy load (below a certain TPS value), enable
+  # async display automatically. This can prevent some server crashes under load.
+  emergency:
+    # If emergency async should be used.
+    enabled: true
+    # Below this TPS value, emergency async display will be used.
+    cutoff: 18
+
+  # If players with a large amount of display packets should have their processing
+  # done asynchronously. This will help if a player is trying to crash the server
+  # by overloading the display system.
+  ratelimit:
+    # If rate limit async display should be used.
+    enabled: true
+    # The amount of window items packets per second needed to enable async display
+    # for a specified player.
+    cutoff: 5
 
 mysql:
   enabled: false # Set to false, data.yml will be used instead.
