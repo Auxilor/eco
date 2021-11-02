@@ -70,9 +70,9 @@ async-display:
     enabled: true
     # The amount of window items packets per timeframe needed to enable async display
     # for a specified player.
-    cutoff: 5
+    cutoff: 4
     # The length of the timeframe in seconds.
     # Cutoff 5, Timeframe 1 means that if there are more than 5 window items packets
     # being sent per second for a player, then that player should have their packets
     # handled asynchronously.
-    timeframe: 2
+    timeframe: 1
