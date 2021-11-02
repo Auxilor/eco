@@ -36,6 +36,11 @@ display-frame-ttl: 17
 # are experiencing severe display lag.
 use-async-display: false
 
+# If someone seems to be trying to lag out the server, or if the server is running
+# under heavy load, (below 18 TPS) async display will kick in automatically. This
+# can prevent some server crashes under load.
+use-emergency-async-display: true
+
 mysql:
   enabled: false # Set to false, data.yml will be used instead.
   host: localhost

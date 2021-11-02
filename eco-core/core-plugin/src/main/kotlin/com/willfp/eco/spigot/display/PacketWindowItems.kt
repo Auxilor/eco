@@ -12,6 +12,7 @@ import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.spigot.display.frame.DisplayFrame
 import com.willfp.eco.spigot.display.frame.HashedItem
 import com.willfp.eco.spigot.display.frame.lastDisplayFrame
+import com.willfp.eco.util.ServerUtils
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.concurrent.ConcurrentHashMap
@@ -42,7 +43,7 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         val itemStacks = packet.itemListModifier.read(0) ?: return
 
-        if (this.getPlugin().configYml.getBool("use-async-display")) {
+        if (usingAsync()) {
             executor.execute {
                 modifyWindowItems(itemStacks, windowId, player)
 
@@ -58,7 +59,23 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         }
     }
 
-    private fun modifyWindowItems(itemStacks: MutableList<ItemStack>, windowId: Int, player: Player): MutableList<ItemStack> {
+    private fun usingAsync(): Boolean {
+        if (this.getPlugin().configYml.getBool("use-async.display")) {
+            return true
+        }
+
+        if (this.getPlugin().configYml.getBool("use-emergency-async-display") && ServerUtils.getTps() < 18) {
+            return true
+        }
+
+        return false
+    }
+
+    private fun modifyWindowItems(
+        itemStacks: MutableList<ItemStack>,
+        windowId: Int,
+        player: Player
+    ): MutableList<ItemStack> {
         if (this.getPlugin().configYml.getBool("use-display-frame") && windowId == 0) {
             val frameMap = mutableMapOf<Byte, HashedItem>()
 

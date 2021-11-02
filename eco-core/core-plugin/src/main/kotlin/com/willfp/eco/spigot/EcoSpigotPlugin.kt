@@ -22,6 +22,7 @@ import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.proxy.BlockBreakProxy
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
+import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.data.DataListener
 import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
@@ -29,12 +30,7 @@ import com.willfp.eco.spigot.data.PlayerBlockListener
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
-import com.willfp.eco.spigot.display.PacketAutoRecipe
-import com.willfp.eco.spigot.display.PacketChat
-import com.willfp.eco.spigot.display.PacketOpenWindowMerchant
-import com.willfp.eco.spigot.display.PacketSetCreativeSlot
-import com.willfp.eco.spigot.display.PacketSetSlot
-import com.willfp.eco.spigot.display.PacketWindowItems
+import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.display.frame.clearFrames
 import com.willfp.eco.spigot.drops.CollatedRunnable
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners
@@ -45,21 +41,8 @@ import com.willfp.eco.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.spigot.gui.GUIListener
 import com.willfp.eco.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatAlice
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV10
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.spigot.integrations.anticheat.*
+import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
@@ -72,16 +55,14 @@ import com.willfp.eco.spigot.integrations.multiverseinventories.MultiverseInvent
 import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
+import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.block.Block
-import org.bukkit.entity.Player
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.SkullMeta
 
 abstract class EcoSpigotPlugin : EcoPlugin(
     773,
@@ -97,12 +78,15 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
-            { meta: SkullMeta, base64: String -> skullProxy.setSkullTexture(meta, base64) },
-            { meta: SkullMeta -> skullProxy.getSkullTexture(meta) }
+            { meta, base64 -> skullProxy.setSkullTexture(meta, base64) },
+            { meta -> skullProxy.getSkullTexture(meta) }
         )
 
         val blockBreakProxy = getProxy(BlockBreakProxy::class.java)
-        BlockUtils.initialize { player: Player, block: Block -> blockBreakProxy.breakBlock(player, block) }
+        BlockUtils.initialize { player, block -> blockBreakProxy.breakBlock(player, block) }
+
+        val tpsProxy = getProxy(TPSProxy::class.java)
+        ServerUtils.initialize { tpsProxy.getTPS() }
 
         postInit()
     }
