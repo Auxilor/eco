@@ -4,19 +4,25 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.spigot.display.frame.DisplayFrame
 import com.willfp.eco.spigot.display.frame.HashedItem
 import com.willfp.eco.spigot.display.frame.lastDisplayFrame
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketType.Play.Server.WINDOW_ITEMS, false) {
     private val ignorePacketList = ConcurrentHashMap.newKeySet<String>()
+    private val executor: ExecutorService = Executors.newCachedThreadPool(
+        ThreadFactoryBuilder().setNameFormat("eco-display-thread-%d").build()
+    )
 
     override fun onSend(
         packet: PacketContainer,
@@ -36,42 +42,50 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         val itemStacks = packet.itemListModifier.read(0) ?: return
 
-        val displayTask = {
-            if (this.getPlugin().configYml.getBool("use-display-frame") && windowId == 0) {
-                val frameMap = mutableMapOf<Byte, HashedItem>()
+        if (this.getPlugin().configYml.getBool("use-async-display")) {
+            executor.execute {
+                modifyWindowItems(itemStacks, windowId, player)
 
-                for (index in itemStacks.indices) {
-                    frameMap[index.toByte()] =
-                        HashedItem(FastItemStack.wrap(itemStacks[index]).hashCode(), itemStacks[index])
-                }
+                val newPacket = packet.deepClone()
+                newPacket.itemListModifier.write(0, itemStacks)
 
-                val newFrame = DisplayFrame(frameMap)
+                ignorePacketList.add(player.name)
 
-                val lastFrame = player.lastDisplayFrame
+                ProtocolLibrary.getProtocolManager().sendServerPacket(player, newPacket)
+            }
+        } else {
+            packet.itemListModifier.write(0, modifyWindowItems(itemStacks, windowId, player))
+        }
+    }
 
-                player.lastDisplayFrame = newFrame
+    private fun modifyWindowItems(itemStacks: MutableList<ItemStack>, windowId: Int, player: Player): MutableList<ItemStack> {
+        if (this.getPlugin().configYml.getBool("use-display-frame") && windowId == 0) {
+            val frameMap = mutableMapOf<Byte, HashedItem>()
 
-                val changes = lastFrame.getChangedSlots(newFrame)
-
-                for (index in changes) {
-                    Display.display(itemStacks[index.toInt()], player)
-                }
-
-                for (index in (itemStacks.indices subtract changes.toSet())) {
-                    itemStacks[index.toInt()] = lastFrame.getItem(index.toByte()) ?: itemStacks[index.toInt()]
-                }
-            } else {
-                itemStacks.forEach { Display.display(it, player) }
+            for (index in itemStacks.indices) {
+                frameMap[index.toByte()] =
+                    HashedItem(FastItemStack.wrap(itemStacks[index]).hashCode(), itemStacks[index])
             }
 
-            val newPacket = packet.deepClone()
-            newPacket.itemListModifier.write(0, itemStacks)
+            val newFrame = DisplayFrame(frameMap)
 
-            ignorePacketList.add(player.name)
+            val lastFrame = player.lastDisplayFrame
 
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, newPacket)
+            player.lastDisplayFrame = newFrame
+
+            val changes = lastFrame.getChangedSlots(newFrame)
+
+            for (index in changes) {
+                Display.display(itemStacks[index.toInt()], player)
+            }
+
+            for (index in (itemStacks.indices subtract changes.toSet())) {
+                itemStacks[index.toInt()] = lastFrame.getItem(index.toByte()) ?: itemStacks[index.toInt()]
+            }
+        } else {
+            itemStacks.forEach { Display.display(it, player) }
         }
 
-        (Display.getHandler() as EcoDisplayHandler).executor.execute(displayTask)
+        return itemStacks
     }
 }

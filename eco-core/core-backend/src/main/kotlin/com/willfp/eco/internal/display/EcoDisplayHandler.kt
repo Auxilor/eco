@@ -17,9 +17,6 @@ import java.util.concurrent.Executors
 class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
     private val registeredModules = mutableMapOf<DisplayPriority, MutableList<DisplayModule>>()
     private val finalizeKey: NamespacedKey = plugin.namespacedKeyFactory.create("finalized")
-    val executor: ExecutorService = Executors.newCachedThreadPool(
-        ThreadFactoryBuilder().setNameFormat("eco-display-thread-%d").build()
-    )
 
     init {
         for (priority in DisplayPriority.values()) {

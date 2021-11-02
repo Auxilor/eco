@@ -170,19 +170,10 @@ public class Display {
      */
     @ApiStatus.Internal
     public static void setHandler(@NotNull final DisplayHandler handler) {
-        Display.handler = handler;
-    }
+        if (Display.handler != null) {
+            throw new IllegalStateException("Display already initialized!");
+        }
 
-    /**
-     * Get the display handler.
-     * <p>
-     * In plugins, there is never any reason to use the display handler directly,
-     * this is for internal use only.
-     *
-     * @return The handler.
-     */
-    @ApiStatus.Internal
-    public static DisplayHandler getHandler() {
-        return handler;
+        Display.handler = handler;
     }
 }

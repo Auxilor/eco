@@ -17,7 +17,7 @@ use-fast-collated-drops: true
 enable-bstats: true
 
 # Some plugins use their own item display systems (eg Triton)
-# And must be ran after eco. Don't enable this unless you run a conflicting plugin
+# And must be run after eco. Don't enable this unless you run a conflicting plugin
 # and have been told to enable it.
 use-lower-protocollib-priority: false
 
@@ -29,6 +29,12 @@ use-display-frame: true
 # Time to live for a display frame. In other words, this is how frequent (in ticks)
 # that display frames will be cleared / deleted.
 display-frame-ttl: 17
+
+# Window items packets have the option to be run asynchronously. This may cause
+# some bugs and is considered experimental, however it has been tested without
+# any apparent issues. Enable this if performance is absolutely crucial or if you
+# are experiencing severe display lag.
+use-async-display: false
 
 mysql:
   enabled: false # Set to false, data.yml will be used instead.
