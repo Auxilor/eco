@@ -3,6 +3,8 @@
 # by Auxilor
 #
 
+# You must restart your server after any changes to this config file for changes
+# to be applied.
 
 # Options to fix villager bugs left behind from old (buggy) versions.
 villager-display-fix: false
