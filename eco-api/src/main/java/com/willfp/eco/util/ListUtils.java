@@ -23,8 +23,8 @@ public class ListUtils {
      * @return The list, filled will null objects.
      */
     @NotNull
-    public <@Nullable T> List<List<T>> create2DList(final int rows,
-                                                    final int columns) {
+    public static <@Nullable T> List<List<T>> create2DList(final int rows,
+                                                           final int columns) {
         List<List<T>> list = new ArrayList<>(rows);
         while (list.size() < rows) {
             List<T> row = new ArrayList<>(columns);
@@ -45,7 +45,7 @@ public class ListUtils {
      * @return The frequency map.
      */
     @NotNull
-    private static <T> Map<T, Integer> listToFrequencyMap(@NotNull final List<T> list) {
+    public static <T> Map<T, Integer> listToFrequencyMap(@NotNull final List<T> list) {
         Map<T, Integer> frequencyMap = new HashMap<>();
         for (T object : list) {
             if (frequencyMap.containsKey(object)) {

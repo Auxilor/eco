@@ -27,14 +27,23 @@ public class EconomyManager {
     }
 
     /**
+     * Get if any economy registrations are registered.
+     *
+     * @return If any economy.
+     */
+    public boolean hasRegistrations() {
+        return !registered.isEmpty();
+    }
+
+    /**
      * Get if a player has a certain amount.
      *
      * @param player The player.
      * @param amount The amount.
      * @return If the player has the amount.
      */
-    boolean hasAmount(@NotNull final OfflinePlayer player,
-                      final double amount) {
+    public boolean hasAmount(@NotNull final OfflinePlayer player,
+                             final double amount) {
         for (EconomyWrapper wrapper : registered) {
             return wrapper.hasAmount(player, amount);
         }
@@ -49,8 +58,8 @@ public class EconomyManager {
      * @param amount The amount to give.
      * @return If the transaction was a success.
      */
-    boolean giveMoney(@NotNull final OfflinePlayer player,
-                      final double amount) {
+    public boolean giveMoney(@NotNull final OfflinePlayer player,
+                             final double amount) {
         for (EconomyWrapper wrapper : registered) {
             return wrapper.giveMoney(player, amount);
         }
@@ -65,8 +74,8 @@ public class EconomyManager {
      * @param amount The amount to remove.
      * @return If the transaction was a success.
      */
-    boolean removeMoney(@NotNull final OfflinePlayer player,
-                        final double amount) {
+    public boolean removeMoney(@NotNull final OfflinePlayer player,
+                               final double amount) {
         for (EconomyWrapper wrapper : registered) {
             return wrapper.removeMoney(player, amount);
         }
@@ -80,7 +89,7 @@ public class EconomyManager {
      * @param player The player.
      * @return The balance.
      */
-    double getBalance(@NotNull final OfflinePlayer player) {
+    public double getBalance(@NotNull final OfflinePlayer player) {
         for (EconomyWrapper wrapper : registered) {
             return wrapper.getBalance(player);
         }
