@@ -6,17 +6,18 @@ import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramWrapper
 import net.Zrips.CMILib.Container.CMILocation
 import org.bukkit.Location
-import java.util.*
+import java.util.UUID
 
 @Suppress("DEPRECATION")
 class HologramCMI : HologramWrapper {
     override fun createHologram(location: Location, contents: MutableList<String>): Hologram {
         val cmiHolo = CMIHologram(UUID.randomUUID().toString(), CMILocation(location))
-        cmiHolo.enable()
         CMI.getInstance().hologramManager.addHologram(cmiHolo)
 
         val holo = HologramImplCMI(cmiHolo)
         holo.setContents(contents)
+
+        cmiHolo.enable()
 
         return holo
     }
