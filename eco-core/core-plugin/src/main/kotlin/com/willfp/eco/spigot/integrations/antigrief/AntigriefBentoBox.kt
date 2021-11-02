@@ -5,6 +5,7 @@ import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 import world.bentobox.bentobox.BentoBox
 import world.bentobox.bentobox.api.user.User
@@ -49,6 +50,8 @@ class AntigriefBentoBox : AntigriefWrapper {
                     else -> Flags.PVP_OVERWORLD
                 }
             )
+        } else if (victim is Monster) {
+            island.isAllowed(User.getInstance(player), Flags.HURT_MONSTERS)
         } else {
             island.isAllowed(User.getInstance(player), Flags.HURT_ANIMALS)
         }
