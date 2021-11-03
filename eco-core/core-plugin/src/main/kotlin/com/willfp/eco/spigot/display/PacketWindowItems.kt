@@ -51,7 +51,9 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
                 try {
                     modifyWindowItems(itemStacks, windowId, player)
                 } catch (e: Exception) {
-                    // Don't do anything, just accept defeat
+                    if (this.getPlugin().configYml.getBool("async-display.log-errors")) {
+                        this.getPlugin().logger.warning("Error happened in async processing! Disable async display (/plugins/eco/config.yml) if this is a frequent issue")
+                    }
                 }
 
                 val newPacket = packet.deepClone()

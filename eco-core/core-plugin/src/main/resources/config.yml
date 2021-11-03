@@ -3,8 +3,19 @@
 # by Auxilor
 #
 
-# You must restart your server after any changes to this config file for changes
-# to be applied.
+mysql:
+  enabled: false # Set to false, data.yml will be used instead.
+  host: localhost
+  port: 3306
+  database: database
+  user: username
+  password: passy
+
+autosave:
+  ticks: 20000 # The amount of ticks between autosaves
+  log: false # If auto-save messages should be sent to console
+  async: false # If saves should be performed asynchronously. May cause bugs without MySQL
+
 
 # Options to fix villager bugs left behind from old (buggy) versions.
 villager-display-fix: false
@@ -40,6 +51,9 @@ async-display:
   # If async display should always be used.
   enabled: false
 
+  # Log errors that occur in async processing.
+  log-errors: true
+
   # If the server is running under heavy load (below a certain TPS value), enable
   # async display automatically. This can prevent some server crashes under load.
   emergency:
@@ -56,22 +70,9 @@ async-display:
     enabled: true
     # The amount of window items packets per timeframe needed to enable async display
     # for a specified player.
-    cutoff: 5
+    cutoff: 4
     # The length of the timeframe in seconds.
     # Cutoff 5, Timeframe 1 means that if there are more than 5 window items packets
     # being sent per second for a player, then that player should have their packets
     # handled asynchronously.
     timeframe: 1
-
-mysql:
-  enabled: false # Set to false, data.yml will be used instead.
-  host: localhost
-  port: 3306
-  database: database
-  user: username
-  password: passy
-
-autosave:
-  ticks: 20000 # The amount of ticks between autosaves
-  log: false # If auto-save messages should be sent to console
-  async: false # If saves should be performed asynchronously. May cause bugs without MySQL

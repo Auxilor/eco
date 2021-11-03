@@ -82,6 +82,10 @@ class MySQLDataHandler(
 
     private fun <T> registerColumn(key: PersistentDataKey<T>, table: UUIDTable) {
         table.apply {
+            if (this.columns.stream().anyMatch { it.name == key.key.toString() }) {
+                return@apply
+            }
+
             when (key.type) {
                 PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
                     .default(key.defaultValue as Int)
@@ -89,7 +93,7 @@ class MySQLDataHandler(
                     .default(key.defaultValue as Double)
                 PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(key.key.toString(), BooleanColumnType())
                     .default(key.defaultValue as Boolean)
-                PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(128))
+                PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(512))
                     .default(key.defaultValue as String)
 
                 else -> throw NullPointerException("Null value found!")
