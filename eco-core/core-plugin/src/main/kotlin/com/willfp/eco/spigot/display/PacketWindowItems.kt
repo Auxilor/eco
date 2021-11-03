@@ -90,6 +90,11 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
     }
 
     private fun usingAsync(player: Player): Boolean {
+        if (this.getPlugin().configYml.getStrings("async-display.disable-on-types", false)
+                .map { it.lowercase() }.contains(player.openInventory.type.name.lowercase())) {
+            return false
+        }
+
         if (this.getPlugin().configYml.getBool("async-display.enabled")) {
             return true
         }

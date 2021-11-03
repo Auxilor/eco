@@ -54,6 +54,12 @@ async-display:
   # Log errors that occur in async processing.
   log-errors: true
 
+  # The inventory types that should never be processed asynchronously.
+  # A list of IDs can be found here:
+  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/inventory/InventoryType.html
+  disable-on-types:
+    - 'anvil'
+
   # If the server is running under heavy load (below a certain TPS value), enable
   # async display automatically. This can prevent some server crashes under load.
   emergency:
