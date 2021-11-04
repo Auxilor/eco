@@ -9,6 +9,7 @@ import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 import java.util.concurrent.Executors
@@ -43,7 +44,7 @@ class MySQLDataHandler(
                 registerColumn(key, Players)
             }
 
-            SchemaUtils.createMissingTablesAndColumns(Players)
+            createMissingTablesAndColumnsSilently(Players)
         }
     }
 
@@ -129,6 +130,29 @@ class MySQLDataHandler(
                 Players.insert { it[id] = uuid }
             }
             getPlayer(uuid)
+        }
+    }
+
+    private fun createMissingTablesAndColumnsSilently(table: Table) {
+        with(TransactionManager.current()) {
+            fun execStatements(statements: List<String>) {
+                for (statement in statements) {
+                    exec(statement)
+                }
+            }
+
+            db.dialect.resetCaches()
+            val createStatements = SchemaUtils.createStatements(table)
+            execStatements(createStatements)
+            commit()
+            val alterStatements = SchemaUtils.addMissingColumnsStatements(table)
+            execStatements(alterStatements)
+            commit()
+            val executedStatements = createStatements + alterStatements
+            val modifyTablesStatements = checkMappingConsistence(table).filter { it !in executedStatements }
+            execStatements(modifyTablesStatements)
+            commit()
+            db.dialect.resetCaches()
         }
     }
 }
