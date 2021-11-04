@@ -125,9 +125,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun handleDisable() {
-        Eco.getHandler().adventure?.close()
         this.logger.info("Saving player data...")
         Eco.getHandler().playerProfileHandler.saveAll()
+        Eco.getHandler().adventure?.close()
     }
 
     override fun handleReload() {
