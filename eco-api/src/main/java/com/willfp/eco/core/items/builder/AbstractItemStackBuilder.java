@@ -73,6 +73,11 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
     @Override
     public U addEnchantment(@NotNull final Enchantment enchantment,
                             final int level) {
+        //noinspection ConstantConditions
+        if (enchantment == null) {
+            return (U) this;
+        }
+
         meta.addEnchant(enchantment, level, true);
         return (U) this;
     }

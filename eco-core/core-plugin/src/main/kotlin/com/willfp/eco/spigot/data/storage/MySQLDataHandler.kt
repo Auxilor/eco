@@ -114,7 +114,9 @@ class MySQLDataHandler(
     }
 
     private fun getPlayer(uuid: UUID): ResultRow {
-        val player = Players.select { Players.id eq uuid }.limit(1).singleOrNull()
+        val player = transaction {
+            Players.select { Players.id eq uuid }.limit(1).singleOrNull()
+        }
 
         return if (player != null) {
             player
