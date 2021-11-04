@@ -52,16 +52,7 @@ import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefBentoBox
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV10
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
@@ -177,6 +168,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
         return listOf(
             // AntiGrief
+            IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
