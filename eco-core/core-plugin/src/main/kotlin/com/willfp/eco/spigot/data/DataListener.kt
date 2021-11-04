@@ -11,11 +11,12 @@ class DataListener : Listener {
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
         PlayerUtils.updateSavedDisplayName(event.player)
-        Eco.getHandler().playerProfileHandler.savePlayer(event.player.uniqueId)
+        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
+        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).unloadPlayer(event.player.uniqueId)
         PlayerUtils.updateSavedDisplayName(event.player)
     }
 }

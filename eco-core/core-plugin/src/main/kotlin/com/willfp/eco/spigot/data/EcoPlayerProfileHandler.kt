@@ -32,6 +32,11 @@ class EcoPlayerProfileHandler(
         return profile
     }
 
+    fun unloadPlayer(uuid: UUID) {
+        handler.savePlayer(uuid)
+        loaded.remove(uuid)
+    }
+
     override fun savePlayer(uuid: UUID) {
         handler.savePlayer(uuid)
     }

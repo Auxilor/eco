@@ -95,7 +95,7 @@ class MySQLDataHandler(
     }
 
     override fun savePlayer(uuid: UUID) {
-        savePlayer(uuid, async = true)
+        savePlayer(uuid, async = false)
     }
 
     override fun saveAll(uuids: Iterable<UUID>) {
