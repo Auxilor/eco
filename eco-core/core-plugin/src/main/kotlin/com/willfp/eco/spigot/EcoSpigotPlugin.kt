@@ -24,6 +24,7 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
+import com.willfp.eco.spigot.data.BungeeDataListener
 import com.willfp.eco.spigot.data.DataListener
 import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.spigot.data.PlayerBlockListener
@@ -58,6 +59,7 @@ import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefDeluxeCombat
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefIridiumSkyblock
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
@@ -75,6 +77,7 @@ import com.willfp.eco.spigot.integrations.multiverseinventories.MultiverseInvent
 import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
+import com.willfp.eco.util.ClassUtils
 import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -178,6 +181,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
         return listOf(
             // AntiGrief
+            IntegrationLoader("IridiumSkyblock") { AntigriefManager.register(AntigriefIridiumSkyblock()) },
             IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
@@ -254,7 +258,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun loadListeners(): List<Listener> {
-        return listOf(
+        val listeners = mutableListOf(
             NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
@@ -266,5 +270,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             DataListener(),
             PlayerBlockListener(this)
         )
+
+        if (ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent")) {
+            listeners.add(BungeeDataListener())
+        }
+
+        return listeners
     }
 }
