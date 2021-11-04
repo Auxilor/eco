@@ -87,7 +87,19 @@ class MySQLDataHandler(
         savePlayer(uuid, async = true)
     }
 
-    fun savePlayer(uuid: UUID, async: Boolean = true) {
+    override fun saveAll(uuids: Iterable<UUID>) {
+        for (uuid in uuids) {
+            savePlayer(uuid)
+        }
+    }
+
+    override fun saveAllBlocking(uuids: Iterable<UUID>) {
+        for (uuid in uuids) {
+            savePlayer(uuid, async = false)
+        }
+    }
+
+    private fun savePlayer(uuid: UUID, async: Boolean = true) {
         val profile = PlayerProfile.load(uuid)
 
         transaction {

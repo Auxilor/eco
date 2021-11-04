@@ -5,7 +5,7 @@ import com.willfp.eco.core.config.yaml.YamlBaseConfig
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
-import java.util.*
+import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
 class YamlDataHandler(
@@ -15,6 +15,14 @@ class YamlDataHandler(
 
     override fun save() {
         dataYml.save()
+    }
+
+    override fun saveAll(uuids: Iterable<UUID>) {
+        for (uuid in uuids) {
+            savePlayer(uuid)
+        }
+
+        save()
     }
 
     override fun savePlayer(uuid: UUID) {
