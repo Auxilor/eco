@@ -8,10 +8,22 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.BooleanColumnType
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DoubleColumnType
+import org.jetbrains.exposed.sql.IntegerColumnType
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.VarCharColumnType
+import org.jetbrains.exposed.sql.checkMappingConsistence
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import org.jetbrains.exposed.sql.update
+import java.util.UUID
 import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
@@ -49,29 +61,40 @@ class MySQLDataHandler(
     }
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
-        writeSafely(uuid, key, value)
+        getPlayer(uuid)
+        writeAsserted(uuid, key, value)
     }
 
-    private fun <T> writeSafely(uuid: UUID, key: NamespacedKey, value: T, predefinedPlayer: ResultRow? = null) {
+    private fun <T> writeAsserted(uuid: UUID, key: NamespacedKey, value: T, async: Boolean = true) {
         val column: Column<T> = getColumn(key.toString()) as Column<T>
 
-        executor.execute {
+        fun executeTransaction() {
             transaction {
-                val player = predefinedPlayer ?: getPlayer(uuid)
-
-                player[column] = value
+                Players.update({ Players.id eq uuid }) {
+                    it[column] = value
+                }
             }
+        }
+
+        if (async) {
+            executor.execute { executeTransaction() }
+        } else {
+            executeTransaction()
         }
     }
 
     override fun savePlayer(uuid: UUID) {
+        savePlayer(uuid, async = true)
+    }
+
+    fun savePlayer(uuid: UUID, async: Boolean = true) {
         val profile = PlayerProfile.load(uuid)
 
         transaction {
-            val player = getPlayer(uuid)
+            getPlayer(uuid)
 
             for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-                writeSafely(uuid, key.key, profile.read(key), predefinedPlayer = player)
+                writeAsserted(uuid, key.key, profile.read(key), async = async)
             }
         }
     }

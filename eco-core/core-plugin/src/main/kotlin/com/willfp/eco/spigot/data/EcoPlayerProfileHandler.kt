@@ -6,8 +6,9 @@ import com.willfp.eco.core.data.PlayerProfileHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.data.EcoPlayerProfile
 import com.willfp.eco.spigot.EcoSpigotPlugin
+import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import org.bukkit.Bukkit
-import java.util.*
+import java.util.UUID
 
 class EcoPlayerProfileHandler(
     private val plugin: EcoSpigotPlugin
@@ -42,6 +43,17 @@ class EcoPlayerProfileHandler(
         }
 
         handler.save()
+    }
+
+    fun saveAllBlocking() {
+        when (handler) {
+            is MySQLDataHandler -> {
+                for ((uuid, _) in loaded) {
+                    handler.savePlayer(uuid, async = false)
+                }
+            }
+            else -> saveAll()
+        }
     }
 
     fun autosave() {
