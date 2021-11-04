@@ -47,14 +47,8 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         handleRateLimit(player)
 
         if (usingAsync(player)) {
-            executor.execute {
-                try {
-                    modifyWindowItems(itemStacks, windowId, player)
-                } catch (e: Exception) {
-                    if (this.getPlugin().configYml.getBool("async-display.log-errors")) {
-                        this.getPlugin().logger.warning("Error happened in async processing! Disable async display (/plugins/eco/config.yml) if this is a frequent issue")
-                    }
-                }
+            fun modifyAndSend(itemStacks: MutableList<ItemStack>, windowId: Int, player: Player) {
+                modifyWindowItems(itemStacks, windowId, player)
 
                 val newPacket = packet.deepClone()
                 newPacket.itemListModifier.write(0, itemStacks)
@@ -62,6 +56,20 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
                 ignorePacketList.add(player.name)
 
                 ProtocolLibrary.getProtocolManager().sendServerPacket(player, newPacket)
+            }
+
+            executor.execute {
+                try {
+                    modifyAndSend(itemStacks, windowId, player)
+                } catch (e: Exception) {
+                    if (this.getPlugin().configYml.getBool("async-display.log-errors")) {
+                        this.getPlugin().logger.warning("Error happened in async processing! Disable async display (/plugins/eco/config.yml) if this is a frequent issue")
+                    }
+
+                    this.getPlugin().scheduler.run {
+                        modifyAndSend(itemStacks, windowId, player)
+                    }
+                }
             }
         } else {
             packet.itemListModifier.write(0, modifyWindowItems(itemStacks, windowId, player))
@@ -91,7 +99,8 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
     private fun usingAsync(player: Player): Boolean {
         if (this.getPlugin().configYml.getStrings("async-display.disable-on-types", false)
-                .map { it.lowercase() }.contains(player.openInventory.type.name.lowercase())) {
+                .map { it.lowercase() }.contains(player.openInventory.type.name.lowercase())
+        ) {
             return false
         }
 

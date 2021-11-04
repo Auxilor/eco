@@ -1,30 +1,25 @@
 package com.willfp.eco.spigot.data.storage
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.Eco
+import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.BooleanColumnType
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DoubleColumnType
-import org.jetbrains.exposed.sql.IntegerColumnType
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.VarCharColumnType
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
-import java.util.UUID
+import java.util.*
+import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
     plugin: EcoSpigotPlugin
 ) : DataHandler {
     private val columns = mutableMapOf<String, Column<*>>()
+    private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
+    private val executor = Executors.newCachedThreadPool(threadFactory)
 
     init {
         Database.connect(
@@ -52,17 +47,39 @@ class MySQLDataHandler(
         }
     }
 
-    override fun save() {
-        // Do nothing
+    override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+        writeSafely(uuid, key, value)
     }
 
-    override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
-        transaction {
-            getPlayer(uuid)
-            val column: Column<T> = getColumn(key.toString()) as Column<T>
+    private fun <T> writeSafely(
+        uuid: UUID,
+        key: NamespacedKey,
+        value: T,
+        assumeCreated: Boolean = false
+    ) {
+        val column: Column<T> = getColumn(key.toString()) as Column<T>
 
-            Players.update({ Players.id eq uuid }) {
-                it[column] = value
+        executor.execute {
+            if (!assumeCreated) {
+                getPlayer(uuid)
+            }
+
+            transaction {
+                Players.update({ Players.id eq uuid }) {
+                    it[column] = value
+                }
+            }
+        }
+    }
+
+    override fun savePlayer(uuid: UUID) {
+        val profile = PlayerProfile.load(uuid)
+
+        getPlayer(uuid)
+
+        transaction {
+            for (key in Eco.getHandler().keyRegistry.registeredKeys) {
+                writeSafely(uuid, key.key, profile.read(key), assumeCreated = true)
             }
         }
     }
@@ -112,12 +129,15 @@ class MySQLDataHandler(
     }
 
     private fun getPlayer(uuid: UUID): ResultRow {
-        Players.select { Players.id eq uuid }.firstOrNull() ?: run {
-            Players.insert {
-                it[id] = uuid
-            }
-        }
+        val player = Players.select { Players.id eq uuid }.limit(1).singleOrNull()
 
-        return Players.select { Players.id eq uuid }.first()
+        return if (player != null) {
+            player
+        } else {
+            transaction {
+                Players.insert { it[id] = uuid }
+            }
+            getPlayer(uuid)
+        }
     }
 }

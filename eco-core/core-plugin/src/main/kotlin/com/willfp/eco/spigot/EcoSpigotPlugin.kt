@@ -30,12 +30,7 @@ import com.willfp.eco.spigot.data.PlayerBlockListener
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
-import com.willfp.eco.spigot.display.PacketAutoRecipe
-import com.willfp.eco.spigot.display.PacketChat
-import com.willfp.eco.spigot.display.PacketOpenWindowMerchant
-import com.willfp.eco.spigot.display.PacketSetCreativeSlot
-import com.willfp.eco.spigot.display.PacketSetSlot
-import com.willfp.eco.spigot.display.PacketWindowItems
+import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.display.frame.clearFrames
 import com.willfp.eco.spigot.drops.CollatedRunnable
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners
@@ -46,22 +41,8 @@ import com.willfp.eco.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.spigot.gui.GUIListener
 import com.willfp.eco.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatAlice
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan
-import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefBentoBox
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV10
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny
-import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.spigot.integrations.anticheat.*
+import com.willfp.eco.spigot.integrations.antigrief.*
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
@@ -145,6 +126,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleDisable() {
         Eco.getHandler().adventure?.close()
+        this.logger.info("Saving player data...")
+        Eco.getHandler().playerProfileHandler.saveAll()
     }
 
     override fun handleReload() {
@@ -158,7 +141,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         this.scheduler.runTimer(
             {
                 (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler)
-                    .autosave(this.configYml.getBool("autosave.async"))
+                    .autosave()
             },
             this.configYml.getInt("autosave.ticks").toLong(),
             this.configYml.getInt("autosave.ticks").toLong()

@@ -1,6 +1,8 @@
 package com.willfp.eco.spigot.data.storage
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.config.yaml.YamlBaseConfig
+import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
 import java.util.*
@@ -15,8 +17,12 @@ class YamlDataHandler(
         dataYml.save()
     }
 
-    override fun updateKeys() {
-        // Do nothing
+    override fun savePlayer(uuid: UUID) {
+        val profile = PlayerProfile.load(uuid)
+
+        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
+            write(uuid, key.key, profile.read(key))
+        }
     }
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {

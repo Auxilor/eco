@@ -14,7 +14,6 @@ mysql:
 autosave:
   ticks: 20000 # The amount of ticks between autosaves
   log: false # If auto-save messages should be sent to console
-  async: false # If saves should be performed asynchronously. May cause bugs without MySQL
 
 
 # Options to fix villager bugs left behind from old (buggy) versions.

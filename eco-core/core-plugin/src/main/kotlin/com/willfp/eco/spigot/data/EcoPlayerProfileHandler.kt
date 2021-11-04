@@ -33,39 +33,18 @@ class EcoPlayerProfileHandler(
     }
 
     override fun savePlayer(uuid: UUID) {
-        writeToHandler(uuid)
-        saveToHandler()
+        handler.savePlayer(uuid)
     }
 
-    private fun writeToHandler(uuid: UUID) {
-        val profile = load(uuid)
-
-        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-            handler.write(uuid, key.key, profile.read(key) ?: key.defaultValue)
+    override fun saveAll() {
+        for ((uuid, _) in loaded) {
+            handler.savePlayer(uuid)
         }
-    }
 
-    private fun saveToHandler() {
         handler.save()
     }
 
-    override fun saveAll(async: Boolean) {
-        val saver = {
-            for ((uuid, _) in loaded) {
-                writeToHandler(uuid)
-            }
-
-            saveToHandler()
-        }
-
-        if (async) {
-            plugin.scheduler.runAsync(saver)
-        } else {
-            saver.invoke()
-        }
-    }
-
-    fun autosave(async: Boolean) {
+    fun autosave() {
         if (Bukkit.getOnlinePlayers().isEmpty()) {
             return
         }
@@ -74,7 +53,7 @@ class EcoPlayerProfileHandler(
             plugin.logger.info("Auto-Saving player data!")
         }
 
-        saveAll(async)
+        saveAll()
 
         if (plugin.configYml.getBool("autosave.log")) {
             plugin.logger.info("Saved player data!")

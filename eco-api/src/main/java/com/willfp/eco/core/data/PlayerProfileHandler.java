@@ -27,6 +27,15 @@ public interface PlayerProfileHandler {
      * Save all player data.
      *
      * @param async If the saving should be done asynchronously.
+     * @deprecated async is now handled automatically depending on implementation.
      */
-    void saveAll(boolean async);
+    @Deprecated
+    default void saveAll(boolean async) {
+        saveAll();
+    }
+
+    /**
+     * Save all player data.
+     */
+    void saveAll();
 }
