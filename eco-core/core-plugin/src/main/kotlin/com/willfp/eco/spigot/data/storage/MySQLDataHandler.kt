@@ -48,12 +48,16 @@ class MySQLDataHandler(
     }
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+        writeSafely(uuid, key, value)
+    }
+
+    private fun <T> writeSafely(uuid: UUID, key: NamespacedKey, value: T, predefinedPlayer: ResultRow? = null) {
         val column: Column<T> = getColumn(key.toString()) as Column<T>
 
         executor.execute {
-            val player = getPlayer(uuid)
-
             transaction {
+                val player = predefinedPlayer ?: getPlayer(uuid)
+
                 player[column] = value
             }
         }
@@ -63,8 +67,10 @@ class MySQLDataHandler(
         val profile = PlayerProfile.load(uuid)
 
         transaction {
+            val player = getPlayer(uuid)
+
             for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-                write(uuid, key.key, profile.read(key))
+                writeSafely(uuid, key.key, profile.read(key), predefinedPlayer = player)
             }
         }
     }
@@ -78,9 +84,7 @@ class MySQLDataHandler(
         return value
     }
 
-    object Players : UUIDTable("eco_players") {
-
-    }
+    object Players : UUIDTable("eco_players")
 
     private fun <T> registerColumn(key: PersistentDataKey<T>, table: UUIDTable) {
         table.apply {
