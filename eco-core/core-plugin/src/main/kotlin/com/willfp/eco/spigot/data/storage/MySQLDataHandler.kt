@@ -6,6 +6,7 @@ import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.spigot.EcoSpigotPlugin
+import org.apache.logging.log4j.Level
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.BooleanColumnType
@@ -18,6 +19,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.VarCharColumnType
 import org.jetbrains.exposed.sql.checkMappingConsistence
+import org.jetbrains.exposed.sql.exposedLogger
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.TransactionManager
@@ -48,6 +50,15 @@ class MySQLDataHandler(
         transaction {
             SchemaUtils.create(Players)
         }
+
+        // Get Exposed to shut the hell up
+        exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
+            .apply {
+                get(exposedLogger).apply {
+                    this.javaClass.getDeclaredMethod("setLevel", Level::class.java)
+                        .invoke(this, Level.OFF)
+                }
+            }
     }
 
     override fun updateKeys() {
@@ -56,7 +67,7 @@ class MySQLDataHandler(
                 registerColumn(key, Players)
             }
 
-            createMissingTablesAndColumnsSilently(Players)
+            SchemaUtils.createMissingTablesAndColumns(Players)
         }
     }
 
