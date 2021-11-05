@@ -54,6 +54,9 @@ allprojects {
 
         // CombatLogX
         maven { url 'https://nexus.sirblobman.xyz/repository/public/' }
+
+        // IridiumSkyblock
+        maven { url 'https://nexus.iridiumdevelopment.net/repository/maven-releases/' }
     }
 
     dependencies {

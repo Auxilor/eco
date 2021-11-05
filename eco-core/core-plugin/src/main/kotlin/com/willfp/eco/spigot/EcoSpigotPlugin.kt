@@ -24,13 +24,19 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
+import com.willfp.eco.spigot.data.BungeeDataListener
 import com.willfp.eco.spigot.data.DataListener
 import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.spigot.data.PlayerBlockListener
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
-import com.willfp.eco.spigot.display.*
+import com.willfp.eco.spigot.display.PacketAutoRecipe
+import com.willfp.eco.spigot.display.PacketChat
+import com.willfp.eco.spigot.display.PacketOpenWindowMerchant
+import com.willfp.eco.spigot.display.PacketSetCreativeSlot
+import com.willfp.eco.spigot.display.PacketSetSlot
+import com.willfp.eco.spigot.display.PacketWindowItems
 import com.willfp.eco.spigot.display.frame.clearFrames
 import com.willfp.eco.spigot.drops.CollatedRunnable
 import com.willfp.eco.spigot.eventlisteners.EntityDeathByEntityListeners
@@ -41,8 +47,24 @@ import com.willfp.eco.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.spigot.gui.GUIListener
 import com.willfp.eco.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.spigot.integrations.anticheat.*
-import com.willfp.eco.spigot.integrations.antigrief.*
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatAAC
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatAlice
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatMatrix
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatNCP
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatSpartan
+import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefBentoBox
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV10
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefDeluxeCombat
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefIridiumSkyblock
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefKingdoms
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefLands
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefTowny
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.spigot.integrations.customitems.CustomItemsOraxen
@@ -55,6 +77,7 @@ import com.willfp.eco.spigot.integrations.multiverseinventories.MultiverseInvent
 import com.willfp.eco.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
+import com.willfp.eco.util.ClassUtils
 import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -126,7 +149,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleDisable() {
         this.logger.info("Saving player data...")
-        Eco.getHandler().playerProfileHandler.saveAll()
+        val start = System.currentTimeMillis()
+        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).saveAllBlocking()
+        this.logger.info("Saved player data! Took ${System.currentTimeMillis() - start}ms")
         Eco.getHandler().adventure?.close()
     }
 
@@ -156,6 +181,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
         return listOf(
             // AntiGrief
+            IntegrationLoader("IridiumSkyblock") { AntigriefManager.register(AntigriefIridiumSkyblock()) },
+            IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
@@ -231,7 +258,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun loadListeners(): List<Listener> {
-        return listOf(
+        val listeners = mutableListOf(
             NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
@@ -243,5 +270,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             DataListener(),
             PlayerBlockListener(this)
         )
+
+        if (ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent")) {
+            listeners.add(BungeeDataListener())
+        }
+
+        return listeners
     }
 }

@@ -33,6 +33,8 @@ softdepend:
   - Essentials
   - Vault
   - BentoBox
+  - DeluxeCombat
+  - IridiumSkyblock
 libraries:
   - 'org.reflections:reflections:0.9.12'
   - 'org.apache.maven:maven-artifact:3.0.3'

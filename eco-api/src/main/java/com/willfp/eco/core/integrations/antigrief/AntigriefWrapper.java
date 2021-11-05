@@ -15,7 +15,7 @@ public interface AntigriefWrapper extends Integration {
      *
      * @param player The player.
      * @param block  The block.
-     * @return If player cna break block.
+     * @return If player can break block.
      */
     boolean canBreakBlock(Player player, Block block);
 

@@ -1,11 +1,17 @@
 package com.willfp.eco.spigot.data.storage
 
 import org.bukkit.NamespacedKey
-import java.util.*
+import java.util.UUID
 
 interface DataHandler {
     fun save() {
 
+    }
+
+    fun saveAll(uuids: Iterable<UUID>)
+
+    fun saveAllBlocking(uuids: Iterable<UUID>) {
+        saveAll(uuids)
     }
 
     fun updateKeys() {

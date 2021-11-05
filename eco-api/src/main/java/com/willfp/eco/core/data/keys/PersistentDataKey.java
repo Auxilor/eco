@@ -5,6 +5,8 @@ import lombok.Getter;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
 /**
  * A persistent data key is a key with a type that can be stored about an offline player.
  *
@@ -53,5 +55,14 @@ public class PersistentDataKey<T> {
                 + ", defaultValue=" + defaultValue
                 + ", type=" + type
                 + '}';
+    }
+
+    /**
+     * Get all persistent data keys.
+     *
+     * @return The keys.
+     */
+    public static Set<PersistentDataKey<?>> values() {
+        return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
     }
 }
