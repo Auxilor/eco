@@ -24,10 +24,7 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
-import com.willfp.eco.spigot.data.BungeeDataListener
-import com.willfp.eco.spigot.data.DataListener
-import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
-import com.willfp.eco.spigot.data.PlayerBlockListener
+import com.willfp.eco.spigot.data.*
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
@@ -251,6 +248,10 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         if (Prerequisite.HAS_BUNGEECORD.isMet) {
             listeners.add(BungeeDataListener())
+        }
+
+        if (Prerequisite.HAS_VELOCITY.isMet) {
+            listeners.add(VelocityDataListener())
         }
 
         return listeners

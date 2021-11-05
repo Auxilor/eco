@@ -34,7 +34,7 @@ allprojects {
         // bStats, mcMMO, BentoBox
         maven { url 'https://repo.codemc.org/repository/maven-public/' }
 
-        // Spigot API
+        // Spigot API, Bungee API
         maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
 
         // PlaceholderAPI
@@ -57,6 +57,9 @@ allprojects {
 
         // IridiumSkyblock
         maven { url 'https://nexus.iridiumdevelopment.net/repository/maven-releases/' }
+
+        // Velocity
+        maven { url 'https://repo.velocitypowered.com/snapshots/' }
     }
 
     dependencies {

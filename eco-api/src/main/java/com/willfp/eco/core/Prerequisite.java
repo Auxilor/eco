@@ -59,6 +59,14 @@ public class Prerequisite {
     );
 
     /**
+     * Requires the server to be running an implementation of Velocity.
+     */
+    public static final Prerequisite HAS_VELOCITY = new Prerequisite(
+            () -> ClassUtils.exists("com.velocitypowered.api.event.player.ServerConnectedEvent"),
+            "Requires server to be running Velocity (or a fork)"
+    );
+
+    /**
      * If the necessary prerequisite condition has been met.
      */
     @Getter
