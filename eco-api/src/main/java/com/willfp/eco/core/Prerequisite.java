@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.willfp.eco.core.integrations.economy.EconomyManager;
 import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.util.ClassUtils;
 import lombok.Getter;
@@ -31,8 +32,11 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running an implementation of paper.
+     * Requires the server to have vault installed.
+     *
+     * @deprecated Use {@link EconomyManager#hasRegistrations()} instead.
      */
+    @Deprecated
     public static final Prerequisite HAS_VAULT = new Prerequisite(
             () -> ClassUtils.exists("net.milkbowl.vault.economy.Economy"),
             "Requires server to have vault"
@@ -44,6 +48,14 @@ public class Prerequisite {
     public static final Prerequisite HAS_1_17 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("17"),
             "Requires server to be running 1.17+"
+    );
+
+    /**
+     * Requires the server to be running an implementation of BungeeCord.
+     */
+    public static final Prerequisite HAS_BUNGEECORD = new Prerequisite(
+            () -> ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent"),
+            "Requires server to be running BungeeCord (or a fork)"
     );
 
     /**
