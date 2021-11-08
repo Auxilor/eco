@@ -16,7 +16,7 @@ class DataListener : Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).unloadPlayer(event.player.uniqueId)
+        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).unloadPlayerBlocking(event.player.uniqueId)
         PlayerUtils.updateSavedDisplayName(event.player)
     }
 }

@@ -7,7 +7,7 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.data.EcoPlayerProfile
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.Bukkit
-import java.util.UUID
+import java.util.*
 
 class EcoPlayerProfileHandler(
     private val plugin: EcoSpigotPlugin
@@ -34,6 +34,11 @@ class EcoPlayerProfileHandler(
 
     fun unloadPlayer(uuid: UUID) {
         handler.savePlayer(uuid)
+        loaded.remove(uuid)
+    }
+
+    fun unloadPlayerBlocking(uuid: UUID) {
+        handler.saveAllBlocking(listOf(uuid))
         loaded.remove(uuid)
     }
 
