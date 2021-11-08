@@ -24,7 +24,6 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
-import com.willfp.eco.spigot.data.BungeeDataListener
 import com.willfp.eco.spigot.data.DataListener
 import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.spigot.data.PlayerBlockListener
@@ -125,9 +124,13 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
 
+        /*
+        I'll figure this one out eventually...
+        
         if (Prerequisite.HAS_BUNGEECORD.isMet) {
             BungeeDataListener.register()
         }
+         */
     }
 
     override fun handleDisable() {

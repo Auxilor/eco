@@ -58,6 +58,20 @@ public abstract class Extension implements PluginLike {
     }
 
     /**
+     * Method to handle after load.
+     */
+    public final void handleAfterLoad() {
+        this.onAfterLoad();
+    }
+
+    /**
+     * Method to handle plugin reloads.
+     */
+    public final void handleReload() {
+        this.onReload();
+    }
+
+    /**
      * Called on enabling Extension.
      */
     protected abstract void onEnable();
@@ -66,6 +80,16 @@ public abstract class Extension implements PluginLike {
      * Called when Extension is disabled.
      */
     protected abstract void onDisable();
+
+    /**
+     * Called the once the base plugin is done loading.
+     */
+    protected abstract void onAfterLoad();
+
+    /**
+     * Called on plugin reload.
+     */
+    protected abstract void onReload();
 
     /**
      * Set the metadata of the extension.
