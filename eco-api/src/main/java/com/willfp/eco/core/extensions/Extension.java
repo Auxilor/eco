@@ -84,12 +84,16 @@ public abstract class Extension implements PluginLike {
     /**
      * Called the once the base plugin is done loading.
      */
-    protected abstract void onAfterLoad();
+    protected void onAfterLoad() {
+        // Override if needed
+    }
 
     /**
      * Called on plugin reload.
      */
-    protected abstract void onReload();
+    protected void onReload() {
+        // Override if needed
+    }
 
     /**
      * Set the metadata of the extension.
