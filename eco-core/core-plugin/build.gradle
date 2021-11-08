@@ -42,7 +42,6 @@ dependencies {
     compileOnly 'com.google.guava:guava:31.0.1-jre'
     compileOnly 'com.iridium:IridiumSkyblock:3.1.2'
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT'
-    compileOnly 'com.velocitypowered:velocity-api:3.0.0-SNAPSHOT'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'

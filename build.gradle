@@ -57,9 +57,6 @@ allprojects {
 
         // IridiumSkyblock
         maven { url 'https://nexus.iridiumdevelopment.net/repository/maven-releases/' }
-
-        // Velocity
-        maven { url 'https://repo.velocitypowered.com/snapshots/' }
     }
 
     dependencies {

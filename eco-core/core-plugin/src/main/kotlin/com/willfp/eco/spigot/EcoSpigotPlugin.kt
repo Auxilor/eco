@@ -24,7 +24,10 @@ import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
-import com.willfp.eco.spigot.data.*
+import com.willfp.eco.spigot.data.BungeeDataListener
+import com.willfp.eco.spigot.data.DataListener
+import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
+import com.willfp.eco.spigot.data.PlayerBlockListener
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
@@ -119,7 +122,12 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             logger.severe("")
         }
 
+        // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
+
+        if (Prerequisite.HAS_BUNGEECORD.isMet) {
+            BungeeDataListener.register()
+        }
     }
 
     override fun handleDisable() {
@@ -233,7 +241,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun loadListeners(): List<Listener> {
-        val listeners = mutableListOf(
+        return listOf(
             NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
@@ -245,15 +253,5 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             DataListener(),
             PlayerBlockListener(this)
         )
-
-        if (Prerequisite.HAS_BUNGEECORD.isMet) {
-            listeners.add(BungeeDataListener())
-        }
-
-        if (Prerequisite.HAS_VELOCITY.isMet) {
-            listeners.add(VelocityDataListener())
-        }
-
-        return listeners
     }
 }
