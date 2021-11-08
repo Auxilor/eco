@@ -68,6 +68,11 @@ public abstract class Extension implements PluginLike {
     protected abstract void onDisable();
 
     /**
+     * Called after enabling the plugin that this extension is for.
+     */
+    public abstract void afterLoad();
+
+    /**
      * Set the metadata of the extension.
      * <p>
      * Must be called before enabling.

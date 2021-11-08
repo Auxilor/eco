@@ -7,6 +7,7 @@ import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
 import com.willfp.eco.core.events.EventManager;
+import com.willfp.eco.core.extensions.Extension;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
@@ -470,6 +471,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.reload();
 
         this.getLogger().info("Loaded " + this.color + this.getName());
+
+        for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
+            extension.afterLoad();
+        }
     }
 
     /**
