@@ -5,9 +5,6 @@ import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.CommandHandler;
 import com.willfp.eco.core.command.TabCompleteHandler;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -30,7 +27,6 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
     /**
      * The name of the command.
      */
-    @Getter
     private final String name;
 
     /**
@@ -38,7 +34,6 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
      * <p>
      * Written out as a string for flexibility with subclasses.
      */
-    @Getter
     private final String permission;
 
     /**
@@ -46,27 +41,22 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
      * <p>
      * In other worlds, only allowed to be executed by console.
      */
-    @Getter
     private final boolean playersOnly;
 
     /**
      * The actual code to be executed in the command.
      */
-    @Getter
-    @Setter
-    private CommandHandler handler = (sender, args) -> { };
+    private CommandHandler handler = (sender, args) -> {
+    };
 
     /**
      * The tab completion code to be executed in the command.
      */
-    @Getter
-    @Setter
     private TabCompleteHandler tabCompleter = (sender, args) -> new ArrayList<>();
 
     /**
      * All subcommands for the command.
      */
-    @Getter(AccessLevel.PROTECTED)
     private final List<CommandBase> subcommands;
 
     /**
@@ -201,5 +191,77 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
         }
 
         return true;
+    }
+
+    /**
+     * Get the command name.
+     *
+     * @return The name.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Get the permission required to execute the command.
+     *
+     * @return The permission.
+     */
+    public String getPermission() {
+        return this.permission;
+    }
+
+    /**
+     * Get if the command can only be executed by players.
+     *
+     * @return If players only.
+     */
+    public boolean isPlayersOnly() {
+        return this.playersOnly;
+    }
+
+    /**
+     * Get the actual code to be executed in the command.
+     *
+     * @return The code.
+     */
+    public CommandHandler getHandler() {
+        return this.handler;
+    }
+
+    /**
+     * Get the tab completion code to be executed in the command.
+     *
+     * @return The code.
+     */
+    public TabCompleteHandler getTabCompleter() {
+        return this.tabCompleter;
+    }
+
+    /**
+     * Get the subcommands of the command.
+     *
+     * @return The subcommands.
+     */
+    public List<CommandBase> getSubcommands() {
+        return this.subcommands;
+    }
+
+    /**
+     * Set the command handler.
+     *
+     * @param handler The handler.
+     */
+    public void setHandler(@NotNull final CommandHandler handler) {
+        this.handler = handler;
+    }
+
+    /**
+     * Set the tab completer.
+     *
+     * @param tabCompleter The tab completer.
+     */
+    public void setTabCompleter(@NotNull final TabCompleteHandler tabCompleter) {
+        this.tabCompleter = tabCompleter;
     }
 }
