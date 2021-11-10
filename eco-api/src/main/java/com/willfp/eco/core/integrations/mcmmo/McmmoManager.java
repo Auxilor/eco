@@ -1,6 +1,5 @@
 package com.willfp.eco.core.integrations.mcmmo;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -11,19 +10,18 @@ import java.util.Set;
 /**
  * Class to handle mcmmo integrations.
  */
-@UtilityClass
-public class McmmoManager {
+public final class McmmoManager {
     /**
      * A set of all registered integrations.
      */
-    private final Set<McmmoWrapper> registered = new HashSet<>();
+    private static final Set<McmmoWrapper> registered = new HashSet<>();
 
     /**
      * Register a new integration.
      *
      * @param integration The integration to register.
      */
-    public void register(@NotNull final McmmoWrapper integration) {
+    public static void register(@NotNull final McmmoWrapper integration) {
         registered.add(integration);
     }
 
@@ -33,7 +31,7 @@ public class McmmoManager {
      * @param block The block.
      * @return The bonus drop count.
      */
-    public int getBonusDropCount(@NotNull final Block block) {
+    public static int getBonusDropCount(@NotNull final Block block) {
         for (McmmoWrapper mcmmoWrapper : registered) {
             return mcmmoWrapper.getBonusDropCount(block);
         }
@@ -46,10 +44,14 @@ public class McmmoManager {
      * @param event The event to check.
      * @return If the event is fake.
      */
-    public boolean isFake(@NotNull final Event event) {
+    public static boolean isFake(@NotNull final Event event) {
         for (McmmoWrapper mcmmoWrapper : registered) {
             return mcmmoWrapper.isFake(event);
         }
         return false;
+    }
+
+    private McmmoManager() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

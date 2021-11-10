@@ -1,6 +1,5 @@
 package com.willfp.eco.core.display;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -10,8 +9,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Utility class to manage client-side item display.
  */
-@UtilityClass
-public class Display {
+public final class Display {
     /**
      * The prefix for client-side lore lines.
      */
@@ -28,7 +26,7 @@ public class Display {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    public ItemStack display(@NotNull final ItemStack itemStack) {
+    public static ItemStack display(@NotNull final ItemStack itemStack) {
         return display(itemStack, null);
     }
 
@@ -39,8 +37,8 @@ public class Display {
      * @param player    The player.
      * @return The ItemStack.
      */
-    public ItemStack display(@NotNull final ItemStack itemStack,
-                             @Nullable final Player player) {
+    public static ItemStack display(@NotNull final ItemStack itemStack,
+                                    @Nullable final Player player) {
         return handler.display(itemStack, player);
     }
 
@@ -50,7 +48,7 @@ public class Display {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
+    public static ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
         return finalize(display(itemStack, null));
     }
 
@@ -61,7 +59,7 @@ public class Display {
      * @param player    The player.
      * @return The ItemStack.
      */
-    public ItemStack displayAndFinalize(@NotNull final ItemStack itemStack,
+    public static ItemStack displayAndFinalize(@NotNull final ItemStack itemStack,
                                         @Nullable final Player player) {
         return finalize(display(itemStack, player));
     }
@@ -72,7 +70,7 @@ public class Display {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    public ItemStack revert(@NotNull final ItemStack itemStack) {
+    public static ItemStack revert(@NotNull final ItemStack itemStack) {
         return handler.revert(itemStack);
     }
 
@@ -82,7 +80,7 @@ public class Display {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    public ItemStack finalize(@NotNull final ItemStack itemStack) {
+    public static ItemStack finalize(@NotNull final ItemStack itemStack) {
         return handler.finalize(itemStack);
     }
 
@@ -92,7 +90,7 @@ public class Display {
      * @param itemStack The item.
      * @return The ItemStack.
      */
-    public ItemStack unfinalize(@NotNull final ItemStack itemStack) {
+    public static ItemStack unfinalize(@NotNull final ItemStack itemStack) {
         return handler.unfinalize(itemStack);
     }
 
@@ -102,7 +100,7 @@ public class Display {
      * @param itemStack The item.
      * @return If finalized.
      */
-    public boolean isFinalized(@NotNull final ItemStack itemStack) {
+    public static boolean isFinalized(@NotNull final ItemStack itemStack) {
         return handler.isFinalized(itemStack);
     }
 
@@ -111,7 +109,7 @@ public class Display {
      *
      * @param module The module.
      */
-    public void registerDisplayModule(@NotNull final DisplayModule module) {
+    public static void registerDisplayModule(@NotNull final DisplayModule module) {
         handler.registerDisplayModule(module);
     }
 
@@ -175,5 +173,9 @@ public class Display {
         }
 
         Display.handler = handler;
+    }
+
+    private Display() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

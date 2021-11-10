@@ -1,6 +1,5 @@
 package com.willfp.eco.core;
 
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -10,20 +9,19 @@ import org.jetbrains.annotations.NotNull;
  *
  * @see Handler
  */
-@UtilityClass
-public class Eco {
+public final class Eco {
     /**
      * Instance of eco handler.
      */
     @ApiStatus.Internal
-    private Handler handler;
+    private static Handler handler;
 
     /**
      * Set the handler.
      * @param handler The handler.
      */
     @ApiStatus.Internal
-    public void setHandler(@NotNull final Handler handler) {
+    public static void setHandler(@NotNull final Handler handler) {
         Validate.isTrue(Eco.handler == null, "Already initialized!");
 
         Eco.handler = handler;
@@ -46,7 +44,11 @@ public class Eco {
      * @return The handler.
      */
     @ApiStatus.Internal
-    public Handler getHandler() {
+    public static Handler getHandler() {
         return handler;
+    }
+
+    private Eco() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

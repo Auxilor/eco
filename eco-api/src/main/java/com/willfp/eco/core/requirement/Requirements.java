@@ -1,14 +1,12 @@
 package com.willfp.eco.core.requirement;
 
 import com.willfp.eco.core.Eco;
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Contains methods and fields pertaining to requirements.
  */
-@UtilityClass
-public class Requirements {
+public final class Requirements {
     /**
      * Requires a player to have a permission.
      */
@@ -37,5 +35,9 @@ public class Requirements {
      */
     public static Requirement getByID(@NotNull final String name) {
         return Eco.getHandler().getRequirementFactory().create(name);
+    }
+
+    private Requirements() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

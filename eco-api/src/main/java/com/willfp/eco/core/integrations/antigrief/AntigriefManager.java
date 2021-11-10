@@ -1,6 +1,5 @@
 package com.willfp.eco.core.integrations.antigrief;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -13,20 +12,19 @@ import java.util.Set;
 /**
  * Class to handle antigrief integrations.
  */
-@UtilityClass
-public class AntigriefManager {
+public final class AntigriefManager {
     /**
      * Registered antigriefs.
      */
-    private final Set<AntigriefWrapper> registered = new HashSet<>();
+    private static final Set<AntigriefWrapper> REGISTERED = new HashSet<>();
 
     /**
      * Register a new AntiGrief/Land Management integration.
      *
      * @param antigrief The integration to register.
      */
-    public void register(@NotNull final AntigriefWrapper antigrief) {
-        registered.add(antigrief);
+    public static void register(@NotNull final AntigriefWrapper antigrief) {
+        REGISTERED.add(antigrief);
     }
 
     /**
@@ -34,9 +32,9 @@ public class AntigriefManager {
      *
      * @param antigrief The integration to unregister.
      */
-    public void unregister(@NotNull final AntigriefWrapper antigrief) {
-        registered.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
-        registered.remove(antigrief);
+    public static void unregister(@NotNull final AntigriefWrapper antigrief) {
+        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
+        REGISTERED.remove(antigrief);
     }
 
     /**
@@ -46,9 +44,9 @@ public class AntigriefManager {
      * @param block  The block.
      * @return If player can break block.
      */
-    public boolean canBreakBlock(@NotNull final Player player,
+    public static boolean canBreakBlock(@NotNull final Player player,
                                  @NotNull final Block block) {
-        return registered.stream().allMatch(antigriefWrapper -> antigriefWrapper.canBreakBlock(player, block));
+        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canBreakBlock(player, block));
     }
 
     /**
@@ -58,9 +56,9 @@ public class AntigriefManager {
      * @param location The location.
      * @return If player can create explosion.
      */
-    public boolean canCreateExplosion(@NotNull final Player player,
+    public static boolean canCreateExplosion(@NotNull final Player player,
                                       @NotNull final Location location) {
-        return registered.stream().allMatch(antigriefWrapper -> antigriefWrapper.canCreateExplosion(player, location));
+        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canCreateExplosion(player, location));
     }
 
     /**
@@ -70,9 +68,9 @@ public class AntigriefManager {
      * @param block  The block.
      * @return If player can place block.
      */
-    public boolean canPlaceBlock(@NotNull final Player player,
+    public static boolean canPlaceBlock(@NotNull final Player player,
                                  @NotNull final Block block) {
-        return registered.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPlaceBlock(player, block));
+        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPlaceBlock(player, block));
     }
 
     /**
@@ -82,8 +80,12 @@ public class AntigriefManager {
      * @param victim The victim.
      * @return If player can injure.
      */
-    public boolean canInjure(@NotNull final Player player,
+    public static boolean canInjure(@NotNull final Player player,
                              @NotNull final LivingEntity victim) {
-        return registered.stream().allMatch(antigriefWrapper -> antigriefWrapper.canInjure(player, victim));
+        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canInjure(player, victim));
+    }
+
+    private AntigriefManager() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

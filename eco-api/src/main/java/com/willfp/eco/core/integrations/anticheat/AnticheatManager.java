@@ -1,7 +1,6 @@
 package com.willfp.eco.core.integrations.anticheat;
 
 import com.willfp.eco.core.EcoPlugin;
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -12,12 +11,11 @@ import java.util.Set;
 /**
  * Class to handle anticheat integrations.
  */
-@UtilityClass
-public class AnticheatManager {
+public final class AnticheatManager {
     /**
      * A set of all registered anticheats.
      */
-    private final Set<AnticheatWrapper> anticheats = new HashSet<>();
+    private static final Set<AnticheatWrapper> ANTICHEATS = new HashSet<>();
 
     /**
      * Register a new anticheat.
@@ -25,12 +23,12 @@ public class AnticheatManager {
      * @param plugin    The plugin.
      * @param anticheat The anticheat to register.
      */
-    public void register(@NotNull final EcoPlugin plugin,
+    public static void register(@NotNull final EcoPlugin plugin,
                          @NotNull final AnticheatWrapper anticheat) {
         if (anticheat instanceof Listener) {
             plugin.getEventManager().registerListener((Listener) anticheat);
         }
-        anticheats.add(anticheat);
+        ANTICHEATS.add(anticheat);
     }
 
     /**
@@ -38,8 +36,8 @@ public class AnticheatManager {
      *
      * @param player The player to exempt.
      */
-    public void exemptPlayer(@NotNull final Player player) {
-        anticheats.forEach(anticheat -> anticheat.exempt(player));
+    public static void exemptPlayer(@NotNull final Player player) {
+        ANTICHEATS.forEach(anticheat -> anticheat.exempt(player));
     }
 
     /**
@@ -48,7 +46,11 @@ public class AnticheatManager {
      *
      * @param player The player to remove the exemption.
      */
-    public void unexemptPlayer(@NotNull final Player player) {
-        anticheats.forEach(anticheat -> anticheat.unexempt(player));
+    public static void unexemptPlayer(@NotNull final Player player) {
+        ANTICHEATS.forEach(anticheat -> anticheat.unexempt(player));
+    }
+
+    private AnticheatManager() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

@@ -1,6 +1,5 @@
 package com.willfp.eco.core.integrations.placeholder;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,8 +12,7 @@ import java.util.Set;
 /**
  * Class to handle placeholder integrations.
  */
-@UtilityClass
-public class PlaceholderManager {
+public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
@@ -80,5 +78,9 @@ public class PlaceholderManager {
             processed = integration.translate(processed, player);
         }
         return processed;
+    }
+
+    private PlaceholderManager() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

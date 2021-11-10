@@ -8,7 +8,6 @@ import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 /**
  * Class to manage all custom and vanilla items.
  */
-@UtilityClass
 public final class Items {
     /**
      * All recipe parts.
@@ -51,7 +49,7 @@ public final class Items {
      * @param key  The key of the item.
      * @param item The item.
      */
-    public void registerCustomItem(@NotNull final NamespacedKey key,
+    public static void registerCustomItem(@NotNull final NamespacedKey key,
                                    @NotNull final TestableItem item) {
         REGISTRY.put(key, item);
     }
@@ -61,7 +59,7 @@ public final class Items {
      *
      * @param provider The provider.
      */
-    public void registerItemProvider(@NotNull final ItemProvider provider) {
+    public static void registerItemProvider(@NotNull final ItemProvider provider) {
         PROVIDERS.put(provider.getNamespace(), provider);
     }
 
@@ -70,7 +68,7 @@ public final class Items {
      *
      * @param parser The parser.
      */
-    public void registerArgParser(@NotNull final LookupArgParser parser) {
+    public static void registerArgParser(@NotNull final LookupArgParser parser) {
         ARG_PARSERS.add(parser);
     }
 
@@ -79,7 +77,7 @@ public final class Items {
      *
      * @param key The key of the recipe part.
      */
-    public void removeCustomItem(@NotNull final NamespacedKey key) {
+    public static void removeCustomItem(@NotNull final NamespacedKey key) {
         REGISTRY.remove(key);
     }
 
@@ -106,7 +104,7 @@ public final class Items {
      * @param key The lookup string.
      * @return The testable item, or an {@link EmptyTestableItem}.
      */
-    public TestableItem lookup(@NotNull final String key) {
+    public static TestableItem lookup(@NotNull final String key) {
         if (key.contains("?")) {
             String[] options = key.split("\\?");
             for (String option : options) {
@@ -243,7 +241,7 @@ public final class Items {
      * @param itemStack The itemStack to check.
      * @return If is recipe.
      */
-    public boolean isCustomItem(@NotNull final ItemStack itemStack) {
+    public static boolean isCustomItem(@NotNull final ItemStack itemStack) {
         for (TestableItem item : REGISTRY.values()) {
             if (item.matches(itemStack)) {
                 return true;
@@ -259,7 +257,7 @@ public final class Items {
      * @return The custom item, or null if not exists.
      */
     @Nullable
-    public CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
+    public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
         for (TestableItem item : REGISTRY.values()) {
             if (item.matches(itemStack)) {
                 return getOrWrap(item);
@@ -273,7 +271,7 @@ public final class Items {
      *
      * @return A set of all items.
      */
-    public Set<CustomItem> getCustomItems() {
+    public static Set<CustomItem> getCustomItems() {
         return REGISTRY.values().stream().map(Items::getOrWrap).collect(Collectors.toSet());
     }
 
@@ -286,7 +284,7 @@ public final class Items {
      * @param item The item.
      * @return The CustomItem.
      */
-    public CustomItem getOrWrap(@NotNull final TestableItem item) {
+    public static CustomItem getOrWrap(@NotNull final TestableItem item) {
         if (item instanceof CustomItem) {
             return (CustomItem) item;
         } else {
@@ -296,5 +294,9 @@ public final class Items {
                     item.getItem()
             );
         }
+    }
+
+    private Items() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

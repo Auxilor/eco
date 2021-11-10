@@ -6,7 +6,6 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
-import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +16,8 @@ import java.util.List;
 /**
  * Utility class to manage and register crafting recipes.
  */
-@UtilityClass
 @SuppressWarnings("deprecation")
-public class Recipes {
+public final class Recipes {
     /**
      * Registry of all recipes.
      */
@@ -31,7 +29,7 @@ public class Recipes {
      *
      * @param recipe The recipe.
      */
-    public void register(@NotNull final CraftingRecipe recipe) {
+    public static void register(@NotNull final CraftingRecipe recipe) {
         RECIPES.forcePut(recipe.getKey(), recipe);
     }
 
@@ -42,7 +40,7 @@ public class Recipes {
      * @return The match, or null if not found.
      */
     @Nullable
-    public CraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
+    public static CraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
         return RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
     }
 
@@ -53,7 +51,7 @@ public class Recipes {
      * @return The recipe, or null if not found.
      */
     @Nullable
-    public CraftingRecipe getRecipe(@NotNull final NamespacedKey key) {
+    public static CraftingRecipe getRecipe(@NotNull final NamespacedKey key) {
         CraftingRecipe recipe = RECIPES.get(key);
         if (recipe != null) {
             return recipe;
@@ -77,10 +75,10 @@ public class Recipes {
      * @param recipeStrings The recipe.
      * @return The recipe.
      */
-    public CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
-                                                  @NotNull final String key,
-                                                  @NotNull final ItemStack output,
-                                                  @NotNull final List<String> recipeStrings) {
+    public static CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
+                                                         @NotNull final String key,
+                                                         @NotNull final ItemStack output,
+                                                         @NotNull final List<String> recipeStrings) {
         ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key).setOutput(output);
 
         for (int i = 0; i < 9; i++) {
@@ -91,5 +89,9 @@ public class Recipes {
         recipe.register();
 
         return recipe;
+    }
+
+    private Recipes() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }
