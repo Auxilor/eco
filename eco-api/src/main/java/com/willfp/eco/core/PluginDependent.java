@@ -1,7 +1,5 @@
 package com.willfp.eco.core;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,7 +11,6 @@ public abstract class PluginDependent<T extends EcoPlugin> {
     /**
      * The {@link EcoPlugin} that is stored.
      */
-    @Getter(AccessLevel.PROTECTED)
     @NotNull
     private final T plugin;
 
@@ -24,5 +21,15 @@ public abstract class PluginDependent<T extends EcoPlugin> {
      */
     protected PluginDependent(@NotNull final T plugin) {
         this.plugin = plugin;
+    }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    @NotNull
+    protected T getPlugin() {
+        return this.plugin;
     }
 }

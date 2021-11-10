@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +25,6 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
      * <p>
      * Useful for monitor priority adapters that <b>must</b> be ran last.
      */
-    @Getter
     private final boolean postLoad;
 
     /**
@@ -133,5 +131,14 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
         if (!ProtocolLibrary.getProtocolManager().getPacketListeners().contains(this)) {
             ProtocolLibrary.getProtocolManager().addPacketListener(this);
         }
+    }
+
+    /**
+     * Get if the packet adapter should be loaded last.
+     *
+     * @return If post load.
+     */
+    public boolean isPostLoad() {
+        return this.postLoad;
     }
 }

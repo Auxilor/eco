@@ -3,7 +3,6 @@ package com.willfp.eco.core;
 import com.willfp.eco.core.integrations.economy.EconomyManager;
 import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.util.ClassUtils;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -69,7 +68,6 @@ public class Prerequisite {
     /**
      * If the necessary prerequisite condition has been met.
      */
-    @Getter
     private boolean isMet;
 
     /**
@@ -80,7 +78,6 @@ public class Prerequisite {
     /**
      * The description of the requirements of the prerequisite.
      */
-    @Getter
     private final String description;
 
     /**
@@ -124,5 +121,23 @@ public class Prerequisite {
 
     static {
         update();
+    }
+
+    /**
+     * Get if the prerequisite is met.
+     *
+     * @return If the condition is met.
+     */
+    public boolean isMet() {
+        return this.isMet;
+    }
+
+    /**
+     * Get the description.
+     *
+     * @return The description.
+     */
+    public String getDescription() {
+        return this.description;
     }
 }
