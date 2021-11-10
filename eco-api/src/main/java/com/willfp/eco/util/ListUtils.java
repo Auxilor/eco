@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,8 +11,7 @@ import java.util.Map;
 /**
  * Utilities / API methods for lists.
  */
-@UtilityClass
-public class ListUtils {
+public final class ListUtils {
     /**
      * Initialize 2D list of a given size.
      *
@@ -56,5 +54,9 @@ public class ListUtils {
         }
 
         return frequencyMap;
+    }
+
+    private ListUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.ApiStatus;
@@ -13,22 +12,21 @@ import java.util.function.Function;
 /**
  * Utilities / API methods for player heads.
  */
-@UtilityClass
-public class SkullUtils {
+public final class SkullUtils {
     /**
      * If the meta set function has been set.
      */
-    private boolean initialized = false;
+    private static boolean initialized = false;
 
     /**
      * The meta set function.
      */
-    private BiConsumer<SkullMeta, String> metaSetConsumer = null;
+    private static BiConsumer<SkullMeta, String> metaSetConsumer = null;
 
     /**
      * The meta get function.
      */
-    private Function<SkullMeta, String> metaGetConsumer = null;
+    private static Function<SkullMeta, String> metaGetConsumer = null;
 
     /**
      * Set the texture of a skull from base64.
@@ -36,7 +34,7 @@ public class SkullUtils {
      * @param meta   The meta to modify.
      * @param base64 The base64 texture.
      */
-    public void setSkullTexture(@NotNull final SkullMeta meta,
+    public static void setSkullTexture(@NotNull final SkullMeta meta,
                                 @NotNull final String base64) {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(metaSetConsumer, "Must be initialized!");
@@ -51,7 +49,7 @@ public class SkullUtils {
      * @return The texture, potentially null.
      */
     @Nullable
-    public String getSkullTexture(@NotNull final SkullMeta meta) {
+    public static String getSkullTexture(@NotNull final SkullMeta meta) {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(metaGetConsumer, "Must be initialized!");
 
@@ -65,12 +63,16 @@ public class SkullUtils {
      * @param function2 Get function.
      */
     @ApiStatus.Internal
-    public void initialize(@NotNull final BiConsumer<SkullMeta, String> function,
+    public static void initialize(@NotNull final BiConsumer<SkullMeta, String> function,
                            @NotNull final Function<SkullMeta, String> function2) {
         Validate.isTrue(!initialized, "Already initialized!");
 
         metaSetConsumer = function;
         metaGetConsumer = function2;
         initialized = true;
+    }
+
+    private SkullUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

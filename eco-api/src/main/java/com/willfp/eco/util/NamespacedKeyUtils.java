@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,8 +8,7 @@ import java.util.Objects;
 /**
  * Utilities / API methods for {@link NamespacedKey}s.
  */
-@UtilityClass
-public class NamespacedKeyUtils {
+public final class NamespacedKeyUtils {
     /**
      * Create a NamespacedKey for eco.
      *
@@ -18,7 +16,7 @@ public class NamespacedKeyUtils {
      * @return The key.
      */
     @NotNull
-    public NamespacedKey createEcoKey(@NotNull final String string) {
+    public static NamespacedKey createEcoKey(@NotNull final String string) {
         return Objects.requireNonNull(NamespacedKey.fromString("eco:" + string));
     }
 
@@ -30,8 +28,12 @@ public class NamespacedKeyUtils {
      * @return The key.
      */
     @NotNull
-    public NamespacedKey create(@NotNull final String namespace,
-                                @NotNull final String key) {
+    public static NamespacedKey create(@NotNull final String namespace,
+                                       @NotNull final String key) {
         return Objects.requireNonNull(NamespacedKey.fromString(namespace + ":" + key));
+    }
+
+    private NamespacedKeyUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

@@ -1,21 +1,19 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.potion.PotionData;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for potions.
  */
-@UtilityClass
-public class PotionUtils {
+public final class PotionUtils {
     /**
      * Get the duration (in ticks) for potion data.
      *
      * @param data The data.
      * @return The duration.
      */
-    public int getDuration(@NotNull final PotionData data) {
+    public static int getDuration(@NotNull final PotionData data) {
         if (data.isExtended()) {
             return switch (data.getType()) {
                 case INSTANT_DAMAGE, INSTANT_HEAL: yield 0;
@@ -43,5 +41,9 @@ public class PotionUtils {
             case TURTLE_MASTER: yield 1800;
             default: yield 3600;
         };
+    }
+
+    private PotionUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

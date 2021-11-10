@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Arrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
@@ -12,9 +11,7 @@ import java.util.List;
 /**
  * Utilities / API methods for arrows.
  */
-@UtilityClass
-public class ArrowUtils {
-
+public final class ArrowUtils {
     /**
      * Get the bow from an arrow.
      *
@@ -22,7 +19,7 @@ public class ArrowUtils {
      * @return The bow, or null if no bow.
      */
     @Nullable
-    public ItemStack getBow(@NotNull final Arrow arrow) {
+    public static ItemStack getBow(@NotNull final Arrow arrow) {
         List<MetadataValue> values = arrow.getMetadata("shot-from");
 
         if (values.isEmpty()) {
@@ -34,5 +31,9 @@ public class ArrowUtils {
         }
 
         return (ItemStack) values.get(0).value();
+    }
+
+    private ArrowUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

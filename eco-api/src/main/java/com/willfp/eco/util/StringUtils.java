@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -16,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,18 +24,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static net.md_5.bungee.api.ChatColor.BOLD;
-import static net.md_5.bungee.api.ChatColor.COLOR_CHAR;
-import static net.md_5.bungee.api.ChatColor.ITALIC;
-import static net.md_5.bungee.api.ChatColor.MAGIC;
-import static net.md_5.bungee.api.ChatColor.STRIKETHROUGH;
-import static net.md_5.bungee.api.ChatColor.UNDERLINE;
+import static net.md_5.bungee.api.ChatColor.*;
 
 /**
  * Utilities / API methods for strings.
  */
-@UtilityClass
-public class StringUtils {
+public final class StringUtils {
     /**
      * Regexes for gradients.
      */
@@ -93,7 +86,7 @@ public class StringUtils {
      * @return The message, formatted.
      */
     @NotNull
-    public List<String> formatList(@NotNull final List<String> list) {
+    public static List<String> formatList(@NotNull final List<String> list) {
         return formatList(list, (Player) null);
     }
 
@@ -107,8 +100,8 @@ public class StringUtils {
      * @return The message, format.
      */
     @NotNull
-    public List<String> formatList(@NotNull final List<String> list,
-                                   @Nullable final Player player) {
+    public static List<String> formatList(@NotNull final List<String> list,
+                                          @Nullable final Player player) {
         return formatList(list, player, FormatOption.WITH_PLACEHOLDERS);
     }
 
@@ -122,8 +115,8 @@ public class StringUtils {
      * @return The message, formatted.
      */
     @NotNull
-    public List<String> formatList(@NotNull final List<String> list,
-                                   @NotNull final FormatOption option) {
+    public static List<String> formatList(@NotNull final List<String> list,
+                                          @NotNull final FormatOption option) {
         return formatList(list, null, option);
     }
 
@@ -138,9 +131,9 @@ public class StringUtils {
      * @return The message, format.
      */
     @NotNull
-    public List<String> formatList(@NotNull final List<String> list,
-                                   @Nullable final Player player,
-                                   @NotNull final FormatOption option) {
+    public static List<String> formatList(@NotNull final List<String> list,
+                                          @Nullable final Player player,
+                                          @NotNull final FormatOption option) {
         List<String> translated = new ArrayList<>();
         for (String string : list) {
             translated.add(format(string, player, option));
@@ -159,7 +152,7 @@ public class StringUtils {
      * @see StringUtils#format(String, Player)
      */
     @NotNull
-    public String format(@NotNull final String message) {
+    public static String format(@NotNull final String message) {
         return format(message, (Player) null);
     }
 
@@ -173,8 +166,8 @@ public class StringUtils {
      * @return The message, formatted.
      */
     @NotNull
-    public String format(@NotNull final String message,
-                         @Nullable final Player player) {
+    public static String format(@NotNull final String message,
+                                @Nullable final Player player) {
         return format(message, player, FormatOption.WITH_PLACEHOLDERS);
     }
 
@@ -189,8 +182,8 @@ public class StringUtils {
      * @see StringUtils#format(String, Player)
      */
     @NotNull
-    public String format(@NotNull final String message,
-                         @NotNull final FormatOption option) {
+    public static String format(@NotNull final String message,
+                                @NotNull final FormatOption option) {
         return format(message, null, option);
     }
 
@@ -204,7 +197,7 @@ public class StringUtils {
      * @see StringUtils#format(String, Player)
      */
     @NotNull
-    public Component formatToComponent(@NotNull final String message) {
+    public static Component formatToComponent(@NotNull final String message) {
         return formatToComponent(message, (Player) null);
     }
 
@@ -218,8 +211,8 @@ public class StringUtils {
      * @return The message, formatted.
      */
     @NotNull
-    public Component formatToComponent(@NotNull final String message,
-                                       @Nullable final Player player) {
+    public static Component formatToComponent(@NotNull final String message,
+                                              @Nullable final Player player) {
         return formatToComponent(message, player, FormatOption.WITH_PLACEHOLDERS);
     }
 
@@ -234,8 +227,8 @@ public class StringUtils {
      * @see StringUtils#format(String, Player)
      */
     @NotNull
-    public Component formatToComponent(@NotNull final String message,
-                                       @NotNull final FormatOption option) {
+    public static Component formatToComponent(@NotNull final String message,
+                                              @NotNull final FormatOption option) {
         return formatToComponent(message, null, option);
     }
 
@@ -250,9 +243,9 @@ public class StringUtils {
      * @return The message, formatted, as a component.
      */
     @NotNull
-    public Component formatToComponent(@NotNull final String message,
-                                       @Nullable final Player player,
-                                       @NotNull final FormatOption option) {
+    public static Component formatToComponent(@NotNull final String message,
+                                              @Nullable final Player player,
+                                              @NotNull final FormatOption option) {
         return toComponent(format(message, player, option));
     }
 
@@ -267,9 +260,9 @@ public class StringUtils {
      * @return The message, formatted.
      */
     @NotNull
-    public String format(@NotNull final String message,
-                         @Nullable final Player player,
-                         @NotNull final FormatOption option) {
+    public static String format(@NotNull final String message,
+                                @Nullable final Player player,
+                                @NotNull final FormatOption option) {
         String processedMessage = message;
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
@@ -379,7 +372,7 @@ public class StringUtils {
      * @return The object stringified.
      */
     @NotNull
-    public String internalToString(@Nullable final Object object) {
+    public static String internalToString(@Nullable final Object object) {
         if (object == null) {
             return "null";
         }
@@ -405,8 +398,8 @@ public class StringUtils {
      * @return The string with the prefix removed.
      */
     @NotNull
-    public String removePrefix(@NotNull final String string,
-                               @NotNull final String prefix) {
+    public static String removePrefix(@NotNull final String string,
+                                      @NotNull final String prefix) {
         if (string.startsWith(prefix)) {
             return string.substring(prefix.length());
         }
@@ -420,7 +413,7 @@ public class StringUtils {
      * @return The JSON String.
      */
     @NotNull
-    public String legacyToJson(@Nullable final String legacy) {
+    public static String legacyToJson(@Nullable final String legacy) {
         String processed = legacy;
         if (legacy == null) {
             processed = "";
@@ -439,7 +432,7 @@ public class StringUtils {
      * @return The legacy string.
      */
     @NotNull
-    public String jsonToLegacy(@NotNull final String json) {
+    public static String jsonToLegacy(@NotNull final String json) {
         return LEGACY_COMPONENT_SERIALIZER.serialize(
                 GsonComponentSerializer.gson().deserialize(json)
         );
@@ -452,7 +445,7 @@ public class StringUtils {
      * @return The component.
      */
     @NotNull
-    public Component toComponent(@Nullable final String legacy) {
+    public static Component toComponent(@Nullable final String legacy) {
         String processed = legacy;
         if (legacy == null) {
             processed = "";
@@ -468,7 +461,7 @@ public class StringUtils {
      * @return The legacy text.
      */
     @NotNull
-    public String toLegacy(@NotNull final Component component) {
+    public static String toLegacy(@NotNull final Component component) {
         return LEGACY_COMPONENT_SERIALIZER.serialize(component);
     }
 
@@ -485,5 +478,9 @@ public class StringUtils {
          * Completely formatted without placeholders.
          */
         WITHOUT_PLACEHOLDERS
+    }
+
+    private StringUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

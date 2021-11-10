@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
@@ -11,8 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Utilities / API methods for numbers.
  */
-@UtilityClass
-public class NumberUtils {
+public final class NumberUtils {
     /**
      * Sin lookup table.
      */
@@ -72,8 +70,8 @@ public class NumberUtils {
      * @param bias  The bias between -1 and 1, where higher values bias input values to lower output values.
      * @return The biased output.
      */
-    public double bias(final double input,
-                       final double bias) {
+    public static double bias(final double input,
+                              final double bias) {
         double k = Math.pow(1 - bias, 3);
 
         return (input * k) / (input * k - input + 1);
@@ -86,8 +84,8 @@ public class NumberUtils {
      * @param limit    The maximum.
      * @return The new value.
      */
-    public int equalIfOver(final int toChange,
-                           final int limit) {
+    public static int equalIfOver(final int toChange,
+                                  final int limit) {
         return Math.min(toChange, limit);
     }
 
@@ -98,8 +96,8 @@ public class NumberUtils {
      * @param limit    The maximum.
      * @return The new value.
      */
-    public double equalIfOver(final double toChange,
-                              final double limit) {
+    public static double equalIfOver(final double toChange,
+                                     final double limit) {
         return Math.min(toChange, limit);
     }
 
@@ -110,7 +108,7 @@ public class NumberUtils {
      * @return The number, converted to a roman numeral.
      */
     @NotNull
-    public String toNumeral(final int number) {
+    public static String toNumeral(final int number) {
         if (number >= 1 && number <= 4096) {
             int l = NUMERALS.floorKey(number);
             if (number == l) {
@@ -147,8 +145,8 @@ public class NumberUtils {
      * @param max Maximum.
      * @return Random integer.
      */
-    public int randInt(final int min,
-                       final int max) {
+    public static int randInt(final int min,
+                              final int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
@@ -159,8 +157,8 @@ public class NumberUtils {
      * @param max Maximum.
      * @return Random double.
      */
-    public double randFloat(final double min,
-                            final double max) {
+    public static double randFloat(final double min,
+                                   final double max) {
         return ThreadLocalRandom.current().nextDouble(min, max);
     }
 
@@ -172,9 +170,9 @@ public class NumberUtils {
      * @param peak    Peak.
      * @return Random double.
      */
-    public double triangularDistribution(final double minimum,
-                                         final double maximum,
-                                         final double peak) {
+    public static double triangularDistribution(final double minimum,
+                                                final double maximum,
+                                                final double peak) {
         double f = (peak - minimum) / (maximum - minimum);
         double rand = Math.random();
         if (rand < f) {
@@ -190,7 +188,7 @@ public class NumberUtils {
      * @param toLog The number.
      * @return The result.
      */
-    public int log2(final int toLog) {
+    public static int log2(final int toLog) {
         return (int) (Math.log(toLog) / Math.log(2));
     }
 
@@ -201,10 +199,14 @@ public class NumberUtils {
      * @return Formatted.
      */
     @NotNull
-    public String format(final double toFormat) {
+    public static String format(final double toFormat) {
         DecimalFormat df = new DecimalFormat("0.00");
         String formatted = df.format(toFormat);
 
         return formatted.endsWith("00") ? String.valueOf((int) toFormat) : formatted;
+    }
+
+    private NumberUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

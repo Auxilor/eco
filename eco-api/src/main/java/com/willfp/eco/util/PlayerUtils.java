@@ -5,7 +5,6 @@ import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.data.PlayerProfile;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.data.keys.PersistentDataKeyType;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.OfflinePlayer;
@@ -16,8 +15,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Utilities / API methods for players.
  */
-@UtilityClass
-public class PlayerUtils {
+public final class PlayerUtils {
     /**
      * The data key for saved player names.
      */
@@ -34,7 +32,7 @@ public class PlayerUtils {
      * @return The audience.
      */
     @NotNull
-    public Audience getAudience(@NotNull final Player player) {
+    public static Audience getAudience(@NotNull final Player player) {
         BukkitAudiences adventure = Eco.getHandler().getAdventure();
 
         if (Prerequisite.HAS_PAPER.isMet()) {
@@ -59,7 +57,7 @@ public class PlayerUtils {
      * @return The audience.
      */
     @NotNull
-    public Audience getAudience(@NotNull final CommandSender sender) {
+    public static Audience getAudience(@NotNull final CommandSender sender) {
         BukkitAudiences adventure = Eco.getHandler().getAdventure();
 
         if (Prerequisite.HAS_PAPER.isMet()) {
@@ -83,7 +81,7 @@ public class PlayerUtils {
      * @param player The player.
      * @return The player name.
      */
-    public String getSavedDisplayName(@NotNull final OfflinePlayer player) {
+    public static String getSavedDisplayName(@NotNull final OfflinePlayer player) {
         PlayerProfile profile = PlayerProfile.load(player);
 
         if (player instanceof Player onlinePlayer) {
@@ -108,8 +106,12 @@ public class PlayerUtils {
      *
      * @param player The player.
      */
-    public void updateSavedDisplayName(@NotNull final Player player) {
+    public static void updateSavedDisplayName(@NotNull final Player player) {
         PlayerProfile profile = PlayerProfile.load(player);
         profile.write(PLAYER_NAME_KEY, player.getDisplayName());
+    }
+
+    private PlayerUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

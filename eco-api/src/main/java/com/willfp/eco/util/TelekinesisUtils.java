@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +13,6 @@ import java.util.function.Function;
  * Telekinesis means that all drops and xp go straight to a player's inventory
  * rather than dropping on the ground.
  */
-@UtilityClass
 public final class TelekinesisUtils {
     /**
      * Set of tests that return if the player is telekinetic.
@@ -26,7 +24,7 @@ public final class TelekinesisUtils {
      *
      * @param test The test to register, where the boolean output is if the player is telekinetic.
      */
-    public void registerTest(@NotNull final Function<Player, Boolean> test) {
+    public static void registerTest(@NotNull final Function<Player, Boolean> test) {
         TESTS.add(test);
     }
 
@@ -38,7 +36,7 @@ public final class TelekinesisUtils {
      * @param player The player to test.
      * @return If the player is telekinetic.
      */
-    public boolean testPlayer(@NotNull final Player player) {
+    public static boolean testPlayer(@NotNull final Player player) {
         for (Function<Player, Boolean> test : TESTS) {
             if (test.apply(player)) {
                 return true;
@@ -46,5 +44,9 @@ public final class TelekinesisUtils {
         }
 
         return false;
+    }
+
+    private TelekinesisUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

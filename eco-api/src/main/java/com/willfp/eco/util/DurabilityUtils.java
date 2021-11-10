@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -11,14 +10,16 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for item durability.
  */
-@UtilityClass
-public class DurabilityUtils {
+public final class DurabilityUtils {
+    private DurabilityUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
     /**
      * Damage an item in a player's inventory.
      * The slot of a held item can be obtained with {@link PlayerInventory#getHeldItemSlot()}.
@@ -29,10 +30,10 @@ public class DurabilityUtils {
      * @param damage The amount of damage to deal.
      * @param slot   The slot in the inventory of the item.
      */
-    public void damageItem(@NotNull final Player player,
-                           @NotNull final ItemStack item,
-                           final int damage,
-                           final int slot) {
+    public static void damageItem(@NotNull final Player player,
+                                  @NotNull final ItemStack item,
+                                  final int damage,
+                                  final int slot) {
         if (item.getItemMeta() == null) {
             return;
         }
@@ -60,13 +61,13 @@ public class DurabilityUtils {
 
             if (meta.getDamage() >= item.getType().getMaxDurability()) {
                 meta.setDamage(item.getType().getMaxDurability());
-                item.setItemMeta((ItemMeta) meta);
+                item.setItemMeta(meta);
                 PlayerItemBreakEvent event = new PlayerItemBreakEvent(player, item);
                 Bukkit.getPluginManager().callEvent(event);
                 player.getInventory().clear(slot);
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1, 1);
             } else {
-                item.setItemMeta((ItemMeta) meta);
+                item.setItemMeta(meta);
             }
         }
     }
@@ -78,9 +79,9 @@ public class DurabilityUtils {
      * @param damage The amount of damage to deal.
      * @param player The player.
      */
-    public void damageItemNoBreak(@NotNull final ItemStack item,
-                                  final int damage,
-                                  @NotNull final Player player) {
+    public static void damageItemNoBreak(@NotNull final ItemStack item,
+                                         final int damage,
+                                         @NotNull final Player player) {
         if (item.getItemMeta() == null) {
             return;
         }
@@ -104,7 +105,7 @@ public class DurabilityUtils {
             if (meta.getDamage() >= item.getType().getMaxDurability()) {
                 meta.setDamage(item.getType().getMaxDurability() - 1);
             }
-            item.setItemMeta((ItemMeta) meta);
+            item.setItemMeta(meta);
         }
     }
 
@@ -114,8 +115,8 @@ public class DurabilityUtils {
      * @param item   The item to damage.
      * @param repair The amount of damage to heal.
      */
-    public void repairItem(@NotNull final ItemStack item,
-                           final int repair) {
+    public static void repairItem(@NotNull final ItemStack item,
+                                  final int repair) {
         if (item.getItemMeta() == null) {
             return;
         }
@@ -130,7 +131,7 @@ public class DurabilityUtils {
             if (meta.getDamage() < 0) {
                 meta.setDamage(0);
             }
-            item.setItemMeta((ItemMeta) meta);
+            item.setItemMeta(meta);
         }
     }
 }

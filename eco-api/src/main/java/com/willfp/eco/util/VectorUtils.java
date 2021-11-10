@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -13,8 +12,7 @@ import java.util.Map;
 /**
  * Utilities / API methods for vectors.
  */
-@UtilityClass
-public class VectorUtils {
+public final class VectorUtils {
     /**
      * Cached circles to prevent many sqrt calls.
      */
@@ -26,7 +24,7 @@ public class VectorUtils {
      * @param vector The vector to check.
      * @return If the vector is finite.
      */
-    public boolean isFinite(@NotNull final Vector vector) {
+    public static boolean isFinite(@NotNull final Vector vector) {
         try {
             NumberConversions.checkFinite(vector.getX(), "x not finite");
             NumberConversions.checkFinite(vector.getY(), "y not finite");
@@ -45,7 +43,7 @@ public class VectorUtils {
      * @return The vector, simplified.
      */
     @NotNull
-    public Vector simplifyVector(@NotNull final Vector vec) {
+    public static Vector simplifyVector(@NotNull final Vector vec) {
         double x = Math.abs(vec.getX());
         double y = Math.abs(vec.getY());
         double z = Math.abs(vec.getZ());
@@ -78,7 +76,7 @@ public class VectorUtils {
      * @return An array of {@link Vector}s.
      */
     @NotNull
-    public Vector[] getCircle(final int radius) {
+    public static Vector[] getCircle(final int radius) {
         Vector[] cached = CIRCLE_CACHE.get(radius);
         if (cached != null) {
             return cached;
@@ -115,7 +113,7 @@ public class VectorUtils {
      * @return An array of {@link Vector}s.
      */
     @NotNull
-    public Vector[] getSquare(final int radius) {
+    public static Vector[] getSquare(final int radius) {
         List<Vector> vectors = new ArrayList<>();
 
         int xoffset = -radius;
@@ -140,7 +138,7 @@ public class VectorUtils {
      * @return An array of {@link Vector}s.
      */
     @NotNull
-    public Vector[] getCube(final int radius) {
+    public static Vector[] getCube(final int radius) {
         List<Vector> vectors = new ArrayList<>();
 
         for (int y = -radius; y <= radius; y++) {
@@ -152,5 +150,9 @@ public class VectorUtils {
         }
 
         return vectors.toArray(new Vector[0]);
+    }
+
+    private VectorUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

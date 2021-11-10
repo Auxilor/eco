@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -21,22 +20,21 @@ import java.util.function.BiConsumer;
 /**
  * Utilities / API methods for blocks.
  */
-@UtilityClass
-public class BlockUtils {
+public final class BlockUtils {
     /**
      * If the meta set function has been set.
      */
-    private boolean initialized = false;
+    private static boolean initialized = false;
 
     /**
      * The block break function.
      */
-    private BiConsumer<Player, Block> blockBreakConsumer = null;
+    private static BiConsumer<Player, Block> blockBreakConsumer = null;
 
-    private Set<Block> getNearbyBlocks(@NotNull final Block start,
-                                       @NotNull final List<Material> allowedMaterials,
-                                       @NotNull final Set<Block> blocks,
-                                       final int limit) {
+    private static Set<Block> getNearbyBlocks(@NotNull final Block start,
+                                              @NotNull final List<Material> allowedMaterials,
+                                              @NotNull final Set<Block> blocks,
+                                              final int limit) {
         for (BlockFace face : BlockFace.values()) {
             Block block = start.getRelative(face);
             if (blocks.contains(block)) {
@@ -66,9 +64,9 @@ public class BlockUtils {
      * @return A set of all {@link Block}s.
      */
     @NotNull
-    public Set<Block> getVein(@NotNull final Block start,
-                              @NotNull final List<Material> allowedMaterials,
-                              final int limit) {
+    public static Set<Block> getVein(@NotNull final Block start,
+                                     @NotNull final List<Material> allowedMaterials,
+                                     final int limit) {
         return getNearbyBlocks(start, allowedMaterials, new HashSet<>(), limit);
     }
 
@@ -78,8 +76,8 @@ public class BlockUtils {
      * @param player The player to break the block as.
      * @param block  The block to break.
      */
-    public void breakBlock(@NotNull final Player player,
-                           @NotNull final Block block) {
+    public static void breakBlock(@NotNull final Player player,
+                                  @NotNull final Block block) {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(blockBreakConsumer, "Must be initialized!");
 
@@ -100,7 +98,7 @@ public class BlockUtils {
      * @param block The block.
      * @return If placed by a player.
      */
-    public boolean isPlayerPlaced(@NotNull final Block block) {
+    public static boolean isPlayerPlaced(@NotNull final Block block) {
         Chunk chunk = block.getChunk();
 
         return chunk.getPersistentDataContainer().has(
@@ -115,11 +113,15 @@ public class BlockUtils {
      * @param function The function.
      */
     @ApiStatus.Internal
-    public void initialize(@NotNull final BiConsumer<Player, Block> function) {
+    public static void initialize(@NotNull final BiConsumer<Player, Block> function) {
         Validate.isTrue(!initialized, "Already initialized!");
 
         blockBreakConsumer = function;
 
         initialized = true;
+    }
+
+    private BlockUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

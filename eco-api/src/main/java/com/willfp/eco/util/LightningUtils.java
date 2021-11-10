@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -9,8 +8,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Utilities / API methods for lightning.
  */
-@UtilityClass
-public class LightningUtils {
+public final class LightningUtils {
 
     /**
      * Strike lightning on player without fire.
@@ -19,9 +17,9 @@ public class LightningUtils {
      * @param damage The damage to deal.
      * @param silent If the lightning sound should be played locally
      */
-    public void strike(@NotNull final LivingEntity victim,
-                       final double damage,
-                       final boolean silent) {
+    public static void strike(@NotNull final LivingEntity victim,
+                              final double damage,
+                              final boolean silent) {
         Location loc = victim.getLocation();
 
         if (silent) {
@@ -40,8 +38,12 @@ public class LightningUtils {
      * @param victim The entity to smite.
      * @param damage The damage to deal.
      */
-    public void strike(@NotNull final LivingEntity victim,
-                       final double damage) {
+    public static void strike(@NotNull final LivingEntity victim,
+                              final double damage) {
         strike(victim, damage, false);
+    }
+
+    private LightningUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

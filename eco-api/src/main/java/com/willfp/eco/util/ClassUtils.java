@@ -1,13 +1,11 @@
 package com.willfp.eco.util;
 
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for classes.
  */
-@UtilityClass
-public class ClassUtils {
+public final class ClassUtils {
     /**
      * Get if a class exists.
      *
@@ -15,12 +13,16 @@ public class ClassUtils {
      * @return If the class exists.
      * @see Class#forName(String)
      */
-    public boolean exists(@NotNull final String className) {
+    public static boolean exists(@NotNull final String className) {
         try {
             Class.forName(className);
             return true;
         } catch (ClassNotFoundException e) {
             return false;
         }
+    }
+
+    private ClassUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

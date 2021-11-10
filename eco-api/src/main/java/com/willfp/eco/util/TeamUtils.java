@@ -3,7 +3,6 @@ package com.willfp.eco.util;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.Prerequisite;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,8 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Utilities / API methods for teams.
  */
-@UtilityClass
-public class TeamUtils {
+public final class TeamUtils {
     /**
      * Ore ChatColors.
      */
@@ -44,7 +42,7 @@ public class TeamUtils {
      * @return The team.
      */
     @NotNull
-    public Team fromChatColor(@NotNull final ChatColor color) {
+    public static Team fromChatColor(@NotNull final ChatColor color) {
         if (CHAT_COLOR_TEAMS.containsKey(color)) {
             return CHAT_COLOR_TEAMS.get(color);
         }
@@ -72,7 +70,7 @@ public class TeamUtils {
      * @return The team.
      */
     @NotNull
-    public Team getMaterialColorTeam(@NotNull final Material material) {
+    public static Team getMaterialColorTeam(@NotNull final Material material) {
         return fromChatColor(MATERIAL_COLORS.getOrDefault(material, ChatColor.WHITE));
     }
 
@@ -101,5 +99,9 @@ public class TeamUtils {
             MATERIAL_COLORS.put(Material.DEEPSLATE_DIAMOND_ORE, ChatColor.AQUA);
             MATERIAL_COLORS.put(Material.DEEPSLATE_EMERALD_ORE, ChatColor.GREEN);
         }
+    }
+
+    private TeamUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }
