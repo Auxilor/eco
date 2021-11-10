@@ -18,7 +18,6 @@ import com.willfp.eco.core.proxy.AbstractProxy;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
-import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.bukkit.Bukkit;
@@ -57,73 +56,61 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The polymart resource ID of the plugin.
      */
-    @Getter
     private final int resourceId;
 
     /**
      * The bStats resource ID of the plugin.
      */
-    @Getter
     private final int bStatsId;
 
     /**
      * The package where proxy implementations are.
      */
-    @Getter
     private final String proxyPackage;
 
     /**
      * The color of the plugin, used in messages.
      */
-    @Getter
     private final String color;
 
     /**
      * Loaded integrations.
      */
-    @Getter
     private final Set<String> loadedIntegrations = new HashSet<>();
 
     /**
      * The internal plugin scheduler.
      */
-    @Getter
     private final Scheduler scheduler;
 
     /**
      * The internal plugin Event Manager.
      */
-    @Getter
     private final EventManager eventManager;
 
     /**
      * Config.yml.
      */
-    @Getter
     private final ConfigYml configYml;
 
     /**
      * Lang.yml.
      */
-    @Getter
     private final LangYml langYml;
 
     /**
      * The internal factory to produce {@link org.bukkit.NamespacedKey}s.
      */
-    @Getter
     private final NamespacedKeyFactory namespacedKeyFactory;
 
     /**
      * The internal factory to produce {@link org.bukkit.metadata.FixedMetadataValue}s.
      */
-    @Getter
     private final MetadataValueFactory metadataValueFactory;
 
     /**
      * The internal factory to produce {@link com.willfp.eco.core.scheduling.RunnableTask}s.
      */
-    @Getter
     private final RunnableFactory runnableFactory;
 
     /**
@@ -131,19 +118,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @see com.willfp.eco.core.extensions.Extension
      */
-    @Getter
     private final ExtensionLoader extensionLoader;
 
     /**
      * The handler class for updatable classes.
      */
-    @Getter
     private final ConfigHandler configHandler;
 
     /**
      * The display module for the plugin.
      */
-    @Getter
     private DisplayModule displayModule;
 
     /**
@@ -154,19 +138,17 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * If the server is running an outdated version of the plugin.
      */
-    @Getter
     private boolean outdated = false;
 
     /**
      * If the plugin supports extensions.
      */
-    @Getter
     private final boolean supportingExtensions;
 
     /**
      * The proxy factory.
      */
-    @Getter
+    @Nullable
     private final ProxyFactory proxyFactory;
 
     /**
@@ -732,5 +714,169 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      */
     public static Set<String> getPluginNames() {
         return new HashSet<>(Eco.getHandler().getLoadedPlugins());
+    }
+
+    /**
+     * Get the polymart resource ID.
+     *
+     * @return The resource ID.
+     */
+    public int getResourceId() {
+        return this.resourceId;
+    }
+
+    /**
+     * Get the bStats ID.
+     *
+     * @return The ID.
+     */
+    public int getBStatsId() {
+        return this.bStatsId;
+    }
+
+    /**
+     * Get the proxy package.
+     *
+     * @return The package where proxies are contained.
+     */
+    public String getProxyPackage() {
+        return this.proxyPackage;
+    }
+
+    /**
+     * Get the plugin color (uses legacy formatting).
+     *
+     * @return The color.
+     */
+    public String getColor() {
+        return this.color;
+    }
+
+    /**
+     * Get all loaded integration names.
+     *
+     * @return The integrations.
+     */
+    public Set<String> getLoadedIntegrations() {
+        return this.loadedIntegrations;
+    }
+
+    /**
+     * Get the scheduler.
+     *
+     * @return The scheduler.
+     */
+    public Scheduler getScheduler() {
+        return this.scheduler;
+    }
+
+    /**
+     * Get the event manager.
+     *
+     * @return The event manager.
+     */
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+
+    /**
+     * Get config.yml.
+     *
+     * @return config.yml.
+     */
+    public ConfigYml getConfigYml() {
+        return this.configYml;
+    }
+
+    /**
+     * Get lang.yml.
+     *
+     * @return lang.yml.
+     */
+    public LangYml getLangYml() {
+        return this.langYml;
+    }
+
+    /**
+     * Get the NamespacedKey factory.
+     *
+     * @return The factory.
+     */
+    public NamespacedKeyFactory getNamespacedKeyFactory() {
+        return this.namespacedKeyFactory;
+    }
+
+    /**
+     * Get the metadata value factory.
+     *
+     * @return The factory.
+     */
+    public MetadataValueFactory getMetadataValueFactory() {
+        return this.metadataValueFactory;
+    }
+
+    /**
+     * Get the runnable factory.
+     *
+     * @return The runnable factory.
+     */
+    public RunnableFactory getRunnableFactory() {
+        return this.runnableFactory;
+    }
+
+    /**
+     * Get the extension loader.
+     *
+     * @return The extension loader.
+     */
+    public ExtensionLoader getExtensionLoader() {
+        return this.extensionLoader;
+    }
+
+    /**
+     * Get the config handler.
+     *
+     * @return The config handler.
+     */
+    public ConfigHandler getConfigHandler() {
+        return this.configHandler;
+    }
+
+    /**
+     * Get the plugin's display module.
+     *
+     * @return The display module.
+     */
+    @Nullable
+    public DisplayModule getDisplayModule() {
+        return this.displayModule;
+    }
+
+    /**
+     * Get if the plugin is outdated.
+     *
+     * @return If outdated.
+     */
+    public boolean isOutdated() {
+        return this.outdated;
+    }
+
+    /**
+     * Get if the plugin supports extensions.
+     *
+     * @return If extensions are supported.
+     */
+    public boolean isSupportingExtensions() {
+        return this.supportingExtensions;
+    }
+
+    /**
+     * Get the proxy factory.
+     *
+     * @return The proxy factory.
+     */
+    @Nullable
+    public ProxyFactory getProxyFactory() {
+        return this.proxyFactory;
     }
 }
