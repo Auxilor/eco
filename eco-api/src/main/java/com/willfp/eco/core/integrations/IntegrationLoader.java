@@ -1,6 +1,5 @@
 package com.willfp.eco.core.integrations;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,7 +16,6 @@ public class IntegrationLoader {
     /**
      * The plugin to require to load the integration.
      */
-    @Getter
     private final String pluginName;
 
     /**
@@ -37,5 +35,14 @@ public class IntegrationLoader {
      */
     public void load() {
         runnable.run();
+    }
+
+    /**
+     * Get the plugin name.
+     *
+     * @return The plugin name.
+     */
+    public String getPluginName() {
+        return this.pluginName;
     }
 }

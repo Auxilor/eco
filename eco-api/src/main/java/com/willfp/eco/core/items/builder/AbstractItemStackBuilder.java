@@ -1,8 +1,6 @@
 package com.willfp.eco.core.items.builder;
 
 import com.willfp.eco.util.StringUtils;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -29,13 +27,11 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
     /**
      * The ItemMeta used while building.
      */
-    @Getter(AccessLevel.PROTECTED)
     private final T meta;
 
     /**
      * The ItemStack.
      */
-    @Getter(AccessLevel.PROTECTED)
     private final ItemStack base;
 
     /**
@@ -200,5 +196,23 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
         base.setItemMeta(meta);
 
         return base;
+    }
+
+    /**
+     * Get the base ItemStack.
+     *
+     * @return The base ItemStack.
+     */
+    protected ItemStack getBase() {
+        return base;
+    }
+
+    /**
+     * Get the meta.
+     *
+     * @return The meta.
+     */
+    protected T getMeta() {
+        return meta;
     }
 }

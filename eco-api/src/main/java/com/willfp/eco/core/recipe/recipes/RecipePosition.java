@@ -1,7 +1,5 @@
 package com.willfp.eco.core.recipe.recipes;
 
-import lombok.Getter;
-
 /**
  * Positions in a 3x3 crafting recipe.
  */
@@ -54,7 +52,6 @@ public enum RecipePosition {
     /**
      * The index within a crafting table matrix.
      */
-    @Getter
     private final int index;
 
     /**
@@ -64,5 +61,14 @@ public enum RecipePosition {
      */
     RecipePosition(final int index) {
         this.index = index;
+    }
+
+    /**
+     * Get the index within a crafting table matrix.
+     *
+     * @return The index.
+     */
+    public int getIndex() {
+        return index;
     }
 }

@@ -1,6 +1,5 @@
 package com.willfp.eco.core.integrations.placeholder;
 
-import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,6 @@ public class PlaceholderEntry {
     /**
      * The name of the placeholder, used in lookups.
      */
-    @Getter
     private final String identifier;
 
     /**
@@ -76,6 +74,15 @@ public class PlaceholderEntry {
      */
     public boolean requiresPlayer() {
         return requiresPlayer;
+    }
+
+    /**
+     * Get the identifier.
+     *
+     * @return The identifier.
+     */
+    public String getIdentifier() {
+        return identifier;
     }
 
     /**
