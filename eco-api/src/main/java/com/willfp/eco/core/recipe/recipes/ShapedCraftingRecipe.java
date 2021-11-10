@@ -7,7 +7,6 @@ import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -27,25 +26,21 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
     /**
      * Recipe parts.
      */
-    @Getter
     private final List<TestableItem> parts;
 
     /**
      * The key of the recipe.
      */
-    @Getter
     private final NamespacedKey key;
 
     /**
      * The key of the displayed recipe.
      */
-    @Getter
     private final NamespacedKey displayedKey;
 
     /**
      * The recipe's output.
      */
-    @Getter
     private final ItemStack output;
 
     private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
@@ -131,6 +126,42 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
     public static Builder builder(@NotNull final EcoPlugin plugin,
                                   @NotNull final String key) {
         return new Builder(plugin, key);
+    }
+
+    /**
+     * Get the parts.
+     *
+     * @return The parts.
+     */
+    public List<TestableItem> getParts() {
+        return this.parts;
+    }
+
+    /**
+     * Get the key.
+     *
+     * @return The key.
+     */
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    /**
+     * Get the displayed key.
+     *
+     * @return The displayed key.
+     */
+    public NamespacedKey getDisplayedKey() {
+        return this.displayedKey;
+    }
+
+    /**
+     * Get the output.
+     *
+     * @return The output.
+     */
+    public ItemStack getOutput() {
+        return this.output;
     }
 
     /**

@@ -2,7 +2,6 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.util.ListUtils;
-import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +28,6 @@ public class FillerMask {
     /**
      * Mask.
      */
-    @Getter
     private final List<List<Slot>> mask;
 
     /**
@@ -47,7 +45,7 @@ public class FillerMask {
      * Create a new filler mask.
      *
      * @param materials The mask materials.
-     * @param pattern  The pattern.
+     * @param pattern   The pattern.
      */
     public FillerMask(@NotNull final MaskMaterials materials,
                       @NotNull final String... pattern) {
@@ -81,5 +79,14 @@ public class FillerMask {
                 row++;
             }
         }
+    }
+
+    /**
+     * Get the mask.
+     *
+     * @return The mask.
+     */
+    public List<List<Slot>> getMask() {
+        return this.mask;
     }
 }

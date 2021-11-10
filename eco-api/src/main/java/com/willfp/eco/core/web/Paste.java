@@ -1,7 +1,6 @@
 package com.willfp.eco.core.web;
 
 import com.willfp.eco.core.Eco;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -23,7 +22,6 @@ public class Paste {
     /**
      * The contents.
      */
-    @Getter
     private final String contents;
 
     /**
@@ -93,7 +91,7 @@ public class Paste {
             conn.setRequestMethod("GET");
             try (var reader = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()))) {
-                for (String line; (line = reader.readLine()) != null;) {
+                for (String line; (line = reader.readLine()) != null; ) {
                     result.append(line);
                 }
             }
@@ -103,5 +101,14 @@ public class Paste {
         }
 
         return null;
+    }
+
+    /**
+     * Get the contents.
+     *
+     * @return The contents.
+     */
+    public String getContents() {
+        return this.contents;
     }
 }

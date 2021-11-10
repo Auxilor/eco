@@ -1,7 +1,5 @@
 package com.willfp.eco.core.tuples;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -14,16 +12,12 @@ public class Pair<A, B> {
     /**
      * The first item in the tuple.
      */
-    @Getter
-    @Setter
     @Nullable
     private A first;
 
     /**
      * The second item in the tuple.
      */
-    @Getter
-    @Setter
     @Nullable
     private B second;
 
@@ -59,5 +53,41 @@ public class Pair<A, B> {
      */
     public B component2() {
         return second;
+    }
+
+    /**
+     * Get the first member of the tuple.
+     *
+     * @return The first member.
+     */
+    public @Nullable A getFirst() {
+        return this.first;
+    }
+
+    /**
+     * Get the second member of the tuple.
+     *
+     * @return The second member.
+     */
+    public @Nullable B getSecond() {
+        return this.second;
+    }
+
+    /**
+     * Set the first member of the tuple.
+     *
+     * @param first The data to set.
+     */
+    public void setFirst(@Nullable final A first) {
+        this.first = first;
+    }
+
+    /**
+     * Set the second member of the tuple.
+     *
+     * @param second The data to set.
+     */
+    public void setSecond(@Nullable final B second) {
+        this.second = second;
     }
 }

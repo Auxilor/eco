@@ -1,6 +1,5 @@
 package com.willfp.eco.core.gui.slot;
 
-import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,6 @@ public class FillerSlot implements Slot {
     /**
      * The ItemStack.
      */
-    @Getter
     private final ItemStack itemStack;
 
     /**
@@ -34,5 +32,14 @@ public class FillerSlot implements Slot {
     @Override
     public boolean isCaptive() {
         return false;
+    }
+
+    /**
+     * Get the ItemStack.
+     *
+     * @return The ItemStack.
+     */
+    public ItemStack getItemStack() {
+        return this.itemStack;
     }
 }

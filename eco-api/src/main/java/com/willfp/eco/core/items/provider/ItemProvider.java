@@ -1,7 +1,6 @@
 package com.willfp.eco.core.items.provider;
 
 import com.willfp.eco.core.items.TestableItem;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +16,6 @@ public abstract class ItemProvider {
     /**
      * The namespace.
      */
-    @Getter
     private final String namespace;
 
     /**
@@ -37,4 +35,13 @@ public abstract class ItemProvider {
      */
     @Nullable
     public abstract TestableItem provideForKey(@NotNull String key);
+
+    /**
+     * Get the namespace.
+     *
+     * @return The namespace.
+     */
+    public String getNamespace() {
+        return this.namespace;
+    }
 }

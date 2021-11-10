@@ -1,7 +1,5 @@
 package com.willfp.eco.core.tuples;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -15,8 +13,6 @@ public class Triplet<A, B, C> extends Pair<A, B> {
     /**
      * The third item in the tuple.
      */
-    @Getter
-    @Setter
     @Nullable
     private C third;
 
@@ -44,5 +40,23 @@ public class Triplet<A, B, C> extends Pair<A, B> {
      */
     public C component3() {
         return third;
+    }
+
+    /**
+     * Get the third member of the tuple.
+     *
+     * @return The third.
+     */
+    public @Nullable C getThird() {
+        return this.third;
+    }
+
+    /**
+     * Set the third member of the tuple.
+     *
+     * @param third The data to set.
+     */
+    public void setThird(@Nullable final C third) {
+        this.third = third;
     }
 }

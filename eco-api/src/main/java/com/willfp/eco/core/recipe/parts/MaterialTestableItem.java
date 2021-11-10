@@ -1,7 +1,6 @@
 package com.willfp.eco.core.recipe.parts;
 
 import com.willfp.eco.core.items.TestableItem;
-import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +14,6 @@ public class MaterialTestableItem implements TestableItem {
     /**
      * The material.
      */
-    @Getter
     private final Material material;
 
     /**
@@ -43,5 +41,14 @@ public class MaterialTestableItem implements TestableItem {
     @Override
     public ItemStack getItem() {
         return new ItemStack(material);
+    }
+
+    /**
+     * Get the material.
+     *
+     * @return The material.
+     */
+    public Material getMaterial() {
+        return this.material;
     }
 }

@@ -1,7 +1,6 @@
 package com.willfp.eco.core.recipe.parts;
 
 import com.willfp.eco.core.items.TestableItem;
-import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,13 +16,11 @@ public class ModifiedTestableItem implements TestableItem {
     /**
      * The item.
      */
-    @Getter
     private final TestableItem handle;
 
     /**
      * The amount.
      */
-    @Getter
     private final Predicate<ItemStack> test;
 
     /**
@@ -60,5 +57,23 @@ public class ModifiedTestableItem implements TestableItem {
     @Override
     public ItemStack getItem() {
         return example;
+    }
+
+    /**
+     * Get the handle.
+     *
+     * @return The handle.
+     */
+    public TestableItem getHandle() {
+        return this.handle;
+    }
+
+    /**
+     * Get the test.
+     *
+     * @return The test.
+     */
+    public Predicate<ItemStack> getTest() {
+        return this.test;
     }
 }

@@ -1,7 +1,6 @@
 package com.willfp.eco.core.items;
 
 import com.willfp.eco.core.Eco;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +22,6 @@ public class CustomItem implements TestableItem {
     /**
      * The key.
      */
-    @Getter
     private final NamespacedKey key;
 
     /**
@@ -76,5 +74,14 @@ public class CustomItem implements TestableItem {
      */
     public void register() {
         Items.registerCustomItem(this.getKey(), this);
+    }
+
+    /**
+     * Get the key.
+     *
+     * @return The key.
+     */
+    public NamespacedKey getKey() {
+        return this.key;
     }
 }
