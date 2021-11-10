@@ -48,7 +48,7 @@ display-frame-ttl: 17
 # are experiencing severe display lag.
 async-display:
   # If async display should always be used.
-  enabled: false
+  always-enabled: false
 
   # Log errors that occur in async processing.
   log-errors: true
