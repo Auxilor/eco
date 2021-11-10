@@ -1,6 +1,5 @@
 package com.willfp.eco.core.events;
 
-import lombok.Getter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
@@ -25,31 +24,26 @@ public class EntityDeathByEntityEvent extends Event {
     /**
      * The {@link LivingEntity} killed.
      */
-    @Getter
     private final LivingEntity victim;
 
     /**
      * The {@link Entity} that killed.
      */
-    @Getter
     private final Entity killer;
 
     /**
      * The associated {@link EntityDeathEvent}.
      */
-    @Getter
     private final EntityDeathEvent deathEvent;
 
     /**
      * The entity drops.
      */
-    @Getter
     private final List<ItemStack> drops;
 
     /**
      * The xp to drop.
      */
-    @Getter
     private final int xp;
 
     /**
@@ -90,5 +84,50 @@ public class EntityDeathByEntityEvent extends Event {
      */
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    /**
+     * Get the entity killed.
+     *
+     * @return The victim.
+     */
+    public LivingEntity getVictim() {
+        return this.victim;
+    }
+
+    /**
+     * Get the killer.
+     *
+     * @return The killer.
+     */
+    public Entity getKiller() {
+        return this.killer;
+    }
+
+    /**
+     * Get the death event that caused this event.
+     *
+     * @return The death event.
+     */
+    public EntityDeathEvent getDeathEvent() {
+        return this.deathEvent;
+    }
+
+    /**
+     * Get the drops.
+     *
+     * @return The drops.
+     */
+    public List<ItemStack> getDrops() {
+        return this.drops;
+    }
+
+    /**
+     * Get the experience dropped.
+     *
+     * @return The experience.
+     */
+    public int getXp() {
+        return this.xp;
     }
 }

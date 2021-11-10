@@ -1,6 +1,5 @@
 package com.willfp.eco.core.events;
 
-import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -23,13 +22,11 @@ public class ArmorChangeEvent extends PlayerEvent {
     /**
      * The armor contents before. 0 is helmet, 3 is boots.
      */
-    @Getter
     private final List<ItemStack> before;
 
     /**
      * The armor contents after. 0 is helmet, 3 is boots.
      */
-    @Getter
     private final List<ItemStack> after;
 
     /**
@@ -37,7 +34,7 @@ public class ArmorChangeEvent extends PlayerEvent {
      *
      * @param player The player.
      * @param before The armor contents before.
-     * @param after The armor contents after.
+     * @param after  The armor contents after.
      */
     public ArmorChangeEvent(@NotNull final Player player,
                             @NotNull final List<ItemStack> before,
@@ -66,5 +63,23 @@ public class ArmorChangeEvent extends PlayerEvent {
      */
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    /**
+     * Get the contents before the change.
+     *
+     * @return The contents.
+     */
+    public List<ItemStack> getBefore() {
+        return this.before;
+    }
+
+    /**
+     * Get the current contents.
+     *
+     * @return The contents.
+     */
+    public List<ItemStack> getAfter() {
+        return this.after;
     }
 }

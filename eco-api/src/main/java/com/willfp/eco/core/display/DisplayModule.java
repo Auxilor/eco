@@ -2,7 +2,6 @@ package com.willfp.eco.core.display;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
-import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +14,6 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
     /**
      * The priority of the module.
      */
-    @Getter
     private final DisplayPriority priority;
 
     /**
@@ -80,5 +78,14 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      */
     public final String getPluginName() {
         return super.getPlugin().getName();
+    }
+
+    /**
+     * Get the display priority.
+     *
+     * @return The priority.
+     */
+    public DisplayPriority getPriority() {
+        return this.priority;
     }
 }

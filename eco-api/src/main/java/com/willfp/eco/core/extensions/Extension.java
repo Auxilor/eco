@@ -3,8 +3,6 @@ package com.willfp.eco.core.extensions;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.updating.ConfigHandler;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +23,6 @@ public abstract class Extension implements PluginLike {
     /**
      * The {@link EcoPlugin} that this extension is for.
      */
-    @Getter(AccessLevel.PROTECTED)
     private final EcoPlugin plugin;
 
     /**
@@ -144,5 +141,14 @@ public abstract class Extension implements PluginLike {
     @Override
     public ConfigHandler getConfigHandler() {
         return this.plugin.getConfigHandler();
+    }
+
+    /**
+     * Get the plugin for the extension.
+     *
+     * @return The plugin.
+     */
+    protected EcoPlugin getPlugin() {
+        return this.plugin;
     }
 }

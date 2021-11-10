@@ -1,6 +1,5 @@
 package com.willfp.eco.core.events;
 
-import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerExpChangeEvent;
@@ -20,7 +19,6 @@ public class NaturalExpGainEvent extends Event {
      * The associated {@link PlayerExpChangeEvent}.
      * Use this to modify event parameters.
      */
-    @Getter
     private final PlayerExpChangeEvent expChangeEvent;
 
     /**
@@ -49,5 +47,14 @@ public class NaturalExpGainEvent extends Event {
      */
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    /**
+     * Get the event that caused this event.
+     *
+     * @return The exp change event.
+     */
+    public PlayerExpChangeEvent getExpChangeEvent() {
+        return this.expChangeEvent;
     }
 }
