@@ -19,7 +19,6 @@ public abstract class YamlConfigWrapper extends ConfigWrapper<Config> implements
         super(handle);
     }
 
-
     @Override
     public YamlConfiguration getBukkitHandle() {
         return ((WrappedYamlConfiguration) this.getHandle()).getBukkitHandle();

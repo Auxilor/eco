@@ -2,7 +2,6 @@ package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.util.StringUtils;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +26,6 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
      * <p>
      * In general use, though, the handle isn't necessary.
      */
-    @Getter
     private final T handle;
 
     /**
@@ -178,5 +176,14 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Override
     public Config clone() {
         return handle.clone();
+    }
+
+    /**
+     * Get the handle.
+     *
+     * @return The handle.
+     */
+    public T getHandle() {
+        return this.handle;
     }
 }
