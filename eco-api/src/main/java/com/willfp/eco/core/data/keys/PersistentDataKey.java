@@ -1,7 +1,6 @@
 package com.willfp.eco.core.data.keys;
 
 import com.willfp.eco.core.Eco;
-import lombok.Getter;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,19 +15,16 @@ public class PersistentDataKey<T> {
     /**
      * The key of the persistent data value.
      */
-    @Getter
     private final NamespacedKey key;
 
     /**
      * The default value for the key.
      */
-    @Getter
     private final T defaultValue;
 
     /**
      * The persistent data key type.
      */
-    @Getter
     private final PersistentDataKeyType type;
 
     /**
@@ -64,5 +60,32 @@ public class PersistentDataKey<T> {
      */
     public static Set<PersistentDataKey<?>> values() {
         return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
+    }
+
+    /**
+     * Get the key.
+     *
+     * @return The key.
+     */
+    public NamespacedKey getKey() {
+        return this.key;
+    }
+
+    /**
+     * Get the default value.
+     *
+     * @return The default value.
+     */
+    public T getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    /**
+     * Get the data key type.
+     *
+     * @return The key type.
+     */
+    public PersistentDataKeyType getType() {
+        return this.type;
     }
 }
