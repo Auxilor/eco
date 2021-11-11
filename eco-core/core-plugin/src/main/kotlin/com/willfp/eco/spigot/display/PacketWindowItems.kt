@@ -104,7 +104,7 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
             return false
         }
 
-        if (this.getPlugin().configYml.getBool("async-display.enabled")) {
+        if (this.getPlugin().configYml.getBool("async-display.always-enabled")) {
             return true
         }
 
