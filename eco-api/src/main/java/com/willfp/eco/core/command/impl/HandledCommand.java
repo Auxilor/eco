@@ -47,6 +47,7 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
      * The actual code to be executed in the command.
      */
     private CommandHandler handler = (sender, args) -> {
+        // Do nothing by default
     };
 
     /**
