@@ -9,19 +9,19 @@ import org.bukkit.entity.Player
 
 class AntigriefDeluxeCombat: AntigriefWrapper {
     override fun getPluginName(): String {
-        return "DeluxeCombat";
+        return "DeluxeCombat"
     }
 
     override fun canBreakBlock(player: Player, block: Block): Boolean {
-        return true;
+        return true
     }
 
     override fun canCreateExplosion(player: Player, location: Location): Boolean {
-        return true;
+        return true
     }
 
     override fun canPlaceBlock(player: Player, block: Block): Boolean {
-        return true;
+        return true
     }
 
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {

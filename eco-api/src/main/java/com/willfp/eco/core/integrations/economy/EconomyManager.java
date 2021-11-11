@@ -13,7 +13,7 @@ public final class EconomyManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<EconomyWrapper> registered = new HashSet<>();
+    private static final Set<EconomyWrapper> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
@@ -21,7 +21,7 @@ public final class EconomyManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final EconomyWrapper integration) {
-        registered.add(integration);
+        REGISTERED.add(integration);
     }
 
     /**
@@ -30,7 +30,7 @@ public final class EconomyManager {
      * @return If any economy.
      */
     public static boolean hasRegistrations() {
-        return !registered.isEmpty();
+        return !REGISTERED.isEmpty();
     }
 
     /**
@@ -42,7 +42,7 @@ public final class EconomyManager {
      */
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
                              final double amount) {
-        for (EconomyWrapper wrapper : registered) {
+        for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.hasAmount(player, amount);
         }
 
@@ -58,7 +58,7 @@ public final class EconomyManager {
      */
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
                              final double amount) {
-        for (EconomyWrapper wrapper : registered) {
+        for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.giveMoney(player, amount);
         }
 
@@ -74,7 +74,7 @@ public final class EconomyManager {
      */
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
                                final double amount) {
-        for (EconomyWrapper wrapper : registered) {
+        for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.removeMoney(player, amount);
         }
 
@@ -88,7 +88,7 @@ public final class EconomyManager {
      * @return The balance.
      */
     public static double getBalance(@NotNull final OfflinePlayer player) {
-        for (EconomyWrapper wrapper : registered) {
+        for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.getBalance(player);
         }
 

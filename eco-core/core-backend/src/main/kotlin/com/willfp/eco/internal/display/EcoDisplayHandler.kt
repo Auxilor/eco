@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.display
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.display.DisplayHandler
@@ -11,8 +10,6 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
     private val registeredModules = mutableMapOf<DisplayPriority, MutableList<DisplayModule>>()

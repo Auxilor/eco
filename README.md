@@ -108,7 +108,7 @@ cd eco
   <br>
   <div style="width: 50%; margin: 0 auto;">
   <br>
-    <a href="http://gamersupps.gg/discount/Auxilor?afmc=Auxilor" target="_blank">
+    <a href="https://gamersupps.gg/discount/Auxilor?afmc=Auxilor" target="_blank">
       <img src="https://i.imgur.com/7mFhlQO.png" alt="supps banner">
     </a>
     <a href="https://dedimc.promo/Auxilor" target="_blank">
