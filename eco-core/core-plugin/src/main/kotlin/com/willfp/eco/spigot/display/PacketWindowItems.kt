@@ -63,7 +63,8 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
                     modifyAndSend(itemStacks, windowId, player)
                 } catch (e: Exception) {
                     if (this.getPlugin().configYml.getBool("async-display.log-errors")) {
-                        this.getPlugin().logger.warning("Error happened in async processing! Disable async display (/plugins/eco/config.yml) if this is a frequent issue")
+                        this.getPlugin().logger.warning("Error happened in async processing! Disable async display (/plugins/eco/config.yml)" +
+                                "if this is a frequent issue. (Remember to disable ratelimit and emergency too)")
                     }
 
                     this.getPlugin().scheduler.run {
