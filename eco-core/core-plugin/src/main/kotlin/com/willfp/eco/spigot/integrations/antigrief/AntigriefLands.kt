@@ -2,10 +2,13 @@ package com.willfp.eco.spigot.integrations.antigrief
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import me.angeschossen.lands.api.flags.Flags
 import me.angeschossen.lands.api.integration.LandsIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
+import org.bukkit.entity.Animals
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 
 class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
@@ -15,7 +18,7 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
         block: Block
     ): Boolean {
         val area = landsIntegration.getAreaByLoc(block.location) ?: return true
-        return area.isTrusted(player.uniqueId)
+        return area.hasFlag(player, Flags.BLOCK_BREAK, false)
     }
 
     override fun canCreateExplosion(
@@ -23,7 +26,7 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
         location: Location
     ): Boolean {
         val area = landsIntegration.getAreaByLoc(location) ?: return true
-        return area.isTrusted(player.uniqueId)
+        return area.hasFlag(player, Flags.ATTACK_PLAYER, false) && area.hasFlag(player, Flags.ATTACK_ANIMAL, false)
     }
 
     override fun canPlaceBlock(
@@ -31,15 +34,22 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
         block: Block
     ): Boolean {
         val area = landsIntegration.getAreaByLoc(block.location) ?: return true
-        return area.isTrusted(player.uniqueId)
+        return area.hasFlag(player, Flags.BLOCK_PLACE, false)
     }
 
     override fun canInjure(
         player: Player,
         victim: LivingEntity
     ): Boolean {
+
         val area = landsIntegration.getAreaByLoc(victim.location) ?: return true
-        return area.isTrusted(player.uniqueId)
+
+        return when(victim) {
+            is Player -> area.hasFlag(player, Flags.ATTACK_PLAYER, false)
+            is Monster -> area.hasFlag(player, Flags.ATTACK_MONSTER, false)
+            is Animals -> area.hasFlag(player, Flags.ATTACK_MONSTER, false)
+            else -> area.isTrusted(player.uniqueId)
+        }
     }
 
     override fun getPluginName(): String {

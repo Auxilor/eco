@@ -49,7 +49,6 @@ public class ArmorChangeEvent extends PlayerEvent {
      *
      * @return A list of handlers handling this event.
      */
-
     @Override
     @NotNull
     public HandlerList getHandlers() {

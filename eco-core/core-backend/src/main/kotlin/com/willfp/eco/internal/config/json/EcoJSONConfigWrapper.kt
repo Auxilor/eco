@@ -4,12 +4,15 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.util.StringUtils
-import java.util.*
+import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
 open class EcoJSONConfigWrapper : JSONConfig {
-    val handle: Gson = GsonBuilder().setPrettyPrinting().create()
+    val handle: Gson = GsonBuilder()
+        .setPrettyPrinting()
+        .disableHtmlEscaping()
+        .create()
 
     val values = ConcurrentHashMap<String, Any?>()
 
@@ -273,6 +276,6 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun clone(): JSONConfig {
-        return EcoJSONConfigSection(HashMap<String, Any>(this.values))
+        return EcoJSONConfigSection(this.values.toMutableMap())
     }
 }

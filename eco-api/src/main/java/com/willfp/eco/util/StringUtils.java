@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static net.md_5.bungee.api.ChatColor.*;
 
 /**
  * Utilities / API methods for strings.
@@ -65,16 +63,16 @@ public final class StringUtils {
      * Color map.
      */
     private static final Map<String, ChatColor> COLOR_MAP = new ImmutableMap.Builder<String, ChatColor>()
-            .put("&l", BOLD)
-            .put("&o", ITALIC)
-            .put("&n", UNDERLINE)
-            .put("&m", STRIKETHROUGH)
-            .put("&k", MAGIC)
-            .put("§l", BOLD)
-            .put("§o", ITALIC)
-            .put("§n", UNDERLINE)
-            .put("§m", STRIKETHROUGH)
-            .put("§k", MAGIC)
+            .put("&l", ChatColor.BOLD)
+            .put("&o", ChatColor.ITALIC)
+            .put("&n", ChatColor.UNDERLINE)
+            .put("&m", ChatColor.STRIKETHROUGH)
+            .put("&k", ChatColor.MAGIC)
+            .put("§l", ChatColor.BOLD)
+            .put("§o", ChatColor.ITALIC)
+            .put("§n", ChatColor.UNDERLINE)
+            .put("§m", ChatColor.STRIKETHROUGH)
+            .put("§k", ChatColor.MAGIC)
             .build();
 
     /**
@@ -295,10 +293,10 @@ public final class StringUtils {
         StringBuilder builder = new StringBuilder(message.length() + 4 * 8);
         while (matcher.find()) {
             String group = matcher.group(1);
-            matcher.appendReplacement(builder, COLOR_CHAR + "x"
-                    + COLOR_CHAR + group.charAt(0) + COLOR_CHAR + group.charAt(1)
-                    + COLOR_CHAR + group.charAt(2) + COLOR_CHAR + group.charAt(3)
-                    + COLOR_CHAR + group.charAt(4) + COLOR_CHAR + group.charAt(5));
+            matcher.appendReplacement(builder, ChatColor.COLOR_CHAR + "x"
+                    + ChatColor.COLOR_CHAR + group.charAt(0) + ChatColor.COLOR_CHAR + group.charAt(1)
+                    + ChatColor.COLOR_CHAR + group.charAt(2) + ChatColor.COLOR_CHAR + group.charAt(3)
+                    + ChatColor.COLOR_CHAR + group.charAt(4) + ChatColor.COLOR_CHAR + group.charAt(5));
         }
 
         return matcher.appendTail(builder).toString();

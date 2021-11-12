@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +32,7 @@ public final class TeamUtils {
     /**
      * The server scoreboard.
      */
-    private static final Scoreboard SCOREBOARD = Bukkit.getScoreboardManager().getMainScoreboard();
+    private static final Scoreboard SCOREBOARD = Objects.requireNonNull(Bukkit.getScoreboardManager()).getMainScoreboard();
 
     /**
      * Get team from {@link ChatColor}.

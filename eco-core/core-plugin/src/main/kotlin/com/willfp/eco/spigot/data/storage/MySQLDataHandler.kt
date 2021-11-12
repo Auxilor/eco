@@ -16,13 +16,10 @@ import org.jetbrains.exposed.sql.DoubleColumnType
 import org.jetbrains.exposed.sql.IntegerColumnType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.VarCharColumnType
-import org.jetbrains.exposed.sql.checkMappingConsistence
 import org.jetbrains.exposed.sql.exposedLogger
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
@@ -176,29 +173,6 @@ class MySQLDataHandler(
                 Players.insert { it[id] = uuid }
             }
             getPlayer(uuid)
-        }
-    }
-
-    private fun createMissingTablesAndColumnsSilently(table: Table) {
-        with(TransactionManager.current()) {
-            fun execStatements(statements: List<String>) {
-                for (statement in statements) {
-                    exec(statement)
-                }
-            }
-
-            db.dialect.resetCaches()
-            val createStatements = SchemaUtils.createStatements(table)
-            execStatements(createStatements)
-            commit()
-            val alterStatements = SchemaUtils.addMissingColumnsStatements(table)
-            execStatements(alterStatements)
-            commit()
-            val executedStatements = createStatements + alterStatements
-            val modifyTablesStatements = checkMappingConsistence(table).filter { it !in executedStatements }
-            execStatements(modifyTablesStatements)
-            commit()
-            db.dialect.resetCaches()
         }
     }
 }

@@ -12,7 +12,7 @@ public final class ShopManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<ShopWrapper> registered = new HashSet<>();
+    private static final Set<ShopWrapper> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
@@ -20,14 +20,14 @@ public final class ShopManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final ShopWrapper integration) {
-        registered.add(integration);
+        REGISTERED.add(integration);
     }
 
     /**
      * Register eco item provider for shop plugins.
      */
     public static void registerEcoProvider() {
-        for (ShopWrapper shopWrapper : registered) {
+        for (ShopWrapper shopWrapper : REGISTERED) {
             shopWrapper.registerEcoProvider();
         }
     }

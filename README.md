@@ -1,22 +1,37 @@
-<h1 align="center">
-  <br>
-  <img src="https://i.imgur.com/kU3ejCt.png" alt="eco logo" width="256">
-  <br>
-</h1>
+# eco
+eco is a powerful Spigot development library that simplifies the process of plugin creation and supercharges
+your plugins.
+It's the engine behind [EcoEnchants](https://polymart.org/resource/490), [Reforges](https://polymart.org/resource/1330),
+[EcoItems](https://polymart.org/resource/1247), [EcoSkills](https://polymart.org/resource/1351),
+[EcoArmor](https://polymart.org/resource/687), [Talismans](https://polymart.org/resource/611),
+and many more.
 
-<h4 align="center">eco - Simplify spigot development.</h4>
+<p>
+    <a href="https://github.com/Auxilor/eco/releases">
+        <img alt="spigot" src="https://img.shields.io/github/v/release/Auxilor/eco?color=informational"/>
+    </a>
+    <a href="https://bstats.org/plugin/bukkit/EcoEnchants" alt="bstats servers">
+        <img src="https://img.shields.io/bstats/servers/7666?color=informational"/>
+    </a>
+    <a href="https://bstats.org/plugin/bukkit/EcoEnchants" alt="bstats players">
+        <img src="https://img.shields.io/bstats/players/7666?color=informational"/>
+    </a>
+    <a href="https://plugins.auxilor.io/" alt="Docs (gitbook)">
+        <img src="https://img.shields.io/badge/docs-gitbook-informational"/>
+    </a>
+    <a href="https://discord.gg/ZcwpSsE/" alt="Discord">
+        <img src="https://img.shields.io/discord/452518336627081236?label=discord&color=informational"/>
+    </a>
+</p>
 
-### Plugin Information
+# For server owners
 - Requires ProtocolLib to be installed: get the latest version [here](https://www.spigotmc.org/resources/protocollib.1997/)
 - Supports 1.16.5+
 
-### bStats
-<img src="https://bstats.org/signatures/bukkit/eco.svg" width="512">
-
-# Information for development
+# For developers
 
 ## Javadoc
-The 6.8.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.8.0/javadoc/)
+The 6.13.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.13.0/javadoc/)
 
 ## Plugin Information
 
@@ -51,7 +66,7 @@ dependencies {
 }
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.0.0`.
+Replace `Tag` with a release tag for eco, eg `6.13.0`.
 
 Maven:
 
@@ -71,7 +86,7 @@ Maven:
 </dependency>
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.8.0`.
+Replace `Tag` with a release tag for eco, eg `6.13.0`.
 
 ## Build locally:
 
@@ -84,85 +99,21 @@ cd eco
 ./gradlew build
 ```
 
-# Features
-
-Here's a list of some (not all) of the features of eco:
-
-- Command system with subcommands
-- Reworked config system
-- JSON Config Support
-- Client-Side item display
-- World drop system
-- Event manager
-    - PlayerJumpEvent
-    - ArmorEquipEvent
-    - EntityDeathByEntityEvent
-    - NaturalExpGainEvent
-- Plugin extensions (com.willfp.eco.internal.Plugins for plugins)
-- GUI System
-- Integration system for external plugins
-    - Anticheat support
-        - AAC
-        - Matrix
-        - NCP
-        - Spartan
-        - Vulcan
-    - Antigrief/Combat support
-        - CombatLogX (V10 + V11)
-        - FactionsUUID
-        - GriefPrevention
-        - Kingdoms
-        - Lands
-        - Towny
-        - WorldGuard
-    - mcMMO support
-    - Custom Items support
-        - Oraxen
-    - PlaceholderAPI support
-- NMS Proxy / Wrapper system built in
-- Custom Items system
-- Crafting Recipe handler
-- Tuples
-- Support uploading to / downloading from hastebin
-- Packet System (via ProtocolLib)
-- Dependency Injection systems
-- Prerequisite system
-- API additions (via utility classes)
-    - Get bow from arrow
-    - Break a block as a player
-    - Get a vein of blocks
-    - Create 2D lists
-    - Create NamespacedKeys safely
-    - Random number, distribution, roman numerals
-    - Set skull texture
-    - Format all strings
-        - Hex Support
-        - Gradient Support
-        - Placeholder Support
-    - Get a scoreboard team from any color
-    - Telekinesis (Drops straight to inventory) system
-    - More vector options
-- Update checker
-- bStats integration
-- Reworked systems for:
-    - NamespacedKey
-    - MetadataValue
-    - Runnables / Scheduling
-
-... and a lot more!
-
 ## License
 
 *Click here to read [the entire license](https://github.com/Auxilor/eco/blob/master/LICENSE.md).*
 
 <h1 align="center">
+  Check out our partners!
+  <br>
+  <div style="width: 50%; margin: 0 auto;">
   <br>
     <a href="https://gamersupps.gg/discount/Auxilor?afmc=Auxilor" target="_blank">
-      <img src="https://i.imgur.com/uFDpBAC.png" alt="supps banner">
+      <img src="https://i.imgur.com/7mFhlQO.png" alt="supps banner">
     </a>
     <a href="https://dedimc.promo/Auxilor" target="_blank">
-      <img src="https://i.imgur.com/zdDLhFA.png" alt="dedimc banner">
+      <img src="https://i.imgur.com/x9aeH38.png" alt="dedimc banner">
     </a>
   <br>
+  </div>
 </h1>
-

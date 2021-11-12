@@ -1,7 +1,6 @@
 package com.willfp.eco.spigot.data
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
