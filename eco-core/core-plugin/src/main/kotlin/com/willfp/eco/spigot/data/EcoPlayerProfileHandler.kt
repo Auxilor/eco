@@ -6,7 +6,6 @@ import com.willfp.eco.core.data.PlayerProfileHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.data.EcoPlayerProfile
 import com.willfp.eco.spigot.EcoSpigotPlugin
-import org.bukkit.Bukkit
 import java.util.*
 
 class EcoPlayerProfileHandler(
@@ -27,21 +26,21 @@ class EcoPlayerProfileHandler(
             data[key] = handler.read(uuid, key.key) ?: key.defaultValue
         }
 
-        val profile = EcoPlayerProfile(data)
+        val profile = EcoPlayerProfile(data, uuid)
         loaded[uuid] = profile
         return profile
     }
 
+    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        val profile = PlayerProfile.load(uuid)
+
+        for (key in keys) {
+            handler.write(uuid, key.key, profile.read(key))
+        }
+    }
+
     override fun unloadPlayer(uuid: UUID) {
         loaded.remove(uuid)
-    }
-
-    override fun savePlayer(uuid: UUID) {
-        handler.savePlayer(uuid)
-    }
-
-    override fun savePlayerBlocking(uuid: UUID) {
-        handler.saveAllBlocking(listOf(uuid))
     }
 
     override fun saveAll() {
@@ -50,21 +49,5 @@ class EcoPlayerProfileHandler(
 
     override fun saveAllBlocking() {
         handler.saveAllBlocking(loaded.keys.toList())
-    }
-
-    fun autosave() {
-        if (Bukkit.getOnlinePlayers().isEmpty()) {
-            return
-        }
-
-        if (plugin.configYml.getBool("autosave.log")) {
-            plugin.logger.info("Auto-Saving player data!")
-        }
-
-        saveAll()
-
-        if (plugin.configYml.getBool("autosave.log")) {
-            plugin.logger.info("Saved player data!")
-        }
     }
 }

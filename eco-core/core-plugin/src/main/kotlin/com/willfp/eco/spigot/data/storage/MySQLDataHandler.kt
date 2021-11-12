@@ -75,12 +75,13 @@ class MySQLDataHandler(
         }
 
         if (!async) {
+            // Await the future if not async
             future.get()
         }
     }
 
-    override fun savePlayer(uuid: UUID) {
-        savePlayer(uuid, true)
+    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        savePlayer(uuid, true, keys)
     }
 
     override fun saveAll(uuids: Iterable<UUID>) {
@@ -91,19 +92,26 @@ class MySQLDataHandler(
 
     override fun saveAllBlocking(uuids: Iterable<UUID>) {
         for (uuid in uuids) {
-            savePlayer(uuid, false)
+            savePlayer(uuid, false, PersistentDataKey.values())
         }
     }
 
-    private fun savePlayer(uuid: UUID, async: Boolean) {
+    private fun savePlayer(uuid: UUID, async: Boolean, keys: Set<PersistentDataKey<*>>) {
         val profile = PlayerProfile.load(uuid)
 
-        transaction {
-            getPlayer(uuid)
+        val future = executor.submit {
+            transaction {
+                getPlayer(uuid)
 
-            for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-                writeAsserted(uuid, key.key, profile.read(key), async = async)
+                for (key in keys) {
+                    writeAsserted(uuid, key.key, profile.read(key), async = async)
+                }
             }
+        }
+
+        if (!async) {
+            // Await the future if not async
+            future.get()
         }
     }
 

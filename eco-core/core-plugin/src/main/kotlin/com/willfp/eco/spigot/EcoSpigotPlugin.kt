@@ -29,6 +29,7 @@ import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.spigot.data.PlayerBlockListener
 import com.willfp.eco.spigot.data.storage.DataHandler
 import com.willfp.eco.spigot.data.storage.MySQLDataHandler
+import com.willfp.eco.spigot.data.storage.ProfileSaver
 import com.willfp.eco.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.display.frame.clearFrames
@@ -136,18 +137,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun handleReload() {
         CollatedRunnable(this)
         DropManager.update(this)
+        ProfileSaver(this)
         this.scheduler.runTimer(
             { clearFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),
             this.configYml.getInt("display-frame-ttl").toLong()
-        )
-        this.scheduler.runTimer(
-            {
-                (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler)
-                    .autosave()
-            },
-            this.configYml.getInt("autosave.ticks").toLong(),
-            this.configYml.getInt("autosave.ticks").toLong()
         )
     }
 

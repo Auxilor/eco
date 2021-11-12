@@ -1,11 +1,11 @@
 package com.willfp.eco.spigot.data.storage
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.config.yaml.YamlBaseConfig
 import com.willfp.eco.core.data.PlayerProfile
+import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
-import java.util.UUID
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 class YamlDataHandler(
@@ -25,10 +25,10 @@ class YamlDataHandler(
         save()
     }
 
-    override fun savePlayer(uuid: UUID) {
+    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         val profile = PlayerProfile.load(uuid)
 
-        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
+        for (key in keys) {
             write(uuid, key.key, profile.read(key))
         }
     }

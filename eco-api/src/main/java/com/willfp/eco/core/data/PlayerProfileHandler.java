@@ -1,7 +1,9 @@
 package com.willfp.eco.core.data;
 
+import com.willfp.eco.core.data.keys.PersistentDataKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -33,15 +35,20 @@ public interface PlayerProfileHandler {
      *
      * @param uuid The uuid.
      */
-    void savePlayer(@NotNull UUID uuid);
-
+    default void savePlayer(@NotNull UUID uuid) {
+        this.saveKeysForPlayer(uuid, PersistentDataKey.values());
+    }
 
     /**
-     * Save a player profile, forcibly synchronously.
+     * Save keys for a player.
+     * <p>
+     * Can run async if using MySQL.
      *
      * @param uuid The uuid.
+     * @param keys The keys.
      */
-    void savePlayerBlocking(@NotNull UUID uuid);
+    void saveKeysForPlayer(@NotNull UUID uuid,
+                           @NotNull Set<PersistentDataKey<?>> keys);
 
     /**
      * Save all player data.
