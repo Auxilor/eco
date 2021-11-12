@@ -14,4 +14,20 @@ class EcoPlayerProfile(
         @Suppress("UNCHECKED_CAST")
         return this.data[key] as T? ?: key.defaultValue
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is EcoPlayerProfile) {
+            return false
+        }
+
+        return this.data == other.data
+    }
+
+    override fun hashCode(): Int {
+        return data.hashCode()
+    }
+
+    override fun toString(): String {
+        return "EcoPlayerProfile{$data}"
+    }
 }

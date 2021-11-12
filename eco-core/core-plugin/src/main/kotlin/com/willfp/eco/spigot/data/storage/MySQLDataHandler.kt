@@ -12,6 +12,7 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
@@ -65,7 +66,7 @@ class MySQLDataHandler(
     private fun <T> writeAsserted(uuid: UUID, key: NamespacedKey, value: T, async: Boolean = true) {
         val column: Column<T> = getColumn(key.toString()) as Column<T>
 
-        fun executeTransaction() {
+        val future = executor.submit {
             transaction {
                 Players.update({ Players.id eq uuid }) {
                     it[column] = value
@@ -73,10 +74,8 @@ class MySQLDataHandler(
             }
         }
 
-        if (async) {
-            executor.execute { executeTransaction() }
-        } else {
-            executeTransaction()
+        if (!async) {
+            future.get()
         }
     }
 
@@ -109,12 +108,14 @@ class MySQLDataHandler(
     }
 
     override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
-        var value: T? = null
-        transaction {
-            val player = getPlayer(uuid)
-            value = player[getColumn(key.toString())] as T?
-        }
-        return value
+        return executor.submit(Callable<T?> {
+            var value: T? = null
+            transaction {
+                val player = getPlayer(uuid)
+                value = player[getColumn(key.toString())] as T?
+            }
+            return@Callable value
+        }).get()
     }
 
     object Players : UUIDTable("eco_players")
