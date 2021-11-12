@@ -38,6 +38,8 @@ import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.spigot.data.EcoKeyRegistry
 import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
+import com.willfp.eco.spigot.data.storage.MySQLDataHandler
+import com.willfp.eco.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.spigot.integrations.bstats.MetricHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.inventory.ItemStack
@@ -49,7 +51,10 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     private val requirementFactory = EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
     private val keyRegistry = EcoKeyRegistry(this)
-    private val playerProfileHandler = EcoPlayerProfileHandler(this)
+    private val playerProfileHandler = EcoPlayerProfileHandler(
+        if (this.configYml.getBool("mysql.enabled"))
+            MySQLDataHandler(this) else YamlDataHandler(this)
+    )
 
     override fun createScheduler(plugin: EcoPlugin): Scheduler {
         return EcoScheduler(plugin)

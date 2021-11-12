@@ -9,20 +9,9 @@ import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.apache.logging.log4j.Level
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.BooleanColumnType
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DoubleColumnType
-import org.jetbrains.exposed.sql.IntegerColumnType
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.VarCharColumnType
-import org.jetbrains.exposed.sql.exposedLogger
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
@@ -73,26 +62,20 @@ class MySQLDataHandler(
         writeAsserted(uuid, key, value)
     }
 
-    private fun <T> writeAsserted(uuid: UUID, key: NamespacedKey, value: T, async: Boolean = true) {
+    private fun <T> writeAsserted(uuid: UUID, key: NamespacedKey, value: T) {
         val column: Column<T> = getColumn(key.toString()) as Column<T>
 
-        fun executeTransaction() {
+        executor.submit {
             transaction {
                 Players.update({ Players.id eq uuid }) {
                     it[column] = value
                 }
             }
         }
-
-        if (async) {
-            executor.execute { executeTransaction() }
-        } else {
-            executeTransaction()
-        }
     }
 
-    override fun savePlayer(uuid: UUID) {
-        savePlayer(uuid, async = false)
+    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        savePlayer(uuid, keys)
     }
 
     override fun saveAll(uuids: Iterable<UUID>) {
@@ -101,20 +84,16 @@ class MySQLDataHandler(
         }
     }
 
-    override fun saveAllBlocking(uuids: Iterable<UUID>) {
-        for (uuid in uuids) {
-            savePlayer(uuid, async = false)
-        }
-    }
-
-    private fun savePlayer(uuid: UUID, async: Boolean = true) {
+    private fun savePlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         val profile = PlayerProfile.load(uuid)
 
-        transaction {
-            getPlayer(uuid)
+        executor.submit {
+            transaction {
+                getPlayer(uuid)
 
-            for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-                writeAsserted(uuid, key.key, profile.read(key), async = async)
+                for (key in keys) {
+                    writeAsserted(uuid, key.key, profile.read(key))
+                }
             }
         }
     }
@@ -125,6 +104,7 @@ class MySQLDataHandler(
             val player = getPlayer(uuid)
             value = player[getColumn(key.toString())] as T?
         }
+
         return value
     }
 

@@ -1,7 +1,9 @@
 package com.willfp.eco.core.data;
 
+import com.willfp.eco.core.data.keys.PersistentDataKey;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -17,11 +19,37 @@ public interface PlayerProfileHandler {
     PlayerProfile load(@NotNull UUID uuid);
 
     /**
-     * Save a player profile.
+     * Unload a player profile from memory.
+     * <p>
+     * This will not save the profile first.
      *
      * @param uuid The uuid.
      */
-    void savePlayer(@NotNull UUID uuid);
+    void unloadPlayer(@NotNull UUID uuid);
+
+    /**
+     * Save a player profile.
+     * <p>
+     * Can run async if using MySQL.
+     *
+     * @param uuid The uuid.
+     * @deprecated Saving changes is faster and should be used. Saving a player manually is not recommended.
+     */
+    @Deprecated
+    default void savePlayer(@NotNull UUID uuid) {
+        this.saveKeysForPlayer(uuid, PersistentDataKey.values());
+    }
+
+    /**
+     * Save keys for a player.
+     * <p>
+     * Can run async if using MySQL.
+     *
+     * @param uuid The uuid.
+     * @param keys The keys.
+     */
+    void saveKeysForPlayer(@NotNull UUID uuid,
+                           @NotNull Set<PersistentDataKey<?>> keys);
 
     /**
      * Save all player data.
@@ -36,6 +64,15 @@ public interface PlayerProfileHandler {
 
     /**
      * Save all player data.
+     * <p>
+     * Can run async if using MySQL.
      */
     void saveAll();
+
+    /**
+     * Commit all changes to the file.
+     * <p>
+     * Does nothing if using MySQL.
+     */
+    void save();
 }

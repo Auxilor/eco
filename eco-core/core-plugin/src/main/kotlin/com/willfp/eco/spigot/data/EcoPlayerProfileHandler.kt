@@ -1,19 +1,16 @@
 package com.willfp.eco.spigot.data
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.PlayerProfileHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.data.EcoPlayerProfile
-import com.willfp.eco.spigot.EcoSpigotPlugin
-import org.bukkit.Bukkit
-import java.util.*
+import com.willfp.eco.spigot.data.storage.DataHandler
+import java.util.UUID
 
 class EcoPlayerProfileHandler(
-    private val plugin: EcoSpigotPlugin
+    private val handler: DataHandler
 ) : PlayerProfileHandler {
     private val loaded = mutableMapOf<UUID, PlayerProfile>()
-    private val handler = plugin.dataHandler
 
     override fun load(uuid: UUID): PlayerProfile {
         val found = loaded[uuid]
@@ -23,50 +20,36 @@ class EcoPlayerProfileHandler(
 
         val data = mutableMapOf<PersistentDataKey<*>, Any>()
 
-        for (key in Eco.getHandler().keyRegistry.registeredKeys) {
+        for (key in PersistentDataKey.values()) {
             data[key] = handler.read(uuid, key.key) ?: key.defaultValue
         }
 
-        val profile = EcoPlayerProfile(data)
+        val profile = EcoPlayerProfile(data, uuid)
         loaded[uuid] = profile
         return profile
     }
 
-    fun unloadPlayer(uuid: UUID) {
-        handler.savePlayer(uuid)
-        loaded.remove(uuid)
+    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        val profile = PlayerProfile.load(uuid)
+
+        for (key in keys) {
+            handler.write(uuid, key.key, profile.read(key))
+        }
     }
 
-    fun unloadPlayerBlocking(uuid: UUID) {
-        handler.saveAllBlocking(listOf(uuid))
+    override fun unloadPlayer(uuid: UUID) {
         loaded.remove(uuid)
-    }
-
-    override fun savePlayer(uuid: UUID) {
-        handler.savePlayer(uuid)
     }
 
     override fun saveAll() {
         handler.saveAll(loaded.keys.toList())
     }
 
-    fun saveAllBlocking() {
-        handler.saveAllBlocking(loaded.keys.toList())
+    override fun save() {
+        handler.save()
     }
 
-    fun autosave() {
-        if (Bukkit.getOnlinePlayers().isEmpty()) {
-            return
-        }
-
-        if (plugin.configYml.getBool("autosave.log")) {
-            plugin.logger.info("Auto-Saving player data!")
-        }
-
-        saveAll()
-
-        if (plugin.configYml.getBool("autosave.log")) {
-            plugin.logger.info("Saved player data!")
-        }
+    fun updateKeys() {
+        handler.updateKeys()
     }
 }
