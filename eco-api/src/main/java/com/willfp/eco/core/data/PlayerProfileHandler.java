@@ -21,8 +21,7 @@ public interface PlayerProfileHandler {
     /**
      * Unload a player profile from memory.
      * <p>
-     * This will not save the profile first, so to avoid data loss, run a blocking
-     * save beforehand.
+     * This will not save the profile first.
      *
      * @param uuid The uuid.
      */
@@ -34,7 +33,9 @@ public interface PlayerProfileHandler {
      * Can run async if using MySQL.
      *
      * @param uuid The uuid.
+     * @deprecated Saving changes is faster and should be used. Saving a player manually is not recommended.
      */
+    @Deprecated
     default void savePlayer(@NotNull UUID uuid) {
         this.saveKeysForPlayer(uuid, PersistentDataKey.values());
     }
@@ -69,7 +70,9 @@ public interface PlayerProfileHandler {
     void saveAll();
 
     /**
-     * Save all player data, forcibly synchronously.
+     * Commit all changes to the file.
+     * <p>
+     * Does nothing if using MySQL.
      */
-    void saveAllBlocking();
+    void save();
 }

@@ -25,12 +25,8 @@ import com.willfp.eco.proxy.SkullProxy
 import com.willfp.eco.proxy.TPSProxy
 import com.willfp.eco.spigot.arrows.ArrowDataListener
 import com.willfp.eco.spigot.data.DataListener
-import com.willfp.eco.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.spigot.data.PlayerBlockListener
-import com.willfp.eco.spigot.data.storage.DataHandler
-import com.willfp.eco.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.spigot.data.storage.ProfileSaver
-import com.willfp.eco.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.spigot.display.*
 import com.willfp.eco.spigot.display.frame.clearFrames
 import com.willfp.eco.spigot.drops.CollatedRunnable
@@ -71,8 +67,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     "com.willfp.eco.proxy",
     "&a"
 ) {
-    lateinit var dataHandler: DataHandler
-
     init {
         Items.registerArgParser(EnchantmentArgParser())
         Items.registerArgParser(TextureArgParser())
@@ -94,9 +88,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     private fun postInit() {
         Display.setHandler(EcoDisplayHandler(this))
-
-        this.dataHandler = if (this.configYml.getBool("mysql.enabled"))
-            MySQLDataHandler(this) else YamlDataHandler(this)
     }
 
     override fun handleEnable() {
@@ -129,7 +120,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun handleDisable() {
         this.logger.info("Saving player data...")
         val start = System.currentTimeMillis()
-        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).saveAllBlocking()
+        Eco.getHandler().playerProfileHandler.save()
         this.logger.info("Saved player data! Took ${System.currentTimeMillis() - start}ms")
         Eco.getHandler().adventure?.close()
     }

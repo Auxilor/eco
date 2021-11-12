@@ -11,10 +11,6 @@ interface DataHandler {
 
     fun saveAll(uuids: Iterable<UUID>)
 
-    fun saveAllBlocking(uuids: Iterable<UUID>) {
-        saveAll(uuids)
-    }
-
     fun updateKeys() {
 
     }
