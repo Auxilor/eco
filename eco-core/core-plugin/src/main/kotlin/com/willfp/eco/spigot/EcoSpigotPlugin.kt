@@ -123,14 +123,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
-
-        /*
-        I'll figure this one out eventually...
-        
-        if (Prerequisite.HAS_BUNGEECORD.isMet) {
-            BungeeDataListener.register()
-        }
-         */
     }
 
     override fun handleDisable() {
