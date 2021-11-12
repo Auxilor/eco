@@ -1,5 +1,6 @@
 package com.willfp.eco.spigot.data
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
@@ -20,7 +21,7 @@ class EcoKeyRegistry(
 
         this.registry[key.key] = key
 
-        plugin.dataHandler.updateKeys()
+        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).updateKeys()
     }
 
     override fun getRegisteredKeys(): MutableSet<PersistentDataKey<*>> {

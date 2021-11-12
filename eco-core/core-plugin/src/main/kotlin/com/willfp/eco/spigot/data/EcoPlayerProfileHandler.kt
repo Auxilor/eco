@@ -5,7 +5,7 @@ import com.willfp.eco.core.data.PlayerProfileHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.data.EcoPlayerProfile
 import com.willfp.eco.spigot.data.storage.DataHandler
-import java.util.*
+import java.util.UUID
 
 class EcoPlayerProfileHandler(
     private val handler: DataHandler
@@ -47,5 +47,9 @@ class EcoPlayerProfileHandler(
 
     override fun save() {
         handler.save()
+    }
+
+    fun updateKeys() {
+        handler.updateKeys()
     }
 }
