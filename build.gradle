@@ -60,18 +60,10 @@ allprojects {
     }
 
     dependencies {
-        // Adventure
-        api 'net.kyori:adventure-platform-bukkit:4.0.0'
-        api 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
-        api 'net.kyori:adventure-api:4.9.3'
-        api 'net.kyori:adventure-text-serializer-gson:4.9.3'
-        api 'net.kyori:adventure-text-serializer-legacy:4.9.3'
-
-        // Annotations
-        api 'org.jetbrains:annotations:22.0.0'
+        compileOnly 'org.jetbrains:annotations:19.0.0'
 
         // Test
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
     }
 
