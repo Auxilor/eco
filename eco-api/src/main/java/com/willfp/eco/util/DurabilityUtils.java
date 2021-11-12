@@ -10,16 +10,13 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for item durability.
  */
 public final class DurabilityUtils {
-    private DurabilityUtils() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-    }
-
     /**
      * Damage an item in a player's inventory.
      * The slot of a held item can be obtained with {@link PlayerInventory#getHeldItemSlot()}.
@@ -61,13 +58,13 @@ public final class DurabilityUtils {
 
             if (meta.getDamage() >= item.getType().getMaxDurability()) {
                 meta.setDamage(item.getType().getMaxDurability());
-                item.setItemMeta(meta);
+                item.setItemMeta((ItemMeta) meta);
                 PlayerItemBreakEvent event = new PlayerItemBreakEvent(player, item);
                 Bukkit.getPluginManager().callEvent(event);
                 player.getInventory().clear(slot);
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1, 1);
             } else {
-                item.setItemMeta(meta);
+                item.setItemMeta((ItemMeta) meta);
             }
         }
     }
@@ -105,7 +102,7 @@ public final class DurabilityUtils {
             if (meta.getDamage() >= item.getType().getMaxDurability()) {
                 meta.setDamage(item.getType().getMaxDurability() - 1);
             }
-            item.setItemMeta(meta);
+            item.setItemMeta((ItemMeta) meta);
         }
     }
 
@@ -131,7 +128,11 @@ public final class DurabilityUtils {
             if (meta.getDamage() < 0) {
                 meta.setDamage(0);
             }
-            item.setItemMeta(meta);
+            item.setItemMeta((ItemMeta) meta);
         }
+    }
+
+    private DurabilityUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }
