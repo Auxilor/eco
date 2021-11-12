@@ -17,11 +17,31 @@ public interface PlayerProfileHandler {
     PlayerProfile load(@NotNull UUID uuid);
 
     /**
+     * Unload a player profile from memory.
+     * <p>
+     * This will not save the profile first, so to avoid data loss, run a blocking
+     * save beforehand.
+     *
+     * @param uuid The uuid.
+     */
+    void unloadPlayer(@NotNull UUID uuid);
+
+    /**
      * Save a player profile.
+     * <p>
+     * Can run async if using MySQL.
      *
      * @param uuid The uuid.
      */
     void savePlayer(@NotNull UUID uuid);
+
+
+    /**
+     * Save a player profile, forcibly synchronously.
+     *
+     * @param uuid The uuid.
+     */
+    void savePlayerBlocking(@NotNull UUID uuid);
 
     /**
      * Save all player data.
@@ -36,6 +56,13 @@ public interface PlayerProfileHandler {
 
     /**
      * Save all player data.
+     * <p>
+     * Can run async if using MySQL.
      */
     void saveAll();
+
+    /**
+     * Save all player data, forcibly synchronously.
+     */
+    void saveAllBlocking();
 }

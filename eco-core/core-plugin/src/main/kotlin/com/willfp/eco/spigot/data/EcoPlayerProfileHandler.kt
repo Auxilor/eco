@@ -32,7 +32,7 @@ class EcoPlayerProfileHandler(
         return profile
     }
 
-    fun unloadPlayer(uuid: UUID) {
+    override fun unloadPlayer(uuid: UUID) {
         loaded.remove(uuid)
     }
 
@@ -40,7 +40,7 @@ class EcoPlayerProfileHandler(
         handler.savePlayer(uuid)
     }
 
-    fun savePlayerBlocking(uuid: UUID) {
+    override fun savePlayerBlocking(uuid: UUID) {
         handler.saveAllBlocking(listOf(uuid))
     }
 
@@ -48,7 +48,7 @@ class EcoPlayerProfileHandler(
         handler.saveAll(loaded.keys.toList())
     }
 
-    fun saveAllBlocking() {
+    override fun saveAllBlocking() {
         handler.saveAllBlocking(loaded.keys.toList())
     }
 

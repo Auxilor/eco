@@ -12,19 +12,20 @@ class DataListener : Listener {
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
         PlayerUtils.updateSavedDisplayName(event.player)
-        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).savePlayerBlocking(event.player.uniqueId)
-        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).unloadPlayer(event.player.uniqueId)
+        Eco.getHandler().playerProfileHandler.savePlayerBlocking(event.player.uniqueId)
+        Eco.getHandler().playerProfileHandler.unloadPlayer(event.player.uniqueId)
         Eco.getHandler().ecoPlugin.logger.info("Player ${event.player.name} Quit (Saving)")
     }
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
+        Eco.getHandler().playerProfileHandler.unloadPlayer(event.player.uniqueId)
         PlayerUtils.updateSavedDisplayName(event.player)
     }
 
     @EventHandler
     fun onLogin(event: PlayerLoginEvent) {
-        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).unloadPlayer(event.player.uniqueId)
+        Eco.getHandler().playerProfileHandler.unloadPlayer(event.player.uniqueId)
         Eco.getHandler().ecoPlugin.logger.info("Player ${event.player.name} Logged In (Saving)")
     }
 }
