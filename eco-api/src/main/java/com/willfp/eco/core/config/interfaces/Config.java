@@ -199,11 +199,12 @@ public interface Config extends Cloneable {
 
     /**
      * Get a string from config.
+     * <p>
+     * This will be deprecated when {@link Config#getString(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
      * @return The found value, or an empty string if not found.
-     * @apiNote This will be deprecated when {@link Config#getString(String)} no longer formats by default.
      */
     default String getString(@NotNull String path,
                              boolean format) {
@@ -277,11 +278,12 @@ public interface Config extends Cloneable {
 
     /**
      * Get a string from config.
+     * <p>
+     * This will be deprecated when {@link Config#getStringOrNull(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
      * @return The found value, or null if not found.
-     * @apiNote This will be deprecated when {@link Config#getStringOrNull(String)} no longer formats by default.
      */
     @Nullable
     default String getStringOrNull(@NotNull String path,
@@ -349,10 +351,11 @@ public interface Config extends Cloneable {
      * Get a list of strings from config.
      * <p>
      * Formatted by default.
+     * <p>
+     * This will be changed in newer versions to <b>not</b> format by default.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     * @apiNote This will be changed in newer versions to <b>not</b> format by default.
      */
     @NotNull
     default List<String> getStrings(@NotNull String path) {
@@ -361,11 +364,12 @@ public interface Config extends Cloneable {
 
     /**
      * Get a list of strings from config.
+     * <p>
+     * This will be deprecated when {@link Config#getStrings(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     * @apiNote This will be deprecated when {@link Config#getStrings(String)} no longer formats by default.
      */
     @NotNull
     default List<String> getStrings(@NotNull String path,
@@ -433,10 +437,11 @@ public interface Config extends Cloneable {
      * Get a list of strings from config.
      * <p>
      * Formatted by default.
+     * <p>
+     * This will be changed in newer versions to <b>not</b> format by default.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
-     * @apiNote This will be changed in newer versions to <b>not</b> format by default.
      */
     @Nullable
     default List<String> getStringsOrNull(@NotNull String path) {
