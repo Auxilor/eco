@@ -24,7 +24,7 @@ public class LangYml extends YamlBaseConfig {
      * @return The prefix.
      */
     public String getPrefix() {
-        return this.getString("messages.prefix");
+        return this.getFormattedString("messages.prefix");
     }
 
     /**
@@ -33,7 +33,7 @@ public class LangYml extends YamlBaseConfig {
      * @return The message.
      */
     public String getNoPermission() {
-        return getPrefix() + this.getString("messages.no-permission");
+        return getPrefix() + this.getFormattedString("messages.no-permission");
     }
 
     /**
@@ -55,6 +55,6 @@ public class LangYml extends YamlBaseConfig {
      */
     public String getMessage(@NotNull final String message,
                              @NotNull final StringUtils.FormatOption option) {
-        return getPrefix() + this.getString("messages." + message, option);
+        return getPrefix() + this.getFormattedString("messages." + message, option);
     }
 }
