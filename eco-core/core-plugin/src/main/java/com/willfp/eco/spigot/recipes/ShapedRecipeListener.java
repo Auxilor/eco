@@ -10,6 +10,7 @@ import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -245,7 +246,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
     
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final PrepareItemCraftEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
+        if (!(event.getRecipe() instanceof Keyed recipe)) {
             return;
         }
 
@@ -263,7 +264,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
 
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final CraftItemEvent event) {
-        if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
+        if (!(event.getRecipe() instanceof Keyed recipe)) {
             return;
         }
 
