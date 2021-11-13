@@ -27,7 +27,7 @@ class AntigriefDeluxeCombat: AntigriefWrapper {
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
         val api = DeluxeCombatAPI()
         return when(victim) {
-            is Player -> (api.hasProtection(victim) || !api.hasPvPEnabled(victim)) && !api.isInCombat(victim)
+            is Player -> ((!api.hasProtection(victim) && api.hasPvPEnabled(victim)) || api.isInCombat(victim))
             else -> true
         }
     }
