@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
  * Utilities / API methods for lightning.
  */
 public final class LightningUtils {
-
     /**
      * Strike lightning on player without fire.
      *
