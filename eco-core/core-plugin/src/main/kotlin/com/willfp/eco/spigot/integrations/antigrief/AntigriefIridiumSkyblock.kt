@@ -9,12 +9,12 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 class AntigriefIridiumSkyblock : AntigriefWrapper {
-    private val api = IridiumSkyblockAPI.getInstance()
-
     override fun canBreakBlock(
         player: Player,
         block: Block
     ): Boolean {
+        val api = IridiumSkyblockAPI.getInstance() ?: return true
+
         return api.getIslandPermission(api.getIslandViaLocation(block.location).orElse(null) ?: return true, api.getUser(player), PermissionType.BLOCK_BREAK)
     }
 
@@ -22,6 +22,8 @@ class AntigriefIridiumSkyblock : AntigriefWrapper {
         player: Player,
         location: Location
     ): Boolean {
+        val api = IridiumSkyblockAPI.getInstance() ?: return true
+
         return api.getIslandPermission(api.getIslandViaLocation(location).orElse(null) ?: return true, api.getUser(player), PermissionType.BLOCK_BREAK)
     }
 
@@ -29,6 +31,8 @@ class AntigriefIridiumSkyblock : AntigriefWrapper {
         player: Player,
         block: Block
     ): Boolean {
+        val api = IridiumSkyblockAPI.getInstance() ?: return true
+
         return api.getIslandPermission(api.getIslandViaLocation(block.location).orElse(null) ?: return true, api.getUser(player), PermissionType.BLOCK_PLACE)
     }
 
@@ -36,6 +40,8 @@ class AntigriefIridiumSkyblock : AntigriefWrapper {
         player: Player,
         victim: LivingEntity
     ): Boolean {
+        val api = IridiumSkyblockAPI.getInstance() ?: return true
+
         return when (victim) {
             is Player -> api.getIslandViaLocation(victim.location).orElse(null) != null
             else -> api.getIslandPermission(api.getIslandViaLocation(victim.location).orElse(null) ?: return true, api.getUser(player), PermissionType.KILL_MOBS)
