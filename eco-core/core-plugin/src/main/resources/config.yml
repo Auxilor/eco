@@ -5,6 +5,10 @@
 
 mysql:
   enabled: false # Set to false, data.yml will be used instead.
+  # How many threads to execute statements on. Higher numbers can be faster however
+  # very high numbers can cause issues with OS configuration. If writes are taking
+  # too long, increase this value.
+  threads: 2
   host: localhost
   port: 3306
   database: database
