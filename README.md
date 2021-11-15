@@ -22,12 +22,22 @@ and many more.
     <a href="https://discord.gg/ZcwpSsE/" alt="Discord">
         <img src="https://img.shields.io/discord/452518336627081236?label=discord&color=informational"/>
     </a>
-    <img src="https://img.shields.io/github/workflow/status/Auxilor/eco/Java%20CI/develop?color=informational"/>
+    <a href="https://github.com/Auxilor/eco/actions/workflows/java-ci.yml" alt"Latest Dev Build">
+        <img src="https://img.shields.io/github/workflow/status/Auxilor/eco/Java%20CI/develop?color=informational"/>
+    </a>
 </p>
 
 # For server owners
 - Requires ProtocolLib to be installed: get the latest version [here](https://www.spigotmc.org/resources/protocollib.1997/)
 - Supports 1.16.5+
+
+## Downloads
+
+Stable (Recommended) - [GitHub](https://github.com/Auxilor/eco/releases), [Polymart](https://polymart.org/resource/eco.773)
+Dev (Not Recommended) - [GitHub](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml) (Open latest run and download)
+
+[Stable (Recommended)](https://github.com/Auxilor/eco/releases)
+[Dev (Not Recommended)](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml)
 
 # For developers
 
@@ -43,12 +53,6 @@ and specify it as a dependency in your plugin.yml:
 depend:
   - eco
 ```
-
-eco is available from any of these places:
-
-- [GitHub](https://github.com/Auxilor/eco/releases)
-- [Polymart](https://polymart.org/resource/eco.773)
-- [Build it locally](https://github.com/Auxilor/eco#build-locally).
 
 ## Get from JitPack:
 
