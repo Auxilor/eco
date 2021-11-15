@@ -1,6 +1,5 @@
 plugins {
     id("io.papermc.paperweight.userdev") version "1.1.14"
-    id("xyz.jpenilla.run-paper") version "1.0.4"
 }
 
 group = "com.willfp"
@@ -12,21 +11,14 @@ dependencies {
     compileOnly("net.kyori:adventure-text-serializer-gson:4.8.1")
 }
 
+configurations.create("mapped")
+
 tasks {
     build {
         dependsOn(reobfJar)
     }
 
-    compileJava {
-        options.encoding = "UTF_8"
-        options.release.set(16)
-    }
-
-    javadoc {
-        options.encoding = "UTF_8"
-    }
-
-    processResources {
-        filteringCharset = "UTF_8"
+    artifacts {
+        this.add("mapped", reobfJar)
     }
 }
