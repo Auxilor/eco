@@ -22,6 +22,7 @@ and many more.
     <a href="https://discord.gg/ZcwpSsE/" alt="Discord">
         <img src="https://img.shields.io/discord/452518336627081236?label=discord&color=informational"/>
     </a>
+    <img src="https://img.shields.io/github/workflow/status/Auxilor/eco/Java%20CI/develop?color=informational&style=plastic"/>
 </p>
 
 # For server owners
