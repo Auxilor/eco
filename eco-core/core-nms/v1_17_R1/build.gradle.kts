@@ -11,14 +11,8 @@ dependencies {
     compileOnly("net.kyori:adventure-text-serializer-gson:4.8.1")
 }
 
-configurations.create("mapped")
-
 tasks {
     build {
         dependsOn(reobfJar)
-    }
-
-    artifacts {
-        this.add("mapped", reobfJar)
     }
 }
