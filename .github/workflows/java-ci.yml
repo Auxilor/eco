@@ -29,7 +29,6 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - run: ./gradlew build
-      - run: ./gradlew build # Run it twice because special gradle sucks
 
       - uses: actions/upload-artifact@v2
         with:
