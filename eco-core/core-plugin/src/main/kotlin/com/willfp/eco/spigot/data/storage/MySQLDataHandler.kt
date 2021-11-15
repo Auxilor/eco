@@ -9,9 +9,20 @@ import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.apache.logging.log4j.Level
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.BooleanColumnType
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DoubleColumnType
+import org.jetbrains.exposed.sql.IntegerColumnType
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.VarCharColumnType
+import org.jetbrains.exposed.sql.exposedLogger
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
+import org.jetbrains.exposed.sql.update
+import java.util.UUID
 import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
@@ -38,13 +49,17 @@ class MySQLDataHandler(
         }
 
         // Get Exposed to shut the hell up
-        exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
-            .apply {
-                get(exposedLogger).apply {
-                    this.javaClass.getDeclaredMethod("setLevel", Level::class.java)
-                        .invoke(this, Level.OFF)
+        try {
+            exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
+                .apply {
+                    get(exposedLogger).apply {
+                        this.javaClass.getDeclaredMethod("setLevel", Level::class.java)
+                            .invoke(this, Level.OFF)
+                    }
                 }
-            }
+        } catch (e: Exception) {
+            Eco.getHandler().ecoPlugin.logger.warning("Failed to silence Exposed logger! You might get some console spam")
+        }
     }
 
     override fun updateKeys() {
@@ -53,7 +68,7 @@ class MySQLDataHandler(
                 registerColumn(key, Players)
             }
 
-            SchemaUtils.createMissingTablesAndColumns(Players)
+            SchemaUtils.createMissingTablesAndColumns(Players, withLogs = false)
         }
     }
 

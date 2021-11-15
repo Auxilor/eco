@@ -15,7 +15,7 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly project(":eco-core:core-proxy")
     compileOnly project(":eco-core:core-backend")
-    compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.1-SNAPSHOT'
+    compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.1-SNAPSHOT'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT'
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
     compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.5.10'
@@ -30,9 +30,9 @@ dependencies {
     compileOnly 'com.github.brcdev-minecraft:shopgui-api:2.2.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:2.4.7'
     compileOnly 'com.arcaniax:HeadDatabase-API:1.3.0'
-    compileOnly 'org.jetbrains.exposed:exposed-core:0.35.1'
-    compileOnly 'org.jetbrains.exposed:exposed-dao:0.35.1'
-    compileOnly 'org.jetbrains.exposed:exposed-jdbc:0.35.1'
+    compileOnly 'org.jetbrains.exposed:exposed-core:0.36.2'
+    compileOnly 'org.jetbrains.exposed:exposed-dao:0.36.2'
+    compileOnly 'org.jetbrains.exposed:exposed-jdbc:0.36.2'
     compileOnly 'mysql:mysql-connector-java:8.0.25'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0'
     compileOnly 'net.essentialsx:EssentialsX:2.19.0'

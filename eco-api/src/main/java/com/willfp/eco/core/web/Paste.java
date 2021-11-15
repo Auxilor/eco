@@ -46,7 +46,7 @@ public class Paste {
                 byte[] postData = contents.getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
-                String requestURL = "https://hastebin.com/documents";
+                String requestURL = "https://paste.willfp.com/documents";
                 URL url = new URL(requestURL);
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setDoOutput(true);
@@ -86,7 +86,7 @@ public class Paste {
     public static Paste getFromHastebin(@NotNull final String token) {
         try {
             StringBuilder result = new StringBuilder();
-            URL url = new URL("https://hastebin.com/raw/" + token);
+            URL url = new URL("https://paste.willfp.com/raw/" + token);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             try (var reader = new BufferedReader(

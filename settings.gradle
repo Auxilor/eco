@@ -1,7 +1,7 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        maven { url "https://repo.jpenilla.xyz/snapshots/" }
+        maven { url "https://papermc.io/repo/repository/maven-public/" }
     }
 }
 
