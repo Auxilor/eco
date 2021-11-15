@@ -20,7 +20,7 @@ class MySQLDataHandler(
 ) : DataHandler {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
-    private val executor = Executors.newCachedThreadPool(threadFactory)
+    private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
 
     init {
         Database.connect(
