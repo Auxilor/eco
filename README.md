@@ -33,11 +33,8 @@ and many more.
 
 ## Downloads
 
-Stable (Recommended) - [GitHub](https://github.com/Auxilor/eco/releases), [Polymart](https://polymart.org/resource/eco.773)
-Dev (Not Recommended) - [GitHub](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml) (Open latest run and download)
-
-[Stable (Recommended)](https://github.com/Auxilor/eco/releases)
-[Dev (Not Recommended)](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml)
+- Stable (Recommended): [GitHub](https://github.com/Auxilor/eco/releases), [Polymart](https://polymart.org/resource/eco.773)
+- Dev (Not Recommended): [GitHub](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml) (Open latest run and download)
 
 # For developers
 
