@@ -101,7 +101,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     private fun getLoreJSON(): List<String> {
-        val displayTag = handle.getOrCreateTagElement("display")
+        val displayTag = handle.getTagElement("display") ?: return emptyList()
         return if (displayTag.contains("Lore")) {
             val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
             val lore: MutableList<String> = ArrayList(loreTag.size)
@@ -112,7 +112,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
             lore
         } else {
-            ArrayList()
+            emptyList()
         }
     }
 

@@ -2,7 +2,13 @@ package com.willfp.eco.proxy.v1_16_R3.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
 import com.willfp.eco.util.StringUtils
-import net.minecraft.server.v1_16_R3.*
+import net.minecraft.server.v1_16_R3.Item
+import net.minecraft.server.v1_16_R3.ItemEnchantedBook
+import net.minecraft.server.v1_16_R3.ItemStack
+import net.minecraft.server.v1_16_R3.Items
+import net.minecraft.server.v1_16_R3.NBTTagCompound
+import net.minecraft.server.v1_16_R3.NBTTagList
+import net.minecraft.server.v1_16_R3.NBTTagString
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftNamespacedKey
@@ -82,7 +88,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     private fun getLoreJSON(): List<String> {
-        val displayTag = handle.a("display")
+        val displayTag = handle.b("display") ?: return emptyList()
         return if (displayTag.hasKey("Lore")) {
             val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
             val lore: MutableList<String> = ArrayList(loreTag.size)
@@ -91,7 +97,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             }
             lore
         } else {
-            ArrayList()
+            emptyList()
         }
     }
 
