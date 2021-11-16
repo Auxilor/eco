@@ -2,8 +2,8 @@ package com.willfp.eco.core;
 
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
-import com.willfp.eco.core.data.keys.KeyRegistry;
 import com.willfp.eco.core.data.PlayerProfileHandler;
+import com.willfp.eco.core.data.keys.KeyRegistry;
 import com.willfp.eco.core.drops.DropQueueFactory;
 import com.willfp.eco.core.events.EventManager;
 import com.willfp.eco.core.extensions.ExtensionLoader;

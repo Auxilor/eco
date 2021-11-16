@@ -9,7 +9,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.potion.PotionEffectType
 import java.text.DecimalFormat
-import java.util.*
+import java.util.UUID
 
 @Suppress("DEPRECATION")
 class PlayerJumpListeners : Listener {

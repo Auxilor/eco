@@ -2,7 +2,7 @@ package com.willfp.eco.internal.data
 
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 class EcoPlayerProfile(

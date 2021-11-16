@@ -6,7 +6,7 @@ import com.willfp.eco.util.NamespacedKeyUtils
 import io.th0rgal.oraxen.items.OraxenItems
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
-import java.util.*
+import java.util.Objects
 import java.util.function.Predicate
 
 class CustomItemsOraxen : CustomItemsWrapper {

@@ -5,7 +5,7 @@ import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
-import java.util.*
+import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
 class YamlDataHandler(

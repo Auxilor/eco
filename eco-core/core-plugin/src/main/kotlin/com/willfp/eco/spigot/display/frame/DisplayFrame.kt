@@ -2,7 +2,7 @@ package com.willfp.eco.spigot.display.frame
 
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 data class HashedItem(val hash: Int, val item: ItemStack)

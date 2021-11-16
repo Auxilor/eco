@@ -4,7 +4,7 @@ import com.willfp.eco.core.integrations.anticheat.AnticheatWrapper
 import fr.neatmonster.nocheatplus.checks.CheckType
 import fr.neatmonster.nocheatplus.hooks.NCPExemptionManager
 import org.bukkit.entity.Player
-import java.util.*
+import java.util.UUID
 
 class AnticheatNCP : AnticheatWrapper {
     private val exempt: MutableSet<UUID> = HashSet()

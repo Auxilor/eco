@@ -4,7 +4,7 @@ import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramWrapper
 import me.gholo.api.GHoloAPI
 import org.bukkit.Location
-import java.util.*
+import java.util.UUID
 
 @Suppress("DEPRECATION")
 class HologramGHolo : HologramWrapper {

@@ -1,6 +1,10 @@
 package com.willfp.eco.spigot.integrations.antigrief
 
-import com.massivecraft.factions.*
+import com.massivecraft.factions.Board
+import com.massivecraft.factions.FLocation
+import com.massivecraft.factions.FPlayer
+import com.massivecraft.factions.FPlayers
+import com.massivecraft.factions.Faction
 import com.massivecraft.factions.perms.PermissibleAction
 import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import org.bukkit.Location

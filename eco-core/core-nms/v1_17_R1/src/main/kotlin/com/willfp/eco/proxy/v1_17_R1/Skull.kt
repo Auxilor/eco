@@ -6,7 +6,7 @@ import com.willfp.eco.proxy.SkullProxy
 import org.bukkit.inventory.meta.SkullMeta
 import java.lang.reflect.Field
 import java.lang.reflect.Method
-import java.util.*
+import java.util.UUID
 
 class Skull : SkullProxy {
     private lateinit var setProfile: Method

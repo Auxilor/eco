@@ -2,7 +2,7 @@ package com.willfp.eco.spigot.data.storage
 
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import org.bukkit.NamespacedKey
-import java.util.*
+import java.util.UUID
 
 interface DataHandler {
     fun save() {

@@ -2,7 +2,7 @@ package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.inventory.Inventory
-import java.util.*
+import java.util.WeakHashMap
 
 object MenuHandler {
     private val menus = WeakHashMap<ExtendedInventory, EcoMenu>()

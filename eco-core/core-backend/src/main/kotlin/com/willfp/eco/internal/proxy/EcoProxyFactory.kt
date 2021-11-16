@@ -7,7 +7,7 @@ import com.willfp.eco.core.proxy.ProxyFactory
 import com.willfp.eco.core.proxy.exceptions.ProxyError
 import com.willfp.eco.core.proxy.exceptions.UnsupportedVersionException
 import java.net.URLClassLoader
-import java.util.*
+import java.util.IdentityHashMap
 
 class EcoProxyFactory(
     private val plugin: EcoPlugin
