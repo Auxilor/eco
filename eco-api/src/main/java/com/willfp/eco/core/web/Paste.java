@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
@@ -43,7 +44,7 @@ public class Paste {
     public void getHastebinToken(@NotNull final Consumer<String> callback) {
         Eco.getHandler().getEcoPlugin().getScheduler().runAsync(() -> {
             try {
-                byte[] postData = contents.getBytes(StandardCharsets.UTF_8);
+                byte[] postData = URLEncoder.encode(contents, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
                 String requestURL = "https://paste.willfp.com/documents";

@@ -47,10 +47,11 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         handleRateLimit(player)
 
         if (usingAsync(player)) {
+            val newPacket = packet.shallowClone()
+
             fun modifyAndSend(itemStacks: MutableList<ItemStack>, windowId: Int, player: Player) {
                 modifyWindowItems(itemStacks, windowId, player)
 
-                val newPacket = packet.deepClone()
                 newPacket.itemListModifier.write(0, itemStacks)
 
                 ignorePacketList.add(player.name)
