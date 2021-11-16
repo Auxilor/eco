@@ -2,23 +2,8 @@ package com.willfp.eco.spigot
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Handler
-import com.willfp.eco.core.config.updating.ConfigHandler
-import com.willfp.eco.core.config.wrapper.ConfigFactory
-import com.willfp.eco.core.data.PlayerProfileHandler
-import com.willfp.eco.core.data.keys.KeyRegistry
-import com.willfp.eco.core.drops.DropQueueFactory
-import com.willfp.eco.core.events.EventManager
-import com.willfp.eco.core.extensions.ExtensionLoader
-import com.willfp.eco.core.factory.MetadataValueFactory
-import com.willfp.eco.core.factory.NamespacedKeyFactory
-import com.willfp.eco.core.factory.RunnableFactory
 import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.core.gui.GUIFactory
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
-import com.willfp.eco.core.proxy.Cleaner
-import com.willfp.eco.core.proxy.ProxyFactory
-import com.willfp.eco.core.requirement.RequirementFactory
-import com.willfp.eco.core.scheduling.Scheduler
 import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.Plugins
 import com.willfp.eco.internal.config.EcoConfigFactory
@@ -56,31 +41,31 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
             MySQLDataHandler(this) else YamlDataHandler(this)
     )
 
-    override fun createScheduler(plugin: EcoPlugin): Scheduler {
+    override fun createScheduler(plugin: EcoPlugin): EcoScheduler {
         return EcoScheduler(plugin)
     }
 
-    override fun createEventManager(plugin: EcoPlugin): EventManager {
+    override fun createEventManager(plugin: EcoPlugin): EcoEventManager {
         return EcoEventManager(plugin)
     }
 
-    override fun createNamespacedKeyFactory(plugin: EcoPlugin): NamespacedKeyFactory {
+    override fun createNamespacedKeyFactory(plugin: EcoPlugin): EcoNamespacedKeyFactory {
         return EcoNamespacedKeyFactory(plugin)
     }
 
-    override fun createMetadataValueFactory(plugin: EcoPlugin): MetadataValueFactory {
+    override fun createMetadataValueFactory(plugin: EcoPlugin): EcoMetadataValueFactory {
         return EcoMetadataValueFactory(plugin)
     }
 
-    override fun createRunnableFactory(plugin: EcoPlugin): RunnableFactory {
+    override fun createRunnableFactory(plugin: EcoPlugin): EcoRunnableFactory {
         return EcoRunnableFactory(plugin)
     }
 
-    override fun createExtensionLoader(plugin: EcoPlugin): ExtensionLoader {
+    override fun createExtensionLoader(plugin: EcoPlugin): EcoExtensionLoader {
         return EcoExtensionLoader(plugin)
     }
 
-    override fun createConfigHandler(plugin: EcoPlugin): ConfigHandler {
+    override fun createConfigHandler(plugin: EcoPlugin): EcoConfigHandler {
         return EcoConfigHandler(plugin)
     }
 
@@ -96,23 +81,23 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         return this
     }
 
-    override fun getConfigFactory(): ConfigFactory {
+    override fun getConfigFactory(): EcoConfigFactory {
         return EcoConfigFactory()
     }
 
-    override fun getDropQueueFactory(): DropQueueFactory {
+    override fun getDropQueueFactory(): EcoDropQueueFactory {
         return EcoDropQueueFactory()
     }
 
-    override fun getGUIFactory(): GUIFactory {
+    override fun getGUIFactory(): EcoGUIFactory {
         return EcoGUIFactory()
     }
 
-    override fun getCleaner(): Cleaner {
+    override fun getCleaner(): EcoCleaner {
         return cleaner
     }
 
-    override fun createProxyFactory(plugin: EcoPlugin): ProxyFactory {
+    override fun createProxyFactory(plugin: EcoPlugin): EcoProxyFactory {
         return EcoProxyFactory(plugin)
     }
 
@@ -136,7 +121,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         MetricHandler.createMetrics(plugin, this.ecoPlugin)
     }
 
-    override fun getRequirementFactory(): RequirementFactory {
+    override fun getRequirementFactory(): EcoRequirementFactory {
         return requirementFactory
     }
 
@@ -144,11 +129,11 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         return adventure
     }
 
-    override fun getKeyRegistry(): KeyRegistry {
+    override fun getKeyRegistry(): EcoKeyRegistry {
         return keyRegistry
     }
 
-    override fun getPlayerProfileHandler(): PlayerProfileHandler {
+    override fun getPlayerProfileHandler(): EcoPlayerProfileHandler {
         return playerProfileHandler
     }
 
