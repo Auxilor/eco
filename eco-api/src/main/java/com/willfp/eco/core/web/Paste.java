@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
@@ -95,7 +94,7 @@ public class Paste {
                     result.append(line);
                 }
             }
-            return new Paste(URLDecoder.decode(result.toString(), StandardCharsets.UTF_8));
+            return new Paste(result.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
