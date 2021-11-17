@@ -7,7 +7,6 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.markdown.DiscordFlavor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -275,7 +274,7 @@ public final class StringUtils {
     }
 
     private static String translateMiniMessage(@NotNull final String message) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.withMarkdownFlavor(DiscordFlavor.get()).parse(message));
+        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.get().parse(message));
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
