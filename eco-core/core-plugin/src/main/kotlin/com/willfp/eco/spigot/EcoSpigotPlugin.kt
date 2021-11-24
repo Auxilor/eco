@@ -52,6 +52,7 @@ import com.willfp.eco.spigot.integrations.anticheat.AnticheatVulcan
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefBentoBox
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV10
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefCombatLogXV11
+import com.willfp.eco.spigot.integrations.antigrief.AntigriefCrashClaim
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefDeluxeCombat
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefFactionsUUID
 import com.willfp.eco.spigot.integrations.antigrief.AntigriefGriefPrevention
@@ -175,6 +176,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
             IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
             IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
+            IntegrationLoader("CrashClaim") { AntigriefManager.register(AntigriefCrashClaim()) },
             IntegrationLoader("CombatLogX") {
                 val pluginManager = Bukkit.getPluginManager()
                 val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader

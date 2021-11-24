@@ -41,6 +41,7 @@ dependencies {
     compileOnly 'world.bentobox:bentobox:1.17.3-SNAPSHOT'
     compileOnly 'com.google.guava:guava:31.0.1-jre'
     compileOnly 'com.iridium:IridiumSkyblock:3.1.2'
+    compileOnly 'com.github.WillFP:CrashClaim:1.0.19'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'

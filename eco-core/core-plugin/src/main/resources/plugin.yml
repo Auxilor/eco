@@ -18,6 +18,7 @@ softdepend:
   - AAC
   - Matrix
   - Spartan
+  - Vulcan
   - PlaceholderAPI
   - mcMMO
   - CombatLogX
@@ -36,6 +37,7 @@ softdepend:
   - DeluxeCombat
   - IridiumSkyblock
   - SuperiorSkyblock2
+  - CrashClaim
 libraries:
   - 'org.reflections:reflections:0.9.12'
   - 'org.apache.maven:maven-artifact:3.0.3'
