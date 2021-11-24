@@ -86,16 +86,13 @@ public final class PlayerUtils {
 
         if (player instanceof Player onlinePlayer) {
             profile.write(PLAYER_NAME_KEY, onlinePlayer.getDisplayName());
+            return onlinePlayer.getDisplayName();
         }
 
         String saved = profile.read(PLAYER_NAME_KEY);
 
         if (saved.equals(PLAYER_NAME_KEY.getDefaultValue())) {
-            String name = player.getName();
-            if (name != null) {
-                profile.write(PLAYER_NAME_KEY, player.getName());
-                return player.getName();
-            }
+            return player.getName();
         }
 
         return saved;
