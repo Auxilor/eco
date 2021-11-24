@@ -4,7 +4,6 @@ import net.minecraft.server.v1_16_R3.MinecraftKey
 import net.minecraft.server.v1_16_R3.PacketPlayOutAutoRecipe
 
 class AutoCraft : AutoCraftProxy {
-    @Throws(NoSuchFieldException::class, IllegalAccessException::class)
     override fun modifyPacket(packet: Any) {
         val recipePacket = packet as PacketPlayOutAutoRecipe
         val fKey = recipePacket.javaClass.getDeclaredField("b")

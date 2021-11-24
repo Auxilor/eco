@@ -5,7 +5,6 @@ import net.minecraft.network.protocol.game.ClientboundPlaceGhostRecipePacket
 import net.minecraft.resources.ResourceLocation
 
 class AutoCraft : AutoCraftProxy {
-    @Throws(NoSuchFieldException::class, IllegalAccessException::class)
     override fun modifyPacket(packet: Any) {
         val recipePacket = packet as ClientboundPlaceGhostRecipePacket
         val fKey = recipePacket.javaClass.getDeclaredField("b")

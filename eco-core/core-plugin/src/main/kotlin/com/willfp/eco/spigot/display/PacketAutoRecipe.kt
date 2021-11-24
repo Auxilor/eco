@@ -24,11 +24,7 @@ class PacketAutoRecipe(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packet
         if (packet.minecraftKeys.values[0].fullKey.split(":".toRegex()).toTypedArray()[1].contains("displayed")) {
             return
         }
-        try {
-            getPlugin().getProxy(AutoCraftProxy::class.java).modifyPacket(packet.handle)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        getPlugin().getProxy(AutoCraftProxy::class.java).modifyPacket(packet.handle)
         val newAutoRecipe = PacketContainer(PacketType.Play.Server.AUTO_RECIPE)
         newAutoRecipe.minecraftKeys.write(0, packet.minecraftKeys.read(0))
         try {
