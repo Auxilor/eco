@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.2.0"
+    id("io.papermc.paperweight.userdev") version "1.1.13"
 }
 
 group = "com.willfp"
