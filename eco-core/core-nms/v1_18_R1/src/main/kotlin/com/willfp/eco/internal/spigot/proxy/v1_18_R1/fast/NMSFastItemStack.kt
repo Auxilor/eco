@@ -9,9 +9,9 @@ import net.minecraft.world.item.EnchantedBookItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and

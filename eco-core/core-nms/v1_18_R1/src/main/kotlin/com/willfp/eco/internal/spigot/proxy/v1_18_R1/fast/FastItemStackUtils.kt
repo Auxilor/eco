@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_18_R1.fast
 
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Field
 
