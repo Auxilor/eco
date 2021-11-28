@@ -21,9 +21,9 @@ subprojects {
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "16"
+            jvmTarget = "17"
         }
-        targetCompatibility = JavaVersion.VERSION_16
-        sourceCompatibility = JavaVersion.VERSION_16
+        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
     }
 }

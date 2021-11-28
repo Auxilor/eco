@@ -21,4 +21,4 @@
 
 ## Other
 - All drops **must** be sent through a DropQueue - calls to World#dropItem will get your PR rejected.
-- eco is built with java 16.
+- eco is built with java 17.
