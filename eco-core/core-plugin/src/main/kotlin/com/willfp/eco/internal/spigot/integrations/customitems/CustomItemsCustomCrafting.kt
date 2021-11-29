@@ -27,7 +27,7 @@ class CustomItemsCustomCrafting: CustomItemsWrapper {
             val itemKey = NamespacedKey("customcrafting", nKey)
             val item = Registry.CUSTOM_ITEMS.get(itemKey) ?: return null
             val namespacedKey = NamespacedKeyUtils.create("customcrafting", key)
-            val stack = item.itemStack
+            val stack = item.create(1)
             return CustomItem(
                 namespacedKey,
                 Predicate { test: ItemStack ->
