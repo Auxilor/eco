@@ -20,10 +20,11 @@ public class ConfigYml extends YamlBaseConfig {
     /**
      * Config.yml.
      *
-     * @param plugin The plugin.
+     * @param plugin       The plugin.
      * @param removeUnused Remove unused.
      */
-    public ConfigYml(@NotNull final EcoPlugin plugin, boolean removeUnused) {
+    public ConfigYml(@NotNull final EcoPlugin plugin,
+                     final boolean removeUnused) {
         super("config", removeUnused, plugin);
     }
 
@@ -31,20 +32,23 @@ public class ConfigYml extends YamlBaseConfig {
      * Config.yml.
      *
      * @param plugin The plugin.
-     * @param name The config name.
+     * @param name   The config name.
      */
-    public ConfigYml(@NotNull final EcoPlugin plugin, String name) {
+    public ConfigYml(@NotNull final EcoPlugin plugin,
+                     @NotNull final String name) {
         super(name, true, plugin);
     }
 
     /**
      * Config.yml.
      *
-     * @param plugin The plugin.
-     * @param name The config name.
+     * @param plugin       The plugin.
+     * @param name         The config name.
      * @param removeUnused Remove unused.
      */
-    public ConfigYml(@NotNull final EcoPlugin plugin, String name, boolean removeUnused) {
+    public ConfigYml(@NotNull final EcoPlugin plugin,
+                     @NotNull final String name,
+                     final boolean removeUnused) {
         super(name, removeUnused, plugin);
     }
 
