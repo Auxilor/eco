@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":eco-core:core-backend"))
     implementation(project(":eco-core:core-nms:v1_16_R3"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
+    implementation(project(":eco-core:core-nms:v1_18_R1"))
 }
 
 allprojects {
@@ -24,6 +25,9 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven("https://jitpack.io")
+
+        // CustomCrafting
+        maven("https://maven.wolfyscript.com/repository/public/")
 
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
@@ -65,6 +69,11 @@ allprojects {
         // Test
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+        
+        // Adventure
+        compileOnly("net.kyori:adventure-api:4.9.3")
+        compileOnly("net.kyori:adventure-text-serializer-gson:4.9.3")
+        compileOnly("net.kyori:adventure-text-serializer-legacy:4.9.3")
     }
 
     tasks.withType<JavaCompile> {
@@ -93,8 +102,8 @@ allprojects {
         }
 
         java {
-            sourceCompatibility = JavaVersion.VERSION_16
-            targetCompatibility = JavaVersion.VERSION_16
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
             withSourcesJar()
         }
 

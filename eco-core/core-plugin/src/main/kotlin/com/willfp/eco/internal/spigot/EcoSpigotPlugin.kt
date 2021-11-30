@@ -254,7 +254,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
-            DataListener(),
+            DataListener(this),
             PlayerBlockListener(this)
         )
     }

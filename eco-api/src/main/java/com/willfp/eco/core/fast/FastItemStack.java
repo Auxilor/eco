@@ -70,14 +70,14 @@ public interface FastItemStack {
      *
      * @param hideFlags The flags.
      */
-    void addItemFlags(ItemFlag... hideFlags);
+    void addItemFlags(@NotNull ItemFlag... hideFlags);
 
     /**
      * Remove ItemFlags.
      *
      * @param hideFlags The flags.
      */
-    void removeItemFlags(ItemFlag... hideFlags);
+    void removeItemFlags(@NotNull ItemFlag... hideFlags);
 
     /**
      * Get the ItemFlags.
@@ -92,7 +92,7 @@ public interface FastItemStack {
      * @param flag The flag.
      * @return If the flag is present.
      */
-    boolean hasItemFlag(ItemFlag flag);
+    boolean hasItemFlag(@NotNull ItemFlag flag);
 
     /**
      * Get the Bukkit ItemStack again.

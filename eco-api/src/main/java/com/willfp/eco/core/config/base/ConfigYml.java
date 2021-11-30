@@ -16,4 +16,40 @@ public class ConfigYml extends YamlBaseConfig {
     public ConfigYml(@NotNull final EcoPlugin plugin) {
         super("config", true, plugin);
     }
+
+    /**
+     * Config.yml.
+     *
+     * @param plugin       The plugin.
+     * @param removeUnused Remove unused.
+     */
+    public ConfigYml(@NotNull final EcoPlugin plugin,
+                     final boolean removeUnused) {
+        super("config", removeUnused, plugin);
+    }
+
+    /**
+     * Config.yml.
+     *
+     * @param plugin The plugin.
+     * @param name   The config name.
+     */
+    public ConfigYml(@NotNull final EcoPlugin plugin,
+                     @NotNull final String name) {
+        super(name, true, plugin);
+    }
+
+    /**
+     * Config.yml.
+     *
+     * @param plugin       The plugin.
+     * @param name         The config name.
+     * @param removeUnused Remove unused.
+     */
+    public ConfigYml(@NotNull final EcoPlugin plugin,
+                     @NotNull final String name,
+                     final boolean removeUnused) {
+        super(name, removeUnused, plugin);
+    }
+
 }

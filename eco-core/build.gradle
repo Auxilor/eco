@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
     }
 }
 
@@ -16,14 +16,14 @@ subprojects {
 
     dependencies {
         compileOnly project(":eco-api")
-        compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
+        compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
     }
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "16"
+            jvmTarget = "17"
         }
-        targetCompatibility = JavaVersion.VERSION_16
-        sourceCompatibility = JavaVersion.VERSION_16
+        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
     }
 }
