@@ -39,6 +39,7 @@ dependencies {
     compileOnly 'com.google.guava:guava:31.0.1-jre'
     compileOnly 'com.iridium:IridiumSkyblock:3.1.2'
     compileOnly 'com.github.WillFP:CrashClaim:1.0.19'
+    compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:1.7.8.1'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
