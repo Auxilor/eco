@@ -23,6 +23,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
@@ -114,13 +115,21 @@ class MySQLDataHandler(
     }
 
     override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
-        var value: T? = null
-        transaction {
-            val player = getPlayer(uuid)
-            value = player[getColumn(key.toString())] as T?
+        val doRead = Callable<T?> {
+            var value: T? = null
+            transaction {
+                val player = getPlayer(uuid)
+                value = player[getColumn(key.toString())] as T?
+            }
+
+            return@Callable value
         }
 
-        return value
+        return if (Eco.getHandler().ecoPlugin.configYml.getBool("mysql.async-reads")) {
+            executor.submit(doRead).get()
+        } else {
+            doRead.call()
+        }
     }
 
     object Players : UUIDTable("eco_players")
