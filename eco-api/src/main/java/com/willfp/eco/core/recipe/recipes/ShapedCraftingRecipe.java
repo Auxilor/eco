@@ -113,7 +113,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
             displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(item));
         }
 
-        if (Prerequisite.HAS_1_18.isMet()) {
+        if (Prerequisite.HAS_1_18.isMet() && !Prerequisite.HAS_PAPER.isMet()) {
             if (Bukkit.getServer().getRecipe(this.getKey()) != null) {
                 return;
             }
