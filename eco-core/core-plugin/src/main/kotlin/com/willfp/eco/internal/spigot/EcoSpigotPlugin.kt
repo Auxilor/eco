@@ -17,6 +17,7 @@ import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.args.CustomModelDataArgParser
 import com.willfp.eco.core.items.args.EnchantmentArgParser
+import com.willfp.eco.core.items.args.LeatherArmorColorArgParser
 import com.willfp.eco.core.items.args.TextureArgParser
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
@@ -94,6 +95,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Items.registerArgParser(EnchantmentArgParser())
         Items.registerArgParser(TextureArgParser())
         Items.registerArgParser(CustomModelDataArgParser())
+        Items.registerArgParser(LeatherArmorColorArgParser())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
