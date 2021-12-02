@@ -26,6 +26,7 @@ import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.display.PacketAutoRecipe
 import com.willfp.eco.internal.spigot.display.PacketChat
+import com.willfp.eco.internal.spigot.display.PacketHeldWindowItems
 import com.willfp.eco.internal.spigot.display.PacketOpenWindowMerchant
 import com.willfp.eco.internal.spigot.display.PacketSetCreativeSlot
 import com.willfp.eco.internal.spigot.display.PacketSetSlot
@@ -240,6 +241,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             PacketSetCreativeSlot(this),
             PacketSetSlot(this),
             PacketWindowItems(this),
+            PacketHeldWindowItems(this),
             PacketOpenWindowMerchant(this)
         )
     }
