@@ -1,17 +1,15 @@
 package com.willfp.eco.internal.config.yaml
 
 import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.internal.config.json.EcoJSONConfigSection
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
-import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
 open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     lateinit var handle: T
-    private val cache = ConcurrentHashMap<String, Any?>()
+    private val cache = mutableMapOf<String, Any?>()
 
     protected fun init(config: T): Config {
         handle = config
@@ -71,9 +69,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getInt(path: String): Int {
         return if (cache.containsKey(path)) {
-            cache[path] as Int
+            (cache[path] as Number).toInt()
         } else {
-            cache[path] = handle.getInt(path, 0)
+            cache[path] = handle.getDouble(path, 0.0).toInt()
             getInt(path)
         }
     }
@@ -91,9 +89,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         def: Int
     ): Int {
         return if (cache.containsKey(path)) {
-            cache[path] as Int
+            (cache[path] as Number).toInt()
         } else {
-            cache[path] = handle.getInt(path, def)
+            cache[path] = handle.getDouble(path, def.toDouble()).toInt()
             getInt(path)
         }
     }
@@ -270,7 +268,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
             val mapList = ArrayList(handle.getMapList(path)) as List<Map<String, Any?>>
             val configList = mutableListOf<Config>()
             for (map in mapList) {
-                configList.add(EcoJSONConfigSection(map))
+                val temp = YamlConfiguration.loadConfiguration(StringReader(""))
+                temp.createSection("a", map)
+                configList.add(EcoYamlConfigSection(temp.getConfigurationSection("a")!!))
             }
 
             cache[path] = if (has(path)) configList else emptyList()
