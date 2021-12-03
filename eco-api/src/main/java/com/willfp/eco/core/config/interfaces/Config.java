@@ -531,7 +531,7 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Config> getSubsections(@NotNull String path);
+    List<? extends Config> getSubsections(@NotNull String path);
 
     /**
      * Get a list of subsections from config.
@@ -540,7 +540,7 @@ public interface Config extends Cloneable {
      * @return The found value, or null if not found.
      */
     @Nullable
-    List<Config> getSubsectionsOrNull(@NotNull String path);
+    List<? extends Config> getSubsectionsOrNull(@NotNull String path);
 
 
     /**
