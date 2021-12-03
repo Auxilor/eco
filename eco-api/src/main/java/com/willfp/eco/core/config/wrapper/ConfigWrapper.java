@@ -174,6 +174,16 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
+    public @NotNull List<? extends Config> getSubsections(@NotNull final String path) {
+        return handle.getSubsections(path);
+    }
+
+    @Override
+    public @Nullable List<? extends Config> getSubsectionsOrNull(@NotNull final String path) {
+        return handle.getSubsectionsOrNull(path);
+    }
+
+    @Override
     public Config clone() {
         return handle.clone();
     }

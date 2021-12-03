@@ -263,7 +263,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getSubsections(path: String): MutableList<Config> {
+    override fun getSubsections(path: String): MutableList<out Config> {
         return if (cache.containsKey(path)) {
             (cache[path] as MutableList<Config>).toMutableList()
         } else {
@@ -278,7 +278,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getSubsectionsOrNull(path: String): MutableList<Config>? {
+    override fun getSubsectionsOrNull(path: String): MutableList<out Config>? {
         return if (has(path)) {
             getSubsections(path)
         } else {
