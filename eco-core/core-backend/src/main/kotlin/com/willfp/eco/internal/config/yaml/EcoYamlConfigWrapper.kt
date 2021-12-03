@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.config.yaml
 
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.internal.config.json.EcoJSONConfigSection
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
@@ -257,6 +258,29 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     override fun getDoublesOrNull(path: String): MutableList<Double>? {
         return if (has(path)) {
             getDoubles(path)
+        } else {
+            null
+        }
+    }
+
+    override fun getSubsections(path: String): MutableList<Config> {
+        return if (cache.containsKey(path)) {
+            (cache[path] as MutableList<Config>).toMutableList()
+        } else {
+            val mapList = ArrayList(handle.getMapList(path)) as List<Map<String, Any?>>
+            val configList = mutableListOf<Config>()
+            for (map in mapList) {
+                configList.add(EcoJSONConfigSection(map))
+            }
+
+            cache[path] = if (has(path)) configList else emptyList()
+            getSubsections(path)
+        }
+    }
+
+    override fun getSubsectionsOrNull(path: String): MutableList<Config>? {
+        return if (has(path)) {
+            getSubsections(path)
         } else {
             null
         }
