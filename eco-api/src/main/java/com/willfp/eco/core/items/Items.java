@@ -94,8 +94,8 @@ public final class Items {
      * <p>
      * The advantages of the testable item system are that there is the inbuilt
      * {@link TestableItem#matches(ItemStack)} - this allows to check if any item
-     * is that testable item; which may sound negligible but actually it allows for
-     * much more power an flexibility. For example, you can have an item with an
+     * is that testable item; which may sound negligible, but actually it allows for
+     * much more power and flexibility. For example, you can have an item with an
      * extra metadata tag, extra lore lines, different display name - and it
      * will still work as long as the test passes. This is very important
      * for custom crafting recipes where other plugins may add metadata
