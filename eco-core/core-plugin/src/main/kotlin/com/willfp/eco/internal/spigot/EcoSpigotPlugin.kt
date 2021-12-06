@@ -21,6 +21,7 @@ import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
 import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserName
 import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
@@ -100,6 +101,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Items.registerArgParser(ArgParserCustomModelData())
         Items.registerArgParser(ArgParserFlag())
         Items.registerArgParser(ArgParserUnbreakable())
+        Items.registerArgParser(ArgParserName())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
