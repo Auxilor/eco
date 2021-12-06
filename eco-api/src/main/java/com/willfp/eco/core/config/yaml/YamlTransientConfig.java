@@ -26,4 +26,11 @@ public class YamlTransientConfig extends YamlConfigWrapper {
     public YamlTransientConfig(@NotNull final String contents) {
         super(Eco.getHandler().getConfigFactory().createYamlConfig(YamlConfiguration.loadConfiguration(new StringReader(contents))));
     }
+
+    /**
+     * Create a new empty transient config.
+     */
+    public YamlTransientConfig() {
+        super(Eco.getHandler().getConfigFactory().createYamlConfig(YamlConfiguration.loadConfiguration(new StringReader(""))));
+    }
 }
