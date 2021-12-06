@@ -7,8 +7,6 @@ import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.display.Display
-import com.willfp.eco.internal.spigot.display.frame.DisplayFrame
-import com.willfp.eco.internal.spigot.display.frame.lastDisplayFrame
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -27,7 +25,5 @@ class PacketHeldWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, P
                 item!!, player
             )
         }
-
-        player.lastDisplayFrame = DisplayFrame.EMPTY
     }
 }
