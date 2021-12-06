@@ -11,7 +11,10 @@ import java.util.function.Predicate;
 
 /**
  * Parse leather armor colors.
+ *
+ * @deprecated Moved to internals.
  */
+@Deprecated(forRemoval = true)
 public class ColorArgParser implements LookupArgParser {
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,

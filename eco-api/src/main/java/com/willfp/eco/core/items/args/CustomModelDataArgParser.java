@@ -9,7 +9,10 @@ import java.util.function.Predicate;
 
 /**
  * Parse custom model data.
+ *
+ * @deprecated Moved to internals.
  */
+@Deprecated(forRemoval = true)
 public class CustomModelDataArgParser implements LookupArgParser {
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,

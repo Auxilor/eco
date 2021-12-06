@@ -14,7 +14,10 @@ import java.util.function.Predicate;
 
 /**
  * Parses enchantment arguments.
+ *
+ * @deprecated Moved to internals.
  */
+@Deprecated(forRemoval = true)
 public class EnchantmentArgParser implements LookupArgParser {
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,

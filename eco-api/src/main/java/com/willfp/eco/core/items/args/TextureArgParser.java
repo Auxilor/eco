@@ -11,7 +11,10 @@ import java.util.function.Predicate;
 
 /**
  * Parse skull textures.
+ *
+ * @deprecated Moved to internals.
  */
+@Deprecated(forRemoval = true)
 public class TextureArgParser implements LookupArgParser {
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,

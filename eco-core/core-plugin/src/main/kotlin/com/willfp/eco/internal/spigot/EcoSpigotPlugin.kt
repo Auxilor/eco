@@ -15,12 +15,13 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.args.ColorArgParser
-import com.willfp.eco.core.items.args.CustomModelDataArgParser
-import com.willfp.eco.core.items.args.EnchantmentArgParser
-import com.willfp.eco.core.items.args.TextureArgParser
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
+import com.willfp.eco.internal.items.ArgParserColor
+import com.willfp.eco.internal.items.ArgParserCustomModelData
+import com.willfp.eco.internal.items.ArgParserEnchantment
+import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
@@ -92,10 +93,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     "&a"
 ) {
     init {
-        Items.registerArgParser(EnchantmentArgParser())
-        Items.registerArgParser(TextureArgParser())
-        Items.registerArgParser(CustomModelDataArgParser())
-        Items.registerArgParser(ColorArgParser())
+        Items.registerArgParser(ArgParserEnchantment())
+        Items.registerArgParser(ArgParserColor())
+        Items.registerArgParser(ArgParserTexture())
+        Items.registerArgParser(ArgParserCustomModelData())
+        Items.registerArgParser(ArgParserFlag())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
