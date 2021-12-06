@@ -84,7 +84,7 @@ public final class Items {
     /**
      * This is the backbone of the entire eco item system.
      * <p>
-     * You can lookup a TestableItem for any material, custom item,
+     * You can look up a TestableItem for any material, custom item,
      * or item in general, and it will return it with any modifiers
      * passed as parameters. This includes stack size (item amount)
      * and enchantments that should be present on the item.
