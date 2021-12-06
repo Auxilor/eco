@@ -17,44 +17,6 @@ public class CustomModelDataArgParser implements LookupArgParser {
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,
                                                          @NotNull final ItemMeta meta) {
-        Integer modelData = null;
-
-        for (String arg : args) {
-            String[] argSplit = arg.split(":");
-            if (!argSplit[0].equalsIgnoreCase("custom-model-data")) {
-                continue;
-            }
-
-            if (argSplit.length < 2) {
-                continue;
-            }
-
-            String asString = argSplit[1];
-
-            try {
-                modelData = Integer.parseInt(asString);
-            } catch (NumberFormatException e) {
-                modelData = null;
-            }
-        }
-
-        if (modelData == null) {
-            return null;
-        }
-
-        meta.setCustomModelData(modelData);
-
-        int finalModelData = modelData;
-        return test -> {
-            if (!test.hasItemMeta()) {
-                return false;
-            }
-
-            ItemMeta testMeta = test.getItemMeta();
-
-            assert testMeta != null;
-
-            return testMeta.getCustomModelData() == finalModelData;
-        };
+        return null;
     }
 }
