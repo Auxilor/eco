@@ -263,7 +263,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getSubsections(path: String): MutableList<out Config> {
         return if (cache.containsKey(path)) {
-            (cache[path] as MutableList<Config>).toMutableList()
+            (cache[path] as Collection<Config>).toMutableList()
         } else {
             val mapList = ArrayList(handle.getMapList(path)) as List<Map<String, Any?>>
             val configList = mutableListOf<Config>()
