@@ -3,6 +3,7 @@ package com.willfp.eco.core.recipe.recipes;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
+import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -110,6 +111,12 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
             }
 
             displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(item));
+        }
+
+        if (Prerequisite.HAS_1_18.isMet() && !Prerequisite.HAS_PAPER.isMet()) {
+            if (Bukkit.getServer().getRecipe(this.getKey()) != null) {
+                return;
+            }
         }
 
         Bukkit.getServer().addRecipe(shapedRecipe);

@@ -1,7 +1,6 @@
 package com.willfp.eco.util;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +20,8 @@ public final class ListUtils {
      * @return The list, filled will null objects.
      */
     @NotNull
-    public static <@Nullable T> List<List<T>> create2DList(final int rows,
-                                                           final int columns) {
+    public static <T> List<List<T>> create2DList(final int rows,
+                                                 final int columns) {
         List<List<T>> list = new ArrayList<>(rows);
         while (list.size() < rows) {
             List<T> row = new ArrayList<>(columns);

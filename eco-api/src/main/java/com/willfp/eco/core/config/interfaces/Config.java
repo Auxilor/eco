@@ -525,6 +525,25 @@ public interface Config extends Cloneable {
     List<Double> getDoublesOrNull(@NotNull String path);
 
     /**
+     * Get a list of subsections from config.
+     *
+     * @param path The key to fetch the value from.
+     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     */
+    @NotNull
+    List<? extends Config> getSubsections(@NotNull String path);
+
+    /**
+     * Get a list of subsections from config.
+     *
+     * @param path The key to fetch the value from.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    List<? extends Config> getSubsectionsOrNull(@NotNull String path);
+
+
+    /**
      * Clone the config.
      *
      * @return The clone.

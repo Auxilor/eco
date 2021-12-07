@@ -9,6 +9,8 @@ mysql:
   # very high numbers can cause issues with OS configuration. If writes are taking
   # too long, increase this value.
   threads: 2
+  # If read operations should be ran in the thread pool. Runs on main thread by default.
+  async-reads: false
   host: localhost
   port: 3306
   database: database

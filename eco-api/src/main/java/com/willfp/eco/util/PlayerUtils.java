@@ -82,12 +82,11 @@ public final class PlayerUtils {
      * @return The player name.
      */
     public static String getSavedDisplayName(@NotNull final OfflinePlayer player) {
-        PlayerProfile profile = PlayerProfile.load(player);
-
         if (player instanceof Player onlinePlayer) {
-            profile.write(PLAYER_NAME_KEY, onlinePlayer.getDisplayName());
-            return onlinePlayer.getDisplayName();
+            updateSavedDisplayName(onlinePlayer);
         }
+
+        PlayerProfile profile = PlayerProfile.load(player);
 
         String saved = profile.read(PLAYER_NAME_KEY);
 

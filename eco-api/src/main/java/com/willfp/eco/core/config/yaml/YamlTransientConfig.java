@@ -14,16 +14,23 @@ import java.io.StringReader;
  */
 public class YamlTransientConfig extends YamlConfigWrapper {
     /**
-     * @param config     The YamlConfiguration handle.
+     * @param config The YamlConfiguration handle.
      */
     public YamlTransientConfig(@NotNull final YamlConfiguration config) {
         super(Eco.getHandler().getConfigFactory().createYamlConfig(config));
     }
 
     /**
-     * @param contents     The contents of the config.
+     * @param contents The contents of the config.
      */
     public YamlTransientConfig(@NotNull final String contents) {
         super(Eco.getHandler().getConfigFactory().createYamlConfig(YamlConfiguration.loadConfiguration(new StringReader(contents))));
+    }
+
+    /**
+     * Create a new empty transient config.
+     */
+    public YamlTransientConfig() {
+        super(Eco.getHandler().getConfigFactory().createYamlConfig(YamlConfiguration.loadConfiguration(new StringReader(""))));
     }
 }

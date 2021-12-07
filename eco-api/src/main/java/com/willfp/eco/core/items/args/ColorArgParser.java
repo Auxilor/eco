@@ -8,12 +8,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 /**
- * Parses enchantment arguments.
+ * Parse leather armor colors.
  *
  * @deprecated Moved to internals.
  */
 @Deprecated(forRemoval = true)
-public class EnchantmentArgParser implements LookupArgParser {
+public class ColorArgParser implements LookupArgParser {
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,
                                                          @NotNull final ItemMeta meta) {

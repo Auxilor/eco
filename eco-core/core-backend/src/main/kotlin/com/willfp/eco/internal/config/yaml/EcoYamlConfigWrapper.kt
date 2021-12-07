@@ -5,12 +5,11 @@ import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
-import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
 open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     lateinit var handle: T
-    private val cache = ConcurrentHashMap<String, Any?>()
+    private val cache = mutableMapOf<String, Any?>()
 
     protected fun init(config: T): Config {
         handle = config
@@ -70,9 +69,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getInt(path: String): Int {
         return if (cache.containsKey(path)) {
-            cache[path] as Int
+            (cache[path] as Number).toInt()
         } else {
-            cache[path] = handle.getInt(path, 0)
+            cache[path] = handle.getDouble(path, 0.0).toInt()
             getInt(path)
         }
     }
@@ -90,9 +89,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         def: Int
     ): Int {
         return if (cache.containsKey(path)) {
-            cache[path] as Int
+            (cache[path] as Number).toInt()
         } else {
-            cache[path] = handle.getInt(path, def)
+            cache[path] = handle.getDouble(path, def.toDouble()).toInt()
             getInt(path)
         }
     }
@@ -257,6 +256,31 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     override fun getDoublesOrNull(path: String): MutableList<Double>? {
         return if (has(path)) {
             getDoubles(path)
+        } else {
+            null
+        }
+    }
+
+    override fun getSubsections(path: String): MutableList<out Config> {
+        return if (cache.containsKey(path)) {
+            (cache[path] as Collection<Config>).toMutableList()
+        } else {
+            val mapList = ArrayList(handle.getMapList(path)) as List<Map<String, Any?>>
+            val configList = mutableListOf<Config>()
+            for (map in mapList) {
+                val temp = YamlConfiguration.loadConfiguration(StringReader(""))
+                temp.createSection("a", map)
+                configList.add(EcoYamlConfigSection(temp.getConfigurationSection("a")!!))
+            }
+
+            cache[path] = if (has(path)) configList else emptyList()
+            getSubsections(path)
+        }
+    }
+
+    override fun getSubsectionsOrNull(path: String): MutableList<out Config>? {
+        return if (has(path)) {
+            getSubsections(path)
         } else {
             null
         }

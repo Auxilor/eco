@@ -15,6 +15,6 @@ class RequirementPlaceholderGreaterThan : Requirement() {
 
         val placeholder = args[0]
         val equals = args[1].toDoubleOrNull() ?: return false
-        return PlaceholderManager.translatePlaceholders(placeholder, player).toDoubleOrNull() ?: 0.0 >= equals
+        return (PlaceholderManager.translatePlaceholders(placeholder, player).toDoubleOrNull() ?: 0.0) >= equals
     }
 }

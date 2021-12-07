@@ -15,18 +15,22 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.args.CustomModelDataArgParser
-import com.willfp.eco.core.items.args.EnchantmentArgParser
-import com.willfp.eco.core.items.args.LeatherArmorColorArgParser
-import com.willfp.eco.core.items.args.TextureArgParser
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
+import com.willfp.eco.internal.items.ArgParserColor
+import com.willfp.eco.internal.items.ArgParserCustomModelData
+import com.willfp.eco.internal.items.ArgParserEnchantment
+import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserName
+import com.willfp.eco.internal.items.ArgParserTexture
+import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.display.PacketAutoRecipe
 import com.willfp.eco.internal.spigot.display.PacketChat
+import com.willfp.eco.internal.spigot.display.PacketHeldWindowItems
 import com.willfp.eco.internal.spigot.display.PacketOpenWindowMerchant
 import com.willfp.eco.internal.spigot.display.PacketSetCreativeSlot
 import com.willfp.eco.internal.spigot.display.PacketSetSlot
@@ -60,13 +64,11 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
-import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHolograms
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicDisplays
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
@@ -93,10 +95,13 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     "&a"
 ) {
     init {
-        Items.registerArgParser(EnchantmentArgParser())
-        Items.registerArgParser(TextureArgParser())
-        Items.registerArgParser(CustomModelDataArgParser())
-        Items.registerArgParser(LeatherArmorColorArgParser())
+        Items.registerArgParser(ArgParserEnchantment())
+        Items.registerArgParser(ArgParserColor())
+        Items.registerArgParser(ArgParserTexture())
+        Items.registerArgParser(ArgParserCustomModelData())
+        Items.registerArgParser(ArgParserFlag())
+        Items.registerArgParser(ArgParserUnbreakable())
+        Items.registerArgParser(ArgParserName())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
@@ -206,7 +211,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
-            IntegrationLoader("CustomCrafting") { CustomItemsManager.register(CustomItemsCustomCrafting()) },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
@@ -214,7 +218,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
             IntegrationLoader("CMI") { HologramManager.register(HologramCMI()) },
-            IntegrationLoader("DecentHolograms") { HologramManager.register(HologramDecentHolograms()) },
             //IntegrationLoader("GHolo") { HologramManager.register(HologramGHolo()) },
 
             // AFK
@@ -246,6 +249,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             PacketSetCreativeSlot(this),
             PacketSetSlot(this),
             PacketWindowItems(this),
+            PacketHeldWindowItems(this),
             PacketOpenWindowMerchant(this)
         )
     }
@@ -260,7 +264,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
-            DataListener(),
+            DataListener(this),
             PlayerBlockListener(this)
         )
     }

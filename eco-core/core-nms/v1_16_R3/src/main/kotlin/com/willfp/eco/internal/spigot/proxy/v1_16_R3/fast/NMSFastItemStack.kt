@@ -165,7 +165,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     override fun hashCode(): Int {
-        return handle.tag?.hashCode() ?: 0b00010101 * 31 + Item.getId(handle.item)
+        return handle.tag?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.item))
     }
 
     private fun apply() {
