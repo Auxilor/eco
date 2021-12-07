@@ -1,6 +1,9 @@
 package com.willfp.eco.core.drops;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.events.DropQueuePushEvent;
+import com.willfp.eco.core.integrations.antigrief.AntigriefManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +21,11 @@ import java.util.Collection;
  * @see com.willfp.eco.util.TelekinesisUtils
  */
 public class DropQueue {
+
+    private Location location;
+    private boolean forceTelekinesis = false;
+    private final Player player;
+
     /**
      * The internally used {@link DropQueue}.
      */
@@ -28,6 +36,7 @@ public class DropQueue {
      */
     public DropQueue(@NotNull final Player player) {
         handle = Eco.getHandler().getDropQueueFactory().create(player);
+        this.player = player;
     }
 
     /**
@@ -71,6 +80,7 @@ public class DropQueue {
      */
     public DropQueue setLocation(@NotNull final Location location) {
         handle.setLocation(location);
+        this.location = location;
         return this;
     }
 
@@ -81,6 +91,7 @@ public class DropQueue {
      */
     public DropQueue forceTelekinesis() {
         handle.forceTelekinesis();
+        this.forceTelekinesis = true;
         return this;
     }
 
@@ -88,6 +99,11 @@ public class DropQueue {
      * Push the queue.
      */
     public void push() {
-        handle.push();
+        if (!AntigriefManager.canPickupItem(this.player, this.location)) return;
+        DropQueuePushEvent event = new DropQueuePushEvent(this.player, this.handle, this, this.forceTelekinesis);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            handle.push();
+        }
     }
 }

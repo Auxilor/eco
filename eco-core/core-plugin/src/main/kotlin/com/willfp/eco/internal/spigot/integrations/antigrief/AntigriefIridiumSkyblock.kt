@@ -48,6 +48,11 @@ class AntigriefIridiumSkyblock : AntigriefWrapper {
         }
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        val api = IridiumSkyblockAPI.getInstance() ?: return true
+        return api.getIslandPermission(api.getIslandViaLocation(location).orElse(null) ?: return true, api.getUser(player), PermissionType.PICKUP_ITEMS)
+    }
+
     override fun getPluginName(): String {
         return "IridiumSkyblock"
     }

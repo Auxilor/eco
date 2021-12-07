@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrapper class for antigrief integrations.
@@ -45,4 +46,14 @@ public interface AntigriefWrapper extends Integration {
      * @return If player can injure.
      */
     boolean canInjure(Player player, LivingEntity victim);
+
+    /**
+     * Can player pick up item.
+     *
+     * @param player   The player.
+     * @param location The location.
+     * @return If player can pick up item.
+     */
+    boolean canPickupItem(@NotNull final Player player, @NotNull final Location location);
+
 }

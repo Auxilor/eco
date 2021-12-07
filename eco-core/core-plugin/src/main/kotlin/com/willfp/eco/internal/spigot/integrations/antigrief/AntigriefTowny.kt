@@ -69,6 +69,10 @@ class AntigriefTowny : AntigriefWrapper {
         return townBlock.permissions.pvp
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        return true
+    }
+
     override fun getPluginName(): String {
         return "Towny"
     }

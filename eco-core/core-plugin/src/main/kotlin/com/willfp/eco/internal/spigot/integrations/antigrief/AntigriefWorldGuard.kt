@@ -98,6 +98,13 @@ class AntigriefWorldGuard : AntigriefWrapper {
         }
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
+        val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
+        val query: RegionQuery = container.createQuery()
+        return query.testState(BukkitAdapter.adapt(location), localPlayer, Flags.ITEM_PICKUP)
+    }
+
     override fun getPluginName(): String {
         return "WorldGuard"
     }

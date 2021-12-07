@@ -52,6 +52,11 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefWrapper {
         }
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        val area = landsIntegration.getAreaByLoc(location) ?: return true
+        return area.hasFlag(player, Flags.ITEM_PICKUP, false)
+    }
+
     override fun getPluginName(): String {
         return "Lands"
     }

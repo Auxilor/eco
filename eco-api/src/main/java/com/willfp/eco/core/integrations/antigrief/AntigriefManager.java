@@ -2,6 +2,7 @@ package com.willfp.eco.core.integrations.antigrief;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,17 @@ public final class AntigriefManager {
     public static void unregister(@NotNull final AntigriefWrapper antigrief) {
         REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
         REGISTERED.remove(antigrief);
+    }
+
+    /**
+     * Can player pickup item.
+     *
+     * @param player   The player.
+     * @param location The location.
+     * @return If player can pick up item.
+     */
+    public static boolean canPickupItem(@NotNull final Player player, @NotNull final Location location) {
+        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPickupItem(player, location));
     }
 
     /**

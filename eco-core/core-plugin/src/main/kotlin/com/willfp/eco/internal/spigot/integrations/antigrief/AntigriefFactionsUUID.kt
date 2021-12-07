@@ -65,6 +65,10 @@ class AntigriefFactionsUUID : AntigriefWrapper {
         return true
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        return true
+    }
+
     override fun getPluginName(): String {
         return "FactionsUUID"
     }

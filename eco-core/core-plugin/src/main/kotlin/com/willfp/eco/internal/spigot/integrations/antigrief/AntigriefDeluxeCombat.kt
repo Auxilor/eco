@@ -31,4 +31,8 @@ class AntigriefDeluxeCombat: AntigriefWrapper {
             else -> true
         }
     }
+
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        return true
+    }
 }

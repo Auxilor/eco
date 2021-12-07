@@ -48,6 +48,10 @@ class AntigriefCrashClaim : AntigriefWrapper {
         }
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        return true
+    }
+
     override fun getPluginName(): String {
         return "CrashClaim"
     }
