@@ -236,6 +236,21 @@ public final class Items {
     }
 
     /**
+     * Get TestableItem from ItemStack
+     *
+     * @param item The item
+     * @return TestableItem
+     */
+    public static TestableItem getItem(@Nullable final ItemStack item) {
+        if (item == null || item.getType().isAir()) return new EmptyTestableItem();
+        if (isCustomItem(item)) return getCustomItem(item);
+        for (TestableItem value : REGISTRY.values()) {
+            if (value.matches(item)) return value;
+        }
+        return new MaterialTestableItem(item.getType());
+    }
+
+    /**
      * Get if itemStack is a custom item.
      *
      * @param itemStack The itemStack to check.
