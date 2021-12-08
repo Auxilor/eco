@@ -2,7 +2,7 @@ group 'com.willfp'
 version rootProject.version
 
 dependencies {
-    implementation 'org.bstats:bstats-bukkit:2.2.1'
+    implementation 'org.bstats:bstats-bukkit:1.7'
     implementation('net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT') {
         exclude group: 'net.kyori', module: 'adventure-api'
     }
