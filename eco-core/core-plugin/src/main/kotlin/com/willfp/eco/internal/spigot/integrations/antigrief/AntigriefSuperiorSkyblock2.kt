@@ -18,10 +18,8 @@ class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
     }
 
     override fun canBreakBlock(player: Player, block: Block): Boolean {
-        val island: Island? =
-            SuperiorSkyblockAPI.getIslandAt(block.location)
-        val superiorPlayer: SuperiorPlayer =
-            SuperiorSkyblockAPI.getPlayer(player)
+        val island = SuperiorSkyblockAPI.getIslandAt(block.location)
+        val superiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
 
         if (island == null) {
             if (!superiorPlayer.hasBypassModeEnabled() && SuperiorSkyblockAPI.getSuperiorSkyblock().grid
@@ -51,10 +49,8 @@ class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
     }
 
     override fun canPlaceBlock(player: Player, block: Block): Boolean {
-        val island: Island? =
-            SuperiorSkyblockAPI.getIslandAt(block.location)
-        val superiorPlayer: SuperiorPlayer =
-            SuperiorSkyblockAPI.getPlayer(player)
+        val island = SuperiorSkyblockAPI.getIslandAt(block.location)
+        val superiorPlayer: SuperiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
 
         if (island == null) {
             if (!superiorPlayer.hasBypassModeEnabled() && SuperiorSkyblockAPI.getSuperiorSkyblock().grid
@@ -98,14 +94,7 @@ class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
     override fun canPickupItem(player: Player, location: Location): Boolean {
         val superiorPlayer: SuperiorPlayer =
             SuperiorSkyblockAPI.getPlayer(player)
-        val island: Island? =
-            SuperiorSkyblockAPI.getSuperiorSkyblock().grid.getIslandAt(location)
-        if (island != null &&
-            !island.hasPermission(superiorPlayer, IslandPrivilege.getByName("PICKUP_DROPS"))
-        ) {
-            return false
-        }
-
-        return true
+        val island = SuperiorSkyblockAPI.getSuperiorSkyblock().grid.getIslandAt(location) ?: return true
+        return island.hasPermission(superiorPlayer, IslandPrivilege.getByName("PICKUP_DROPS"))
     }
 }
