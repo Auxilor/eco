@@ -6,7 +6,9 @@ import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration
 import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.OutputStream
 
 open class EcoLoadableYamlConfig(
     configName: String,
@@ -29,10 +31,18 @@ open class EcoLoadableYamlConfig(
     }
 
     final override fun createFile() {
-        val inputFile = File(source.getResource(resourcePath)!!.path)
+        val inputStream = source.getResourceAsStream(resourcePath)!!
         val outFile = File(this.plugin.dataFolder, resourcePath)
+        val lastIndex = resourcePath.lastIndexOf('/')
+        val outDir = File(this.plugin.dataFolder, resourcePath.substring(0, lastIndex.coerceAtLeast(0)))
+        if (!outDir.exists()) {
+            outDir.mkdirs()
+        }
         if (!outFile.exists()) {
-            inputFile.copyTo(outFile, true, 1024)
+            val out: OutputStream = FileOutputStream(outFile)
+            inputStream.copyTo(out, 1024)
+            out.close()
+            inputStream.close()
         }
     }
 
