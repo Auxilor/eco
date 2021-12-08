@@ -28,6 +28,10 @@ class ArgParserEnchantment : LookupArgParser {
             }
         }
 
+        if (enchants.isEmpty()) {
+            return null
+        }
+
         for ((enchant, level) in enchants) {
             if (meta is EnchantmentStorageMeta) {
                 meta.addStoredEnchant(enchant, level, true)
