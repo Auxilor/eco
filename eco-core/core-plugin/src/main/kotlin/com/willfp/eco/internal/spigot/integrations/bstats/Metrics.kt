@@ -10,16 +10,12 @@ import java.io.File
 import java.io.InputStreamReader
 import java.net.URL
 import java.nio.charset.StandardCharsets
-import java.util.Arrays
-import java.util.Objects
 import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Supplier
 import java.util.logging.Level
-import java.util.stream.Collectors
 import java.util.zip.GZIPOutputStream
 import javax.net.ssl.HttpsURLConnection
 
@@ -54,13 +50,10 @@ class Metrics(private val plugin: EcoPlugin) {
         private val appendServiceDataConsumer: Consumer<JsonObjectBuilder>,
         private val submitTaskConsumer: Consumer<Runnable>?,
         private val checkServiceEnabledSupplier: Supplier<Boolean>,
-        private val errorLogger: BiConsumer<String?, Throwable?>,
         private val infoLogger: Consumer<String>,
-        private val logErrors: Boolean,
         private val logSentData: Boolean,
         private val logResponseStatusText: Boolean
     ) {
-        private val customCharts: MutableSet<CustomChart> = HashSet()
 
         private fun startSubmitting() {
             val submitTask = Runnable {
@@ -97,20 +90,8 @@ class Metrics(private val plugin: EcoPlugin) {
             appendPlatformDataConsumer.accept(baseJsonBuilder)
             val serviceJsonBuilder = JsonObjectBuilder()
             appendServiceDataConsumer.accept(serviceJsonBuilder)
-            val chartData = customCharts.stream()
-                .map { customChart: CustomChart ->
-                    customChart.getRequestJsonObject(
-                        errorLogger, logErrors
-                    )
-                }
-                .filter { obj: JsonObjectBuilder.JsonObject? -> Objects.nonNull(obj) }
-                .toArray()
 
             serviceJsonBuilder.appendField("id", serviceId)
-            serviceJsonBuilder.appendField(
-                "customCharts",
-                chartData as Array<JsonObjectBuilder.JsonObject>
-            )
             baseJsonBuilder.appendField("service", serviceJsonBuilder.build())
             baseJsonBuilder.appendField("serverUUID", serverUuid)
             baseJsonBuilder.appendField("metricsVersion", METRICS_VERSION)
@@ -173,36 +154,6 @@ class Metrics(private val plugin: EcoPlugin) {
         }
     }
 
-
-    abstract class CustomChart protected constructor(chartId: String?) {
-        private val chartId: String
-        fun getRequestJsonObject(
-            errorLogger: BiConsumer<String?, Throwable?>, logErrors: Boolean
-        ): JsonObjectBuilder.JsonObject? {
-            val builder = JsonObjectBuilder()
-            builder.appendField("chartId", chartId)
-            try {
-                val data = chartData
-                    ?: // If the data is null we don't send the chart.
-                    return null
-                builder.appendField("data", data)
-            } catch (t: Throwable) {
-                if (logErrors) {
-                    errorLogger.accept("Failed to get data for custom chart with id $chartId", t)
-                }
-                return null
-            }
-            return builder.build()
-        }
-
-        protected abstract val chartData: JsonObjectBuilder.JsonObject?
-
-        init {
-            requireNotNull(chartId) { "chartId must not be null" }
-            this.chartId = chartId
-        }
-    }
-
     class JsonObjectBuilder {
         private var builder: StringBuilder? = StringBuilder()
         private var hasAtLeastOneField = false
@@ -221,14 +172,6 @@ class Metrics(private val plugin: EcoPlugin) {
         fun appendField(key: String?, `object`: JsonObject?): JsonObjectBuilder {
             requireNotNull(`object`) { "JSON object must not be null" }
             appendFieldUnescaped(key, `object`.toString())
-            return this
-        }
-
-        fun appendField(key: String?, values: Array<JsonObject>?): JsonObjectBuilder {
-            requireNotNull(values) { "JSON values must not be null" }
-            val escapedValues = Arrays.stream(values).map { obj: JsonObject -> obj.toString() }
-                .collect(Collectors.joining(","))
-            appendFieldUnescaped(key, "[$escapedValues]")
             return this
         }
 
@@ -310,7 +253,6 @@ class Metrics(private val plugin: EcoPlugin) {
         }
         // Load the data
         val serverUUID = config.getString("serverUuid")!!
-        val logErrors = config.getBoolean("logFailedRequests", false)
         val logSentData = config.getBoolean("logSentData", false)
         val logResponseStatusText = config.getBoolean("logResponseStatusText", false)
         metricsBase = MetricsBase(
@@ -321,9 +263,7 @@ class Metrics(private val plugin: EcoPlugin) {
             { builder: JsonObjectBuilder -> appendServiceData(builder) },
             { submitDataTask: Runnable? -> Bukkit.getScheduler().runTask(plugin, submitDataTask!!) },
             { plugin.isEnabled },
-            { message: String?, error: Throwable? -> this.plugin.logger.log(Level.WARNING, message, error) },
             { message: String? -> this.plugin.logger.log(Level.INFO, message) },
-            logErrors,
             logSentData,
             logResponseStatusText
         )
