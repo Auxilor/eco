@@ -118,7 +118,7 @@ class EcoHandler : com.willfp.eco.internal.spigot.EcoSpigotPlugin(), Handler {
     }
 
     override fun registerBStats(plugin: EcoPlugin) {
-        MetricHandler.createMetrics(plugin, this.ecoPlugin)
+        MetricHandler.createMetrics(plugin)
     }
 
     override fun getRequirementFactory(): EcoRequirementFactory {

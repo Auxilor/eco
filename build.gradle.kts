@@ -35,7 +35,7 @@ allprojects {
         // NMS (for jitpack compilation)
         maven("https://repo.codemc.org/repository/nms/")
 
-        // bStats, mcMMO, BentoBox
+        // mcMMO, BentoBox
         maven("https://repo.codemc.org/repository/maven-public/")
 
         // Spigot API, Bungee API
