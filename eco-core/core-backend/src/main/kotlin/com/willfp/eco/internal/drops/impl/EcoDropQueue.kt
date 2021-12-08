@@ -54,10 +54,10 @@ open class EcoDropQueue(val player: Player) : InternalDropQueue {
             hasTelekinesis = false
         }
 
-        val event = DropQueuePushEvent(player, items, location, xp, hasTelekinesis)
-        Bukkit.getServer().pluginManager.callEvent(event)
+        val pushEvent = DropQueuePushEvent(player, items, location, xp, hasTelekinesis)
+        Bukkit.getServer().pluginManager.callEvent(pushEvent)
 
-        if (event.isCancelled) {
+        if (pushEvent.isCancelled) {
             return
         }
 
