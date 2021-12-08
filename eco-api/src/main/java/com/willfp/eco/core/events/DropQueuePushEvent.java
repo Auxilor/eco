@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
+/**
+ * Called on DropQueue push.
+ */
 public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     /**
      * Cancel state.

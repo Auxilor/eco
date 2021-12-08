@@ -21,7 +21,7 @@ class ShopShopGuiPlus : ShopWrapper {
 
         override fun loadItem(configurationSection: ConfigurationSection): ItemStack? {
             val id = configurationSection.getString("eco")
-            return if (id == null) null else Items.lookup(id)?.item
+            return if (id == null) null else Items.lookup(id).item
         }
 
         override fun compare(itemStack1: ItemStack, itemStack2: ItemStack): Boolean {
