@@ -7,7 +7,6 @@ import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.File
-import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -51,7 +50,6 @@ class Metrics(private val plugin: EcoPlugin) {
         private val platform: String,
         private val serverUuid: String,
         private val serviceId: Int,
-        private val enabled: Boolean,
         private val appendPlatformDataConsumer: Consumer<JsonObjectBuilder>,
         private val appendServiceDataConsumer: Consumer<JsonObjectBuilder>,
         private val submitTaskConsumer: Consumer<Runnable>?,
@@ -66,13 +64,13 @@ class Metrics(private val plugin: EcoPlugin) {
 
         private fun startSubmitting() {
             val submitTask = Runnable {
-                if (!enabled || !checkServiceEnabledSupplier.get()) {
+                if (!checkServiceEnabledSupplier.get()) {
                     // Submitting data or service is disabled
                     scheduler.shutdown()
                     return@Runnable
                 }
                 if (submitTaskConsumer != null) {
-                    submitTaskConsumer.accept(Runnable { submitData() })
+                    submitTaskConsumer.accept { submitData() }
                 } else {
                     submitData()
                 }
@@ -86,10 +84,12 @@ class Metrics(private val plugin: EcoPlugin) {
             // WARNING: Modifying this code will get your plugin banned on bStats. Just don't do it!
             val initialDelay = (1000 * 60 * (3 + Math.random() * 3)).toLong()
             val secondDelay = (1000 * 60 * (Math.random() * 30)).toLong()
-            scheduler.schedule(submitTask, initialDelay, TimeUnit.MILLISECONDS)
-            scheduler.scheduleAtFixedRate(
-                submitTask, initialDelay + secondDelay, (1000 * 60 * 30).toLong(), TimeUnit.MILLISECONDS
-            )
+            runIgnoring {
+                scheduler.schedule(submitTask, initialDelay, TimeUnit.MILLISECONDS)
+                scheduler.scheduleAtFixedRate(
+                    submitTask, initialDelay + secondDelay, (1000 * 60 * 30).toLong(), TimeUnit.MILLISECONDS
+                )
+            }
         }
 
         private fun submitData() {
@@ -115,12 +115,9 @@ class Metrics(private val plugin: EcoPlugin) {
             baseJsonBuilder.appendField("serverUUID", serverUuid)
             baseJsonBuilder.appendField("metricsVersion", METRICS_VERSION)
             val data = baseJsonBuilder.build()
-            scheduler.execute {
-                try {
-                    // Send the data
-                    sendData(data)
-                } catch (e: Exception) {
-                    // do nothing
+            runIgnoring {
+                scheduler.execute {
+                    runIgnoring { sendData(data) }
                 }
             }
         }
@@ -155,56 +152,6 @@ class Metrics(private val plugin: EcoPlugin) {
             }
         }
 
-        private fun checkRelocation() {
-            // You can use the property to disable the check in your test environment
-            if (System.getProperty("bstats.relocatecheck") == null
-                || System.getProperty("bstats.relocatecheck") != "false"
-            ) {
-                // Maven's Relocate is clever and changes strings, too. So we have to use this little
-                // "trick" ... :D
-                val defaultPackage = String(
-                    byteArrayOf(
-                        'o'.code.toByte(),
-                        'r'.code.toByte(),
-                        'g'.code.toByte(),
-                        '.'.code.toByte(),
-                        'b'.code.toByte(),
-                        's'.code.toByte(),
-                        't'.code.toByte(),
-                        'a'.code.toByte(),
-                        't'.code.toByte(),
-                        's'.code.toByte()
-                    )
-                )
-                val examplePackage = String(
-                    byteArrayOf(
-                        'y'.code.toByte(),
-                        'o'.code.toByte(),
-                        'u'.code.toByte(),
-                        'r'.code.toByte(),
-                        '.'.code.toByte(),
-                        'p'.code.toByte(),
-                        'a'.code.toByte(),
-                        'c'.code.toByte(),
-                        'k'.code.toByte(),
-                        'a'.code.toByte(),
-                        'g'.code.toByte(),
-                        'e'.code.toByte()
-                    )
-                )
-                // We want to make sure no one just copy & pastes the example and uses the wrong package
-                // names
-                check(
-                    !(MetricsBase::class.java.getPackage().name.startsWith(
-                        defaultPackage
-                    )
-                            || MetricsBase::class.java.getPackage().name.startsWith(
-                        examplePackage
-                    ))
-                ) { "bStats Metrics class has not been relocated correctly!" }
-            }
-        }
-
         companion object {
             const val METRICS_VERSION = "2.2.1"
             private val scheduler =
@@ -222,10 +169,7 @@ class Metrics(private val plugin: EcoPlugin) {
         }
 
         init {
-            checkRelocation()
-            if (enabled) {
-                startSubmitting()
-            }
+            startSubmitting()
         }
     }
 
@@ -362,10 +306,7 @@ class Metrics(private val plugin: EcoPlugin) {
                     """.trimIndent()
                 )
                 .copyDefaults(true)
-            try {
-                config.save(configFile)
-            } catch (ignored: IOException) {
-            }
+            config.save(configFile)
         }
         // Load the data
         val serverUUID = config.getString("serverUuid")!!
@@ -376,7 +317,6 @@ class Metrics(private val plugin: EcoPlugin) {
             "bukkit",
             serverUUID,
             plugin.bStatsId,
-            true,
             { builder: JsonObjectBuilder -> appendPlatformData(builder) },
             { builder: JsonObjectBuilder -> appendServiceData(builder) },
             { submitDataTask: Runnable? -> Bukkit.getScheduler().runTask(plugin, submitDataTask!!) },
@@ -387,5 +327,13 @@ class Metrics(private val plugin: EcoPlugin) {
             logSentData,
             logResponseStatusText
         )
+    }
+}
+
+private fun runIgnoring(func: () -> Unit) {
+    try {
+        func()
+    } catch (e: Exception) {
+        // Do nothing
     }
 }
