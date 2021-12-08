@@ -31,8 +31,7 @@ open class EcoSlot(
             ClickType.SHIFT_LEFT -> this.onShiftLeftClick.handle(event, this, menu)
             ClickType.SHIFT_RIGHT -> this.onShiftRightClick.handle(event, this, menu)
             ClickType.MIDDLE -> this.onMiddleClick.handle(event, this, menu)
-            else -> {
-            }
+            else -> {}
         }
     }
 

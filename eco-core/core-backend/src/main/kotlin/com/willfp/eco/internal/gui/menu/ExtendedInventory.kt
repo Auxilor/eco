@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
-import com.willfp.eco.internal.gui.slot.EcoCaptivatorSlot
+import com.willfp.eco.internal.gui.slot.EcoCaptiveSlot
 import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.StringUtils
 import org.bukkit.NamespacedKey
@@ -20,7 +20,7 @@ class ExtendedInventory(
         for (i in 0 until inventory.size) {
             val (row, column) = MenuUtils.convertSlotToRowColumn(i)
             val slot = menu.getSlot(row, column)
-            if (slot is EcoCaptivatorSlot) {
+            if (slot is EcoCaptiveSlot) {
                 val defaultItem = slot.getItemStack(player)
                 val item = inventory.getItem(i) ?: continue
                 if (item != defaultItem) {
