@@ -102,7 +102,14 @@ class AntigriefWorldGuard : AntigriefWrapper {
         val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
-        return query.testState(BukkitAdapter.adapt(location), localPlayer, Flags.ITEM_PICKUP)
+        val world = location.world
+        Validate.notNull(world, "World cannot be null!")
+        return if (!query.testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.ITEM_PICKUP)) {
+            WorldGuard.getInstance().platform.sessionManager.hasBypass(
+                localPlayer,
+                BukkitAdapter.adapt(world)
+            )
+        } else true
     }
 
     override fun getPluginName(): String {

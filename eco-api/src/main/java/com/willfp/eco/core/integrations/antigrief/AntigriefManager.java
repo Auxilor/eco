@@ -2,7 +2,6 @@ package com.willfp.eco.core.integrations.antigrief;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +56,7 @@ public final class AntigriefManager {
      * @return If player can break block.
      */
     public static boolean canBreakBlock(@NotNull final Player player,
-                                 @NotNull final Block block) {
+                                        @NotNull final Block block) {
         return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canBreakBlock(player, block));
     }
 
@@ -69,7 +68,7 @@ public final class AntigriefManager {
      * @return If player can create explosion.
      */
     public static boolean canCreateExplosion(@NotNull final Player player,
-                                      @NotNull final Location location) {
+                                             @NotNull final Location location) {
         return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canCreateExplosion(player, location));
     }
 
@@ -81,7 +80,7 @@ public final class AntigriefManager {
      * @return If player can place block.
      */
     public static boolean canPlaceBlock(@NotNull final Player player,
-                                 @NotNull final Block block) {
+                                        @NotNull final Block block) {
         return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPlaceBlock(player, block));
     }
 
@@ -93,7 +92,7 @@ public final class AntigriefManager {
      * @return If player can injure.
      */
     public static boolean canInjure(@NotNull final Player player,
-                             @NotNull final LivingEntity victim) {
+                                    @NotNull final LivingEntity victim) {
         return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canInjure(player, victim));
     }
 

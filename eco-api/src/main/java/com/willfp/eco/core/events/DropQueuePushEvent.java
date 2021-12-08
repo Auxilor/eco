@@ -1,34 +1,40 @@
 package com.willfp.eco.core.events;
 
-import com.willfp.eco.core.drops.DropQueue;
-import com.willfp.eco.core.drops.InternalDropQueue;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+
 public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
-
-    /**
-     * Queue handle.
-     */
-    private final InternalDropQueue handle;
-
-    /**
-     * Queue itself.
-     */
-    private final DropQueue queue;
-
     /**
      * Cancel state.
      */
     private boolean cancelled;
 
     /**
-     * Force telekinesis state
+     * If telekinetic.
      */
-    private final boolean forceTelekinesis;
+    private final boolean isTelekinetic;
+
+    /**
+     * The items.
+     */
+    private final Collection<? extends ItemStack> items;
+
+    /**
+     * The xp.
+     */
+    private final int xp;
+
+    /**
+     * The location.
+     */
+    private final Location location;
 
     /**
      * Bukkit parity.
@@ -36,15 +42,24 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
     /**
-     * Create a new ArmorEquipEvent.
+     * Create a new DropQueuePushEvent.
      *
-     * @param player The player.
+     * @param player        The player.
+     * @param items         The items.
+     * @param location      The location.
+     * @param xp            The xp.
+     * @param isTelekinetic If the event is telekinetic.
      */
-    public DropQueuePushEvent(@NotNull final Player player, @NotNull final InternalDropQueue handle, @NotNull final DropQueue queue, final boolean forceTelekinesis) {
+    public DropQueuePushEvent(@NotNull final Player player,
+                              @NotNull final Collection<? extends ItemStack> items,
+                              @NotNull final Location location,
+                              final int xp,
+                              final boolean isTelekinetic) {
         super(player);
-        this.handle = handle;
-        this.queue = queue;
-        this.forceTelekinesis = forceTelekinesis;
+        this.items = items;
+        this.location = location;
+        this.xp = xp;
+        this.isTelekinetic = isTelekinetic;
     }
 
     /**
@@ -80,29 +95,38 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     /**
      * Set cancel state.
      *
-     * @param b The state.
+     * @param cancelled If cancelled.
      */
     @Override
-    public void setCancelled(boolean b) {
-        this.cancelled = b;
+    public void setCancelled(final boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
     /**
-     * Get queue handle.
+     * Get the items to be dropped.
      *
-     * @return The handle.
+     * @return The items.
      */
-    public InternalDropQueue getHandle() {
-        return handle;
+    public Collection<? extends ItemStack> getItems() {
+        return items;
     }
 
     /**
-     * Get queue.
+     * Get the xp to be dropped.
      *
-     * @return The queue.
+     * @return The xp.
      */
-    public DropQueue getQueue() {
-        return queue;
+    public int getXp() {
+        return xp;
+    }
+
+    /**
+     * Get the location.
+     *
+     * @return The location.
+     */
+    public Location getLocation() {
+        return location;
     }
 
     /**
@@ -110,8 +134,7 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
      *
      * @return The force telekinesis state.
      */
-    public boolean isForceTelekinesis() {
-        return this.forceTelekinesis;
+    public boolean isTelekinetic() {
+        return this.isTelekinetic;
     }
-
 }

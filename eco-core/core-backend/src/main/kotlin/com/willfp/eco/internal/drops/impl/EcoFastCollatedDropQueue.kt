@@ -10,10 +10,10 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
         val fetched = COLLATED_MAP[player]
 
         if (fetched == null) {
-            COLLATED_MAP[player] = CollatedDrops(items, loc, xp, hasTelekinesis)
+            COLLATED_MAP[player] = CollatedDrops(items, location, xp, hasTelekinesis)
         } else {
             fetched.addDrops(items)
-            fetched.location = loc
+            fetched.location = location
             fetched.addXp(xp)
             if (this.hasTelekinesis) {
                 fetched.forceTelekinesis()

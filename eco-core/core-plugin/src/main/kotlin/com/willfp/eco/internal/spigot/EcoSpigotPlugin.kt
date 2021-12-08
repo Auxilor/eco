@@ -69,6 +69,7 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsA
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
+import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHolograms
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicDisplays
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
@@ -218,6 +219,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
             IntegrationLoader("CMI") { HologramManager.register(HologramCMI()) },
+            IntegrationLoader("DecentHolograms") { HologramManager.register(HologramDecentHolograms()) },
             //IntegrationLoader("GHolo") { HologramManager.register(HologramGHolo()) },
 
             // AFK

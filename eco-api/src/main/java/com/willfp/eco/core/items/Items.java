@@ -50,7 +50,7 @@ public final class Items {
      * @param item The item.
      */
     public static void registerCustomItem(@NotNull final NamespacedKey key,
-                                   @NotNull final TestableItem item) {
+                                          @NotNull final TestableItem item) {
         REGISTRY.put(key, item);
     }
 
@@ -104,6 +104,7 @@ public final class Items {
      * @param key The lookup string.
      * @return The testable item, or an {@link EmptyTestableItem}.
      */
+    @NotNull
     public static TestableItem lookup(@NotNull final String key) {
         if (key.contains("?")) {
             String[] options = key.split("\\?");
@@ -236,16 +237,32 @@ public final class Items {
     }
 
     /**
-     * Get TestableItem from ItemStack
+     * Get a Testable Item from an ItemStack.
+     * <p>
+     * Will search for registered items first. If there are no matches in the registry,
+     * then it will return a {@link MaterialTestableItem} matching the item type.
+     * <p>
+     * Does not account for modifiers (arg parser data).
      *
-     * @param item The item
-     * @return TestableItem
+     * @param item The ItemStack.
+     * @return The found Testable Item.
      */
+    @NotNull
     public static TestableItem getItem(@Nullable final ItemStack item) {
-        if (item == null || item.getType().isAir()) return new EmptyTestableItem();
-        if (isCustomItem(item)) return getCustomItem(item);
-        for (TestableItem value : REGISTRY.values()) {
-            if (value.matches(item)) return value;
+        if (item == null || item.getType().isAir()) {
+            return new EmptyTestableItem();
+        }
+
+        CustomItem customItem = getCustomItem(item);
+
+        if (customItem != null) {
+            return customItem;
+        }
+
+        for (TestableItem known : REGISTRY.values()) {
+            if (known.matches(item)) {
+                return known;
+            }
         }
         return new MaterialTestableItem(item.getType());
     }
@@ -299,6 +316,7 @@ public final class Items {
      * @param item The item.
      * @return The CustomItem.
      */
+    @NotNull
     public static CustomItem getOrWrap(@NotNull final TestableItem item) {
         if (item instanceof CustomItem) {
             return (CustomItem) item;

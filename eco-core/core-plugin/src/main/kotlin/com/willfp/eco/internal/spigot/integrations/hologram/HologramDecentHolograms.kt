@@ -3,26 +3,24 @@ package com.willfp.eco.internal.spigot.integrations.hologram
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramWrapper
 import eu.decentsoftware.holograms.api.DHAPI
-import me.gholo.api.GHoloAPI
 import org.bukkit.Location
 import java.util.UUID
 
 @Suppress("DEPRECATION")
 class HologramDecentHolograms : HologramWrapper {
-
     override fun createHologram(location: Location, contents: MutableList<String>): Hologram {
         val id = UUID.randomUUID().toString()
 
-        val holo = DHAPI.createHologram(id, location, contents)
+        DHAPI.createHologram(id, location, contents)
 
-        return HologramImplGHolo(id)
+        return HologramImplDecentHolograms(id)
     }
 
     override fun getPluginName(): String {
-        return "GHolo"
+        return "DecentHolograms"
     }
 
-    class HologramImplGHolo(
+    class HologramImplDecentHolograms(
         private val id: String,
     ) : Hologram {
         override fun remove() {

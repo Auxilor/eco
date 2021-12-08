@@ -8,7 +8,9 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer
 import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
 import org.bukkit.Location
 import org.bukkit.block.Block
-import org.bukkit.entity.*
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Monster
+import org.bukkit.entity.Player
 
 class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
     override fun getPluginName(): String {
@@ -78,7 +80,8 @@ class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
 
         val island: Island? = SuperiorSkyblockAPI.getSuperiorSkyblock().grid.getIslandAt(victim.location)
 
-        if (victim is Player) return SuperiorSkyblockAPI.getPlayer(player).canHit(SuperiorSkyblockAPI.getPlayer(victim)).equals(HitActionResult.SUCCESS)
+        if (victim is Player) return SuperiorSkyblockAPI.getPlayer(player).canHit(SuperiorSkyblockAPI.getPlayer(victim))
+            .equals(HitActionResult.SUCCESS)
 
         val islandPermission = when (victim) {
             is Monster -> IslandPrivilege.getByName("MONSTER_DAMAGE")

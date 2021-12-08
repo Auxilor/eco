@@ -18,7 +18,7 @@ public interface AntigriefWrapper extends Integration {
      * @param block  The block.
      * @return If player can break block.
      */
-    boolean canBreakBlock(Player player, Block block);
+    boolean canBreakBlock(@NotNull Player player, @NotNull Block block);
 
     /**
      * Can player create explosion at location.
@@ -27,7 +27,7 @@ public interface AntigriefWrapper extends Integration {
      * @param location The location.
      * @return If player can create explosion.
      */
-    boolean canCreateExplosion(Player player, Location location);
+    boolean canCreateExplosion(@NotNull Player player, @NotNull Location location);
 
     /**
      * Can player place block.
@@ -36,7 +36,7 @@ public interface AntigriefWrapper extends Integration {
      * @param block  The block.
      * @return If player can place block.
      */
-    boolean canPlaceBlock(Player player, Block block);
+    boolean canPlaceBlock(@NotNull Player player, @NotNull Block block);
 
     /**
      * Can player injure living entity.
@@ -45,7 +45,7 @@ public interface AntigriefWrapper extends Integration {
      * @param victim The victim.
      * @return If player can injure.
      */
-    boolean canInjure(Player player, LivingEntity victim);
+    boolean canInjure(@NotNull Player player, @NotNull LivingEntity victim);
 
     /**
      * Can player pick up item.
@@ -54,6 +54,6 @@ public interface AntigriefWrapper extends Integration {
      * @param location The location.
      * @return If player can pick up item.
      */
-    boolean canPickupItem(@NotNull final Player player, @NotNull final Location location);
+    boolean canPickupItem(@NotNull Player player, @NotNull Location location);
 
 }

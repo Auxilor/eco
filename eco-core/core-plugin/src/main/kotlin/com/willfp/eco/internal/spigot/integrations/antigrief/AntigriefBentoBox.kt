@@ -57,6 +57,11 @@ class AntigriefBentoBox : AntigriefWrapper {
         }
     }
 
+    override fun canPickupItem(player: Player, location: Location): Boolean {
+        val island = BentoBox.getInstance().islandsManager.getIslandAt(location).orElse(null) ?: return true
+        return island.isAllowed(User.getInstance(player), Flags.ITEM_PICKUP)
+    }
+
     override fun getPluginName(): String {
         return "BentoBox"
     }
