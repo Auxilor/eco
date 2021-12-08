@@ -23,7 +23,7 @@ class ArgParserColor : LookupArgParser {
             if (argSplit.size < 2) {
                 continue
             }
-            color = argSplit[1]
+            color = argSplit[1].replace("#","")
         }
 
         color ?: return null
