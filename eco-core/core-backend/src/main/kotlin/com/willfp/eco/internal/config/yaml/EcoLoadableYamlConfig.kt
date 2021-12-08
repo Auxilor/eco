@@ -40,7 +40,7 @@ open class EcoLoadableYamlConfig(
         }
         if (!outFile.exists()) {
             val out: OutputStream = FileOutputStream(outFile)
-            inputStream.copyTo(out, 1024)
+            inputStream.copyTo(out)
             out.close()
             inputStream.close()
         }
