@@ -54,6 +54,7 @@ public interface AntigriefWrapper extends Integration {
      * @param location The location.
      * @return If player can pick up item.
      */
-    boolean canPickupItem(@NotNull Player player, @NotNull Location location);
-
+    default boolean canPickupItem(@NotNull Player player, @NotNull Location location) {
+        return true;
+    }
 }

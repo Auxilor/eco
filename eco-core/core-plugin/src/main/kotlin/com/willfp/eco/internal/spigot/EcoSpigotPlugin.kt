@@ -132,20 +132,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         this.logger.info("Ignore messages about deprecated events!")
 
-        if (!this.configYml.getBool("enable-bstats")) {
-            logger.severe("")
-            logger.severe("----------------------------")
-            logger.severe("")
-            logger.severe("Looks like you've disabled bStats!")
-            logger.severe("This means that information about java version,")
-            logger.severe("player count, server version, and other data")
-            logger.severe("isn't able to be used to ensure that support isn't dropped!")
-            logger.severe("Enable bStats in /plugins/eco/config.yml")
-            logger.severe("")
-            logger.severe("----------------------------")
-            logger.severe("")
-        }
-
         // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
     }
