@@ -280,6 +280,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
          * Set the permission required to craft the recipe.
          *
          * @param permission The permission.
+         * @return The builder.
          */
         public Builder setPermission(@Nullable final String permission) {
             this.permission = permission;
