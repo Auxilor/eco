@@ -3,6 +3,7 @@ package com.willfp.eco.core;
 import com.willfp.eco.core.config.updating.ConfigHandler;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * Represents any class that acts like a plugin, for example {@link EcoPlugin}
@@ -26,4 +27,11 @@ public interface PluginLike {
      * @return The config handler.
      */
     ConfigHandler getConfigHandler();
+
+    /**
+     * Get the logger.
+     *
+     * @return The logger.
+     */
+    Logger getLogger();
 }

@@ -13,9 +13,11 @@ import java.io.IOException;
 /**
  * Wrapper to handle the backend loadable JSON config implementations.
  *
- * @deprecated JSON and yml have full parity.
+ * @deprecated JSON and yml have full parity, use configs without a prefix instead,
+ * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
+ * These configs will be removed eventually.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public abstract class LoadableJSONConfigWrapper extends JSONConfigWrapper implements LoadableConfig {
     /**
      * Create a config wrapper.

@@ -11,9 +11,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Non-updatable JSON config that exists within a plugin jar.
  *
- * @deprecated JSON and yml have full parity.
+ * @deprecated JSON and yml have full parity, use configs without a prefix instead,
+ * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
+ * These configs will be removed eventually.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public abstract class JSONStaticBaseConfig extends LoadableJSONConfigWrapper {
     /**
      * Config implementation for configs present in the plugin's base directory (eg config.json, lang.json).

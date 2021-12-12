@@ -13,9 +13,11 @@ import java.io.StringReader;
  * <p>
  * Does not automatically update.
  *
- * @deprecated JSON and yml have full parity.
+ * @deprecated JSON and yml have full parity, use configs without a prefix instead,
+ * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
+ * These configs will be removed eventually.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public class YamlTransientConfig extends YamlConfigWrapper {
     /**
      * @param config The YamlConfiguration handle.

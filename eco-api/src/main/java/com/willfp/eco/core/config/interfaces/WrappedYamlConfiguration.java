@@ -5,9 +5,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 /**
  * Interface for configs that wrap an {@link YamlConfiguration}.
  *
- * @see com.willfp.eco.core.config.yaml.wrapper.YamlConfigWrapper
+ * @deprecated JSON and yml have full parity, use configs without a prefix instead,
+ * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
+ * These configs will be removed eventually.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @SuppressWarnings("DeprecatedIsStillUsed")
 public interface WrappedYamlConfiguration {
     /**

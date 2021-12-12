@@ -12,10 +12,11 @@ import java.util.List;
  * The replacement for {@link org.bukkit.command.CommandExecutor#onCommand(CommandSender, Command, String, String[])}
  *
  * @see CommandBase
- * @deprecated Handlers have been deprecated.
+ * @deprecated Handlers have been deprecated. This legacy system will eventually be removed,
+ * update to use the new system.
  */
 @FunctionalInterface
-@Deprecated
+@Deprecated(forRemoval = true)
 public interface CommandHandler {
     /**
      * The code to be called on execution.

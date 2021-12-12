@@ -9,9 +9,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Wrapper to handle the backend yaml config implementations.
  *
- * @deprecated JSON and yml have full parity.
+ * @deprecated JSON and yml have full parity, use configs without a prefix instead,
+ * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
+ * These configs will be removed eventually.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public abstract class YamlConfigWrapper extends ConfigWrapper<Config> implements WrappedYamlConfiguration {
     /**
      * Create a config wrapper.

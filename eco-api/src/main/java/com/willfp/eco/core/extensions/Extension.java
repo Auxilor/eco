@@ -7,6 +7,7 @@ import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * An extension is a separate jar file that hooks into the base plugin jar.
@@ -141,6 +142,11 @@ public abstract class Extension implements PluginLike {
     @Override
     public ConfigHandler getConfigHandler() {
         return this.plugin.getConfigHandler();
+    }
+
+    @Override
+    public Logger getLogger() {
+        return this.plugin.getLogger();
     }
 
     /**
