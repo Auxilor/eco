@@ -15,6 +15,7 @@ import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,16 +45,23 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
      */
     private final ItemStack output;
 
+    /**
+     * The permission.
+     */
+    private final String permission;
+
     private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
                                  @NotNull final String key,
                                  @NotNull final List<TestableItem> parts,
-                                 @NotNull final ItemStack output) {
+                                 @NotNull final ItemStack output,
+                                 @Nullable final String permission) {
         super(plugin);
 
         this.parts = parts;
         this.key = plugin.getNamespacedKeyFactory().create(key);
         this.displayedKey = plugin.getNamespacedKeyFactory().create(key + "_displayed");
         this.output = output;
+        this.permission = permission;
     }
 
     @Override
@@ -140,6 +148,8 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
      *
      * @return The parts.
      */
+    @NotNull
+    @Override
     public List<TestableItem> getParts() {
         return this.parts;
     }
@@ -149,6 +159,8 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
      *
      * @return The key.
      */
+    @NotNull
+    @Override
     public NamespacedKey getKey() {
         return this.key;
     }
@@ -158,6 +170,8 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
      *
      * @return The displayed key.
      */
+    @NotNull
+    @Override
     public NamespacedKey getDisplayedKey() {
         return this.displayedKey;
     }
@@ -167,8 +181,21 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
      *
      * @return The output.
      */
+    @NotNull
+    @Override
     public ItemStack getOutput() {
         return this.output;
+    }
+
+    /**
+     * Get the permission.
+     *
+     * @return The permission.
+     */
+    @Nullable
+    @Override
+    public String getPermission() {
+        return permission;
     }
 
     /**
@@ -184,6 +211,11 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
          * The output of the recipe.
          */
         private ItemStack output = null;
+
+        /**
+         * The permission for the recipe.
+         */
+        private String permission = null;
 
         /**
          * The key of the recipe.
@@ -245,6 +277,16 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         }
 
         /**
+         * Set the permission required to craft the recipe.
+         *
+         * @param permission The permission.
+         */
+        public Builder setPermission(@Nullable final String permission) {
+            this.permission = permission;
+            return this;
+        }
+
+        /**
          * Build the recipe.
          *
          * @return The built recipe.
@@ -256,7 +298,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
                 }
             }
 
-            return new ShapedCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output);
+            return new ShapedCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission);
         }
     }
 }

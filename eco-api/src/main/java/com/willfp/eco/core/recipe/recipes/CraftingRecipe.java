@@ -4,6 +4,7 @@ import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public interface CraftingRecipe {
      *
      * @return The parts.
      */
+    @NotNull
     List<TestableItem> getParts();
 
     /**
@@ -38,6 +40,7 @@ public interface CraftingRecipe {
      *
      * @return The key.
      */
+    @NotNull
     NamespacedKey getKey();
 
     /**
@@ -45,6 +48,7 @@ public interface CraftingRecipe {
      *
      * @return The key.
      */
+    @NotNull
     NamespacedKey getDisplayedKey();
 
     /**
@@ -52,5 +56,16 @@ public interface CraftingRecipe {
      *
      * @return The output.
      */
+    @NotNull
     ItemStack getOutput();
+
+    /**
+     * Get the recipe permission.
+     *
+     * @return The permission.
+     */
+    @Nullable
+    default String getPermission() {
+        return null;
+    }
 }

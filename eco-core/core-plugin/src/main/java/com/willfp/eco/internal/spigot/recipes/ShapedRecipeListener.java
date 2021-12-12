@@ -12,6 +12,7 @@ import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import org.bukkit.Keyed;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,6 +29,29 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         super(plugin);
     }
 
+    private void allow(@NotNull final Event event,
+                       @NotNull final CraftingRecipe recipe) {
+        if (event instanceof PrepareItemCraftEvent) {
+            ((PrepareItemCraftEvent) event).getInventory().setResult(recipe.getOutput());
+        }
+
+        if (event instanceof CraftItemEvent) {
+            ((CraftItemEvent) event).getInventory().setResult(recipe.getOutput());
+        }
+    }
+
+    private void deny(@NotNull final Event event) {
+        if (event instanceof PrepareItemCraftEvent) {
+            ((PrepareItemCraftEvent) event).getInventory().setResult(new ItemStack(Material.AIR));
+        }
+
+        if (event instanceof CraftItemEvent) {
+            ((CraftItemEvent) event).getInventory().setResult(new ItemStack(Material.AIR));
+            ((CraftItemEvent) event).setResult(Event.Result.DENY);
+            ((CraftItemEvent) event).setCancelled(true);
+        }
+    }
+
     @EventHandler
     public void complexRecipeListener(@NotNull final PrepareItemCraftEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -38,18 +62,30 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (!(event.getInventory().getViewers().get(0) instanceof Player player)) {
+            return;
+        }
+
         ItemStack[] matrix = event.getInventory().getMatrix();
         CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
-            event.getInventory().setResult(new ItemStack(Material.AIR));
+            deny(event);
             return;
         }
 
         if (matched.test(matrix)) {
-            event.getInventory().setResult(matched.getOutput());
+            if (matched.getPermission() != null) {
+                if (player.hasPermission(matched.getPermission())) {
+                    allow(event, matched);
+                } else {
+                    deny(event);
+                }
+            } else {
+                allow(event, matched);
+            }
         } else {
-            event.getInventory().setResult(new ItemStack(Material.AIR));
+            deny(event);
         }
     }
 
@@ -63,25 +99,33 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (!(event.getInventory().getViewers().get(0) instanceof Player player)) {
+            return;
+        }
+
         ItemStack[] matrix = event.getInventory().getMatrix();
         CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
-            event.getInventory().setResult(new ItemStack(Material.AIR));
-            event.setResult(Event.Result.DENY);
-            event.setCancelled(true);
+            deny(event);
             return;
         }
 
         if (matched.test(matrix)) {
-            event.getInventory().setResult(matched.getOutput());
+            if (matched.getPermission() != null) {
+                if (player.hasPermission(matched.getPermission())) {
+                    allow(event, matched);
+                } else {
+                    deny(event);
+                }
+            } else {
+                allow(event, matched);
+            }
         } else {
-            event.getInventory().setResult(new ItemStack(Material.AIR));
-            event.setResult(Event.Result.DENY);
-            event.setCancelled(true);
+            deny(event);
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void stackedRecipeListener(@NotNull final CraftItemEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -199,7 +243,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             }
         }
     }
-    
+
     @EventHandler
     public void preventUsingComplexPartInEcoRecipe(@NotNull final CraftItemEvent event) {
         if (!(event.getRecipe() instanceof ShapedRecipe recipe)) {
@@ -243,7 +287,7 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             }
         }
     }
-    
+
     @EventHandler
     public void preventUsingComplexPartInVanillaRecipe(@NotNull final PrepareItemCraftEvent event) {
         if (!(event.getRecipe() instanceof Keyed recipe)) {

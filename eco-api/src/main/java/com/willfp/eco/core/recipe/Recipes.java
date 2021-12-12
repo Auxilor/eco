@@ -79,7 +79,27 @@ public final class Recipes {
                                                          @NotNull final String key,
                                                          @NotNull final ItemStack output,
                                                          @NotNull final List<String> recipeStrings) {
-        ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key).setOutput(output);
+        return createAndRegisterRecipe(plugin, key, output, recipeStrings, null);
+    }
+
+    /**
+     * Create and register recipe.
+     *
+     * @param plugin        The plugin.
+     * @param key           The key.
+     * @param output        The output.
+     * @param recipeStrings The recipe.
+     * @param permission    The permission.
+     * @return The recipe.
+     */
+    public static CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
+                                                         @NotNull final String key,
+                                                         @NotNull final ItemStack output,
+                                                         @NotNull final List<String> recipeStrings,
+                                                         @Nullable final String permission) {
+        ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
+                .setOutput(output)
+                .setPermission(permission);
 
         for (int i = 0; i < 9; i++) {
             builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
