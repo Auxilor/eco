@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * in order to execute the command-specific code. It's essentially an internal
  * layer, hence why it's a package-private class.
  */
-@SuppressWarnings({"DeprecatedIsStillUsed", "deprecation"})
+@SuppressWarnings({"DeprecatedIsStillUsed"})
 abstract class HandledCommand extends PluginDependent<EcoPlugin> implements CommandBase {
     /**
      * The name of the command.
