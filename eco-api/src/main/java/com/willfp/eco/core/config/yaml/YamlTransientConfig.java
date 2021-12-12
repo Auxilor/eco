@@ -15,7 +15,6 @@ import java.io.StringReader;
  *
  * @deprecated JSON and yml have full parity.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
 @Deprecated
 public class YamlTransientConfig extends YamlConfigWrapper {
     /**

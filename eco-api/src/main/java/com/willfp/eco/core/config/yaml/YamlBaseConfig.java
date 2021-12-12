@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
  * @deprecated JSON and yml have full parity.
  */
 @Deprecated
-@SuppressWarnings("DeprecatedIsStillUsed")
 public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
     /**
      * @param configName      The name of the config
