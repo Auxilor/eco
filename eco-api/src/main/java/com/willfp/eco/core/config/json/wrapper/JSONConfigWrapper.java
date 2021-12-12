@@ -9,7 +9,10 @@ import java.util.List;
 
 /**
  * Wrapper to handle the backend JSON config implementations.
+ *
+ * @deprecated JSON and yml have full parity.
  */
+@Deprecated
 public abstract class JSONConfigWrapper extends ConfigWrapper<JSONConfig> implements JSONConfig {
     /**
      * Create a config wrapper.

@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  * Interface for configs that physically exist as files in plugins.
  */
-public interface LoadableConfig {
+public interface LoadableConfig extends Config {
     /**
      * Create the file.
      */

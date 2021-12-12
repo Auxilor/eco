@@ -1,6 +1,7 @@
 package com.willfp.eco.core.config.json;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.core.config.json.wrapper.JSONConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +10,10 @@ import java.util.Map;
 
 /**
  * Raw JSON config with a map of values at its core.
+ *
+ * @deprecated JSON and yml have full parity.
  */
+@Deprecated
 public class JSONTransientConfig extends JSONConfigWrapper {
     /**
      * Config implementation for passing maps.
@@ -19,13 +23,13 @@ public class JSONTransientConfig extends JSONConfigWrapper {
      * @param values The map of values.
      */
     public JSONTransientConfig(@NotNull final Map<String, Object> values) {
-        super(Eco.getHandler().getConfigFactory().createJSONConfig(values));
+        super((JSONConfig) Eco.getHandler().getConfigFactory().createConfig(values));
     }
 
     /**
      * Empty JSON config.
      */
     public JSONTransientConfig() {
-        super(Eco.getHandler().getConfigFactory().createJSONConfig(new HashMap<>()));
+        super((JSONConfig) Eco.getHandler().getConfigFactory().createConfig(new HashMap<>()));
     }
 }

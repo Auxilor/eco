@@ -6,10 +6,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * JSON configs have extra methods compared to yaml configs.
- * <p>
- * If you need to use them, then use JSONConfig instead.
+ * JSON config.
+ *
+ * @deprecated Config and JSONConfig have full parity, there's no need for the extra interface.
  */
+@Deprecated
+@SuppressWarnings("DeprecatedIsStillUsed")
 public interface JSONConfig extends Config {
     /**
      * Get a list of subsections from config.

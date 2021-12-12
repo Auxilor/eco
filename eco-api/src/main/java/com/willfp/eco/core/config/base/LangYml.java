@@ -1,21 +1,22 @@
 package com.willfp.eco.core.config.base;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.config.yaml.YamlBaseConfig;
+import com.willfp.eco.core.config.BaseConfig;
+import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Default plugin lang.yml.
  */
-public class LangYml extends YamlBaseConfig {
+public class LangYml extends BaseConfig {
     /**
      * Lang.yml.
      *
      * @param plugin The plugin.
      */
     public LangYml(@NotNull final EcoPlugin plugin) {
-        super("lang", false, plugin);
+        super("lang", plugin, false, ConfigType.YAML);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.willfp.eco.core.config.yaml;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
+import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +15,10 @@ import org.jetbrains.annotations.NotNull;
  * </ul>
  * <p>
  * Automatically updates.
+ *
+ * @deprecated JSON and yml have full parity.
  */
+@Deprecated
 public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
     /**
      * @param configName       The name of the config
@@ -31,16 +35,17 @@ public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
                                    @NotNull final String subDirectoryPath,
                                    @NotNull final String... updateBlacklist) {
         super(
-                Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
+                Eco.getHandler().getConfigFactory().createUpdatableConfig(
                         configName,
                         plugin,
                         subDirectoryPath,
                         source,
                         removeUnused,
-                        updateBlacklist
+                        ConfigType.YAML
                 )
         );
     }
+
     /**
      * @param configName       The name of the config
      * @param removeUnused     Whether keys not present in the default config should be removed on update.

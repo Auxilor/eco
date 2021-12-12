@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @see com.willfp.eco.core.config.yaml.wrapper.YamlConfigWrapper
  */
+@Deprecated
+@SuppressWarnings("DeprecatedIsStillUsed")
 public interface WrappedYamlConfiguration {
     /**
      * Get the ConfigurationSection handle.

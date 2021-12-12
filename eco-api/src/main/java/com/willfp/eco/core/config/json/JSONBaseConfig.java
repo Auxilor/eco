@@ -3,6 +3,8 @@ package com.willfp.eco.core.config.json;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
+import com.willfp.eco.core.config.ConfigType;
+import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.core.config.json.wrapper.LoadableJSONConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +12,10 @@ import org.jetbrains.annotations.NotNull;
  * Config implementation for configs present in the plugin's base directory (eg config.json).
  * <p>
  * Automatically updates.
+ *
+ * @deprecated JSON and yml have full parity.
  */
+@Deprecated
 public abstract class JSONBaseConfig extends LoadableJSONConfigWrapper {
     /**
      * @param configName      The name of the config
@@ -23,13 +28,15 @@ public abstract class JSONBaseConfig extends LoadableJSONConfigWrapper {
                              @NotNull final PluginLike plugin,
                              @NotNull final String... updateBlacklist) {
         super(
-                Eco.getHandler().getConfigFactory().createUpdatableJSONConfig(
-                        configName,
-                        plugin,
-                        "",
-                        plugin.getClass(),
-                        removeUnused, updateBlacklist
-                )
+                (JSONConfig)
+                        Eco.getHandler().getConfigFactory().createUpdatableConfig(
+                                configName,
+                                plugin,
+                                "",
+                                plugin.getClass(),
+                                removeUnused,
+                                ConfigType.JSON
+                        )
         );
     }
 
@@ -42,13 +49,15 @@ public abstract class JSONBaseConfig extends LoadableJSONConfigWrapper {
                              final boolean removeUnused,
                              @NotNull final PluginLike plugin) {
         super(
-                Eco.getHandler().getConfigFactory().createUpdatableJSONConfig(
-                        configName,
-                        plugin,
-                        "",
-                        plugin.getClass(),
-                        removeUnused
-                )
+                (JSONConfig)
+                        Eco.getHandler().getConfigFactory().createUpdatableConfig(
+                                configName,
+                                plugin,
+                                "",
+                                plugin.getClass(),
+                                removeUnused,
+                                ConfigType.JSON
+                        )
         );
     }
 

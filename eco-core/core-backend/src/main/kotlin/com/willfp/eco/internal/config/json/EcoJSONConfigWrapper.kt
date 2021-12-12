@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.willfp.eco.internal.config.json
 
 import com.google.gson.Gson
@@ -9,10 +11,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
 open class EcoJSONConfigWrapper : JSONConfig {
-    val handle: Gson = GsonBuilder()
-        .setPrettyPrinting()
-        .disableHtmlEscaping()
-        .create()
+    companion object {
+        val gson: Gson = GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .create()
+    }
 
     val values = ConcurrentHashMap<String, Any?>()
 
@@ -28,14 +32,14 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun toPlaintext(): String {
-        return this.handle.toJson(this.values)
+        return gson.toJson(this.values)
     }
 
     override fun has(path: String): Boolean {
         return getOfKnownType(path, Any::class.java) != null
     }
 
-    private fun <T: Any?> getOfKnownType(
+    private fun <T : Any?> getOfKnownType(
         path: String,
         clazz: Class<T>
     ): T? {
@@ -173,7 +177,10 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getInts(path: String): MutableList<Int> {
-        return (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), emptyList<Int>()) as List<Int>).toMutableList()
+        return (Objects.requireNonNullElse(
+            getOfKnownType(path, Any::class.java),
+            emptyList<Int>()
+        ) as List<Int>).toMutableList()
     }
 
     override fun getIntsOrNull(path: String): MutableList<Int>? {
@@ -197,7 +204,10 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getBools(path: String): MutableList<Boolean> {
-        return (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), emptyList<Boolean>()) as List<Boolean>).toMutableList()
+        return (Objects.requireNonNullElse(
+            getOfKnownType(path, Any::class.java),
+            emptyList<Boolean>()
+        ) as List<Boolean>).toMutableList()
     }
 
     override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
@@ -235,7 +245,10 @@ open class EcoJSONConfigWrapper : JSONConfig {
         option: StringUtils.FormatOption
     ): MutableList<String> {
         val strings =
-            (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), emptyList<String>()) as List<String>).toMutableList()
+            (Objects.requireNonNullElse(
+                getOfKnownType(path, Any::class.java),
+                emptyList<String>()
+            ) as List<String>).toMutableList()
         return if (format) StringUtils.formatList(strings, option) else strings
     }
 
@@ -264,7 +277,10 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getDoubles(path: String): MutableList<Double> {
-        return (Objects.requireNonNullElse(getOfKnownType(path, Any::class.java), emptyList<Double>()) as List<Double>).toMutableList()
+        return (Objects.requireNonNullElse(
+            getOfKnownType(path, Any::class.java),
+            emptyList<Double>()
+        ) as List<Double>).toMutableList()
     }
 
     override fun getDoublesOrNull(path: String): MutableList<Double>? {

@@ -69,7 +69,7 @@ open class EcoLoadableJSONConfig(
 
     @Throws(FileNotFoundException::class)
     fun init(file: File) {
-        super.init(handle.fromJson(FileReader(file), Map::class.java) as MutableMap<String, Any>)
+        super.init(gson.fromJson(FileReader(file), Map::class.java) as MutableMap<String, Any>)
     }
 
     override fun getName(): String {

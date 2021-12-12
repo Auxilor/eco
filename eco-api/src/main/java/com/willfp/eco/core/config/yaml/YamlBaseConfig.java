@@ -3,6 +3,7 @@ package com.willfp.eco.core.config.yaml;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
+import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.yaml.wrapper.LoadableYamlConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +11,11 @@ import org.jetbrains.annotations.NotNull;
  * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
  * <p>
  * Automatically updates.
+ *
+ * @deprecated JSON and yml have full parity.
  */
+@Deprecated
+@SuppressWarnings("DeprecatedIsStillUsed")
 public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
     /**
      * @param configName      The name of the config
@@ -23,12 +28,13 @@ public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
                              @NotNull final PluginLike plugin,
                              @NotNull final String... updateBlacklist) {
         super(
-                Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
+                Eco.getHandler().getConfigFactory().createUpdatableConfig(
                         configName,
                         plugin,
                         "",
                         plugin.getClass(),
-                        removeUnused, updateBlacklist
+                        removeUnused,
+                        ConfigType.YAML
                 )
         );
     }
@@ -42,12 +48,13 @@ public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
                              final boolean removeUnused,
                              @NotNull final PluginLike plugin) {
         super(
-                Eco.getHandler().getConfigFactory().createUpdatableYamlConfig(
+                Eco.getHandler().getConfigFactory().createUpdatableConfig(
                         configName,
                         plugin,
                         "",
                         plugin.getClass(),
-                        removeUnused
+                        removeUnused,
+                        ConfigType.YAML
                 )
         );
     }

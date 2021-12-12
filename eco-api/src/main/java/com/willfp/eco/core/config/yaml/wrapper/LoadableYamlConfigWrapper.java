@@ -10,7 +10,10 @@ import java.io.IOException;
 
 /**
  * Wrapper to handle the backend loadable yaml config implementations.
+ *
+ * @deprecated JSON and yml have full parity.
  */
+@Deprecated
 public abstract class LoadableYamlConfigWrapper extends YamlConfigWrapper implements LoadableConfig {
     /**
      * Create a config wrapper.
