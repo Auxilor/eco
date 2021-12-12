@@ -23,8 +23,9 @@ import java.lang.annotation.Target;
  * <p>
  * The second:
  * <pre>{@code
- * public static void update(EcoPlugin plugin) {}
+ * public static void update(EcoPlugin plugin) {
  *     // Update code
+ * }
  * }</pre>
  * <p>
  * Config update methods in all classes in a plugin jar will be called
