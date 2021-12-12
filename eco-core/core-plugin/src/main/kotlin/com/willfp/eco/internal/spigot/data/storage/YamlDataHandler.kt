@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.data.storage
 
-import com.willfp.eco.core.config.yaml.YamlBaseConfig
+import com.willfp.eco.core.config.BaseConfig
+import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
@@ -43,9 +44,10 @@ class YamlDataHandler(
 
     class DataYml(
         plugin: EcoSpigotPlugin
-    ) : YamlBaseConfig(
+    ) : BaseConfig(
         "data",
+        plugin,
         false,
-        plugin
+        ConfigType.YAML
     )
 }
