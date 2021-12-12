@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items.args;
 
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,13 @@ import java.util.function.Predicate;
  */
 @Deprecated(forRemoval = true)
 public class CustomModelDataArgParser implements LookupArgParser {
+    /**
+     * Instantiate arg parser.
+     */
+    public CustomModelDataArgParser() {
+        Bukkit.getLogger().severe("Instantiation of class marked for removal! (" + this.getClass().getName() + ")");
+    }
+
     @Override
     public @Nullable Predicate<ItemStack> parseArguments(@NotNull final String[] args,
                                                          @NotNull final ItemMeta meta) {

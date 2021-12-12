@@ -16,7 +16,7 @@ import java.util.List;
  * update to use the new system.
  */
 @FunctionalInterface
-@Deprecated(forRemoval = true)
+@Deprecated
 public interface CommandHandler {
     /**
      * The code to be called on execution.

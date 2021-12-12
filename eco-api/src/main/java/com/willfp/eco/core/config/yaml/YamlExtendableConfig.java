@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
     /**
      * @param configName       The name of the config

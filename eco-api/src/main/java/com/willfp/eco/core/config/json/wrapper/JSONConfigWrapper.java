@@ -14,7 +14,7 @@ import java.util.List;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public abstract class JSONConfigWrapper extends ConfigWrapper<JSONConfig> implements JSONConfig {
     /**
      * Create a config wrapper.

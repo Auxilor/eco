@@ -17,7 +17,7 @@ import java.io.IOException;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public abstract class LoadableYamlConfigWrapper extends YamlConfigWrapper implements LoadableConfig {
     /**
      * Create a config wrapper.

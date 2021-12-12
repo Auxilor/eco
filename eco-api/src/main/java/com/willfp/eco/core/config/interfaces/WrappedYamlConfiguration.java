@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 @SuppressWarnings("DeprecatedIsStillUsed")
 public interface WrappedYamlConfiguration {
     /**

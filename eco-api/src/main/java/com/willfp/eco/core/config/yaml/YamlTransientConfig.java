@@ -17,7 +17,7 @@ import java.io.StringReader;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class YamlTransientConfig extends YamlConfigWrapper {
     /**
      * @param config The YamlConfiguration handle.
