@@ -1,5 +1,8 @@
 package com.willfp.eco.core.config.interfaces;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -39,4 +42,12 @@ public interface LoadableConfig extends Config {
      * @return The name.
      */
     String getName();
+
+    /**
+     * Get bukkit {@link YamlConfiguration}.
+     *
+     * @return The config, or null if config is not yaml-based.
+     */
+    @Nullable
+    YamlConfiguration getBukkitHandle();
 }

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.willfp.eco.internal.config.yaml
 
 import com.willfp.eco.core.PluginLike
@@ -60,16 +62,16 @@ open class EcoLoadableYamlConfig(
         handle.save(getConfigFile())
     }
 
-    override fun getBukkitHandle(): YamlConfiguration {
-        return handle
-    }
-
     override fun getName(): String {
         return name
     }
 
     override fun getConfigFile(): File {
         return configFile
+    }
+
+    override fun getBukkitHandle(): YamlConfiguration? {
+        return handle
     }
 
     init {

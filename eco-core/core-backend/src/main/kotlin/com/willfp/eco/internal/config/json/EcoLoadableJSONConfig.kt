@@ -2,6 +2,7 @@ package com.willfp.eco.internal.config.json
 
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.LoadableConfig
+import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -78,6 +79,10 @@ open class EcoLoadableJSONConfig(
 
     override fun getConfigFile(): File {
         return configFile
+    }
+
+    override fun getBukkitHandle(): YamlConfiguration? {
+        return null
     }
 
     init {

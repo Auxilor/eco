@@ -297,10 +297,6 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return ConfigType.JSON
     }
 
-    override fun getBukkitHandle(): YamlConfiguration? {
-        return null
-    }
-
     override fun clone(): JSONConfig {
         return EcoJSONConfigSection(this.values.toMutableMap())
     }

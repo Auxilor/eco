@@ -2,7 +2,9 @@ package com.willfp.eco.core.config;
 
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.core.config.wrapper.ConfigWrapper;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,5 +45,10 @@ public abstract class LoadableConfigWrapper extends ConfigWrapper<LoadableConfig
     @Override
     public String getName() {
         return this.getHandle().getName();
+    }
+
+    @Override
+    public @Nullable YamlConfiguration getBukkitHandle() {
+        return this.getHandle().getBukkitHandle();
     }
 }

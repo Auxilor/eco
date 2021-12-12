@@ -191,11 +191,6 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
-    public @Nullable YamlConfiguration getBukkitHandle() {
-        return handle.getBukkitHandle();
-    }
-
-    @Override
     public @NotNull ConfigType getType() {
         return handle.getType();
     }

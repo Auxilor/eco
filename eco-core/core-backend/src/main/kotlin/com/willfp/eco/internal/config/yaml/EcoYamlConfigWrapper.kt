@@ -287,10 +287,6 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun getBukkitHandle(): YamlConfiguration? {
-        return this.handle as? YamlConfiguration
-    }
-
     override fun getType(): ConfigType {
         return ConfigType.JSON
     }

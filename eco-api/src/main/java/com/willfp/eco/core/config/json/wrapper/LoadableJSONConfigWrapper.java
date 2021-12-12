@@ -3,7 +3,9 @@ package com.willfp.eco.core.config.json.wrapper;
 import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,5 +52,10 @@ public abstract class LoadableJSONConfigWrapper extends JSONConfigWrapper implem
     @Override
     public String getName() {
         return ((LoadableConfig) this.getHandle()).getName();
+    }
+
+    @Override
+    public @Nullable YamlConfiguration getBukkitHandle() {
+        return null;
     }
 }
