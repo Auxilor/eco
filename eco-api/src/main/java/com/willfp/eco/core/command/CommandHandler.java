@@ -10,7 +10,9 @@ import java.util.List;
  * A command handler handles the actual code for a command.
  * <p>
  * The replacement for {@link org.bukkit.command.CommandExecutor#onCommand(CommandSender, Command, String, String[])}
+ *
  * @see CommandBase
+ * @deprecated Handlers have been deprecated.
  */
 @FunctionalInterface
 @Deprecated

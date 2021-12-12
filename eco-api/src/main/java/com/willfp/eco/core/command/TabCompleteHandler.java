@@ -10,7 +10,9 @@ import java.util.List;
  * A Tab Complete handler handles the actual tab-completion code.
  * <p>
  * The replacement for {@link org.bukkit.command.TabCompleter#onTabComplete(CommandSender, Command, String, String[])}
+ *
  * @see CommandBase
+ * @deprecated Handlers have been deprecated.
  */
 @FunctionalInterface
 @Deprecated
