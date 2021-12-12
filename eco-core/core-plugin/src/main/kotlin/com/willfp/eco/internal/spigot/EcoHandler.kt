@@ -31,7 +31,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
 
 @Suppress("UNUSED")
-class EcoHandler : com.willfp.eco.internal.spigot.EcoSpigotPlugin(), Handler {
+class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
     private val requirementFactory = EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null

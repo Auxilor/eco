@@ -13,6 +13,7 @@ import java.util.List;
  * @see CommandBase
  */
 @FunctionalInterface
+@Deprecated
 public interface CommandHandler {
     /**
      * The code to be called on execution.

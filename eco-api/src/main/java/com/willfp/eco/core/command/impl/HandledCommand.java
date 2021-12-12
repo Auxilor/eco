@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  * in order to execute the command-specific code. It's essentially an internal
  * layer, hence why it's a package-private class.
  */
+@SuppressWarnings({"DeprecatedIsStillUsed", "deprecation"})
 abstract class HandledCommand extends PluginDependent<EcoPlugin> implements CommandBase {
     /**
      * The name of the command.
@@ -46,14 +48,16 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
     /**
      * The actual code to be executed in the command.
      */
-    private CommandHandler handler = (sender, args) -> {
-        // Do nothing by default
-    };
+    @Deprecated
+    @Nullable
+    private CommandHandler handler = null;
 
     /**
      * The tab completion code to be executed in the command.
      */
-    private TabCompleteHandler tabCompleter = (sender, args) -> new ArrayList<>();
+    @Deprecated
+    @Nullable
+    private TabCompleteHandler tabCompleter = null;
 
     /**
      * All subcommands for the command.
@@ -120,7 +124,11 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
             }
         }
 
-        this.getHandler().onExecute(sender, Arrays.asList(args));
+        if (this.getHandler() != null) {
+            this.getHandler().onExecute(sender, Arrays.asList(args));
+        } else {
+            this.onExecute(sender, Arrays.asList(args));
+        }
     }
 
     /**
@@ -167,7 +175,11 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
             }
         }
 
-        return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
+        if (this.getTabCompleter() != null) {
+            return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
+        } else {
+            return this.tabComplete(sender, Arrays.asList(args));
+        }
     }
 
     /**
@@ -222,24 +234,6 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
     }
 
     /**
-     * Get the actual code to be executed in the command.
-     *
-     * @return The code.
-     */
-    public CommandHandler getHandler() {
-        return this.handler;
-    }
-
-    /**
-     * Get the tab completion code to be executed in the command.
-     *
-     * @return The code.
-     */
-    public TabCompleteHandler getTabCompleter() {
-        return this.tabCompleter;
-    }
-
-    /**
      * Get the subcommands of the command.
      *
      * @return The subcommands.
@@ -248,21 +242,27 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
         return this.subcommands;
     }
 
-    /**
-     * Set the command handler.
-     *
-     * @param handler The handler.
-     */
-    public void setHandler(@NotNull final CommandHandler handler) {
+    @Deprecated
+    @Override
+    public @Nullable CommandHandler getHandler() {
+        return this.handler;
+    }
+
+    @Deprecated
+    @Override
+    public @Nullable TabCompleteHandler getTabCompleter() {
+        return this.tabCompleter;
+    }
+
+    @Deprecated
+    @Override
+    public void setHandler(@Nullable final CommandHandler handler) {
         this.handler = handler;
     }
 
-    /**
-     * Set the tab completer.
-     *
-     * @param tabCompleter The tab completer.
-     */
-    public void setTabCompleter(@NotNull final TabCompleteHandler tabCompleter) {
+    @Deprecated
+    @Override
+    public void setTabCompleter(@Nullable final TabCompleteHandler tabCompleter) {
         this.tabCompleter = tabCompleter;
     }
 }
