@@ -4,8 +4,10 @@ package com.willfp.eco.internal.config.json
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.util.StringUtils
+import org.bukkit.configuration.file.YamlConfiguration
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 
@@ -289,6 +291,14 @@ open class EcoJSONConfigWrapper : JSONConfig {
         } else {
             null
         }
+    }
+
+    override fun getType(): ConfigType {
+        return ConfigType.JSON
+    }
+
+    override fun getBukkitHandle(): YamlConfiguration? {
+        return null
     }
 
     override fun clone(): JSONConfig {

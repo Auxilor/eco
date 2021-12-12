@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.config.yaml
 
+import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
@@ -284,6 +285,14 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         } else {
             null
         }
+    }
+
+    override fun getBukkitHandle(): YamlConfiguration? {
+        return this.handle as? YamlConfiguration
+    }
+
+    override fun getType(): ConfigType {
+        return ConfigType.JSON
     }
 
     override fun clone(): Config {

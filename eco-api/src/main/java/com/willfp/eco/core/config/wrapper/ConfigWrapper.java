@@ -1,7 +1,9 @@
 package com.willfp.eco.core.config.wrapper;
 
+import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.util.StringUtils;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -186,6 +188,16 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Override
     public Config clone() {
         return handle.clone();
+    }
+
+    @Override
+    public @Nullable YamlConfiguration getBukkitHandle() {
+        return handle.getBukkitHandle();
+    }
+
+    @Override
+    public @NotNull ConfigType getType() {
+        return handle.getType();
     }
 
     /**

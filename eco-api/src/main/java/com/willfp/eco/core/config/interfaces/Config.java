@@ -1,6 +1,8 @@
 package com.willfp.eco.core.config.interfaces;
 
+import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.util.StringUtils;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -542,6 +544,21 @@ public interface Config extends Cloneable {
     @Nullable
     List<? extends Config> getSubsectionsOrNull(@NotNull String path);
 
+    /**
+     * Get bukkit {@link YamlConfiguration}.
+     *
+     * @return The config, or null if config is not yaml-based.
+     */
+    @Nullable
+    YamlConfiguration getBukkitHandle();
+
+    /**
+     * Get config type.
+     *
+     * @return The type.
+     */
+    @NotNull
+    ConfigType getType();
 
     /**
      * Clone the config.
