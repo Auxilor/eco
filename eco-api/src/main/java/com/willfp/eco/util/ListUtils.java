@@ -1,8 +1,10 @@
 package com.willfp.eco.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,22 @@ public final class ListUtils {
         }
 
         return frequencyMap;
+    }
+
+    /**
+     * Convert nullable object to either singleton list or empty list.
+     *
+     * @param object The object.
+     * @param <T>    The type of the object.
+     * @return The list.
+     */
+    @NotNull
+    public static <T> List<T> toSingletonList(@Nullable final T object) {
+        if (object == null) {
+            return Collections.emptyList();
+        } else {
+            return Collections.singletonList(object);
+        }
     }
 
     private ListUtils() {
