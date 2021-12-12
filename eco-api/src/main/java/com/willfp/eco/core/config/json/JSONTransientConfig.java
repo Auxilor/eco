@@ -15,7 +15,7 @@ import java.util.Map;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated
+@Deprecated(since = "6.17.0")
 public class JSONTransientConfig extends JSONConfigWrapper {
     /**
      * Config implementation for passing maps.
