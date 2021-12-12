@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class IntegrationLoader {
     /**
-     * The lambda to be ran if the plugin is present.
+     * The lambda to be run if the plugin is present.
      */
     private final Runnable runnable;
 
@@ -22,7 +22,7 @@ public class IntegrationLoader {
      * Create a new Integration Loader.
      *
      * @param pluginName The plugin to require.
-     * @param onLoad     The lambda to be ran if the plugin is present.
+     * @param onLoad     The lambda to be run if the plugin is present.
      */
     public IntegrationLoader(@NotNull final String pluginName,
                              @NotNull final Runnable onLoad) {
