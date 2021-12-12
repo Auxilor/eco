@@ -1,6 +1,7 @@
 package com.willfp.eco.core.events;
 
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Manages listeners for a plugin.
@@ -11,14 +12,14 @@ public interface EventManager {
      *
      * @param listener The listener to register.
      */
-    void registerListener(Listener listener);
+    void registerListener(@NotNull Listener listener);
 
     /**
      * Unregister a listener with bukkit.
      *
      * @param listener The listener to unregister.
      */
-    void unregisterListener(Listener listener);
+    void unregisterListener(@NotNull Listener listener);
 
     /**
      * Unregister all listeners associated with the plugin.

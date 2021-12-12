@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.config.json.wrapper.JSONConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,5 +20,12 @@ public class JSONTransientConfig extends JSONConfigWrapper {
      */
     public JSONTransientConfig(@NotNull final Map<String, Object> values) {
         super(Eco.getHandler().getConfigFactory().createJSONConfig(values));
+    }
+
+    /**
+     * Empty JSON config.
+     */
+    public JSONTransientConfig() {
+        super(Eco.getHandler().getConfigFactory().createJSONConfig(new HashMap<>()));
     }
 }
