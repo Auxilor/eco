@@ -48,7 +48,7 @@ public interface LoadableConfig extends Config {
      * Get bukkit {@link YamlConfiguration}.
      * <p>
      * This method is not recommended unless absolutely required as it
-     * only returns true if {@link this#getType()} is {@link com.willfp.eco.core.config.ConfigType#YAML},
+     * only returns true if the type of config is {@link com.willfp.eco.core.config.ConfigType#YAML},
      * and if the handle is an {@link YamlConfiguration} specifically. This depends on the internals
      * and the implementation, and so may cause problems - it exists mostly for parity with
      * {@link JavaPlugin#getConfig()}.
