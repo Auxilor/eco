@@ -40,43 +40,9 @@ public interface CommandBase {
     CommandBase addSubcommand(@NotNull CommandBase command);
 
     /**
-     * Get the handler.
-     *
-     * @return The handler.
-     * @deprecated Use {@link CommandBase#onExecute(CommandSender, List)} instead.
-     */
-    @Deprecated
-    CommandHandler getHandler();
-
-    /**
-     * Set the handler.
-     *
-     * @param handler The handler.
-     * @deprecated Handlers have been deprecated.
-     */
-    @Deprecated
-    void setHandler(@NotNull CommandHandler handler);
-
-    /**
-     * Get the tab completer.
-     *
-     * @return The tab completer.
-     * @deprecated Use {@link CommandBase#tabComplete(CommandSender, List)} instead.
-     */
-    @Deprecated
-    TabCompleteHandler getTabCompleter();
-
-    /**
-     * Set the tab completer.
-     *
-     * @param handler The handler.
-     * @deprecated Handlers have been deprecated.
-     */
-    @Deprecated
-    void setTabCompleter(@NotNull TabCompleteHandler handler);
-
-    /**
      * Handle command execution.
+     * <p>
+     * Marked as default void with no implementation for backwards compatibility.
      *
      * @param sender The sender.
      * @param args   The args.
@@ -88,6 +54,8 @@ public interface CommandBase {
 
     /**
      * Handle tab completion.
+     * <p>
+     * Marked as default void with no implementation for backwards compatibility.
      *
      * @param sender The sender.
      * @param args   The args.
@@ -97,4 +65,44 @@ public interface CommandBase {
                                      @NotNull List<String> args) {
         return new ArrayList<>();
     }
+
+    /**
+     * Get the handler.
+     *
+     * @return The handler.
+     * @see CommandHandler
+     * @deprecated Use {@link CommandBase#onExecute(CommandSender, List)} instead.
+     */
+    @Deprecated
+    CommandHandler getHandler();
+
+    /**
+     * Set the handler.
+     *
+     * @param handler The handler.
+     * @see CommandHandler
+     * @deprecated Handlers have been deprecated.
+     */
+    @Deprecated
+    void setHandler(@NotNull CommandHandler handler);
+
+    /**
+     * Get the tab completer.
+     *
+     * @return The tab completer.
+     * @see TabCompleteHandler
+     * @deprecated Use {@link CommandBase#tabComplete(CommandSender, List)} instead.
+     */
+    @Deprecated
+    TabCompleteHandler getTabCompleter();
+
+    /**
+     * Set the tab completer.
+     *
+     * @param handler The handler.
+     * @see TabCompleteHandler
+     * @deprecated Handlers have been deprecated.
+     */
+    @Deprecated
+    void setTabCompleter(@NotNull TabCompleteHandler handler);
 }

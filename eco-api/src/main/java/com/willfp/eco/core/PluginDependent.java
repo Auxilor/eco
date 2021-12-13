@@ -4,6 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Quick DI class to manage passing eco plugins.
+ * <p>
+ * Basically just a quick bit of laziness if you can't be bothered to add a private field
+ * and a protected getter, don't use this in kotlin as you can just specify
+ * {@code
+ * private val plugin: EcoPlugin
+ * }
+ * in the constructor.
  *
  * @param <T> The eco plugin type.
  */

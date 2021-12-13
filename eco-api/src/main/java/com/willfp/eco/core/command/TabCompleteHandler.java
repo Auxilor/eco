@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @see CommandBase
  * @deprecated Handlers have been deprecated. This legacy system will eventually be removed,
- * update to use the new system.
+ * update to use the new system: {@link CommandBase#tabComplete(CommandSender, List)}
  */
 @FunctionalInterface
 @Deprecated(since = "6.17.0")

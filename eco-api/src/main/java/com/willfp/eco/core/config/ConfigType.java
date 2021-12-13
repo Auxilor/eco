@@ -1,7 +1,7 @@
 package com.willfp.eco.core.config;
 
 /**
- * Config types.
+ * Config types, classified by file extension.
  */
 public enum ConfigType {
     /**

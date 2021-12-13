@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 /**
- * Config implementation for passing YamlConfigurations.
+ * Config that exists purely in the code, not linked to any file.
  * <p>
- * Does not automatically update.
+ * Use for inline configs to move data around or to add subsections to other configs.
  */
 public class TransientConfig extends ConfigWrapper<Config> {
     /**

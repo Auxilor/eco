@@ -12,7 +12,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * PluginCommands are the class to be used instead of CommandExecutor.
+ * PluginCommands are the class to be used instead of CommandExecutor,
+ * they function as the base command, e.g. {@code /ecoenchants} would be a base command, with each
+ * subsequent argument functioning as subcommands.
  * <p>
  * The command will not be registered until register() is called.
  * <p>

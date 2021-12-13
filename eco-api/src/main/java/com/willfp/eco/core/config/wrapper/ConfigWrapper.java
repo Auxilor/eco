@@ -3,7 +3,6 @@ package com.willfp.eco.core.config.wrapper;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.util.StringUtils;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +16,8 @@ import java.util.List;
  *
  * @param <T> The type of the handle.
  */
-public abstract class ConfigWrapper<T extends Config> implements Config {
+@SuppressWarnings("MethodDoesntCallSuperMethod")
+public class ConfigWrapper<T extends Config> implements Config {
     /**
      * Configs from eco have an internal implementation,
      * which is the handle.
@@ -35,7 +35,7 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
      *
      * @param handle The config that is being wrapped.
      */
-    protected ConfigWrapper(@NotNull final T handle) {
+    public ConfigWrapper(@NotNull final T handle) {
         this.handle = handle;
     }
 
