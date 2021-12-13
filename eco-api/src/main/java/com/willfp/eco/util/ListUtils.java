@@ -73,6 +73,24 @@ public final class ListUtils {
         }
     }
 
+    /**
+     * Get element from list or return null if out of bounds.
+     *
+     * @param list  The list.
+     * @param index The index.
+     * @param <T>   The type of the list.
+     * @return The found element, or null if out of bounds.
+     */
+    @Nullable
+    public static <T> T getOrNull(@Nullable final List<T> list,
+                                  final int index) {
+        if (list == null) {
+            return null;
+        }
+
+        return index >= 0 && index < list.size() ? list.get(index) : null;
+    }
+
     private ListUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
