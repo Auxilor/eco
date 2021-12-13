@@ -230,5 +230,6 @@ public interface Handler {
      *
      * @return The handler.
      */
+    @NotNull
     PlayerProfileHandler getPlayerProfileHandler();
 }
