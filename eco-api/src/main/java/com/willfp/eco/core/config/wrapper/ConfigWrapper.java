@@ -35,7 +35,7 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
      *
      * @param handle The config that is being wrapped.
      */
-    public ConfigWrapper(@NotNull final T handle) {
+    protected ConfigWrapper(@NotNull final T handle) {
         this.handle = handle;
     }
 
