@@ -1,7 +1,6 @@
-package com.willfp.eco.core.config;
+package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
-import com.willfp.eco.core.config.wrapper.ConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

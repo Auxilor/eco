@@ -2,6 +2,7 @@ package com.willfp.eco.core.config;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.PluginLike;
+import com.willfp.eco.core.config.wrapper.LoadableConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
 /**
