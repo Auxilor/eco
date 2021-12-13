@@ -39,7 +39,8 @@ import com.willfp.eco.internal.spigot.display.frame.clearFrames
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListeners
-import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListeners
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.internal.spigot.gui.GUIListener
@@ -243,17 +244,24 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     }
 
     override fun loadListeners(): List<Listener> {
-        return listOf(
+        val listeners = mutableListOf(
             NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
             ShapedRecipeListener(this),
-            PlayerJumpListeners(),
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
             DataListener(this),
             PlayerBlockListener(this)
         )
+
+        if (Prerequisite.HAS_PAPER.isMet) {
+            listeners.add(PlayerJumpListenersPaper())
+        } else {
+            listeners.add(PlayerJumpListenersSpigot())
+        }
+
+        return listeners
     }
 }

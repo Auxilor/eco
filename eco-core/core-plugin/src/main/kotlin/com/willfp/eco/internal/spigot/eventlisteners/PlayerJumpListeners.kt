@@ -12,7 +12,7 @@ import java.text.DecimalFormat
 import java.util.UUID
 
 @Suppress("DEPRECATION")
-class PlayerJumpListeners : Listener {
+class PlayerJumpListenersSpigot : Listener {
     @EventHandler(ignoreCancelled = true)
     fun onJump(event: PlayerMoveEvent) {
         if (McmmoManager.isFake(event)) {
@@ -42,5 +42,16 @@ class PlayerJumpListeners : Listener {
     companion object {
         private val PREVIOUS_PLAYERS_ON_GROUND: MutableSet<UUID> = HashSet()
         private val FORMAT = DecimalFormat("0.00")
+    }
+}
+
+class PlayerJumpListenersPaper : Listener {
+    @EventHandler(ignoreCancelled = true)
+    fun onJump(event: com.destroystokyo.paper.event.player.PlayerJumpEvent) {
+        Bukkit.getPluginManager().callEvent(
+            PlayerJumpEvent(
+                PlayerMoveEvent(event.player, event.from, event.to)
+            )
+        )
     }
 }
