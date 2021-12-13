@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  *
  * @deprecated Moved to internals.
  */
-@Deprecated(forRemoval = true)
+@Deprecated(since = "6.16.0", forRemoval = true)
 public class CustomModelDataArgParser implements LookupArgParser {
     /**
      * Instantiate arg parser.

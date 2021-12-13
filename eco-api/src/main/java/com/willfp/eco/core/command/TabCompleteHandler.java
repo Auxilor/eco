@@ -16,7 +16,7 @@ import java.util.List;
  * update to use the new system.
  */
 @FunctionalInterface
-@Deprecated
+@Deprecated(since = "6.17.0")
 public interface TabCompleteHandler {
     /**
      * Handle Tab Completion.
