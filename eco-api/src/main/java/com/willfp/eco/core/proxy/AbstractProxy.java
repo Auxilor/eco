@@ -1,14 +1,12 @@
 package com.willfp.eco.core.proxy;
 
 /**
- * All proxies must implement this interface.
- * <p>
- * A proxy is an NMS implementation of a proxy interface.
- * <p>
- * This allows for cross-version support.
- * <p>
- * See the core-spigot and core-nms modules of eco to see an example.
+ * Prior to 6.17.0, all proxies were required to implement this interface,
+ * however it produced no functionality and was not even used internally.
+ *
+ * @deprecated Unused class, not required.
  */
+@Deprecated
 public interface AbstractProxy {
 
 }

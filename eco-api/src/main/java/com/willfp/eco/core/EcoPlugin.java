@@ -14,7 +14,6 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.core.proxy.AbstractProxy;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
@@ -637,7 +636,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param <T>        The proxy type.
      * @return The proxy.
      */
-    public final <T extends AbstractProxy> T getProxy(@NotNull final Class<T> proxyClass) {
+    public final <T> T getProxy(@NotNull final Class<T> proxyClass) {
         Validate.notNull(proxyFactory, "Plugin does not support proxy!");
 
         return proxyFactory.getProxy(proxyClass);

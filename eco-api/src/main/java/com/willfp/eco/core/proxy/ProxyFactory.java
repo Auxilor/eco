@@ -13,5 +13,5 @@ public interface ProxyFactory {
      * @param <T>        The proxy class.
      * @return The proxy implementation.
      */
-    <T extends AbstractProxy> @NotNull T getProxy(@NotNull Class<T> proxyClass);
+    <T> @NotNull T getProxy(@NotNull Class<T> proxyClass);
 }
