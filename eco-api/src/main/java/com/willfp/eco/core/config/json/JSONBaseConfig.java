@@ -37,7 +37,8 @@ public abstract class JSONBaseConfig extends LoadableJSONConfigWrapper {
                                 "",
                                 plugin.getClass(),
                                 removeUnused,
-                                ConfigType.JSON
+                                ConfigType.JSON,
+                                updateBlacklist
                         )
         );
     }

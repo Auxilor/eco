@@ -45,7 +45,8 @@ public abstract class JSONExtendableConfig extends LoadableJSONConfigWrapper {
                                 subDirectoryPath,
                                 source,
                                 removeUnused,
-                                ConfigType.JSON
+                                ConfigType.JSON,
+                                updateBlacklist
                         )
         );
     }

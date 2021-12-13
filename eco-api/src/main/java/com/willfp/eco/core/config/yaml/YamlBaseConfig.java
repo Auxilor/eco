@@ -35,7 +35,8 @@ public abstract class YamlBaseConfig extends LoadableYamlConfigWrapper {
                         "",
                         plugin.getClass(),
                         removeUnused,
-                        ConfigType.YAML
+                        ConfigType.YAML,
+                        updateBlacklist
                 )
         );
     }

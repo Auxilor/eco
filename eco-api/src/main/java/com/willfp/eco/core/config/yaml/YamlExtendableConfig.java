@@ -43,7 +43,8 @@ public abstract class YamlExtendableConfig extends LoadableYamlConfigWrapper {
                         subDirectoryPath,
                         source,
                         removeUnused,
-                        ConfigType.YAML
+                        ConfigType.YAML,
+                        updateBlacklist
                 )
         );
     }
