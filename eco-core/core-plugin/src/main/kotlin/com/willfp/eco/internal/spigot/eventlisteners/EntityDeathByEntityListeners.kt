@@ -30,9 +30,9 @@ class EntityDeathByEntityListeners(
         builtEvent.victim = victim
         builtEvent.damager = event.damager
         events.add(builtEvent)
-        this.plugin.scheduler.runLater({
+        this.plugin.scheduler.run {
             events.remove(builtEvent)
-        }, 1)
+        }
     }
 
     @EventHandler
