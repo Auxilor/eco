@@ -17,7 +17,7 @@ import java.util.List;
  * @param <T> The type of the handle.
  */
 @SuppressWarnings("MethodDoesntCallSuperMethod")
-public class ConfigWrapper<T extends Config> implements Config {
+public abstract class ConfigWrapper<T extends Config> implements Config {
     /**
      * Configs from eco have an internal implementation,
      * which is the handle.
