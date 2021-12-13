@@ -60,7 +60,7 @@ public final class Display {
      * @return The ItemStack.
      */
     public static ItemStack displayAndFinalize(@NotNull final ItemStack itemStack,
-                                        @Nullable final Player player) {
+                                               @Nullable final Player player) {
         return finalize(display(itemStack, player));
     }
 

@@ -33,7 +33,7 @@ public final class HologramManager {
      * @return The hologram.
      */
     public static Hologram createHologram(@NotNull final Location location,
-                                   @NotNull final List<String> contents) {
+                                          @NotNull final List<String> contents) {
         for (HologramWrapper wrapper : REGISTERED) {
             return wrapper.createHologram(location, contents);
         }

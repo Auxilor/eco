@@ -35,7 +35,7 @@ public final class SkullUtils {
      * @param base64 The base64 texture.
      */
     public static void setSkullTexture(@NotNull final SkullMeta meta,
-                                @NotNull final String base64) {
+                                       @NotNull final String base64) {
         Validate.isTrue(initialized, "Must be initialized!");
         Validate.notNull(metaSetConsumer, "Must be initialized!");
 
@@ -64,7 +64,7 @@ public final class SkullUtils {
      */
     @ApiStatus.Internal
     public static void initialize(@NotNull final BiConsumer<SkullMeta, String> function,
-                           @NotNull final Function<SkullMeta, String> function2) {
+                                  @NotNull final Function<SkullMeta, String> function2) {
         Validate.isTrue(!initialized, "Already initialized!");
 
         metaSetConsumer = function;

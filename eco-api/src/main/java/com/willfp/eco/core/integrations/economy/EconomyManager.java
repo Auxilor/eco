@@ -41,7 +41,7 @@ public final class EconomyManager {
      * @return If the player has the amount.
      */
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
-                             final double amount) {
+                                    final double amount) {
         for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.hasAmount(player, amount);
         }
@@ -57,7 +57,7 @@ public final class EconomyManager {
      * @return If the transaction was a success.
      */
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
-                             final double amount) {
+                                    final double amount) {
         for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.giveMoney(player, amount);
         }
@@ -73,7 +73,7 @@ public final class EconomyManager {
      * @return If the transaction was a success.
      */
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
-                               final double amount) {
+                                      final double amount) {
         for (EconomyWrapper wrapper : REGISTERED) {
             return wrapper.removeMoney(player, amount);
         }

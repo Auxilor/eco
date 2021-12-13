@@ -24,7 +24,7 @@ public final class AnticheatManager {
      * @param anticheat The anticheat to register.
      */
     public static void register(@NotNull final EcoPlugin plugin,
-                         @NotNull final AnticheatWrapper anticheat) {
+                                @NotNull final AnticheatWrapper anticheat) {
         if (anticheat instanceof Listener) {
             plugin.getEventManager().registerListener((Listener) anticheat);
         }

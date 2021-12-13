@@ -92,7 +92,7 @@ public class Paste {
             conn.setRequestMethod("GET");
             try (var reader = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()))) {
-                for (String line; (line = reader.readLine()) != null;) {
+                for (String line; (line = reader.readLine()) != null; ) {
                     result.append(line);
                 }
             }

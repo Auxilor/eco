@@ -46,10 +46,10 @@ public interface ConfigFactory {
      * @return The config implementation.
      */
     LoadableConfig createLoadableConfig(@NotNull String configName,
-                                @NotNull PluginLike plugin,
-                                @NotNull String subDirectoryPath,
-                                @NotNull Class<?> source,
-                                @NotNull ConfigType type);
+                                        @NotNull PluginLike plugin,
+                                        @NotNull String subDirectoryPath,
+                                        @NotNull Class<?> source,
+                                        @NotNull ConfigType type);
 
     /**
      * Create config.
