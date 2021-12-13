@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items.builder;
 
+import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +29,15 @@ public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMe
      */
     public LeatherArmorBuilder(@NotNull final ItemStack base) {
         super(base);
+    }
+
+    /**
+     * Create a new ItemStackBuilder to modify an existing item.
+     *
+     * @param item The item to start with.
+     */
+    public LeatherArmorBuilder(@NotNull final TestableItem item) {
+        super(item);
     }
 
     /**

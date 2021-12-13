@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items.builder;
 
+import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,5 +26,14 @@ public class ItemStackBuilder extends AbstractItemStackBuilder<ItemMeta, ItemSta
      */
     public ItemStackBuilder(@NotNull final ItemStack base) {
         super(base);
+    }
+
+    /**
+     * Create a new ItemStackBuilder to modify an existing item.
+     *
+     * @param item The item to start with.
+     */
+    public ItemStackBuilder(@NotNull final TestableItem item) {
+        super(item);
     }
 }

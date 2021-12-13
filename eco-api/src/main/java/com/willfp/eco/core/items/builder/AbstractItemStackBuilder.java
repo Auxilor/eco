@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items.builder;
 
+import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.util.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
@@ -41,6 +42,15 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
      */
     protected AbstractItemStackBuilder(@NotNull final Material material) {
         this(new ItemStack(material));
+    }
+
+    /**
+     * Create a new ItemStackBuilder to modify an existing item.
+     *
+     * @param item The item to start with.
+     */
+    protected AbstractItemStackBuilder(@NotNull final TestableItem item) {
+        this(item.getItem());
     }
 
     /**
