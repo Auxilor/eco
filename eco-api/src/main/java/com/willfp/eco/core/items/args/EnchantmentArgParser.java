@@ -19,7 +19,7 @@ public class EnchantmentArgParser implements LookupArgParser {
      * Instantiate arg parser.
      */
     public EnchantmentArgParser() {
-        Bukkit.getLogger().severe("Instantiation of class marked for removal! (" + this.getClass().getName() + ")");
+        Bukkit.getLogger().severe("Instantiation of class marked for removal! (" + this.getClass().getName() + "), this will throw an error in a future release!");
     }
 
     @Override
