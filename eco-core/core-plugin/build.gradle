@@ -31,7 +31,7 @@ dependencies {
     compileOnly 'org.jetbrains.exposed:exposed-jdbc:0.36.2'
     compileOnly 'mysql:mysql-connector-java:8.0.25'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0'
-    compileOnly 'net.essentialsx:EssentialsX:2.19.0'
+    compileOnly 'com.github.EssentialsX:Essentials:2.19.0'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'world.bentobox:bentobox:1.17.3-SNAPSHOT'
