@@ -1,12 +1,16 @@
 package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.util.BlockUtils
+import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockMultiPlaceEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.persistence.PersistentDataType
 
@@ -36,9 +40,59 @@ class PlayerBlockListener(
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onExtend(event: BlockPistonExtendEvent) {
+        val locs = mutableListOf<Location>()
+        val toRemove = mutableListOf<Location>()
+
+        for (block in event.blocks) {
+            if (BlockUtils.isPlayerPlaced(block)) {
+                locs.add(block.getRelative(event.direction).location)
+                toRemove.add(block.location)
+            }
+        }
+
+        this.plugin.scheduler.run {
+            for (loc in toRemove) {
+                removeKey(loc)
+            }
+
+            for (loc in locs) {
+                writeKey(loc)
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onRetract(event: BlockPistonRetractEvent) {
+        val locs = mutableListOf<Location>()
+        val toRemove = mutableListOf<Location>()
+
+        for (block in event.blocks) {
+            if (BlockUtils.isPlayerPlaced(block)) {
+                locs.add(block.getRelative(event.direction).location)
+                toRemove.add(block.location)
+            }
+        }
+
+        this.plugin.scheduler.run {
+            for (loc in toRemove) {
+                removeKey(loc)
+            }
+
+            for (loc in locs) {
+                writeKey(loc)
+            }
+        }
+    }
+
     private fun writeKey(block: Block) {
-        val loc = block.location.hashCode().toString(16)
-        block.chunk.persistentDataContainer.set(
+        writeKey(block.location)
+    }
+
+    private fun writeKey(location: Location) {
+        val loc = location.hashCode().toString(16)
+        location.chunk.persistentDataContainer.set(
             plugin.namespacedKeyFactory.create(loc.lowercase()),
             PersistentDataType.INTEGER,
             1
@@ -46,7 +100,11 @@ class PlayerBlockListener(
     }
 
     private fun removeKey(block: Block) {
-        val loc = block.location.hashCode().toString(16)
-        block.chunk.persistentDataContainer.remove(plugin.namespacedKeyFactory.create(loc.lowercase()))
+        removeKey(block.location)
+    }
+
+    private fun removeKey(location: Location) {
+        val loc = location.hashCode().toString(16)
+        location.chunk.persistentDataContainer.remove(plugin.namespacedKeyFactory.create(loc.lowercase()))
     }
 }
