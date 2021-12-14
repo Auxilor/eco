@@ -3,7 +3,6 @@ package com.willfp.eco.core;
 import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
-import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.display.Display;
 import com.willfp.eco.core.display.DisplayModule;
@@ -92,7 +91,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * Config.yml.
      */
-    private final LoadableConfig configYml;
+    private final ConfigYml configYml;
 
     /**
      * Lang.yml.
@@ -785,7 +784,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @return config.yml.
      */
-    public LoadableConfig getConfigYml() {
+    public ConfigYml getConfigYml() {
         return this.configYml;
     }
 

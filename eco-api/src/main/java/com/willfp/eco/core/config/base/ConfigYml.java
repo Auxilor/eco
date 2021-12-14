@@ -34,9 +34,7 @@ public class ConfigYml extends BaseConfig {
      *
      * @param plugin The plugin.
      * @param name   The config name.
-     * @deprecated Rename config.yml by using a custom config, e.g. {@link BaseConfig}.
      */
-    @Deprecated
     public ConfigYml(@NotNull final EcoPlugin plugin,
                      @NotNull final String name) {
         super(name, plugin, true, ConfigType.YAML);
@@ -48,9 +46,7 @@ public class ConfigYml extends BaseConfig {
      * @param plugin       The plugin.
      * @param name         The config name.
      * @param removeUnused Remove unused.
-     * @deprecated Rename config.yml by using a custom config, e.g. {@link BaseConfig}.
      */
-    @Deprecated
     public ConfigYml(@NotNull final EcoPlugin plugin,
                      @NotNull final String name,
                      final boolean removeUnused) {
