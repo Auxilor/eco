@@ -16,7 +16,9 @@ dependencies {
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
     compileOnly 'com.massivecraft:Factions:1.6.9.5-U0.5.10'
     compileOnly 'com.github.cryptomorin:kingdoms:1.11.9'
-    compileOnly 'com.github.TownyAdvanced:Towny:0.97.2.6'
+    compileOnly('com.github.TownyAdvanced:Towny:0.97.2.6') {
+        exclude group: 'com.zaxxer', module: 'HikariCP'
+    }
     compileOnly 'com.github.angeschossen:LandsAPI:5.15.2'
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
@@ -30,6 +32,7 @@ dependencies {
     compileOnly 'org.jetbrains.exposed:exposed-dao:0.36.2'
     compileOnly 'org.jetbrains.exposed:exposed-jdbc:0.36.2'
     compileOnly 'mysql:mysql-connector-java:8.0.25'
+    compileOnly 'com.zaxxer:HikariCP:5.0.0'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0'
     compileOnly 'com.github.EssentialsX:Essentials:2.19.0'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'

@@ -6,6 +6,8 @@ import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.Level
 import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -35,15 +37,18 @@ class MySQLDataHandler(
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
 
     init {
-        Database.connect(
-            "jdbc:mysql://" +
-                    "${plugin.configYml.getString("mysql.host")}:" +
-                    "${plugin.configYml.getString("mysql.port")}/" +
-                    plugin.configYml.getString("mysql.database"),
-            driver = "com.mysql.cj.jdbc.Driver",
-            user = plugin.configYml.getString("mysql.user"),
-            password = plugin.configYml.getString("mysql.password")
-        )
+        val config = HikariConfig()
+        config.driverClassName = "com.mysql.cj.jdbc.Driver"
+        config.username = plugin.configYml.getString("mysql.user")
+        config.password = plugin.configYml.getString("mysql.password")
+        config.jdbcUrl = "jdbc:mysql://" +
+                "${plugin.configYml.getString("mysql.host")}:" +
+                "${plugin.configYml.getString("mysql.port")}/" +
+                plugin.configYml.getString("mysql.database")
+        config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
+
+        Database.connect(HikariDataSource(config))
+
 
         transaction {
             SchemaUtils.create(Players)
