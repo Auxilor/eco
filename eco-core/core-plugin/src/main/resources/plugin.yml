@@ -52,3 +52,4 @@ libraries:
   - 'org.jetbrains.exposed:exposed-jdbc:0.36.2'
   - 'mysql:mysql-connector-java:8.0.25'
   - 'com.google.guava:guava:31.0.1-jre'
+  - 'com.zaxxer:HikariCP:5.0.0'
