@@ -3,7 +3,6 @@ package com.willfp.eco.internal.spigot.data
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.PlayerProfileHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.internal.data.EcoPlayerProfile
 import com.willfp.eco.internal.spigot.data.storage.DataHandler
 import java.util.UUID
 
@@ -20,11 +19,7 @@ class EcoPlayerProfileHandler(
 
         val data = mutableMapOf<PersistentDataKey<*>, Any>()
 
-        for (key in PersistentDataKey.values()) {
-            data[key] = handler.read(uuid, key.key) ?: key.defaultValue
-        }
-
-        val profile = EcoPlayerProfile(data, uuid)
+        val profile = EcoPlayerProfile(data, uuid, handler)
         loaded[uuid] = profile
         return profile
     }

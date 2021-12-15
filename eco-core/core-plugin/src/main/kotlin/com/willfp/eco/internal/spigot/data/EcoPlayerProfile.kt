@@ -1,13 +1,15 @@
-package com.willfp.eco.internal.data
+package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.internal.spigot.data.storage.DataHandler
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 class EcoPlayerProfile(
     val data: MutableMap<PersistentDataKey<*>, Any>,
-    val uuid: UUID
+    val uuid: UUID,
+    private val handler: DataHandler
 ) : PlayerProfile {
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         this.data[key] = value
@@ -19,7 +21,12 @@ class EcoPlayerProfile(
 
     override fun <T : Any> read(key: PersistentDataKey<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return this.data[key] as T? ?: key.defaultValue
+        if (this.data.containsKey(key)) {
+            return this.data[key] as T
+        }
+
+        this.data[key] = handler.read(uuid, key.key) ?: key.defaultValue
+        return read(key)
     }
 
     override fun equals(other: Any?): Boolean {

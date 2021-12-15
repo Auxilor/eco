@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.data.storage
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.internal.data.EcoPlayerProfile
+import com.willfp.eco.internal.spigot.data.EcoPlayerProfile
 
 class ProfileSaver(plugin: EcoPlugin) {
     init {
