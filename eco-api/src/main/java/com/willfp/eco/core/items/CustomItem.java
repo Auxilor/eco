@@ -66,7 +66,7 @@ public class CustomItem implements TestableItem {
 
     @Override
     public ItemStack getItem() {
-        return item;
+        return item.clone();
     }
 
     /**
