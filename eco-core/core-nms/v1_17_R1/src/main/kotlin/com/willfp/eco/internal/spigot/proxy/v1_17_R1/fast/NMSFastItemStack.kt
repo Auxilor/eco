@@ -103,7 +103,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         }
 
         val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
-        val lore = ArrayList<String>(loreTag.size)
+        val lore = mutableListOf<String>()
 
         for (i in loreTag.indices) {
             lore.add(loreTag.getString(i))
