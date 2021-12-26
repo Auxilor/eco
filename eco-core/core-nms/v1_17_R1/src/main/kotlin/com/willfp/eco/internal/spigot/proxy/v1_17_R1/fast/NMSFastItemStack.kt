@@ -155,11 +155,11 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
     private var flagBits: Int
         get() =
-            if (handle.hasTag() && handle.tag!!.contains(
+            if (handle.hasTag() && handle.tag.contains(
                     "HideFlags",
                     99
                 )
-            ) handle.tag!!.getInt("HideFlags") else 0
+            ) handle.tag.getInt("HideFlags") else 0
         set(value) =
             handle.orCreateTag.putInt("HideFlags", value)
 
