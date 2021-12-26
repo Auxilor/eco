@@ -91,6 +91,24 @@ public final class ListUtils {
         return index >= 0 && index < list.size() ? list.get(index) : null;
     }
 
+    /**
+     * Get if an iterable of strings contains a certain element regardless of case.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @return If contained.
+     */
+    public static boolean containsIgnoreCase(@NotNull final Iterable<String> list,
+                                             @NotNull final String element) {
+        for (String s : list) {
+            if (s.equalsIgnoreCase(element)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private ListUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
