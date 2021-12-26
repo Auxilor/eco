@@ -12,7 +12,7 @@ dependencies {
     implementation(project(":eco-core:core-backend"))
     implementation(project(":eco-core:core-nms:v1_16_R3"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
-    implementation(project(":eco-core:core-nms:v1_18_R1"))
+    implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
 }
 
 allprojects {
