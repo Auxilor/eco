@@ -59,6 +59,13 @@ public final class StringUtils {
             .build();
 
     /**
+     * GSON serializer.
+     */
+    private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder()
+            .emitLegacyHoverEvent()
+            .build();
+
+    /**
      * Color map.
      */
     private static final Map<String, ChatColor> COLOR_MAP = new ImmutableMap.Builder<String, ChatColor>()
@@ -415,7 +422,7 @@ public final class StringUtils {
         if (legacy == null) {
             processed = "";
         }
-        return GsonComponentSerializer.gson().serialize(
+        return GSON_COMPONENT_SERIALIZER.serialize(
                 Component.empty().decoration(TextDecoration.ITALIC, false).append(
                         LEGACY_COMPONENT_SERIALIZER.deserialize(processed)
                 )
@@ -431,7 +438,7 @@ public final class StringUtils {
     @NotNull
     public static String jsonToLegacy(@NotNull final String json) {
         return LEGACY_COMPONENT_SERIALIZER.serialize(
-                GsonComponentSerializer.gson().deserialize(json)
+                GSON_COMPONENT_SERIALIZER.deserialize(json)
         );
     }
 
