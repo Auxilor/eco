@@ -2,6 +2,8 @@ package com.willfp.eco.util;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonSyntaxException;
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import net.kyori.adventure.text.Component;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -80,6 +83,11 @@ public final class StringUtils {
             .put("§m", ChatColor.STRIKETHROUGH)
             .put("§k", ChatColor.MAGIC)
             .build();
+
+    /**
+     * Logger.
+     */
+    private static final Logger LOGGER = Eco.getHandler().getEcoPlugin().getLogger();
 
     /**
      * Format a list of strings.
@@ -436,10 +444,18 @@ public final class StringUtils {
      * @return The legacy string.
      */
     @NotNull
-    public static String jsonToLegacy(@NotNull final String json) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(
-                GSON_COMPONENT_SERIALIZER.deserialize(json)
-        );
+    public static String jsonToLegacy(@Nullable final String json) {
+        if (json == null || json.isEmpty()) {
+            return "";
+        }
+
+        try {
+            Component component = GSON_COMPONENT_SERIALIZER.deserialize(json);
+            return LEGACY_COMPONENT_SERIALIZER.serialize(component);
+        } catch (JsonSyntaxException e) {
+            LOGGER.warning("(Report this!) Erroneous json string " + json + " could not be deserialized");
+            return "";
+        }
     }
 
     /**
