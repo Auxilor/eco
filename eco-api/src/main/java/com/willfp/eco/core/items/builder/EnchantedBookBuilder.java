@@ -39,7 +39,7 @@ public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentSt
      * @return The builder.
      */
     public EnchantedBookBuilder addStoredEnchantment(@NotNull final Supplier<Enchantment> enchantment,
-                                                     final Supplier<Integer> level) {
+                                                     @NotNull final Supplier<Integer> level) {
         return this.addStoredEnchantment(enchantment.get(), level.get());
     }
 }
