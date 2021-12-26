@@ -185,11 +185,23 @@ public final class NumberUtils {
     /**
      * Get Log base 2 of a number.
      *
-     * @param toLog The number.
+     * @param a The number.
      * @return The result.
      */
-    public static int log2(final int toLog) {
-        return (int) (Math.log(toLog) / Math.log(2));
+    public static int log2(final int a) {
+        return (int) logBase(a, 2);
+    }
+
+    /**
+     * Log with a base.
+     *
+     * @param a    The number.
+     * @param base The base.
+     * @return The logarithm.
+     */
+    public static double logBase(final double a,
+                                 final double base) {
+        return Math.log(a) / Math.log(base);
     }
 
     /**
