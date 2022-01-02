@@ -174,7 +174,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
             IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
             IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
-            IntegrationLoader("CrashClaim") { AntigriefManager.register(AntigriefCrashClaim()) },
+            //IntegrationLoader("CrashClaim") { AntigriefManager.register(AntigriefCrashClaim()) },
             IntegrationLoader("CombatLogX") {
                 val pluginManager = Bukkit.getPluginManager()
                 val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
