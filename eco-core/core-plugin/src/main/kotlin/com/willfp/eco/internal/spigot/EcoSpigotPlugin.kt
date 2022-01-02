@@ -55,7 +55,6 @@ import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV10
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCrashClaim
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
