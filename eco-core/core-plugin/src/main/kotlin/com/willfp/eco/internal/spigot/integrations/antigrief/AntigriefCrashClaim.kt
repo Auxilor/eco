@@ -14,7 +14,7 @@ class AntigriefCrashClaim : AntigriefWrapper {
         block: Block
     ): Boolean {
         val api = CrashClaim.getPlugin().api ?: return true
-        val claim = api.getClaim(block.location).getNow(null) ?: return true
+        val claim = api.getClaim(block.location) ?: return true
         return claim.hasPermission(player.uniqueId, block.location, PermissionRoute.BUILD)
     }
 
@@ -23,7 +23,7 @@ class AntigriefCrashClaim : AntigriefWrapper {
         location: Location
     ): Boolean {
         val api = CrashClaim.getPlugin().api ?: return true
-        val claim = api.getClaim(location).getNow(null) ?: return true
+        val claim = api.getClaim(location) ?: return true
         return claim.hasPermission(player.uniqueId, location, PermissionRoute.EXPLOSIONS)
     }
 
@@ -32,7 +32,7 @@ class AntigriefCrashClaim : AntigriefWrapper {
         block: Block
     ): Boolean {
         val api = CrashClaim.getPlugin().api ?: return true
-        val claim = api.getClaim(block.location).getNow(null) ?: return true
+        val claim = api.getClaim(block.location) ?: return true
         return claim.hasPermission(player.uniqueId, block.location, PermissionRoute.BUILD)
     }
 
@@ -41,7 +41,7 @@ class AntigriefCrashClaim : AntigriefWrapper {
         victim: LivingEntity
     ): Boolean {
         val api = CrashClaim.getPlugin().api ?: return true
-        val claim = api.getClaim(victim.location).getNow(null) ?: return true
+        val claim = api.getClaim(victim.location) ?: return true
         return when (victim) {
             is Player -> false
             else -> claim.hasPermission(player.uniqueId, victim.location, PermissionRoute.ENTITIES)
