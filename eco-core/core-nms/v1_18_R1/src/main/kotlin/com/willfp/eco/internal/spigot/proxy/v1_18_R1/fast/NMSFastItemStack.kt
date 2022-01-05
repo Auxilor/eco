@@ -16,6 +16,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
 
+@Suppress("UsePropertyAccessSyntax")
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
     itemStack.getNMSStack(), itemStack
 ) {
@@ -176,7 +177,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     override fun hashCode(): Int {
-        return handle.tag?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.item))
+        return handle.tag?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.getItem()))
     }
 
     private fun apply() {

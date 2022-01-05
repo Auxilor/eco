@@ -27,7 +27,7 @@ class VillagerTrade : VillagerTradeProxy {
         for (ingredient in recipe.getIngredients()) {
             newRecipe.addIngredient(Display.display(ingredient.clone(), player))
         }
-        getHandle(newRecipe).specialPriceDiff = getHandle(oldRecipe).specialPriceDiff
+        getHandle(newRecipe).setSpecialPriceDiff(getHandle(oldRecipe).getSpecialPriceDiff())
         return newRecipe
     }
 
