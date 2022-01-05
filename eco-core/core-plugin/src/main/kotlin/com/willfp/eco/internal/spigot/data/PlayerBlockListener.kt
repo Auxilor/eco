@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockMultiPlaceEvent
 import org.bukkit.event.block.BlockPistonExtendEvent
 import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.world.StructureGrowEvent
 import org.bukkit.persistence.PersistentDataType
 
 class PlayerBlockListener(
@@ -34,6 +35,15 @@ class PlayerBlockListener(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onBreak(event: BlockBreakEvent) {
         val block = event.block
+
+        this.plugin.scheduler.run {
+            removeKey(block)
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onGrow(event: StructureGrowEvent) {
+        val block = event.location.block
 
         this.plugin.scheduler.run {
             removeKey(block)
