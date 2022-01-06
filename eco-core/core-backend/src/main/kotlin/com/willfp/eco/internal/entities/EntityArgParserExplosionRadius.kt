@@ -2,16 +2,15 @@ package com.willfp.eco.internal.entities
 
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
-import org.bukkit.entity.Phantom
-import org.bukkit.entity.Slime
+import org.bukkit.entity.Creeper
 
-class EntityArgParserSize : EntityArgParser {
+class EntityArgParserExplosionRadius : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var size: Int? = null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("size", ignoreCase = true)) {
+            if (!argSplit[0].equals("explosion-radius", ignoreCase = true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -25,15 +24,13 @@ class EntityArgParserSize : EntityArgParser {
         return EntityArgParseResult(
             {
                 when (it) {
-                    is Slime -> it.size == size
-                    is Phantom -> it.size == size
+                    is Creeper -> it.explosionRadius == size
                     else -> false
                 }
             },
             {
                 when (it) {
-                    is Slime -> it.size = size
-                    is Phantom -> it.size = size
+                    is Creeper -> it.explosionRadius = size
                 }
             }
         )
