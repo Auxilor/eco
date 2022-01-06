@@ -8,17 +8,18 @@ import io.lumine.xikage.mythicmobs.MythicMobs
 class CustomEntitiesMythicMobs : CustomEntitiesWrapper {
     override fun registerAllEntities() {
         val mobManager = MythicMobs.inst().mobManager
+        val api = MythicMobs.inst().apiHelper
 
         for (id in mobManager.mobNames) {
             val key = NamespacedKeyUtils.create("mythicmobs", id.lowercase())
             CustomEntity(
                 key,
                 {
-                    val entityId = mobManager.getMythicMobInstance(it)?.type?.entityType ?: return@CustomEntity false
+                    val entityId = api.getMythicMobInstance(it)?.type?.entityType ?: return@CustomEntity false
                     entityId.equals(id, ignoreCase = true)
                 },
                 {
-                    MythicMobs.inst().apiHelper.spawnMythicMob(id, it)
+                    api.spawnMythicMob(id, it)
                 }
             ).register()
         }
