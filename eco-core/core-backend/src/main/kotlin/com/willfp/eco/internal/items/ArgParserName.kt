@@ -18,7 +18,7 @@ class ArgParserName : LookupArgParser {
             if (argSplit.size < 2) {
                 continue
             }
-            name = argSplit[1].replace("_", "")
+            name = argSplit[1]
         }
 
         name ?: return null
