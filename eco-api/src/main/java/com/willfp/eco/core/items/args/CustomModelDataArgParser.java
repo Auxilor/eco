@@ -3,6 +3,7 @@ package com.willfp.eco.core.items.args;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,6 +15,7 @@ import java.util.function.Predicate;
  * @deprecated Moved to internals.
  */
 @Deprecated(since = "6.16.0", forRemoval = true)
+@ApiStatus.ScheduledForRemoval(inVersion = "6.18.1")
 public class CustomModelDataArgParser implements LookupArgParser {
     /**
      * Instantiate arg parser.
