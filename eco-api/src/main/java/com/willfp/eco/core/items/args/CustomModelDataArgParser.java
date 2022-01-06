@@ -29,6 +29,6 @@ public class CustomModelDataArgParser implements LookupArgParser {
     }
 
     static {
-        Bukkit.getLogger().severe("Referencing a class marked for removal! (" + CustomModelDataArgParser.class.getName() + "), this will throw an error in a future release!");
+        Bukkit.getLogger().severe("Referencing a class marked for removal! (" + CustomModelDataArgParser.class.getName() + "), this will throw an error in the next release!");
     }
 }
