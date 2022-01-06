@@ -28,12 +28,6 @@ public class SimpleTestableEntity implements TestableEntity {
         Validate.notNull(type.getEntityClass(), "Entity cannot be of unknown type!");
     }
 
-    /**
-     * If the entity matches the type.
-     *
-     * @param entity The entity to test.
-     * @return If the entity is of the specified type.
-     */
     @Override
     public boolean matches(@Nullable final Entity entity) {
         return entity != null && entity.getType() == type;

@@ -18,6 +18,8 @@ import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.requirement.RequirementFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -232,4 +234,13 @@ public interface Handler {
      */
     @NotNull
     PlayerProfileHandler getPlayerProfileHandler();
+
+    /**
+     * Create dummy entity - never spawned, exists purely in code.
+     *
+     * @param location The location.
+     * @return The entity.
+     */
+    @NotNull
+    Entity createDummyEntity(@NotNull Location location);
 }

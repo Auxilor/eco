@@ -2,6 +2,7 @@ package com.willfp.eco.core.entities;
 
 import com.willfp.eco.core.entities.args.EntityArgParseResult;
 import com.willfp.eco.core.entities.args.EntityArgParser;
+import com.willfp.eco.core.entities.impl.EmptyTestableEntity;
 import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.core.entities.impl.SimpleTestableEntity;
 import com.willfp.eco.util.NamespacedKeyUtils;
@@ -80,31 +81,28 @@ public final class Entities {
      * much more power and flexibility. For example, you can have an entity with an
      * extra metadata tag, extra lore lines, different display name - and it
      * will still work as long as the test passes.
-     * <p>
-     * Unlike {@link com.willfp.eco.core.items.Items#lookup(String)}, this can return
-     * null as there is no empty entity equivalent.
      *
      * @param key The lookup string.
-     * @return The testable entity, or null if not found.
+     * @return The testable entity, or an empty testable entity if not found.
      */
-    @Nullable
+    @NotNull
     public static TestableEntity lookup(@NotNull final String key) {
         if (key.contains("?")) {
             String[] options = key.split("\\?");
             for (String option : options) {
                 TestableEntity lookup = lookup(option);
-                if (lookup != null) {
+                if (!(lookup instanceof EmptyTestableEntity)) {
                     return lookup;
                 }
             }
 
-            return null;
+            return new EmptyTestableEntity();
         }
 
         String[] args = StringUtils.parseTokens(key);
 
         if (args.length == 0) {
-            return null;
+            return new EmptyTestableEntity();
         }
 
         TestableEntity entity;
@@ -116,7 +114,7 @@ public final class Entities {
             try {
                 type = EntityType.valueOf(args[0].toUpperCase());
             } catch (IllegalArgumentException e) {
-                return null;
+                return new EmptyTestableEntity();
             }
             entity = new SimpleTestableEntity(type);
         } else {
@@ -127,7 +125,7 @@ public final class Entities {
             TestableEntity part = REGISTRY.get(namespacedKey);
 
             if (part == null) {
-                return null;
+                return new EmptyTestableEntity();
             }
 
             entity = part;

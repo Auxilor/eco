@@ -46,12 +46,6 @@ public class ModifiedTestableEntity implements TestableEntity {
         this.provider = provider;
     }
 
-    /**
-     * If the entity matches the test.
-     *
-     * @param entity The entity to test.
-     * @return If the entity matches the test.
-     */
     @Override
     public boolean matches(@Nullable final Entity entity) {
         return entity != null && handle.matches(entity) && test.test(entity);
