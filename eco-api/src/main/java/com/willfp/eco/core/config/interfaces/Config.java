@@ -169,7 +169,7 @@ public interface Config extends Cloneable {
      */
     @NotNull
     default String getFormattedString(@NotNull String path) {
-        return getString(path, true);
+        return getString(path, true, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
@@ -188,25 +188,25 @@ public interface Config extends Cloneable {
     /**
      * Get a string from config.
      * <p>
-     * Formatted by default.
+     * Not formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or an empty string if not found.
      */
     @NotNull
     default String getString(@NotNull String path) {
-        return getString(path, true);
+        return getString(path, false);
     }
 
     /**
      * Get a string from config.
-     * <p>
-     * This will be deprecated when {@link Config#getString(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
      * @return The found value, or an empty string if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
+    @Deprecated(since = "6.18.0")
     default String getString(@NotNull String path,
                              boolean format) {
         return this.getString(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -248,7 +248,7 @@ public interface Config extends Cloneable {
      */
     @Nullable
     default String getFormattedStringOrNull(@NotNull String path) {
-        return getStringOrNull(path, true);
+        return getStringOrNull(path, true, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
@@ -274,19 +274,19 @@ public interface Config extends Cloneable {
      */
     @Nullable
     default String getStringOrNull(@NotNull String path) {
-        return getStringOrNull(path, true);
+        return getStringOrNull(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
      * Get a string from config.
-     * <p>
-     * This will be deprecated when {@link Config#getStringOrNull(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
      * @return The found value, or null if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
     @Nullable
+    @Deprecated(since = "6.18.0")
     default String getStringOrNull(@NotNull String path,
                                    boolean format) {
         return this.getStringOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -351,28 +351,26 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
-     * <p>
-     * This will be changed in newer versions to <b>not</b> format by default.
+     * Not formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
     default List<String> getStrings(@NotNull String path) {
-        return getStrings(path, true);
+        return getStrings(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
      * Get a list of strings from config.
-     * <p>
-     * This will be deprecated when {@link Config#getStrings(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
     @NotNull
+    @Deprecated(since = "6.18.0")
     default List<String> getStrings(@NotNull String path,
                                     boolean format) {
         return this.getStrings(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -390,7 +388,7 @@ public interface Config extends Cloneable {
     @Deprecated
     default List<String> getStrings(@NotNull String path,
                                     @NotNull StringUtils.FormatOption option) {
-        return getStrings(path, true, option);
+        return getStrings(path, false, option);
     }
 
     /**
@@ -409,7 +407,7 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
+     * Formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
@@ -422,7 +420,7 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
+     * Formatted.
      *
      * @param path   The key to fetch the value from.
      * @param option The format option.
@@ -437,7 +435,7 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
+     * Not formatted.
      * <p>
      * This will be changed in newer versions to <b>not</b> format by default.
      *
@@ -446,7 +444,7 @@ public interface Config extends Cloneable {
      */
     @Nullable
     default List<String> getStringsOrNull(@NotNull String path) {
-        return getStringsOrNull(path, true);
+        return getStringsOrNull(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
@@ -455,8 +453,10 @@ public interface Config extends Cloneable {
      * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
      * @return The found value, or null if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
     @Nullable
+    @Deprecated(since = "6.18.0")
     default List<String> getStringsOrNull(@NotNull String path,
                                           boolean format) {
         return getStringsOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -474,7 +474,7 @@ public interface Config extends Cloneable {
     @Deprecated
     default List<String> getStringsOrNull(@NotNull String path,
                                           @NotNull StringUtils.FormatOption option) {
-        return getStringsOrNull(path, true, option);
+        return getStringsOrNull(path, false, option);
     }
 
     /**

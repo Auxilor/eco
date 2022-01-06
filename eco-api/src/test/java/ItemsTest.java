@@ -1,4 +1,4 @@
-import com.willfp.eco.core.items.Items;
+import com.willfp.eco.util.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -6,11 +6,11 @@ public class ItemsTest {
     @Test
     public void testParserLookupStrings() {
         Assertions.assertArrayEquals(
-                Items.parseLookupString("diamond_sword name:\"test name\""),
+                StringUtils.parseTokens("diamond_sword name:\"test name\""),
                 new String[]{"diamond_sword", "name:test name"}
         );
         Assertions.assertArrayEquals(
-                Items.parseLookupString("stick 1 name:\"The \\\"Holy\\\" Stick\""),
+                StringUtils.parseTokens("stick 1 name:\"The \\\"Holy\\\" Stick\""),
                 new String[]{"stick", "1", "name:The \"Holy\" Stick"}
         );
     }
