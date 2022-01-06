@@ -18,6 +18,7 @@ import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
+import com.willfp.eco.internal.entities.EntityArgParserAdult
 import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
 import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
 import com.willfp.eco.internal.entities.EntityArgParserBaby
@@ -134,6 +135,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Entities.registerArgParser(EntityArgParserSpawnReinforcements())
         Entities.registerArgParser(EntityArgParserSpeed())
         Entities.registerArgParser(EntityArgParserBaby())
+        Entities.registerArgParser(EntityArgParserAdult())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
