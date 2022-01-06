@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +44,11 @@ public final class Items {
      * All recipe parts.
      */
     private static final List<LookupArgParser> ARG_PARSERS = new ArrayList<>();
+
+    /**
+     * Regex for quotes in args.
+     */
+    private static final Pattern QUOTE_REGEX = Pattern.compile("([^\"]\\S*|\".+?\")\\s*");
 
     /**
      * Register a new custom item.
@@ -118,7 +125,23 @@ public final class Items {
             return new EmptyTestableItem();
         }
 
-        String[] args = key.split(" ");
+
+        List<String> argBuilder = new ArrayList<>();
+        Matcher matcher = QUOTE_REGEX.matcher(key);
+        while (matcher.find()) {
+            argBuilder.add(matcher.group(1));
+        }
+
+        argBuilder.replaceAll(string -> {
+            if (string.startsWith("\"") && string.endsWith("\"")) {
+                return string.substring(1, string.length() - 1);
+            } else {
+                return string;
+            }
+        });
+
+        String[] args = argBuilder.toArray(new String[0]);
+
         if (args.length == 0) {
             return new EmptyTestableItem();
         }
