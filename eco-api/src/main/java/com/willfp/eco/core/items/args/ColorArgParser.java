@@ -27,4 +27,8 @@ public class ColorArgParser implements LookupArgParser {
                                                          @NotNull final ItemMeta meta) {
         return null;
     }
+
+    static {
+        Bukkit.getLogger().severe("Referencing a class marked for removal! (" + ColorArgParser.class.getName() + "), this will throw an error in a future release!");
+    }
 }
