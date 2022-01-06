@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType
 class DummyEntity : DummyEntityProxy {
     override fun createDummyEntity(location: Location): Entity {
         val world = location.world as CraftWorld
-        return world.createEntity(location, EntityType.ZOMBIE.entityClass).bukkitEntity
+        @Suppress("UsePropertyAccessSyntax")
+        return world.createEntity(location, EntityType.ZOMBIE.entityClass).getBukkitEntity()
     }
 }
