@@ -10,6 +10,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.afk.AFKManager
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
+import com.willfp.eco.core.integrations.customentities.CustomEntitiesManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.hologram.HologramManager
@@ -83,6 +84,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
@@ -194,6 +196,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleAfterLoad() {
         CustomItemsManager.registerAllItems()
+        CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
     }
 
@@ -230,6 +233,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Spartan") { AnticheatManager.register(this, AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(this, AnticheatVulcan()) },
             IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
+
+            // Custom Entities
+            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs())},
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
