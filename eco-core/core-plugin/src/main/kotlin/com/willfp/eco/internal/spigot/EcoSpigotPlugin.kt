@@ -20,6 +20,7 @@ import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
 import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
+import com.willfp.eco.internal.entities.EntityArgParserBaby
 import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
 import com.willfp.eco.internal.entities.EntityArgParserFollowRange
 import com.willfp.eco.internal.entities.EntityArgParserHealth
@@ -132,6 +133,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Entities.registerArgParser(EntityArgParserSize())
         Entities.registerArgParser(EntityArgParserSpawnReinforcements())
         Entities.registerArgParser(EntityArgParserSpeed())
+        Entities.registerArgParser(EntityArgParserBaby())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(

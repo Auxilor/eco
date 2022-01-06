@@ -2,6 +2,7 @@ package com.willfp.eco.internal.entities
 
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
+import org.bukkit.entity.Phantom
 import org.bukkit.entity.Slime
 
 class EntityArgParserSize : EntityArgParser {
@@ -23,18 +24,17 @@ class EntityArgParserSize : EntityArgParser {
 
         return EntityArgParseResult(
             {
-                if (it !is Slime) {
-                    return@EntityArgParseResult false
+                when (it) {
+                    is Slime -> it.size == size
+                    is Phantom -> it.size == size
+                    else -> false
                 }
-
-                it.size == size
             },
             {
-                if (it !is Slime) {
-                    return@EntityArgParseResult
+                when (it) {
+                    is Slime -> it.size == size
+                    is Phantom -> it.size == size
                 }
-
-                it.size = size
             }
         )
     }
