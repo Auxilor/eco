@@ -8,6 +8,7 @@ import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
+import com.willfp.eco.util.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -118,7 +119,7 @@ public final class Items {
             return new EmptyTestableItem();
         }
 
-        String[] args = parseLookupString(key);
+        String[] args = StringUtils.parseTokens(key);
 
         if (args.length == 0) {
             return new EmptyTestableItem();
@@ -236,54 +237,6 @@ public final class Items {
             return new TestableStack(item, stackAmount);
         }
     }
-
-    /**
-     * Parse lookup string into arguments.
-     * <p>
-     * Handles quoted strings for names.
-     *
-     * @param lookup The lookup string.
-     * @return An array of arguments to be processed.
-     * @author Shawn (https://stackoverflow.com/questions/70606170/split-a-list-on-spaces-and-group-quoted-characters/70606653#70606653)
-     */
-    @NotNull
-    public static String[] parseLookupString(@NotNull final String lookup) {
-        char[] chars = lookup.toCharArray();
-        List<String> arguments = new ArrayList<>();
-        StringBuilder argumentBuilder = new StringBuilder();
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == ' ') {
-                /*
-                Take the current value of the argument builder, append it to the
-                list of found arguments, and then clear it for the next argument.
-                 */
-                arguments.add(argumentBuilder.toString());
-                argumentBuilder.setLength(0);
-            } else if (chars[i] == '"') {
-                /*
-                Work until the next unescaped quote to handle quotes with
-                spaces in them - assumes the input string is well-formatted
-                 */
-                for (i++; chars[i] != '"'; i++) {
-                    /*
-                    If the found quote is escaped, ignore it in the parsing
-                     */
-                    if (chars[i] == '\\') {
-                        i++;
-                    }
-                    argumentBuilder.append(chars[i]);
-                }
-            } else {
-                /*
-                If it's a regular character, just append it to the current argument.
-                 */
-                argumentBuilder.append(chars[i]);
-            }
-        }
-        arguments.add(argumentBuilder.toString()); // Adds the last argument to the arguments.
-        return arguments.toArray(new String[0]);
-    }
-
 
     /**
      * Get a Testable Item from an ItemStack.
