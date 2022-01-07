@@ -1,11 +1,14 @@
 package com.willfp.eco.core.config.interfaces;
 
 import com.willfp.eco.core.config.ConfigType;
+import com.willfp.eco.core.config.TransientConfig;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * All configs implement this interface.
@@ -67,10 +70,12 @@ public interface Config extends Cloneable {
      * Get subsection from config.
      *
      * @param path The key to check.
-     * @return The subsection. Throws NPE if not found.
+     * @return The subsection. Returns an empty section if not found.
      */
     @NotNull
-    Config getSubsection(@NotNull String path);
+    default Config getSubsection(@NotNull String path) {
+        return Objects.requireNonNullElse(getSubsectionOrNull(path), new TransientConfig());
+    }
 
     /**
      * Get subsection from config.
@@ -87,7 +92,21 @@ public interface Config extends Cloneable {
      * @param path The key to fetch the value from.
      * @return The found value, or 0 if not found.
      */
-    int getInt(@NotNull String path);
+    default int getInt(@NotNull String path) {
+        return Objects.requireNonNullElse(getIntOrNull(path), 0);
+    }
+
+    /**
+     * Get an integer from config with a specified default (not found) value.
+     *
+     * @param path The key to fetch the value from.
+     * @param def  The value to default to if not found.
+     * @return The found value, or the default.
+     */
+    default int getInt(@NotNull String path,
+                       int def) {
+        return Objects.requireNonNullElse(getIntOrNull(path), def);
+    }
 
     /**
      * Get an integer from config.
@@ -99,23 +118,15 @@ public interface Config extends Cloneable {
     Integer getIntOrNull(@NotNull String path);
 
     /**
-     * Get an integer from config with a specified default (not found) value.
-     *
-     * @param path The key to fetch the value from.
-     * @param def  The value to default to if not found.
-     * @return The found value, or the default.
-     */
-    int getInt(@NotNull String path,
-               int def);
-
-    /**
      * Get a list of integers from config.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Integer> getInts(@NotNull String path);
+    default List<Integer> getInts(@NotNull String path) {
+        return Objects.requireNonNullElse(getIntsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of integers from config.
@@ -132,7 +143,9 @@ public interface Config extends Cloneable {
      * @param path The key to fetch the value from.
      * @return The found value, or false if not found.
      */
-    boolean getBool(@NotNull String path);
+    default boolean getBool(@NotNull String path) {
+        return Objects.requireNonNullElse(getBoolOrNull(path), false);
+    }
 
     /**
      * Get a boolean from config.
@@ -150,7 +163,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Boolean> getBools(@NotNull String path);
+    default List<Boolean> getBools(@NotNull String path) {
+        return Objects.requireNonNullElse(getBoolsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of booleans from config.
@@ -236,9 +251,11 @@ public interface Config extends Cloneable {
      * @return The found value, or an empty string if not found.
      */
     @NotNull
-    String getString(@NotNull String path,
-                     boolean format,
-                     @NotNull StringUtils.FormatOption option);
+    default String getString(@NotNull String path,
+                             boolean format,
+                             @NotNull StringUtils.FormatOption option) {
+        return Objects.requireNonNullElse(getStringOrNull(path, format, option), "");
+    }
 
     /**
      * Get a formatted string from config.
@@ -400,9 +417,11 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<String> getStrings(@NotNull String path,
-                            boolean format,
-                            @NotNull StringUtils.FormatOption option);
+    default List<String> getStrings(@NotNull String path,
+                                    boolean format,
+                                    @NotNull StringUtils.FormatOption option) {
+        return Objects.requireNonNullElse(getStringsOrNull(path, format, option), new ArrayList<>());
+    }
 
     /**
      * Get a list of strings from config.
@@ -496,7 +515,9 @@ public interface Config extends Cloneable {
      * @param path The key to fetch the value from.
      * @return The found value, or 0 if not found.
      */
-    double getDouble(@NotNull String path);
+    default double getDouble(@NotNull String path) {
+        return Objects.requireNonNullElse(getDoubleOrNull(path), 0.0);
+    }
 
     /**
      * Get a decimal from config.
@@ -514,7 +535,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Double> getDoubles(@NotNull String path);
+    default List<Double> getDoubles(@NotNull String path) {
+        return Objects.requireNonNullElse(getDoublesOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of decimals from config.
@@ -532,7 +555,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<? extends Config> getSubsections(@NotNull String path);
+    default List<? extends Config> getSubsections(@NotNull String path) {
+        return Objects.requireNonNullElse(getSubsectionsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of subsections from config.
