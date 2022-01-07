@@ -13,4 +13,21 @@ import java.util.function.Predicate;
  */
 public record EntityArgParseResult(@NotNull Predicate<Entity> test,
                                    @NotNull Consumer<Entity> modifier) {
+    /**
+     * Kotlin destructuring support.
+     *
+     * @return The test.
+     */
+    public Predicate<Entity> component1() {
+        return test;
+    }
+
+    /**
+     * Kotlin destructuring support.
+     *
+     * @return The modifier.
+     */
+    public Consumer<Entity> component2() {
+        return modifier;
+    }
 }
