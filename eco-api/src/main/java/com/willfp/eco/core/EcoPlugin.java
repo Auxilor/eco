@@ -327,11 +327,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                 DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
                 if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
                     this.outdated = true;
-                    this.getScheduler().runTimer(() -> {
-                        this.getLogger().info("&c " + this.getName() + " is out of date! (Version " + this.getDescription().getVersion() + ")");
-                        this.getLogger().info("&cThe newest version is &f" + version);
-                        this.getLogger().info("&cDownload the new version!");
-                    }, 0, 864000);
+                    this.getLogger().warning("&c " + this.getName() + " is out of date! (Version " + this.getDescription().getVersion() + ")");
+                    this.getLogger().warning("&cThe newest version is &f" + version);
+                    this.getLogger().warning("&cDownload the new version!");
                 }
             });
         }
