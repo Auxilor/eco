@@ -9,7 +9,7 @@ class EntityArgParserNoAI : EntityArgParser {
         var noAI = false
 
         for (arg in args) {
-            if (arg.equals("unbreakable", true)) {
+            if (arg.equals("no-ai", true)) {
                 noAI = true
             }
         }
