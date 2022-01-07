@@ -71,18 +71,8 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
-    public @NotNull Config getSubsection(@NotNull final String path) {
-        return handle.getSubsection(path);
-    }
-
-    @Override
     public @Nullable Config getSubsectionOrNull(@NotNull final String path) {
         return handle.getSubsectionOrNull(path);
-    }
-
-    @Override
-    public int getInt(@NotNull final String path) {
-        return handle.getInt(path);
     }
 
     @Override
@@ -91,24 +81,8 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
-    public int getInt(@NotNull final String path,
-                      final int def) {
-        return handle.getInt(path, def);
-    }
-
-    @Override
-    public @NotNull List<Integer> getInts(@NotNull final String path) {
-        return handle.getInts(path);
-    }
-
-    @Override
     public @Nullable List<Integer> getIntsOrNull(@NotNull final String path) {
         return handle.getIntsOrNull(path);
-    }
-
-    @Override
-    public boolean getBool(@NotNull final String path) {
-        return handle.getBool(path);
     }
 
     @Override
@@ -117,21 +91,8 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
-    public @NotNull List<Boolean> getBools(@NotNull final String path) {
-        return handle.getBools(path);
-    }
-
-    @Override
     public @Nullable List<Boolean> getBoolsOrNull(@NotNull final String path) {
         return handle.getBoolsOrNull(path);
-    }
-
-
-    @Override
-    public @NotNull String getString(@NotNull final String path,
-                                     final boolean format,
-                                     @NotNull final StringUtils.FormatOption option) {
-        return handle.getString(path, format, option);
     }
 
     @Override
@@ -142,22 +103,10 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
-    public @NotNull List<String> getStrings(@NotNull final String path,
-                                            final boolean format,
-                                            @NotNull final StringUtils.FormatOption option) {
-        return handle.getStrings(path, format, option);
-    }
-
-    @Override
     public @Nullable List<String> getStringsOrNull(@NotNull final String path,
                                                    final boolean format,
                                                    @NotNull final StringUtils.FormatOption option) {
         return handle.getStringsOrNull(path, format, option);
-    }
-
-    @Override
-    public double getDouble(@NotNull final String path) {
-        return handle.getDouble(path);
     }
 
     @Override
@@ -166,18 +115,8 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
-    public @NotNull List<Double> getDoubles(@NotNull final String path) {
-        return handle.getDoubles(path);
-    }
-
-    @Override
     public @Nullable List<Double> getDoublesOrNull(@NotNull final String path) {
         return handle.getDoublesOrNull(path);
-    }
-
-    @Override
-    public @NotNull List<? extends Config> getSubsections(@NotNull final String path) {
-        return handle.getSubsections(path);
     }
 
     @Override
