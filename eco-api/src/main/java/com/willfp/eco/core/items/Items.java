@@ -8,6 +8,7 @@ import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
+import com.willfp.eco.util.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -118,7 +119,8 @@ public final class Items {
             return new EmptyTestableItem();
         }
 
-        String[] args = key.split(" ");
+        String[] args = StringUtils.parseTokens(key);
+
         if (args.length == 0) {
             return new EmptyTestableItem();
         }

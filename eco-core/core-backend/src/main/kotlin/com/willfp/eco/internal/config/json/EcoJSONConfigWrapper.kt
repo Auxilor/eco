@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.JSONConfig
 import com.willfp.eco.util.StringUtils
-import org.bukkit.configuration.file.YamlConfiguration
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 
@@ -131,22 +130,16 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getSubsection(path: String): JSONConfig {
-        val subsection = getSubsectionOrNull(path)
-        return subsection ?: EcoJSONConfigSection(emptyMap())
+        return getSubsectionOrNull(path) ?: EcoJSONConfigSection(mutableMapOf())
     }
 
     override fun getSubsectionOrNull(path: String): JSONConfig? {
         return if (values.containsKey(path)) {
-            val subsection = values[path] as Map<String, Any>?
-            EcoJSONConfigSection(subsection!!)
+            val subsection = values[path] as Map<String, Any>
+            EcoJSONConfigSection(subsection)
         } else {
             null
         }
-    }
-
-    override fun getSubsections(path: String): List<JSONConfig> {
-        val subsections = getSubsectionsOrNull(path)
-        return subsections ?: mutableListOf()
     }
 
     override fun getSubsectionsOrNull(path: String): List<JSONConfig>? {
@@ -159,74 +152,20 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return configs.toMutableList()
     }
 
-    override fun getInt(path: String): Int {
-        return (getOfKnownType(path, Double::class.java) ?: 0.0).toInt()
-    }
-
     override fun getIntOrNull(path: String): Int? {
-        return if (has(path)) {
-            getInt(path)
-        } else {
-            null
-        }
-    }
-
-    override fun getInt(
-        path: String,
-        def: Int
-    ): Int {
-        return Objects.requireNonNullElse(getOfKnownType(path, Int::class.java), def)
-    }
-
-    override fun getInts(path: String): MutableList<Int> {
-        return (Objects.requireNonNullElse(
-            getOfKnownType(path, Any::class.java),
-            emptyList<Int>()
-        ) as List<Int>).toMutableList()
+        return getOfKnownType(path, Double::class.java)?.toInt()
     }
 
     override fun getIntsOrNull(path: String): MutableList<Int>? {
-        return if (has(path)) {
-            getInts(path)
-        } else {
-            null
-        }
-    }
-
-    override fun getBool(path: String): Boolean {
-        return Objects.requireNonNullElse(getOfKnownType(path, Boolean::class.java), false)
+        return (getOfKnownType(path, Any::class.java) as Collection<Int>?)?.toMutableList()
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
-        return if (has(path)) {
-            getBool(path)
-        } else {
-            null
-        }
-    }
-
-    override fun getBools(path: String): MutableList<Boolean> {
-        return (Objects.requireNonNullElse(
-            getOfKnownType(path, Any::class.java),
-            emptyList<Boolean>()
-        ) as List<Boolean>).toMutableList()
+        return getOfKnownType(path, Boolean::class.java)
     }
 
     override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
-        return if (has(path)) {
-            getBools(path)
-        } else {
-            null
-        }
-    }
-
-    override fun getString(
-        path: String,
-        format: Boolean,
-        option: StringUtils.FormatOption
-    ): String {
-        val string = getOfKnownType(path, String::class.java) ?: ""
-        return if (format) StringUtils.format(string, option) else string
+        return (getOfKnownType(path, Any::class.java) as Collection<Boolean>?)?.toMutableList()
     }
 
     override fun getStringOrNull(
@@ -235,23 +174,11 @@ open class EcoJSONConfigWrapper : JSONConfig {
         option: StringUtils.FormatOption
     ): String? {
         return if (has(path)) {
-            getString(path, format, option)
+            val string = getOfKnownType(path, String::class.java) ?: ""
+            return if (format) StringUtils.format(string, option) else string
         } else {
             null
         }
-    }
-
-    override fun getStrings(
-        path: String,
-        format: Boolean,
-        option: StringUtils.FormatOption
-    ): MutableList<String> {
-        val strings =
-            (Objects.requireNonNullElse(
-                getOfKnownType(path, Any::class.java),
-                emptyList<String>()
-            ) as List<String>).toMutableList()
-        return if (format) StringUtils.formatList(strings, option) else strings
     }
 
     override fun getStringsOrNull(
@@ -260,37 +187,23 @@ open class EcoJSONConfigWrapper : JSONConfig {
         option: StringUtils.FormatOption
     ): MutableList<String>? {
         return if (has(path)) {
-            getStrings(path, format, option)
+            val strings =
+                (Objects.requireNonNullElse(
+                    getOfKnownType(path, Any::class.java),
+                    emptyList<String>()
+                ) as List<String>).toMutableList()
+            return if (format) StringUtils.formatList(strings, option) else strings
         } else {
             null
         }
-    }
-
-    override fun getDouble(path: String): Double {
-        return Objects.requireNonNullElse(getOfKnownType(path, Double::class.java), 0.0)
     }
 
     override fun getDoubleOrNull(path: String): Double? {
-        return if (has(path)) {
-            getDouble(path)
-        } else {
-            null
-        }
-    }
-
-    override fun getDoubles(path: String): MutableList<Double> {
-        return (Objects.requireNonNullElse(
-            getOfKnownType(path, Any::class.java),
-            emptyList<Double>()
-        ) as List<Double>).toMutableList()
+        return getOfKnownType(path, Double::class.java)
     }
 
     override fun getDoublesOrNull(path: String): MutableList<Double>? {
-        return if (has(path)) {
-            getDoubles(path)
-        } else {
-            null
-        }
+        return (getOfKnownType(path, Any::class.java) as Collection<Double>?)?.toMutableList()
     }
 
     override fun getType(): ConfigType {

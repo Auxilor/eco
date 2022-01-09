@@ -1,11 +1,14 @@
 package com.willfp.eco.core.config.interfaces;
 
 import com.willfp.eco.core.config.ConfigType;
+import com.willfp.eco.core.config.TransientConfig;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * All configs implement this interface.
@@ -67,10 +70,12 @@ public interface Config extends Cloneable {
      * Get subsection from config.
      *
      * @param path The key to check.
-     * @return The subsection. Throws NPE if not found.
+     * @return The subsection. Returns an empty section if not found.
      */
     @NotNull
-    Config getSubsection(@NotNull String path);
+    default Config getSubsection(@NotNull String path) {
+        return Objects.requireNonNullElse(getSubsectionOrNull(path), new TransientConfig());
+    }
 
     /**
      * Get subsection from config.
@@ -87,7 +92,21 @@ public interface Config extends Cloneable {
      * @param path The key to fetch the value from.
      * @return The found value, or 0 if not found.
      */
-    int getInt(@NotNull String path);
+    default int getInt(@NotNull String path) {
+        return Objects.requireNonNullElse(getIntOrNull(path), 0);
+    }
+
+    /**
+     * Get an integer from config with a specified default (not found) value.
+     *
+     * @param path The key to fetch the value from.
+     * @param def  The value to default to if not found.
+     * @return The found value, or the default.
+     */
+    default int getInt(@NotNull String path,
+                       int def) {
+        return Objects.requireNonNullElse(getIntOrNull(path), def);
+    }
 
     /**
      * Get an integer from config.
@@ -99,23 +118,15 @@ public interface Config extends Cloneable {
     Integer getIntOrNull(@NotNull String path);
 
     /**
-     * Get an integer from config with a specified default (not found) value.
-     *
-     * @param path The key to fetch the value from.
-     * @param def  The value to default to if not found.
-     * @return The found value, or the default.
-     */
-    int getInt(@NotNull String path,
-               int def);
-
-    /**
      * Get a list of integers from config.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Integer> getInts(@NotNull String path);
+    default List<Integer> getInts(@NotNull String path) {
+        return Objects.requireNonNullElse(getIntsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of integers from config.
@@ -132,7 +143,9 @@ public interface Config extends Cloneable {
      * @param path The key to fetch the value from.
      * @return The found value, or false if not found.
      */
-    boolean getBool(@NotNull String path);
+    default boolean getBool(@NotNull String path) {
+        return Objects.requireNonNullElse(getBoolOrNull(path), false);
+    }
 
     /**
      * Get a boolean from config.
@@ -150,7 +163,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Boolean> getBools(@NotNull String path);
+    default List<Boolean> getBools(@NotNull String path) {
+        return Objects.requireNonNullElse(getBoolsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of booleans from config.
@@ -169,7 +184,7 @@ public interface Config extends Cloneable {
      */
     @NotNull
     default String getFormattedString(@NotNull String path) {
-        return getString(path, true);
+        return getString(path, true, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
@@ -188,25 +203,25 @@ public interface Config extends Cloneable {
     /**
      * Get a string from config.
      * <p>
-     * Formatted by default.
+     * Not formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or an empty string if not found.
      */
     @NotNull
     default String getString(@NotNull String path) {
-        return getString(path, true);
+        return getString(path, false);
     }
 
     /**
      * Get a string from config.
-     * <p>
-     * This will be deprecated when {@link Config#getString(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
      * @return The found value, or an empty string if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
+    @Deprecated(since = "6.18.0")
     default String getString(@NotNull String path,
                              boolean format) {
         return this.getString(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -236,9 +251,11 @@ public interface Config extends Cloneable {
      * @return The found value, or an empty string if not found.
      */
     @NotNull
-    String getString(@NotNull String path,
-                     boolean format,
-                     @NotNull StringUtils.FormatOption option);
+    default String getString(@NotNull String path,
+                             boolean format,
+                             @NotNull StringUtils.FormatOption option) {
+        return Objects.requireNonNullElse(getStringOrNull(path, format, option), "");
+    }
 
     /**
      * Get a formatted string from config.
@@ -248,7 +265,7 @@ public interface Config extends Cloneable {
      */
     @Nullable
     default String getFormattedStringOrNull(@NotNull String path) {
-        return getStringOrNull(path, true);
+        return getStringOrNull(path, true, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
@@ -274,19 +291,19 @@ public interface Config extends Cloneable {
      */
     @Nullable
     default String getStringOrNull(@NotNull String path) {
-        return getStringOrNull(path, true);
+        return getStringOrNull(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
      * Get a string from config.
-     * <p>
-     * This will be deprecated when {@link Config#getStringOrNull(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
      * @return The found value, or null if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
     @Nullable
+    @Deprecated(since = "6.18.0")
     default String getStringOrNull(@NotNull String path,
                                    boolean format) {
         return this.getStringOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -351,28 +368,26 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
-     * <p>
-     * This will be changed in newer versions to <b>not</b> format by default.
+     * Not formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
     default List<String> getStrings(@NotNull String path) {
-        return getStrings(path, true);
+        return getStrings(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
      * Get a list of strings from config.
-     * <p>
-     * This will be deprecated when {@link Config#getStrings(String)} no longer formats by default.
      *
      * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
     @NotNull
+    @Deprecated(since = "6.18.0")
     default List<String> getStrings(@NotNull String path,
                                     boolean format) {
         return this.getStrings(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -390,7 +405,7 @@ public interface Config extends Cloneable {
     @Deprecated
     default List<String> getStrings(@NotNull String path,
                                     @NotNull StringUtils.FormatOption option) {
-        return getStrings(path, true, option);
+        return getStrings(path, false, option);
     }
 
     /**
@@ -402,14 +417,16 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<String> getStrings(@NotNull String path,
-                            boolean format,
-                            @NotNull StringUtils.FormatOption option);
+    default List<String> getStrings(@NotNull String path,
+                                    boolean format,
+                                    @NotNull StringUtils.FormatOption option) {
+        return Objects.requireNonNullElse(getStringsOrNull(path, format, option), new ArrayList<>());
+    }
 
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
+     * Formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
@@ -422,7 +439,7 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
+     * Formatted.
      *
      * @param path   The key to fetch the value from.
      * @param option The format option.
@@ -437,7 +454,7 @@ public interface Config extends Cloneable {
     /**
      * Get a list of strings from config.
      * <p>
-     * Formatted by default.
+     * Not formatted.
      * <p>
      * This will be changed in newer versions to <b>not</b> format by default.
      *
@@ -446,7 +463,7 @@ public interface Config extends Cloneable {
      */
     @Nullable
     default List<String> getStringsOrNull(@NotNull String path) {
-        return getStringsOrNull(path, true);
+        return getStringsOrNull(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
@@ -455,8 +472,10 @@ public interface Config extends Cloneable {
      * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
      * @return The found value, or null if not found.
+     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
      */
     @Nullable
+    @Deprecated(since = "6.18.0")
     default List<String> getStringsOrNull(@NotNull String path,
                                           boolean format) {
         return getStringsOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
@@ -474,7 +493,7 @@ public interface Config extends Cloneable {
     @Deprecated
     default List<String> getStringsOrNull(@NotNull String path,
                                           @NotNull StringUtils.FormatOption option) {
-        return getStringsOrNull(path, true, option);
+        return getStringsOrNull(path, false, option);
     }
 
     /**
@@ -496,7 +515,9 @@ public interface Config extends Cloneable {
      * @param path The key to fetch the value from.
      * @return The found value, or 0 if not found.
      */
-    double getDouble(@NotNull String path);
+    default double getDouble(@NotNull String path) {
+        return Objects.requireNonNullElse(getDoubleOrNull(path), 0.0);
+    }
 
     /**
      * Get a decimal from config.
@@ -514,7 +535,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<Double> getDoubles(@NotNull String path);
+    default List<Double> getDoubles(@NotNull String path) {
+        return Objects.requireNonNullElse(getDoublesOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of decimals from config.
@@ -532,7 +555,9 @@ public interface Config extends Cloneable {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<? extends Config> getSubsections(@NotNull String path);
+    default List<? extends Config> getSubsections(@NotNull String path) {
+        return Objects.requireNonNullElse(getSubsectionsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of subsections from config.

@@ -25,8 +25,11 @@ import com.willfp.eco.internal.spigot.data.EcoPlayerProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.internal.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
+import com.willfp.eco.internal.spigot.proxy.DummyEntityProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
+import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
 
@@ -139,5 +142,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     fun setAdventure(adventure: BukkitAudiences) {
         this.adventure = adventure
+    }
+
+    override fun createDummyEntity(location: Location): Entity {
+        return getProxy(DummyEntityProxy::class.java).createDummyEntity(location)
     }
 }

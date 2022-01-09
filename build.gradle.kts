@@ -61,6 +61,9 @@ allprojects {
 
         // IridiumSkyblock
         maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
+
+        // MythicMobs
+        maven("https://mvn.lumine.io/repository/maven-public/")
     }
 
     dependencies {

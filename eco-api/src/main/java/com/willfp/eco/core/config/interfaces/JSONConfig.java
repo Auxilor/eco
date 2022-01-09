@@ -3,7 +3,9 @@ package com.willfp.eco.core.config.interfaces;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * JSON config.
@@ -22,7 +24,9 @@ public interface JSONConfig extends Config {
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
     @NotNull
-    List<JSONConfig> getSubsections(@NotNull String path);
+    default List<JSONConfig> getSubsections(@NotNull String path) {
+        return Objects.requireNonNullElse(getSubsectionsOrNull(path), new ArrayList<>());
+    }
 
     /**
      * Get a list of subsections from config.

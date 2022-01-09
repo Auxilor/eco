@@ -5,10 +5,12 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.display.Display
+import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.afk.AFKManager
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
+import com.willfp.eco.core.integrations.customentities.CustomEntitiesManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.hologram.HologramManager
@@ -17,6 +19,23 @@ import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
+import com.willfp.eco.internal.entities.EntityArgParserAdult
+import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
+import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
+import com.willfp.eco.internal.entities.EntityArgParserBaby
+import com.willfp.eco.internal.entities.EntityArgParserCharged
+import com.willfp.eco.internal.entities.EntityArgParserExplosionRadius
+import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
+import com.willfp.eco.internal.entities.EntityArgParserFollowRange
+import com.willfp.eco.internal.entities.EntityArgParserHealth
+import com.willfp.eco.internal.entities.EntityArgParserJumpStrength
+import com.willfp.eco.internal.entities.EntityArgParserKnockback
+import com.willfp.eco.internal.entities.EntityArgParserKnockbackResistance
+import com.willfp.eco.internal.entities.EntityArgParserName
+import com.willfp.eco.internal.entities.EntityArgParserNoAI
+import com.willfp.eco.internal.entities.EntityArgParserSize
+import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
+import com.willfp.eco.internal.entities.EntityArgParserSpeed
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -64,6 +83,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
@@ -103,6 +123,24 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Items.registerArgParser(ArgParserFlag())
         Items.registerArgParser(ArgParserUnbreakable())
         Items.registerArgParser(ArgParserName())
+
+        Entities.registerArgParser(EntityArgParserName())
+        Entities.registerArgParser(EntityArgParserNoAI())
+        Entities.registerArgParser(EntityArgParserAttackDamage())
+        Entities.registerArgParser(EntityArgParserAttackSpeed())
+        Entities.registerArgParser(EntityArgParserFlySpeed())
+        Entities.registerArgParser(EntityArgParserFollowRange())
+        Entities.registerArgParser(EntityArgParserHealth())
+        Entities.registerArgParser(EntityArgParserJumpStrength())
+        Entities.registerArgParser(EntityArgParserKnockback())
+        Entities.registerArgParser(EntityArgParserKnockbackResistance())
+        Entities.registerArgParser(EntityArgParserSize())
+        Entities.registerArgParser(EntityArgParserSpawnReinforcements())
+        Entities.registerArgParser(EntityArgParserSpeed())
+        Entities.registerArgParser(EntityArgParserBaby())
+        Entities.registerArgParser(EntityArgParserAdult())
+        Entities.registerArgParser(EntityArgParserCharged())
+        Entities.registerArgParser(EntityArgParserExplosionRadius())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
@@ -157,6 +195,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
     override fun handleAfterLoad() {
         CustomItemsManager.registerAllItems()
+        CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
     }
 
@@ -193,6 +232,9 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Spartan") { AnticheatManager.register(this, AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(this, AnticheatVulcan()) },
             IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
+
+            // Custom Entities
+            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs())},
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
