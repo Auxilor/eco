@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public final class NumberUtils {
     /**
      * Crunch handler.
      */
-    private static BiFunction<@NotNull String, @Nullable Player, @NotNull Double> crunch;
+    private static BiFunction<@NotNull String, @Nullable Player, @NotNull Double> crunch = null;
 
     /**
      * Set of roman numerals to look up.
@@ -256,6 +257,7 @@ public final class NumberUtils {
      */
     @ApiStatus.Internal
     public static void initCrunch(@NotNull final BiFunction<@NotNull String, @Nullable Player, @NotNull Double> handler) {
+        Validate.isTrue(crunch == null, "Already initialized!");
         crunch = handler;
     }
 
