@@ -64,6 +64,9 @@ allprojects {
 
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
+
+        // Crunch
+        maven("https://redempt.dev")
     }
 
     dependencies {
@@ -97,6 +100,7 @@ allprojects {
         shadowJar {
             relocate("org.bstats", "com.willfp.eco.shaded.bstats")
             relocate("net.kyori.adventure.text.minimessage", "com.willfp.eco.shaded.minimessage")
+            relocate("redempt.crunch", "com.willfp.eco.shaded.crunch")
         }
 
         compileJava {

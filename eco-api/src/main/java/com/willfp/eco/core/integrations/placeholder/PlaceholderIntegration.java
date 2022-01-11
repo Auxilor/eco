@@ -5,6 +5,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wrapper class for placeholder integrations.
  */
@@ -24,4 +27,14 @@ public interface PlaceholderIntegration extends Integration {
      */
     String translate(@NotNull String text,
                      @Nullable Player player);
+
+    /**
+     * Find all placeholders in a given text.
+     *
+     * @param text The text.
+     * @return The placeholders.
+     */
+    default List<String> findPlaceholdersIn(@NotNull String text) {
+        return new ArrayList<>();
+    }
 }

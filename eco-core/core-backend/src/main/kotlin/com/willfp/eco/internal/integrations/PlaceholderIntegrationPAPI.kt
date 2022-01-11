@@ -49,4 +49,14 @@ class PlaceholderIntegrationPAPI(private val plugin: EcoPlugin) : PlaceholderExp
     ): String {
         return PlaceholderAPI.setPlaceholders(player, text)
     }
+
+    override fun findPlaceholdersIn(text: String): MutableList<String> {
+        val placeholders = mutableListOf<String>()
+        val matcher = PlaceholderAPI.getPlaceholderPattern().matcher(text)
+        while (matcher.find()) {
+            placeholders.add(matcher.group())
+        }
+
+        return placeholders
+    }
 }

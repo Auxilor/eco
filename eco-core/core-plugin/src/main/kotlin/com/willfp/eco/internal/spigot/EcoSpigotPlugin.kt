@@ -95,12 +95,14 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicD
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
+import com.willfp.eco.internal.spigot.math.evaluateExpression
 import com.willfp.eco.internal.spigot.proxy.BlockBreakProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.util.BlockUtils
+import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -154,6 +156,8 @@ abstract class EcoSpigotPlugin : EcoPlugin(
 
         val tpsProxy = getProxy(TPSProxy::class.java)
         ServerUtils.initialize { tpsProxy.getTPS() }
+
+        NumberUtils.initCrunch { exp, player -> evaluateExpression(exp, player) }
 
         postInit()
     }
@@ -235,7 +239,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
 
             // Custom Entities
-            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs())},
+            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },

@@ -4,8 +4,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,6 +80,21 @@ public final class PlaceholderManager {
             processed = integration.translate(processed, player);
         }
         return processed;
+    }
+
+    /**
+     * Find all placeholders in a given text.
+     *
+     * @param text The text.
+     * @return The placeholders.
+     */
+    public static List<String> findPlaceholdersIn(@NotNull final String text) {
+        List<String> found = new ArrayList<>();
+        for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
+            found.addAll(integration.findPlaceholdersIn(text));
+        }
+
+        return found;
     }
 
     private PlaceholderManager() {

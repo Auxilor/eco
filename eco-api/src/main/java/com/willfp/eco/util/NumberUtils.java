@@ -1,11 +1,15 @@
 package com.willfp.eco.util;
 
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiFunction;
 
 /**
  * Utilities / API methods for numbers.
@@ -15,6 +19,11 @@ public final class NumberUtils {
      * Sin lookup table.
      */
     private static final double[] SIN_LOOKUP = new double[65536];
+
+    /**
+     * Crunch handler.
+     */
+    private static BiFunction<@NotNull String, @Nullable Player, @NotNull Double> crunch;
 
     /**
      * Set of roman numerals to look up.
@@ -216,6 +225,38 @@ public final class NumberUtils {
         String formatted = df.format(toFormat);
 
         return formatted.endsWith("00") ? String.valueOf((int) toFormat) : formatted;
+    }
+
+    /**
+     * Evaluate an expression.
+     *
+     * @param expression The expression.
+     * @return The value of the expression.
+     */
+    public static double evaluateExpression(@NotNull final String expression) {
+        return evaluateExpression(expression, null);
+    }
+
+    /**
+     * Evaluate an expression with respect to a player (for placeholders).
+     *
+     * @param expression The expression.
+     * @param player     The player.
+     * @return The value of the expression.
+     */
+    public static double evaluateExpression(@NotNull final String expression,
+                                            @Nullable final Player player) {
+        return crunch.apply(expression, player);
+    }
+
+    /**
+     * Init crunch handler.
+     *
+     * @param handler The handler.
+     */
+    @ApiStatus.Internal
+    public static void initCrunch(@NotNull final BiFunction<@NotNull String, @Nullable Player, @NotNull Double> handler) {
+        crunch = handler;
     }
 
     private NumberUtils() {
