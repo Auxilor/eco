@@ -2,7 +2,9 @@ package com.willfp.eco.core.config.interfaces;
 
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.TransientConfig;
+import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,6 +109,29 @@ public interface Config extends Cloneable {
                        int def) {
         return Objects.requireNonNullElse(getIntOrNull(path), def);
     }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path The key to fetch the value from.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default int getIntFromExpression(@NotNull String path) {
+        return getIntFromExpression(path, null);
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path   The key to fetch the value from.
+     * @param player The player to evaluate placeholders with respect to.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default int getIntFromExpression(@NotNull String path,
+                                     @Nullable Player player) {
+        return Double.valueOf(getDoubleFromExpression(path, player)).intValue();
+    }
+
 
     /**
      * Get an integer from config.
@@ -517,6 +542,28 @@ public interface Config extends Cloneable {
      */
     default double getDouble(@NotNull String path) {
         return Objects.requireNonNullElse(getDoubleOrNull(path), 0.0);
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path The key to fetch the value from.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default double getDoubleFromExpression(@NotNull String path) {
+        return getDoubleFromExpression(path, null);
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path   The key to fetch the value from.
+     * @param player The player to evaluate placeholders with respect to.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default double getDoubleFromExpression(@NotNull String path,
+                                           @Nullable Player player) {
+        return NumberUtils.evaluateExpression(this.getString(path), player);
     }
 
     /**

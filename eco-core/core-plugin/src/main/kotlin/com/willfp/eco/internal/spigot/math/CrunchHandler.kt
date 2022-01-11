@@ -16,7 +16,7 @@ fun evaluateExpression(expression: String, player: Player?): Double {
         .toDoubleArray()
 
     val compiled = generateExpression(expression)
-    return compiled.evaluate(*placeholderValues)
+    return runCatching { compiled.evaluate(*placeholderValues) }.getOrDefault(0.0)
 }
 
 private fun generateExpression(expression: String): CompiledExpression {
