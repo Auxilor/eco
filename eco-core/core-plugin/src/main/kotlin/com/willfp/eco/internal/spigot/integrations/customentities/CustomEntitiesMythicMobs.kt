@@ -2,8 +2,8 @@ package com.willfp.eco.internal.spigot.integrations.customentities
 
 import com.willfp.eco.core.entities.CustomEntity
 import com.willfp.eco.core.integrations.customentities.CustomEntitiesWrapper
-import com.willfp.eco.util.NamespacedKeyUtils
 import io.lumine.xikage.mythicmobs.MythicMobs
+import org.bukkit.NamespacedKey
 
 class CustomEntitiesMythicMobs : CustomEntitiesWrapper {
     override fun registerAllEntities() {
@@ -11,7 +11,8 @@ class CustomEntitiesMythicMobs : CustomEntitiesWrapper {
         val api = MythicMobs.inst().apiHelper
 
         for (id in mobManager.mobNames) {
-            val key = NamespacedKeyUtils.create("mythicmobs", id.lowercase())
+            val key = NamespacedKey.fromString("mythicmobs:${id.lowercase()}")
+            key ?: continue
             CustomEntity(
                 key,
                 {
