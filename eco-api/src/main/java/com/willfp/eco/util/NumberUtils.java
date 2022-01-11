@@ -24,7 +24,7 @@ public final class NumberUtils {
     /**
      * Crunch handler.
      */
-    private static BiFunction<@NotNull String, @Nullable Player, @NotNull Double> crunch = null;
+    private static BiFunction<String, Player, Double> crunch = null;
 
     /**
      * Set of roman numerals to look up.
@@ -93,7 +93,9 @@ public final class NumberUtils {
      * @param toChange The value to test.
      * @param limit    The maximum.
      * @return The new value.
+     * @deprecated Pointless method.
      */
+    @Deprecated(since = "6.19.0")
     public static int equalIfOver(final int toChange,
                                   final int limit) {
         return Math.min(toChange, limit);
@@ -105,7 +107,9 @@ public final class NumberUtils {
      * @param toChange The value to test.
      * @param limit    The maximum.
      * @return The new value.
+     * @deprecated Pointless method.
      */
+    @Deprecated(since = "6.19.0")
     public static double equalIfOver(final double toChange,
                                      final double limit) {
         return Math.min(toChange, limit);
@@ -256,7 +260,7 @@ public final class NumberUtils {
      * @param handler The handler.
      */
     @ApiStatus.Internal
-    public static void initCrunch(@NotNull final BiFunction<@NotNull String, @Nullable Player, @NotNull Double> handler) {
+    public static void initCrunch(@NotNull final BiFunction<String, Player, Double> handler) {
         Validate.isTrue(crunch == null, "Already initialized!");
         crunch = handler;
     }
