@@ -94,6 +94,7 @@ allprojects {
         exclude(group = "org.spongepowered", module = "configurate-hocon")
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
+        exclude(group = "org.apache.commons", module = "commons-lang3")
     }
 
     tasks {
