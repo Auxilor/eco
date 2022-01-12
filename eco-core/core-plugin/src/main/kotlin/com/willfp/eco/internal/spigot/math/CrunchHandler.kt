@@ -8,6 +8,7 @@ import redempt.crunch.data.FastNumberParsing
 import redempt.crunch.functional.EvaluationEnvironment
 
 private val cache = mutableMapOf<String, CompiledExpression>()
+private val goToZero = Crunch.compileExpression("0")
 
 fun evaluateExpression(expression: String, player: Player?): Double {
     val placeholderValues = PlaceholderManager.findPlaceholdersIn(expression)
@@ -31,7 +32,7 @@ private fun generateExpression(expression: String): CompiledExpression {
     val env = EvaluationEnvironment()
     env.setVariableNames(*placeholders.toTypedArray())
 
-    val compiled = Crunch.compileExpression(expression, env)
+    val compiled = runCatching { Crunch.compileExpression(expression, env) }.getOrDefault(goToZero)
     cache[expression] = compiled
     return compiled
 }
