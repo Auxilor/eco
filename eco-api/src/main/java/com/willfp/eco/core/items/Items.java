@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -353,6 +354,14 @@ public final class Items {
                     item.getItem()
             );
         }
+    }
+
+    /**
+     * Clear the lookup cache.
+     */
+    @ApiStatus.Internal
+    public static void clearCache() {
+        CACHE.clear();
     }
 
     private Items() {

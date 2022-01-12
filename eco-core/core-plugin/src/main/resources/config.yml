@@ -41,6 +41,11 @@ use-display-frame: true
 # that display frames will be cleared / deleted.
 display-frame-ttl: 17
 
+# Time to live for storing hashes against custom item keys. Increasing this value
+# can benefit performance under load (e.g. from ShopGUI+ sells) but can increase
+# memory use.
+item-cache-ttl: 6000
+
 # Window items packets have the option to be run asynchronously. This may cause
 # some bugs and is considered experimental, however it has been tested without
 # any apparent issues. Enable this if performance is absolutely crucial or if you
