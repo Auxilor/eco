@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items;
 
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -33,6 +34,11 @@ public final class Items {
      * All recipe parts.
      */
     private static final Map<NamespacedKey, TestableItem> REGISTRY = new ConcurrentHashMap<>();
+
+    /**
+     * Cached custom item lookups, using {@link FastItemStack#hashCode()}.
+     */
+    private static final Map<Integer, NamespacedKey> CACHE = new ConcurrentHashMap<>();
 
     /**
      * All item providers.
@@ -276,12 +282,7 @@ public final class Items {
      * @return If is recipe.
      */
     public static boolean isCustomItem(@NotNull final ItemStack itemStack) {
-        for (TestableItem item : REGISTRY.values()) {
-            if (item.matches(itemStack)) {
-                return true;
-            }
-        }
-        return false;
+        return getCustomItem(itemStack) != null;
     }
 
     /**
@@ -292,12 +293,35 @@ public final class Items {
      */
     @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
-        for (TestableItem item : REGISTRY.values()) {
-            if (item.matches(itemStack)) {
-                return getOrWrap(item);
+        int hash = FastItemStack.wrap(itemStack).hashCode();
+        NamespacedKey itemKey = CACHE.get(hash);
+        if (itemKey != null) {
+            TestableItem found = REGISTRY.get(itemKey);
+            if (found != null) {
+                return getOrWrap(found);
+            } else {
+                CACHE.remove(hash);
             }
         }
-        return null;
+
+        TestableItem match = null;
+
+        for (TestableItem item : REGISTRY.values()) {
+            if (item.matches(itemStack)) {
+                match = item;
+                break;
+            }
+        }
+
+        if (match == null) {
+            return null;
+        }
+
+        if (match instanceof CustomItem custom) {
+            CACHE.put(hash, custom.getKey());
+        }
+
+        return getOrWrap(match);
     }
 
     /**
