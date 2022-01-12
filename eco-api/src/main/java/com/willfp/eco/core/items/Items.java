@@ -39,7 +39,7 @@ public final class Items {
     /**
      * Cached custom item lookups, using {@link FastItemStack#hashCode()}.
      */
-    private static final Map<Integer, NamespacedKey> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, TestableItem> CACHE = new ConcurrentHashMap<>();
 
     /**
      * All item providers.
@@ -295,14 +295,11 @@ public final class Items {
     @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
         int hash = FastItemStack.wrap(itemStack).hashCode();
-        NamespacedKey itemKey = CACHE.get(hash);
-        if (itemKey != null) {
-            TestableItem found = REGISTRY.get(itemKey);
-            if (found != null) {
-                return getOrWrap(found);
-            } else {
-                CACHE.remove(hash);
-            }
+        TestableItem cached = CACHE.get(hash);
+        if (cached != null) {
+            return getOrWrap(cached);
+        } else {
+            CACHE.remove(hash);
         }
 
         TestableItem match = null;
@@ -318,9 +315,7 @@ public final class Items {
             return null;
         }
 
-        if (match instanceof CustomItem custom) {
-            CACHE.put(hash, custom.getKey());
-        }
+        CACHE.put(hash, match);
 
         return getOrWrap(match);
     }
