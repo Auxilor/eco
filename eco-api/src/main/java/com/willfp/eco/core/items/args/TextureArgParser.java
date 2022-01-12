@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  * @deprecated Moved to internals.
  */
 @Deprecated(since = "6.16.0", forRemoval = true)
-@ApiStatus.ScheduledForRemoval(inVersion = "6.18.1")
+@ApiStatus.ScheduledForRemoval(inVersion = "6.18.2")
 public class TextureArgParser implements LookupArgParser {
     /**
      * Instantiate arg parser.

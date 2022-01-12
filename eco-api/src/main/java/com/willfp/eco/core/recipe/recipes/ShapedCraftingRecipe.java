@@ -111,7 +111,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
                 List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 assert lore != null;
                 lore.add("");
-                String add = Eco.getHandler().getEcoPlugin().getLangYml().getString("multiple-in-craft");
+                String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
                 add = add.replace("%amount%", String.valueOf(item.getAmount()));
                 lore.add(add);
                 meta.setLore(lore);

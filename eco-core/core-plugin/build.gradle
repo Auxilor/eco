@@ -36,7 +36,7 @@ dependencies {
     compileOnly 'com.zaxxer:HikariCP:5.0.0'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0'
     compileOnly 'com.github.EssentialsX:Essentials:2.19.0'
-    compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
+    compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:1.8.3'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'world.bentobox:bentobox:1.17.3-SNAPSHOT'
     compileOnly 'com.google.guava:guava:31.0.1-jre'

@@ -15,6 +15,7 @@ dependencies {
     compileOnly 'org.apache.maven:maven-artifact:3.8.1'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.1-SNAPSHOT'
     compileOnly 'com.google.code.gson:gson:2.8.8'
+    compileOnly 'org.apache.commons:commons-lang3:3.0'
 }
 
 java {
