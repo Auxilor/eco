@@ -236,7 +236,7 @@ public final class NumberUtils {
      * Evaluate an expression.
      *
      * @param expression The expression.
-     * @return The value of the expression.
+     * @return The value of the expression, or zero if invalid.
      */
     public static double evaluateExpression(@NotNull final String expression) {
         return evaluateExpression(expression, null);
@@ -247,7 +247,7 @@ public final class NumberUtils {
      *
      * @param expression The expression.
      * @param player     The player.
-     * @return The value of the expression.
+     * @return The value of the expression, or zero if invalid.
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player) {

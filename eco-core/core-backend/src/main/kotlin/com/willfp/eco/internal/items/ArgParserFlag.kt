@@ -11,12 +11,7 @@ class ArgParserFlag : LookupArgParser {
         val flags = mutableSetOf<ItemFlag>()
 
         for (arg in args) {
-            val flag = try {
-                ItemFlag.valueOf(arg.uppercase())
-            } catch (e: Exception) {
-                null
-            } ?: continue
-
+            val flag = kotlin.runCatching { ItemFlag.valueOf(arg.uppercase()) }.getOrNull() ?: continue
             flags.add(flag)
         }
 

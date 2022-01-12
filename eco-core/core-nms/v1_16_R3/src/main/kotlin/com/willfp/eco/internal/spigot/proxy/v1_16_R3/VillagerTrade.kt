@@ -1,4 +1,5 @@
 package com.willfp.eco.internal.spigot.proxy.v1_16_R3
+
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxy.VillagerTradeProxy
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantRecipe
@@ -30,21 +31,11 @@ class VillagerTrade : VillagerTradeProxy {
     }
 
     private fun getHandle(recipe: CraftMerchantRecipe): net.minecraft.server.v1_16_R3.MerchantRecipe {
-        try {
-            return handle[recipe] as net.minecraft.server.v1_16_R3.MerchantRecipe
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        }
-        throw IllegalArgumentException("Not CMR")
+        return handle[recipe] as net.minecraft.server.v1_16_R3.MerchantRecipe
     }
 
     init {
-        try {
-            handle = CraftMerchantRecipe::class.java.getDeclaredField("handle")
-            handle.isAccessible = true
-        } catch (e: NoSuchFieldException) {
-            e.printStackTrace()
-            throw RuntimeException("Error!")
-        }
+        handle = CraftMerchantRecipe::class.java.getDeclaredField("handle")
+        handle.isAccessible = true
     }
 }

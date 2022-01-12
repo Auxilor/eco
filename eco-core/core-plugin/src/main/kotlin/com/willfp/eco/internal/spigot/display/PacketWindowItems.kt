@@ -47,34 +47,42 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         handleRateLimit(player)
 
         if (usingAsync(player)) {
-            val newPacket = packet.shallowClone()
-
-            fun modifyAndSend(itemStacks: MutableList<ItemStack>, windowId: Int, player: Player) {
-                modifyWindowItems(itemStacks, windowId, player)
-
-                newPacket.itemListModifier.write(0, itemStacks)
-
-                ignorePacketList.add(player.name)
-
-                ProtocolLibrary.getProtocolManager().sendServerPacket(player, newPacket)
-            }
-
             executor.execute {
-                try {
-                    modifyAndSend(itemStacks, windowId, player)
-                } catch (e: Exception) {
+                runCatching {
+                    modifyAndSend(packet.shallowClone(), itemStacks, windowId, player)
+                }.onFailure {
                     if (this.getPlugin().configYml.getBool("async-display.log-errors")) {
-                        this.getPlugin().logger.warning("Error happened in async processing! Disable async display (/plugins/eco/config.yml)" +
-                                "if this is a frequent issue. (Remember to disable ratelimit and emergency too)")
-                    }
-
-                    this.getPlugin().scheduler.run {
-                        modifyAndSend(itemStacks, windowId, player)
+                        this.getPlugin().logger.warning(
+                            "Error happened in async processing! Disable async display (/plugins/eco/config.yml)" +
+                                    "if this is a frequent issue. (Remember to disable ratelimit and emergency too)"
+                        )
                     }
                 }
             }
         } else {
-            packet.itemListModifier.write(0, modifyWindowItems(itemStacks, windowId, player))
+            modifyPacket(packet, itemStacks, windowId, player)
+        }
+    }
+
+    private fun modifyPacket(
+        packet: PacketContainer,
+        itemStacks: MutableList<ItemStack>,
+        windowId: Int,
+        player: Player
+    ) {
+        packet.itemListModifier.write(0, modifyWindowItems(itemStacks, windowId, player))
+    }
+
+    private fun modifyAndSend(
+        packet: PacketContainer,
+        itemStacks: MutableList<ItemStack>,
+        windowId: Int,
+        player: Player
+    ) {
+        modifyPacket(packet, itemStacks, windowId, player)
+        ignorePacketList.add(player.name)
+        this.getPlugin().scheduler.run {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
         }
     }
 

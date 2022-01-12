@@ -5,7 +5,6 @@ package com.willfp.eco.internal.config.yaml
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration
-import org.bukkit.configuration.InvalidConfigurationException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileOutputStream
@@ -23,13 +22,7 @@ open class EcoLoadableYamlConfig(
     private val name: String = "$configName.yml"
 
     fun reloadFromFile() {
-        try {
-            handle.load(getConfigFile())
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: InvalidConfigurationException) {
-            e.printStackTrace()
-        }
+        handle.load(getConfigFile())
     }
 
     final override fun createFile() {

@@ -55,7 +55,7 @@ class MySQLDataHandler(
         }
 
         // Get Exposed to shut the hell up
-        try {
+        runCatching {
             exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
                 .apply {
                     get(exposedLogger).apply {
@@ -63,8 +63,6 @@ class MySQLDataHandler(
                             .invoke(this, Level.OFF)
                     }
                 }
-        } catch (e: Exception) {
-            Eco.getHandler().ecoPlugin.logger.warning("Failed to silence Exposed logger! You might get some console spam")
         }
     }
 

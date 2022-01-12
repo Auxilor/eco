@@ -24,11 +24,7 @@ open class EcoLoadableJSONConfig(
     private val name: String = "$configName.json"
 
     fun reloadFromFile() {
-        try {
-            init(configFile)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        runCatching { init(configFile) }.onFailure { it.printStackTrace() }
     }
 
     final override fun createFile() {
@@ -94,11 +90,7 @@ open class EcoLoadableJSONConfig(
             createFile()
         }
         configFile = File(directory, name)
-        try {
-            init(configFile)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        init(configFile)
         plugin.configHandler.addConfig(this)
     }
 }

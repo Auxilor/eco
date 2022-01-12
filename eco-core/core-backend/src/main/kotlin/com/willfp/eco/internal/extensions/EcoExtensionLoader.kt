@@ -10,8 +10,6 @@ import com.willfp.eco.core.extensions.MalformedExtensionException
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.InputStreamReader
-import java.net.MalformedURLException
-import java.net.URL
 import java.net.URLClassLoader
 
 class EcoExtensionLoader(
@@ -32,9 +30,7 @@ class EcoExtensionLoader(
                 continue
             }
 
-            try {
-                loadExtension(extensionJar)
-            } catch (e: MalformedExtensionException) {
+            runCatching { loadExtension(extensionJar) }.onFailure {
                 this.plugin.logger.warning(extensionJar.name + " caused an error!")
             }
         }
@@ -42,13 +38,7 @@ class EcoExtensionLoader(
 
     @Throws(MalformedExtensionException::class)
     private fun loadExtension(extensionJar: File) {
-        lateinit var url: URL
-
-        try {
-            url = extensionJar.toURI().toURL()
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-        }
+        val url = extensionJar.toURI().toURL()
 
         val classLoader = URLClassLoader(arrayOf(url), this.plugin::class.java.classLoader)
         val ymlIn = classLoader.getResourceAsStream("extension.yml")

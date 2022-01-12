@@ -24,15 +24,15 @@ class EcoConfigHandler(
 
     override fun callUpdate() {
         for (method in reflections.getMethodsAnnotatedWith(ConfigUpdater::class.java)) {
-            try {
+            kotlin.runCatching {
                 when (method.parameterCount) {
                     0 -> method.invoke(null)
                     1 -> method.invoke(null, this.plugin)
                     else -> throw InvalidUpdateMethodException("Update method must have 0 parameters or a plugin parameter.")
                 }
-            } catch (e: ReflectiveOperationException) {
-                e.printStackTrace()
-                throw InvalidUpdateMethodException("Update method generated an exception")
+            }.onFailure {
+                it.printStackTrace()
+                plugin.logger.severe("Update method ${method.toGenericString()} generated an exception")
             }
         }
     }
