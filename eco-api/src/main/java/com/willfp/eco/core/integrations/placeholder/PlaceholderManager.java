@@ -78,6 +78,14 @@ public final class PlaceholderManager {
         EcoPlugin owner = player == null ? Eco.getHandler().getEcoPlugin() : plugin;
         PlaceholderEntry entry = REGISTERED_PLACEHOLDERS.getOrDefault(owner, new HashMap<>()).get(identifier.toLowerCase());
 
+        if (entry == null && plugin != null) {
+            PlaceholderEntry alternate = REGISTERED_PLACEHOLDERS.getOrDefault(Eco.getHandler().getEcoPlugin(), new HashMap<>())
+                    .get(identifier.toLowerCase());
+            if (alternate != null) {
+                entry = alternate;
+            }
+        }
+
         if (entry == null) {
             return "";
         }
