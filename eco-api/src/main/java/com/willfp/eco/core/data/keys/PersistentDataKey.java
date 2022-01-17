@@ -54,15 +54,6 @@ public class PersistentDataKey<T> {
     }
 
     /**
-     * Get all persistent data keys.
-     *
-     * @return The keys.
-     */
-    public static Set<PersistentDataKey<?>> values() {
-        return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
-    }
-
-    /**
      * Get the key.
      *
      * @return The key.
@@ -87,5 +78,14 @@ public class PersistentDataKey<T> {
      */
     public PersistentDataKeyType getType() {
         return this.type;
+    }
+
+    /**
+     * Get all persistent data keys.
+     *
+     * @return The keys.
+     */
+    public static Set<PersistentDataKey<?>> values() {
+        return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
     }
 }
