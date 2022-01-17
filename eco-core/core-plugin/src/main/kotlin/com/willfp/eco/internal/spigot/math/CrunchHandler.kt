@@ -12,7 +12,7 @@ private val goToZero = Crunch.compileExpression("0")
 
 fun evaluateExpression(expression: String, player: Player?): Double {
     val placeholderValues = PlaceholderManager.findPlaceholdersIn(expression)
-        .map { PlaceholderManager.getResult(player, expression) }
+        .map { PlaceholderManager.translatePlaceholders(expression, player) }
         .map { runCatching { FastNumberParsing.parseDouble(it) }.getOrDefault(0.0) }
         .toDoubleArray()
 

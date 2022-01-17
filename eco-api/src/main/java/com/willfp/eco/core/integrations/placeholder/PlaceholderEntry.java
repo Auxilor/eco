@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.placeholder;
 
+import com.willfp.eco.core.EcoPlugin;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -29,11 +30,19 @@ public class PlaceholderEntry {
     private final boolean requiresPlayer;
 
     /**
+     * The plugin for the placeholder.
+     */
+    @Nullable
+    private final EcoPlugin plugin;
+
+    /**
      * Create a placeholder entry that doesn't require a player.
      *
      * @param identifier The identifier of the placeholder.
      * @param function   A lambda to get the result of the placeholder given a player.
+     * @deprecated Specify a plugin.
      */
+    @Deprecated
     public PlaceholderEntry(@NotNull final String identifier,
                             @NotNull final Function<Player, String> function) {
         this(identifier, function, false);
@@ -45,10 +54,41 @@ public class PlaceholderEntry {
      * @param identifier     The identifier of the placeholder.
      * @param function       A lambda to get the result of the placeholder.
      * @param requiresPlayer If the placeholder requires a player.
+     * @deprecated Specify a plugin.
      */
+    @Deprecated
     public PlaceholderEntry(@NotNull final String identifier,
                             @NotNull final Function<Player, String> function,
                             final boolean requiresPlayer) {
+        this(null, identifier, function, requiresPlayer);
+    }
+
+    /**
+     * Create a placeholder entry that doesn't require a player.
+     *
+     * @param plugin     The plugin for the placeholder.
+     * @param identifier The identifier of the placeholder.
+     * @param function   A lambda to get the result of the placeholder given a player.
+     */
+    public PlaceholderEntry(@Nullable final EcoPlugin plugin,
+                            @NotNull final String identifier,
+                            @NotNull final Function<Player, String> function) {
+        this(plugin, identifier, function, false);
+    }
+
+    /**
+     * Create a placeholder entry that may require a player.
+     *
+     * @param plugin         The plugin for the placeholder.
+     * @param identifier     The identifier of the placeholder.
+     * @param function       A lambda to get the result of the placeholder.
+     * @param requiresPlayer If the placeholder requires a player.
+     */
+    public PlaceholderEntry(@Nullable final EcoPlugin plugin,
+                            @NotNull final String identifier,
+                            @NotNull final Function<Player, String> function,
+                            final boolean requiresPlayer) {
+        this.plugin = plugin;
         this.identifier = identifier;
         this.function = function;
         this.requiresPlayer = requiresPlayer;
@@ -83,6 +123,16 @@ public class PlaceholderEntry {
      */
     public String getIdentifier() {
         return identifier;
+    }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    @Nullable
+    public EcoPlugin getPlugin() {
+        return plugin;
     }
 
     /**

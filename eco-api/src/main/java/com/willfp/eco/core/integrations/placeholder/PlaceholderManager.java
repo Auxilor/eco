@@ -1,5 +1,7 @@
 package com.willfp.eco.core.integrations.placeholder;
 
+import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +20,7 @@ public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final Map<String, PlaceholderEntry> REGISTERED_PLACEHOLDERS = new HashMap<>();
+    private static final Map<EcoPlugin, Map<String, PlaceholderEntry>> REGISTERED_PLACEHOLDERS = new HashMap<>();
 
     /**
      * All registered placeholder integrations.
@@ -41,8 +43,11 @@ public final class PlaceholderManager {
      * @param expansion The {@link PlaceholderEntry} to register.
      */
     public static void registerPlaceholder(@NotNull final PlaceholderEntry expansion) {
-        REGISTERED_PLACEHOLDERS.remove(expansion.getIdentifier());
-        REGISTERED_PLACEHOLDERS.put(expansion.getIdentifier(), expansion);
+        EcoPlugin plugin = expansion.getPlugin() == null ? Eco.getHandler().getEcoPlugin() : expansion.getPlugin();
+        Map<String, PlaceholderEntry> pluginPlaceholders = REGISTERED_PLACEHOLDERS
+                .getOrDefault(plugin, new HashMap<>());
+        pluginPlaceholders.put(expansion.getIdentifier(), expansion);
+        REGISTERED_PLACEHOLDERS.put(plugin, pluginPlaceholders);
     }
 
     /**
@@ -51,10 +56,28 @@ public final class PlaceholderManager {
      * @param player     The player to get the result from.
      * @param identifier The placeholder identifier.
      * @return The value of the placeholder.
+     * @deprecated Specify a plugin to get the result from.
      */
+    @Deprecated
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier) {
-        PlaceholderEntry entry = REGISTERED_PLACEHOLDERS.get(identifier.toLowerCase());
+        return getResult(player, identifier, null);
+    }
+
+    /**
+     * Get the result of a placeholder with respect to a player.
+     *
+     * @param player     The player to get the result from.
+     * @param identifier The placeholder identifier.
+     * @param plugin     The plugin for the placeholder.
+     * @return The value of the placeholder.
+     */
+    public static String getResult(@Nullable final Player player,
+                                   @NotNull final String identifier,
+                                   @Nullable final EcoPlugin plugin) {
+        EcoPlugin owner = player == null ? Eco.getHandler().getEcoPlugin() : plugin;
+        PlaceholderEntry entry = REGISTERED_PLACEHOLDERS.getOrDefault(owner, new HashMap<>()).get(identifier.toLowerCase());
+
         if (entry == null) {
             return "";
         }

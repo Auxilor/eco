@@ -32,7 +32,7 @@ class PlaceholderIntegrationPAPI(private val plugin: EcoPlugin) : PlaceholderExp
         player: Player?,
         identifier: String
     ): String {
-        return PlaceholderManager.getResult(player, identifier)
+        return PlaceholderManager.getResult(player, identifier, plugin)
     }
 
     override fun registerIntegration() {
