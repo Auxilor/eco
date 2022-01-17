@@ -20,7 +20,7 @@ open class EcoUpdatableJSONConfig(
     fun update() {
         super.clearCache()
         this.init(configFile)
-        val newConfig = configInJar
+        val newConfig = configInJar ?: return
         if (newConfig.getKeys(true) == this.getKeys(true)) {
             return
         }
@@ -43,9 +43,9 @@ open class EcoUpdatableJSONConfig(
         this.save()
     }
 
-    private val configInJar: YamlConfiguration
+    private val configInJar: YamlConfiguration?
         get() {
-            val newIn = this.source.getResourceAsStream(resourcePath) ?: throw NullPointerException("$name is null?")
+            val newIn = this.source.getResourceAsStream(resourcePath) ?: return null
             val reader = BufferedReader(InputStreamReader(newIn, StandardCharsets.UTF_8))
             val newConfig = YamlConfiguration()
             newConfig.load(reader)
