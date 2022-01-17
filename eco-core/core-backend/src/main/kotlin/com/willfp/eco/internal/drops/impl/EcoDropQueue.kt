@@ -73,12 +73,10 @@ open class EcoDropQueue(val player: Player) : InternalDropQueue {
                 world.dropItem(location, drop!!).velocity = Vector()
             }
             if (xp > 0) {
-                val event = PlayerExpChangeEvent(player, xp)
-                Bukkit.getPluginManager().callEvent(event)
                 val orb =
                     world.spawnEntity(player.location.add(0.0, 0.2, 0.0), EntityType.EXPERIENCE_ORB) as ExperienceOrb
                 orb.velocity = Vector(0, 0, 0)
-                orb.experience = event.amount
+                orb.experience = xp
             }
         } else {
             for (drop in items) {
