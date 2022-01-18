@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.events.PacketEvent
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.AbstractPacketAdapter
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.fast.FastItemStack
@@ -47,17 +48,10 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         handleRateLimit(player)
 
         if (usingAsync(player)) {
+            val newPacket = packet.shallowClone()
+
             executor.execute {
-                runCatching {
-                    modifyAndSend(packet.shallowClone(), itemStacks, windowId, player)
-                }.onFailure {
-                    if (this.getPlugin().configYml.getBool("async-display.log-errors")) {
-                        this.getPlugin().logger.warning(
-                            "Error happened in async processing! Disable async display (/plugins/eco/config.yml)" +
-                                    "if this is a frequent issue. (Remember to disable ratelimit and emergency too)"
-                        )
-                    }
-                }
+                runCatchingWithLogs { modifyAndSend(newPacket, itemStacks, windowId, player) }
             }
         } else {
             modifyPacket(packet, itemStacks, windowId, player)
@@ -82,7 +76,7 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         modifyPacket(packet, itemStacks, windowId, player)
         ignorePacketList.add(player.name)
         this.getPlugin().scheduler.run {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet)
+            runCatchingWithLogs { ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet) }
         }
     }
 
@@ -168,5 +162,16 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         }
 
         return itemStacks
+    }
+}
+
+private inline fun <T> runCatchingWithLogs(toRun: () -> T): Result<T> {
+    return runCatching { toRun() }.onFailure {
+        if (Eco.getHandler().ecoPlugin.configYml.getBool("async-display.log-errors")) {
+            Eco.getHandler().ecoPlugin.logger.warning(
+                "Error happened in async processing! Disable async display (/plugins/eco/config.yml)" +
+                        "if this is a frequent issue. (Remember to disable ratelimit and emergency too)"
+            )
+        }
     }
 }

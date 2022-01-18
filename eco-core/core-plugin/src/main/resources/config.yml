@@ -69,14 +69,14 @@ async-display:
     # If emergency async should be used.
     enabled: true
     # Below this TPS value, emergency async display will be used.
-    cutoff: 18
+    cutoff: 17
 
   # If players with a large amount of display packets should have their processing
   # done asynchronously. This will help if a player is trying to crash the server
   # by overloading the display system.
   ratelimit:
     # If rate limit async display should be used.
-    enabled: true
+    enabled: false
     # The amount of window items packets per timeframe needed to enable async display
     # for a specified player.
     cutoff: 4
