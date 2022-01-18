@@ -48,7 +48,7 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         handleRateLimit(player)
 
         if (usingAsync(player)) {
-            val newPacket = packet.shallowClone()
+            val newPacket = packet.deepClone()
 
             executor.execute {
                 runCatchingWithLogs { modifyAndSend(newPacket, itemStacks, windowId, player) }
