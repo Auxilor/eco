@@ -11,12 +11,12 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 class CustomItemsExecutableItems: CustomItemsWrapper {
     override fun registerAllItems() {
-        Items.registerItemProvider(ItemsAdderProvider())
+        Items.registerItemProvider(ExecutableItemsProvider())
     }
     override fun getPluginName(): String {
         return "ExecutableItems"
     }
-    private class ItemsAdderProvider : ItemProvider("executableitems") {
+    private class ExecutableItemsProvider : ItemProvider("executableitems") {
         override fun provideForKey(key: String): TestableItem? {
             val item = ExecutableItemsAPI.getExecutableItem(key) ?: return null
             val namespacedKey = NamespacedKeyUtils.create("executableitems", key)

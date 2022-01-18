@@ -12,12 +12,12 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 class CustomItemsCustomCrafting: CustomItemsWrapper {
     override fun registerAllItems() {
-        Items.registerItemProvider(ItemsAdderProvider())
+        Items.registerItemProvider(CustomCraftingProvider())
     }
     override fun getPluginName(): String {
         return "CustomCrafting"
     }
-    private class ItemsAdderProvider : ItemProvider("customcrafting") {
+    private class CustomCraftingProvider : ItemProvider("customcrafting") {
         override fun provideForKey(key: String): TestableItem? {
             val nKey = key.replace("customcrafting:", "", ignoreCase = true)
             val itemKey = NamespacedKey("customcrafting", nKey)
