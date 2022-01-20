@@ -75,7 +75,7 @@ public final class PlaceholderManager {
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier,
                                    @Nullable final EcoPlugin plugin) {
-        EcoPlugin owner = player == null ? Eco.getHandler().getEcoPlugin() : plugin;
+        EcoPlugin owner = plugin == null ? Eco.getHandler().getEcoPlugin() : plugin;
         PlaceholderEntry entry = REGISTERED_PLACEHOLDERS.getOrDefault(owner, new HashMap<>()).get(identifier.toLowerCase());
 
         if (entry == null && plugin != null) {
