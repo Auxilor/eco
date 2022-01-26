@@ -1,6 +1,7 @@
 package com.willfp.eco.core.data.keys;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,7 @@ public final class PersistentDataKeyType<T> {
      *
      * @return The registered types.
      */
+    @NotNull
     public static PersistentDataKeyType<?>[] values() {
         return VALUES.toArray(new PersistentDataKeyType[0]);
     }
@@ -91,8 +93,9 @@ public final class PersistentDataKeyType<T> {
      * Get a key type from a name.
      *
      * @param name The name.
-     * @return The type.
+     * @return The type, or null if not found.
      */
+    @Nullable
     public static PersistentDataKeyType<?> valueOf(@NotNull final String name) {
         for (PersistentDataKeyType<?> type : VALUES) {
             if (type.name.equalsIgnoreCase(name)) {
@@ -100,6 +103,6 @@ public final class PersistentDataKeyType<T> {
             }
         }
 
-        throw new IllegalArgumentException("Invalid name!");
+        return null;
     }
 }
