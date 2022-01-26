@@ -25,7 +25,7 @@ public class PersistentDataKey<T> {
     /**
      * The persistent data key type.
      */
-    private final PersistentDataKeyType type;
+    private final PersistentDataKeyType<T> type;
 
     /**
      * Create a new Persistent Data Key.
@@ -35,7 +35,7 @@ public class PersistentDataKey<T> {
      * @param defaultValue The default value.
      */
     public PersistentDataKey(@NotNull final NamespacedKey key,
-                             @NotNull final PersistentDataKeyType type,
+                             @NotNull final PersistentDataKeyType<T> type,
                              @NotNull final T defaultValue) {
         this.key = key;
         this.defaultValue = defaultValue;
@@ -76,7 +76,7 @@ public class PersistentDataKey<T> {
      *
      * @return The key type.
      */
-    public PersistentDataKeyType getType() {
+    public PersistentDataKeyType<T> getType() {
         return this.type;
     }
 
