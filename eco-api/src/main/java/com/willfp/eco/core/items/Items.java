@@ -1,7 +1,5 @@
 package com.willfp.eco.core.items;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
@@ -12,7 +10,6 @@ import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
