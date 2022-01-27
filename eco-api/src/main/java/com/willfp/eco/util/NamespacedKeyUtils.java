@@ -4,8 +4,6 @@ import com.willfp.eco.core.Eco;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-
 /**
  * Utilities / API methods for {@link NamespacedKey}s.
  */
@@ -32,8 +30,8 @@ public final class NamespacedKeyUtils {
     public static NamespacedKey create(@NotNull final String namespace,
                                        @NotNull final String key) {
         return Eco.getHandler().createNamespacedKey(
-                namespace.toLowerCase(Locale.ROOT),
-                key.toLowerCase(Locale.ROOT)
+                namespace,
+                key
         );
     }
 
@@ -51,7 +49,7 @@ public final class NamespacedKeyUtils {
 
         return NamespacedKeyUtils.create(
                 string.substring(0, index),
-                string.substring(index)
+                string.substring(index + 1)
         );
     }
 
