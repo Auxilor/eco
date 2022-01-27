@@ -19,6 +19,7 @@ import com.willfp.eco.core.requirement.RequirementFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
@@ -243,4 +244,19 @@ public interface Handler {
      */
     @NotNull
     Entity createDummyEntity(@NotNull Location location);
+
+    /**
+     * Create a {@link NamespacedKey} quickly
+     * <p>
+     * Bypasses the constructor, allowing for the creation of invalid keys,
+     * therefore this is considered unsafe and should only be called after
+     * the key has been confirmed to be valid.
+     *
+     * @param namespace The namespace.
+     * @param key       The key.
+     * @return The key.
+     */
+    @NotNull
+    NamespacedKey createNamespacedKey(@NotNull String namespace,
+                                      @NotNull String key);
 }

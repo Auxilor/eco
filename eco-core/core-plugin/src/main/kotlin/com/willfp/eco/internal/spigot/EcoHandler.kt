@@ -14,6 +14,7 @@ import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
 import com.willfp.eco.internal.factory.EcoRunnableFactory
+import com.willfp.eco.internal.fast.EcoFastNamespacedKeyFactory
 import com.willfp.eco.internal.gui.EcoGUIFactory
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
@@ -29,6 +30,7 @@ import com.willfp.eco.internal.spigot.proxy.DummyEntityProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
 import java.util.logging.Logger
@@ -146,5 +148,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun createDummyEntity(location: Location): Entity {
         return getProxy(DummyEntityProxy::class.java).createDummyEntity(location)
+    }
+
+    override fun createNamespacedKey(namespace: String, key: String): NamespacedKey {
+        return EcoFastNamespacedKeyFactory.create(namespace, key)
     }
 }

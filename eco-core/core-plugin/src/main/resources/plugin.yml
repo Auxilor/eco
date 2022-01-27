@@ -57,3 +57,4 @@ libraries:
   - 'com.google.guava:guava:31.0.1-jre'
   - 'com.zaxxer:HikariCP:5.0.0'
   - 'org.apache.commons:commons-lang3:3.0'
+  - 'org.objenesis:objenesis:3.2'
