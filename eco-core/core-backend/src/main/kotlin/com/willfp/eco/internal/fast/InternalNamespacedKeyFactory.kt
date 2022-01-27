@@ -17,7 +17,7 @@ class FastInternalNamespacedKeyFactory : InternalNamespacedKeyFactory {
 
     override fun create(namespace: String, key: String): NamespacedKey {
         val namespacedKey = creator.newInstance()
-        namespaceField.set(namespacedKey, key.lowercase())
+        keyField.set(namespacedKey, key.lowercase())
         namespaceField.set(namespacedKey, namespace.lowercase())
         return namespacedKey
     }
