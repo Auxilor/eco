@@ -1,14 +1,14 @@
 package com.willfp.eco.internal.fast
 
 import org.bukkit.NamespacedKey
-import org.objenesis.ObjenesisSerializer
+import org.objenesis.ObjenesisStd
 
 interface InternalNamespacedKeyFactory {
     fun create(namespace: String, key: String): NamespacedKey
 }
 
 class FastInternalNamespacedKeyFactory : InternalNamespacedKeyFactory {
-    private val creator = ObjenesisSerializer().getInstantiatorOf(NamespacedKey::class.java)
+    private val creator = ObjenesisStd().getInstantiatorOf(NamespacedKey::class.java)
     private val namespaceField = NamespacedKey::class.java.getDeclaredField("namespace")
         .apply { isAccessible = true }
     private val keyField = NamespacedKey::class.java.getDeclaredField("key")
