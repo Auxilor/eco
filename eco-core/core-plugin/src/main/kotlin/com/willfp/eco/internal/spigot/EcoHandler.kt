@@ -14,7 +14,8 @@ import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
 import com.willfp.eco.internal.factory.EcoRunnableFactory
-import com.willfp.eco.internal.fast.EcoFastNamespacedKeyFactory
+import com.willfp.eco.internal.fast.FastInternalNamespacedKeyFactory
+import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.EcoGUIFactory
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
@@ -45,6 +46,8 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         if (this.configYml.getBool("mysql.enabled"))
             MySQLDataHandler(this) else YamlDataHandler(this)
     )
+    private val keyFactory = if (this.configYml.getBool("use-safer-namespacedkey-creation"))
+        SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
     override fun createScheduler(plugin: EcoPlugin): EcoScheduler {
         return EcoScheduler(plugin)
@@ -151,6 +154,6 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     }
 
     override fun createNamespacedKey(namespace: String, key: String): NamespacedKey {
-        return EcoFastNamespacedKeyFactory.create(namespace, key)
+        return keyFactory.create(namespace, key)
     }
 }

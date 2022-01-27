@@ -6,6 +6,7 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
+import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +59,10 @@ public final class Recipes {
         }
 
         if (key.getKey().contains("_displayed")) {
-            NamespacedKey otherKey = new NamespacedKey(key.getNamespace(), key.getKey().replace("_displayed", ""));
+            NamespacedKey otherKey = NamespacedKeyUtils.create(
+                    key.getNamespace(),
+                    key.getKey().replace("_displayed", "")
+            );
 
             return RECIPES.get(otherKey);
         }

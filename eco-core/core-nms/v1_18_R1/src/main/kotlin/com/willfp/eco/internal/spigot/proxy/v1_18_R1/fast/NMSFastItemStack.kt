@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_18_R1.fast
 
 import com.willfp.eco.internal.fast.EcoFastItemStack
+import com.willfp.eco.util.NamespacedKeyUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
@@ -11,7 +12,6 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
@@ -32,7 +32,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             val compound = base as CompoundTag
             val key = compound.getString("id")
             val level = ('\uffff'.code.toShort() and compound.getShort("lvl")).toInt()
-            val found = Enchantment.getByKey(CraftNamespacedKey.fromStringOrNull(key))
+            val found = Enchantment.getByKey(NamespacedKeyUtils.fromString(key))
             if (found != null) {
                 foundEnchantments[found] = level
             }
