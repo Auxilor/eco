@@ -1,5 +1,7 @@
 package com.willfp.eco.core.items;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
@@ -10,6 +12,7 @@ import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -18,11 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -39,7 +38,7 @@ public final class Items {
     /**
      * Cached custom item lookups, using {@link FastItemStack#hashCode()}.
      */
-    private static final Map<Integer, TestableItem> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, Optional<TestableItem>> CACHE = new ConcurrentHashMap<>();
 
     /**
      * All item providers.
@@ -292,32 +291,28 @@ public final class Items {
      * @param itemStack The item.
      * @return The custom item, or null if not exists.
      */
-    @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
         int hash = FastItemStack.wrap(itemStack).hashCode();
-        TestableItem cached = CACHE.get(hash);
-        if (cached != null) {
-            return getOrWrap(cached);
+        // cache permits null values, so it should return that!
+        if (CACHE.containsKey(hash)) {
+            // don't use Optional.empty() using CACHE.getOrDefault() because it might affect the Optional.orElse(), and it's important to be an Optional!
+            return CACHE.get(hash).map(Items::getOrWrap).orElse(null);
         } else {
-            CACHE.remove(hash);
-        }
-
-        TestableItem match = null;
-
-        for (TestableItem item : REGISTRY.values()) {
-            if (item.matches(itemStack)) {
-                match = item;
-                break;
+            // no key found, search for one, if found
+            TestableItem match = null;
+            for (TestableItem item : REGISTRY.values()) {
+                if (item.matches(itemStack)) {
+                    match = item;
+                    break;
+                }
+            }
+            CACHE.put(hash, Optional.ofNullable(match)); // cache permits null values, store them too!
+            if (match == null) {
+                return null; // didn't found a match, return null
+            } else {
+                return getOrWrap(match);
             }
         }
-
-        if (match == null) {
-            return null;
-        }
-
-        CACHE.put(hash, match);
-
-        return getOrWrap(match);
     }
 
     /**
