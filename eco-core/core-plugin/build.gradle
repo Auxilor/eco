@@ -43,7 +43,7 @@ dependencies {
     compileOnly 'com.google.guava:guava:31.0.1-jre'
     compileOnly 'com.iridium:IridiumSkyblock:3.1.2'
     compileOnly 'com.github.WhipDevelopment:CrashClaim:f9cd7d92eb'
-    compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:1.7.8.1'
+    compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0'
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.1.2'
     compileOnly 'io.lumine.xikage:MythicMobs:4.9.1'
 
@@ -54,6 +54,9 @@ dependencies {
     // CombatLogX V11 + NewbieHelper Expansion
     compileOnly 'com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT'
     compileOnly 'com.github.sirblobman.combatlogx.expansion:newbie-helper:11.0.0.0-SNAPSHOT'
+
+    // LibsDisguises
+    compileOnly 'LibsDisguises:LibsDisguises:10.0.26'
 
     compileOnly fileTree(dir: '../../lib', include: ['*.jar'])
 }

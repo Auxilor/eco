@@ -55,24 +55,14 @@ import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV10
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefKingdoms
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.antigrief.*
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHolograms
@@ -208,6 +198,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
             IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
             IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
+            IntegrationLoader("RPGHorses") { AntigriefManager.register(AntigriefRPGHorses()) },
             //IntegrationLoader("CrashClaim") { AntigriefManager.register(AntigriefCrashClaim()) },
             IntegrationLoader("CombatLogX") {
                 val pluginManager = Bukkit.getPluginManager()
@@ -237,7 +228,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
-            IntegrationLoader("CustomCrafting") { CustomItemsManager.register(CustomItemsCustomCrafting()) },
+            IntegrationLoader("CustomCrafting") { CustomItemsManager.register(CustomItemsCustomCrafting()); ShapedRecipeListener.registerValidator(CustomRecipeCustomCrafting()) },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },

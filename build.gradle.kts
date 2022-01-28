@@ -67,6 +67,9 @@ allprojects {
 
         // Crunch
         maven("https://redempt.dev")
+
+        // LibsDisguises
+        maven("https://repo.md-5.net/content/groups/public/")
     }
 
     dependencies {
@@ -94,14 +97,12 @@ allprojects {
         exclude(group = "org.spongepowered", module = "configurate-hocon")
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
-        exclude(group = "org.apache.commons", module = "commons-lang3")
     }
 
     tasks {
         shadowJar {
             relocate("org.bstats", "com.willfp.eco.shaded.bstats")
             relocate("net.kyori.adventure.text.minimessage", "com.willfp.eco.shaded.minimessage")
-            relocate("redempt.crunch", "com.willfp.eco.shaded.crunch")
         }
 
         compileJava {

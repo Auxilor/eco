@@ -7,6 +7,7 @@ import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import com.willfp.eco.util.NamespacedKeyUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -96,6 +97,7 @@ public final class Recipes {
      * @param permission    The permission.
      * @return The recipe.
      */
+    @Nullable
     public static CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
                                                          @NotNull final String key,
                                                          @NotNull final ItemStack output,
@@ -107,6 +109,12 @@ public final class Recipes {
 
         for (int i = 0; i < 9; i++) {
             builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
+        }
+
+        if (builder.isAir()) {
+            Bukkit.getLogger().warning("RECIPE ERROR! " + plugin.getName() + ":" + key + " consists only");
+            Bukkit.getLogger().warning("of air or invalid items! Please change that or disable this recipe.");
+            return null;
         }
 
         ShapedCraftingRecipe recipe = builder.build();

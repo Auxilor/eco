@@ -24,7 +24,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements Listener {
+
+    private static final List<RecipeValidator> VALIDATORS = new ArrayList<>();
+
+    public static void registerValidator(RecipeValidator validator) {
+        VALIDATORS.add(validator);
+    }
+
     public ShapedRecipeListener(@NotNull final EcoPlugin plugin) {
         super(plugin);
     }
@@ -67,6 +77,11 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
+
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
@@ -104,6 +119,11 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
         }
 
         ItemStack[] matrix = event.getInventory().getMatrix();
+
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
@@ -136,10 +156,20 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (!(event.getInventory().getViewers().get(0) instanceof Player player)) {
+            return;
+        }
+
         ItemStack[] matrix = event.getInventory().getMatrix();
+
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         CraftingRecipe matched = Recipes.getMatch(matrix);
 
         if (matched == null) {
+            deny(event);
             return;
         }
 
@@ -216,6 +246,10 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
             TestableItem part = shapedCraftingRecipe.getParts().get(i);
@@ -256,14 +290,16 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = event.getInventory().getMatrix()[i];
             TestableItem part = shapedCraftingRecipe.getParts().get(i);
             if (part instanceof MaterialTestableItem) {
                 if (Items.isCustomItem(itemStack)) {
                     event.getInventory().setResult(new ItemStack(Material.AIR));
-                    event.setResult(Event.Result.DENY);
-                    event.setCancelled(true);
                     return;
                 }
             }
@@ -271,8 +307,6 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
                 if (modified.getHandle() instanceof MaterialTestableItem) {
                     if (Items.isCustomItem(itemStack)) {
                         event.getInventory().setResult(new ItemStack(Material.AIR));
-                        event.setResult(Event.Result.DENY);
-                        event.setCancelled(true);
                         return;
                     }
                 }
@@ -298,6 +332,10 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
             if (Items.isCustomItem(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
@@ -316,11 +354,13 @@ public class ShapedRecipeListener extends PluginDependent<EcoPlugin> implements 
             return;
         }
 
+        if (VALIDATORS.stream().anyMatch(validator -> validator.validate(event))) {
+            return;
+        }
+
         for (ItemStack itemStack : event.getInventory().getMatrix()) {
             if (Items.isCustomItem(itemStack)) {
                 event.getInventory().setResult(new ItemStack(Material.AIR));
-                event.setResult(Event.Result.DENY);
-                event.setCancelled(true);
                 return;
             }
         }

@@ -288,6 +288,20 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         }
 
         /**
+         * Check if recipe parts are all air.
+         *
+         * @return If recipe parts are all air.
+         */
+        public boolean isAir() {
+            for (TestableItem recipePart : this.recipeParts) {
+                if (recipePart!= null && !(recipePart instanceof EmptyTestableItem)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /**
          * Build the recipe.
          *
          * @return The built recipe.
