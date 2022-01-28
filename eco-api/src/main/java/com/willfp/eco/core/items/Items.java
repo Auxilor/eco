@@ -18,7 +18,12 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -288,28 +293,30 @@ public final class Items {
      * @param itemStack The item.
      * @return The custom item, or null if not exists.
      */
+    @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
         int hash = FastItemStack.wrap(itemStack).hashCode();
-        // cache permits null values, so it should return that!
+
         if (CACHE.containsKey(hash)) {
-            // don't use Optional.empty() using CACHE.getOrDefault() because it might affect the Optional.orElse(), and it's important to be an Optional!
             return CACHE.get(hash).map(Items::getOrWrap).orElse(null);
-        } else {
-            // no key found, search for one, if found
-            TestableItem match = null;
-            for (TestableItem item : REGISTRY.values()) {
-                if (item.matches(itemStack)) {
-                    match = item;
-                    break;
-                }
-            }
-            CACHE.put(hash, Optional.ofNullable(match)); // cache permits null values, store them too!
-            if (match == null) {
-                return null; // didn't found a match, return null
-            } else {
-                return getOrWrap(match);
+        }
+
+        TestableItem match = null;
+        for (TestableItem item : REGISTRY.values()) {
+            if (item.matches(itemStack)) {
+                match = item;
+                break;
             }
         }
+
+        // Cache even if not matched; allows for marking hashes as definitely not custom.
+        CACHE.put(hash, Optional.ofNullable(match));
+
+        if (match == null) {
+            return null;
+        }
+
+        return getOrWrap(match);
     }
 
     /**
