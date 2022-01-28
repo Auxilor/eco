@@ -47,6 +47,8 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         if (this.configYml.getBool("mysql.enabled"))
             MySQLDataHandler(this) else YamlDataHandler(this)
     )
+
+    @Suppress("RedundantNullableReturnType")
     private val keyFactory: InternalNamespacedKeyFactory? =
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
