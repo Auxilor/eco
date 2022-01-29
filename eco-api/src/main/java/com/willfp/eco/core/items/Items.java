@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -39,7 +40,7 @@ public final class Items {
     /**
      * Cached custom item lookups, using {@link FastItemStack#hashCode()}.
      */
-    private static final Map<Integer, TestableItem> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Integer, Optional<TestableItem>> CACHE = new ConcurrentHashMap<>();
 
     /**
      * All item providers.
@@ -295,15 +296,12 @@ public final class Items {
     @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
         int hash = FastItemStack.wrap(itemStack).hashCode();
-        TestableItem cached = CACHE.get(hash);
-        if (cached != null) {
-            return getOrWrap(cached);
-        } else {
-            CACHE.remove(hash);
+
+        if (CACHE.containsKey(hash)) {
+            return CACHE.get(hash).map(Items::getOrWrap).orElse(null);
         }
 
         TestableItem match = null;
-
         for (TestableItem item : REGISTRY.values()) {
             if (item.matches(itemStack)) {
                 match = item;
@@ -311,11 +309,12 @@ public final class Items {
             }
         }
 
+        // Cache even if not matched; allows for marking hashes as definitely not custom.
+        CACHE.put(hash, Optional.ofNullable(match));
+
         if (match == null) {
             return null;
         }
-
-        CACHE.put(hash, match);
 
         return getOrWrap(match);
     }
