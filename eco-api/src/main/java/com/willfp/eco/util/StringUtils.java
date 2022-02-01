@@ -71,6 +71,21 @@ public final class StringUtils {
             .build();
 
     /**
+     * String format cache.
+     */
+    private static final LoadingCache<FormatLookup, String> STRING_FORMAT_CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build(
+                    new CacheLoader<>() {
+                        @Override
+                        @NotNull
+                        public String load(@NotNull final FormatLookup key) {
+                            return format(key);
+                        }
+                    }
+            );
+
+    /**
      * Json -> Legacy Cache.
      */
     private static final LoadingCache<String, String> JSON_TO_LEGACY = CacheBuilder.newBuilder()
@@ -315,6 +330,12 @@ public final class StringUtils {
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
+        FormatLookup lookup = new FormatLookup(processedMessage, player);
+        return STRING_FORMAT_CACHE.getUnchecked(lookup);
+    }
+
+    private static String format(@NotNull final FormatLookup lookup) {
+        String processedMessage = lookup.message;
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
@@ -572,6 +593,11 @@ public final class StringUtils {
          * Completely formatted without placeholders.
          */
         WITHOUT_PLACEHOLDERS
+    }
+
+    private static record FormatLookup(@NotNull String message,
+                                       @Nullable Player player) {
+
     }
 
     private StringUtils() {
