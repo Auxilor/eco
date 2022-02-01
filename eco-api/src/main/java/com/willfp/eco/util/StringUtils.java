@@ -1,8 +1,7 @@
 package com.willfp.eco.util;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
@@ -73,34 +72,22 @@ public final class StringUtils {
     /**
      * String format cache.
      */
-    private static final LoadingCache<FormatLookup, String> STRING_FORMAT_CACHE = CacheBuilder.newBuilder()
+    private static final LoadingCache<FormatLookup, String> STRING_FORMAT_CACHE = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.SECONDS)
-            .build(
-                    new CacheLoader<>() {
-                        @Override
-                        @NotNull
-                        public String load(@NotNull final FormatLookup key) {
-                            return format(key);
-                        }
-                    }
-            );
+            .build(StringUtils::format);
 
     /**
      * Json -> Legacy Cache.
      */
-    private static final LoadingCache<String, String> JSON_TO_LEGACY = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, String> JSON_TO_LEGACY = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.SECONDS)
             .build(
-                    new CacheLoader<>() {
-                        @Override
-                        @NotNull
-                        public String load(@NotNull final String json) {
-                            try {
-                                Component component = GSON_COMPONENT_SERIALIZER.deserialize(json);
-                                return LEGACY_COMPONENT_SERIALIZER.serialize(component);
-                            } catch (JsonSyntaxException e) {
-                                return json;
-                            }
+                    json -> {
+                        try {
+                            Component component = GSON_COMPONENT_SERIALIZER.deserialize(json);
+                            return LEGACY_COMPONENT_SERIALIZER.serialize(component);
+                        } catch (JsonSyntaxException e) {
+                            return json;
                         }
                     }
             );
@@ -108,20 +95,14 @@ public final class StringUtils {
     /**
      * Legacy -> Json Cache.
      */
-    private static final LoadingCache<String, String> LEGACY_TO_JSON = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, String> LEGACY_TO_JSON = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.SECONDS)
             .build(
-                    new CacheLoader<>() {
-                        @Override
-                        @NotNull
-                        public String load(@NotNull final String legacy) {
-                            return GSON_COMPONENT_SERIALIZER.serialize(
-                                    Component.empty().decoration(TextDecoration.ITALIC, false).append(
-                                            LEGACY_COMPONENT_SERIALIZER.deserialize(legacy)
-                                    )
-                            );
-                        }
-                    }
+                    legacy -> GSON_COMPONENT_SERIALIZER.serialize(
+                            Component.empty().decoration(TextDecoration.ITALIC, false).append(
+                                    LEGACY_COMPONENT_SERIALIZER.deserialize(legacy)
+                            )
+                    )
             );
 
     /**
@@ -331,7 +312,7 @@ public final class StringUtils {
             processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
         }
         FormatLookup lookup = new FormatLookup(processedMessage, player);
-        return STRING_FORMAT_CACHE.getUnchecked(lookup);
+        return STRING_FORMAT_CACHE.get(lookup);
     }
 
     private static String format(@NotNull final FormatLookup lookup) {
@@ -488,7 +469,7 @@ public final class StringUtils {
             processed = "";
         }
 
-        return LEGACY_TO_JSON.getUnchecked(processed);
+        return LEGACY_TO_JSON.get(processed);
     }
 
     /**
@@ -503,7 +484,7 @@ public final class StringUtils {
             return "";
         }
 
-        return JSON_TO_LEGACY.getUnchecked(json);
+        return JSON_TO_LEGACY.get(json);
     }
 
     /**

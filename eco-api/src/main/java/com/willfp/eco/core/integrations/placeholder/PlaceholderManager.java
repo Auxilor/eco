@@ -1,8 +1,7 @@
 package com.willfp.eco.core.integrations.placeholder;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.Player;
@@ -34,22 +33,14 @@ public final class PlaceholderManager {
     /**
      * Placeholder Cache.
      */
-    private static final LoadingCache<EntryWithPlayer, String> PLACEHOLDER_CACHE = CacheBuilder.newBuilder()
+    private static final LoadingCache<EntryWithPlayer, String> PLACEHOLDER_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(50, TimeUnit.MILLISECONDS)
-            .build(
-                    new CacheLoader<>() {
-                        @Override
-                        @NotNull
-                        public String load(@NotNull final EntryWithPlayer key) {
-                            return key.entry.getResult(key.player);
-                        }
-                    }
-            );
+            .build(key -> key.entry.getResult(key.player));
 
     /**
      * Register a new placeholder integration.
      *
-     * @param integration The {@link PlaceholderIntegration} to register.
+     * @param integration The {@link com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration} to register.
      */
     public static void addIntegration(@NotNull final PlaceholderIntegration integration) {
         integration.registerIntegration();
@@ -59,7 +50,7 @@ public final class PlaceholderManager {
     /**
      * Register a placeholder.
      *
-     * @param expansion The {@link PlaceholderEntry} to register.
+     * @param expansion The {@link com.willfp.eco.core.integrations.placeholder.PlaceholderEntry} to register.
      */
     public static void registerPlaceholder(@NotNull final PlaceholderEntry expansion) {
         EcoPlugin plugin = expansion.getPlugin() == null ? Eco.getHandler().getEcoPlugin() : expansion.getPlugin();
@@ -113,7 +104,7 @@ public final class PlaceholderManager {
             return "";
         }
 
-        return PLACEHOLDER_CACHE.getUnchecked(new EntryWithPlayer(entry, player));
+        return PLACEHOLDER_CACHE.get(new EntryWithPlayer(entry, player));
     }
 
     /**

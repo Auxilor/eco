@@ -58,3 +58,4 @@ libraries:
   - 'com.google.guava:guava:31.0.1-jre'
   - 'com.zaxxer:HikariCP:5.0.0'
   - 'org.objenesis:objenesis:3.2'
+  - 'com.github.ben-manes.caffeine:caffeine:3.0.5'

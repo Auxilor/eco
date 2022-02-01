@@ -1,8 +1,7 @@
 package com.willfp.eco.core.items;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -42,23 +41,19 @@ public final class Items {
     /**
      * Cached custom item lookups, using {@link HashedItem}.
      */
-    private static final LoadingCache<HashedItem, Optional<TestableItem>> CACHE = CacheBuilder.newBuilder()
+    private static final LoadingCache<HashedItem, Optional<TestableItem>> CACHE = Caffeine.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(
-                    new CacheLoader<>() {
-                        @Override
-                        @NotNull
-                        public Optional<TestableItem> load(@NotNull final HashedItem key) {
-                            TestableItem match = null;
-                            for (TestableItem item : REGISTRY.values()) {
-                                if (item.matches(key.getItem())) {
-                                    match = item;
-                                    break;
-                                }
+                    key -> {
+                        TestableItem match = null;
+                        for (TestableItem item : REGISTRY.values()) {
+                            if (item.matches(key.getItem())) {
+                                match = item;
+                                break;
                             }
-
-                            return Optional.ofNullable(match);
                         }
+
+                        return Optional.ofNullable(match);
                     }
             );
 
@@ -315,7 +310,7 @@ public final class Items {
      */
     @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
-        return CACHE.getUnchecked(HashedItem.of(itemStack)).map(Items::getOrWrap).orElse(null);
+        return CACHE.get(HashedItem.of(itemStack)).map(Items::getOrWrap).orElse(null);
     }
 
     /**
