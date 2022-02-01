@@ -50,9 +50,17 @@ class EcoPlayerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
     uuid: UUID,
     handler: DataHandler
-) : EcoProfile(data, uuid, handler)
+) : EcoProfile(data, uuid, handler) {
+    override fun toString(): String {
+        return "EcoPlayerProfile{uuid=$uuid}"
+    }
+}
 
 class EcoServerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
     handler: DataHandler
-) : EcoProfile(data, serverProfileUUID, handler)
+) : EcoProfile(data, serverProfileUUID, handler) {
+    override fun toString(): String {
+        return "EcoServerProfile"
+    }
+}
