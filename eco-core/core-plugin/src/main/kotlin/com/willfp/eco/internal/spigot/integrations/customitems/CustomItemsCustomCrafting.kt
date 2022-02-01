@@ -10,6 +10,8 @@ import me.wolfyscript.utilities.util.NamespacedKey
 import me.wolfyscript.utilities.util.Registry
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
+
+@Suppress("DEPRECATED")
 class CustomItemsCustomCrafting: CustomItemsWrapper {
     override fun registerAllItems() {
         Items.registerItemProvider(CustomCraftingProvider())
