@@ -24,7 +24,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
         val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
-        return if (!query.testState(
+        return if (!query.testBuild(
                 BukkitAdapter.adapt(block.location),
                 localPlayer,
                 Flags.BLOCK_BREAK
@@ -46,7 +46,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
         val query: RegionQuery = container.createQuery()
         val world = location.world
         Validate.notNull(world, "World cannot be null!")
-        return if (!query.testState(BukkitAdapter.adapt(location), localPlayer, Flags.TNT)) {
+        return if (!query.testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.TNT)) {
             WorldGuard.getInstance().platform.sessionManager.hasBypass(
                 localPlayer,
                 BukkitAdapter.adapt(world)
@@ -61,7 +61,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
         val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
-        return if (!query.testState(
+        return if (!query.testBuild(
                 BukkitAdapter.adapt(block.location),
                 localPlayer,
                 Flags.BLOCK_PLACE
@@ -88,7 +88,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
             else -> return true
         }
 
-        return if (!query.testState(BukkitAdapter.adapt(victim.location), localPlayer, flag)) {
+        return if (!query.testBuild(BukkitAdapter.adapt(victim.location), localPlayer, flag)) {
             WorldGuard.getInstance().platform.sessionManager.hasBypass(
                 localPlayer,
                 BukkitAdapter.adapt(player.world)
@@ -104,7 +104,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
         val query: RegionQuery = container.createQuery()
         val world = location.world
         Validate.notNull(world, "World cannot be null!")
-        return if (!query.testState(BukkitAdapter.adapt(location), localPlayer, Flags.ITEM_PICKUP)) {
+        return if (!query.testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.ITEM_PICKUP)) {
             WorldGuard.getInstance().platform.sessionManager.hasBypass(
                 localPlayer,
                 BukkitAdapter.adapt(world)
