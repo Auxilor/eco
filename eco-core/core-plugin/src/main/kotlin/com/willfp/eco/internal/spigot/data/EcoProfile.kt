@@ -1,6 +1,8 @@
 package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.data.PlayerProfile
+import com.willfp.eco.core.data.Profile
+import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.data.storage.DataHandler
 import java.util.UUID
@@ -10,7 +12,7 @@ abstract class EcoProfile(
     val data: MutableMap<PersistentDataKey<*>, Any>,
     val uuid: UUID,
     private val handler: DataHandler
-) : PlayerProfile {
+) : Profile {
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         this.data[key] = value
 
@@ -50,7 +52,7 @@ class EcoPlayerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
     uuid: UUID,
     handler: DataHandler
-) : EcoProfile(data, uuid, handler) {
+) : EcoProfile(data, uuid, handler), PlayerProfile {
     override fun toString(): String {
         return "EcoPlayerProfile{uuid=$uuid}"
     }
@@ -59,7 +61,7 @@ class EcoPlayerProfile(
 class EcoServerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
     handler: DataHandler
-) : EcoProfile(data, serverProfileUUID, handler) {
+) : EcoProfile(data, serverProfileUUID, handler), ServerProfile {
     override fun toString(): String {
         return "EcoServerProfile"
     }
