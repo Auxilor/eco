@@ -41,11 +41,6 @@ use-display-frame: true
 # that display frames will be cleared / deleted.
 display-frame-ttl: 17
 
-# Time to live for storing hashes against custom item keys. Increasing this value
-# can benefit performance under load (e.g. from ShopGUI+ sells) but can increase
-# memory use.
-item-cache-ttl: 6000
-
 # The default bukkit NamespacedKey creation can cause decent amounts of lag under
 # load due to the use of regex validation in the constructor. eco has its own system
 # to create NamespacedKeys, however it can be unsafe as it skips most validation checks.

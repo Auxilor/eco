@@ -1,5 +1,8 @@
 package com.willfp.eco.core.items;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
@@ -25,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,9 +42,27 @@ public final class Items {
     private static final Map<NamespacedKey, TestableItem> REGISTRY = new ConcurrentHashMap<>();
 
     /**
-     * Cached custom item lookups, using {@link FastItemStack#hashCode()}.
+     * Cached custom item lookups, using {@link HashedItem}.
      */
-    private static final Map<Integer, Optional<TestableItem>> CACHE = new ConcurrentHashMap<>();
+    private static final LoadingCache<HashedItem, Optional<TestableItem>> CACHE = CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .build(
+                    new CacheLoader<>() {
+                        @Override
+                        @NotNull
+                        public Optional<TestableItem> load(@NotNull final HashedItem key) {
+                            TestableItem match = null;
+                            for (TestableItem item : REGISTRY.values()) {
+                                if (item.matches(key.item())) {
+                                    match = item;
+                                    break;
+                                }
+                            }
+
+                            return Optional.ofNullable(match);
+                        }
+                    }
+            );
 
     /**
      * All item providers.
@@ -297,26 +319,7 @@ public final class Items {
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
         int hash = FastItemStack.wrap(itemStack).hashCode();
 
-        if (CACHE.containsKey(hash)) {
-            return CACHE.get(hash).map(Items::getOrWrap).orElse(null);
-        }
-
-        TestableItem match = null;
-        for (TestableItem item : REGISTRY.values()) {
-            if (item.matches(itemStack)) {
-                match = item;
-                break;
-            }
-        }
-
-        // Cache even if not matched; allows for marking hashes as definitely not custom.
-        CACHE.put(hash, Optional.ofNullable(match));
-
-        if (match == null) {
-            return null;
-        }
-
-        return getOrWrap(match);
+        return CACHE.getUnchecked(HashedItem.of(itemStack)).map(Items::getOrWrap).orElse(null);
     }
 
     /**
@@ -348,14 +351,6 @@ public final class Items {
                     item.getItem()
             );
         }
-    }
-
-    /**
-     * Clear the lookup cache.
-     */
-    @ApiStatus.Internal
-    public static void clearCache() {
-        CACHE.clear();
     }
 
     private Items() {

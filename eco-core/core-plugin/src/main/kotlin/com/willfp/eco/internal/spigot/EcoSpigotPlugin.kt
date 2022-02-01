@@ -205,11 +205,6 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         DropManager.update(this)
         ProfileSaver(this)
         this.scheduler.runTimer(
-            { Items.clearCache() },
-            this.configYml.getInt("item-cache-ttl").toLong(),
-            this.configYml.getInt("item-cache-ttl").toLong()
-        )
-        this.scheduler.runTimer(
             { clearFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),
             this.configYml.getInt("display-frame-ttl").toLong()
