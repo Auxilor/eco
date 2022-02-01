@@ -19,7 +19,24 @@ import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
-import com.willfp.eco.internal.entities.*
+import com.willfp.eco.internal.entities.EntityArgParserAdult
+import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
+import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
+import com.willfp.eco.internal.entities.EntityArgParserBaby
+import com.willfp.eco.internal.entities.EntityArgParserCharged
+import com.willfp.eco.internal.entities.EntityArgParserExplosionRadius
+import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
+import com.willfp.eco.internal.entities.EntityArgParserFollowRange
+import com.willfp.eco.internal.entities.EntityArgParserHealth
+import com.willfp.eco.internal.entities.EntityArgParserJumpStrength
+import com.willfp.eco.internal.entities.EntityArgParserKnockback
+import com.willfp.eco.internal.entities.EntityArgParserKnockbackResistance
+import com.willfp.eco.internal.entities.EntityArgParserName
+import com.willfp.eco.internal.entities.EntityArgParserNoAI
+import com.willfp.eco.internal.entities.EntityArgParserSilent
+import com.willfp.eco.internal.entities.EntityArgParserSize
+import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
+import com.willfp.eco.internal.entities.EntityArgParserSpeed
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -55,7 +72,19 @@ import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
-import com.willfp.eco.internal.spigot.integrations.antigrief.*
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV10
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefKingdoms
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
@@ -76,6 +105,9 @@ import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
+import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
+import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInEco
+import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils
@@ -120,6 +152,10 @@ abstract class EcoSpigotPlugin : EcoPlugin(
         Entities.registerArgParser(EntityArgParserCharged())
         Entities.registerArgParser(EntityArgParserExplosionRadius())
         Entities.registerArgParser(EntityArgParserSilent())
+
+        ShapedRecipeListener.registerListener(ComplexInComplex())
+        ShapedRecipeListener.registerListener(ComplexInEco())
+        ShapedRecipeListener.registerListener(ComplexInVanilla())
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(
@@ -228,7 +264,11 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
-            IntegrationLoader("CustomCrafting") { CustomItemsManager.register(CustomItemsCustomCrafting()); ShapedRecipeListener.registerValidator(CustomRecipeCustomCrafting()) },
+            IntegrationLoader("CustomCrafting") {
+                CustomItemsManager.register(CustomItemsCustomCrafting()); ShapedRecipeListener.registerValidator(
+                CustomRecipeCustomCrafting()
+            )
+            },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
@@ -278,7 +318,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
             NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
-            ShapedRecipeListener(this),
+            ShapedRecipeListener(),
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
