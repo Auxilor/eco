@@ -39,16 +39,16 @@ class ShapedRecipeListener : Listener {
         var isStackedRecipe = false
         var upperBound = 64
         for (i in 0..8) {
-            val inMatrix = event.inventory.matrix[i]
+            val inMatrix = event.inventory.matrix.getOrNull(i)
             val inRecipe = matched.parts[i]
 
             if (inRecipe is TestableStack) {
-                val max = Math.floorDiv(inMatrix.amount, inRecipe.amount)
+                val max = Math.floorDiv(inMatrix!!.amount, inRecipe.amount)
                 if (max < upperBound) {
                     upperBound = max
                 }
                 isStackedRecipe = true
-            } else {
+            } else if (inMatrix != null) {
                 val max = inMatrix.amount
                 if (max < upperBound) {
                     upperBound = max
