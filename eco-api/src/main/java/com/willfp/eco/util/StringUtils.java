@@ -74,7 +74,7 @@ public final class StringUtils {
      * String format cache.
      */
     private static final LoadingCache<FormatLookup, String> STRING_FORMAT_CACHE = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .expireAfterAccess(10, TimeUnit.SECONDS)
             .build(
                     new CacheLoader<>() {
                         @Override
@@ -89,7 +89,7 @@ public final class StringUtils {
      * Json -> Legacy Cache.
      */
     private static final LoadingCache<String, String> JSON_TO_LEGACY = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .expireAfterAccess(10, TimeUnit.SECONDS)
             .build(
                     new CacheLoader<>() {
                         @Override
@@ -109,7 +109,7 @@ public final class StringUtils {
      * Legacy -> Json Cache.
      */
     private static final LoadingCache<String, String> LEGACY_TO_JSON = CacheBuilder.newBuilder()
-            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .expireAfterAccess(10, TimeUnit.SECONDS)
             .build(
                     new CacheLoader<>() {
                         @Override
