@@ -48,7 +48,7 @@ class ShapedRecipeListener : Listener {
                     upperBound = max
                 }
                 isStackedRecipe = true
-            } else if (inMatrix != null) {
+            } else {
                 val max = inMatrix.amount
                 if (max < upperBound) {
                     upperBound = max

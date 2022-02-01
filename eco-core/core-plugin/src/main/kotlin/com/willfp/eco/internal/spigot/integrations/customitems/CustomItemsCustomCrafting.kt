@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATED")
+
 package com.willfp.eco.internal.spigot.integrations.customitems
 
 import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
@@ -11,14 +13,15 @@ import me.wolfyscript.utilities.util.Registry
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 
-@Suppress("DEPRECATED")
-class CustomItemsCustomCrafting: CustomItemsWrapper {
+class CustomItemsCustomCrafting : CustomItemsWrapper {
     override fun registerAllItems() {
         Items.registerItemProvider(CustomCraftingProvider())
     }
+
     override fun getPluginName(): String {
         return "CustomCrafting"
     }
+
     private class CustomCraftingProvider : ItemProvider("customcrafting") {
         override fun provideForKey(key: String): TestableItem? {
             val nKey = key.replace("customcrafting:", "", ignoreCase = true)
@@ -29,7 +32,9 @@ class CustomItemsCustomCrafting: CustomItemsWrapper {
             return CustomItem(
                 namespacedKey,
                 Predicate { test: ItemStack ->
-                    val customStack = me.wolfyscript.utilities.api.inventory.custom_items.CustomItem.getByItemStack(test) ?: return@Predicate false
+                    val customStack =
+                        me.wolfyscript.utilities.api.inventory.custom_items.CustomItem.getByItemStack(test)
+                            ?: return@Predicate false
                     val iKey = customStack.namespacedKey ?: return@Predicate false
                     iKey.equals(key)
                 },
