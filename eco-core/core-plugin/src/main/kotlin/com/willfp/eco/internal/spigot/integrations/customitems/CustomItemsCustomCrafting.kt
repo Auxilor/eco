@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATED")
+@file:Suppress("DEPRECATION")
 
 package com.willfp.eco.internal.spigot.integrations.customitems
 
