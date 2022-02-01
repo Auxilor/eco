@@ -8,7 +8,7 @@ class ProfileSaver(plugin: EcoPlugin) {
     init {
         plugin.scheduler.runTimer({
             for ((uuid, set) in EcoProfile.CHANGE_MAP) {
-                Eco.getHandler().profileHandler.saveKeysForPlayer(uuid, set)
+                Eco.getHandler().profileHandler.saveKeysFor(uuid, set)
             }
             EcoProfile.CHANGE_MAP.clear()
         }, 1, 1)

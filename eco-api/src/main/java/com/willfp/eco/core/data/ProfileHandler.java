@@ -48,7 +48,7 @@ public interface ProfileHandler {
      */
     @Deprecated
     default void savePlayer(@NotNull UUID uuid) {
-        this.saveKeysForPlayer(uuid, PersistentDataKey.values());
+        this.saveKeysFor(uuid, PersistentDataKey.values());
     }
 
     /**
@@ -59,8 +59,8 @@ public interface ProfileHandler {
      * @param uuid The uuid.
      * @param keys The keys.
      */
-    void saveKeysForPlayer(@NotNull UUID uuid,
-                           @NotNull Set<PersistentDataKey<?>> keys);
+    void saveKeysFor(@NotNull UUID uuid,
+                     @NotNull Set<PersistentDataKey<?>> keys);
 
     /**
      * Save all player data.

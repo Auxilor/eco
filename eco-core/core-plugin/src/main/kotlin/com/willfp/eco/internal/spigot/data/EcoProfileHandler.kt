@@ -43,7 +43,7 @@ class EcoProfileHandler(
         return loadGenericProfile(serverProfileUUID) as ServerProfile
     }
 
-    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         val profile = PlayerProfile.load(uuid)
 
         for (key in keys) {
