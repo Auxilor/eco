@@ -1,17 +1,21 @@
 package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.data.PlayerProfile
-import com.willfp.eco.core.data.PlayerProfileHandler
+import com.willfp.eco.core.data.Profile
+import com.willfp.eco.core.data.ProfileHandler
+import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.data.storage.DataHandler
 import java.util.UUID
 
-class EcoPlayerProfileHandler(
-    private val handler: DataHandler
-) : PlayerProfileHandler {
-    private val loaded = mutableMapOf<UUID, PlayerProfile>()
+val serverProfileUUID = UUID(0, 0)
 
-    override fun load(uuid: UUID): PlayerProfile {
+class EcoProfileHandler(
+    private val handler: DataHandler
+) : ProfileHandler {
+    private val loaded = mutableMapOf<UUID, Profile>()
+
+    private fun loadGenericProfile(uuid: UUID): Profile {
         val found = loaded[uuid]
         if (found != null) {
             return found
@@ -19,9 +23,24 @@ class EcoPlayerProfileHandler(
 
         val data = mutableMapOf<PersistentDataKey<*>, Any>()
 
-        val profile = EcoPlayerProfile(data, uuid, handler)
-        loaded[uuid] = profile
-        return profile
+        return if (uuid == serverProfileUUID) {
+            val profile = EcoServerProfile(data, handler)
+            loaded[uuid] = profile
+            profile
+        } else {
+            val profile = EcoPlayerProfile(data, uuid, handler)
+            loaded[uuid] = profile
+            profile
+        }
+    }
+
+    override fun load(uuid: UUID): PlayerProfile {
+        return loadGenericProfile(uuid) as PlayerProfile
+    }
+
+
+    override fun loadServerProfile(): ServerProfile {
+        return loadGenericProfile(serverProfileUUID) as ServerProfile
     }
 
     override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {

@@ -21,7 +21,7 @@ class EcoKeyRegistry(
 
         this.registry[key.key] = key
 
-        (Eco.getHandler().playerProfileHandler as EcoPlayerProfileHandler).updateKeys()
+        (Eco.getHandler().profileHandler as EcoProfileHandler).updateKeys()
     }
 
     override fun getRegisteredKeys(): MutableSet<PersistentDataKey<*>> {

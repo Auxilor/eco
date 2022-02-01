@@ -24,7 +24,7 @@ import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.requirement.EcoRequirementFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
-import com.willfp.eco.internal.spigot.data.EcoPlayerProfileHandler
+import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.internal.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
@@ -43,7 +43,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     private val requirementFactory = EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
     private val keyRegistry = EcoKeyRegistry(this)
-    private val playerProfileHandler = EcoPlayerProfileHandler(
+    private val playerProfileHandler = EcoProfileHandler(
         if (this.configYml.getBool("mysql.enabled"))
             MySQLDataHandler(this) else YamlDataHandler(this)
     )
@@ -145,7 +145,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         return keyRegistry
     }
 
-    override fun getPlayerProfileHandler(): EcoPlayerProfileHandler {
+    override fun getProfileHandler(): EcoProfileHandler {
         return playerProfileHandler
     }
 

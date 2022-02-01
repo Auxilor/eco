@@ -15,7 +15,7 @@ class DataListener(
 ) : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onLeave(event: PlayerQuitEvent) {
-        Eco.getHandler().playerProfileHandler.unloadPlayer(event.player.uniqueId)
+        Eco.getHandler().profileHandler.unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler
@@ -27,6 +27,6 @@ class DataListener(
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onLogin(event: PlayerLoginEvent) {
-        Eco.getHandler().playerProfileHandler.unloadPlayer(event.player.uniqueId)
+        Eco.getHandler().profileHandler.unloadPlayer(event.player.uniqueId)
     }
 }

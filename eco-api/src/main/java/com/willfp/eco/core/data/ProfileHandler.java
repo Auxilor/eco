@@ -1,15 +1,19 @@
 package com.willfp.eco.core.data;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 import java.util.UUID;
 
 /**
- * API to handle player profiles.
+ * API to handle profiles.
  */
-public interface PlayerProfileHandler {
+@ApiStatus.Internal
+@Eco.HandlerComponent
+public interface ProfileHandler {
     /**
      * Load a player profile.
      *
@@ -17,6 +21,13 @@ public interface PlayerProfileHandler {
      * @return The profile.
      */
     PlayerProfile load(@NotNull UUID uuid);
+
+    /**
+     * Load the server profile.
+     *
+     * @return The profile.
+     */
+    ServerProfile loadServerProfile();
 
     /**
      * Unload a player profile from memory.

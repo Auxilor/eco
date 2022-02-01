@@ -2,7 +2,7 @@ package com.willfp.eco.core;
 
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
-import com.willfp.eco.core.data.PlayerProfileHandler;
+import com.willfp.eco.core.data.ProfileHandler;
 import com.willfp.eco.core.data.keys.KeyRegistry;
 import com.willfp.eco.core.drops.DropQueueFactory;
 import com.willfp.eco.core.events.EventManager;
@@ -234,7 +234,7 @@ public interface Handler {
      * @return The handler.
      */
     @NotNull
-    PlayerProfileHandler getPlayerProfileHandler();
+    ProfileHandler getProfileHandler();
 
     /**
      * Create dummy entity - never spawned, exists purely in code.

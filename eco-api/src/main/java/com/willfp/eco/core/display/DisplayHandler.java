@@ -1,13 +1,17 @@
 package com.willfp.eco.core.display;
 
+import com.willfp.eco.core.Eco;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for display implementations.
  */
+@ApiStatus.Internal
+@Eco.HandlerComponent
 public interface DisplayHandler {
     /**
      * Register display module.

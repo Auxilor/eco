@@ -1,7 +1,9 @@
 package com.willfp.eco.core.drops;
 
+import com.willfp.eco.core.Eco;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,6 +11,8 @@ import java.util.Collection;
 /**
  * Internal interface for backend DropQueue implementations.
  */
+@ApiStatus.Internal
+@Eco.HandlerComponent
 public interface InternalDropQueue {
     /**
      * Add item to queue.

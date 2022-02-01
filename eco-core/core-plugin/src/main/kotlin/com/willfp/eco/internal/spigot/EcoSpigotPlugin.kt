@@ -194,7 +194,7 @@ abstract class EcoSpigotPlugin : EcoPlugin(
     override fun handleDisable() {
         this.logger.info("Saving player data...")
         val start = System.currentTimeMillis()
-        Eco.getHandler().playerProfileHandler.save()
+        Eco.getHandler().profileHandler.save()
         this.logger.info("Saved player data! Took ${System.currentTimeMillis() - start}ms")
         Eco.getHandler().adventure?.close()
     }

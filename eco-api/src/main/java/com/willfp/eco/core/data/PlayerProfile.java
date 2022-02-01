@@ -1,7 +1,6 @@
 package com.willfp.eco.core.data;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.data.keys.PersistentDataKey;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,26 +11,7 @@ import java.util.UUID;
  * <p>
  * Profiles save automatically, so there is no need to save after changes.
  */
-public interface PlayerProfile {
-    /**
-     * Write a key to a player's persistent data.
-     *
-     * @param key   The key.
-     * @param value The value.
-     * @param <T>   The type of the key.
-     */
-    <T> void write(@NotNull PersistentDataKey<T> key,
-                   @NotNull T value);
-
-    /**
-     * Read a key from a player's persistent data.
-     *
-     * @param key The key.
-     * @param <T> The type of the key.
-     * @return The value, or the default value if not found.
-     */
-    <T> @NotNull T read(@NotNull PersistentDataKey<T> key);
-
+public interface PlayerProfile extends Profile {
     /**
      * Load a player profile.
      *
@@ -51,6 +31,6 @@ public interface PlayerProfile {
      */
     @NotNull
     static PlayerProfile load(@NotNull final UUID uuid) {
-        return Eco.getHandler().getPlayerProfileHandler().load(uuid);
+        return Eco.getHandler().getProfileHandler().load(uuid);
     }
 }

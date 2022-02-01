@@ -1,10 +1,14 @@
 package com.willfp.eco.core.requirement;
 
+import com.willfp.eco.core.Eco;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface for internal requirement factory implementations.
  */
+@ApiStatus.Internal
+@Eco.HandlerComponent
 public interface RequirementFactory {
     /**
      * Create a requirement.

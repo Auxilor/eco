@@ -1,5 +1,6 @@
 package com.willfp.eco.core.config.wrapper;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
@@ -14,6 +15,7 @@ import java.util.Map;
  * Internal component to create backend config implementations.
  */
 @ApiStatus.Internal
+@Eco.HandlerComponent
 public interface ConfigFactory {
     /**
      * Updatable config.
