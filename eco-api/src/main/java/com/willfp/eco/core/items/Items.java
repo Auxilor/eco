@@ -3,7 +3,6 @@ package com.willfp.eco.core.items;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -17,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +51,7 @@ public final class Items {
                         public Optional<TestableItem> load(@NotNull final HashedItem key) {
                             TestableItem match = null;
                             for (TestableItem item : REGISTRY.values()) {
-                                if (item.matches(key.item())) {
+                                if (item.matches(key.getItem())) {
                                     match = item;
                                     break;
                                 }
@@ -224,7 +222,7 @@ public final class Items {
             }
         }
 
-        // Marked as redundant but i am covering all bases here
+        // Marked as redundant but I am covering all bases here
         if (item == null || item instanceof EmptyTestableItem) {
             return new EmptyTestableItem();
         }
@@ -317,8 +315,6 @@ public final class Items {
      */
     @Nullable
     public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
-        int hash = FastItemStack.wrap(itemStack).hashCode();
-
         return CACHE.getUnchecked(HashedItem.of(itemStack)).map(Items::getOrWrap).orElse(null);
     }
 

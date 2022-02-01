@@ -9,9 +9,8 @@ import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
-import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.core.items.HashedItem
 import com.willfp.eco.internal.spigot.display.frame.DisplayFrame
-import com.willfp.eco.internal.spigot.display.frame.HashedItem
 import com.willfp.eco.internal.spigot.display.frame.lastDisplayFrame
 import com.willfp.eco.util.ServerUtils
 import org.bukkit.entity.Player
@@ -138,8 +137,7 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
             val frameMap = mutableMapOf<Byte, HashedItem>()
 
             for (index in itemStacks.indices) {
-                frameMap[index.toByte()] =
-                    HashedItem(FastItemStack.wrap(itemStacks[index]).hashCode(), itemStacks[index])
+                frameMap[index.toByte()] = HashedItem.of(itemStacks[index])
             }
 
             val newFrame = DisplayFrame(frameMap)

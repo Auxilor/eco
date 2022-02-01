@@ -3,6 +3,7 @@ package com.willfp.eco.core.items;
 import com.willfp.eco.core.fast.FastItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An item and its {@link com.willfp.eco.core.fast.FastItemStack} hash.
@@ -24,8 +25,8 @@ public final class HashedItem {
      * @param item The item.
      * @param hash The hash.
      */
-    public HashedItem(@NotNull final ItemStack item,
-                      final int hash) {
+    private HashedItem(@NotNull final ItemStack item,
+                       final int hash) {
         this.item = item;
         this.hash = hash;
     }
@@ -54,7 +55,7 @@ public final class HashedItem {
      * @return The ItemStack.
      */
     public ItemStack component1() {
-        return this.item();
+        return this.getItem();
     }
 
     /**
@@ -63,7 +64,7 @@ public final class HashedItem {
      * @return The hash.
      */
     public int component2() {
-        return this.hash();
+        return this.getHash();
     }
 
     @Override
