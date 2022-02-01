@@ -6,9 +6,6 @@ group 'com.willfp'
 version rootProject.version
 
 dependencies {
-    // API Guava
-    api 'com.google.guava:guava:31.0.1-jre'
-
     // Adventure
     compileOnly 'net.kyori:adventure-platform-bukkit:4.0.0'
     compileOnly 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'

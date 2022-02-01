@@ -83,6 +83,9 @@ allprojects {
         compileOnly("net.kyori:adventure-api:4.9.3")
         compileOnly("net.kyori:adventure-text-serializer-gson:4.9.3")
         compileOnly("net.kyori:adventure-text-serializer-legacy:4.9.3")
+
+        // Other
+        compileOnly("com.google.guava:guava:31.0.1-jre")
     }
 
     tasks.withType<JavaCompile> {
