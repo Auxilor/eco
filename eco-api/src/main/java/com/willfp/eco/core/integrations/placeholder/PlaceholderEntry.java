@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -140,5 +141,22 @@ public class PlaceholderEntry {
      */
     public void register() {
         PlaceholderManager.registerPlaceholder(this);
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlaceholderEntry entry)) {
+            return false;
+        }
+        return Objects.equals(this.getIdentifier(), entry.getIdentifier())
+                && Objects.equals(this.getPlugin(), entry.getPlugin());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getIdentifier(), this.getPlugin());
     }
 }

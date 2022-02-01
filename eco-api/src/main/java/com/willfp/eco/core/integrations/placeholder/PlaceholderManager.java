@@ -1,5 +1,8 @@
 package com.willfp.eco.core.integrations.placeholder;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.Player;
@@ -12,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class to handle placeholder integrations.
@@ -26,6 +30,21 @@ public final class PlaceholderManager {
      * All registered placeholder integrations.
      */
     private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = new HashSet<>();
+
+    /**
+     * Placeholder Cache.
+     */
+    private static final LoadingCache<EntryWithPlayer, String> PLACEHOLDER_CACHE = CacheBuilder.newBuilder()
+            .expireAfterWrite(50, TimeUnit.MILLISECONDS)
+            .build(
+                    new CacheLoader<>() {
+                        @Override
+                        @NotNull
+                        public String load(@NotNull final EntryWithPlayer key) {
+                            return key.entry.getResult(key.player);
+                        }
+                    }
+            );
 
     /**
      * Register a new placeholder integration.
@@ -94,7 +113,7 @@ public final class PlaceholderManager {
             return "";
         }
 
-        return entry.getResult(player);
+        return PLACEHOLDER_CACHE.getUnchecked(new EntryWithPlayer(entry, player));
     }
 
     /**
@@ -126,6 +145,11 @@ public final class PlaceholderManager {
         }
 
         return found;
+    }
+
+    private static record EntryWithPlayer(@NotNull PlaceholderEntry entry,
+                                          @Nullable Player player) {
+
     }
 
     private PlaceholderManager() {

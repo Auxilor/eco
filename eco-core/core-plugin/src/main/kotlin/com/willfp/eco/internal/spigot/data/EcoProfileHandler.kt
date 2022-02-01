@@ -23,21 +23,16 @@ class EcoProfileHandler(
 
         val data = mutableMapOf<PersistentDataKey<*>, Any>()
 
-        return if (uuid == serverProfileUUID) {
-            val profile = EcoServerProfile(data, handler)
-            loaded[uuid] = profile
-            profile
-        } else {
-            val profile = EcoPlayerProfile(data, uuid, handler)
-            loaded[uuid] = profile
-            profile
-        }
+        val profile = if (uuid == serverProfileUUID)
+            EcoServerProfile(data, handler) else EcoPlayerProfile(data, uuid, handler)
+
+        loaded[uuid] = profile
+        return profile
     }
 
     override fun load(uuid: UUID): PlayerProfile {
         return loadGenericProfile(uuid) as PlayerProfile
     }
-
 
     override fun loadServerProfile(): ServerProfile {
         return loadGenericProfile(serverProfileUUID) as ServerProfile

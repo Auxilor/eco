@@ -1,5 +1,8 @@
 package com.willfp.eco.util;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -65,6 +69,45 @@ public final class StringUtils {
     private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder()
             .emitLegacyHoverEvent()
             .build();
+
+    /**
+     * Json -> Legacy Cache.
+     */
+    private static final LoadingCache<String, String> JSON_TO_LEGACY = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build(
+                    new CacheLoader<>() {
+                        @Override
+                        @NotNull
+                        public String load(@NotNull final String json) {
+                            try {
+                                Component component = GSON_COMPONENT_SERIALIZER.deserialize(json);
+                                return LEGACY_COMPONENT_SERIALIZER.serialize(component);
+                            } catch (JsonSyntaxException e) {
+                                return json;
+                            }
+                        }
+                    }
+            );
+
+    /**
+     * Legacy -> Json Cache.
+     */
+    private static final LoadingCache<String, String> LEGACY_TO_JSON = CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.SECONDS)
+            .build(
+                    new CacheLoader<>() {
+                        @Override
+                        @NotNull
+                        public String load(@NotNull final String legacy) {
+                            return GSON_COMPONENT_SERIALIZER.serialize(
+                                    Component.empty().decoration(TextDecoration.ITALIC, false).append(
+                                            LEGACY_COMPONENT_SERIALIZER.deserialize(legacy)
+                                    )
+                            );
+                        }
+                    }
+            );
 
     /**
      * Color map.
@@ -423,11 +466,8 @@ public final class StringUtils {
         if (legacy == null) {
             processed = "";
         }
-        return GSON_COMPONENT_SERIALIZER.serialize(
-                Component.empty().decoration(TextDecoration.ITALIC, false).append(
-                        LEGACY_COMPONENT_SERIALIZER.deserialize(processed)
-                )
-        );
+
+        return LEGACY_TO_JSON.getUnchecked(processed);
     }
 
     /**
@@ -442,12 +482,7 @@ public final class StringUtils {
             return "";
         }
 
-        try {
-            Component component = GSON_COMPONENT_SERIALIZER.deserialize(json);
-            return LEGACY_COMPONENT_SERIALIZER.serialize(component);
-        } catch (JsonSyntaxException e) {
-            return json;
-        }
+        return JSON_TO_LEGACY.getUnchecked(json);
     }
 
     /**
