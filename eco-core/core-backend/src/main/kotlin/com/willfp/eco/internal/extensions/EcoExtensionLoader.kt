@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.extensions
 
 import com.google.common.collect.ImmutableSet
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.TransientConfig
 import com.willfp.eco.core.extensions.Extension
@@ -32,6 +33,9 @@ class EcoExtensionLoader(
 
             runCatching { loadExtension(extensionJar) }.onFailure {
                 this.plugin.logger.warning(extensionJar.name + " caused an error!")
+                if (Eco.getHandler().ecoPlugin.configYml.getBool("log-full-extension-errors")) {
+                    it.printStackTrace()
+                }
             }
         }
     }

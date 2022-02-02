@@ -48,6 +48,10 @@ display-frame-ttl: 17
 # at a performance penalty.
 use-safer-namespacedkey-creation: false
 
+# If the stack traces of extensions that failed to load should be logged. Disabled by
+# default to prevent users from reporting bugs. Enable if you're a developer.
+log-full-extension-errors: false
+
 # Window items packets have the option to be run asynchronously. This may cause
 # some bugs and is considered experimental, however it has been tested without
 # any apparent issues. Enable this if performance is absolutely crucial or if you
