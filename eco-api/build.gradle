@@ -3,7 +3,7 @@ subprojects {
     version rootProject.version
 
     dependencies {
-        api project(":eco-api").getSubprojects()
+        api project(":eco-api:api-java")
 
         // Adventure
         compileOnly 'net.kyori:adventure-platform-bukkit:4.0.0'
