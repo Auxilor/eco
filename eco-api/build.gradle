@@ -19,6 +19,9 @@ subprojects {
     }
 }
 
+group 'com.willfp'
+version rootProject.version
+
 dependencies {
     api project(":eco-api:api-java")
     api project(":eco-api:api-kotlin")
