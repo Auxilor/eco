@@ -1,8 +1,6 @@
 @file:JvmName("ListUtilsExtensions")
 
-package com.willfp.eco.util.kotlin
-
-import com.willfp.eco.util.ListUtils
+package com.willfp.eco.util
 
 /**
  * @see ListUtils.listToFrequencyMap
