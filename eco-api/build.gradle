@@ -1,10 +1,12 @@
+dependencies {
+    api project(":eco-api").getSubprojects()
+}
+
 subprojects {
     group 'com.willfp'
     version rootProject.version
 
     dependencies {
-        api project(":eco-api:api-java")
-
         // Adventure
         compileOnly 'net.kyori:adventure-platform-bukkit:4.0.0'
         compileOnly 'net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT'
