@@ -10,7 +10,6 @@ import org.bukkit.util.Vector
 val Vector.isFinite: Boolean
     get() = VectorUtils.isFinite(this)
 
-
 /**
  * @see VectorUtils.simplifyVector
  */
