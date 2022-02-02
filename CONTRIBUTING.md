@@ -7,11 +7,14 @@
 
 2. Use JetBrains annotations
 - Every parameter should be annotated with @NotNull or @Nullable
-- Use @NotNull over lombok @NonNull
 
 3. Imports
 - No group (*) imports.
 - No static imports.
+
+4. Kotlin
+- Kotlin should be the only language used in the backend, java should be the only language used in the frontend.
+- Kotlin API extensions should only be for creating extension functions and extra niceties that aren't possible in java. Do not write API components in kotlin.
 
 ## Dependency Injection
 - eco uses Dependency Injection
