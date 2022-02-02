@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+    }
+}
+
+apply plugin: "kotlin"
+
+group 'com.willfp'
+version rootProject.version
+
+dependencies {
+    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
+    compileOnly project(":eco-api:api-java")
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+java {
+    withJavadocJar()
+}

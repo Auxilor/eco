@@ -15,7 +15,8 @@ subprojects {
     apply plugin: "kotlin"
 
     dependencies {
-        compileOnly project(":eco-api")
+        compileOnly project(":eco-api:api-java")
+        compileOnly project(":eco-api:api-kotlin")
         compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
     }
 
