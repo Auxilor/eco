@@ -8,7 +8,7 @@ pluginManagement {
 rootProject.name = "eco"
 
 // Core
-include(":eco-api")G
+include(":eco-api")
 include(":eco-core")
 include(":eco-core:core-nms")
 include(":eco-core:core-nms:v1_16_R3")
