@@ -15,7 +15,6 @@ version rootProject.version
 
 dependencies {
     compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
-    compileOnly project(":eco-api:api-java")
 }
 
 compileKotlin {
