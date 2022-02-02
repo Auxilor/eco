@@ -45,7 +45,8 @@ build.dependsOn publishToMavenLocal
 publishing {
     publications {
         shadow(MavenPublication) {
-            project.shadow.component(it)
+            from components.java
+            artifactId 'eco'
         }
     }
 
