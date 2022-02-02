@@ -8,9 +8,7 @@ pluginManagement {
 rootProject.name = "eco"
 
 // Core
-include(":eco-api")
-include(":eco-api:api-java")
-include(":eco-api:api-kotlin")
+include(":eco-api")G
 include(":eco-core")
 include(":eco-core:core-nms")
 include(":eco-core:core-nms:v1_16_R3")
