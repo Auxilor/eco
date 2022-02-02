@@ -1,4 +1,4 @@
-@file:JvmName("SkullUtilsExtensions")
+@file:JvmName("StringUtilsExtensions")
 
 package com.willfp.eco.util
 
