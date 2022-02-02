@@ -1,7 +1,3 @@
-dependencies {
-    api project(":eco-api").getSubprojects()
-}
-
 subprojects {
     group 'com.willfp'
     version rootProject.version
@@ -17,10 +13,15 @@ subprojects {
         compileOnly 'com.comphenix.protocol:ProtocolLib:4.6.1-SNAPSHOT'
         compileOnly 'com.google.code.gson:gson:2.8.8'
     }
+
+    java {
+        withJavadocJar()
+    }
 }
 
-java {
-    withJavadocJar()
+dependencies {
+    api project(":eco-api:api-java")
+    api project(":eco-api:api-kotlin")
 }
 
 build.dependsOn publishToMavenLocal

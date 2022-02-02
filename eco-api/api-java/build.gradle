@@ -1,6 +1,2 @@
 group 'com.willfp'
 version rootProject.version
-
-java {
-    withJavadocJar()
-}
