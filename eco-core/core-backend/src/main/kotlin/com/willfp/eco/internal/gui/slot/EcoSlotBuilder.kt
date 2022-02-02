@@ -3,12 +3,12 @@ package com.willfp.eco.internal.gui.slot
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
-import com.willfp.eco.core.gui.slot.functional.SlotModifier
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
+import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 
 class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captive = false
-    private var modifier: SlotModifier = SlotModifier { player, menu, _ -> provider.provide(player, menu) }
+    private var updater: SlotUpdater = SlotUpdater { player, menu, _ -> provider.provide(player, menu) }
 
     private var onLeftClick =
         SlotHandler { _, _, _ -> run { } }
@@ -51,8 +51,8 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
         return this
     }
 
-    override fun setModifier(modifier: SlotModifier): SlotBuilder {
-        this.modifier = modifier
+    override fun setUpdater(updater: SlotUpdater): SlotBuilder {
+        this.updater = updater
         return this
     }
 
@@ -60,7 +60,7 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
         return if (captive) {
             EcoCaptiveSlot(provider)
         } else {
-            EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick, modifier)
+            EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick, updater)
         }
     }
 }

@@ -6,21 +6,19 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Interface to run on slot modify.
- *
- * @deprecated Use {@link SlotUpdater} instead.
+ * Interface to run on slot update.
  */
 @FunctionalInterface
-@Deprecated
-public interface SlotModifier {
+public interface SlotUpdater {
     /**
      * Performs this operation on the given arguments.
      *
      * @param player   The player.
      * @param menu     The menu.
      * @param previous The previous ItemStack.
+     * @return The new ItemStack.
      */
-    void modify(@NotNull Player player,
-                @NotNull Menu menu,
-                @NotNull ItemStack previous);
+    ItemStack update(@NotNull Player player,
+                     @NotNull Menu menu,
+                     @NotNull ItemStack previous);
 }

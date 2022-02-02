@@ -12,7 +12,7 @@ class EcoCaptiveSlot(
     allowMovingItem,
     allowMovingItem,
     allowMovingItem,
-    { _, _, _ -> }
+    { _, _, prev -> prev }
 ) {
     override fun isCaptive(): Boolean {
         return true

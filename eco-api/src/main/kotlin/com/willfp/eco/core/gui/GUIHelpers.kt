@@ -43,9 +43,17 @@ fun SlotBuilder.onMiddleClick(action: (InventoryClickEvent, Slot, Menu) -> Unit)
 
 /**
  * @see SlotBuilder.setModifier
+ * @deprecated Use SlotUpdater instead.
  */
+@Deprecated("Use SlotUpdater instead")
 fun SlotBuilder.setModifier(action: (Player, Menu, ItemStack) -> Unit): SlotBuilder =
     this.setModifier { a, b, c -> action(a, b, c) }
+
+/**
+ * @see SlotBuilder.setUpdater
+ */
+fun SlotBuilder.setUpdater(action: (Player, Menu, ItemStack) -> ItemStack): SlotBuilder =
+    this.setUpdater { a, b, c -> action(a, b, c) }
 
 /**
  * Kotlin builder for slots.
