@@ -255,7 +255,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @param pluginProps The props. If left null, it will read from eco.yml.
      */
-    private EcoPlugin(@Nullable final EcoPluginProps pluginProps) {
+    protected EcoPlugin(@Nullable final EcoPluginProps pluginProps) {
         /*
         The handler must be initialized before any plugin's constructors
         are called, as the constructors call Eco#getHandler().
