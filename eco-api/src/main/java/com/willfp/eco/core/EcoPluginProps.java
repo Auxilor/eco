@@ -91,7 +91,7 @@ public final class EcoPluginProps {
     }
 
     /**
-     * Get the proxy package
+     * Get the proxy package.
      *
      * @return The package.
      */
@@ -100,7 +100,7 @@ public final class EcoPluginProps {
     }
 
     /**
-     * Set the proxy package
+     * Set the proxy package.
      *
      * @param proxyPackage The proxy package.
      */
@@ -203,6 +203,7 @@ public final class EcoPluginProps {
      * @param proxyPackage       The package where proxies can be found.
      * @param color              The primary color of the plugin.
      * @param supportsExtensions If the plugin should attempt to look for extensions.
+     * @return The props.
      */
     @ApiStatus.Internal
     static EcoPluginProps createSimple(final int resourceId,
