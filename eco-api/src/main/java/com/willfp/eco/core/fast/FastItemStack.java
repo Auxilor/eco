@@ -22,7 +22,7 @@ public interface FastItemStack {
      *
      * @param checkStored If stored NBT should also be checked.
      * @return A map of all enchantments.
-     * @deprecated Poorly named method. Use {@link this#getEnchants(boolean)} instead.
+     * @deprecated Poorly named method. Use getEnchants instead.
      */
     @Deprecated(since = "6.24.0")
     default Map<Enchantment, Integer> getEnchantmentsOnItem(boolean checkStored) {
