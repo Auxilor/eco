@@ -635,7 +635,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return The proxy.
      */
     public final <T> T getProxy(@NotNull final Class<T> proxyClass) {
-        Validate.notNull(proxyFactory, "Plugin does not support proxy!");
+        Validate.notNull(proxyFactory, "Plugin does not support proxies!");
 
         return proxyFactory.getProxy(proxyClass);
     }

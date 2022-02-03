@@ -34,21 +34,26 @@ class EcoProxyFactory(
                 return proxy
             }
         } catch (e: Exception) {
-            throwError(e)
+            throw proxyErrorFrom(e)
         }
 
-        throwError(IllegalArgumentException())
-
-        throw RuntimeException("Something went wrong.")
+        throw proxyErrorFrom(IllegalArgumentException("Class doesn't seem to be a proxy."))
     }
 
-    private fun throwError(e: Exception?) {
-        e?.printStackTrace()
+    private fun proxyErrorFrom(e: Exception): Throwable {
+        plugin.logger.severe("Fatal error with proxies! This plugin can't load.")
 
         if (!SUPPORTED_VERSIONS.contains(ProxyConstants.NMS_VERSION)) {
-            throw UnsupportedVersionException("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION)
+            throw ProxyError(
+                "Could not initialize proxy.",
+                UnsupportedVersionException()
+            )
         } else {
-            throw ProxyError("Error with proxies - here's a stacktrace. Only god can help you now.")
+            throw ProxyError(
+                "Could not initialize proxy. If you're seeing this error message"
+                        + ", something has gone badly wrong. This almost definitely isn't user error, blame the developer.",
+                e
+            )
         }
     }
 
