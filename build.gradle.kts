@@ -117,6 +117,14 @@ allprojects {
     }
 
     tasks {
+        compileKotlin {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+            targetCompatibility = "17"
+            sourceCompatibility = "17"
+        }
+
         shadowJar {
             relocate("org.bstats", "com.willfp.eco.shaded.bstats")
             relocate("net.kyori.adventure.text.minimessage", "com.willfp.eco.shaded.minimessage")
