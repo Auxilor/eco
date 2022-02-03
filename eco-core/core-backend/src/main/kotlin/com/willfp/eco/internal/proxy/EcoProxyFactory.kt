@@ -43,13 +43,13 @@ class EcoProxyFactory(
     private fun proxyErrorFrom(e: Exception): Throwable {
         plugin.logger.severe("Fatal error with proxies! This plugin can't load.")
 
-        if (!SUPPORTED_VERSIONS.contains(ProxyConstants.NMS_VERSION)) {
-            throw ProxyError(
+        return if (!SUPPORTED_VERSIONS.contains(ProxyConstants.NMS_VERSION)) {
+            ProxyError(
                 "Could not initialize proxy.",
                 UnsupportedVersionException()
             )
         } else {
-            throw ProxyError(
+            ProxyError(
                 "Could not initialize proxy. If you're seeing this error message"
                         + ", something has gone badly wrong. This almost definitely isn't user error, blame the developer.",
                 e
