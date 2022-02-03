@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -342,6 +343,35 @@ public final class Items {
                     item.getItem()
             );
         }
+    }
+
+    /**
+     * Convert an array of materials to an array of testable items.
+     *
+     * @param materials The materials.
+     * @return An array of functionally identical testable items.
+     */
+    @NotNull
+    public static TestableItem[] fromMaterials(@NotNull final Material... materials) {
+        return Arrays.stream(materials)
+                .map(MaterialTestableItem::new)
+                .toArray(MaterialTestableItem[]::new);
+    }
+
+    /**
+     * Convert a collection of materials into a collection of testable items.
+     *
+     * @param materials The materials.
+     * @return A collection of functionally identical testable items.
+     */
+    @NotNull
+    public static Collection<TestableItem> fromMaterials(@NotNull final Iterable<Material> materials) {
+        List<TestableItem> items = new ArrayList<>();
+        for (Material material : materials) {
+            items.add(new MaterialTestableItem(material));
+        }
+
+        return items;
     }
 
     private Items() {
