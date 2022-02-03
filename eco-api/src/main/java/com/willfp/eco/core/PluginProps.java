@@ -223,6 +223,10 @@ public final class PluginProps {
     /**
      * Create new props from known values.
      *
+     * Marked as internal as this method will break whenever the properties themselves
+     * are updated (e.g. if a new property is added) - so to prevent any potential
+     * backwards-compatibility bugs, this method cannot be invoked outside eco itself.
+     *
      * @param resourceId         The ID of the plugin on polymart.
      * @param bStatsId           The ID of the plugin on bStats.
      * @param proxyPackage       The package where proxies can be found.
