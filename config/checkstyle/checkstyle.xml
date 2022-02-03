@@ -32,10 +32,6 @@
 -->
 
 <module name="Checker">
-    <module name="SuppressionFilter">
-        <property name="file" value="config/checkstyle/suppression.xml"/>
-    </module>
-
     <!--
         If you set the basedir property below, then all reported file
         names will be relative to the specified directory. See
