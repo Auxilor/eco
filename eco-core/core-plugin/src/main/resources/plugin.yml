@@ -46,7 +46,7 @@ softdepend:
 libraries:
   - 'org.reflections:reflections:0.9.12'
   - 'org.apache.maven:maven-artifact:3.0.3'
-  - 'org.jetbrains.kotlin:kotlin-stdlib:1.6.0'
+  - 'org.jetbrains.kotlin:kotlin-stdlib:1.6.10'
   - 'net.kyori:adventure-platform-bukkit:4.0.0'
   - 'net.kyori:adventure-api:4.9.3'
   - 'net.kyori:adventure-text-serializer-gson:4.9.3'
