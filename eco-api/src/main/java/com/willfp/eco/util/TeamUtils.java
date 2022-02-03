@@ -69,8 +69,10 @@ public final class TeamUtils {
      *
      * @param material The material to find the team from.
      * @return The team.
+     * @deprecated Stupid method.
      */
     @NotNull
+    @Deprecated(since = "6.24.0")
     public static Team getMaterialColorTeam(@NotNull final Material material) {
         return fromChatColor(MATERIAL_COLORS.getOrDefault(material, ChatColor.WHITE));
     }
