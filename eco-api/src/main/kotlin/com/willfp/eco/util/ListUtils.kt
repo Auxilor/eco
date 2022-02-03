@@ -13,3 +13,9 @@ fun <T> List<T>.toFrequencyMap(): Map<T, Int> =
  */
 fun Iterable<String>.containsIgnoreCase(element: String): Boolean =
     ListUtils.containsIgnoreCase(this, element)
+
+/**
+ * @see ListUtils.create2DList
+ */
+fun <T> create2DList(rows: Int, columns: Int): List<List<T>> =
+    ListUtils.create2DList(rows, columns)
