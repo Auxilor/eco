@@ -54,11 +54,7 @@ public class FillerMask {
     public FillerMask(@NotNull final MaskMaterials materials,
                       @NotNull final String... pattern) {
         this(
-                new MaskItems(
-                        Arrays.stream(materials.materials())
-                                .map(MaterialTestableItem::new)
-                                .toArray(MaterialTestableItem[]::new)
-                ),
+                materials.toMaskItems(),
                 pattern
         );
     }
