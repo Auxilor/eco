@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.items
 
-import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.items.args.LookupArgParser
 import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.enchantments.Enchantment
@@ -41,7 +41,7 @@ class ArgParserEnchantment : LookupArgParser {
         }
 
         return Predicate {
-            val onItem = FastItemStack.wrap(it).getEnchantmentsOnItem(true)
+            val onItem = it.fast().getEnchantmentsOnItem(true)
 
             for ((enchant, level) in enchants) {
                 if ((onItem[enchant] ?: 0) < level) {

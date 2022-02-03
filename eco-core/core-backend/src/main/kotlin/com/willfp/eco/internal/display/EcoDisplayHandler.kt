@@ -5,7 +5,7 @@ import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.display.DisplayHandler
 import com.willfp.eco.core.display.DisplayModule
 import com.willfp.eco.core.display.DisplayPriority
-import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.core.fast.fast
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -60,7 +60,7 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
             Display.unfinalize(itemStack)
         }
 
-        val fast = FastItemStack.wrap(itemStack)
+        val fast = itemStack.fast()
         val lore = fast.lore
 
         if (lore.isNotEmpty() && lore.removeIf { line: String ->
