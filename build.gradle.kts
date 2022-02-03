@@ -13,7 +13,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.0"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "1.6.0"
+    kotlin("jvm") version "1.6.10"
 }
 
 dependencies {
