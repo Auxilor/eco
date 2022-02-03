@@ -13,7 +13,8 @@ import java.util.Map;
  * <p>
  * This class is complex in how it works intentionally. This is done so that fields can be
  * added to the props without breaking API backwards compatibility. Thus, there is no public
- * constructor and no way to instantiate props without creating a parser.
+ * constructor and no way to instantiate props without creating a parser - even internally,
+ * props are generated from eco.yml by using Objenesis (reflection).
  */
 public final class EcoPluginProps {
     /**
