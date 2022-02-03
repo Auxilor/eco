@@ -1,0 +1,5 @@
+resource-id: 773
+bstats-id: 10043
+proxy-package: com.willfp.eco.internal.spigot.proxy
+color: '&a'
+supports-extensions: false

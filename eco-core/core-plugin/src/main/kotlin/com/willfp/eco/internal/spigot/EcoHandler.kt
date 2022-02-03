@@ -1,10 +1,12 @@
 package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.EcoPluginProps
 import com.willfp.eco.core.Handler
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import com.willfp.eco.internal.EcoCleaner
+import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.Plugins
 import com.willfp.eco.internal.config.EcoConfigFactory
 import com.willfp.eco.internal.config.updating.EcoConfigHandler
@@ -95,7 +97,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     }
 
     override fun getConfigFactory(): EcoConfigFactory {
-        return EcoConfigFactory()
+        return EcoConfigFactory
     }
 
     override fun getDropQueueFactory(): EcoDropQueueFactory {
@@ -162,5 +164,11 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     override fun createNamespacedKey(namespace: String, key: String): NamespacedKey {
         @Suppress("DEPRECATION")
         return keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
+    }
+
+    companion object {
+        init {
+            EcoPluginProps.setConfigParser(EcoPropsParser())
+        }
     }
 }

@@ -120,12 +120,7 @@ import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
-abstract class EcoSpigotPlugin : EcoPlugin(
-    773,
-    10043,
-    "com.willfp.eco.internal.spigot.proxy",
-    "&a"
-) {
+abstract class EcoSpigotPlugin : EcoPlugin() {
     init {
         Items.registerArgParser(ArgParserEnchantment())
         Items.registerArgParser(ArgParserColor())

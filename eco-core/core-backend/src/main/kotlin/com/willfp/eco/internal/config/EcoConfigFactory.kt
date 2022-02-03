@@ -15,7 +15,7 @@ import com.willfp.eco.internal.config.yaml.EcoYamlConfigSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
 
-class EcoConfigFactory : ConfigFactory {
+object EcoConfigFactory : ConfigFactory {
     override fun createConfig(config: YamlConfiguration): Config {
         return EcoYamlConfigSection(config)
     }

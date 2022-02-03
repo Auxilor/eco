@@ -1,6 +1,7 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.impl.PluginCommand;
+import com.willfp.eco.core.config.TransientConfig;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
 import com.willfp.eco.core.config.updating.ConfigHandler;
@@ -152,10 +153,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     private final ProxyFactory proxyFactory;
 
     /**
-     * Create a new plugin without a specified color, proxy support, polymart, or bStats.
+     * Create a new plugin.
+     * <p>
+     * Will read from eco.yml (like plugin.yml) to fetch values that would otherwise be passed
+     * into the constructor.
      */
     protected EcoPlugin() {
-        this("&f");
+        this((EcoPluginProps) null);
     }
 
     /**
@@ -236,6 +240,23 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                         @NotNull final String proxyPackage,
                         @NotNull final String color,
                         final boolean supportingExtensions) {
+        this(
+                new EcoPluginProps(
+                        resourceId,
+                        bStatsId,
+                        proxyPackage,
+                        color,
+                        supportingExtensions
+                )
+        );
+    }
+
+    /**
+     * Create a new plugin.
+     *
+     * @param pluginProps The props. If left null, it will read from eco.yml.
+     */
+    protected EcoPlugin(@Nullable final EcoPluginProps pluginProps) {
         /*
         The handler must be initialized before any plugin's constructors
         are called, as the constructors call Eco#getHandler().
@@ -272,11 +293,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         assert Eco.getHandler() != null;
 
-        this.resourceId = resourceId;
-        this.bStatsId = bStatsId;
-        this.proxyPackage = proxyPackage;
-        this.color = color;
-        this.supportingExtensions = supportingExtensions;
+        EcoPluginProps props = pluginProps != null ? pluginProps : EcoPluginProps.fromConfig(
+                new TransientConfig(this.getClass().getResourceAsStream("eco.yml"))
+        );
+
+        this.resourceId = props.resourceId();
+        this.bStatsId = props.bStatsId();
+        this.proxyPackage = props.proxyPackage();
+        this.color = props.color();
+        this.supportingExtensions = props.supportingExtensions();
 
         this.scheduler = Eco.getHandler().createScheduler(this);
         this.eventManager = Eco.getHandler().createEventManager(this);

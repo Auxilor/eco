@@ -5,7 +5,10 @@ import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.wrapper.ConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
@@ -19,6 +22,15 @@ public class TransientConfig extends ConfigWrapper<Config> {
      */
     public TransientConfig(@NotNull final YamlConfiguration config) {
         super(Eco.getHandler().getConfigFactory().createConfig(config));
+    }
+
+    /**
+     * @param stream The InputStream.
+     */
+    public TransientConfig(@Nullable final InputStream stream) {
+        super(stream != null ? Eco.getHandler().getConfigFactory().createConfig(YamlConfiguration.loadConfiguration(
+                new InputStreamReader(stream)
+        )) : new TransientConfig());
     }
 
     /**
