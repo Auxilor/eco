@@ -35,7 +35,7 @@ fun String.formatEco(
 fun List<String>.formatEco(
     player: Player? = null,
     formatPlaceholders: Boolean = false
-) = StringUtils.formatList(
+): List<String> = StringUtils.formatList(
     this,
     player,
     if (formatPlaceholders) StringUtils.FormatOption.WITH_PLACEHOLDERS else StringUtils.FormatOption.WITHOUT_PLACEHOLDERS

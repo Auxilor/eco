@@ -10,7 +10,6 @@ import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
-import org.bukkit.event.player.PlayerExpChangeEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 

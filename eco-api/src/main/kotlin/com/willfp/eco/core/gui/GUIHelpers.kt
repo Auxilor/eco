@@ -48,7 +48,7 @@ fun SlotBuilder.onMiddleClick(action: (InventoryClickEvent, Slot, Menu) -> Unit)
 @Deprecated("Use SlotUpdater instead")
 @Suppress("DEPRECATION")
 fun SlotBuilder.setModifier(action: (Player, Menu, ItemStack) -> Unit): SlotBuilder =
-    this.setModifier { a, b, c -> action(a, b, c) }
+    this.setUpdater { a, b, c -> c.apply { action(a, b, c) } }
 
 /**
  * @see SlotBuilder.setUpdater

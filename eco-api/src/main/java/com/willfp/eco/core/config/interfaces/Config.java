@@ -235,7 +235,7 @@ public interface Config extends Cloneable {
      */
     @NotNull
     default String getString(@NotNull String path) {
-        return getString(path, false);
+        return getString(path, false, StringUtils.FormatOption.WITHOUT_PLACEHOLDERS);
     }
 
     /**

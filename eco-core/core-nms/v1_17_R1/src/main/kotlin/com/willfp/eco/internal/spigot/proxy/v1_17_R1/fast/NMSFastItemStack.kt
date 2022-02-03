@@ -176,6 +176,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     override fun hashCode(): Int {
+        @Suppress("KotlinDeprecation")
         return handle.tag?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.item))
     }
 

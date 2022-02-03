@@ -8,7 +8,7 @@ import org.bukkit.inventory.MerchantRecipe
 import java.lang.reflect.Field
 
 class VillagerTrade : VillagerTradeProxy {
-    private var handle: Field
+    private val handle: Field = CraftMerchantRecipe::class.java.getDeclaredField("handle")
 
     override fun displayTrade(
         recipe: MerchantRecipe,
@@ -35,7 +35,6 @@ class VillagerTrade : VillagerTradeProxy {
     }
 
     init {
-        handle = CraftMerchantRecipe::class.java.getDeclaredField("handle")
         handle.isAccessible = true
     }
 }
