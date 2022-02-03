@@ -166,9 +166,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         return keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
     }
 
-    companion object {
-        init {
-            EcoPluginProps.setConfigParser(EcoPropsParser())
-        }
+    override fun getProps(existing: EcoPluginProps?, plugin: Class<out EcoPlugin>): EcoPluginProps {
+        return existing ?: EcoPropsParser.parseForPlugin(plugin)
     }
 }

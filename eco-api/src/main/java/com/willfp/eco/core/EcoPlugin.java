@@ -1,7 +1,6 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.impl.PluginCommand;
-import com.willfp.eco.core.config.TransientConfig;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
 import com.willfp.eco.core.config.updating.ConfigHandler;
@@ -241,7 +240,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                         @NotNull final String color,
                         final boolean supportingExtensions) {
         this(
-                new EcoPluginProps(
+                EcoPluginProps.createSimple(
                         resourceId,
                         bStatsId,
                         proxyPackage,
@@ -293,15 +292,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         assert Eco.getHandler() != null;
 
-        EcoPluginProps props = pluginProps != null ? pluginProps : EcoPluginProps.fromConfig(
-                new TransientConfig(this.getClass().getResourceAsStream("/eco.yml"))
-        );
+        EcoPluginProps props = Eco.getHandler().getProps(pluginProps, this.getClass());
 
-        this.resourceId = props.resourceId();
-        this.bStatsId = props.bStatsId();
-        this.proxyPackage = props.proxyPackage();
-        this.color = props.color();
-        this.supportingExtensions = props.supportingExtensions();
+        this.resourceId = props.getResourceId();
+        this.bStatsId = props.getBStatsId();
+        this.proxyPackage = props.getProxyPackage();
+        this.color = props.getColor();
+        this.supportingExtensions = props.isSupportingExtensions();
 
         this.scheduler = Eco.getHandler().createScheduler(this);
         this.eventManager = Eco.getHandler().createEventManager(this);

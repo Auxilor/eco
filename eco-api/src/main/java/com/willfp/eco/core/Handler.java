@@ -260,4 +260,15 @@ public interface Handler {
     @NotNull
     NamespacedKey createNamespacedKey(@NotNull String namespace,
                                       @NotNull String key);
+
+    /**
+     * Return or get props for a plugin.
+     *
+     * @param existing The existing constructor props.
+     * @param plugin   The plugin.
+     * @return The props.
+     */
+    @NotNull
+    EcoPluginProps getProps(@Nullable EcoPluginProps existing,
+                            @NotNull Class<? extends EcoPlugin> plugin);
 }

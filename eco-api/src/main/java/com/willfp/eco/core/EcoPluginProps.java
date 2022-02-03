@@ -1,49 +1,221 @@
 package com.willfp.eco.core;
 
-import com.willfp.eco.core.config.interfaces.Config;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Plugin props are the arguments related to the plugin that are required on start-up.
  * Marked as internal as the props may change / update, which will cause problems if
- * you create props objects.
- *
- * @param resourceId           The ID of the plugin on polymart.
- * @param bStatsId             The ID of the plugin on bStats.
- * @param proxyPackage         The package where proxies can be found.
- * @param color                The primary color of the plugin.
- * @param supportingExtensions If the plugin should attempt to look for extensions.
+ * you create props objects outside using parsers.
+ * <p>
+ * This class is complex in how it works intentionally. This is done so that fields can be
+ * added to the props without breaking API backwards compatibility. Thus, there is no public
+ * constructor and no way to instantiate props without creating a parser.
  */
-@ApiStatus.Internal
-public record EcoPluginProps(int resourceId,
-                             int bStatsId,
-                             @NotNull String proxyPackage,
-                             @NotNull String color,
-                             boolean supportingExtensions) {
+public final class EcoPluginProps {
     /**
-     * The parser for config props.
+     * All registered parsers.
      */
-    private static PropsParser<Config> configParser = null;
+    private static final Map<Class<?>, PropsParser<?>> REGISTERED_PARSERS = new HashMap<>();
 
     /**
-     * Load props from config.
-     *
-     * @param config The config.
-     * @return The props.
+     * The polymart resource ID.
      */
-    public static EcoPluginProps fromConfig(@NotNull final Config config) {
-        return configParser.parseFrom(config);
+    private int resourceId;
+
+    /**
+     * The bStats ID.
+     */
+    private int bStatsId;
+
+    /**
+     * The proxy package.
+     */
+    private String proxyPackage;
+
+    /**
+     * The color.
+     */
+    private String color;
+
+    /**
+     * If extensions are supported.
+     */
+    private boolean supportingExtensions;
+
+    /**
+     * Create new blank props.
+     */
+    private EcoPluginProps() {
+
     }
 
     /**
-     * Initialize the parser for eco.yml.
+     * Get resource ID.
      *
+     * @return The resource ID.
+     */
+    public int getResourceId() {
+        return resourceId;
+    }
+
+    /**
+     * Set resource ID.
+     *
+     * @param resourceId The resource ID.
+     */
+    public void setResourceId(final int resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    /**
+     * Get bStats ID.
+     *
+     * @return The bStats ID.
+     */
+    public int getBStatsId() {
+        return bStatsId;
+    }
+
+    /**
+     * Set bStats ID.
+     *
+     * @param bStatsId The bStats ID.
+     */
+    public void setBStatsId(final int bStatsId) {
+        this.bStatsId = bStatsId;
+    }
+
+    /**
+     * Get the proxy package
+     *
+     * @return The package.
+     */
+    public String getProxyPackage() {
+        return proxyPackage;
+    }
+
+    /**
+     * Set the proxy package
+     *
+     * @param proxyPackage The proxy package.
+     */
+    public void setProxyPackage(@NotNull final String proxyPackage) {
+        this.proxyPackage = proxyPackage;
+    }
+
+    /**
+     * Get color.
+     *
+     * @return The color.
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * Set the color.
+     *
+     * @param color The color.
+     */
+    public void setColor(@NotNull final String color) {
+        this.color = color;
+    }
+
+    /**
+     * Get if extensions are supported.
+     *
+     * @return If supported.
+     */
+    public boolean isSupportingExtensions() {
+        return supportingExtensions;
+    }
+
+    /**
+     * Set if extensions are supported.
+     *
+     * @param supportingExtensions If supported.
+     */
+    public void setSupportingExtensions(final boolean supportingExtensions) {
+        this.supportingExtensions = supportingExtensions;
+    }
+
+    /**
+     * Parse props from source.
+     *
+     * @param source      The source.
+     * @param sourceClass The source class.
+     * @param <T>         The source type.
+     * @return The props.
+     */
+    public static <T> EcoPluginProps parse(@NotNull final T source,
+                                           @NotNull final Class<? extends T> sourceClass) {
+        for (Map.Entry<Class<?>, PropsParser<?>> entry : REGISTERED_PARSERS.entrySet()) {
+            Class<?> clazz = entry.getKey();
+
+            if (clazz.equals(sourceClass)) {
+                @SuppressWarnings("unchecked")
+                PropsParser<T> parser = (PropsParser<T>) entry.getValue();
+                return parser.parseFrom(source);
+            }
+        }
+
+        throw new IllegalArgumentException("No parser exists for class " + sourceClass);
+    }
+
+    /**
+     * Register a parser for a type.
+     *
+     * @param clazz  The class.
      * @param parser The parser.
+     * @param <T>    The source type.
+     */
+    public static <T> void registerParser(@NotNull final Class<T> clazz,
+                                          @NotNull final PropsParser<T> parser) {
+        REGISTERED_PARSERS.put(clazz, parser);
+    }
+
+    /**
+     * Get if there is a registered parser for a class.
+     *
+     * @param clazz The class.
+     * @return If there is a parser registered.
+     */
+    public static boolean hasParserFor(@NotNull final Class<?> clazz) {
+        for (Class<?> test : REGISTERED_PARSERS.keySet()) {
+            if (test.equals(clazz)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Create new props from known values.
+     *
+     * @param resourceId         The ID of the plugin on polymart.
+     * @param bStatsId           The ID of the plugin on bStats.
+     * @param proxyPackage       The package where proxies can be found.
+     * @param color              The primary color of the plugin.
+     * @param supportsExtensions If the plugin should attempt to look for extensions.
      */
     @ApiStatus.Internal
-    public static void setConfigParser(@NotNull final PropsParser<Config> parser) {
-        configParser = parser;
+    static EcoPluginProps createSimple(final int resourceId,
+                                       final int bStatsId,
+                                       @NotNull final String proxyPackage,
+                                       @NotNull final String color,
+                                       final boolean supportsExtensions) {
+        EcoPluginProps props = new EcoPluginProps();
+        props.setResourceId(resourceId);
+        props.setBStatsId(bStatsId);
+        props.setProxyPackage(proxyPackage);
+        props.setColor(color);
+        props.setSupportingExtensions(supportsExtensions);
+        return props;
     }
 
     /**
