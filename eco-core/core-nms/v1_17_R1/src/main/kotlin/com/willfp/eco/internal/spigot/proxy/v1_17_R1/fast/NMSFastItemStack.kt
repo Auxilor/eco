@@ -21,7 +21,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 ) {
     private var loreCache: List<String>? = null
 
-    override fun getEnchantmentsOnItem(checkStored: Boolean): Map<Enchantment, Int> {
+    override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantmentNBT =
             if (checkStored && handle.item === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
                 handle

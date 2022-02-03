@@ -41,7 +41,7 @@ class ArgParserEnchantment : LookupArgParser {
         }
 
         return Predicate {
-            val onItem = it.fast().getEnchantmentsOnItem(true)
+            val onItem = it.fast().getEnchants(true)
 
             for ((enchant, level) in enchants) {
                 if ((onItem[enchant] ?: 0) < level) {
