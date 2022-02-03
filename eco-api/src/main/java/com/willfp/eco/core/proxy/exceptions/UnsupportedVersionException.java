@@ -22,6 +22,6 @@ public class UnsupportedVersionException extends ProxyError {
      * Thrown if the server is running an unsupported NMS version.
      */
     public UnsupportedVersionException() {
-        super("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION);
+        super("You're running an unsupported server version: " + ProxyConstants.NMS_VERSION, new IllegalStateException());
     }
 }

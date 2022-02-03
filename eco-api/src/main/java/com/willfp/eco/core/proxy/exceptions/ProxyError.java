@@ -24,7 +24,6 @@ public class ProxyError extends Error {
      * @deprecated Proxy Errors should include a cause.
      */
     @Deprecated
-    @SuppressWarnings("DeprecatedIsStillUsed")
     public ProxyError(@NotNull final String message) {
         super(message);
     }
