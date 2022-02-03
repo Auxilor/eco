@@ -124,6 +124,11 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
             }
         }
 
+        if (this.isPlayersOnly() && !(sender instanceof Player)) {
+            sender.sendMessage(this.getPlugin().getLangYml().getMessage("not-player"));
+            return;
+        }
+
         if (this.getHandler() != null) {
             this.getHandler().onExecute(sender, Arrays.asList(args));
         } else {
@@ -193,11 +198,6 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
     public static boolean canExecute(@NotNull final CommandSender sender,
                                      @NotNull final CommandBase command,
                                      @NotNull final EcoPlugin plugin) {
-        if (command.isPlayersOnly() && !(sender instanceof Player)) {
-            sender.sendMessage(plugin.getLangYml().getMessage("not-player"));
-            return false;
-        }
-
         if (!sender.hasPermission(command.getPermission()) && sender instanceof Player) {
             sender.sendMessage(plugin.getLangYml().getNoPermission());
             return false;
