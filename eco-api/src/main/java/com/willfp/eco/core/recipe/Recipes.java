@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * Utility class to manage and register crafting recipes.
  */
-@SuppressWarnings("deprecation")
 public final class Recipes {
     /**
      * Registry of all recipes.
