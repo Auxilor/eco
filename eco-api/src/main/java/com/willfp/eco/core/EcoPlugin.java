@@ -158,7 +158,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * into the constructor.
      */
     protected EcoPlugin() {
-        this((EcoPluginProps) null);
+        this((PluginProps) null);
     }
 
     /**
@@ -240,7 +240,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                         @NotNull final String color,
                         final boolean supportingExtensions) {
         this(
-                EcoPluginProps.createSimple(
+                PluginProps.createSimple(
                         resourceId,
                         bStatsId,
                         proxyPackage,
@@ -255,7 +255,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @param pluginProps The props. If left null, it will read from eco.yml.
      */
-    protected EcoPlugin(@Nullable final EcoPluginProps pluginProps) {
+    protected EcoPlugin(@Nullable final PluginProps pluginProps) {
         /*
         The handler must be initialized before any plugin's constructors
         are called, as the constructors call Eco#getHandler().
@@ -292,7 +292,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         assert Eco.getHandler() != null;
 
-        EcoPluginProps props = Eco.getHandler().getProps(pluginProps, this.getClass());
+        PluginProps props = Eco.getHandler().getProps(pluginProps, this.getClass());
         props.validate();
 
         this.resourceId = props.getResourceId();

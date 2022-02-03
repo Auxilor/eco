@@ -16,7 +16,7 @@ import java.util.Map;
  * added to the props without breaking API backwards compatibility. Thus, there is no public
  * constructor and no way to instantiate props without creating a parser.
  */
-public final class EcoPluginProps {
+public final class PluginProps {
     /**
      * All registered parsers.
      */
@@ -55,7 +55,7 @@ public final class EcoPluginProps {
     /**
      * Create new blank props.
      */
-    private EcoPluginProps() {
+    private PluginProps() {
 
     }
 
@@ -179,8 +179,8 @@ public final class EcoPluginProps {
      * @param <T>         The source type.
      * @return The props.
      */
-    public static <T> EcoPluginProps parse(@NotNull final T source,
-                                           @NotNull final Class<? extends T> sourceClass) {
+    public static <T> PluginProps parse(@NotNull final T source,
+                                        @NotNull final Class<? extends T> sourceClass) {
         for (Map.Entry<Class<?>, PropsParser<?>> entry : REGISTERED_PARSERS.entrySet()) {
             Class<?> clazz = entry.getKey();
 
@@ -233,12 +233,12 @@ public final class EcoPluginProps {
      * @return The props.
      */
     @ApiStatus.Internal
-    static EcoPluginProps createSimple(final int resourceId,
-                                       final int bStatsId,
-                                       @NotNull final String proxyPackage,
-                                       @NotNull final String color,
-                                       final boolean supportsExtensions) {
-        EcoPluginProps props = new EcoPluginProps();
+    static PluginProps createSimple(final int resourceId,
+                                    final int bStatsId,
+                                    @NotNull final String proxyPackage,
+                                    @NotNull final String color,
+                                    final boolean supportsExtensions) {
+        PluginProps props = new PluginProps();
         props.setResourceId(resourceId);
         props.setBStatsId(bStatsId);
         props.setProxyPackage(proxyPackage);
@@ -259,15 +259,15 @@ public final class EcoPluginProps {
          * @param source The source.
          * @return The props.
          */
-        EcoPluginProps parseFrom(@NotNull T source);
+        PluginProps parseFrom(@NotNull T source);
 
         /**
          * Get a new, blank props instance.
          *
          * @return Blank props.
          */
-        default EcoPluginProps getBlankProps() {
-            return new EcoPluginProps();
+        default PluginProps getBlankProps() {
+            return new PluginProps();
         }
     }
 }

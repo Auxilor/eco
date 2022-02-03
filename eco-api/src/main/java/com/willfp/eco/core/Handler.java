@@ -269,6 +269,6 @@ public interface Handler {
      * @return The props.
      */
     @NotNull
-    EcoPluginProps getProps(@Nullable EcoPluginProps existing,
-                            @NotNull Class<? extends EcoPlugin> plugin);
+    PluginProps getProps(@Nullable PluginProps existing,
+                         @NotNull Class<? extends EcoPlugin> plugin);
 }

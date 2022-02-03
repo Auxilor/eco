@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.EcoPluginProps
+import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.Handler
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
@@ -166,7 +166,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         return keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
     }
 
-    override fun getProps(existing: EcoPluginProps?, plugin: Class<out EcoPlugin>): EcoPluginProps {
+    override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>): PluginProps {
         return existing ?: EcoPropsParser.parseForPlugin(plugin)
     }
 }
