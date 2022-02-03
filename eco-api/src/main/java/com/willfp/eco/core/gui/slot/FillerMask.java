@@ -1,6 +1,8 @@
 package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.items.builder.ItemStackBuilder;
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
+import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.util.ListUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -38,7 +40,7 @@ public class FillerMask {
      */
     public FillerMask(@NotNull final Material material,
                       @NotNull final String... pattern) {
-        this(new MaskMaterials(material), pattern);
+        this(new MaskItems(new MaterialTestableItem(material)), pattern);
     }
 
     /**
@@ -46,17 +48,37 @@ public class FillerMask {
      *
      * @param materials The mask materials.
      * @param pattern   The pattern.
+     * @deprecated Use {@link MaskItems} instead.
      */
+    @Deprecated(since = "6.24.0")
     public FillerMask(@NotNull final MaskMaterials materials,
                       @NotNull final String... pattern) {
-        if (Arrays.stream(materials.materials()).anyMatch(material -> material == Material.AIR)) {
-            throw new IllegalArgumentException("Materials cannot be air!");
+        this(
+                new MaskItems(
+                        Arrays.stream(materials.materials())
+                                .map(MaterialTestableItem::new)
+                                .toArray(MaterialTestableItem[]::new)
+                ),
+                pattern
+        );
+    }
+
+    /**
+     * Create a new filler mask.
+     *
+     * @param items   The mask items.
+     * @param pattern The pattern.
+     */
+    public FillerMask(@NotNull final MaskItems items,
+                      @NotNull final String... pattern) {
+        if (Arrays.stream(items.items()).anyMatch(item -> item instanceof EmptyTestableItem)) {
+            throw new IllegalArgumentException("Items cannot be empty!");
         }
 
         mask = ListUtils.create2DList(6, 9);
 
-        for (int i = 0; i < materials.materials().length; i++) {
-            ItemStack itemStack = new ItemStackBuilder(materials.materials()[i])
+        for (int i = 0; i < items.items().length; i++) {
+            ItemStack itemStack = new ItemStackBuilder(items.items()[i])
                     .setDisplayName("&r")
                     .build();
 

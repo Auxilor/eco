@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
  * a filler mask.
  *
  * @param materials The materials.
+ * @deprecated Use {@link MaskItems} instead.
  */
+@Deprecated(since = "6.24.0")
 public record MaskMaterials(@NotNull Material... materials) {
 
 }
