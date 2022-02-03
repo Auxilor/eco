@@ -9,8 +9,6 @@ import java.util.Map;
 
 /**
  * Plugin props are the arguments related to the plugin that are required on start-up.
- * Marked as internal as the props may change / update, which will cause problems if
- * you create props objects outside using parsers.
  * <p>
  * This class is complex in how it works intentionally. This is done so that fields can be
  * added to the props without breaking API backwards compatibility. Thus, there is no public
