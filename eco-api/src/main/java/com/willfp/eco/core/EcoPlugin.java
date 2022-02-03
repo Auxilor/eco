@@ -292,7 +292,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         assert Eco.getHandler() != null;
 
-        PluginProps props = Eco.getHandler().getProps(pluginProps, this.getClass());
+        PluginProps generatedProps = Eco.getHandler().getProps(pluginProps, this.getClass());
+        generatedProps.validate();
+        PluginProps props = this.mutateProps(generatedProps);
         props.validate();
 
         this.resourceId = props.getResourceId();
@@ -555,6 +557,21 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      */
     protected void handleAfterLoad() {
 
+    }
+
+    /**
+     * Mutate the plugin props.
+     * <p>
+     * Useful for eco-based plugin libraries to enforce certain properties, such as
+     * forcing extensions to be enabled.
+     * <p>
+     * Props are validated both before and after calling this method.
+     *
+     * @param props The props.
+     * @return The mutated props.
+     */
+    protected PluginProps mutateProps(@NotNull final PluginProps props) {
+        return props;
     }
 
     /**
