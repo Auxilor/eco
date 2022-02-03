@@ -2,6 +2,7 @@ package com.willfp.eco.core;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,27 +25,32 @@ public final class EcoPluginProps {
     /**
      * The polymart resource ID.
      */
-    private int resourceId;
+    @Nullable
+    private Integer resourceId;
 
     /**
      * The bStats ID.
      */
-    private int bStatsId;
+    @Nullable
+    private Integer bStatsId;
 
     /**
      * The proxy package.
      */
+    @Nullable
     private String proxyPackage;
 
     /**
      * The color.
      */
+    @Nullable
     private String color;
 
     /**
      * If extensions are supported.
      */
-    private boolean supportingExtensions;
+    @Nullable
+    private Boolean supportingExtensions;
 
     /**
      * Create new blank props.
@@ -59,6 +65,7 @@ public final class EcoPluginProps {
      * @return The resource ID.
      */
     public int getResourceId() {
+        assert resourceId != null;
         return resourceId;
     }
 
@@ -77,6 +84,7 @@ public final class EcoPluginProps {
      * @return The bStats ID.
      */
     public int getBStatsId() {
+        assert bStatsId != null;
         return bStatsId;
     }
 
@@ -94,7 +102,9 @@ public final class EcoPluginProps {
      *
      * @return The package.
      */
+    @NotNull
     public String getProxyPackage() {
+        assert proxyPackage != null;
         return proxyPackage;
     }
 
@@ -112,7 +122,9 @@ public final class EcoPluginProps {
      *
      * @return The color.
      */
+    @NotNull
     public String getColor() {
+        assert color != null;
         return color;
     }
 
@@ -131,6 +143,7 @@ public final class EcoPluginProps {
      * @return If supported.
      */
     public boolean isSupportingExtensions() {
+        assert supportingExtensions != null;
         return supportingExtensions;
     }
 
@@ -141,6 +154,21 @@ public final class EcoPluginProps {
      */
     public void setSupportingExtensions(final boolean supportingExtensions) {
         this.supportingExtensions = supportingExtensions;
+    }
+
+    /**
+     * Ensure that all required props have been set.
+     */
+    public void validate() {
+        if (
+                supportingExtensions == null
+                        || proxyPackage == null
+                        || color == null
+                        || bStatsId == null
+                        || resourceId == null
+        ) {
+            throw new IllegalStateException("Missing required props!");
+        }
     }
 
     /**

@@ -293,6 +293,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         assert Eco.getHandler() != null;
 
         EcoPluginProps props = Eco.getHandler().getProps(pluginProps, this.getClass());
+        props.validate();
 
         this.resourceId = props.getResourceId();
         this.bStatsId = props.getBStatsId();
@@ -318,8 +319,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         /*
         The minimum eco version check was moved here because it's very common
         to add a lot of code in the constructor of plugins; meaning that the plugin
-        can throw errors without it being obvious to the user that the reason is
-        because they have an outdated version of eco installed.
+        can throw errors without it being obvious to the user that the reason is that
+        they have an outdated version of eco installed.
          */
 
         DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getEcoPlugin().getDescription().getVersion());
