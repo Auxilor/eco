@@ -17,5 +17,5 @@ fun Iterable<String>.containsIgnoreCase(element: String): Boolean =
 /**
  * @see ListUtils.create2DList
  */
-fun <T> create2DList(rows: Int, columns: Int): List<List<T>> =
+fun <T> create2DList(rows: Int, columns: Int): MutableList<MutableList<T>> =
     ListUtils.create2DList(rows, columns)
