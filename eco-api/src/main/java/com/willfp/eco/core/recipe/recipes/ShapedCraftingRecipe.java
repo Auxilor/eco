@@ -294,7 +294,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
          */
         public boolean isAir() {
             for (TestableItem recipePart : this.recipeParts) {
-                if (recipePart!= null && !(recipePart instanceof EmptyTestableItem)) {
+                if (recipePart != null && !(recipePart instanceof EmptyTestableItem)) {
                     return false;
                 }
             }
