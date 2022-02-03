@@ -256,7 +256,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @param pluginProps The props. If left null, it will read from eco.yml.
      */
-    protected EcoPlugin(@Nullable final EcoPluginProps pluginProps) {
+    private EcoPlugin(@Nullable final EcoPluginProps pluginProps) {
         /*
         The handler must be initialized before any plugin's constructors
         are called, as the constructors call Eco#getHandler().
@@ -274,15 +274,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         a standalone handler class, but then there would be an interface
         left in the API that doesn't really help anything.
 
-        The other alternative would be do use reflection to get a 'createHandler'
-        method that only exists in EcoSpigotPlugin - but that feels really dirty
+        The other alternative would be to use reflection to get a 'createHandler'
+        method that only exists in EcoSpigotPlugin - but that feels filthy,
         and I'd rather only use reflection where necessary.
         */
 
         if (Eco.getHandler() == null && this instanceof Handler) {
             /*
             This code is only ever called by EcoSpigotPlugin (EcoHandler)
-            as it's the first plugin to load and it is a handler.
+            as it's the first plugin to load, and it is a handler.
 
             Any other plugins will never call this code as the handler
             will have already been initialized.
@@ -294,7 +294,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         assert Eco.getHandler() != null;
 
         EcoPluginProps props = pluginProps != null ? pluginProps : EcoPluginProps.fromConfig(
-                new TransientConfig(this.getClass().getResourceAsStream("eco.yml"))
+                new TransientConfig(this.getClass().getResourceAsStream("/eco.yml"))
         );
 
         this.resourceId = props.resourceId();
