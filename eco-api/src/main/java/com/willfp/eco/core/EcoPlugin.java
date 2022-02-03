@@ -155,7 +155,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * Create a new plugin.
      * <p>
      * Will read from eco.yml (like plugin.yml) to fetch values that would otherwise be passed
-     * into the constructor.
+     * into the constructor. If no eco.yml is present, the plugin will load without extension
+     * support, without proxy support, with no update-checker or bStats, and with the color white.
      */
     protected EcoPlugin() {
         this((PluginProps) null);
