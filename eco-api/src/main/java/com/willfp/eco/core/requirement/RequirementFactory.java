@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @ApiStatus.Internal
 @Eco.HandlerComponent
+@Deprecated(since = "6.24.0", forRemoval = true)
+@SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
 public interface RequirementFactory {
     /**
      * Create a requirement.

@@ -21,7 +21,6 @@ import com.willfp.eco.internal.gui.EcoGUIFactory
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
-import com.willfp.eco.internal.requirement.EcoRequirementFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
@@ -40,7 +39,9 @@ import java.util.logging.Logger
 @Suppress("UNUSED")
 class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
-    private val requirementFactory = EcoRequirementFactory()
+
+    @Suppress("DEPRECATION")
+    private val requirementFactory = com.willfp.eco.internal.requirement.EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
     private val keyRegistry = EcoKeyRegistry(this)
     private val playerProfileHandler = EcoProfileHandler(
@@ -133,7 +134,8 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         MetricHandler.createMetrics(plugin)
     }
 
-    override fun getRequirementFactory(): EcoRequirementFactory {
+    @Suppress("DEPRECATION")
+    override fun getRequirementFactory(): com.willfp.eco.internal.requirement.EcoRequirementFactory {
         return requirementFactory
     }
 

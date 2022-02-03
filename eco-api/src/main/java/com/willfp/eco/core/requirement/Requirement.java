@@ -8,6 +8,8 @@ import java.util.List;
 /**
  * A requirement is a defined goal that a player must meet.
  */
+@Deprecated(since = "6.24.0", forRemoval = true)
+@SuppressWarnings("DeprecatedIsStillUsed")
 public abstract class Requirement {
     /**
      * Create a new requirement.

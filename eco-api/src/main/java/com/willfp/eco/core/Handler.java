@@ -15,7 +15,6 @@ import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
-import com.willfp.eco.core.requirement.RequirementFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Location;
@@ -33,6 +32,7 @@ import java.util.logging.Logger;
  * @see Eco#getHandler()
  */
 @ApiStatus.Internal
+@SuppressWarnings("removal")
 public interface Handler {
     /**
      * Create a scheduler.
@@ -210,7 +210,8 @@ public interface Handler {
      * @return The factory.
      */
     @NotNull
-    RequirementFactory getRequirementFactory();
+    @Deprecated(forRemoval = true)
+    com.willfp.eco.core.requirement.RequirementFactory getRequirementFactory();
 
     /**
      * Get Adventure audiences.

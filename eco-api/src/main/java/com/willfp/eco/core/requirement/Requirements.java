@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Contains methods and fields pertaining to requirements.
  */
+@Deprecated(since = "6.24.0", forRemoval = true)
+@SuppressWarnings("removal")
 public final class Requirements {
     /**
      * Requires a player to have a permission.
