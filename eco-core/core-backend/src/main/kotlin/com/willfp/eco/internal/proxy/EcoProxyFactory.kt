@@ -4,7 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.core.proxy.ProxyFactory
 import com.willfp.eco.core.proxy.exceptions.ProxyError
-import com.willfp.eco.core.proxy.exceptions.UnsupportedVersionException
+import com.willfp.eco.core.proxy.exceptions.UnsupportedVersionError
 import java.net.URLClassLoader
 import java.util.IdentityHashMap
 
@@ -46,7 +46,7 @@ class EcoProxyFactory(
         return if (!SUPPORTED_VERSIONS.contains(ProxyConstants.NMS_VERSION)) {
             ProxyError(
                 "Could not initialize proxy.",
-                UnsupportedVersionException()
+                UnsupportedVersionError()
             )
         } else {
             ProxyError(
