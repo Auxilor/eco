@@ -26,11 +26,26 @@ public final class DurabilityUtils {
      * @param item   The item to damage.
      * @param damage The amount of damage to deal.
      * @param slot   The slot in the inventory of the item.
+     * @deprecated The slot is not required.
      */
+    @Deprecated(since = "6.24.0")
     public static void damageItem(@NotNull final Player player,
                                   @NotNull final ItemStack item,
                                   final int damage,
                                   final int slot) {
+        damageItem(player, item, damage);
+    }
+
+    /**
+     * Damage an item in a player's inventory.
+     *
+     * @param player The player.
+     * @param item   The item to damage.
+     * @param damage The amount of damage to deal.
+     */
+    public static void damageItem(@NotNull final Player player,
+                                  @NotNull final ItemStack item,
+                                  final int damage) {
         if (item.getItemMeta() == null) {
             return;
         }
@@ -61,11 +76,49 @@ public final class DurabilityUtils {
                 item.setItemMeta((ItemMeta) meta);
                 PlayerItemBreakEvent event = new PlayerItemBreakEvent(player, item);
                 Bukkit.getPluginManager().callEvent(event);
-                player.getInventory().clear(slot);
+                item.setType(Material.AIR);
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1, 1);
             } else {
                 item.setItemMeta((ItemMeta) meta);
             }
+        }
+    }
+
+    /**
+     * Damage an item.
+     *
+     * @param item   The item to damage.
+     * @param damage The amount of damage to deal.
+     */
+    public static void damageItem(@NotNull final ItemStack item,
+                                  final int damage) {
+        if (item.getItemMeta() == null) {
+            return;
+        }
+
+        if (item.getItemMeta().isUnbreakable()) {
+            return;
+        }
+
+        if (!(item.getItemMeta() instanceof Damageable)) {
+            return;
+        }
+
+        // Special edge case
+        if (item.getType() == Material.CARVED_PUMPKIN || item.getType() == Material.PLAYER_HEAD) {
+            return;
+        }
+
+
+        Damageable meta = (Damageable) item.getItemMeta();
+        meta.setDamage(meta.getDamage() + damage);
+
+        if (meta.getDamage() >= item.getType().getMaxDurability()) {
+            meta.setDamage(item.getType().getMaxDurability());
+            item.setItemMeta((ItemMeta) meta);
+            item.setType(Material.AIR);
+        } else {
+            item.setItemMeta((ItemMeta) meta);
         }
     }
 
