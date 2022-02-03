@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface for internal requirement factory implementations.
+ *
+ * @deprecated See {@link Requirement}.
  */
 @ApiStatus.Internal
 @Eco.HandlerComponent

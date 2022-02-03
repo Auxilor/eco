@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Contains methods and fields pertaining to requirements.
+ *
+ * @deprecated See {@link Requirement}.
  */
 @Deprecated(since = "6.24.0", forRemoval = true)
 @SuppressWarnings("removal")

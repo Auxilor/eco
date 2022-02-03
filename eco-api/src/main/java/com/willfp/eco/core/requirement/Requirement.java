@@ -7,6 +7,8 @@ import java.util.List;
 
 /**
  * A requirement is a defined goal that a player must meet.
+ *
+ * @deprecated No typing, weak definitions, and not an API component. Shouldn't be in eco.
  */
 @Deprecated(since = "6.24.0", forRemoval = true)
 @SuppressWarnings("DeprecatedIsStillUsed")
