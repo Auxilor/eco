@@ -1,8 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0")
+    }
+}
+
 plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow") version "7.1.0"
     id("maven-publish")
     id("java")
+    kotlin("jvm") version "1.6.0"
 }
 
 dependencies {
@@ -20,6 +31,7 @@ allprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
     apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "kotlin")
 
     repositories {
         mavenCentral()
@@ -73,6 +85,7 @@ allprojects {
     }
 
     dependencies {
+        compileOnly(kotlin("stdlib", version = "1.6.0"))
         compileOnly("org.jetbrains:annotations:23.0.0")
 
         // Test
