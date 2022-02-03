@@ -32,7 +32,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             val compound = base as CompoundTag
             val key = compound.getString("id")
             val level = ('\uffff'.code.toShort() and compound.getShort("lvl")).toInt()
-            val found = Enchantment.getByKey(NamespacedKeyUtils.fromString(key))
+            val found = Enchantment.getByKey(NamespacedKeyUtils.fromStringOrNull(key))
             if (found != null) {
                 foundEnchantments[found] = level
             }
