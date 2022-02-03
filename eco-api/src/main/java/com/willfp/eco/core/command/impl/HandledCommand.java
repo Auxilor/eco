@@ -1,7 +1,6 @@
 package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.CommandHandler;
 import com.willfp.eco.core.command.TabCompleteHandler;
@@ -25,7 +24,12 @@ import java.util.stream.Collectors;
  * layer, hence why it's a package-private class.
  */
 @SuppressWarnings({"DeprecatedIsStillUsed"})
-abstract class HandledCommand extends PluginDependent<EcoPlugin> implements CommandBase {
+abstract class HandledCommand implements CommandBase {
+    /**
+     * The plugin.
+     */
+    private final EcoPlugin plugin;
+
     /**
      * The name of the command.
      */
@@ -78,7 +82,7 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
                    @NotNull final String name,
                    @NotNull final String permission,
                    final boolean playersOnly) {
-        super(plugin);
+        this.plugin = plugin;
         this.name = name;
         this.permission = permission;
         this.playersOnly = playersOnly;
@@ -96,6 +100,16 @@ abstract class HandledCommand extends PluginDependent<EcoPlugin> implements Comm
         subcommands.add(subcommand);
 
         return this;
+    }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    @Override
+    public EcoPlugin getPlugin() {
+        return this.plugin;
     }
 
     /**

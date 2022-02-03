@@ -24,3 +24,15 @@ fun Player.asAudience(): Audience =
  */
 fun CommandSender.asAudience(): Audience =
     PlayerUtils.getAudience(this)
+
+/**
+ * @see PlayerUtils.runExempted
+ */
+fun Player.runExempted(action: Player.() -> Unit) =
+    PlayerUtils.runExempted(this, action)
+
+/**
+ * @see PlayerUtils.runExempted
+ */
+fun Player.runExempted(action: () -> Unit) =
+    PlayerUtils.runExempted(this, action)

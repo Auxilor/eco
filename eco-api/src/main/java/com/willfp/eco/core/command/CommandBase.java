@@ -1,5 +1,6 @@
 package com.willfp.eco.core.command;
 
+import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +66,13 @@ public interface CommandBase {
                                      @NotNull List<String> args) {
         return new ArrayList<>();
     }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    EcoPlugin getPlugin();
 
     /**
      * Get the handler.
