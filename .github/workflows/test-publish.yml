@@ -1,6 +1,6 @@
 name: Publish API (Dev)
 
-on: [push]
+on: [ push ]
 
 jobs:
   publish-release:
@@ -39,4 +39,4 @@ jobs:
           NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
           echo "New version: ${{ steps.vars.outputs.sha_short }}"
           echo "Github username: ${GITHUB_ACTOR}"
-          ./gradlew -Pversion=${{ steps.vars.outputs.sha_short }} publish
+          ./gradlew -Pversion=dev-${{ steps.vars.outputs.sha_short }} publish
