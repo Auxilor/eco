@@ -24,6 +24,7 @@ import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
 import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
 import com.willfp.eco.internal.entities.EntityArgParserBaby
 import com.willfp.eco.internal.entities.EntityArgParserCharged
+import com.willfp.eco.internal.entities.EntityArgParserEquipment
 import com.willfp.eco.internal.entities.EntityArgParserExplosionRadius
 import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
 import com.willfp.eco.internal.entities.EntityArgParserFollowRange
@@ -148,6 +149,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserCharged())
         Entities.registerArgParser(EntityArgParserExplosionRadius())
         Entities.registerArgParser(EntityArgParserSilent())
+        Entities.registerArgParser(EntityArgParserEquipment())
 
         ShapedRecipeListener.registerListener(ComplexInComplex())
         ShapedRecipeListener.registerListener(ComplexInEco())
