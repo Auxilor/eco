@@ -2,7 +2,7 @@ package com.willfp.eco.internal.entities
 
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
-import org.bukkit.entity.Animals
+import org.bukkit.entity.Ageable
 
 class EntityArgParserBaby : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
@@ -20,14 +20,14 @@ class EntityArgParserBaby : EntityArgParser {
 
         return EntityArgParseResult(
             {
-                if (it !is Animals) {
+                if (it !is Ageable) {
                     return@EntityArgParseResult false
                 }
 
                 !it.isAdult
             },
             {
-                (it as? Animals)?.setBaby()
+                (it as? Ageable)?.setBaby()
             }
         )
     }
