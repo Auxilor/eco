@@ -1,8 +1,8 @@
 package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.Handler
+import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import com.willfp.eco.internal.EcoCleaner
@@ -26,8 +26,6 @@ import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
-import com.willfp.eco.internal.spigot.data.storage.MySQLDataHandler
-import com.willfp.eco.internal.spigot.data.storage.YamlDataHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.proxy.DummyEntityProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
@@ -46,10 +44,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     private val requirementFactory = com.willfp.eco.internal.requirement.EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
     private val keyRegistry = EcoKeyRegistry(this)
-    private val playerProfileHandler = EcoProfileHandler(
-        if (this.configYml.getBool("mysql.enabled"))
-            MySQLDataHandler(this) else YamlDataHandler(this)
-    )
+    private val playerProfileHandler = EcoProfileHandler(this.configYml.getBool("mysql.enabled"), this)
 
     @Suppress("RedundantNullableReturnType")
     private val keyFactory: InternalNamespacedKeyFactory? =

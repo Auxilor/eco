@@ -2,10 +2,10 @@ package com.willfp.eco.internal.spigot.data.storage
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.Eco
-import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
+import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.Level
@@ -30,7 +30,8 @@ import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
-    plugin: EcoSpigotPlugin
+    plugin: EcoSpigotPlugin,
+    private val handler: EcoProfileHandler
 ) : DataHandler {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
@@ -104,7 +105,7 @@ class MySQLDataHandler(
     }
 
     private fun savePlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = PlayerProfile.load(uuid)
+        val profile = handler.loadGenericProfile(uuid)
 
         executor.submit {
             transaction {
