@@ -9,21 +9,17 @@ import java.lang.reflect.Method
 import java.util.UUID
 
 class Skull : SkullProxy {
-    private val setProfile: Method by lazy {
-        meta.javaClass.getDeclaredMethod("setProfile", GameProfile::class.java).apply {
-            isAccessible = true
-        }
-    }
-    private val profile: Field by lazy {
-        meta.javaClass.getDeclaredField("profile").apply {
-            isAccessible = true
-        }
-    }
+    private lateinit var setProfile: Method
+    private lateinit var profile: Field
 
     override fun setSkullTexture(
         meta: SkullMeta,
         base64: String
     ) {
+        if (!this::setProfile.isInitialized) {
+            setProfile = meta.javaClass.getDeclaredMethod("setProfile", GameProfile::class.java)
+            setProfile.isAccessible = true
+        }
         val uuid = UUID(
             base64.substring(base64.length - 20).hashCode().toLong(),
             base64.substring(base64.length - 10).hashCode().toLong()
@@ -36,6 +32,10 @@ class Skull : SkullProxy {
     override fun getSkullTexture(
         meta: SkullMeta
     ): String? {
+        if (!this::profile.isInitialized) {
+            profile = meta.javaClass.getDeclaredField("profile")
+            profile.isAccessible = true
+        }
         val profile = profile[meta] as GameProfile? ?: return null
         val properties = profile.properties ?: return null
         val prop = properties["textures"] ?: return null
