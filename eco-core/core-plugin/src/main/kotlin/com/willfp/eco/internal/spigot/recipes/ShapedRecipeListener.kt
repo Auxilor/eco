@@ -88,7 +88,11 @@ class ShapedRecipeListener : Listener {
                     newMatrix[i] = inMatrix
                 }
             } else {
-                if (inMatrix == null) continue
+                @Suppress("SENSELESS_COMPARISON")
+                if (inMatrix == null) {
+                    continue
+                }
+
                 if (event.isShiftClick) {
                     var amount = inMatrix.amount + 1
                     for (j in 0..upperBound) {
