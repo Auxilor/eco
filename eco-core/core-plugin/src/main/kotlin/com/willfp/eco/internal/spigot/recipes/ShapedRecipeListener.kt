@@ -49,14 +49,12 @@ class ShapedRecipeListener : Listener {
                 }
                 isStackedRecipe = true
             } else if (inMatrix != null) {
-                val max = Math.floorDiv(inMatrix.amount, inRecipe.item.amount)
+                val max = inMatrix.amount
                 if (max < upperBound) {
                     upperBound = max
                 }
-                isStackedRecipe = true
             }
         }
-
 
         if (!isStackedRecipe) {
             return
@@ -68,10 +66,8 @@ class ShapedRecipeListener : Listener {
             upperBound--
         }
 
-        val newMatrix = matrix;
-
         for (i in 0..8) {
-            val inMatrix = matrix[i]
+            val inMatrix = event.inventory.matrix[i]
             val inRecipe = matched.parts[i]
 
             if (inRecipe is TestableStack) {
@@ -80,34 +76,12 @@ class ShapedRecipeListener : Listener {
                     for (j in 0..upperBound) {
                         amount -= inRecipe.amount
                     }
-                    inMatrix.amount = amount;
-                    newMatrix[i] = inMatrix
-
+                    inMatrix.amount = amount
                 } else {
                     inMatrix.amount = inMatrix.amount - (inRecipe.amount - 1)
-                    newMatrix[i] = inMatrix
-                }
-            } else {
-                @Suppress("SENSELESS_COMPARISON")
-                if (inMatrix == null) {
-                    continue
-                }
-
-                if (event.isShiftClick) {
-                    var amount = inMatrix.amount + 1
-                    for (j in 0..upperBound) {
-                        amount -= inRecipe.item.amount
-                    }
-                    inMatrix.amount = amount;
-                    newMatrix[i] = inMatrix
-                } else {
-                    inMatrix.amount = inMatrix.amount - (inRecipe.item.amount - 1)
-                    newMatrix[i] = inMatrix
                 }
             }
         }
-
-        event.inventory.matrix = newMatrix;
 
         if (event.isShiftClick) {
             val result = event.inventory.result ?: return
