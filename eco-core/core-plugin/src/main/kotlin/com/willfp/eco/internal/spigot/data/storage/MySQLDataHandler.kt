@@ -87,14 +87,12 @@ class MySQLDataHandler(
     override fun save() {
         plugin.dataYml.set(
             "categorized-keys.player",
-            playerHandler.registeredKeys
-                .mapNotNull { Eco.getHandler().keyRegistry.getKeyFrom(it) }
+            playerHandler.registeredKeys.values
                 .map { KeyHelpers.serializeToString(it) }
         )
         plugin.dataYml.set(
             "categorized-keys.server",
-            serverHandler.registeredKeys
-                .mapNotNull { Eco.getHandler().keyRegistry.getKeyFrom(it) }
+            serverHandler.registeredKeys.values
                 .map { KeyHelpers.serializeToString(it) }
         )
         plugin.dataYml.save()
@@ -116,7 +114,7 @@ private class ImplementedMySQLHandler(
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
-    val registeredKeys: MutableSet<NamespacedKey> = ConcurrentHashMap.newKeySet()
+    val registeredKeys = ConcurrentHashMap<NamespacedKey, PersistentDataKey<*>>()
 
     init {
         val config = HikariConfig()
@@ -157,7 +155,7 @@ private class ImplementedMySQLHandler(
 
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
             for (key in knownKeys) {
-                registeredKeys.add(key.key)
+                registeredKeys[key.key] = key
             }
         }
     }
@@ -170,7 +168,7 @@ private class ImplementedMySQLHandler(
         val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key) ?: return
 
         if (table.columns.any { it.name == key.toString() }) {
-            registeredKeys.add(key)
+            registeredKeys[key] = persistentKey
             return
         }
 
@@ -180,7 +178,7 @@ private class ImplementedMySQLHandler(
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
 
-        registeredKeys.add(key)
+        registeredKeys[key] = persistentKey
     }
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
