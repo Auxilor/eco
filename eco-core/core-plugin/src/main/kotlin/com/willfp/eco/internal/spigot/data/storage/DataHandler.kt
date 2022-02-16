@@ -5,11 +5,12 @@ import org.bukkit.NamespacedKey
 import java.util.UUID
 
 interface DataHandler {
-    fun save() {
+    fun save()
+    fun saveAll(uuids: Iterable<UUID>)
+
+    fun runPostInit() {
 
     }
-
-    fun saveAll(uuids: Iterable<UUID>)
 
     fun savePlayer(uuid: UUID) {
         saveKeysFor(uuid, PersistentDataKey.values())

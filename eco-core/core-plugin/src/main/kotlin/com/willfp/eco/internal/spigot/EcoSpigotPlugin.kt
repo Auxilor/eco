@@ -48,6 +48,7 @@ import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.DataYml
+import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.display.PacketAutoRecipe
@@ -215,6 +216,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         CustomItemsManager.registerAllItems()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
+        (Eco.getHandler().profileHandler as EcoProfileHandler).runPostInit()
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {

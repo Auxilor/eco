@@ -95,6 +95,11 @@ class MySQLDataHandler(
         )
         plugin.dataYml.save()
     }
+
+    override fun runPostInit() {
+        playerHandler.runPostInit()
+        serverHandler.runPostInit()
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -102,7 +107,7 @@ private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
     plugin: EcoPlugin,
-    knownKeys: Collection<NamespacedKey>
+    private val knownKeys: Collection<NamespacedKey>
 ) {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
@@ -136,11 +141,11 @@ private class ImplementedMySQLHandler(
                     }
                 }
         }
+    }
 
-        plugin.scheduler.runLater(1) {
-            for (key in knownKeys) {
-                ensureKeyRegistration(key)
-            }
+    fun runPostInit() {
+        for (key in knownKeys) {
+            ensureKeyRegistration(key)
         }
     }
 

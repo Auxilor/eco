@@ -63,4 +63,8 @@ class EcoProfileHandler(
     override fun save() {
         handler.save()
     }
+
+    fun runPostInit() {
+        handler.runPostInit()
+    }
 }
