@@ -47,6 +47,7 @@ import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
+import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.display.PacketAutoRecipe
@@ -122,6 +123,8 @@ import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
+    abstract val dataYml: DataYml
+
     init {
         Items.registerArgParser(ArgParserEnchantment())
         Items.registerArgParser(ArgParserColor())

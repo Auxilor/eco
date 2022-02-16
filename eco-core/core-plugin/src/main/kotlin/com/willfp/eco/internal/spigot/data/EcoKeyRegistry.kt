@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.data
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
@@ -17,8 +16,6 @@ class EcoKeyRegistry: KeyRegistry {
         validateKey(key)
 
         this.registry[key.key] = key
-
-        (Eco.getHandler().profileHandler as EcoProfileHandler).updateKeys()
     }
 
     override fun getRegisteredKeys(): MutableSet<PersistentDataKey<*>> {

@@ -63,8 +63,4 @@ class EcoProfileHandler(
     override fun save() {
         handler.save()
     }
-
-    fun updateKeys() {
-        handler.updateKeys()
-    }
 }

@@ -1,7 +1,5 @@
 package com.willfp.eco.internal.spigot.data.storage
 
-import com.willfp.eco.core.config.BaseConfig
-import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
@@ -13,7 +11,7 @@ class YamlDataHandler(
     plugin: EcoSpigotPlugin,
     private val handler: EcoProfileHandler
 ) : DataHandler {
-    private val dataYml = DataYml(plugin)
+    private val dataYml = plugin.dataYml
 
     override fun save() {
         dataYml.save()
@@ -42,13 +40,4 @@ class YamlDataHandler(
     override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
         return dataYml.get("player.$uuid.$key") as T?
     }
-
-    class DataYml(
-        plugin: EcoSpigotPlugin
-    ) : BaseConfig(
-        "data",
-        plugin,
-        false,
-        ConfigType.YAML
-    )
 }

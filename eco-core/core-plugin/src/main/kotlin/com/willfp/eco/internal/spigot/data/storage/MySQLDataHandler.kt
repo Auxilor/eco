@@ -8,6 +8,7 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.serverProfileUUID
+import com.willfp.eco.util.NamespacedKeyUtils
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.Level
@@ -33,19 +34,23 @@ import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
-    plugin: EcoSpigotPlugin,
+    private val plugin: EcoSpigotPlugin,
     handler: EcoProfileHandler
 ) : DataHandler {
     private val playerHandler = ImplementedMySQLHandler(
         handler,
         UUIDTable("eco_players"),
-        plugin
+        plugin,
+        plugin.dataYml.getStrings("known-player-keys")
+            .mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }
     )
 
     private val serverHandler = ImplementedMySQLHandler(
         handler,
         UUIDTable("eco_server"),
-        plugin
+        plugin,
+        plugin.dataYml.getStrings("known-server-keys")
+            .mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }
     )
 
     override fun saveAll(uuids: Iterable<UUID>) {
@@ -78,18 +83,31 @@ class MySQLDataHandler(
             function(playerHandler)
         }
     }
+
+    override fun save() {
+        plugin.dataYml.set(
+            "known-player-keys",
+            playerHandler.registeredKeys.map { it.toString() }
+        )
+        plugin.dataYml.set(
+            "known-server-keys",
+            serverHandler.registeredKeys.map { it.toString() }
+        )
+        plugin.dataYml.save()
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
 private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
-    plugin: EcoPlugin
+    plugin: EcoPlugin,
+    knownKeys: Collection<NamespacedKey>
 ) {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
-    private val registeredKeys = ConcurrentHashMap.newKeySet<NamespacedKey>()
+    val registeredKeys: MutableSet<NamespacedKey> = ConcurrentHashMap.newKeySet()
 
     init {
         val config = HikariConfig()
@@ -118,6 +136,12 @@ private class ImplementedMySQLHandler(
                     }
                 }
         }
+
+        plugin.scheduler.runLater(1) {
+            for (key in knownKeys) {
+                ensureKeyRegistration(key)
+            }
+        }
     }
 
     fun ensureKeyRegistration(key: NamespacedKey) {
@@ -125,9 +149,9 @@ private class ImplementedMySQLHandler(
             return
         }
 
-        transaction {
-            val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key)!!
+        val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key) ?: return
 
+        transaction {
             registerColumn(persistentKey, table)
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
             registeredKeys.add(key)
