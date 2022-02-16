@@ -41,7 +41,7 @@ class MySQLDataHandler(
         handler,
         UUIDTable("eco_players"),
         plugin,
-        plugin.dataYml.getStrings("known-player-keys")
+        plugin.dataYml.getStrings("categorized-keys.player")
             .mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }
     )
 
@@ -49,7 +49,7 @@ class MySQLDataHandler(
         handler,
         UUIDTable("eco_server"),
         plugin,
-        plugin.dataYml.getStrings("known-server-keys")
+        plugin.dataYml.getStrings("categorized-keys.server")
             .mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }
     )
 
@@ -86,11 +86,11 @@ class MySQLDataHandler(
 
     override fun save() {
         plugin.dataYml.set(
-            "known-player-keys",
+            "categorized-keys.player",
             playerHandler.registeredKeys.map { it.toString() }
         )
         plugin.dataYml.set(
-            "known-server-keys",
+            "categorized-keys.server",
             serverHandler.registeredKeys.map { it.toString() }
         )
         plugin.dataYml.save()
@@ -106,7 +106,7 @@ class MySQLDataHandler(
 private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
-    plugin: EcoPlugin,
+    private val plugin: EcoPlugin,
     private val knownKeys: Collection<NamespacedKey>
 ) {
     private val columns = mutableMapOf<String, Column<*>>()
@@ -144,8 +144,20 @@ private class ImplementedMySQLHandler(
     }
 
     fun runPostInit() {
-        for (key in knownKeys) {
-            ensureKeyRegistration(key)
+        plugin.logger.info("Loading known keys: $knownKeys")
+
+        val persistentKeys = knownKeys
+            .mapNotNull { Eco.getHandler().keyRegistry.getKeyFrom(it) }
+
+        transaction {
+            for (key in persistentKeys) {
+                registerColumn(key, table)
+            }
+
+            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+            for (key in persistentKeys) {
+                registeredKeys.add(key.key)
+            }
         }
     }
 
@@ -156,11 +168,17 @@ private class ImplementedMySQLHandler(
 
         val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key) ?: return
 
+        if (table.columns.any { it.name == key.toString() }) {
+            registeredKeys.add(key)
+            return
+        }
+
         transaction {
             registerColumn(persistentKey, table)
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-            registeredKeys.add(key)
         }
+
+        registeredKeys.add(key)
     }
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
@@ -214,6 +232,8 @@ private class ImplementedMySQLHandler(
 
             return@Callable value
         }
+
+        ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
 
         return if (Eco.getHandler().ecoPlugin.configYml.getBool("mysql.async-reads")) {
             executor.submit(doRead).get()
