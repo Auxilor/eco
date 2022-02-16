@@ -11,15 +11,11 @@ interface DataHandler {
 
     fun saveAll(uuids: Iterable<UUID>)
 
-    fun updateKeys() {
-
-    }
-
     fun savePlayer(uuid: UUID) {
-        saveKeysForPlayer(uuid, PersistentDataKey.values())
+        saveKeysFor(uuid, PersistentDataKey.values())
     }
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T)
-    fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>)
+    fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>)
     fun <T> read(uuid: UUID, key: NamespacedKey): T?
 }

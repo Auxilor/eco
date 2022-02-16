@@ -28,6 +28,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
 import java.util.concurrent.Callable
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
@@ -39,13 +40,13 @@ class MySQLDataHandler(
         handler,
         UUIDTable("eco_players"),
         plugin
-    ) { !it.isServerKey }
+    )
 
     private val serverHandler = ImplementedMySQLHandler(
         handler,
         UUIDTable("eco_server"),
         plugin
-    ) { it.isServerKey }
+    )
 
     override fun saveAll(uuids: Iterable<UUID>) {
         serverHandler.saveAll(uuids.filter { it == serverProfileUUID })
@@ -58,7 +59,7 @@ class MySQLDataHandler(
         }
     }
 
-    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         applyFor(uuid) {
             it.saveKeysForRow(uuid, keys)
         }
@@ -68,11 +69,6 @@ class MySQLDataHandler(
         return applyFor(uuid) {
             it.read(uuid, key)
         }
-    }
-
-    override fun updateKeys() {
-        playerHandler.updateKeys()
-        serverHandler.updateKeys()
     }
 
     private inline fun <R> applyFor(uuid: UUID, function: (ImplementedMySQLHandler) -> R): R {
@@ -88,12 +84,12 @@ class MySQLDataHandler(
 private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
-    plugin: EcoPlugin,
-    private val validator: (PersistentDataKey<*>) -> Boolean
+    plugin: EcoPlugin
 ) {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
+    private val registeredKeys = ConcurrentHashMap.newKeySet<NamespacedKey>()
 
     init {
         val config = HikariConfig()
@@ -107,7 +103,6 @@ private class ImplementedMySQLHandler(
         config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
 
         Database.connect(HikariDataSource(config))
-
 
         transaction {
             SchemaUtils.create(table)
@@ -125,25 +120,27 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    fun updateKeys() {
-        transaction {
-            for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-                if (validator(key)) {
-                    registerColumn(key, table)
-                }
-            }
+    fun ensureKeyRegistration(key: NamespacedKey) {
+        if (registeredKeys.contains(key)) {
+            return
+        }
 
+        transaction {
+            val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key)!!
+
+            registerColumn(persistentKey, table)
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+            registeredKeys.add(key)
         }
     }
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
-        getRow(uuid)
-        writeAsserted(uuid, key, value)
+        getOrCreateRow(uuid)
+        doWrite(uuid, key, value)
     }
 
-    private fun <T> writeAsserted(uuid: UUID, key: NamespacedKey, value: T) {
-        val column: Column<T> = getColumn(key.toString()) as Column<T>
+    private fun <T> doWrite(uuid: UUID, key: NamespacedKey, value: T) {
+        val column: Column<T> = getColumn(key) as Column<T>
 
         executor.submit {
             transaction {
@@ -169,12 +166,10 @@ private class ImplementedMySQLHandler(
 
         executor.submit {
             transaction {
-                getRow(uuid)
+                getOrCreateRow(uuid)
 
                 for (key in keys) {
-                    if (validator(key)) {
-                        writeAsserted(uuid, key.key, profile.read(key))
-                    }
+                    doWrite(uuid, key.key, profile.read(key))
                 }
             }
         }
@@ -184,8 +179,8 @@ private class ImplementedMySQLHandler(
         val doRead = Callable<T?> {
             var value: T? = null
             transaction {
-                val player = getRow(uuid)
-                value = player[getColumn(key.toString())] as T?
+                val row = getOrCreateRow(uuid)
+                value = row[getColumn(key)] as T?
             }
 
             return@Callable value
@@ -219,28 +214,30 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    private fun getColumn(name: String): Column<*> {
+    private fun getColumn(key: NamespacedKey): Column<*> {
+        ensureKeyRegistration(key)
+        val name = key.toString()
         val cached = columns[name]
         if (cached != null) {
             return cached
         }
 
         columns[name] = table.columns.stream().filter { it.name == name }.findFirst().get()
-        return getColumn(name)
+        return getColumn(key)
     }
 
-    private fun getRow(uuid: UUID): ResultRow {
-        val player = transaction {
+    private fun getOrCreateRow(uuid: UUID): ResultRow {
+        val row = transaction {
             table.select { table.id eq uuid }.limit(1).singleOrNull()
         }
 
-        return if (player != null) {
-            player
+        return if (row != null) {
+            row
         } else {
             transaction {
                 table.insert { it[id] = uuid }
             }
-            getRow(uuid)
+            getOrCreateRow(uuid)
         }
     }
 }

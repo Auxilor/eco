@@ -1,6 +1,8 @@
 package com.willfp.eco.core.data.keys;
 
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -21,4 +23,13 @@ public interface KeyRegistry {
      * @return The keys.
      */
     Set<PersistentDataKey<?>> getRegisteredKeys();
+
+    /**
+     * Get persistent data key from namespaced key.
+     *
+     * @param namespacedKey The key.
+     * @return The key, or null if not found.
+     */
+    @Nullable
+    PersistentDataKey<?> getKeyFrom(@NotNull NamespacedKey namespacedKey);
 }

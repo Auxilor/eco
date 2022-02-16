@@ -27,7 +27,7 @@ class YamlDataHandler(
         save()
     }
 
-    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         val profile = handler.loadGenericProfile(uuid)
 
         for (key in keys) {

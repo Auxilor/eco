@@ -43,4 +43,8 @@ class EcoKeyRegistry: KeyRegistry {
             else -> throw NullPointerException("Null value found!")
         }
     }
+
+    override fun getKeyFrom(namespacedKey: NamespacedKey): PersistentDataKey<*>? {
+        return registry[namespacedKey]
+    }
 }
