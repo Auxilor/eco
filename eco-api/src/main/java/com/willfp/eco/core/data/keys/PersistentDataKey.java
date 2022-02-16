@@ -3,7 +3,9 @@ package com.willfp.eco.core.data.keys;
 import com.willfp.eco.core.Eco;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -28,6 +30,11 @@ public class PersistentDataKey<T> {
     private final PersistentDataKeyType<T> type;
 
     /**
+     * If the key is for server data.
+     */
+    private final boolean isServerKey;
+
+    /**
      * Create a new Persistent Data Key.
      *
      * @param key          The key.
@@ -37,9 +44,25 @@ public class PersistentDataKey<T> {
     public PersistentDataKey(@NotNull final NamespacedKey key,
                              @NotNull final PersistentDataKeyType<T> type,
                              @NotNull final T defaultValue) {
+        this(key, type, defaultValue, false);
+    }
+
+    /**
+     * Create a new Persistent Data Key.
+     *
+     * @param key          The key.
+     * @param type         The data type.
+     * @param defaultValue The default value.
+     * @param isServerKey  If the key is for server data.
+     */
+    public PersistentDataKey(@NotNull final NamespacedKey key,
+                             @NotNull final PersistentDataKeyType<T> type,
+                             @NotNull final T defaultValue,
+                             final boolean isServerKey) {
         this.key = key;
         this.defaultValue = defaultValue;
         this.type = type;
+        this.isServerKey = isServerKey;
 
         Eco.getHandler().getKeyRegistry().registerKey(this);
     }
@@ -81,11 +104,36 @@ public class PersistentDataKey<T> {
     }
 
     /**
+     * Get if the key is for server data.
+     *
+     * @return If server key.
+     */
+    public boolean isServerKey() {
+        return isServerKey;
+    }
+
+    /**
      * Get all persistent data keys.
      *
      * @return The keys.
      */
     public static Set<PersistentDataKey<?>> values() {
         return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PersistentDataKey that)) {
+            return false;
+        }
+        return Objects.equals(this.getKey(), that.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getKey());
     }
 }

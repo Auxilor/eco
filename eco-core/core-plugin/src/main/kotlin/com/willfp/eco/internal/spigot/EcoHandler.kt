@@ -43,7 +43,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     @Suppress("DEPRECATION")
     private val requirementFactory = com.willfp.eco.internal.requirement.EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
-    private val keyRegistry = EcoKeyRegistry(this)
+    private val keyRegistry = EcoKeyRegistry()
     private val playerProfileHandler = EcoProfileHandler(this.configYml.getBool("mysql.enabled"), this)
 
     @Suppress("RedundantNullableReturnType")

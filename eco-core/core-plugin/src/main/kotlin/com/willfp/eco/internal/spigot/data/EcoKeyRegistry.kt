@@ -4,12 +4,9 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
 
-class EcoKeyRegistry(
-    private val plugin: EcoSpigotPlugin
-) : KeyRegistry {
+class EcoKeyRegistry: KeyRegistry {
     private val registry = mutableMapOf<NamespacedKey, PersistentDataKey<*>>()
 
     override fun registerKey(key: PersistentDataKey<*>) {
