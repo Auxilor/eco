@@ -1,6 +1,7 @@
 package com.willfp.eco.core.data.keys;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

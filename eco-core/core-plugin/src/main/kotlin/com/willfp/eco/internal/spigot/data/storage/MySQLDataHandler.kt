@@ -7,8 +7,8 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.KeyHelpers
 import com.willfp.eco.internal.spigot.data.serverProfileUUID
-import com.willfp.eco.util.NamespacedKeyUtils
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.Level
@@ -42,7 +42,7 @@ class MySQLDataHandler(
         UUIDTable("eco_players"),
         plugin,
         plugin.dataYml.getStrings("categorized-keys.player")
-            .mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }
+            .mapNotNull { KeyHelpers.deserializeFromString(it) }
     )
 
     private val serverHandler = ImplementedMySQLHandler(
@@ -50,7 +50,7 @@ class MySQLDataHandler(
         UUIDTable("eco_server"),
         plugin,
         plugin.dataYml.getStrings("categorized-keys.server")
-            .mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }
+            .mapNotNull { KeyHelpers.deserializeFromString(it) }
     )
 
     override fun saveAll(uuids: Iterable<UUID>) {
@@ -87,11 +87,15 @@ class MySQLDataHandler(
     override fun save() {
         plugin.dataYml.set(
             "categorized-keys.player",
-            playerHandler.registeredKeys.map { it.toString() }
+            playerHandler.registeredKeys
+                .mapNotNull { Eco.getHandler().keyRegistry.getKeyFrom(it) }
+                .map { KeyHelpers.serializeToString(it) }
         )
         plugin.dataYml.set(
             "categorized-keys.server",
-            serverHandler.registeredKeys.map { it.toString() }
+            serverHandler.registeredKeys
+                .mapNotNull { Eco.getHandler().keyRegistry.getKeyFrom(it) }
+                .map { KeyHelpers.serializeToString(it) }
         )
         plugin.dataYml.save()
     }
@@ -107,7 +111,7 @@ private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
     private val plugin: EcoPlugin,
-    private val knownKeys: Collection<NamespacedKey>
+    private val knownKeys: Collection<PersistentDataKey<*>>
 ) {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
@@ -146,16 +150,13 @@ private class ImplementedMySQLHandler(
     fun runPostInit() {
         plugin.logger.info("Loading known keys: $knownKeys")
 
-        val persistentKeys = knownKeys
-            .mapNotNull { Eco.getHandler().keyRegistry.getKeyFrom(it) }
-
         transaction {
-            for (key in persistentKeys) {
+            for (key in knownKeys) {
                 registerColumn(key, table)
             }
 
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-            for (key in persistentKeys) {
+            for (key in knownKeys) {
                 registeredKeys.add(key.key)
             }
         }
@@ -173,6 +174,7 @@ private class ImplementedMySQLHandler(
             return
         }
 
+        plugin.logger.info("Registering new key: $key...")
         transaction {
             registerColumn(persistentKey, table)
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
