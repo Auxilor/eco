@@ -146,8 +146,6 @@ private class ImplementedMySQLHandler(
     }
 
     fun runPostInit() {
-        plugin.logger.info("Loading known keys: $knownKeys")
-
         transaction {
             for (key in knownKeys) {
                 registerColumn(key, table)
@@ -172,7 +170,6 @@ private class ImplementedMySQLHandler(
             return
         }
 
-        plugin.logger.info("Registering new key: $key...")
         transaction {
             registerColumn(persistentKey, table)
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
