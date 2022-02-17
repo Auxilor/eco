@@ -114,6 +114,31 @@ class MySQLDataHandler(
         playerHandler.initialize()
         serverHandler.initialize()
     }
+
+    init {
+        val config = HikariConfig()
+        config.driverClassName = "com.mysql.cj.jdbc.Driver"
+        config.username = plugin.configYml.getString("mysql.user")
+        config.password = plugin.configYml.getString("mysql.password")
+        config.jdbcUrl = "jdbc:mysql://" +
+                "${plugin.configYml.getString("mysql.host")}:" +
+                "${plugin.configYml.getString("mysql.port")}/" +
+                plugin.configYml.getString("mysql.database")
+        config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
+
+        Database.connect(HikariDataSource(config))
+
+        // Get Exposed to shut the hell up
+        runCatching {
+            exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
+                .apply {
+                    get(exposedLogger).apply {
+                        this.javaClass.getDeclaredMethod("setLevel", Level::class.java)
+                            .invoke(this, Level.OFF)
+                    }
+                }
+        }
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -137,31 +162,8 @@ private class ImplementedMySQLHandler(
     private val currentlyProcessingRegistration = ConcurrentHashMap<NamespacedKey, Future<*>>()
 
     init {
-        val config = HikariConfig()
-        config.driverClassName = "com.mysql.cj.jdbc.Driver"
-        config.username = plugin.configYml.getString("mysql.user")
-        config.password = plugin.configYml.getString("mysql.password")
-        config.jdbcUrl = "jdbc:mysql://" +
-                "${plugin.configYml.getString("mysql.host")}:" +
-                "${plugin.configYml.getString("mysql.port")}/" +
-                plugin.configYml.getString("mysql.database")
-        config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
-
-        Database.connect(HikariDataSource(config))
-
         transaction {
             SchemaUtils.create(table)
-        }
-
-        // Get Exposed to shut the hell up
-        runCatching {
-            exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
-                .apply {
-                    get(exposedLogger).apply {
-                        this.javaClass.getDeclaredMethod("setLevel", Level::class.java)
-                            .invoke(this, Level.OFF)
-                    }
-                }
         }
     }
 
