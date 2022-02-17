@@ -320,7 +320,7 @@ private class ImplementedMySQLHandler(
                 transaction {
                     table.insert { it[id] = uuid }
                 }
-                select(uuid)!!
+                select(uuid)
             }
         }
     }
