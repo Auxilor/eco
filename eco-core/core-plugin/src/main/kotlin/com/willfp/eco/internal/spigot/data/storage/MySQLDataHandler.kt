@@ -124,11 +124,11 @@ private class ImplementedMySQLHandler(
     private val knownKeys: Collection<PersistentDataKey<*>>
 ) {
     private val columns = Caffeine.newBuilder()
-        .expireAfterWrite(5, TimeUnit.SECONDS)
+        .expireAfterAccess(5, TimeUnit.SECONDS)
         .build<String, Column<*>>()
 
     private val rows = Caffeine.newBuilder()
-        .expireAfterWrite(5, TimeUnit.SECONDS)
+        .expireAfterAccess(5, TimeUnit.SECONDS)
         .build<UUID, ResultRow>()
 
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
