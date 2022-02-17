@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data.storage
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
@@ -33,6 +34,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
@@ -44,8 +46,7 @@ class MySQLDataHandler(
         UUIDTable("eco_players"),
         plugin,
         plugin.dataYml.getStrings("categorized-keys.player")
-            .mapNotNull { KeyHelpers.deserializeFromString(it) },
-        KeyRegistry.KeyCategory.PLAYER
+            .mapNotNull { KeyHelpers.deserializeFromString(it) }
     )
 
     private val serverHandler = ImplementedMySQLHandler(
@@ -53,8 +54,7 @@ class MySQLDataHandler(
         UUIDTable("eco_server"),
         plugin,
         plugin.dataYml.getStrings("categorized-keys.server")
-            .mapNotNull { KeyHelpers.deserializeFromString(it) },
-        KeyRegistry.KeyCategory.SERVER
+            .mapNotNull { KeyHelpers.deserializeFromString(it) }
     )
 
     override fun saveAll(uuids: Iterable<UUID>) {
@@ -121,10 +121,16 @@ private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
     private val plugin: EcoPlugin,
-    private val knownKeys: Collection<PersistentDataKey<*>>,
-    private val category: KeyRegistry.KeyCategory
+    private val knownKeys: Collection<PersistentDataKey<*>>
 ) {
-    private val columns = mutableMapOf<String, Column<*>>()
+    private val columns = Caffeine.newBuilder()
+        .expireAfterWrite(5, TimeUnit.SECONDS)
+        .build<String, Column<*>>()
+
+    private val rows = Caffeine.newBuilder()
+        .expireAfterWrite(5, TimeUnit.SECONDS)
+        .build<UUID, ResultRow>()
+
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
     val registeredKeys = ConcurrentHashMap<NamespacedKey, PersistentDataKey<*>>()
@@ -285,28 +291,28 @@ private class ImplementedMySQLHandler(
 
     private fun getColumn(key: NamespacedKey): Column<*> {
         ensureKeyRegistration(key)
-        val name = key.toString()
-        val cached = columns[name]
-        if (cached != null) {
-            return cached
-        }
 
-        columns[name] = table.columns.stream().filter { it.name == name }.findFirst().get()
-        return getColumn(key)
+        val name = key.toString()
+
+        return columns.get(name) {
+            table.columns.first { it.name == name }
+        }
     }
 
     private fun getOrCreateRow(uuid: UUID): ResultRow {
-        val row = transaction {
-            table.select { table.id eq uuid }.limit(1).singleOrNull()
-        }
-
-        return if (row != null) {
-            row
-        } else {
-            transaction {
-                table.insert { it[id] = uuid }
+        return rows.get(uuid) {
+            val row = transaction {
+                table.select { table.id eq uuid }.limit(1).singleOrNull()
             }
-            getOrCreateRow(uuid)
+
+            return@get if (row != null) {
+                row
+            } else {
+                transaction {
+                    table.insert { it[id] = uuid }
+                }
+                getOrCreateRow(uuid)
+            }
         }
     }
 }
