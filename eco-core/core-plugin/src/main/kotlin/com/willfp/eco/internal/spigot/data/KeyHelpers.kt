@@ -7,25 +7,29 @@ import com.willfp.eco.util.NamespacedKeyUtils
 @Suppress("UNCHECKED_CAST")
 object KeyHelpers {
     fun deserializeFromString(serialized: String): PersistentDataKey<*>? {
-        val split = serialized.split("::").toTypedArray()
-        if (split.size != 3) {
+        val split = serialized.split(";").toTypedArray()
+
+        if (split.size < 2) {
             return null
         }
+
         val key = NamespacedKeyUtils.fromStringOrNull(split[0]) ?: return null
         val type = PersistentDataKeyType.valueOf(split[1]) ?: return null
         return when (type.name()) {
             "STRING" -> PersistentDataKey(
                 key,
                 type as PersistentDataKeyType<String>,
-                split[2]
+                if(split.size >= 3) split.toList().subList(2, split.size).joinToString("") else ""
             )
             "INT" -> PersistentDataKey(
                 key,
-                type as PersistentDataKeyType<Int>, split[2].toInt()
+                type as PersistentDataKeyType<Int>,
+                split[2].toInt()
             )
             "DOUBLE" -> PersistentDataKey(
                 key,
-                type as PersistentDataKeyType<Double>, split[2].toDouble()
+                type as PersistentDataKeyType<Double>,
+                split[2].toDouble()
             )
             "BOOLEAN" -> PersistentDataKey(
                 key,
@@ -37,6 +41,6 @@ object KeyHelpers {
     }
 
     fun serializeToString(key: PersistentDataKey<*>): String {
-        return "${key.key}::${key.type.name()}::${key.defaultValue}"
+        return "${key.key};${key.type.name()};${key.defaultValue}"
     }
 }
