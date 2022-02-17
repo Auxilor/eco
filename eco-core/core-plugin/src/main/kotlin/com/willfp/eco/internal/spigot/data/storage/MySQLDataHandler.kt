@@ -305,10 +305,14 @@ private class ImplementedMySQLHandler(
     }
 
     private fun getOrCreateRow(uuid: UUID): ResultRow {
-        return rows.get(uuid) {
-            val row = transaction {
+        fun select(uuid: UUID): ResultRow? {
+            return transaction {
                 table.select { table.id eq uuid }.limit(1).singleOrNull()
             }
+        }
+
+        return rows.get(uuid) {
+            val row = select(uuid)
 
             return@get if (row != null) {
                 row
@@ -316,7 +320,7 @@ private class ImplementedMySQLHandler(
                 transaction {
                     table.insert { it[id] = uuid }
                 }
-                getOrCreateRow(uuid)
+                select(uuid)!!
             }
         }
     }
