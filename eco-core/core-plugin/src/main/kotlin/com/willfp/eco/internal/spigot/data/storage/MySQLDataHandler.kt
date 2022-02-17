@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.data.storage
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
@@ -31,6 +32,7 @@ import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
@@ -42,7 +44,8 @@ class MySQLDataHandler(
         UUIDTable("eco_players"),
         plugin,
         plugin.dataYml.getStrings("categorized-keys.player")
-            .mapNotNull { KeyHelpers.deserializeFromString(it) }
+            .mapNotNull { KeyHelpers.deserializeFromString(it) },
+        KeyRegistry.KeyCategory.PLAYER
     )
 
     private val serverHandler = ImplementedMySQLHandler(
@@ -50,7 +53,8 @@ class MySQLDataHandler(
         UUIDTable("eco_server"),
         plugin,
         plugin.dataYml.getStrings("categorized-keys.server")
-            .mapNotNull { KeyHelpers.deserializeFromString(it) }
+            .mapNotNull { KeyHelpers.deserializeFromString(it) },
+        KeyRegistry.KeyCategory.SERVER
     )
 
     override fun saveAll(uuids: Iterable<UUID>) {
@@ -84,6 +88,14 @@ class MySQLDataHandler(
         }
     }
 
+    override fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
+        if (category == KeyRegistry.KeyCategory.SERVER) {
+            serverHandler.ensureKeyRegistration(key.key)
+        } else {
+            playerHandler.ensureKeyRegistration(key.key)
+        }
+    }
+
     override fun save() {
         plugin.dataYml.set(
             "categorized-keys.player",
@@ -98,9 +110,9 @@ class MySQLDataHandler(
         plugin.dataYml.save()
     }
 
-    override fun runPostInit() {
-        playerHandler.runPostInit()
-        serverHandler.runPostInit()
+    override fun initialize() {
+        playerHandler.initialize()
+        serverHandler.initialize()
     }
 }
 
@@ -109,12 +121,14 @@ private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
     private val plugin: EcoPlugin,
-    private val knownKeys: Collection<PersistentDataKey<*>>
+    private val knownKeys: Collection<PersistentDataKey<*>>,
+    private val category: KeyRegistry.KeyCategory
 ) {
     private val columns = mutableMapOf<String, Column<*>>()
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
     val registeredKeys = ConcurrentHashMap<NamespacedKey, PersistentDataKey<*>>()
+    private val currentlyProcessingRegistration = ConcurrentHashMap<NamespacedKey, Future<*>>()
 
     init {
         val config = HikariConfig()
@@ -145,7 +159,7 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    fun runPostInit() {
+    fun initialize() {
         transaction {
             for (key in knownKeys) {
                 registerColumn(key, table)
@@ -170,12 +184,21 @@ private class ImplementedMySQLHandler(
             return
         }
 
-        transaction {
-            registerColumn(persistentKey, table)
-            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+        val future = currentlyProcessingRegistration[key]
+
+        if (future != null) {
+            future.get()
+            return
         }
 
-        registeredKeys[key] = persistentKey
+        currentlyProcessingRegistration[key] = executor.submit {
+            transaction {
+                registerColumn(persistentKey, table)
+                SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+            }
+            registeredKeys[key] = persistentKey
+            currentlyProcessingRegistration.remove(key)
+        }
     }
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {

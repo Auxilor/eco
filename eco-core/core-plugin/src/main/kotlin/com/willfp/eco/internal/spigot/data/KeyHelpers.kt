@@ -15,23 +15,23 @@ object KeyHelpers {
 
         val key = NamespacedKeyUtils.fromStringOrNull(split[0]) ?: return null
         val type = PersistentDataKeyType.valueOf(split[1]) ?: return null
-        return when (type.name()) {
-            "STRING" -> PersistentDataKey(
+        return when (type) {
+            PersistentDataKeyType.STRING -> PersistentDataKey(
                 key,
                 type as PersistentDataKeyType<String>,
-                if(split.size >= 3) split.toList().subList(2, split.size).joinToString("") else ""
+                if (split.size >= 3) split.toList().subList(2, split.size).joinToString("") else ""
             )
-            "INT" -> PersistentDataKey(
+            PersistentDataKeyType.INT -> PersistentDataKey(
                 key,
                 type as PersistentDataKeyType<Int>,
                 split[2].toInt()
             )
-            "DOUBLE" -> PersistentDataKey(
+            PersistentDataKeyType.DOUBLE -> PersistentDataKey(
                 key,
                 type as PersistentDataKeyType<Double>,
                 split[2].toDouble()
             )
-            "BOOLEAN" -> PersistentDataKey(
+            PersistentDataKeyType.BOOLEAN -> PersistentDataKey(
                 key,
                 type as PersistentDataKeyType<Boolean>,
                 java.lang.Boolean.parseBoolean(split[2])

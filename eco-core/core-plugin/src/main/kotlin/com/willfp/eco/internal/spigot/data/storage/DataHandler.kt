@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data.storage
 
+import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import org.bukkit.NamespacedKey
 import java.util.UUID
@@ -8,7 +9,11 @@ interface DataHandler {
     fun save()
     fun saveAll(uuids: Iterable<UUID>)
 
-    fun runPostInit() {
+    fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
+
+    }
+
+    fun initialize() {
 
     }
 

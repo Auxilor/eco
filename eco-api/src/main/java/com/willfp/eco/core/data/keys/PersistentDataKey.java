@@ -1,7 +1,6 @@
 package com.willfp.eco.core.data.keys;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +13,7 @@ import java.util.Set;
  *
  * @param <T> The type of the data.
  */
-public class PersistentDataKey<T> {
+public final class PersistentDataKey<T> {
     /**
      * The key of the persistent data value.
      */
@@ -81,6 +80,32 @@ public class PersistentDataKey<T> {
      */
     public PersistentDataKeyType<T> getType() {
         return this.type;
+    }
+
+    /**
+     * Categorize key as a server key, will register new column to MySQL
+     * database immediately rather than waiting for auto-categorization.
+     * <p>
+     * This will improve performance.
+     *
+     * @return The key.
+     */
+    public PersistentDataKey<T> server() {
+        Eco.getHandler().getKeyRegistry().markKeyAs(this, KeyRegistry.KeyCategory.SERVER);
+        return this;
+    }
+
+    /**
+     * Categorize key as a player key, will register new column to MySQL
+     * database immediately rather than waiting for auto-categorization.
+     * <p>
+     * This will improve performance.
+     *
+     * @return The key.
+     */
+    public PersistentDataKey<T> player() {
+        Eco.getHandler().getKeyRegistry().markKeyAs(this, KeyRegistry.KeyCategory.PLAYER);
+        return this;
     }
 
     /**

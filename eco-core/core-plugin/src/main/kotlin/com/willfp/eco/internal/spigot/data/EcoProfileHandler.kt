@@ -18,7 +18,7 @@ class EcoProfileHandler(
     plugin: EcoSpigotPlugin
 ) : ProfileHandler {
     private val loaded = mutableMapOf<UUID, Profile>()
-    private val handler: DataHandler = if (useSql) MySQLDataHandler(plugin, this) else
+    val handler: DataHandler = if (useSql) MySQLDataHandler(plugin, this) else
         YamlDataHandler(plugin, this)
 
     fun loadGenericProfile(uuid: UUID): Profile {
@@ -64,7 +64,7 @@ class EcoProfileHandler(
         handler.save()
     }
 
-    fun runPostInit() {
-        handler.runPostInit()
+    fun initialize() {
+        handler.initialize()
     }
 }

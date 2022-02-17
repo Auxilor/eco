@@ -2,6 +2,7 @@
 
 categorized-keys:
   # Preloading known keys (as of the release of 6.25.0) for optimal performance.
+  # This is only used when MySQL is enabled as the columns must be added each time a new key is registered.
   player:
     - ecoskills:crit_damage;INT;0
     - ecoskills:strong_impact;INT;0

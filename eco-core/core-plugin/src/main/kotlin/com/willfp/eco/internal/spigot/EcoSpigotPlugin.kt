@@ -187,10 +187,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             (Eco.getHandler() as EcoHandler).setAdventure(BukkitAudiences.create(this))
         }
 
-        this.logger.info("Ignore messages about deprecated events!")
-
         // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
+
+        // Preload categorized persistent data keys
+        (Eco.getHandler().profileHandler as EcoProfileHandler).initialize()
     }
 
     override fun handleDisable() {
@@ -216,7 +217,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         CustomItemsManager.registerAllItems()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
-        (Eco.getHandler().profileHandler as EcoProfileHandler).runPostInit()
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
