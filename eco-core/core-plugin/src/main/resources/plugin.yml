@@ -1,7 +1,7 @@
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoHandler
-api-version: 1.16
+api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
 load: STARTUP

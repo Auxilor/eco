@@ -51,7 +51,10 @@ public class Prerequisite {
 
     /**
      * Requires the server to be running 1.17.
+     *
+     * @deprecated eco no longer supports versions before 1.17.
      */
+    @Deprecated(since = "6.25.2")
     public static final Prerequisite HAS_1_17 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("17") || HAS_1_18.isMet(),
             "Requires server to be running 1.17+"
