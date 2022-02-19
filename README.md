@@ -29,7 +29,7 @@ and many more.
 
 # For server owners
 - Requires ProtocolLib to be installed: get the latest version [here](https://www.spigotmc.org/resources/protocollib.1997/)
-- Supports 1.16.5+
+- Supports 1.17+
 
 ## Downloads
 
