@@ -93,6 +93,7 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecut
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.internal.spigot.integrations.customitems.mythicmobs.MythicDropListener
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
@@ -250,7 +251,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
 
             // Custom Entities
-            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
+            IntegrationLoader("MythicMobs") {
+                CustomEntitiesManager.register(CustomEntitiesMythicMobs());
+                this.eventManager.registerListener(MythicDropListener())
+                                            },
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
