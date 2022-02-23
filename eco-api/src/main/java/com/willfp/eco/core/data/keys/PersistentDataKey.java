@@ -3,7 +3,9 @@ package com.willfp.eco.core.data.keys;
 import com.willfp.eco.core.Eco;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -11,7 +13,7 @@ import java.util.Set;
  *
  * @param <T> The type of the data.
  */
-public class PersistentDataKey<T> {
+public final class PersistentDataKey<T> {
     /**
      * The key of the persistent data value.
      */
@@ -81,11 +83,53 @@ public class PersistentDataKey<T> {
     }
 
     /**
+     * Categorize key as a server key, will register new column to MySQL
+     * database immediately rather than waiting for auto-categorization.
+     * <p>
+     * This will improve performance.
+     *
+     * @return The key.
+     */
+    public PersistentDataKey<T> server() {
+        Eco.getHandler().getKeyRegistry().markKeyAs(this, KeyRegistry.KeyCategory.SERVER);
+        return this;
+    }
+
+    /**
+     * Categorize key as a player key, will register new column to MySQL
+     * database immediately rather than waiting for auto-categorization.
+     * <p>
+     * This will improve performance.
+     *
+     * @return The key.
+     */
+    public PersistentDataKey<T> player() {
+        Eco.getHandler().getKeyRegistry().markKeyAs(this, KeyRegistry.KeyCategory.PLAYER);
+        return this;
+    }
+
+    /**
      * Get all persistent data keys.
      *
      * @return The keys.
      */
     public static Set<PersistentDataKey<?>> values() {
         return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PersistentDataKey that)) {
+            return false;
+        }
+        return Objects.equals(this.getKey(), that.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getKey());
     }
 }

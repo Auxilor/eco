@@ -47,6 +47,8 @@ import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
+import com.willfp.eco.internal.spigot.data.DataYml
+import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.display.PacketAutoRecipe
@@ -123,6 +125,8 @@ import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
+    abstract val dataYml: DataYml
+
     init {
         Items.registerArgParser(ArgParserEnchantment())
         Items.registerArgParser(ArgParserColor())
@@ -184,10 +188,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             (Eco.getHandler() as EcoHandler).setAdventure(BukkitAudiences.create(this))
         }
 
-        this.logger.info("Ignore messages about deprecated events!")
-
         // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
+
+        // Preload categorized persistent data keys
+        (Eco.getHandler().profileHandler as EcoProfileHandler).initialize()
     }
 
     override fun handleDisable() {

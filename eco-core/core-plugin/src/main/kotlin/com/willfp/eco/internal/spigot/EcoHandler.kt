@@ -24,6 +24,7 @@ import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
+import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
@@ -38,12 +39,14 @@ import java.util.logging.Logger
 
 @Suppress("UNUSED")
 class EcoHandler : EcoSpigotPlugin(), Handler {
+    override val dataYml = DataYml(this)
+
     private val cleaner = EcoCleaner()
 
     @Suppress("DEPRECATION")
     private val requirementFactory = com.willfp.eco.internal.requirement.EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
-    private val keyRegistry = EcoKeyRegistry(this)
+    private val keyRegistry = EcoKeyRegistry()
     private val playerProfileHandler = EcoProfileHandler(this.configYml.getBool("mysql.enabled"), this)
 
     @Suppress("RedundantNullableReturnType")

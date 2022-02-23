@@ -4,13 +4,11 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import org.bukkit.NamespacedKey
 
-class EcoKeyRegistry(
-    private val plugin: EcoSpigotPlugin
-) : KeyRegistry {
+class EcoKeyRegistry : KeyRegistry {
     private val registry = mutableMapOf<NamespacedKey, PersistentDataKey<*>>()
+    private val categories = mutableMapOf<NamespacedKey, KeyRegistry.KeyCategory>()
 
     override fun registerKey(key: PersistentDataKey<*>) {
         if (this.registry.containsKey(key.key)) {
@@ -20,8 +18,6 @@ class EcoKeyRegistry(
         validateKey(key)
 
         this.registry[key.key] = key
-
-        (Eco.getHandler().profileHandler as EcoProfileHandler).updateKeys()
     }
 
     override fun getRegisteredKeys(): MutableSet<PersistentDataKey<*>> {
@@ -45,5 +41,14 @@ class EcoKeyRegistry(
 
             else -> throw NullPointerException("Null value found!")
         }
+    }
+
+    override fun markKeyAs(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
+        categories[key.key] = category
+        (Eco.getHandler().profileHandler as EcoProfileHandler).handler.categorize(key, category) // ew
+    }
+
+    override fun getKeyFrom(namespacedKey: NamespacedKey): PersistentDataKey<*>? {
+        return registry[namespacedKey]
     }
 }

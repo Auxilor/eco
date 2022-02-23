@@ -1,11 +1,16 @@
 package com.willfp.eco.internal.spigot.data.storage
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.Eco
+import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.KeyHelpers
+import com.willfp.eco.internal.spigot.data.serverProfileUUID
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.Level
@@ -26,16 +31,18 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
 import java.util.concurrent.Callable
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
-    plugin: EcoSpigotPlugin,
-    private val handler: EcoProfileHandler
+    private val plugin: EcoSpigotPlugin,
+    handler: EcoProfileHandler
 ) : DataHandler {
-    private val columns = mutableMapOf<String, Column<*>>()
-    private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
-    private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
+    private val playerHandler: ImplementedMySQLHandler
+    private val serverHandler: ImplementedMySQLHandler
 
     init {
         val config = HikariConfig()
@@ -50,11 +57,6 @@ class MySQLDataHandler(
 
         Database.connect(HikariDataSource(config))
 
-
-        transaction {
-            SchemaUtils.create(Players)
-        }
-
         // Get Exposed to shut the hell up
         runCatching {
             exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
@@ -65,69 +67,204 @@ class MySQLDataHandler(
                     }
                 }
         }
+
+        playerHandler = ImplementedMySQLHandler(
+            handler,
+            UUIDTable("eco_players"),
+            plugin,
+            plugin.dataYml.getStrings("categorized-keys.player")
+                .mapNotNull { KeyHelpers.deserializeFromString(it) }
+        )
+
+        serverHandler = ImplementedMySQLHandler(
+            handler,
+            UUIDTable("eco_server"),
+            plugin,
+            plugin.dataYml.getStrings("categorized-keys.server")
+                .mapNotNull { KeyHelpers.deserializeFromString(it) }
+        )
     }
 
-    override fun updateKeys() {
-        transaction {
-            for (key in Eco.getHandler().keyRegistry.registeredKeys) {
-                registerColumn(key, Players)
-            }
-
-            SchemaUtils.createMissingTablesAndColumns(Players, withLogs = false)
-        }
+    override fun saveAll(uuids: Iterable<UUID>) {
+        serverHandler.saveAll(uuids.filter { it == serverProfileUUID })
+        playerHandler.saveAll(uuids.filter { it != serverProfileUUID })
     }
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
-        getPlayer(uuid)
-        writeAsserted(uuid, key, value)
+        applyFor(uuid) {
+            it.write(uuid, key, value)
+        }
     }
 
-    private fun <T> writeAsserted(uuid: UUID, key: NamespacedKey, value: T) {
-        val column: Column<T> = getColumn(key.toString()) as Column<T>
+    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        applyFor(uuid) {
+            it.saveKeysForRow(uuid, keys)
+        }
+    }
+
+    override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
+        return applyFor(uuid) {
+            it.read(uuid, key)
+        }
+    }
+
+    private inline fun <R> applyFor(uuid: UUID, function: (ImplementedMySQLHandler) -> R): R {
+        return if (uuid == serverProfileUUID) {
+            function(serverHandler)
+        } else {
+            function(playerHandler)
+        }
+    }
+
+    override fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
+        if (category == KeyRegistry.KeyCategory.SERVER) {
+            serverHandler.ensureKeyRegistration(key.key)
+        } else {
+            playerHandler.ensureKeyRegistration(key.key)
+        }
+    }
+
+    override fun save() {
+        plugin.dataYml.set(
+            "categorized-keys.player",
+            playerHandler.registeredKeys.values
+                .map { KeyHelpers.serializeToString(it) }
+        )
+        plugin.dataYml.set(
+            "categorized-keys.server",
+            serverHandler.registeredKeys.values
+                .map { KeyHelpers.serializeToString(it) }
+        )
+        plugin.dataYml.save()
+    }
+
+    override fun initialize() {
+        playerHandler.initialize()
+        serverHandler.initialize()
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+private class ImplementedMySQLHandler(
+    private val handler: EcoProfileHandler,
+    private val table: UUIDTable,
+    private val plugin: EcoPlugin,
+    private val knownKeys: Collection<PersistentDataKey<*>>
+) {
+    private val columns = Caffeine.newBuilder()
+        .expireAfterWrite(3, TimeUnit.SECONDS)
+        .build<String, Column<*>>()
+
+    private val rows = Caffeine.newBuilder()
+        .expireAfterWrite(3, TimeUnit.SECONDS)
+        .build<UUID, ResultRow>()
+
+    private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
+    private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
+    val registeredKeys = ConcurrentHashMap<NamespacedKey, PersistentDataKey<*>>()
+    private val currentlyProcessingRegistration = ConcurrentHashMap<NamespacedKey, Future<*>>()
+
+    init {
+        transaction {
+            SchemaUtils.create(table)
+        }
+    }
+
+    fun initialize() {
+        transaction {
+            for (key in knownKeys) {
+                registerColumn(key, table)
+            }
+
+            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+            for (key in knownKeys) {
+                registeredKeys[key.key] = key
+            }
+        }
+    }
+
+    fun ensureKeyRegistration(key: NamespacedKey) {
+        if (registeredKeys.contains(key)) {
+            return
+        }
+
+        val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key) ?: return
+
+        if (table.columns.any { it.name == key.toString() }) {
+            registeredKeys[key] = persistentKey
+            return
+        }
+
+        val future = currentlyProcessingRegistration[key]
+
+        if (future != null) {
+            future.get()
+            return
+        }
+
+        currentlyProcessingRegistration[key] = executor.submit {
+            transaction {
+                registerColumn(persistentKey, table)
+                SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+            }
+            registeredKeys[key] = persistentKey
+            currentlyProcessingRegistration.remove(key)
+        }
+    }
+
+    fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+        getOrCreateRow(uuid)
+        doWrite(uuid, key, value)
+    }
+
+    private fun <T> doWrite(uuid: UUID, key: NamespacedKey, value: T) {
+        val column: Column<T> = getColumn(key) as Column<T>
 
         executor.submit {
             transaction {
-                Players.update({ Players.id eq uuid }) {
+                table.update({ table.id eq uuid }) {
                     it[column] = value
                 }
             }
         }
     }
 
-    override fun saveKeysForPlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        savePlayer(uuid, keys)
+    fun saveKeysForRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        saveRow(uuid, keys)
     }
 
-    override fun saveAll(uuids: Iterable<UUID>) {
+    fun saveAll(uuids: Iterable<UUID>) {
         for (uuid in uuids) {
-            savePlayer(uuid)
+            saveRow(uuid, PersistentDataKey.values())
         }
     }
 
-    private fun savePlayer(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+    private fun saveRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         val profile = handler.loadGenericProfile(uuid)
 
         executor.submit {
             transaction {
-                getPlayer(uuid)
+                getOrCreateRow(uuid)
 
                 for (key in keys) {
-                    writeAsserted(uuid, key.key, profile.read(key))
+                    doWrite(uuid, key.key, profile.read(key))
                 }
             }
         }
     }
 
-    override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
+    fun <T> read(uuid: UUID, key: NamespacedKey): T? {
         val doRead = Callable<T?> {
             var value: T? = null
             transaction {
-                val player = getPlayer(uuid)
-                value = player[getColumn(key.toString())] as T?
+                val row = getOrCreateRow(uuid)
+                value = row[getColumn(key)] as T?
             }
 
             return@Callable value
         }
+
+        ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
 
         return if (Eco.getHandler().ecoPlugin.configYml.getBool("mysql.async-reads")) {
             executor.submit(doRead).get()
@@ -135,8 +272,6 @@ class MySQLDataHandler(
             doRead.call()
         }
     }
-
-    object Players : UUIDTable("eco_players")
 
     private fun <T> registerColumn(key: PersistentDataKey<T>, table: UUIDTable) {
         table.apply {
@@ -159,28 +294,34 @@ class MySQLDataHandler(
         }
     }
 
-    private fun getColumn(name: String): Column<*> {
-        val cached = columns[name]
-        if (cached != null) {
-            return cached
-        }
+    private fun getColumn(key: NamespacedKey): Column<*> {
+        ensureKeyRegistration(key)
 
-        columns[name] = Players.columns.stream().filter { it.name == name }.findFirst().get()
-        return getColumn(name)
+        val name = key.toString()
+
+        return columns.get(name) {
+            table.columns.first { it.name == name }
+        }
     }
 
-    private fun getPlayer(uuid: UUID): ResultRow {
-        val player = transaction {
-            Players.select { Players.id eq uuid }.limit(1).singleOrNull()
+    private fun getOrCreateRow(uuid: UUID): ResultRow {
+        fun select(uuid: UUID): ResultRow? {
+            return transaction {
+                table.select { table.id eq uuid }.limit(1).singleOrNull()
+            }
         }
 
-        return if (player != null) {
-            player
-        } else {
-            transaction {
-                Players.insert { it[id] = uuid }
+        return rows.get(uuid) {
+            val row = select(uuid)
+
+            return@get if (row != null) {
+                row
+            } else {
+                transaction {
+                    table.insert { it[id] = uuid }
+                }
+                select(uuid)
             }
-            getPlayer(uuid)
         }
     }
 }
