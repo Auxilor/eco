@@ -2,7 +2,7 @@ package com.willfp.eco.internal.lookup
 
 import com.willfp.eco.core.lookup.LookupHandler
 import com.willfp.eco.core.lookup.SegmentParser
-import com.willfp.eco.core.lookup.test.Testable
+import com.willfp.eco.core.lookup.Testable
 
 class SegmentParserGroup : SegmentParser("||") {
     override fun <T : Testable<*>> handleSegments(segments: Array<out String>, handler: LookupHandler<T>): T {

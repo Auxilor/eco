@@ -1,6 +1,5 @@
 package com.willfp.eco.core.lookup;
 
-import com.willfp.eco.core.lookup.test.Testable;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +56,9 @@ public interface LookupHandler<T extends Testable<?>> {
     /**
      * Get the failsafe object.
      * <p>
-     * A failsafe object should never pass {@link this#validate(Testable)}.
+     * A failsafe object should never pass {@link this#validate(Testable)}, as this will
+     * cause issues with segment parsers. See {@link com.willfp.eco.core.items.ItemsLookupHandler} and
+     * {@link com.willfp.eco.core.recipe.parts.EmptyTestableItem} for examples.
      *
      * @return The failsafe.
      */

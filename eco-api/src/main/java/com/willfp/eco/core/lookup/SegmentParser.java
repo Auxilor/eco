@@ -1,6 +1,5 @@
 package com.willfp.eco.core.lookup;
 
-import com.willfp.eco.core.lookup.test.Testable;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

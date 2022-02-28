@@ -1,6 +1,6 @@
 package com.willfp.eco.core.entities;
 
-import com.willfp.eco.core.lookup.test.Testable;
+import com.willfp.eco.core.lookup.Testable;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;

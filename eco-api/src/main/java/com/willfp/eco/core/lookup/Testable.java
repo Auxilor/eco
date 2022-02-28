@@ -1,4 +1,4 @@
-package com.willfp.eco.core.lookup.test;
+package com.willfp.eco.core.lookup;
 
 import org.jetbrains.annotations.Nullable;
 

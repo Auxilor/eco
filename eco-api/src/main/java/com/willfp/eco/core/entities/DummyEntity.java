@@ -1,4 +1,4 @@
-package com.willfp.eco.core.entities.dummy;
+package com.willfp.eco.core.entities;
 
 import org.bukkit.entity.Entity;
 

@@ -1,6 +1,6 @@
 package com.willfp.eco.core.items;
 
-import com.willfp.eco.core.lookup.test.Testable;
+import com.willfp.eco.core.lookup.Testable;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
