@@ -46,3 +46,9 @@ fun List<String>.formatEco(
  */
 fun String.splitAround(separator: String): Array<String> =
     StringUtils.splitAround(this, separator)
+
+/**
+ * @see StringUtils.toNiceString
+ */
+fun Any?.toNiceString(): String =
+    StringUtils.toNiceString(this)

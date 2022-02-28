@@ -427,9 +427,23 @@ public final class StringUtils {
      *
      * @param object The object to convert to string.
      * @return The object stringified.
+     * @deprecated Poorly named method. Use {@link StringUtils#toNiceString(Object)} instead.
      */
     @NotNull
+    @Deprecated(since = "6.26.0", forRemoval = true)
     public static String internalToString(@Nullable final Object object) {
+        return toNiceString(object);
+    }
+
+    /**
+     * Internal implementation of {@link String#valueOf}.
+     * Formats collections and doubles better.
+     *
+     * @param object The object to convert to string.
+     * @return The object stringified.
+     */
+    @NotNull
+    public static String toNiceString(@Nullable final Object object) {
         if (object == null) {
             return "null";
         }
@@ -441,7 +455,7 @@ public final class StringUtils {
         } else if (object instanceof Double) {
             return NumberUtils.format((Double) object);
         } else if (object instanceof Collection<?> c) {
-            return c.stream().map(StringUtils::internalToString).collect(Collectors.joining(", "));
+            return c.stream().map(StringUtils::toNiceString).collect(Collectors.joining(", "));
         } else {
             return String.valueOf(object);
         }
