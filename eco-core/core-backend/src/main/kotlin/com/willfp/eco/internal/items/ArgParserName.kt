@@ -11,20 +11,17 @@ class ArgParserName : LookupArgParser {
         var name: String? = null
 
         for (arg in args) {
-            val argSplit = arg.split(":")
-            if (!argSplit[0].equals("name", ignoreCase = true)) {
+            if (!arg.lowercase().startsWith("name:")) {
                 continue
             }
-            if (argSplit.size < 2) {
-                continue
-            }
-            name = argSplit[1]
+            name = arg.substring(5, arg.length)
         }
 
         name ?: return null
 
         val formatted = StringUtils.format(name)
 
+        @Suppress("UsePropertyAccessSyntax")
         meta.setDisplayName(formatted)
 
         return Predicate {

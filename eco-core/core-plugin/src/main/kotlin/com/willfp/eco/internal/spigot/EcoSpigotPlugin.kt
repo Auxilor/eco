@@ -17,6 +17,7 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.lookup.LookupHelper
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -114,7 +115,6 @@ import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInEco
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
-import com.willfp.eco.core.lookup.LookupHelper
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils

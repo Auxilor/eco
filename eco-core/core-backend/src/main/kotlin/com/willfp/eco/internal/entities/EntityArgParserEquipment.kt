@@ -12,17 +12,11 @@ class EntityArgParserEquipment : EntityArgParser {
         val equipment = mutableMapOf<EquipmentSlot, TestableItem>()
 
         for (arg in args) {
-            val argSplit = arg.split(":")
             for (slot in EquipmentSlot.values()) {
-                if (!argSplit[0].equals(slot.name, ignoreCase = true)) {
+                if (!arg.lowercase().startsWith("${slot.name.lowercase()}:")) {
                     continue
                 }
-
-                if (argSplit.size < 2) {
-                    continue
-                }
-
-                equipment[slot] = Items.lookup(argSplit[1])
+                equipment[slot] = Items.lookup(arg.substring(slot.name.length + 1, arg.length))
             }
         }
 
