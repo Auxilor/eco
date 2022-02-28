@@ -17,7 +17,6 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.lookup.LookupHelper
 import com.willfp.eco.internal.display.EcoDisplayHandler
 import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -158,12 +157,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserSilent())
         Entities.registerArgParser(EntityArgParserEquipment())
 
-        LookupHelper.registerSegmentParser(SegmentParserGroup())
-        LookupHelper.registerSegmentParser(SegmentParserUseIfPresent())
-
         ShapedRecipeListener.registerListener(ComplexInComplex())
         ShapedRecipeListener.registerListener(ComplexInEco())
         ShapedRecipeListener.registerListener(ComplexInVanilla())
+
+        SegmentParserGroup().register()
+        SegmentParserUseIfPresent().register()
 
         val skullProxy = getProxy(SkullProxy::class.java)
         SkullUtils.initialize(

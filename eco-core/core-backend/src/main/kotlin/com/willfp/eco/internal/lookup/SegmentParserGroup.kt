@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.lookup
 
 import com.willfp.eco.core.lookup.LookupHandler
-import com.willfp.eco.core.lookup.LookupHelper
 import com.willfp.eco.core.lookup.SegmentParser
 import com.willfp.eco.core.lookup.test.Testable
 
@@ -10,7 +9,7 @@ class SegmentParserGroup : SegmentParser("||") {
         val possibleOptions = mutableListOf<T>()
 
         for (option in segments) {
-            val lookup = LookupHelper.parseWith(option, handler)
+            val lookup = handler.parseKey(option)
             if (handler.validate(lookup)) {
                 possibleOptions.add(lookup)
             }

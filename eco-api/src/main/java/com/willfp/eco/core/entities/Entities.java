@@ -5,7 +5,6 @@ import com.willfp.eco.core.entities.args.EntityArgParser;
 import com.willfp.eco.core.entities.impl.EmptyTestableEntity;
 import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.core.entities.impl.SimpleTestableEntity;
-import com.willfp.eco.core.lookup.LookupHelper;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -92,7 +91,7 @@ public final class Entities {
      */
     @NotNull
     public static TestableEntity lookup(@NotNull final String key) {
-        return LookupHelper.parseWith(key, ENTITIES_LOOKUP_HANDLER);
+        return ENTITIES_LOOKUP_HANDLER.parseKey(key);
     }
 
     @NotNull

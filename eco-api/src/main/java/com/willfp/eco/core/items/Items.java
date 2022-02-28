@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
-import com.willfp.eco.core.lookup.LookupHelper;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
@@ -136,7 +135,7 @@ public final class Items {
      */
     @NotNull
     public static TestableItem lookup(@NotNull final String key) {
-        return LookupHelper.parseWith(key, ITEMS_LOOKUP_HANDLER);
+        return ITEMS_LOOKUP_HANDLER.parseKey(key);
     }
 
     @NotNull

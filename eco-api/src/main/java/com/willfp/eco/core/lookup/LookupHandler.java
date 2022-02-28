@@ -1,6 +1,7 @@
 package com.willfp.eco.core.lookup;
 
 import com.willfp.eco.core.lookup.test.Testable;
+import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -11,6 +12,31 @@ import java.util.Collection;
  * @param <T> The type of testable object, eg {@link com.willfp.eco.core.items.TestableItem}.
  */
 public interface LookupHandler<T extends Testable<?>> {
+    /**
+     * Parse lookup string completely.
+     * <p>
+     * You shouldn't override this method unless you're doing something
+     * technically interesting or weird. This is the entry point for all
+     * lookup parsers, {@link this#parse(String[])} is to specify implementation-specific
+     * parsing.
+     *
+     * @param key The key.
+     * @return The object.
+     */
+    default T parseKey(@NotNull String key) {
+        for (SegmentParser parser : SegmentParser.values()) {
+            T generated = parser.parse(key, this);
+
+            if (generated != null) {
+                return generated;
+            }
+        }
+
+        String[] args = StringUtils.parseTokens(key);
+
+        return this.parse(args);
+    }
+
     /**
      * Parse arguments to an object.
      *

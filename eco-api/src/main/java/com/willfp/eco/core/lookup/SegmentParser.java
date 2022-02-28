@@ -5,10 +5,19 @@ import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Parse a key into segments.
  */
 public abstract class SegmentParser {
+    /**
+     * All segment parsers.
+     */
+    private static final List<SegmentParser> REGISTERED = new ArrayList<>();
+
     /**
      * The pattern to split keys on.
      */
@@ -24,15 +33,14 @@ public abstract class SegmentParser {
     }
 
     /**
-     * Handle segments from key.
+     * Register the parser.
      *
-     * @param segments The key segments.
-     * @param handler  The handler.
-     * @param <T>      The object type.
-     * @return The returned object.
+     * @return The parser.
      */
-    protected abstract <T extends Testable<?>> T handleSegments(@NotNull String[] segments,
-                                                                @NotNull LookupHandler<T> handler);
+    public SegmentParser register() {
+        REGISTERED.add(this);
+        return this;
+    }
 
     /**
      * Try parse segments from key.
@@ -52,5 +60,25 @@ public abstract class SegmentParser {
         String[] segments = StringUtils.splitAround(key, pattern);
 
         return handleSegments(segments, handler);
+    }
+
+    /**
+     * Handle segments from key.
+     *
+     * @param segments The key segments.
+     * @param handler  The handler.
+     * @param <T>      The object type.
+     * @return The returned object.
+     */
+    protected abstract <T extends Testable<?>> T handleSegments(@NotNull String[] segments,
+                                                                @NotNull LookupHandler<T> handler);
+
+    /**
+     * Get all segment parsers.
+     *
+     * @return All parsers.
+     */
+    public static Collection<SegmentParser> values() {
+        return new ArrayList<>(REGISTERED);
     }
 }
