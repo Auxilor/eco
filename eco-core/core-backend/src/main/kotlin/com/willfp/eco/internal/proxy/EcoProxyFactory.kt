@@ -43,7 +43,7 @@ class EcoProxyFactory(
     private fun proxyErrorFrom(e: Exception): Throwable {
         plugin.logger.severe("Fatal error with proxies! This plugin can't load.")
 
-        return if (!SUPPORTED_VERSIONS.contains(ProxyConstants.NMS_VERSION)) {
+        return if (!ProxyConstants.SUPPORTED_VERSIONS.contains(ProxyConstants.NMS_VERSION)) {
             ProxyError(
                 "Could not initialize proxy.",
                 UnsupportedVersionError()
@@ -73,12 +73,5 @@ class EcoProxyFactory(
         }
 
         cache.clear()
-    }
-
-    companion object {
-        val SUPPORTED_VERSIONS = listOf(
-            "v1_17_R1",
-            "v1_18_R1"
-        )
     }
 }
