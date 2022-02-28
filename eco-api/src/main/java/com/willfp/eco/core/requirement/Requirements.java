@@ -61,6 +61,7 @@ public final class Requirements {
     }
 
     static {
-        Eco.getHandler().getEcoPlugin().getLogger().severe("Loading for-removal Requirements system! This will throw an error once 6.27.0 is released. Make sure you're running the latest version of all your plugins!");
+        Eco.getHandler().getEcoPlugin().getLogger().severe("Loading for-removal Requirements system! This will throw an error once 6.27.0 is released."
+                + "Make sure you're running the latest version of all your plugins!");
     }
 }
