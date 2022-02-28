@@ -8,9 +8,9 @@ import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
+import com.willfp.eco.lookup.LookupHelper;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
-import com.willfp.eco.util.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -67,6 +67,11 @@ public final class Items {
      * All recipe parts.
      */
     private static final List<LookupArgParser> ARG_PARSERS = new ArrayList<>();
+
+    /**
+     * The handler.
+     */
+    private static final ItemsLookupHandler ITEMS_LOOKUP_HANDLER = new ItemsLookupHandler(Items::doParse);
 
     /**
      * Register a new custom item.
@@ -131,20 +136,11 @@ public final class Items {
      */
     @NotNull
     public static TestableItem lookup(@NotNull final String key) {
-        if (key.contains("?")) {
-            String[] options = key.split("\\?");
-            for (String option : options) {
-                TestableItem lookup = lookup(option);
-                if (!(lookup instanceof EmptyTestableItem)) {
-                    return lookup;
-                }
-            }
+        return LookupHelper.parseWith(key, ITEMS_LOOKUP_HANDLER);
+    }
 
-            return new EmptyTestableItem();
-        }
-
-        String[] args = StringUtils.parseTokens(key);
-
+    @NotNull
+    private static TestableItem doParse(@NotNull final String[] args) {
         if (args.length == 0) {
             return new EmptyTestableItem();
         }

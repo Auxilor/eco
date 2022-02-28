@@ -122,6 +122,14 @@ public final class StringUtils {
             .build();
 
     /**
+     * Regex map for splitting values.
+     */
+    private static final LoadingCache<String, Pattern> SPACE_AROUND_CHARACTER = Caffeine.newBuilder()
+            .build(
+                    character -> Pattern.compile("( " + Pattern.quote(character) + " )")
+            );
+
+    /**
      * Format a list of strings.
      * <p>
      * Converts color codes and placeholders.
@@ -558,6 +566,27 @@ public final class StringUtils {
         }
         tokens.add(tokenBuilder.toString()); // Adds the last argument to the tokens.
         return tokens.toArray(new String[0]);
+    }
+
+    /**
+     * Split input string around separator surrounded by spaces.
+     * <p>
+     * e.g. {@code splitAround("hello ? how are you", "?")} will split, but
+     * {@code splitAround("hello? how are you", "?")} will not.
+     *
+     * @param input     Input string.
+     * @param separator Separator.
+     * @return The split string.
+     */
+    @NotNull
+    public static String[] splitAround(@NotNull final String input,
+                                       @NotNull final String separator) {
+        Matcher matcher = SPACE_AROUND_CHARACTER.get(separator).matcher(input);
+        List<String> groups = new ArrayList<>();
+        while (matcher.find()) {
+            groups.add(matcher.group());
+        }
+        return groups.toArray(new String[0]);
     }
 
     /**

@@ -87,8 +87,8 @@ public final class Entities {
      */
     @NotNull
     public static TestableEntity lookup(@NotNull final String key) {
-        if (key.contains("?")) {
-            String[] options = key.split("\\?");
+        if (key.contains(" ? ")) {
+            String[] options = StringUtils.splitAround(key, "?");
             for (String option : options) {
                 TestableEntity lookup = lookup(option);
                 if (!(lookup instanceof EmptyTestableEntity)) {
