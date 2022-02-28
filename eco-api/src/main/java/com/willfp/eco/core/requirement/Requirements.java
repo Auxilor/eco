@@ -2,6 +2,7 @@ package com.willfp.eco.core.requirement;
 
 import com.willfp.eco.core.Eco;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  *
  * @deprecated See {@link Requirement}.
  */
+@ApiStatus.ScheduledForRemoval(inVersion = "6.27.0")
 @Deprecated(since = "6.24.0", forRemoval = true)
 @SuppressWarnings("removal")
 public final class Requirements {

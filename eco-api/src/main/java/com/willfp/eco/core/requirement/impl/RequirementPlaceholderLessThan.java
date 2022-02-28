@@ -3,6 +3,7 @@ package com.willfp.eco.core.requirement.impl;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @deprecated No typing, weak definitions, and not an API component. Shouldn't be in eco.
  */
 @SuppressWarnings("removal")
+@ApiStatus.ScheduledForRemoval(inVersion = "6.27.0")
 @Deprecated(since = "6.26.0", forRemoval = true)
 public class RequirementPlaceholderLessThan extends com.willfp.eco.core.requirement.Requirement {
     @Override
