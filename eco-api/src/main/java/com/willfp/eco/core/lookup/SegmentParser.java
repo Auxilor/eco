@@ -1,5 +1,6 @@
-package com.willfp.eco.lookup;
+package com.willfp.eco.core.lookup;
 
+import com.willfp.eco.core.lookup.test.Testable;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +31,8 @@ public abstract class SegmentParser {
      * @param <T>      The object type.
      * @return The returned object.
      */
-    protected abstract <T> T handleSegments(@NotNull String[] segments,
-                                            @NotNull LookupHandler<T> handler);
+    protected abstract <T extends Testable<?>> T handleSegments(@NotNull String[] segments,
+                                                                @NotNull LookupHandler<T> handler);
 
     /**
      * Try parse segments from key.
@@ -42,8 +43,8 @@ public abstract class SegmentParser {
      * @return Null if no segments were found, or the object generated from the segments.
      */
     @Nullable
-    public <T> T parse(@NotNull final String key,
-                       @NotNull final LookupHandler<T> handler) {
+    public <T extends Testable<?>> T parse(@NotNull final String key,
+                                           @NotNull final LookupHandler<T> handler) {
         if (!key.contains(" " + pattern + " ")) {
             return null;
         }

@@ -1,5 +1,6 @@
-package com.willfp.eco.lookup;
+package com.willfp.eco.core.lookup;
 
+import com.willfp.eco.core.lookup.test.Testable;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,8 +25,8 @@ public final class LookupHelper {
      * @return The object.
      */
     @NotNull
-    public static <T> T parseWith(@NotNull final String key,
-                                  @NotNull final LookupHandler<T> handler) {
+    public static <T extends Testable<?>> T parseWith(@NotNull final String key,
+                                                      @NotNull final LookupHandler<T> handler) {
         for (SegmentParser parser : SEGMENT_PARSERS) {
             T generated = parser.parse(key, handler);
 

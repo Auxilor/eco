@@ -1,11 +1,12 @@
 package com.willfp.eco.internal.lookup
 
-import com.willfp.eco.lookup.LookupHandler
-import com.willfp.eco.lookup.LookupHelper
-import com.willfp.eco.lookup.SegmentParser
+import com.willfp.eco.core.lookup.LookupHandler
+import com.willfp.eco.core.lookup.LookupHelper
+import com.willfp.eco.core.lookup.SegmentParser
+import com.willfp.eco.core.lookup.test.Testable
 
 class SegmentParserGroup : SegmentParser("||") {
-    override fun <T : Any> handleSegments(segments: Array<out String>, handler: LookupHandler<T>): T {
+    override fun <T : Testable<*>> handleSegments(segments: Array<out String>, handler: LookupHandler<T>): T {
         val possibleOptions: MutableList<T> = ArrayList()
 
         for (option in segments) {

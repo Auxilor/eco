@@ -114,7 +114,7 @@ import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInEco
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
-import com.willfp.eco.lookup.LookupHelper
+import com.willfp.eco.core.lookup.LookupHelper
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils

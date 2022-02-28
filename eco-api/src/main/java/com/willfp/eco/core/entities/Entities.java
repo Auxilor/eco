@@ -5,8 +5,8 @@ import com.willfp.eco.core.entities.args.EntityArgParser;
 import com.willfp.eco.core.entities.impl.EmptyTestableEntity;
 import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.core.entities.impl.SimpleTestableEntity;
+import com.willfp.eco.core.lookup.LookupHelper;
 import com.willfp.eco.util.NamespacedKeyUtils;
-import com.willfp.eco.util.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -36,6 +36,11 @@ public final class Entities {
      * All entity parsers.
      */
     private static final List<EntityArgParser> ARG_PARSERS = new ArrayList<>();
+
+    /**
+     * The lookup handler.
+     */
+    private static final EntitiesLookupHandler ENTITIES_LOOKUP_HANDLER = new EntitiesLookupHandler(Entities::doParse);
 
     /**
      * Register a new custom item.
@@ -87,20 +92,11 @@ public final class Entities {
      */
     @NotNull
     public static TestableEntity lookup(@NotNull final String key) {
-        if (key.contains(" ? ")) {
-            String[] options = StringUtils.splitAround(key, "?");
-            for (String option : options) {
-                TestableEntity lookup = lookup(option);
-                if (!(lookup instanceof EmptyTestableEntity)) {
-                    return lookup;
-                }
-            }
+        return LookupHelper.parseWith(key, ENTITIES_LOOKUP_HANDLER);
+    }
 
-            return new EmptyTestableEntity();
-        }
-
-        String[] args = StringUtils.parseTokens(key);
-
+    @NotNull
+    private static TestableEntity doParse(@NotNull final String[] args) {
         if (args.length == 0) {
             return new EmptyTestableEntity();
         }
@@ -130,7 +126,6 @@ public final class Entities {
 
             entity = part;
         }
-
 
         String[] modifierArgs = Arrays.copyOfRange(args, 1, args.length);
 
@@ -171,7 +166,6 @@ public final class Entities {
 
         return entity;
     }
-
 
     /**
      * Get a Testable Entity from an ItemStack.

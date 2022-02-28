@@ -1,5 +1,6 @@
-package com.willfp.eco.lookup;
+package com.willfp.eco.core.lookup;
 
+import com.willfp.eco.core.lookup.test.Testable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -9,7 +10,7 @@ import java.util.Collection;
  *
  * @param <T> The type of testable object, eg {@link com.willfp.eco.core.items.TestableItem}.
  */
-public interface LookupHandler<T> {
+public interface LookupHandler<T extends Testable<?>> {
     /**
      * Parse arguments to an object.
      *
@@ -30,7 +31,7 @@ public interface LookupHandler<T> {
     /**
      * Get the failsafe object.
      * <p>
-     * A failsafe object should never pass {@link this#validate(Object)}.
+     * A failsafe object should never pass {@link this#validate(Testable)}.
      *
      * @return The failsafe.
      */

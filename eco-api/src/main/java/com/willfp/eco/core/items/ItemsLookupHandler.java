@@ -1,7 +1,8 @@
 package com.willfp.eco.core.items;
 
+import com.willfp.eco.core.lookup.LookupHandler;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
-import com.willfp.eco.lookup.LookupHandler;
+import com.willfp.eco.core.recipe.parts.GroupedTestableItems;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -42,6 +43,6 @@ public class ItemsLookupHandler implements LookupHandler<TestableItem> {
 
     @Override
     public @NotNull TestableItem join(@NotNull final Collection<TestableItem> options) {
-        throw new UnsupportedOperationException("Joining not supported!");
+        return new GroupedTestableItems(options);
     }
 }
