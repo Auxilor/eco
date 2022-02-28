@@ -1,5 +1,6 @@
 package com.willfp.eco.core.requirement;
 
+import com.willfp.eco.core.Eco;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +12,6 @@ import java.util.List;
  * @deprecated No typing, weak definitions, and not an API component. Shouldn't be in eco.
  */
 @Deprecated(since = "6.24.0", forRemoval = true)
-@SuppressWarnings("DeprecatedIsStillUsed")
 public abstract class Requirement {
     /**
      * Create a new requirement.
@@ -29,4 +29,8 @@ public abstract class Requirement {
      */
     public abstract boolean doesPlayerMeet(@NotNull Player player,
                                            @NotNull List<String> args);
+
+    static {
+        Eco.getHandler().getEcoPlugin().getLogger().severe("Loading for-removal Requirements system! This will throw an error once 6.27.0 is released. Make sure you're running the latest version of all your plugins!");
+    }
 }

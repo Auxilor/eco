@@ -205,15 +205,6 @@ public interface Handler {
     void registerBStats(@NotNull EcoPlugin plugin);
 
     /**
-     * Get the requirement factory.
-     *
-     * @return The factory.
-     */
-    @NotNull
-    @Deprecated(forRemoval = true)
-    com.willfp.eco.core.requirement.RequirementFactory getRequirementFactory();
-
-    /**
      * Get Adventure audiences.
      *
      * @return The audiences.

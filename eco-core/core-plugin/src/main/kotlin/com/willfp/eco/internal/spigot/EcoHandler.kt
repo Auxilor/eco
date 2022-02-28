@@ -43,8 +43,6 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     private val cleaner = EcoCleaner()
 
-    @Suppress("DEPRECATION")
-    private val requirementFactory = com.willfp.eco.internal.requirement.EcoRequirementFactory()
     private var adventure: BukkitAudiences? = null
     private val keyRegistry = EcoKeyRegistry()
     private val playerProfileHandler = EcoProfileHandler(this.configYml.getBool("mysql.enabled"), this)
@@ -132,11 +130,6 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun registerBStats(plugin: EcoPlugin) {
         MetricHandler.createMetrics(plugin)
-    }
-
-    @Suppress("DEPRECATION")
-    override fun getRequirementFactory(): com.willfp.eco.internal.requirement.EcoRequirementFactory {
-        return requirementFactory
     }
 
     override fun getAdventure(): BukkitAudiences? {
