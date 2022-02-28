@@ -115,6 +115,10 @@ allprojects {
         exclude(group = "com.github.cryptomorin", module = "XSeries")
     }
 
+    configurations.testImplementation {
+        setExtendsFrom(listOf(configurations.compileOnly.get()))
+    }
+
     tasks {
         compileKotlin {
             kotlinOptions {
