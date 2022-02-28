@@ -9,13 +9,16 @@ import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
-class CustomItemsExecutableItems: CustomItemsWrapper {
+
+class CustomItemsExecutableItems : CustomItemsWrapper {
     override fun registerAllItems() {
         Items.registerItemProvider(ExecutableItemsProvider())
     }
+
     override fun getPluginName(): String {
         return "ExecutableItems"
     }
+
     private class ExecutableItemsProvider : ItemProvider("executableitems") {
         override fun provideForKey(key: String): TestableItem? {
             val item = ExecutableItemsAPI.getExecutableItem(key) ?: return null
