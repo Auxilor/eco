@@ -93,7 +93,7 @@ allprojects {
         
         // Adventure
         compileOnly("net.kyori:adventure-api:4.9.3")
-        compileOnly("net.kyori:adventure-text-serializer-gson:4.9.3")
+        compileOnly("net.kyori:adventure-text-serializer-gson:4.10.0")
         compileOnly("net.kyori:adventure-text-serializer-legacy:4.9.3")
 
         // Other
