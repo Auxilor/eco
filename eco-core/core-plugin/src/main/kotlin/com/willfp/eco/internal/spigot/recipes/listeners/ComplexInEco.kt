@@ -57,7 +57,8 @@ private fun TestableItem.isCustomWhenShouldNotBe(itemStack: ItemStack): Boolean 
             }
         }
         is GroupedTestableItems -> {
-            if (this.children.any { it.isCustomWhenShouldNotBe(itemStack) }) {
+            // This will fail if and only if there is a complex item grouped with a simple item of the same type
+            if (this.children.any { it.isCustomWhenShouldNotBe(itemStack) && it.matches(itemStack) }) {
                 return true
             }
         }
