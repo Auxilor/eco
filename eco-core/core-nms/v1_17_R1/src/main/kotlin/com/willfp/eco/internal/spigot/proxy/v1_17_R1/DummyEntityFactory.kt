@@ -1,16 +1,16 @@
 package com.willfp.eco.internal.spigot.proxy.v1_17_R1
 
-import com.willfp.eco.internal.entities.DummyEntityDelegate
-import com.willfp.eco.internal.spigot.proxy.DummyEntityProxy
+import com.willfp.eco.internal.entities.EcoDummyEntity
+import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 
-class DummyEntity : DummyEntityProxy {
+class DummyEntityFactory : DummyEntityFactoryProxy {
     override fun createDummyEntity(location: Location): Entity {
         val world = location.world as CraftWorld
         @Suppress("UsePropertyAccessSyntax")
-        return DummyEntityDelegate(world.createEntity(location, EntityType.ZOMBIE.entityClass).getBukkitEntity())
+        return EcoDummyEntity(world.createEntity(location, EntityType.ZOMBIE.entityClass).getBukkitEntity())
     }
 }

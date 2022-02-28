@@ -1,8 +1,9 @@
 package com.willfp.eco.internal.entities
 
+import com.willfp.eco.core.entities.dummy.DummyEntity
 import org.bukkit.entity.Entity
 
-class DummyEntityDelegate(private val handle: Entity) : Entity by handle {
+class EcoDummyEntity(private val handle: Entity) : DummyEntity, Entity by handle {
     override fun toString(): String {
         return "DummyEntity{id=${this.entityId}}"
     }

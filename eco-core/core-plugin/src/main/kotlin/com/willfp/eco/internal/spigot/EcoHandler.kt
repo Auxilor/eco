@@ -28,7 +28,7 @@ import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.proxy.DummyEntityProxy
+import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
@@ -149,7 +149,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     }
 
     override fun createDummyEntity(location: Location): Entity {
-        return getProxy(DummyEntityProxy::class.java).createDummyEntity(location)
+        return getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
     }
 
     override fun createNamespacedKey(namespace: String, key: String): NamespacedKey {
