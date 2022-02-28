@@ -581,12 +581,7 @@ public final class StringUtils {
     @NotNull
     public static String[] splitAround(@NotNull final String input,
                                        @NotNull final String separator) {
-        Matcher matcher = SPACE_AROUND_CHARACTER.get(separator).matcher(input);
-        List<String> groups = new ArrayList<>();
-        while (matcher.find()) {
-            groups.add(matcher.group());
-        }
-        return groups.toArray(new String[0]);
+        return SPACE_AROUND_CHARACTER.get(separator).split(input);
     }
 
     /**
