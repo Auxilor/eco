@@ -45,6 +45,8 @@ import com.willfp.eco.internal.items.ArgParserFlag
 import com.willfp.eco.internal.items.ArgParserName
 import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
+import com.willfp.eco.internal.lookup.SegmentParserGroup
+import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.DataYml
@@ -112,6 +114,7 @@ import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInEco
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
+import com.willfp.eco.core.lookup.LookupHelper
 import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils
@@ -154,6 +157,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserExplosionRadius())
         Entities.registerArgParser(EntityArgParserSilent())
         Entities.registerArgParser(EntityArgParserEquipment())
+
+        LookupHelper.registerSegmentParser(SegmentParserGroup())
+        LookupHelper.registerSegmentParser(SegmentParserUseIfPresent())
 
         ShapedRecipeListener.registerListener(ComplexInComplex())
         ShapedRecipeListener.registerListener(ComplexInEco())

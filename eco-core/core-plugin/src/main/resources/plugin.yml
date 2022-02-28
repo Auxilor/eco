@@ -1,7 +1,7 @@
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoHandler
-api-version: 1.16
+api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
 load: STARTUP
@@ -51,9 +51,9 @@ libraries:
   - 'net.kyori:adventure-api:4.9.3'
   - 'net.kyori:adventure-text-serializer-gson:4.9.3'
   - 'net.kyori:adventure-text-serializer-legacy:4.9.3'
-  - 'org.jetbrains.exposed:exposed-core:0.36.2'
-  - 'org.jetbrains.exposed:exposed-dao:0.36.2'
-  - 'org.jetbrains.exposed:exposed-jdbc:0.36.2'
+  - 'org.jetbrains.exposed:exposed-core:0.37.3'
+  - 'org.jetbrains.exposed:exposed-dao:0.37.3'
+  - 'org.jetbrains.exposed:exposed-jdbc:0.37.3'
   - 'mysql:mysql-connector-java:8.0.25'
   - 'com.google.guava:guava:31.0.1-jre'
   - 'com.zaxxer:HikariCP:5.0.0'

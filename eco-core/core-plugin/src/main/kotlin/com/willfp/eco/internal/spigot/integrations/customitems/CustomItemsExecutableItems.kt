@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
-import com.ssomar.score.api.ExecutableItemsAPI
+import com.ssomar.executableitems.api.ExecutableItemsAPI
 import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
@@ -9,13 +9,16 @@ import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
-class CustomItemsExecutableItems: CustomItemsWrapper {
+
+class CustomItemsExecutableItems : CustomItemsWrapper {
     override fun registerAllItems() {
         Items.registerItemProvider(ExecutableItemsProvider())
     }
+
     override fun getPluginName(): String {
         return "ExecutableItems"
     }
+
     private class ExecutableItemsProvider : ItemProvider("executableitems") {
         override fun provideForKey(key: String): TestableItem? {
             val item = ExecutableItemsAPI.getExecutableItem(key) ?: return null

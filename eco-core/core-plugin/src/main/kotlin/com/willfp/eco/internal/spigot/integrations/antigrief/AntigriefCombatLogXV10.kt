@@ -13,6 +13,7 @@ import org.bukkit.entity.Player
 
 class AntigriefCombatLogXV10 : AntigriefWrapper {
     private val instance: ICombatLogX = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX
+    private var disabled = false
 
     override fun canBreakBlock(
         player: Player,
@@ -43,16 +44,23 @@ class AntigriefCombatLogXV10 : AntigriefWrapper {
             return true
         }
 
+        if (disabled) {
+            return true
+        }
+
         // Only run checks if the NewbieHelper expansion is installed on the server.
         val expansionManager = instance.expansionManager
         val optionalExpansion = expansionManager.getExpansionByName<Expansion>("NewbieHelper")
         if (optionalExpansion.isPresent) {
-            val expansion = optionalExpansion.get()
+            val expansion = runCatching { optionalExpansion.get() }
+                .onFailure { disabled = true }
+                .getOrNull() ?: return true
             val newbieHelper: NewbieHelper = expansion as NewbieHelper
             val pvpListener: ListenerPVP = newbieHelper.pvpListener
             return pvpListener.isPVPEnabled(player) && pvpListener.isPVPEnabled(victim)
+        } else {
+            return true
         }
-        return true
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {

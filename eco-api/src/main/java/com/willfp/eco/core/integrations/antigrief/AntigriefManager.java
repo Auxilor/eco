@@ -44,7 +44,8 @@ public final class AntigriefManager {
      * @param location The location.
      * @return If player can pick up item.
      */
-    public static boolean canPickupItem(@NotNull final Player player, @NotNull final Location location) {
+    public static boolean canPickupItem(@NotNull final Player player,
+                                        @NotNull final Location location) {
         return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPickupItem(player, location));
     }
 

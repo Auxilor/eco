@@ -21,7 +21,6 @@ dependencies {
     implementation(project(":eco-core:core-plugin"))
     implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
-    implementation(project(":eco-core:core-nms:v1_16_R3"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
 }
@@ -114,6 +113,10 @@ allprojects {
         exclude(group = "org.spongepowered", module = "configurate-hocon")
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
+    }
+
+    configurations.testImplementation {
+        setExtendsFrom(listOf(configurations.compileOnly.get()))
     }
 
     tasks {

@@ -122,6 +122,14 @@ public final class StringUtils {
             .build();
 
     /**
+     * Regex map for splitting values.
+     */
+    private static final LoadingCache<String, Pattern> SPACE_AROUND_CHARACTER = Caffeine.newBuilder()
+            .build(
+                    character -> Pattern.compile("( " + Pattern.quote(character) + " )")
+            );
+
+    /**
      * Format a list of strings.
      * <p>
      * Converts color codes and placeholders.
@@ -419,9 +427,23 @@ public final class StringUtils {
      *
      * @param object The object to convert to string.
      * @return The object stringified.
+     * @deprecated Poorly named method. Use {@link StringUtils#toNiceString(Object)} instead.
      */
     @NotNull
+    @Deprecated(since = "6.26.0", forRemoval = true)
     public static String internalToString(@Nullable final Object object) {
+        return toNiceString(object);
+    }
+
+    /**
+     * Internal implementation of {@link String#valueOf}.
+     * Formats collections and doubles better.
+     *
+     * @param object The object to convert to string.
+     * @return The object stringified.
+     */
+    @NotNull
+    public static String toNiceString(@Nullable final Object object) {
         if (object == null) {
             return "null";
         }
@@ -433,7 +455,7 @@ public final class StringUtils {
         } else if (object instanceof Double) {
             return NumberUtils.format((Double) object);
         } else if (object instanceof Collection<?> c) {
-            return c.stream().map(StringUtils::internalToString).collect(Collectors.joining(", "));
+            return c.stream().map(StringUtils::toNiceString).collect(Collectors.joining(", "));
         } else {
             return String.valueOf(object);
         }
@@ -558,6 +580,22 @@ public final class StringUtils {
         }
         tokens.add(tokenBuilder.toString()); // Adds the last argument to the tokens.
         return tokens.toArray(new String[0]);
+    }
+
+    /**
+     * Split input string around separator surrounded by spaces.
+     * <p>
+     * e.g. {@code splitAround("hello ? how are you", "?")} will split, but
+     * {@code splitAround("hello? how are you", "?")} will not.
+     *
+     * @param input     Input string.
+     * @param separator Separator.
+     * @return The split string.
+     */
+    @NotNull
+    public static String[] splitAround(@NotNull final String input,
+                                       @NotNull final String separator) {
+        return SPACE_AROUND_CHARACTER.get(separator).split(input);
     }
 
     /**

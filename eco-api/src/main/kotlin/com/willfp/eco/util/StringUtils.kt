@@ -40,3 +40,15 @@ fun List<String>.formatEco(
     player,
     if (formatPlaceholders) StringUtils.FormatOption.WITH_PLACEHOLDERS else StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
 )
+
+/**
+ * @see StringUtils.splitAround
+ */
+fun String.splitAround(separator: String): Array<String> =
+    StringUtils.splitAround(this, separator)
+
+/**
+ * @see StringUtils.toNiceString
+ */
+fun Any?.toNiceString(): String =
+    StringUtils.toNiceString(this)
