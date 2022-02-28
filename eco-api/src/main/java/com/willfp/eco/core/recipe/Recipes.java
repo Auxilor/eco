@@ -1,5 +1,7 @@
 package com.willfp.eco.core.recipe;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.EcoPlugin;
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Utility class to manage and register crafting recipes.
@@ -24,6 +27,13 @@ public final class Recipes {
      */
     private static final BiMap<NamespacedKey, CraftingRecipe> RECIPES = HashBiMap.create();
 
+    /**
+     * Cached recipes from matrix.
+     */
+    private static final LoadingCache<ItemStack[], Optional<CraftingRecipe>> RECIPES_FROM_MATRIX = Caffeine.newBuilder()
+            .build(
+                    matrix -> RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst()
+            );
 
     /**
      * Register a recipe.
@@ -32,6 +42,7 @@ public final class Recipes {
      */
     public static void register(@NotNull final CraftingRecipe recipe) {
         RECIPES.forcePut(recipe.getKey(), recipe);
+        RECIPES_FROM_MATRIX.invalidateAll();
     }
 
     /**
@@ -42,7 +53,7 @@ public final class Recipes {
      */
     @Nullable
     public static CraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
-        return RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst().orElse(null);
+        return RECIPES_FROM_MATRIX.get(matrix).orElse(null);
     }
 
     /**

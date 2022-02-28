@@ -26,13 +26,11 @@ interface GenericCraftEvent {
 }
 
 class WrappedPrepareItemCraftEvent(
-    private val event: PrepareItemCraftEvent
+    private val event: PrepareItemCraftEvent,
+    override val recipe: Keyed
 ) : GenericCraftEvent {
     override val inventory: CraftingInventory
         get() = event.inventory
-
-    override val recipe: Keyed
-        get() = event.recipe as Keyed
 
     override fun allow(recipe: CraftingRecipe) {
         this.inventory.result = recipe.output

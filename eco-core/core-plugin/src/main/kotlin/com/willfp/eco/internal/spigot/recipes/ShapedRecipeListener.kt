@@ -103,12 +103,21 @@ class ShapedRecipeListener : Listener {
 
     @EventHandler
     fun processListeners(event: PrepareItemCraftEvent) {
-        if (event.recipe !is Keyed) {
+        var recipe = event.recipe as? Keyed
+
+        if (recipe == null) {
+            val ecoRecipe = Recipes.getMatch(event.inventory.matrix)
+            if (ecoRecipe != null) {
+                recipe = Keyed { ecoRecipe.key }
+            }
+        }
+
+        if (recipe == null) {
             return
         }
 
         for (listener in listeners) {
-            listener.handle(WrappedPrepareItemCraftEvent(event))
+            listener.handle(WrappedPrepareItemCraftEvent(event, recipe))
         }
     }
 
