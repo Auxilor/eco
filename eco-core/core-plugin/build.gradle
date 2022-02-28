@@ -44,6 +44,7 @@ dependencies {
     compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0'
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.1.2'
     compileOnly 'io.lumine.xikage:MythicMobs:4.9.1'
+    compileOnly 'com.github.Ssomar-Developement:SCore:main-SNAPSHOT'
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
