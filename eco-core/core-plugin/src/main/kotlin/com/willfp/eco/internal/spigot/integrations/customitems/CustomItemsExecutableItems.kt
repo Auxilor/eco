@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
-import com.ssomar.score.api.ExecutableItemsAPI
+import com.ssomar.executableitems.api.ExecutableItemsAPI
 import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
