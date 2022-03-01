@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_17_R1.ai
 
+import com.willfp.eco.core.entities.ai.goals.CustomGoal
 import com.willfp.eco.core.entities.ai.goals.EntityGoal
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalAvoidEntity
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalBreakDoor
@@ -109,6 +110,7 @@ fun <T : EntityGoal> T.getGoalFactory(): EntityGoalFactory<T>? {
         is EntityGoalUseItem -> UseItemGoalFactory
         is EntityGoalWaterAvoidingRandomFlying -> WaterAvoidingRandomFlyingGoalFactory
         is EntityGoalWaterAvoidingRandomStroll -> WaterAvoidingRandomStrollGoalFactory
+        is CustomGoal -> CustomGoalFactory
         else -> null
     } as EntityGoalFactory<T>?
 }

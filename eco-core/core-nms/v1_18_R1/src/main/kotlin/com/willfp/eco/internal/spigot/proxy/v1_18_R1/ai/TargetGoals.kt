@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_18_R1.ai
 
+import com.willfp.eco.core.entities.ai.goals.CustomGoal
 import com.willfp.eco.core.entities.ai.goals.TargetGoal
 import com.willfp.eco.core.entities.ai.goals.target.TargetGoalHurtBy
 import com.willfp.eco.core.entities.ai.goals.target.TargetGoalNearestAttackable
@@ -13,6 +14,7 @@ fun <T : TargetGoal> T.getGoalFactory(): TargetGoalFactory<T>? {
     return when (this) {
         is TargetGoalHurtBy -> HurtByGoalFactory
         is TargetGoalNearestAttackable -> NearestAttackableGoalFactory
+        is CustomGoal -> CustomGoalFactory
         else -> null
     } as TargetGoalFactory<T>?
 }
