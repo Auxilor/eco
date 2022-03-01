@@ -86,11 +86,12 @@ class StackedRecipeListener(
 
             // Do it twice because spigot hates me
             // Everything has to be cloned because the inventory changes the item
-            inventory.matrix[i] = item // Use un-cloned version first
+            inventory.matrix[i] = item.clone() // Use un-cloned version first
             // This isn't even funny anymore
             runTwice {
                 val newItem = item.clone()
                 println("Setting ${inventory.matrix[i]} to $newItem")
+                // Just use every method possible to set the item
                 inventory.matrix[i] = newItem
                 inventory.setItem(i + 1, newItem)
                 // Just to be safe, modify the instance (safe check) Using ?. causes a warning.
@@ -104,8 +105,8 @@ class StackedRecipeListener(
         // Multiply the result by the amount to craft if shift-clicking
         existingResult ?: return
 
-        // Run twice as will be overridden by above check
-        runTwice {
+        // Run later as will be overridden by above check
+        plugin.scheduler.run {
             if (event.isShiftClick) {
                 existingResult.amount *= maxCraftable
             }
