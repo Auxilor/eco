@@ -345,6 +345,7 @@ object RangedAttackGoalFactory : EntityGoalFactory<EntityGoalRangedAttack> {
 
 object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack> {
     override fun create(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
+        @Suppress("UNCHECKED_CAST")
         return RangedBowAttackGoal(
             entity.tryCastForThis() ?: return null,
             apiGoal.speed,
@@ -359,6 +360,7 @@ object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack>
 
 object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCrossbowAttack> {
     override fun create(apiGoal: EntityGoalRangedCrossbowAttack, entity: PathfinderMob): Goal? {
+        @Suppress("UNCHECKED_CAST")
         return RangedCrossbowAttackGoal(
             entity.tryCastForThis() ?: return null,
             apiGoal.speed,

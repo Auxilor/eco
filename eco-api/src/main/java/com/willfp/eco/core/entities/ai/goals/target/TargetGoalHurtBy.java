@@ -9,15 +9,9 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param blacklist The entities not to attack when hurt by.
  */
+@SuppressWarnings({"varargs", "unchecked"})
 public record TargetGoalHurtBy(
         @NotNull Class<? extends LivingEntity>... blacklist
 ) implements TargetGoal {
-    /**
-     * Hurt by entity.
-     *
-     * @param blacklist The entities not to attack when hurt by.
-     */
-    @SafeVarargs
-    public TargetGoalHurtBy {
-    }
+
 }
