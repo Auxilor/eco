@@ -92,6 +92,9 @@ class StackedRecipeListener(
 
             /*
             Everything below this point is unreadable garbage
+            If you want to modify the behaviour of stacked recipes, then
+            change the code above. The code after this just sets the items
+            in the inventory, despite spigot trying to stop me.
              */
 
             // Do it twice because spigot hates me

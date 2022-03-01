@@ -8,6 +8,7 @@ import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
+import com.willfp.eco.util.ListUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -66,9 +67,10 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
 
     @Override
     public boolean test(@NotNull final ItemStack[] matrix) {
+        List<ItemStack> dynamicMatrix = Arrays.asList(matrix);
         boolean matches = true;
         for (int i = 0; i < 9; i++) {
-            if (!parts.get(i).matches(matrix[i])) {
+            if (!parts.get(i).matches(ListUtils.getOrNull(dynamicMatrix, i))) {
                 matches = false;
             }
         }
