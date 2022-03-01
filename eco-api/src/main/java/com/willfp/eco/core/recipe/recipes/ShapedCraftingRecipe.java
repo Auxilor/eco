@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Shaped 3x3 crafting recipe.
@@ -106,31 +105,38 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
             }
 
             char character = String.valueOf(i).toCharArray()[0];
-            ItemStack item = parts.get(i).getItem();
 
-            if (parts.get(i) instanceof TestableStack) {
-                ItemMeta meta = item.getItemMeta();
-                assert meta != null;
-
-                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-                assert lore != null;
-                lore.add("");
-                String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
-                add = add.replace("%amount%", String.valueOf(item.getAmount()));
-                lore.add(add);
-                meta.setLore(lore);
-                item.setItemMeta(meta);
-            }
-
-            List<ItemStack> items = new ArrayList<>();
-
+            List<TestableItem> items = new ArrayList<>();
             if (parts.get(i) instanceof GroupedTestableItems group) {
-                items.addAll(group.getChildren().stream().map(TestableItem::getItem).collect(Collectors.toList()));
+                items.addAll(group.getChildren());
             } else {
-                items.add(parts.get(i).getItem());
+                items.add(parts.get(i));
             }
 
-            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(items));
+            List<ItemStack> displayedItems = new ArrayList<>();
+
+            for (TestableItem testableItem : items) {
+                if (testableItem instanceof TestableStack) {
+                    ItemStack item = testableItem.getItem().clone();
+                    ItemMeta meta = item.getItemMeta();
+                    assert meta != null;
+
+                    List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                    assert lore != null;
+                    lore.add("");
+                    String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
+                    add = add.replace("%amount%", String.valueOf(item.getAmount()));
+                    lore.add(add);
+                    meta.setLore(lore);
+                    item.setItemMeta(meta);
+
+                    displayedItems.add(item);
+                } else {
+                    displayedItems.add(testableItem.getItem());
+                }
+            }
+
+            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(displayedItems));
         }
 
         if (Prerequisite.HAS_1_18.isMet() && !Prerequisite.HAS_PAPER.isMet()) {
