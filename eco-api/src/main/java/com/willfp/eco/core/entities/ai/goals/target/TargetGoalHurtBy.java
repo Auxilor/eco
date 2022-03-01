@@ -13,7 +13,7 @@ public record TargetGoalHurtBy(
         @NotNull Class<? extends LivingEntity>... blacklist
 ) implements TargetGoal {
     /**
-     * Create target goal.
+     * Hurt by entity.
      *
      * @param blacklist The entities not to attack when hurt by.
      */

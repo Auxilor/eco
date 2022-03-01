@@ -1,10 +1,10 @@
-package com.willfp.eco.internal.spigot.proxy.v1_17_R1.ai
+package com.willfp.eco.internal.spigot.proxy.v1_18_R1.ai
 
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.entities.ai.goals.EntityGoal
 import com.willfp.eco.core.entities.ai.goals.TargetGoal
 import net.minecraft.world.entity.PathfinderMob
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity
 import org.bukkit.entity.Mob
 
 class EcoEntityController<T : Mob>(
