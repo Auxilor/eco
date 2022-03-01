@@ -5,6 +5,7 @@ import com.willfp.eco.core.config.wrapper.ConfigFactory;
 import com.willfp.eco.core.data.ProfileHandler;
 import com.willfp.eco.core.data.keys.KeyRegistry;
 import com.willfp.eco.core.drops.DropQueueFactory;
+import com.willfp.eco.core.entities.ai.ControlledEntity;
 import com.willfp.eco.core.events.EventManager;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
@@ -20,6 +21,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -262,4 +264,13 @@ public interface Handler {
     @NotNull
     PluginProps getProps(@Nullable PluginProps existing,
                          @NotNull Class<? extends EcoPlugin> plugin);
+
+    /**
+     * Create controlled entity from a mob.
+     *
+     * @param mob The mob.
+     * @return The controlled entity.
+     */
+    @NotNull
+    ControlledEntity createControlledEntity(@NotNull Mob mob);
 }
