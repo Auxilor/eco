@@ -81,12 +81,12 @@ class StackedRecipeListener(
             }
             item.amount = amount
 
-            val newItem = item.clone()
-
             // Do it twice because spigot hates me
             // Everything has to be cloned because the inventory changes the item
             inventory.matrix[i] = item // Use un-cloned version first
-            plugin.scheduler.run {
+            // This isn't even funny anymore
+            runTwice {
+                val newItem = item.clone()
                 println("Setting ${inventory.matrix[i]} to $newItem")
                 inventory.matrix[i] = newItem
                 inventory.setItem(i + 1, newItem)
@@ -105,5 +105,10 @@ class StackedRecipeListener(
             result.amount *= maxCraftable
             inventory.result = result
         }
+    }
+
+    private fun runTwice(block: () -> Unit) {
+        block()
+        plugin.scheduler.run(block)
     }
 }
