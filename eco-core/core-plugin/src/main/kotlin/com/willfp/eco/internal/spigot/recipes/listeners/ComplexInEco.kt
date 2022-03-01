@@ -26,7 +26,7 @@ class ComplexInEco : RecipeListener {
         }
 
         for (i in 0..8) {
-            val itemStack = event.inventory.matrix[i]
+            val itemStack = event.inventory.matrix[i] ?: continue
             val part = craftingRecipe.parts[i]
             if (part.isCustomWhenShouldNotBe(itemStack)) {
                 event.deny()
