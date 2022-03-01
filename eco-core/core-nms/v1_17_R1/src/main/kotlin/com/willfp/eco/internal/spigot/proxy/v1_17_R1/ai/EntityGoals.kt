@@ -10,6 +10,13 @@ import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalFloat
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalFollowBoats
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalFollowMobs
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalInteract
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalLeapAtTarget
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalLookAtPlayer
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMeleeAttack
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveBackToVillage
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveThroughVillage
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveTowardsRestriction
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveTowardsTarget
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal
 import net.minecraft.world.entity.ai.goal.BreakDoorGoal
@@ -21,6 +28,14 @@ import net.minecraft.world.entity.ai.goal.FollowBoatGoal
 import net.minecraft.world.entity.ai.goal.FollowMobGoal
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.InteractGoal
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal
+import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal
+import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal
+import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal
+import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal
+import net.minecraft.world.entity.player.Player
 
 fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
     @Suppress("UNCHECKED_CAST")
@@ -34,6 +49,13 @@ fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
         is EntityGoalFollowBoats -> FollowBoatsImpl
         is EntityGoalFollowMobs -> FollowMobsImpl
         is EntityGoalInteract -> InteractImpl
+        is EntityGoalLeapAtTarget -> LeapAtTargetImpl
+        is EntityGoalLookAtPlayer -> LookAtPlayerImpl
+        is EntityGoalMeleeAttack -> MeleeAttackImpl
+        is EntityGoalMoveBackToVillage -> MoveBackToVillageImpl
+        is EntityGoalMoveThroughVillage -> MoveThroughVillageImpl
+        is EntityGoalMoveTowardsRestriction -> MoveTowardsRestrictionImpl
+        is EntityGoalMoveTowardsTarget -> MoveTowardsTargetImpl
         else -> throw IllegalArgumentException("Unknown API goal!")
     } as EcoEntityGoal<T>
 }
@@ -122,6 +144,77 @@ object InteractImpl : EcoEntityGoal<EntityGoalInteract> {
             apiGoal.targetClass.toNMSClass(),
             apiGoal.range.toFloat(),
             apiGoal.chance.toFloat() / 100f,
+        )
+    }
+}
+
+object LeapAtTargetImpl : EcoEntityGoal<EntityGoalLeapAtTarget> {
+    override fun generateNMSGoal(apiGoal: EntityGoalLeapAtTarget, entity: PathfinderMob): Goal {
+        return LeapAtTargetGoal(
+            entity,
+            apiGoal.velocity.toFloat()
+        )
+    }
+}
+
+object LookAtPlayerImpl : EcoEntityGoal<EntityGoalLookAtPlayer> {
+    override fun generateNMSGoal(apiGoal: EntityGoalLookAtPlayer, entity: PathfinderMob): Goal {
+        return LookAtPlayerGoal(
+            entity,
+            Player::class.java,
+            apiGoal.range.toFloat(),
+            apiGoal.chance.toFloat() / 100f,
+        )
+    }
+}
+
+object MeleeAttackImpl : EcoEntityGoal<EntityGoalMeleeAttack> {
+    override fun generateNMSGoal(apiGoal: EntityGoalMeleeAttack, entity: PathfinderMob): Goal {
+        return MeleeAttackGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.pauseWhenMobIdle
+        )
+    }
+}
+
+object MoveBackToVillageImpl : EcoEntityGoal<EntityGoalMoveBackToVillage> {
+    override fun generateNMSGoal(apiGoal: EntityGoalMoveBackToVillage, entity: PathfinderMob): Goal {
+        return MoveBackToVillageGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.canDespawn
+        )
+    }
+}
+
+object MoveThroughVillageImpl : EcoEntityGoal<EntityGoalMoveThroughVillage> {
+    override fun generateNMSGoal(apiGoal: EntityGoalMoveThroughVillage, entity: PathfinderMob): Goal {
+        return MoveThroughVillageGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.onlyAtNight,
+            apiGoal.distance,
+            apiGoal.canPassThroughDoorsGetter
+        )
+    }
+}
+
+object MoveTowardsRestrictionImpl : EcoEntityGoal<EntityGoalMoveTowardsRestriction> {
+    override fun generateNMSGoal(apiGoal: EntityGoalMoveTowardsRestriction, entity: PathfinderMob): Goal {
+        return MoveTowardsRestrictionGoal(
+            entity,
+            apiGoal.speed
+        )
+    }
+}
+
+object MoveTowardsTargetImpl : EcoEntityGoal<EntityGoalMoveTowardsTarget> {
+    override fun generateNMSGoal(apiGoal: EntityGoalMoveTowardsTarget, entity: PathfinderMob): Goal {
+        return MoveTowardsTargetGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.maxDistance.toFloat()
         )
     }
 }
