@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.recipes
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.Recipes
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
 import org.bukkit.Material
@@ -16,10 +17,20 @@ import kotlin.math.min
 class StackedRecipeListener(
     private val plugin: EcoPlugin
 ) : Listener {
+    /*
+    If you think you can fix this code, you're wrong.
+    Or, pray to whatever god you have that you can figure it out.
+    Best of luck, you're going to need it.
+     */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun handleStacks(event: InventoryClickEvent) {
         val inventory = event.clickedInventory as? CraftingInventory ?: return
         if (event.slot != 0) {
+            return
+        }
+
+        // Just in case
+        if (EmptyTestableItem().matches(inventory.getItem(event.slot))) {
             return
         }
 
@@ -79,6 +90,10 @@ class StackedRecipeListener(
             }
             item.amount = amount
 
+            /*
+            Everything below this point is unreadable garbage
+             */
+
             // Do it twice because spigot hates me
             // Everything has to be cloned because the inventory changes the item
             inventory.matrix[i] = item.clone() // Use un-cloned version first
@@ -99,13 +114,11 @@ class StackedRecipeListener(
         // Multiply the result by the amount to craft if shift-clicking
         existingResult ?: return
 
-        // Run later as will be overridden by above check
-        plugin.scheduler.run {
-            if (event.isShiftClick) {
-                existingResult.amount *= maxCraftable
-            }
-            inventory.result = existingResult
+        // Modify the item and then set it
+        if (event.isShiftClick) {
+            existingResult.amount *= maxCraftable
         }
+        inventory.result = existingResult
     }
 
     private fun runTwice(block: () -> Unit) {
