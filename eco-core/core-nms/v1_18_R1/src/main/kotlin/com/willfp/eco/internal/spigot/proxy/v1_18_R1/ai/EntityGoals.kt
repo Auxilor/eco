@@ -353,7 +353,8 @@ object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack>
         )
     }
 
-    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob = this.tryCast()
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob = this as? T
 }
 
 object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCrossbowAttack> {
@@ -365,7 +366,8 @@ object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCross
         )
     }
 
-    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob, T : CrossbowAttackMob = this.tryCast()
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob, T : CrossbowAttackMob = this as? T
 }
 
 object RestrictSunGoalFactory : EntityGoalFactory<EntityGoalRestrictSun> {

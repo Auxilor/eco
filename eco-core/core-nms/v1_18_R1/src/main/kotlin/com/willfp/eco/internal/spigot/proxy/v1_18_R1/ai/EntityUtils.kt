@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import net.minecraft.world.entity.AgeableMob
 import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.TamableAnimal
 import net.minecraft.world.entity.ambient.AmbientCreature
 import net.minecraft.world.entity.animal.Animal
@@ -75,8 +74,3 @@ fun <T : org.bukkit.entity.LivingEntity> Class<T>.toNMSClass(): Class<out Living
 
 fun LivingEntity.toBukkitEntity(): org.bukkit.entity.LivingEntity? =
     CraftEntity.getEntity(Bukkit.getServer() as CraftServer, this) as? org.bukkit.entity.LivingEntity
-
-fun <T> PathfinderMob.tryCast(): T? {
-    @Suppress("UNCHECKED_CAST")
-    return this as? T
-}
