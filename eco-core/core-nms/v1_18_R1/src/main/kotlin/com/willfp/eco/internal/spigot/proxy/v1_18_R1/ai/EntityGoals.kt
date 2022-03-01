@@ -69,6 +69,8 @@ import net.minecraft.world.entity.ai.goal.TryFindWaterGoal
 import net.minecraft.world.entity.ai.goal.UseItemGoal
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal
+import net.minecraft.world.entity.monster.CrossbowAttackMob
+import net.minecraft.world.entity.monster.Monster
 import net.minecraft.world.entity.monster.RangedAttackMob
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.crafting.Ingredient
@@ -344,22 +346,26 @@ object RangedAttackGoalFactory : EntityGoalFactory<EntityGoalRangedAttack> {
 object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack> {
     override fun create(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
         return RangedBowAttackGoal(
-            entity.tryCast() ?: return null,
+            entity.tryCastForThis() ?: return null,
             apiGoal.speed,
             apiGoal.attackInterval,
             apiGoal.range.toFloat()
         )
     }
+
+    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob = this.tryCast()
 }
 
 object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCrossbowAttack> {
     override fun create(apiGoal: EntityGoalRangedCrossbowAttack, entity: PathfinderMob): Goal? {
         return RangedCrossbowAttackGoal(
-            entity.tryCast() ?: return null,
+            entity.tryCastForThis() ?: return null,
             apiGoal.speed,
             apiGoal.range.toFloat()
         )
     }
+
+    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob, T : CrossbowAttackMob = this.tryCast()
 }
 
 object RestrictSunGoalFactory : EntityGoalFactory<EntityGoalRestrictSun> {
