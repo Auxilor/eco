@@ -26,6 +26,14 @@ import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRandomSwimming
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRangedAttack
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRangedBowAttack
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRangedCrossbowAttack
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRestrictSun
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalStrollThroughVillage
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalTempt
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalTryFindWater
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalUseItem
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalWaterAvoidingRandomFlying
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalWaterAvoidingRandomStroll
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal
 import net.minecraft.world.entity.ai.goal.BreakDoorGoal
@@ -53,8 +61,18 @@ import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal
 import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal
 import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal
+import net.minecraft.world.entity.ai.goal.StrollThroughVillageGoal
+import net.minecraft.world.entity.ai.goal.TemptGoal
+import net.minecraft.world.entity.ai.goal.TryFindWaterGoal
+import net.minecraft.world.entity.ai.goal.UseItemGoal
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal
 import net.minecraft.world.entity.monster.RangedAttackMob
 import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.crafting.Ingredient
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
 
 fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
     @Suppress("UNCHECKED_CAST")
@@ -84,6 +102,13 @@ fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
         is EntityGoalRangedAttack -> RangedAttackImpl
         is EntityGoalRangedBowAttack -> RangedBowAttackImpl
         is EntityGoalRangedCrossbowAttack -> RangedCrossbowAttackImpl
+        is EntityGoalRestrictSun -> RestrictSunImpl
+        is EntityGoalStrollThroughVillage -> StrollThroughVillageImpl
+        is EntityGoalTempt -> TemptImpl
+        is EntityGoalTryFindWater -> TryFindWaterImpl
+        is EntityGoalUseItem -> UseItemImpl
+        is EntityGoalWaterAvoidingRandomFlying -> WaterAvoidingRandomFlyingImpl
+        is EntityGoalWaterAvoidingRandomStroll -> WaterAvoidingRandomStrollImpl
         else -> throw IllegalArgumentException("Unknown API goal!")
     } as EcoEntityGoal<T>
 }
@@ -331,6 +356,73 @@ object RangedCrossbowAttackImpl : EcoEntityGoal<EntityGoalRangedCrossbowAttack> 
             entity.tryCast() ?: return null,
             apiGoal.speed,
             apiGoal.range.toFloat()
+        )
+    }
+}
+
+object RestrictSunImpl : EcoEntityGoal<EntityGoalRestrictSun> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRestrictSun, entity: PathfinderMob): Goal {
+        return RestrictSunGoal(
+            entity
+        )
+    }
+}
+
+object StrollThroughVillageImpl : EcoEntityGoal<EntityGoalStrollThroughVillage> {
+    override fun generateNMSGoal(apiGoal: EntityGoalStrollThroughVillage, entity: PathfinderMob): Goal {
+        return StrollThroughVillageGoal(
+            entity,
+            apiGoal.searchRange
+        )
+    }
+}
+
+object TemptImpl : EcoEntityGoal<EntityGoalTempt> {
+    override fun generateNMSGoal(apiGoal: EntityGoalTempt, entity: PathfinderMob): Goal {
+        return TemptGoal(
+            entity,
+            apiGoal.speed,
+            Ingredient.of(*apiGoal.items.map { CraftItemStack.asNMSCopy(it) }.toTypedArray()),
+            apiGoal.canBeScared
+        )
+    }
+}
+
+object TryFindWaterImpl : EcoEntityGoal<EntityGoalTryFindWater> {
+    override fun generateNMSGoal(apiGoal: EntityGoalTryFindWater, entity: PathfinderMob): Goal {
+        return TryFindWaterGoal(
+            entity
+        )
+    }
+}
+
+object UseItemImpl : EcoEntityGoal<EntityGoalUseItem> {
+    override fun generateNMSGoal(apiGoal: EntityGoalUseItem, entity: PathfinderMob): Goal {
+        return UseItemGoal(
+            entity,
+            CraftItemStack.asNMSCopy(apiGoal.item),
+            SoundEvent(CraftNamespacedKey.toMinecraft(apiGoal.sound.key)),
+        ) {
+            apiGoal.condition.test(it.toBukkitEntity())
+        }
+    }
+}
+
+object WaterAvoidingRandomFlyingImpl : EcoEntityGoal<EntityGoalWaterAvoidingRandomFlying> {
+    override fun generateNMSGoal(apiGoal: EntityGoalWaterAvoidingRandomFlying, entity: PathfinderMob): Goal {
+        return WaterAvoidingRandomFlyingGoal(
+            entity,
+            apiGoal.speed
+        )
+    }
+}
+
+object WaterAvoidingRandomStrollImpl : EcoEntityGoal<EntityGoalWaterAvoidingRandomStroll> {
+    override fun generateNMSGoal(apiGoal: EntityGoalWaterAvoidingRandomStroll, entity: PathfinderMob): Goal {
+        return WaterAvoidingRandomStrollGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.chance.toFloat() / 100
         )
     }
 }
