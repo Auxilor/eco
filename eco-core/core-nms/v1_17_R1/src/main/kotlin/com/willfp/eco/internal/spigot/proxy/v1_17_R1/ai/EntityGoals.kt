@@ -17,6 +17,10 @@ import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveBackToVillage
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveThroughVillage
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveTowardsRestriction
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalMoveTowardsTarget
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalOcelotAttack
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalOpenDoors
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalPanic
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRandomLookAround
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal
 import net.minecraft.world.entity.ai.goal.BreakDoorGoal
@@ -35,6 +39,10 @@ import net.minecraft.world.entity.ai.goal.MoveBackToVillageGoal
 import net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal
 import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal
 import net.minecraft.world.entity.ai.goal.MoveTowardsTargetGoal
+import net.minecraft.world.entity.ai.goal.OcelotAttackGoal
+import net.minecraft.world.entity.ai.goal.OpenDoorGoal
+import net.minecraft.world.entity.ai.goal.PanicGoal
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal
 import net.minecraft.world.entity.player.Player
 
 fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
@@ -56,6 +64,10 @@ fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
         is EntityGoalMoveThroughVillage -> MoveThroughVillageImpl
         is EntityGoalMoveTowardsRestriction -> MoveTowardsRestrictionImpl
         is EntityGoalMoveTowardsTarget -> MoveTowardsTargetImpl
+        is EntityGoalOcelotAttack -> OcelotAttackImpl
+        is EntityGoalOpenDoors -> OpenDoorsImpl
+        is EntityGoalPanic -> PanicImpl
+        is EntityGoalRandomLookAround -> RandomLookAroundImpl
         else -> throw IllegalArgumentException("Unknown API goal!")
     } as EcoEntityGoal<T>
 }
@@ -215,6 +227,40 @@ object MoveTowardsTargetImpl : EcoEntityGoal<EntityGoalMoveTowardsTarget> {
             entity,
             apiGoal.speed,
             apiGoal.maxDistance.toFloat()
+        )
+    }
+}
+
+object OcelotAttackImpl : EcoEntityGoal<EntityGoalOcelotAttack> {
+    override fun generateNMSGoal(apiGoal: EntityGoalOcelotAttack, entity: PathfinderMob): Goal {
+        return OcelotAttackGoal(
+            entity
+        )
+    }
+}
+
+object OpenDoorsImpl : EcoEntityGoal<EntityGoalOpenDoors> {
+    override fun generateNMSGoal(apiGoal: EntityGoalOpenDoors, entity: PathfinderMob): Goal {
+        return OpenDoorGoal(
+            entity,
+            apiGoal.delayedClose
+        )
+    }
+}
+
+object PanicImpl : EcoEntityGoal<EntityGoalPanic> {
+    override fun generateNMSGoal(apiGoal: EntityGoalPanic, entity: PathfinderMob): Goal {
+        return PanicGoal(
+            entity,
+            apiGoal.speed
+        )
+    }
+}
+
+object RandomLookAroundImpl : EcoEntityGoal<EntityGoalRandomLookAround> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRandomLookAround, entity: PathfinderMob): Goal {
+        return RandomLookAroundGoal(
+            entity
         )
     }
 }
