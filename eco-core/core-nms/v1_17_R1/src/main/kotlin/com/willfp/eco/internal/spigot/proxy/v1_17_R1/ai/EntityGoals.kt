@@ -345,31 +345,30 @@ object RangedAttackGoalFactory : EntityGoalFactory<EntityGoalRangedAttack> {
 
 object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack> {
     override fun create(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
-        @Suppress("UNCHECKED_CAST")
+        (if (entity !is Monster) return null)
+        if (entity !is RangedAttackMob) return null
+
         return RangedBowAttackGoal(
-            entity.tryCastForThis() ?: return null,
+            entity,
             apiGoal.speed,
             apiGoal.attackInterval,
             apiGoal.range.toFloat()
         )
     }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob = this as? T
 }
 
 object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCrossbowAttack> {
     override fun create(apiGoal: EntityGoalRangedCrossbowAttack, entity: PathfinderMob): Goal? {
-        @Suppress("UNCHECKED_CAST")
+        (if (entity !is Monster) return null)
+        if (entity !is RangedAttackMob) return null
+        if (entity !is CrossbowAttackMob) return null
+
         return RangedCrossbowAttackGoal(
-            entity.tryCastForThis() ?: return null,
+            entity,
             apiGoal.speed,
             apiGoal.range.toFloat()
         )
     }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> PathfinderMob.tryCastForThis(): T? where T : Monster, T : RangedAttackMob, T : CrossbowAttackMob = this as? T
 }
 
 object RestrictSunGoalFactory : EntityGoalFactory<EntityGoalRestrictSun> {
