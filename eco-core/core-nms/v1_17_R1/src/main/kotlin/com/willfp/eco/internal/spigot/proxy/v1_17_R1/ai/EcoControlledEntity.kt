@@ -13,7 +13,10 @@ class EcoControlledEntity(
         val craft = handle as? CraftEntity ?: return this
         val nms = craft.handle as? net.minecraft.world.entity.PathfinderMob ?: return this
 
-        nms.goalSelector.addGoal(priority, goal.getImplementation().generateNMSGoal(goal, nms))
+        nms.goalSelector.addGoal(
+            priority,
+            goal.getImplementation().generateNMSGoal(goal, nms) ?: return this
+        )
 
         return this
     }
@@ -22,7 +25,9 @@ class EcoControlledEntity(
         val craft = handle as? CraftEntity ?: return this
         val nms = craft.handle as? net.minecraft.world.entity.PathfinderMob ?: return this
 
-        nms.targetSelector.addGoal(priority, goal.getImplementation().generateNMSGoal(goal, nms))
+        nms.targetSelector.addGoal(
+            priority, goal.getImplementation().generateNMSGoal(goal, nms) ?: return this
+        )
 
         return this
     }

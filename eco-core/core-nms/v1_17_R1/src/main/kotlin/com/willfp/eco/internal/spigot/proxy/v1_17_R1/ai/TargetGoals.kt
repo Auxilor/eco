@@ -18,7 +18,7 @@ fun <T : TargetGoal> T.getImplementation(): EcoTargetGoal<T> {
 }
 
 interface EcoTargetGoal<T : TargetGoal> {
-    fun generateNMSGoal(apiGoal: T, entity: PathfinderMob): Goal
+    fun generateNMSGoal(apiGoal: T, entity: PathfinderMob): Goal?
 }
 
 object HurtByImpl : EcoTargetGoal<TargetGoalHurtBy> {

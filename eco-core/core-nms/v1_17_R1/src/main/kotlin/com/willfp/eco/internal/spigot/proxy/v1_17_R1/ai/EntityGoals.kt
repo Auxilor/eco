@@ -21,6 +21,11 @@ import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalOcelotAttack
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalOpenDoors
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalPanic
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRandomLookAround
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRandomStroll
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRandomSwimming
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRangedAttack
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRangedBowAttack
+import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalRangedCrossbowAttack
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal
 import net.minecraft.world.entity.ai.goal.BreakDoorGoal
@@ -43,6 +48,12 @@ import net.minecraft.world.entity.ai.goal.OcelotAttackGoal
 import net.minecraft.world.entity.ai.goal.OpenDoorGoal
 import net.minecraft.world.entity.ai.goal.PanicGoal
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal
+import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal
+import net.minecraft.world.entity.ai.goal.RangedAttackGoal
+import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal
+import net.minecraft.world.entity.ai.goal.RangedCrossbowAttackGoal
+import net.minecraft.world.entity.monster.RangedAttackMob
 import net.minecraft.world.entity.player.Player
 
 fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
@@ -68,12 +79,17 @@ fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
         is EntityGoalOpenDoors -> OpenDoorsImpl
         is EntityGoalPanic -> PanicImpl
         is EntityGoalRandomLookAround -> RandomLookAroundImpl
+        is EntityGoalRandomStroll -> RandomStrollImpl
+        is EntityGoalRandomSwimming -> RandomSwimmingImpl
+        is EntityGoalRangedAttack -> RangedAttackImpl
+        is EntityGoalRangedBowAttack -> RangedBowAttackImpl
+        is EntityGoalRangedCrossbowAttack -> RangedCrossbowAttackImpl
         else -> throw IllegalArgumentException("Unknown API goal!")
     } as EcoEntityGoal<T>
 }
 
 interface EcoEntityGoal<T : EntityGoal> {
-    fun generateNMSGoal(apiGoal: T, entity: PathfinderMob): Goal
+    fun generateNMSGoal(apiGoal: T, entity: PathfinderMob): Goal?
 }
 
 object AvoidEntityImpl : EcoEntityGoal<EntityGoalAvoidEntity> {
@@ -264,3 +280,58 @@ object RandomLookAroundImpl : EcoEntityGoal<EntityGoalRandomLookAround> {
         )
     }
 }
+
+object RandomStrollImpl : EcoEntityGoal<EntityGoalRandomStroll> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRandomStroll, entity: PathfinderMob): Goal {
+        return RandomStrollGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.interval,
+            apiGoal.canDespawn
+        )
+    }
+}
+
+object RandomSwimmingImpl : EcoEntityGoal<EntityGoalRandomSwimming> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRandomSwimming, entity: PathfinderMob): Goal {
+        return RandomSwimmingGoal(
+            entity,
+            apiGoal.speed,
+            apiGoal.interval
+        )
+    }
+}
+
+object RangedAttackImpl : EcoEntityGoal<EntityGoalRangedAttack> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRangedAttack, entity: PathfinderMob): Goal? {
+        return RangedAttackGoal(
+            entity as? RangedAttackMob ?: return null,
+            apiGoal.mobSpeed,
+            apiGoal.minInterval,
+            apiGoal.maxInterval,
+            apiGoal.maxRange.toFloat()
+        )
+    }
+}
+
+object RangedBowAttackImpl : EcoEntityGoal<EntityGoalRangedBowAttack> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
+        return RangedBowAttackGoal(
+            entity.tryCast() ?: return null,
+            apiGoal.speed,
+            apiGoal.attackInterval,
+            apiGoal.range.toFloat()
+        )
+    }
+}
+
+object RangedCrossbowAttackImpl : EcoEntityGoal<EntityGoalRangedCrossbowAttack> {
+    override fun generateNMSGoal(apiGoal: EntityGoalRangedCrossbowAttack, entity: PathfinderMob): Goal? {
+        return RangedCrossbowAttackGoal(
+            entity.tryCast() ?: return null,
+            apiGoal.speed,
+            apiGoal.range.toFloat()
+        )
+    }
+}
+
