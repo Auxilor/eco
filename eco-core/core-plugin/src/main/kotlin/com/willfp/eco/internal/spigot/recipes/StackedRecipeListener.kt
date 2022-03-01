@@ -56,6 +56,9 @@ class StackedRecipeListener(
 
         Bukkit.getLogger().info("Amount to craft: $maxCraftable")
 
+        // Run this first before the deduction or shift-clicking breaks
+        val existingResult = inventory.result
+
         // Deduct the correct number of items from the inventory
         for (i in 0..8) {
             val item = inventory.matrix.getOrNull(i) ?: continue
@@ -99,11 +102,14 @@ class StackedRecipeListener(
         }
 
         // Multiply the result by the amount to craft if shift-clicking
-        if (event.isShiftClick) {
-            val result = inventory.result ?: return
+        existingResult ?: return
 
-            result.amount *= maxCraftable
-            inventory.result = result
+        // Run twice as will be overridden by above check
+        runTwice {
+            if (event.isShiftClick) {
+                existingResult.amount *= maxCraftable
+            }
+            inventory.result = existingResult
         }
     }
 
