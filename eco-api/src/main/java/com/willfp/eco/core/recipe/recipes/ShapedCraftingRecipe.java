@@ -7,6 +7,7 @@ import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
+import com.willfp.eco.core.recipe.parts.GroupedTestableItems;
 import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.util.ListUtils;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Shaped 3x3 crafting recipe.
@@ -120,7 +122,15 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
                 item.setItemMeta(meta);
             }
 
-            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(item));
+            List<ItemStack> items = new ArrayList<>();
+
+            if (parts.get(i) instanceof GroupedTestableItems group) {
+                items.addAll(group.getChildren().stream().map(TestableItem::getItem).collect(Collectors.toList()));
+            } else {
+                items.add(parts.get(i).getItem());
+            }
+
+            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(items));
         }
 
         if (Prerequisite.HAS_1_18.isMet() && !Prerequisite.HAS_PAPER.isMet()) {
