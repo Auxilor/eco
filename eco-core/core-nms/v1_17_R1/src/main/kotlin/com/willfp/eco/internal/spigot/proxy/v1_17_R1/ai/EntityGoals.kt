@@ -74,51 +74,51 @@ import net.minecraft.world.item.crafting.Ingredient
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNamespacedKey
 
-fun <T : EntityGoal> T.getImplementation(): EcoEntityGoal<T> {
+fun <T : EntityGoal> T.getGoalFactory(): EntityGoalFactory<T>? {
     @Suppress("UNCHECKED_CAST")
     return when (this) {
-        is EntityGoalAvoidEntity -> AvoidEntityImpl
-        is EntityGoalBreakDoor -> BreakDoorImpl
-        is EntityGoalBreatheAir -> BreatheAirImpl
-        is EntityGoalEatBlock -> EatBlockImpl
-        is EntityGoalFleeSun -> FleeSunImpl
-        is EntityGoalFloat -> FloatImpl
-        is EntityGoalFollowBoats -> FollowBoatsImpl
-        is EntityGoalFollowMobs -> FollowMobsImpl
-        is EntityGoalInteract -> InteractImpl
-        is EntityGoalLeapAtTarget -> LeapAtTargetImpl
-        is EntityGoalLookAtPlayer -> LookAtPlayerImpl
-        is EntityGoalMeleeAttack -> MeleeAttackImpl
-        is EntityGoalMoveBackToVillage -> MoveBackToVillageImpl
-        is EntityGoalMoveThroughVillage -> MoveThroughVillageImpl
-        is EntityGoalMoveTowardsRestriction -> MoveTowardsRestrictionImpl
-        is EntityGoalMoveTowardsTarget -> MoveTowardsTargetImpl
-        is EntityGoalOcelotAttack -> OcelotAttackImpl
-        is EntityGoalOpenDoors -> OpenDoorsImpl
-        is EntityGoalPanic -> PanicImpl
-        is EntityGoalRandomLookAround -> RandomLookAroundImpl
-        is EntityGoalRandomStroll -> RandomStrollImpl
-        is EntityGoalRandomSwimming -> RandomSwimmingImpl
-        is EntityGoalRangedAttack -> RangedAttackImpl
-        is EntityGoalRangedBowAttack -> RangedBowAttackImpl
-        is EntityGoalRangedCrossbowAttack -> RangedCrossbowAttackImpl
-        is EntityGoalRestrictSun -> RestrictSunImpl
-        is EntityGoalStrollThroughVillage -> StrollThroughVillageImpl
-        is EntityGoalTempt -> TemptImpl
-        is EntityGoalTryFindWater -> TryFindWaterImpl
-        is EntityGoalUseItem -> UseItemImpl
-        is EntityGoalWaterAvoidingRandomFlying -> WaterAvoidingRandomFlyingImpl
-        is EntityGoalWaterAvoidingRandomStroll -> WaterAvoidingRandomStrollImpl
-        else -> throw IllegalArgumentException("Unknown API goal!")
-    } as EcoEntityGoal<T>
+        is EntityGoalAvoidEntity -> AvoidEntityGoalFactory
+        is EntityGoalBreakDoor -> BreakDoorGoalFactory
+        is EntityGoalBreatheAir -> BreatheAirGoalFactory
+        is EntityGoalEatBlock -> EatBlockGoalFactory
+        is EntityGoalFleeSun -> FleeSunGoalFactory
+        is EntityGoalFloat -> FloatGoalFactory
+        is EntityGoalFollowBoats -> FollowBoatsGoalFactory
+        is EntityGoalFollowMobs -> FollowMobsGoalFactory
+        is EntityGoalInteract -> InteractGoalFactory
+        is EntityGoalLeapAtTarget -> LeapAtTargetGoalFactory
+        is EntityGoalLookAtPlayer -> LookAtPlayerGoalFactory
+        is EntityGoalMeleeAttack -> MeleeAttackGoalFactory
+        is EntityGoalMoveBackToVillage -> MoveBackToVillageGoalFactory
+        is EntityGoalMoveThroughVillage -> MoveThroughVillageGoalFactory
+        is EntityGoalMoveTowardsRestriction -> MoveTowardsRestrictionGoalFactory
+        is EntityGoalMoveTowardsTarget -> MoveTowardsTargetGoalFactory
+        is EntityGoalOcelotAttack -> OcelotAttackGoalFactory
+        is EntityGoalOpenDoors -> OpenDoorsGoalFactory
+        is EntityGoalPanic -> PanicGoalFactory
+        is EntityGoalRandomLookAround -> RandomLookAroundGoalFactory
+        is EntityGoalRandomStroll -> RandomStrollGoalFactory
+        is EntityGoalRandomSwimming -> RandomSwimmingGoalFactory
+        is EntityGoalRangedAttack -> RangedAttackGoalFactory
+        is EntityGoalRangedBowAttack -> RangedBowAttackGoalFactory
+        is EntityGoalRangedCrossbowAttack -> RangedCrossbowAttackGoalFactory
+        is EntityGoalRestrictSun -> RestrictSunGoalFactory
+        is EntityGoalStrollThroughVillage -> StrollThroughVillageGoalFactory
+        is EntityGoalTempt -> TemptGoalFactory
+        is EntityGoalTryFindWater -> TryFindWaterGoalFactory
+        is EntityGoalUseItem -> UseItemGoalFactory
+        is EntityGoalWaterAvoidingRandomFlying -> WaterAvoidingRandomFlyingGoalFactory
+        is EntityGoalWaterAvoidingRandomStroll -> WaterAvoidingRandomStrollGoalFactory
+        else -> null
+    } as EntityGoalFactory<T>?
 }
 
-interface EcoEntityGoal<T : EntityGoal> {
-    fun generateNMSGoal(apiGoal: T, entity: PathfinderMob): Goal?
+interface EntityGoalFactory<T : EntityGoal> {
+    fun create(apiGoal: T, entity: PathfinderMob): Goal?
 }
 
-object AvoidEntityImpl : EcoEntityGoal<EntityGoalAvoidEntity> {
-    override fun generateNMSGoal(apiGoal: EntityGoalAvoidEntity, entity: PathfinderMob): Goal {
+object AvoidEntityGoalFactory : EntityGoalFactory<EntityGoalAvoidEntity> {
+    override fun create(apiGoal: EntityGoalAvoidEntity, entity: PathfinderMob): Goal {
         return AvoidEntityGoal(
             entity,
             apiGoal.avoidClass.toNMSClass(),
@@ -129,8 +129,8 @@ object AvoidEntityImpl : EcoEntityGoal<EntityGoalAvoidEntity> {
     }
 }
 
-object BreakDoorImpl : EcoEntityGoal<EntityGoalBreakDoor> {
-    override fun generateNMSGoal(apiGoal: EntityGoalBreakDoor, entity: PathfinderMob): Goal {
+object BreakDoorGoalFactory : EntityGoalFactory<EntityGoalBreakDoor> {
+    override fun create(apiGoal: EntityGoalBreakDoor, entity: PathfinderMob): Goal {
         return BreakDoorGoal(
             entity,
             apiGoal.maxProgress
@@ -138,24 +138,24 @@ object BreakDoorImpl : EcoEntityGoal<EntityGoalBreakDoor> {
     }
 }
 
-object BreatheAirImpl : EcoEntityGoal<EntityGoalBreatheAir> {
-    override fun generateNMSGoal(apiGoal: EntityGoalBreatheAir, entity: PathfinderMob): Goal {
+object BreatheAirGoalFactory : EntityGoalFactory<EntityGoalBreatheAir> {
+    override fun create(apiGoal: EntityGoalBreatheAir, entity: PathfinderMob): Goal {
         return BreathAirGoal(
             entity
         )
     }
 }
 
-object EatBlockImpl : EcoEntityGoal<EntityGoalEatBlock> {
-    override fun generateNMSGoal(apiGoal: EntityGoalEatBlock, entity: PathfinderMob): Goal {
+object EatBlockGoalFactory : EntityGoalFactory<EntityGoalEatBlock> {
+    override fun create(apiGoal: EntityGoalEatBlock, entity: PathfinderMob): Goal {
         return EatBlockGoal(
             entity
         )
     }
 }
 
-object FleeSunImpl : EcoEntityGoal<EntityGoalFleeSun> {
-    override fun generateNMSGoal(apiGoal: EntityGoalFleeSun, entity: PathfinderMob): Goal {
+object FleeSunGoalFactory : EntityGoalFactory<EntityGoalFleeSun> {
+    override fun create(apiGoal: EntityGoalFleeSun, entity: PathfinderMob): Goal {
         return FleeSunGoal(
             entity,
             apiGoal.speed
@@ -163,24 +163,24 @@ object FleeSunImpl : EcoEntityGoal<EntityGoalFleeSun> {
     }
 }
 
-object FloatImpl : EcoEntityGoal<EntityGoalFloat> {
-    override fun generateNMSGoal(apiGoal: EntityGoalFloat, entity: PathfinderMob): Goal {
+object FloatGoalFactory : EntityGoalFactory<EntityGoalFloat> {
+    override fun create(apiGoal: EntityGoalFloat, entity: PathfinderMob): Goal {
         return FloatGoal(
             entity
         )
     }
 }
 
-object FollowBoatsImpl : EcoEntityGoal<EntityGoalFollowBoats> {
-    override fun generateNMSGoal(apiGoal: EntityGoalFollowBoats, entity: PathfinderMob): Goal {
+object FollowBoatsGoalFactory : EntityGoalFactory<EntityGoalFollowBoats> {
+    override fun create(apiGoal: EntityGoalFollowBoats, entity: PathfinderMob): Goal {
         return FollowBoatGoal(
             entity
         )
     }
 }
 
-object FollowMobsImpl : EcoEntityGoal<EntityGoalFollowMobs> {
-    override fun generateNMSGoal(apiGoal: EntityGoalFollowMobs, entity: PathfinderMob): Goal {
+object FollowMobsGoalFactory : EntityGoalFactory<EntityGoalFollowMobs> {
+    override fun create(apiGoal: EntityGoalFollowMobs, entity: PathfinderMob): Goal {
         return FollowMobGoal(
             entity,
             apiGoal.speed,
@@ -190,8 +190,8 @@ object FollowMobsImpl : EcoEntityGoal<EntityGoalFollowMobs> {
     }
 }
 
-object InteractImpl : EcoEntityGoal<EntityGoalInteract> {
-    override fun generateNMSGoal(apiGoal: EntityGoalInteract, entity: PathfinderMob): Goal {
+object InteractGoalFactory : EntityGoalFactory<EntityGoalInteract> {
+    override fun create(apiGoal: EntityGoalInteract, entity: PathfinderMob): Goal {
         return InteractGoal(
             entity,
             apiGoal.targetClass.toNMSClass(),
@@ -201,8 +201,8 @@ object InteractImpl : EcoEntityGoal<EntityGoalInteract> {
     }
 }
 
-object LeapAtTargetImpl : EcoEntityGoal<EntityGoalLeapAtTarget> {
-    override fun generateNMSGoal(apiGoal: EntityGoalLeapAtTarget, entity: PathfinderMob): Goal {
+object LeapAtTargetGoalFactory : EntityGoalFactory<EntityGoalLeapAtTarget> {
+    override fun create(apiGoal: EntityGoalLeapAtTarget, entity: PathfinderMob): Goal {
         return LeapAtTargetGoal(
             entity,
             apiGoal.velocity.toFloat()
@@ -210,8 +210,8 @@ object LeapAtTargetImpl : EcoEntityGoal<EntityGoalLeapAtTarget> {
     }
 }
 
-object LookAtPlayerImpl : EcoEntityGoal<EntityGoalLookAtPlayer> {
-    override fun generateNMSGoal(apiGoal: EntityGoalLookAtPlayer, entity: PathfinderMob): Goal {
+object LookAtPlayerGoalFactory : EntityGoalFactory<EntityGoalLookAtPlayer> {
+    override fun create(apiGoal: EntityGoalLookAtPlayer, entity: PathfinderMob): Goal {
         return LookAtPlayerGoal(
             entity,
             Player::class.java,
@@ -221,8 +221,8 @@ object LookAtPlayerImpl : EcoEntityGoal<EntityGoalLookAtPlayer> {
     }
 }
 
-object MeleeAttackImpl : EcoEntityGoal<EntityGoalMeleeAttack> {
-    override fun generateNMSGoal(apiGoal: EntityGoalMeleeAttack, entity: PathfinderMob): Goal {
+object MeleeAttackGoalFactory : EntityGoalFactory<EntityGoalMeleeAttack> {
+    override fun create(apiGoal: EntityGoalMeleeAttack, entity: PathfinderMob): Goal {
         return MeleeAttackGoal(
             entity,
             apiGoal.speed,
@@ -231,8 +231,8 @@ object MeleeAttackImpl : EcoEntityGoal<EntityGoalMeleeAttack> {
     }
 }
 
-object MoveBackToVillageImpl : EcoEntityGoal<EntityGoalMoveBackToVillage> {
-    override fun generateNMSGoal(apiGoal: EntityGoalMoveBackToVillage, entity: PathfinderMob): Goal {
+object MoveBackToVillageGoalFactory : EntityGoalFactory<EntityGoalMoveBackToVillage> {
+    override fun create(apiGoal: EntityGoalMoveBackToVillage, entity: PathfinderMob): Goal {
         return MoveBackToVillageGoal(
             entity,
             apiGoal.speed,
@@ -241,8 +241,8 @@ object MoveBackToVillageImpl : EcoEntityGoal<EntityGoalMoveBackToVillage> {
     }
 }
 
-object MoveThroughVillageImpl : EcoEntityGoal<EntityGoalMoveThroughVillage> {
-    override fun generateNMSGoal(apiGoal: EntityGoalMoveThroughVillage, entity: PathfinderMob): Goal {
+object MoveThroughVillageGoalFactory : EntityGoalFactory<EntityGoalMoveThroughVillage> {
+    override fun create(apiGoal: EntityGoalMoveThroughVillage, entity: PathfinderMob): Goal {
         return MoveThroughVillageGoal(
             entity,
             apiGoal.speed,
@@ -253,8 +253,8 @@ object MoveThroughVillageImpl : EcoEntityGoal<EntityGoalMoveThroughVillage> {
     }
 }
 
-object MoveTowardsRestrictionImpl : EcoEntityGoal<EntityGoalMoveTowardsRestriction> {
-    override fun generateNMSGoal(apiGoal: EntityGoalMoveTowardsRestriction, entity: PathfinderMob): Goal {
+object MoveTowardsRestrictionGoalFactory : EntityGoalFactory<EntityGoalMoveTowardsRestriction> {
+    override fun create(apiGoal: EntityGoalMoveTowardsRestriction, entity: PathfinderMob): Goal {
         return MoveTowardsRestrictionGoal(
             entity,
             apiGoal.speed
@@ -262,8 +262,8 @@ object MoveTowardsRestrictionImpl : EcoEntityGoal<EntityGoalMoveTowardsRestricti
     }
 }
 
-object MoveTowardsTargetImpl : EcoEntityGoal<EntityGoalMoveTowardsTarget> {
-    override fun generateNMSGoal(apiGoal: EntityGoalMoveTowardsTarget, entity: PathfinderMob): Goal {
+object MoveTowardsTargetGoalFactory : EntityGoalFactory<EntityGoalMoveTowardsTarget> {
+    override fun create(apiGoal: EntityGoalMoveTowardsTarget, entity: PathfinderMob): Goal {
         return MoveTowardsTargetGoal(
             entity,
             apiGoal.speed,
@@ -272,16 +272,16 @@ object MoveTowardsTargetImpl : EcoEntityGoal<EntityGoalMoveTowardsTarget> {
     }
 }
 
-object OcelotAttackImpl : EcoEntityGoal<EntityGoalOcelotAttack> {
-    override fun generateNMSGoal(apiGoal: EntityGoalOcelotAttack, entity: PathfinderMob): Goal {
+object OcelotAttackGoalFactory : EntityGoalFactory<EntityGoalOcelotAttack> {
+    override fun create(apiGoal: EntityGoalOcelotAttack, entity: PathfinderMob): Goal {
         return OcelotAttackGoal(
             entity
         )
     }
 }
 
-object OpenDoorsImpl : EcoEntityGoal<EntityGoalOpenDoors> {
-    override fun generateNMSGoal(apiGoal: EntityGoalOpenDoors, entity: PathfinderMob): Goal {
+object OpenDoorsGoalFactory : EntityGoalFactory<EntityGoalOpenDoors> {
+    override fun create(apiGoal: EntityGoalOpenDoors, entity: PathfinderMob): Goal {
         return OpenDoorGoal(
             entity,
             apiGoal.delayedClose
@@ -289,8 +289,8 @@ object OpenDoorsImpl : EcoEntityGoal<EntityGoalOpenDoors> {
     }
 }
 
-object PanicImpl : EcoEntityGoal<EntityGoalPanic> {
-    override fun generateNMSGoal(apiGoal: EntityGoalPanic, entity: PathfinderMob): Goal {
+object PanicGoalFactory : EntityGoalFactory<EntityGoalPanic> {
+    override fun create(apiGoal: EntityGoalPanic, entity: PathfinderMob): Goal {
         return PanicGoal(
             entity,
             apiGoal.speed
@@ -298,16 +298,16 @@ object PanicImpl : EcoEntityGoal<EntityGoalPanic> {
     }
 }
 
-object RandomLookAroundImpl : EcoEntityGoal<EntityGoalRandomLookAround> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRandomLookAround, entity: PathfinderMob): Goal {
+object RandomLookAroundGoalFactory : EntityGoalFactory<EntityGoalRandomLookAround> {
+    override fun create(apiGoal: EntityGoalRandomLookAround, entity: PathfinderMob): Goal {
         return RandomLookAroundGoal(
             entity
         )
     }
 }
 
-object RandomStrollImpl : EcoEntityGoal<EntityGoalRandomStroll> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRandomStroll, entity: PathfinderMob): Goal {
+object RandomStrollGoalFactory : EntityGoalFactory<EntityGoalRandomStroll> {
+    override fun create(apiGoal: EntityGoalRandomStroll, entity: PathfinderMob): Goal {
         return RandomStrollGoal(
             entity,
             apiGoal.speed,
@@ -317,8 +317,8 @@ object RandomStrollImpl : EcoEntityGoal<EntityGoalRandomStroll> {
     }
 }
 
-object RandomSwimmingImpl : EcoEntityGoal<EntityGoalRandomSwimming> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRandomSwimming, entity: PathfinderMob): Goal {
+object RandomSwimmingGoalFactory : EntityGoalFactory<EntityGoalRandomSwimming> {
+    override fun create(apiGoal: EntityGoalRandomSwimming, entity: PathfinderMob): Goal {
         return RandomSwimmingGoal(
             entity,
             apiGoal.speed,
@@ -327,8 +327,8 @@ object RandomSwimmingImpl : EcoEntityGoal<EntityGoalRandomSwimming> {
     }
 }
 
-object RangedAttackImpl : EcoEntityGoal<EntityGoalRangedAttack> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRangedAttack, entity: PathfinderMob): Goal? {
+object RangedAttackGoalFactory : EntityGoalFactory<EntityGoalRangedAttack> {
+    override fun create(apiGoal: EntityGoalRangedAttack, entity: PathfinderMob): Goal? {
         return RangedAttackGoal(
             entity as? RangedAttackMob ?: return null,
             apiGoal.mobSpeed,
@@ -339,8 +339,8 @@ object RangedAttackImpl : EcoEntityGoal<EntityGoalRangedAttack> {
     }
 }
 
-object RangedBowAttackImpl : EcoEntityGoal<EntityGoalRangedBowAttack> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
+object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack> {
+    override fun create(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
         return RangedBowAttackGoal(
             entity.tryCast() ?: return null,
             apiGoal.speed,
@@ -350,8 +350,8 @@ object RangedBowAttackImpl : EcoEntityGoal<EntityGoalRangedBowAttack> {
     }
 }
 
-object RangedCrossbowAttackImpl : EcoEntityGoal<EntityGoalRangedCrossbowAttack> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRangedCrossbowAttack, entity: PathfinderMob): Goal? {
+object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCrossbowAttack> {
+    override fun create(apiGoal: EntityGoalRangedCrossbowAttack, entity: PathfinderMob): Goal? {
         return RangedCrossbowAttackGoal(
             entity.tryCast() ?: return null,
             apiGoal.speed,
@@ -360,16 +360,16 @@ object RangedCrossbowAttackImpl : EcoEntityGoal<EntityGoalRangedCrossbowAttack> 
     }
 }
 
-object RestrictSunImpl : EcoEntityGoal<EntityGoalRestrictSun> {
-    override fun generateNMSGoal(apiGoal: EntityGoalRestrictSun, entity: PathfinderMob): Goal {
+object RestrictSunGoalFactory : EntityGoalFactory<EntityGoalRestrictSun> {
+    override fun create(apiGoal: EntityGoalRestrictSun, entity: PathfinderMob): Goal {
         return RestrictSunGoal(
             entity
         )
     }
 }
 
-object StrollThroughVillageImpl : EcoEntityGoal<EntityGoalStrollThroughVillage> {
-    override fun generateNMSGoal(apiGoal: EntityGoalStrollThroughVillage, entity: PathfinderMob): Goal {
+object StrollThroughVillageGoalFactory : EntityGoalFactory<EntityGoalStrollThroughVillage> {
+    override fun create(apiGoal: EntityGoalStrollThroughVillage, entity: PathfinderMob): Goal {
         return StrollThroughVillageGoal(
             entity,
             apiGoal.searchRange
@@ -377,8 +377,8 @@ object StrollThroughVillageImpl : EcoEntityGoal<EntityGoalStrollThroughVillage> 
     }
 }
 
-object TemptImpl : EcoEntityGoal<EntityGoalTempt> {
-    override fun generateNMSGoal(apiGoal: EntityGoalTempt, entity: PathfinderMob): Goal {
+object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
+    override fun create(apiGoal: EntityGoalTempt, entity: PathfinderMob): Goal {
         return TemptGoal(
             entity,
             apiGoal.speed,
@@ -388,16 +388,16 @@ object TemptImpl : EcoEntityGoal<EntityGoalTempt> {
     }
 }
 
-object TryFindWaterImpl : EcoEntityGoal<EntityGoalTryFindWater> {
-    override fun generateNMSGoal(apiGoal: EntityGoalTryFindWater, entity: PathfinderMob): Goal {
+object TryFindWaterGoalFactory : EntityGoalFactory<EntityGoalTryFindWater> {
+    override fun create(apiGoal: EntityGoalTryFindWater, entity: PathfinderMob): Goal {
         return TryFindWaterGoal(
             entity
         )
     }
 }
 
-object UseItemImpl : EcoEntityGoal<EntityGoalUseItem> {
-    override fun generateNMSGoal(apiGoal: EntityGoalUseItem, entity: PathfinderMob): Goal {
+object UseItemGoalFactory : EntityGoalFactory<EntityGoalUseItem> {
+    override fun create(apiGoal: EntityGoalUseItem, entity: PathfinderMob): Goal {
         return UseItemGoal(
             entity,
             CraftItemStack.asNMSCopy(apiGoal.item),
@@ -408,8 +408,8 @@ object UseItemImpl : EcoEntityGoal<EntityGoalUseItem> {
     }
 }
 
-object WaterAvoidingRandomFlyingImpl : EcoEntityGoal<EntityGoalWaterAvoidingRandomFlying> {
-    override fun generateNMSGoal(apiGoal: EntityGoalWaterAvoidingRandomFlying, entity: PathfinderMob): Goal {
+object WaterAvoidingRandomFlyingGoalFactory : EntityGoalFactory<EntityGoalWaterAvoidingRandomFlying> {
+    override fun create(apiGoal: EntityGoalWaterAvoidingRandomFlying, entity: PathfinderMob): Goal {
         return WaterAvoidingRandomFlyingGoal(
             entity,
             apiGoal.speed
@@ -417,8 +417,8 @@ object WaterAvoidingRandomFlyingImpl : EcoEntityGoal<EntityGoalWaterAvoidingRand
     }
 }
 
-object WaterAvoidingRandomStrollImpl : EcoEntityGoal<EntityGoalWaterAvoidingRandomStroll> {
-    override fun generateNMSGoal(apiGoal: EntityGoalWaterAvoidingRandomStroll, entity: PathfinderMob): Goal {
+object WaterAvoidingRandomStrollGoalFactory : EntityGoalFactory<EntityGoalWaterAvoidingRandomStroll> {
+    override fun create(apiGoal: EntityGoalWaterAvoidingRandomStroll, entity: PathfinderMob): Goal {
         return WaterAvoidingRandomStrollGoal(
             entity,
             apiGoal.speed,

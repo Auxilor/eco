@@ -5,7 +5,7 @@ import com.willfp.eco.core.config.wrapper.ConfigFactory;
 import com.willfp.eco.core.data.ProfileHandler;
 import com.willfp.eco.core.data.keys.KeyRegistry;
 import com.willfp.eco.core.drops.DropQueueFactory;
-import com.willfp.eco.core.entities.ai.ControlledEntity;
+import com.willfp.eco.core.entities.ai.EntityController;
 import com.willfp.eco.core.events.EventManager;
 import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
@@ -269,8 +269,9 @@ public interface Handler {
      * Create controlled entity from a mob.
      *
      * @param mob The mob.
+     * @param <T> The mob type.
      * @return The controlled entity.
      */
     @NotNull
-    ControlledEntity createControlledEntity(@NotNull Mob mob);
+    <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
 }

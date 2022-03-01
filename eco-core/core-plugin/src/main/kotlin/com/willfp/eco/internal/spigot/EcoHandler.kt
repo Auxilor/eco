@@ -3,7 +3,7 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Handler
 import com.willfp.eco.core.PluginProps
-import com.willfp.eco.core.entities.ai.ControlledEntity
+import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import com.willfp.eco.internal.EcoCleaner
@@ -29,7 +29,7 @@ import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.proxy.ControlledEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -164,7 +164,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         return existing ?: EcoPropsParser.parseForPlugin(plugin)
     }
 
-    override fun createControlledEntity(mob: Mob): ControlledEntity {
-        return getProxy(ControlledEntityFactoryProxy::class.java).createControlledEntity(mob)
+    override fun <T : Mob> createEntityController(mob: T): EntityController<T> {
+        return getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
     }
 }

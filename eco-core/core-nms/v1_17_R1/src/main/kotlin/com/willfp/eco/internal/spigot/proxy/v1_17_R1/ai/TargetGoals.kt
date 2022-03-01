@@ -8,21 +8,21 @@ import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal
 
-fun <T : TargetGoal> T.getImplementation(): EcoTargetGoal<T> {
+fun <T : TargetGoal> T.getGoalFactory(): TargetGoalFactory<T>? {
     @Suppress("UNCHECKED_CAST")
     return when (this) {
-        is TargetGoalHurtBy -> HurtByImpl
-        is TargetGoalNearestAttackable -> NearestAttackableImpl
-        else -> throw IllegalArgumentException("Unknown API goal!")
-    } as EcoTargetGoal<T>
+        is TargetGoalHurtBy -> HurtByGoalFactory
+        is TargetGoalNearestAttackable -> NearestAttackableGoalFactory
+        else -> null
+    } as TargetGoalFactory<T>?
 }
 
-interface EcoTargetGoal<T : TargetGoal> {
-    fun generateNMSGoal(apiGoal: T, entity: PathfinderMob): Goal?
+interface TargetGoalFactory<T : TargetGoal> {
+    fun create(apiGoal: T, entity: PathfinderMob): Goal?
 }
 
-object HurtByImpl : EcoTargetGoal<TargetGoalHurtBy> {
-    override fun generateNMSGoal(apiGoal: TargetGoalHurtBy, entity: PathfinderMob): Goal {
+object HurtByGoalFactory : TargetGoalFactory<TargetGoalHurtBy> {
+    override fun create(apiGoal: TargetGoalHurtBy, entity: PathfinderMob): Goal {
         return HurtByTargetGoal(
             entity,
             *apiGoal.blacklist.map { it.toNMSClass() }.toTypedArray()
@@ -30,8 +30,8 @@ object HurtByImpl : EcoTargetGoal<TargetGoalHurtBy> {
     }
 }
 
-object NearestAttackableImpl : EcoTargetGoal<TargetGoalNearestAttackable> {
-    override fun generateNMSGoal(apiGoal: TargetGoalNearestAttackable, entity: PathfinderMob): Goal {
+object NearestAttackableGoalFactory : TargetGoalFactory<TargetGoalNearestAttackable> {
+    override fun create(apiGoal: TargetGoalNearestAttackable, entity: PathfinderMob): Goal {
         return NearestAttackableTargetGoal(
             entity,
             apiGoal.targetClass.toNMSClass(),
