@@ -58,6 +58,23 @@ public class GroupedTestableItems implements TestableItem {
     }
 
     /**
+     * Get matching child for an ItemStack.
+     *
+     * @param itemStack The ItemStack.
+     * @return The matching child, or null if the item matches nothing.
+     */
+    @Nullable
+    public TestableItem getMatchingChild(@NotNull final ItemStack itemStack) {
+        for (TestableItem child : children) {
+            if (child.matches(itemStack)) {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get the children.
      *
      * @return The children.

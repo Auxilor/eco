@@ -106,15 +106,13 @@ import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.math.evaluateExpression
-import com.willfp.eco.internal.spigot.proxy.BlockBreakProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
+import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
-import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInEco
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
-import com.willfp.eco.util.BlockUtils
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
@@ -158,7 +156,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserEquipment())
 
         ShapedRecipeListener.registerListener(ComplexInComplex())
-        ShapedRecipeListener.registerListener(ComplexInEco())
         ShapedRecipeListener.registerListener(ComplexInVanilla())
 
         SegmentParserGroup().register()
@@ -169,9 +166,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             { meta, base64 -> skullProxy.setSkullTexture(meta, base64) },
             { meta -> skullProxy.getSkullTexture(meta) }
         )
-
-        val blockBreakProxy = getProxy(BlockBreakProxy::class.java)
-        BlockUtils.initialize { player, block -> blockBreakProxy.breakBlock(player, block) }
 
         val tpsProxy = getProxy(TPSProxy::class.java)
         ServerUtils.initialize { tpsProxy.getTPS() }
@@ -322,6 +316,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ArmorListener(),
             EntityDeathByEntityListeners(this),
             ShapedRecipeListener(),
+            StackedRecipeListener(this),
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),

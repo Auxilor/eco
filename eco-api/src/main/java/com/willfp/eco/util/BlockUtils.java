@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import org.apache.commons.lang.Validate;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,28 +8,16 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 /**
  * Utilities / API methods for blocks.
  */
 public final class BlockUtils {
-    /**
-     * If the meta set function has been set.
-     */
-    private static boolean initialized = false;
-
-    /**
-     * The block break function.
-     */
-    private static BiConsumer<Player, Block> blockBreakConsumer = null;
-
     private static Set<Block> getNearbyBlocks(@NotNull final Block start,
                                               @NotNull final List<Material> allowedMaterials,
                                               @NotNull final Set<Block> blocks,
@@ -75,12 +62,11 @@ public final class BlockUtils {
      *
      * @param player The player to break the block as.
      * @param block  The block to break.
+     * @deprecated Added into spigot API in 1.17.1
      */
+    @Deprecated(since = "6.26.2", forRemoval = true)
     public static void breakBlock(@NotNull final Player player,
                                   @NotNull final Block block) {
-        Validate.isTrue(initialized, "Must be initialized!");
-        Validate.notNull(blockBreakConsumer, "Must be initialized!");
-
         Location location = block.getLocation();
         World world = location.getWorld();
         assert world != null;
@@ -89,7 +75,7 @@ public final class BlockUtils {
             return;
         }
 
-        blockBreakConsumer.accept(player, block);
+        player.breakBlock(block);
     }
 
     /**
@@ -105,20 +91,6 @@ public final class BlockUtils {
                 NamespacedKeyUtils.createEcoKey(Integer.toString(block.getLocation().hashCode(), 16)),
                 PersistentDataType.INTEGER
         );
-    }
-
-    /**
-     * Initialize the block break function.
-     *
-     * @param function The function.
-     */
-    @ApiStatus.Internal
-    public static void initialize(@NotNull final BiConsumer<Player, Block> function) {
-        Validate.isTrue(!initialized, "Already initialized!");
-
-        blockBreakConsumer = function;
-
-        initialized = true;
     }
 
     private BlockUtils() {

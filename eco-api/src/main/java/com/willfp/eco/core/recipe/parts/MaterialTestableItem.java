@@ -1,5 +1,6 @@
 package com.willfp.eco.core.recipe.parts;
 
+import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
@@ -35,7 +36,13 @@ public class MaterialTestableItem implements TestableItem {
      */
     @Override
     public boolean matches(@Nullable final ItemStack itemStack) {
-        return itemStack != null && itemStack.getType() == material;
+        boolean simpleMatches = itemStack != null && itemStack.getType() == material;
+
+        if (!simpleMatches) {
+            return false;
+        }
+
+        return !Items.isCustomItem(itemStack);
     }
 
     @Override
