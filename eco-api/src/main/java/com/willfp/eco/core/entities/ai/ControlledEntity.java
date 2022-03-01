@@ -2,6 +2,7 @@ package com.willfp.eco.core.entities.ai;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.entities.ai.goals.EntityGoal;
+import com.willfp.eco.core.entities.ai.goals.TargetGoal;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,8 +17,8 @@ public interface ControlledEntity {
      * @param goal     The goal.
      * @return The entity.
      */
-    ControlledEntity addTarget(int priority,
-                               @NotNull EntityGoal goal);
+    ControlledEntity addTargetGoal(int priority,
+                                   @NotNull TargetGoal goal);
 
     /**
      * Add a goal to the entity.
@@ -26,8 +27,8 @@ public interface ControlledEntity {
      * @param goal     The goal.
      * @return The entity.
      */
-    ControlledEntity addGoal(int priority,
-                             @NotNull EntityGoal goal);
+    ControlledEntity addEntityGoal(int priority,
+                                   @NotNull EntityGoal goal);
 
     /**
      * Get the mob back from the controlled entity.
