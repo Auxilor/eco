@@ -4,7 +4,6 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -54,8 +53,6 @@ class StackedRecipeListener(
         // Don't allow crafting above the max stack size of the output
         maxCraftable = min(maxCraftable, Math.floorDiv(recipe.output.maxStackSize, recipe.output.amount))
 
-        Bukkit.getLogger().info("Amount to craft: $maxCraftable")
-
         // Run this first before the deduction or shift-clicking breaks
         val existingResult = inventory.result
 
@@ -76,8 +73,6 @@ class StackedRecipeListener(
                 }, 0
             )
 
-            println("Setting amount of ${item.type} to $amount")
-
             // Anti-Underflow
             if (amount == 0) {
                 item.type = Material.AIR
@@ -90,7 +85,6 @@ class StackedRecipeListener(
             // This isn't even funny anymore
             runTwice {
                 val newItem = item.clone()
-                println("Setting ${inventory.matrix[i]} to $newItem")
                 // Just use every method possible to set the item
                 inventory.matrix[i] = newItem
                 inventory.setItem(i + 1, newItem)
