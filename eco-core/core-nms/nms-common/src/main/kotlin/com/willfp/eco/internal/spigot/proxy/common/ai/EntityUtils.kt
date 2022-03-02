@@ -52,7 +52,7 @@ private val cache: LoadingCache<Class<out org.bukkit.entity.LivingEntity>, Optio
                 return@build Optional.of(mapped)
             }
 
-            return@build commonsProvider.toNMSClass(it)
+            return@build Optional.ofNullable(commonsProvider.toNMSClass(it))
         }
 
 fun <T : org.bukkit.entity.LivingEntity> Class<T>.toNMSClass(): Class<out LivingEntity> =

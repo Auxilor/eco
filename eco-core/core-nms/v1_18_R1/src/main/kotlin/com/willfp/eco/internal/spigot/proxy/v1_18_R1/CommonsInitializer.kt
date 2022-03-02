@@ -18,7 +18,6 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Field
-import java.util.Optional
 
 class CommonsInitializer : CommonsInitializerProxy {
     override fun init() {
@@ -54,16 +53,16 @@ class CommonsInitializer : CommonsInitializerProxy {
             }
         }
 
-        override fun toNMSClass(bukkit: Class<out LivingEntity>): Optional<Class<out net.minecraft.world.entity.LivingEntity>> {
+        override fun toNMSClass(bukkit: Class<out LivingEntity>): Class<out net.minecraft.world.entity.LivingEntity>? {
             val world = Bukkit.getWorlds().first() as CraftWorld
 
             @Suppress("UNCHECKED_CAST")
-            return Optional.ofNullable(runCatching {
+            return runCatching {
                 world.createEntity(
                     Location(world, 0.0, 100.0, 0.0),
                     bukkit
                 )::class.java as Class<out net.minecraft.world.entity.LivingEntity>
-            }.getOrNull())
+            }.getOrNull()
         }
 
         override fun toBukkitEntity(entity: net.minecraft.world.entity.LivingEntity): LivingEntity? =

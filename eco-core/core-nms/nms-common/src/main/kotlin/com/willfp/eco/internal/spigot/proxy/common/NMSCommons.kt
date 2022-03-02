@@ -10,7 +10,6 @@ import net.minecraft.world.entity.PathfinderMob
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
-import java.util.Optional
 
 val commonsProvider: CommonsProvider
     get() = impl
@@ -28,7 +27,7 @@ interface CommonsProvider {
 
     fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack)
 
-    fun toNMSClass(bukkit: Class<out org.bukkit.entity.LivingEntity>): Optional<Class<out LivingEntity>>
+    fun toNMSClass(bukkit: Class<out org.bukkit.entity.LivingEntity>): Class<out LivingEntity>?
 
     fun toBukkitEntity(entity: LivingEntity): org.bukkit.entity.LivingEntity?
 
