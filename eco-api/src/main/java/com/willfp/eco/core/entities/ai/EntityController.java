@@ -73,6 +73,20 @@ public interface EntityController<T extends Mob> {
     EntityController<T> clearEntityGoals();
 
     /**
+     * Remove all goals from the entity.
+     * <p>
+     * Mutates the instance.
+     *
+     * @return The entity controller.
+     */
+    default EntityController<T> clearAllGoals() {
+        this.clearTargetGoals();
+        this.clearEntityGoals();
+
+        return this;
+    }
+
+    /**
      * Get the mob back from the controlled entity.
      * <p>
      * Not required to apply changes, as the mob instance will be altered.
