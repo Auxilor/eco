@@ -22,7 +22,7 @@ tasks {
     shadowJar {
         relocate(
             "com.willfp.internal.spigot.proxy.common",
-            "com.willfp.internal.spigot.proxy.v1_17_R1"
+            "com.willfp.internal.spigot.proxy.v1_17_R1.common"
         )
     }
 }
