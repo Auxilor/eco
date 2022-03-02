@@ -8,11 +8,11 @@ import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,9 +24,20 @@ import java.util.stream.Collectors;
  */
 public record EntityGoalTempt(
         double speed,
-        Collection<ItemStack> items,
+        Collection<TestableItem> items,
         boolean canBeScared
 ) implements EntityGoal<Mob> {
+    /**
+     * @param speed       The speed at which the entity follows the item.
+     * @param item        The item that the entity will be attracted by.
+     * @param canBeScared If the entity can be scared and lose track of the item.
+     */
+    public EntityGoalTempt(final double speed,
+                           @NotNull final TestableItem item,
+                           final boolean canBeScared) {
+        this(speed, List.of(item), canBeScared);
+    }
+
     /**
      * The deserializer for the goal.
      */
@@ -48,10 +59,9 @@ public record EntityGoalTempt(
             }
 
             try {
-                Collection<ItemStack> items = config.getStrings("items").stream()
+                Collection<TestableItem> items = config.getStrings("items").stream()
                         .map(Items::lookup)
                         .filter(it -> !(it instanceof EmptyTestableItem))
-                        .map(TestableItem::getItem)
                         .collect(Collectors.toList());
 
                 return new EntityGoalTempt(

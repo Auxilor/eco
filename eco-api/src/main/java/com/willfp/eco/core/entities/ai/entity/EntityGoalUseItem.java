@@ -49,13 +49,11 @@ public record EntityGoalUseItem(
             }
 
             try {
-                ItemStack item = Items.lookup(config.getString("item")).getItem();
-                Sound sound = Sound.valueOf(config.getString("sound").toUpperCase());
                 TestableEntity filter = Entities.lookup(config.getString("condition"));
 
                 return new EntityGoalUseItem(
-                        item,
-                        sound,
+                        Items.lookup(config.getString("item")).getItem(),
+                        Sound.valueOf(config.getString("sound").toUpperCase()),
                         filter::matches
                 );
             } catch (Exception e) {

@@ -45,6 +45,10 @@ class CommonsInitializer : CommonsInitializerProxy {
             }
         }
 
+        override fun asBukkitStack(itemStack: net.minecraft.world.item.ItemStack): ItemStack {
+            return CraftItemStack.asBukkitCopy(itemStack)
+        }
+
         override fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack) {
             if (itemStack !is CraftItemStack) {
                 itemStack.itemMeta = CraftItemStack.asCraftMirror(nmsStack).itemMeta

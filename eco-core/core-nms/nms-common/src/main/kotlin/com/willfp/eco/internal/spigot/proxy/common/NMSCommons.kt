@@ -24,16 +24,19 @@ fun NamespacedKey.toResourceLocation(): ResourceLocation =
 fun ItemStack.asNMSStack(): net.minecraft.world.item.ItemStack =
     impl.asNMSStack(this)
 
+fun net.minecraft.world.item.ItemStack.asBukkitStack(): ItemStack =
+    impl.asBukkitStack(this)
+
 fun ItemStack.mergeIfNeeded(nmsStack: net.minecraft.world.item.ItemStack) =
     impl.mergeIfNeeded(this, nmsStack)
 
 fun LivingEntity.toBukkitEntity(): org.bukkit.entity.LivingEntity? =
     impl.toBukkitEntity(this)
 
-fun <T: EntityGoal<*>> T.getVersionSpecificEntityGoalFactory(): EntityGoalFactory<T>? =
+fun <T : EntityGoal<*>> T.getVersionSpecificEntityGoalFactory(): EntityGoalFactory<T>? =
     impl.getVersionSpecificEntityGoalFactory(this)
 
-fun <T: TargetGoal<*>> T.getVersionSpecificEntityGoalFactory(): TargetGoalFactory<T>? =
+fun <T : TargetGoal<*>> T.getVersionSpecificEntityGoalFactory(): TargetGoalFactory<T>? =
     impl.getVersionSpecificTargetGoalFactory(this)
 
 interface CommonsProvider {
@@ -44,6 +47,8 @@ interface CommonsProvider {
     fun toResourceLocation(namespacedKey: NamespacedKey): ResourceLocation
 
     fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack
+
+    fun asBukkitStack(itemStack: net.minecraft.world.item.ItemStack): ItemStack
 
     fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack)
 
