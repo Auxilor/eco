@@ -6,24 +6,22 @@ import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.TargetGoal;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Raider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
  * Target nearest attackable raider.
  *
- * @param targetClass     The types of entities to heal.
+ * @param target          The types of entities to heal.
  * @param checkVisibility If visibility should be checked.
  * @param targetFilter    The filter for targets to match.
  */
 public record TargetGoalNearestHealableRaider(
-        @NotNull Class<? extends LivingEntity> targetClass,
+        @NotNull TestableEntity target,
         boolean checkVisibility,
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Raider> {
@@ -35,13 +33,12 @@ public record TargetGoalNearestHealableRaider(
     /**
      * Deserialize configs into the goal.
      */
-    @SuppressWarnings("unchecked")
     private static final class Deserializer implements KeyedDeserializer<TargetGoalNearestHealableRaider> {
         @Override
         @Nullable
         public TargetGoalNearestHealableRaider deserialize(@NotNull final Config config) {
             if (!(
-                    config.has("targetClass")
+                    config.has("target")
                             && config.has("checkVisibility")
                             && config.has("targetFilter")
             )) {
@@ -52,10 +49,7 @@ public record TargetGoalNearestHealableRaider(
                 TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
                 return new TargetGoalNearestHealableRaider(
-                        (Class<? extends LivingEntity>)
-                                Objects.requireNonNull(
-                                        EntityType.valueOf(config.getString("avoidClass").toUpperCase()).getEntityClass()
-                                ),
+                        Entities.lookup(config.getString("target")),
                         config.getBool("checkVisibility"),
                         filter::matches
                 );

@@ -6,31 +6,29 @@ import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.TargetGoal;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
+import org.bukkit.entity.Raider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
  * Allows an entity to attack the closest target within a given subset of specific target types.
  *
- * @param targetClass      The types of entities to attack.
+ * @param target           The type of entities to attack.
  * @param checkVisibility  If visibility should be checked.
  * @param checkCanNavigate If navigation should be checked.
  * @param reciprocalChance 1 in reciprocalChance chance of not activating on any tick.
  * @param targetFilter     The filter for targets to match.
  */
 public record TargetGoalNearestAttackable(
-        @NotNull Class<? extends LivingEntity> targetClass,
+        @NotNull TestableEntity target,
         boolean checkVisibility,
         boolean checkCanNavigate,
         int reciprocalChance,
         @NotNull Predicate<LivingEntity> targetFilter
-) implements TargetGoal<Mob> {
+) implements TargetGoal<Raider> {
     /**
      * The deserializer for the goal.
      */
@@ -39,13 +37,12 @@ public record TargetGoalNearestAttackable(
     /**
      * Deserialize configs into the goal.
      */
-    @SuppressWarnings("unchecked")
     private static final class Deserializer implements KeyedDeserializer<TargetGoalNearestAttackable> {
         @Override
         @Nullable
         public TargetGoalNearestAttackable deserialize(@NotNull final Config config) {
             if (!(
-                    config.has("targetClass")
+                    config.has("target")
                             && config.has("checkVisibility")
                             && config.has("checkCanNavigate")
                             && config.has("reciprocalChance")
@@ -58,10 +55,7 @@ public record TargetGoalNearestAttackable(
                 TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
                 return new TargetGoalNearestAttackable(
-                        (Class<? extends LivingEntity>)
-                                Objects.requireNonNull(
-                                        EntityType.valueOf(config.getString("avoidClass").toUpperCase()).getEntityClass()
-                                ),
+                        Entities.lookup(config.getString("target")),
                         config.getBool("checkVisibility"),
                         config.getBool("checkCanNavigate"),
                         config.getInt("reciprocalChance"),
