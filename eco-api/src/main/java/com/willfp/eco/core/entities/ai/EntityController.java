@@ -1,8 +1,6 @@
 package com.willfp.eco.core.entities.ai;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.entities.ai.goals.EntityGoal;
-import com.willfp.eco.core.entities.ai.goals.TargetGoal;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +20,7 @@ public interface EntityController<T extends Mob> {
      * @return The entity controller.
      */
     EntityController<T> addTargetGoal(int priority,
-                                      @NotNull TargetGoal goal);
+                                      @NotNull TargetGoal<? super T> goal);
 
     /**
      * Remove all target goals from the entity.
@@ -41,7 +39,7 @@ public interface EntityController<T extends Mob> {
      * @param goal The goal.
      * @return The entity controller.
      */
-    EntityController<T> removeTargetGoal(@NotNull TargetGoal goal);
+    EntityController<T> removeTargetGoal(@NotNull TargetGoal<? super T> goal);
 
     /**
      * Add an entity goal to the entity.
@@ -53,7 +51,7 @@ public interface EntityController<T extends Mob> {
      * @return The entity controller.
      */
     EntityController<T> addEntityGoal(int priority,
-                                      @NotNull EntityGoal goal);
+                                      @NotNull EntityGoal<? super T> goal);
 
     /**
      * Remove an entity goal from the entity.
@@ -63,7 +61,7 @@ public interface EntityController<T extends Mob> {
      * @param goal The goal.
      * @return The entity controller.
      */
-    EntityController<T> removeEntityGoal(@NotNull EntityGoal goal);
+    EntityController<T> removeEntityGoal(@NotNull EntityGoal<? super T> goal);
 
     /**
      * Remove all entity goals from the entity.

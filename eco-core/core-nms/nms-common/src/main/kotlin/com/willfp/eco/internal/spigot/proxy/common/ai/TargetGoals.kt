@@ -1,25 +1,25 @@
 package com.willfp.eco.internal.spigot.proxy.common.ai
 
-import com.willfp.eco.core.entities.ai.goals.CustomGoal
-import com.willfp.eco.core.entities.ai.goals.TargetGoal
-import com.willfp.eco.core.entities.ai.goals.target.TargetGoalHurtBy
-import com.willfp.eco.core.entities.ai.goals.target.TargetGoalNearestAttackable
+import com.willfp.eco.core.entities.ai.CustomGoal
+import com.willfp.eco.core.entities.ai.TargetGoal
+import com.willfp.eco.core.entities.ai.target.TargetGoalHurtBy
+import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackable
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal
 
-fun <T : TargetGoal> T.getGoalFactory(): TargetGoalFactory<T>? {
+fun <T : TargetGoal<*>> T.getGoalFactory(): TargetGoalFactory<T>? {
     @Suppress("UNCHECKED_CAST")
     return when (this) {
         is TargetGoalHurtBy -> HurtByGoalFactory
         is TargetGoalNearestAttackable -> NearestAttackableGoalFactory
-        is CustomGoal -> CustomGoalFactory
+        is CustomGoal<*> -> CustomGoalFactory
         else -> null
     } as TargetGoalFactory<T>?
 }
 
-interface TargetGoalFactory<T : TargetGoal> {
+interface TargetGoalFactory<T : TargetGoal<*>> {
     fun create(apiGoal: T, entity: PathfinderMob): Goal?
 }
 

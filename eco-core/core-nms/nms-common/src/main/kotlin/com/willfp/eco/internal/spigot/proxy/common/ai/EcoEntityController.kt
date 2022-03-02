@@ -1,8 +1,8 @@
 package com.willfp.eco.internal.spigot.proxy.common.ai
 
 import com.willfp.eco.core.entities.ai.EntityController
-import com.willfp.eco.core.entities.ai.goals.EntityGoal
-import com.willfp.eco.core.entities.ai.goals.TargetGoal
+import com.willfp.eco.core.entities.ai.EntityGoal
+import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.world.entity.PathfinderMob
 import org.bukkit.entity.Mob
@@ -10,7 +10,7 @@ import org.bukkit.entity.Mob
 class EcoEntityController<T : Mob>(
     private val handle: T
 ) : EntityController<T> {
-    override fun addEntityGoal(priority: Int, goal: EntityGoal): EntityController<T> {
+    override fun addEntityGoal(priority: Int, goal: EntityGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
 
         nms.goalSelector.addGoal(
@@ -21,7 +21,7 @@ class EcoEntityController<T : Mob>(
         return this
     }
 
-    override fun removeEntityGoal(goal: EntityGoal): EntityController<T> {
+    override fun removeEntityGoal(goal: EntityGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
         nms.goalSelector.removeGoal(
             goal.getGoalFactory()?.create(goal, nms) ?: return this
@@ -36,7 +36,7 @@ class EcoEntityController<T : Mob>(
         return this
     }
 
-    override fun addTargetGoal(priority: Int, goal: TargetGoal): EntityController<T> {
+    override fun addTargetGoal(priority: Int, goal: TargetGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
 
         nms.targetSelector.addGoal(
@@ -48,7 +48,7 @@ class EcoEntityController<T : Mob>(
         return this
     }
 
-    override fun removeTargetGoal(goal: TargetGoal): EntityController<T> {
+    override fun removeTargetGoal(goal: TargetGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
         nms.targetSelector.removeGoal(
             goal.getGoalFactory()?.create(goal, nms) ?: return this
