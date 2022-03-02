@@ -46,14 +46,7 @@ private val mappedClasses = mapOf(
 
 private val cache: LoadingCache<Class<out org.bukkit.entity.LivingEntity>, Optional<Class<out LivingEntity>>> =
     Caffeine.newBuilder()
-        .build {
-            val mapped = mappedClasses[it]
-            if (mapped != null) {
-                return@build Optional.of(mapped)
-            }
-
-            return@build Optional.ofNullable(commonsProvider.toNMSClass(it))
-        }
+        .build { Optional.ofNullable(mappedClasses[it] ?: commonsProvider.toNMSClass(it)) }
 
 fun <T : org.bukkit.entity.LivingEntity> Class<T>.toNMSClass(): Class<out LivingEntity> =
     cache.get(this).orElseThrow { IllegalArgumentException("Invalid/Unsupported entity type!") }

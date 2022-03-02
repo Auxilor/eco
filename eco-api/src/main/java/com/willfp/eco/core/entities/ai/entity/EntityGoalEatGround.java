@@ -8,28 +8,28 @@ import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Allows an entity to eat any item in its inventory and gain the benefits of the item.
+ * Allows an entity to eat the ground.
  */
-public record EntityGoalEatCarriedItem(
+public record EntityGoalEatGround(
 ) implements EntityGoal<Mob> {
     /**
      * The deserializer for the goal.
      */
-    public static final KeyedDeserializer<EntityGoalEatCarriedItem> DESERIALIZER = new EntityGoalEatCarriedItem.Deserializer();
+    public static final KeyedDeserializer<EntityGoalEatGround> DESERIALIZER = new EntityGoalEatGround.Deserializer();
 
     /**
      * Deserialize configs into the goal.
      */
-    private static final class Deserializer implements KeyedDeserializer<EntityGoalEatCarriedItem> {
+    private static final class Deserializer implements KeyedDeserializer<EntityGoalEatGround> {
         @Override
-        public EntityGoalEatCarriedItem deserialize(@NotNull final Config config) {
-            return new EntityGoalEatCarriedItem();
+        public EntityGoalEatGround deserialize(@NotNull final Config config) {
+            return new EntityGoalEatGround();
         }
 
         @NotNull
         @Override
         public NamespacedKey getKey() {
-            return NamespacedKey.minecraft("eat_carried_item");
+            return NamespacedKey.minecraft("eat_ground");
         }
     }
 }

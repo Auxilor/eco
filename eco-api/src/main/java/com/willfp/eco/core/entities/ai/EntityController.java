@@ -81,9 +81,7 @@ public interface EntityController<T extends Mob> {
      */
     default EntityController<T> clearAllGoals() {
         this.clearTargetGoals();
-        this.clearEntityGoals();
-
-        return this;
+        return this.clearEntityGoals();
     }
 
     /**
