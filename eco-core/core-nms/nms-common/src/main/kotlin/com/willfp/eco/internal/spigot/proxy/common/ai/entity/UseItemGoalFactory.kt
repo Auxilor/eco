@@ -13,7 +13,7 @@ object UseItemGoalFactory : EntityGoalFactory<EntityGoalUseItem> {
     override fun create(apiGoal: EntityGoalUseItem, entity: PathfinderMob): Goal {
         return UseItemGoal(
             entity,
-            commonsProvider.toNMSStack(apiGoal.item),
+            commonsProvider.asNMSStack(apiGoal.item),
             SoundEvent(commonsProvider.toResourceLocation(apiGoal.sound.key)),
         ) {
             apiGoal.condition.test(it.toBukkitEntity())

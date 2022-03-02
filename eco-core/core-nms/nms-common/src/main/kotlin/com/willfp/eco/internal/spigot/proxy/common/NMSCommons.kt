@@ -18,11 +18,15 @@ val commonsProvider: CommonsProvider
 private lateinit var impl: CommonsProvider
 
 interface CommonsProvider {
+    val nbtTagString: Int
+
     fun toPathfinderMob(mob: Mob): PathfinderMob?
 
     fun toResourceLocation(namespacedKey: NamespacedKey): ResourceLocation
 
-    fun toNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack
+    fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack
+
+    fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack)
 
     fun toNMSClass(bukkit: Class<out org.bukkit.entity.LivingEntity>): Optional<Class<out LivingEntity>>
 

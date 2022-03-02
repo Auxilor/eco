@@ -1,6 +1,7 @@
-package com.willfp.eco.internal.spigot.proxy.v1_18_R2.fast
+package com.willfp.eco.internal.spigot.proxy.common.fast
 
-import com.willfp.eco.internal.fast.EcoFastItemStack
+import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import com.willfp.eco.util.NamespacedKeyUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.nbt.CompoundTag
@@ -8,19 +9,17 @@ import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
 import net.minecraft.world.item.EnchantedBookItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
 
 @Suppress("UsePropertyAccessSyntax")
-class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
-    itemStack.getNMSStack(), itemStack
-) {
+class EcoFastItemStack(
+    private val bukkit: org.bukkit.inventory.ItemStack
+) : FastItemStack {
     private var loreCache: List<String>? = null
+    private val handle = commonsProvider.asNMSStack(bukkit)
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantmentNBT =
@@ -75,7 +74,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             displayTag.put("Lore", ListTag())
         }
 
-        val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
+        val loreTag = displayTag.getList("Lore", commonsProvider.nbtTagString)
 
         loreTag.clear()
 
@@ -103,7 +102,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
             return emptyList()
         }
 
-        val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
+        val loreTag = displayTag.getList("Lore", commonsProvider.nbtTagString)
         val lore = ArrayList<String>(loreTag.size)
 
         for (i in loreTag.indices) {
@@ -169,7 +168,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is NMSFastItemStack) {
+        if (other !is EcoFastItemStack) {
             return false
         }
 
@@ -181,8 +180,14 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     private fun apply() {
-        if (bukkit !is CraftItemStack) {
-            bukkit.itemMeta = CraftItemStack.asCraftMirror(handle).itemMeta
-        }
+        commonsProvider.mergeIfNeeded(bukkit, handle)
+    }
+
+    private fun getBitModifier(hideFlag: ItemFlag): Int {
+        return 1 shl hideFlag.ordinal
+    }
+
+    override fun unwrap(): org.bukkit.inventory.ItemStack {
+        return bukkit
     }
 }

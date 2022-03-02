@@ -13,7 +13,7 @@ object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
         return TemptGoal(
             entity,
             apiGoal.speed,
-            Ingredient.of(*apiGoal.items.map { commonsProvider.toNMSStack(it) }.toTypedArray()),
+            Ingredient.of(*apiGoal.items.map { commonsProvider.asNMSStack(it) }.toTypedArray()),
             apiGoal.canBeScared
         )
     }
