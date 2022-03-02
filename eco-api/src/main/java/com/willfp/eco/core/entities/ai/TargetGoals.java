@@ -7,7 +7,7 @@ import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackable;
 import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackableWitch;
 import com.willfp.eco.core.entities.ai.target.TargetGoalNearestHealableRaider;
 import com.willfp.eco.core.entities.ai.target.TargetGoalNonTameRandom;
-import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerHurt;
+import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerTarget;
 import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerHurtBy;
 import com.willfp.eco.core.entities.ai.target.TargetGoalResetUniversalAnger;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
@@ -33,7 +33,7 @@ public final class TargetGoals {
         register(TargetGoalNearestAttackableWitch.DESERIALIZER);
         register(TargetGoalNearestHealableRaider.DESERIALIZER);
         register(TargetGoalNonTameRandom.DESERIALIZER);
-        register(TargetGoalOwnerHurt.DESERIALIZER);
+        register(TargetGoalOwnerTarget.DESERIALIZER);
         register(TargetGoalOwnerHurtBy.DESERIALIZER);
         register(TargetGoalResetUniversalAnger.DESERIALIZER);
     }

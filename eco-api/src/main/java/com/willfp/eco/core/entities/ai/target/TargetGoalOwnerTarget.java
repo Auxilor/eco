@@ -10,26 +10,26 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Allows an entity to react when the owner hits a target.
  */
-public record TargetGoalOwnerHurt(
+public record TargetGoalOwnerTarget(
 ) implements TargetGoal<Tameable> {
     /**
      * The deserializer for the goal.
      */
-    public static final KeyedDeserializer<TargetGoalOwnerHurt> DESERIALIZER = new TargetGoalOwnerHurt.Deserializer();
+    public static final KeyedDeserializer<TargetGoalOwnerTarget> DESERIALIZER = new TargetGoalOwnerTarget.Deserializer();
 
     /**
      * Deserialize configs into the goal.
      */
-    private static final class Deserializer implements KeyedDeserializer<TargetGoalOwnerHurt> {
+    private static final class Deserializer implements KeyedDeserializer<TargetGoalOwnerTarget> {
         @Override
-        public TargetGoalOwnerHurt deserialize(@NotNull final Config config) {
-            return new TargetGoalOwnerHurt();
+        public TargetGoalOwnerTarget deserialize(@NotNull final Config config) {
+            return new TargetGoalOwnerTarget();
         }
 
         @NotNull
         @Override
         public NamespacedKey getKey() {
-            return NamespacedKey.minecraft("owner_hurt");
+            return NamespacedKey.minecraft("owner_target");
         }
     }
 }

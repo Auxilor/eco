@@ -13,21 +13,21 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param maxProgress The time taken to break the door (any integer above 240).
  */
-public record EntityGoalBreakDoor(
+public record EntityGoalBreakDoors(
         int maxProgress
 ) implements EntityGoal<Mob> {
     /**
      * The deserializer for the goal.
      */
-    public static final KeyedDeserializer<EntityGoalBreakDoor> DESERIALIZER = new EntityGoalBreakDoor.Deserializer();
+    public static final KeyedDeserializer<EntityGoalBreakDoors> DESERIALIZER = new EntityGoalBreakDoors.Deserializer();
 
     /**
      * Deserialize configs into the goal.
      */
-    private static final class Deserializer implements KeyedDeserializer<EntityGoalBreakDoor> {
+    private static final class Deserializer implements KeyedDeserializer<EntityGoalBreakDoors> {
         @Override
         @Nullable
-        public EntityGoalBreakDoor deserialize(@NotNull final Config config) {
+        public EntityGoalBreakDoors deserialize(@NotNull final Config config) {
             if (!(
                     config.has("maxProgress")
             )) {
@@ -35,7 +35,7 @@ public record EntityGoalBreakDoor(
             }
 
             try {
-                return new EntityGoalBreakDoor(
+                return new EntityGoalBreakDoors(
                         config.getInt("maxProgress")
                 );
             } catch (Exception e) {
@@ -51,7 +51,7 @@ public record EntityGoalBreakDoor(
         @NotNull
         @Override
         public NamespacedKey getKey() {
-            return NamespacedKey.minecraft("break_door");
+            return NamespacedKey.minecraft("break_doors");
         }
     }
 }

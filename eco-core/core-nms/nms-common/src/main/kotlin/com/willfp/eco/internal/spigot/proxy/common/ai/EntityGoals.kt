@@ -3,9 +3,9 @@ package com.willfp.eco.internal.spigot.proxy.common.ai
 import com.willfp.eco.core.entities.ai.CustomGoal
 import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity
-import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoor
+import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoors
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir
-import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGround
+import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGrass
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats
@@ -35,9 +35,9 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalUseItem
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomFlying
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomStroll
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.AvoidEntityGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreakDoorGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreakDoorsGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreatheAirGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.ai.entity.EatGroundGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.EatGrassGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FleeSunGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FloatGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FollowBoatsGoalFactory
@@ -79,9 +79,9 @@ fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
     @Suppress("UNCHECKED_CAST")
     return when (this) {
         is EntityGoalAvoidEntity -> AvoidEntityGoalFactory
-        is EntityGoalBreakDoor -> BreakDoorGoalFactory
+        is EntityGoalBreakDoors -> BreakDoorsGoalFactory
         is EntityGoalBreatheAir -> BreatheAirGoalFactory
-        is EntityGoalEatGround -> EatGroundGoalFactory
+        is EntityGoalEatGrass -> EatGrassGoalFactory
         is EntityGoalFleeSun -> FleeSunGoalFactory
         is EntityGoalFloat -> FloatGoalFactory
         is EntityGoalFollowBoats -> FollowBoatsGoalFactory

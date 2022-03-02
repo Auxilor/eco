@@ -10,26 +10,26 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Allows an entity to eat the ground.
  */
-public record EntityGoalEatGround(
+public record EntityGoalEatGrass(
 ) implements EntityGoal<Mob> {
     /**
      * The deserializer for the goal.
      */
-    public static final KeyedDeserializer<EntityGoalEatGround> DESERIALIZER = new EntityGoalEatGround.Deserializer();
+    public static final KeyedDeserializer<EntityGoalEatGrass> DESERIALIZER = new EntityGoalEatGrass.Deserializer();
 
     /**
      * Deserialize configs into the goal.
      */
-    private static final class Deserializer implements KeyedDeserializer<EntityGoalEatGround> {
+    private static final class Deserializer implements KeyedDeserializer<EntityGoalEatGrass> {
         @Override
-        public EntityGoalEatGround deserialize(@NotNull final Config config) {
-            return new EntityGoalEatGround();
+        public EntityGoalEatGrass deserialize(@NotNull final Config config) {
+            return new EntityGoalEatGrass();
         }
 
         @NotNull
         @Override
         public NamespacedKey getKey() {
-            return NamespacedKey.minecraft("eat_ground");
+            return NamespacedKey.minecraft("eat_grass");
         }
     }
 }

@@ -7,7 +7,7 @@ import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackable
 import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackableWitch
 import com.willfp.eco.core.entities.ai.target.TargetGoalNearestHealableRaider
 import com.willfp.eco.core.entities.ai.target.TargetGoalNonTameRandom
-import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerHurt
+import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerTarget
 import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerHurtBy
 import com.willfp.eco.internal.spigot.proxy.common.ai.target.HurtByGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.target.NearestAttackableGoalFactory
@@ -15,7 +15,7 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.target.NearestAttackableWi
 import com.willfp.eco.internal.spigot.proxy.common.ai.target.NearestHealableRaiderGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.target.NonTameRandomGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.target.OwnerHurtByGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.ai.target.OwnerHurtGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.target.OwnerTargetGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
@@ -34,7 +34,7 @@ fun <T : TargetGoal<*>> T.getGoalFactory(): TargetGoalFactory<T>? {
         is TargetGoalNearestHealableRaider -> NearestHealableRaiderGoalFactory
         is TargetGoalNonTameRandom -> NonTameRandomGoalFactory
         is TargetGoalOwnerHurtBy -> OwnerHurtByGoalFactory
-        is TargetGoalOwnerHurt -> OwnerHurtGoalFactory
+        is TargetGoalOwnerTarget -> OwnerTargetGoalFactory
         is CustomGoal<*> -> CustomGoalFactory
         else -> null
     } as TargetGoalFactory<T>?

@@ -2,9 +2,9 @@ package com.willfp.eco.core.entities.ai;
 
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoor;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoors;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGround;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGrass;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats;
@@ -51,9 +51,9 @@ public final class EntityGoals {
 
     static {
         register(EntityGoalAvoidEntity.DESERIALIZER);
-        register(EntityGoalBreakDoor.DESERIALIZER);
+        register(EntityGoalBreakDoors.DESERIALIZER);
         register(EntityGoalBreatheAir.DESERIALIZER);
-        register(EntityGoalEatGround.DESERIALIZER);
+        register(EntityGoalEatGrass.DESERIALIZER);
         register(EntityGoalFleeSun.DESERIALIZER);
         register(EntityGoalFloat.DESERIALIZER);
         register(EntityGoalFollowBoats.DESERIALIZER);
