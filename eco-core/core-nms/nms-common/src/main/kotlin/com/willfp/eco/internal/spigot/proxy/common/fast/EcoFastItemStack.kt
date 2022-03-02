@@ -151,13 +151,14 @@ class EcoFastItemStack(
         return this.flagBits and bitModifier == bitModifier
     }
 
+    @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
     private var flagBits: Int
         get() =
-            if (handle.hasTag() && handle.getTag().contains(
+            if (handle.hasTag() && handle.getTag()!!.contains(
                     "HideFlags",
                     99
                 )
-            ) handle.getTag().getInt("HideFlags") else 0
+            ) handle.getTag()!!.getInt("HideFlags") else 0
         set(value) =
             handle.getOrCreateTag().putInt("HideFlags", value)
 
