@@ -88,7 +88,7 @@ public interface EntityController<T extends Mob> {
      * @param <T>    The mob type.
      * @return The entity controller.
      */
-    static <T extends Mob> EntityController<T> of(@NotNull final T entity) {
+    static <T extends Mob> EntityController<T> getFor(@NotNull final T entity) {
         return Eco.getHandler().createEntityController(entity);
     }
 }

@@ -17,7 +17,7 @@ public interface TargetGoal<T extends Mob> {
      * @return The entity, modified.
      */
     default T addToEntity(@NotNull T entity, int priority) {
-        return EntityController.of(entity)
+        return EntityController.getFor(entity)
                 .addTargetGoal(priority, this)
                 .getEntity();
     }

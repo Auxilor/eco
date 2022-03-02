@@ -6,7 +6,7 @@ import com.willfp.eco.core.entities.ai.EntityController
 import org.bukkit.entity.Mob
 
 /**
- * @see EntityController.of
+ * @see EntityController.getFor
  */
 val <T : Mob> T.controller: EntityController<T>
-    get() = EntityController.of(this)
+    get() = EntityController.getFor(this)
