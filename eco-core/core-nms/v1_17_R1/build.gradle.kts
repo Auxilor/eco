@@ -11,6 +11,10 @@ dependencies {
 }
 
 tasks {
+    reobfJar {
+        dependsOn(shadowJar)
+    }
+
     build {
         dependsOn(reobfJar)
     }
