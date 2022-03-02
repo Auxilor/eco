@@ -12,8 +12,7 @@ object MoveThroughVillageGoalFactory : EntityGoalFactory<EntityGoalMoveThroughVi
             entity,
             apiGoal.speed,
             apiGoal.onlyAtNight,
-            apiGoal.distance,
-            apiGoal.canPassThroughDoorsGetter
-        )
+            apiGoal.distance
+        ) { apiGoal.canPassThroughDoors }
     }
 }

@@ -1,7 +1,12 @@
 package com.willfp.eco.core.entities.ai.entity;
 
+import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.entities.ai.EntityGoal;
+import com.willfp.eco.core.serialization.KeyedDeserializer;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Allows entities to make close combat melee attacks.
@@ -13,5 +18,44 @@ public record EntityGoalMeleeAttack(
         double speed,
         boolean pauseWhenMobIdle
 ) implements EntityGoal<Mob> {
+    /**
+     * The deserializer for the goal.
+     */
+    public static final KeyedDeserializer<EntityGoalMeleeAttack> DESERIALIZER = new EntityGoalMeleeAttack.Deserializer();
 
+    /**
+     * Deserialize configs into the goal.
+     */
+    private static final class Deserializer implements KeyedDeserializer<EntityGoalMeleeAttack> {
+        @Override
+        @Nullable
+        public EntityGoalMeleeAttack deserialize(@NotNull final Config config) {
+            if (!(
+                    config.has("speed")
+                            && config.has("pauseWhenMobIdle")
+            )) {
+                return null;
+            }
+
+            try {
+                return new EntityGoalMeleeAttack(
+                        config.getDouble("speed"),
+                        config.getBool("pauseWhenMobIdle")
+                );
+            } catch (Exception e) {
+                /*
+                Exceptions could be caused by configs having values of a wrong type,
+                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
+                so we encapsulate them as null.
+                 */
+                return null;
+            }
+        }
+
+        @NotNull
+        @Override
+        public NamespacedKey getKey() {
+            return NamespacedKey.minecraft("melee_attack");
+        }
+    }
 }
