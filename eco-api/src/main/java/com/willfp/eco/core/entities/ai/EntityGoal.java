@@ -8,14 +8,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> The type of mob that the goal can be applied to.
  */
-public interface EntityGoal<T extends Mob> {
-    /**
-     * Add the entity goal to an entity.
-     *
-     * @param entity   The entity.
-     * @param priority The priority.
-     * @return The entity, modified.
-     */
+public interface EntityGoal<T extends Mob> extends Goal<T> {
+    @Override
     default T addToEntity(@NotNull T entity, int priority) {
         return EntityController.getFor(entity)
                 .addEntityGoal(priority, this)
