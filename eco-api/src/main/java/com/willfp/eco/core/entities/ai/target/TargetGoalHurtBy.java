@@ -1,11 +1,11 @@
 package com.willfp.eco.core.entities.ai.target;
 
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.entities.Entities;
+import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.TargetGoal;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings({"varargs", "unchecked"})
 public record TargetGoalHurtBy(
-        @NotNull Class<? extends LivingEntity>... blacklist
+        @NotNull TestableEntity blacklist
 ) implements TargetGoal<Mob> {
     /**
      * The deserializer for the goal.
@@ -27,7 +27,6 @@ public record TargetGoalHurtBy(
     /**
      * Deserialize configs into the goal.
      */
-    @SuppressWarnings("unchecked")
     private static final class Deserializer implements KeyedDeserializer<TargetGoalHurtBy> {
         @Override
         @Nullable
@@ -40,12 +39,7 @@ public record TargetGoalHurtBy(
 
             try {
                 return new TargetGoalHurtBy(
-                        (Class<? extends LivingEntity>[])
-                                config.getStrings("blacklist").stream()
-                                        .map(String::toUpperCase)
-                                        .map(EntityType::valueOf)
-                                        .map(EntityType::getEntityClass)
-                                        .toArray()
+                        Entities.lookup(config.getString("blacklist"))
                 );
             } catch (Exception e) {
                 /*
