@@ -1,7 +1,9 @@
 package com.willfp.eco.internal.spigot.proxy.common
 
 import com.willfp.eco.core.entities.ai.EntityGoal
+import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
@@ -26,7 +28,11 @@ interface CommonsProvider {
 
     fun toBukkitEntity(entity: LivingEntity): org.bukkit.entity.LivingEntity?
 
-    fun <T : EntityGoal> getVersionSpecificGoalFactory(goal: T): EntityGoalFactory<T>? {
+    fun <T : EntityGoal<*>> getVersionSpecificEntityGoalFactory(goal: T): EntityGoalFactory<T>? {
+        return null
+    }
+
+    fun <T : TargetGoal<*>> getVersionSpecificTargetGoalFactory(goal: T): TargetGoalFactory<T>? {
         return null
     }
 

@@ -64,14 +64,14 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.entity.StrollThroughVillag
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.TemptGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.TryFindWaterGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.UseItemGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WaterAvoidingRandomFlyingGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WaterAvoidingRandomStrollGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal
 
 fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
-    val versionSpecific = commonsProvider.getVersionSpecificGoalFactory(this)
+    val versionSpecific = commonsProvider.getVersionSpecificEntityGoalFactory(this)
     if (versionSpecific != null) {
         return versionSpecific
     }
@@ -118,21 +118,3 @@ fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
 interface EntityGoalFactory<T : EntityGoal<*>> {
     fun create(apiGoal: T, entity: PathfinderMob): Goal?
 }
-
-
-
-
-
-
-
-
-object WaterAvoidingRandomStrollGoalFactory : EntityGoalFactory<EntityGoalWaterAvoidingRandomStroll> {
-    override fun create(apiGoal: EntityGoalWaterAvoidingRandomStroll, entity: PathfinderMob): Goal {
-        return WaterAvoidingRandomStrollGoal(
-            entity,
-            apiGoal.speed,
-            apiGoal.chance.toFloat() / 100
-        )
-    }
-}
-

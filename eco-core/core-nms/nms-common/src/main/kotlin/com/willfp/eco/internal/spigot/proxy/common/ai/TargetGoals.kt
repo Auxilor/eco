@@ -4,16 +4,28 @@ import com.willfp.eco.core.entities.ai.CustomGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.core.entities.ai.target.TargetGoalHurtBy
 import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackable
+import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackableWitch
+import com.willfp.eco.core.entities.ai.target.TargetGoalNearestHealableRaider
+import com.willfp.eco.internal.spigot.proxy.common.ai.target.HurtByGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.target.NearestAttackableGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.target.NearestAttackableWitchGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.target.NearestHealableRaiderGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal
 
 fun <T : TargetGoal<*>> T.getGoalFactory(): TargetGoalFactory<T>? {
+    val versionSpecific = commonsProvider.getVersionSpecificTargetGoalFactory(this)
+    if (versionSpecific != null) {
+        return versionSpecific
+    }
+
     @Suppress("UNCHECKED_CAST")
     return when (this) {
         is TargetGoalHurtBy -> HurtByGoalFactory
         is TargetGoalNearestAttackable -> NearestAttackableGoalFactory
+        is TargetGoalNearestAttackableWitch -> NearestAttackableWitchGoalFactory
+        is TargetGoalNearestHealableRaider -> NearestHealableRaiderGoalFactory
         is CustomGoal<*> -> CustomGoalFactory
         else -> null
     } as TargetGoalFactory<T>?
@@ -21,23 +33,4 @@ fun <T : TargetGoal<*>> T.getGoalFactory(): TargetGoalFactory<T>? {
 
 interface TargetGoalFactory<T : TargetGoal<*>> {
     fun create(apiGoal: T, entity: PathfinderMob): Goal?
-}
-
-object HurtByGoalFactory : TargetGoalFactory<TargetGoalHurtBy> {
-    override fun create(apiGoal: TargetGoalHurtBy, entity: PathfinderMob): Goal {
-        return HurtByTargetGoal(
-            entity,
-            *apiGoal.blacklist.map { it.toNMSClass() }.toTypedArray()
-        )
-    }
-}
-
-object NearestAttackableGoalFactory : TargetGoalFactory<TargetGoalNearestAttackable> {
-    override fun create(apiGoal: TargetGoalNearestAttackable, entity: PathfinderMob): Goal {
-        return NearestAttackableTargetGoal(
-            entity,
-            apiGoal.targetClass.toNMSClass(),
-            apiGoal.checkVisibility
-        )
-    }
 }

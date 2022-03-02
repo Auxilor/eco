@@ -2,13 +2,13 @@ package com.willfp.eco.core.entities.ai.target;
 
 import com.willfp.eco.core.entities.ai.TargetGoal;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mob;
+import org.bukkit.entity.Raider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 /**
- * Target nearest attackable entity.
+ * Target nearest attackable witch.
  *
  * @param targetClass      The types of entities to attack.
  * @param checkVisibility  If visibility should be checked.
@@ -16,12 +16,12 @@ import java.util.function.Predicate;
  * @param reciprocalChance 1 in reciprocalChance chance of not activating on any tick.
  * @param targetFilter     The filter for targets to match.
  */
-public record TargetGoalNearestAttackable(
+public record TargetGoalNearestAttackableWitch(
         @NotNull Class<? extends LivingEntity> targetClass,
         boolean checkVisibility,
         boolean checkCanNavigate,
         int reciprocalChance,
         @NotNull Predicate<LivingEntity> targetFilter
-) implements TargetGoal<Mob> {
+) implements TargetGoal<Raider> {
 
 }
