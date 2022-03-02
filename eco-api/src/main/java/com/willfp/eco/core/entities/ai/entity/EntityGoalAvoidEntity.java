@@ -32,7 +32,6 @@ public record EntityGoalAvoidEntity(
     /**
      * Deserialize configs into the goal.
      */
-    @SuppressWarnings("unchecked")
     private static final class Deserializer implements KeyedDeserializer<EntityGoalAvoidEntity> {
         @Override
         @Nullable

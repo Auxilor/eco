@@ -5,10 +5,8 @@ import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.PathfinderMob
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_18_R1.CraftServer
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftMob
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
@@ -51,18 +49,6 @@ class CommonsInitializer : CommonsInitializerProxy {
             if (itemStack !is CraftItemStack) {
                 itemStack.itemMeta = CraftItemStack.asCraftMirror(nmsStack).itemMeta
             }
-        }
-
-        override fun toNMSClass(bukkit: Class<out LivingEntity>): Class<out net.minecraft.world.entity.LivingEntity>? {
-            val world = Bukkit.getWorlds().first() as CraftWorld
-
-            @Suppress("UNCHECKED_CAST")
-            return runCatching {
-                world.createEntity(
-                    Location(world, 0.0, 100.0, 0.0),
-                    bukkit
-                )::class.java as Class<out net.minecraft.world.entity.LivingEntity>
-            }.getOrNull()
         }
 
         override fun toBukkitEntity(entity: net.minecraft.world.entity.LivingEntity): LivingEntity? =

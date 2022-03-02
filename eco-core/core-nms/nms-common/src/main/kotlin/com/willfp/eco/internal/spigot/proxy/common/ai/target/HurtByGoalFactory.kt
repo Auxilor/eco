@@ -30,6 +30,7 @@ private class EnhancedHurtByTargetGoal(
             return false
         }
 
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         return super.canAttack(target, targetPredicate)
     }
 }

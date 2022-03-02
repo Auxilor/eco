@@ -30,7 +30,6 @@ public record EntityGoalInteract(
     /**
      * Deserialize configs into the goal.
      */
-    @SuppressWarnings("unchecked")
     private static final class Deserializer implements KeyedDeserializer<EntityGoalInteract> {
         @Override
         @Nullable

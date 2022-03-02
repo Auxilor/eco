@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.common.ai.entity
 
 import com.willfp.eco.core.entities.ai.entity.EntityGoalTempt
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
+import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.TemptGoal
@@ -13,7 +13,7 @@ object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
         return TemptGoal(
             entity,
             apiGoal.speed,
-            Ingredient.of(*apiGoal.items.map { commonsProvider.asNMSStack(it) }.toTypedArray()),
+            Ingredient.of(*apiGoal.items.map { it.asNMSStack() }.toTypedArray()),
             apiGoal.canBeScared
         )
     }

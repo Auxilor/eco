@@ -11,10 +11,30 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
 
-val commonsProvider: CommonsProvider
-    get() = impl
-
 private lateinit var impl: CommonsProvider
+
+val NBT_TAG_STRING = impl.nbtTagString
+
+fun Mob.toPathfinderMob(): PathfinderMob? =
+    impl.toPathfinderMob(this)
+
+fun NamespacedKey.toResourceLocation(): ResourceLocation =
+    impl.toResourceLocation(this)
+
+fun ItemStack.asNMSStack(): net.minecraft.world.item.ItemStack =
+    impl.asNMSStack(this)
+
+fun ItemStack.mergeIfNeeded(nmsStack: net.minecraft.world.item.ItemStack) =
+    impl.asNMSStack(this)
+
+fun LivingEntity.toBukkitEntity(): org.bukkit.entity.LivingEntity? =
+    impl.toBukkitEntity(this)
+
+fun <T: EntityGoal<*>> T.getVersionSpecificEntityGoalFactory(): EntityGoalFactory<T>? =
+    impl.getVersionSpecificEntityGoalFactory(this)
+
+fun <T: TargetGoal<*>> T.getVersionSpecificEntityGoalFactory(): TargetGoalFactory<T>? =
+    impl.getVersionSpecificTargetGoalFactory(this)
 
 interface CommonsProvider {
     val nbtTagString: Int
@@ -26,8 +46,6 @@ interface CommonsProvider {
     fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack
 
     fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack)
-
-    fun toNMSClass(bukkit: Class<out org.bukkit.entity.LivingEntity>): Class<out LivingEntity>?
 
     fun toBukkitEntity(entity: LivingEntity): org.bukkit.entity.LivingEntity?
 

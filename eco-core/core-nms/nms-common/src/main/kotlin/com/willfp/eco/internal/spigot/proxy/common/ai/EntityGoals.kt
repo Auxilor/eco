@@ -66,12 +66,12 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.entity.TryFindWaterGoalFac
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.UseItemGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WaterAvoidingRandomFlyingGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WaterAvoidingRandomStrollGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
+import com.willfp.eco.internal.spigot.proxy.common.getVersionSpecificEntityGoalFactory
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 
 fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
-    val versionSpecific = commonsProvider.getVersionSpecificEntityGoalFactory(this)
+    val versionSpecific = this.getVersionSpecificEntityGoalFactory()
     if (versionSpecific != null) {
         return versionSpecific
     }

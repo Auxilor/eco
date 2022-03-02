@@ -3,7 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.common.ai.entity
 import com.willfp.eco.core.entities.TestableEntity
 import com.willfp.eco.core.entities.ai.entity.EntityGoalInteract
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.ai.toBukkitEntity
+import com.willfp.eco.internal.spigot.proxy.common.toBukkitEntity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
@@ -21,6 +21,7 @@ object InteractGoalFactory : EntityGoalFactory<EntityGoalInteract> {
     }
 }
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 private class EnhancedInteractGoal(
     mob: PathfinderMob,
     private val target: TestableEntity,
@@ -36,10 +37,11 @@ private class EnhancedInteractGoal(
         return if (mob.random.nextFloat() >= probability) {
             false
         } else {
+            @Suppress("SENSELESS_COMPARISON")
             if (mob.target != null) {
                 lookAt = mob.target
             }
-            val ecoLookAt = if (lookAtType == Player::class.java) {
+            val lookAt = if (lookAtType == Player::class.java) {
                 mob.level.getNearestPlayer(lookAtContext, mob, mob.x, mob.eyeY, mob.z)
             } else {
                 mob.level.getNearestEntity(
@@ -47,13 +49,11 @@ private class EnhancedInteractGoal(
                         lookAtType, mob.boundingBox.inflate(
                             lookDistance.toDouble(), 3.0, lookDistance.toDouble()
                         )
-                    ) { target.matches(it.toBukkitEntity()) },
+                    ) { target.matches(it.toBukkitEntity()) }, // Change this line to check with TestableEntity.
                     lookAtContext, mob, mob.x, mob.eyeY, mob.z
                 )
             }
-            @Suppress("TYPE_MISMATCH")
-            lookAt = ecoLookAt
-            ecoLookAt != null
+            lookAt != null
         }
     }
 }

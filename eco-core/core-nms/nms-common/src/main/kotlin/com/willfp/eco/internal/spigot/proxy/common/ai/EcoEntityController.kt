@@ -3,7 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.common.ai
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
-import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
+import com.willfp.eco.internal.spigot.proxy.common.toPathfinderMob
 import net.minecraft.world.entity.PathfinderMob
 import org.bukkit.entity.Mob
 
@@ -64,7 +64,7 @@ class EcoEntityController<T : Mob>(
     }
 
     private fun getNms(): PathfinderMob? {
-        return commonsProvider.toPathfinderMob(handle)
+        return handle.toPathfinderMob()
     }
 
     override fun getEntity(): T {

@@ -1,7 +1,9 @@
 package com.willfp.eco.internal.spigot.proxy.common.fast
 
 import com.willfp.eco.core.fast.FastItemStack
-import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
+import com.willfp.eco.internal.spigot.proxy.common.NBT_TAG_STRING
+import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
+import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
 import com.willfp.eco.util.NamespacedKeyUtils
 import com.willfp.eco.util.StringUtils
 import net.minecraft.nbt.CompoundTag
@@ -19,7 +21,7 @@ class EcoFastItemStack(
     private val bukkit: org.bukkit.inventory.ItemStack
 ) : FastItemStack {
     private var loreCache: List<String>? = null
-    private val handle = commonsProvider.asNMSStack(bukkit)
+    private val handle = bukkit.asNMSStack()
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantmentNBT =
@@ -74,7 +76,7 @@ class EcoFastItemStack(
             displayTag.put("Lore", ListTag())
         }
 
-        val loreTag = displayTag.getList("Lore", commonsProvider.nbtTagString)
+        val loreTag = displayTag.getList("Lore", NBT_TAG_STRING)
 
         loreTag.clear()
 
@@ -102,7 +104,7 @@ class EcoFastItemStack(
             return emptyList()
         }
 
-        val loreTag = displayTag.getList("Lore", commonsProvider.nbtTagString)
+        val loreTag = displayTag.getList("Lore", NBT_TAG_STRING)
         val lore = ArrayList<String>(loreTag.size)
 
         for (i in loreTag.indices) {
@@ -151,11 +153,11 @@ class EcoFastItemStack(
 
     private var flagBits: Int
         get() =
-            if (handle.hasTag() && handle.getTag()!!.contains(
+            if (handle.hasTag() && handle.getTag().contains(
                     "HideFlags",
                     99
                 )
-            ) handle.getTag()!!.getInt("HideFlags") else 0
+            ) handle.getTag().getInt("HideFlags") else 0
         set(value) =
             handle.getOrCreateTag().putInt("HideFlags", value)
 
@@ -176,11 +178,12 @@ class EcoFastItemStack(
     }
 
     override fun hashCode(): Int {
+        @Suppress("UNNECESSARY_SAFE_CALL")
         return handle.getTag()?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.getItem()))
     }
 
     private fun apply() {
-        commonsProvider.mergeIfNeeded(bukkit, handle)
+        bukkit.mergeIfNeeded(handle)
     }
 
     private fun getBitModifier(hideFlag: ItemFlag): Int {
