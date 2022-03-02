@@ -77,6 +77,11 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.crafting.Ingredient
 
 fun <T : EntityGoal> T.getGoalFactory(): EntityGoalFactory<T>? {
+    val versionSpecific = commonsProvider.getVersionSpecificGoalFactory(this)
+    if (versionSpecific != null) {
+        return versionSpecific
+    }
+
     @Suppress("UNCHECKED_CAST")
     return when (this) {
         is EntityGoalAvoidEntity -> AvoidEntityGoalFactory
