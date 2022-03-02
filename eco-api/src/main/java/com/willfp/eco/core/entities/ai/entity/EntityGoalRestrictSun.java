@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Restrict sun.
+ * Allows an entity to actively avoid direct sunlight.
  */
 public record EntityGoalRestrictSun(
 ) implements EntityGoal<Mob> {

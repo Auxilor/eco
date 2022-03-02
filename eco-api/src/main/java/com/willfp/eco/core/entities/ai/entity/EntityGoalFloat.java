@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Float in water.
+ * Allows an entity to float on water.
  */
 public record EntityGoalFloat(
 ) implements EntityGoal<Mob> {

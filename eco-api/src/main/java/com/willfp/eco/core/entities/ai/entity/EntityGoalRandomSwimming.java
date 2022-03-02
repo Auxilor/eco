@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Swim around randomly.
+ * Allows an entity to swim in a random point in water.
  *
  * @param speed      The speed at which to move around.
  * @param interval   The amount of ticks to wait (on average) between strolling around.

@@ -6,7 +6,7 @@ import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Hurt by entity.
+ * Allows an entity to react when hit by set target.
  *
  * @param blacklist The entities not to attack when hurt by.
  */

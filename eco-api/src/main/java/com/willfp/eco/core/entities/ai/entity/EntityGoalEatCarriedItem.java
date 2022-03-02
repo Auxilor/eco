@@ -4,9 +4,9 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Eat block.
+ * Allows an entity to eat any item in its inventory and gain the benefits of the item.
  */
-public record EntityGoalEatBlock(
+public record EntityGoalEatCarriedItem(
 ) implements EntityGoal<Mob> {
 
 }

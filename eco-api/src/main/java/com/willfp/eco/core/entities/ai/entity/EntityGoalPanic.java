@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Panic.
+ * Allows an entity to react when it receives damage.
  *
  * @param speed The speed at which to panic.
  */

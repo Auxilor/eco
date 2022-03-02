@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Open doors.
+ * Allows an entity to interact and open a door.
  *
  * @param delayedClose If closing the door should be delayed.
  */

@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Flee sun.
+ * Will make the entity actively avoid the sunlight.
  *
  * @param speed The speed at which to flee.
  */

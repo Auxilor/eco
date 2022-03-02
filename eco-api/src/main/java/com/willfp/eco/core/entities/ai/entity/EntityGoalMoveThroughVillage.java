@@ -6,7 +6,7 @@ import org.bukkit.entity.Mob;
 import java.util.function.BooleanSupplier;
 
 /**
- * Move through village.
+ * Allows the entity to create paths around the village.
  *
  * @param speed                     The speed at which to move through the village.
  * @param onlyAtNight               If the entity can only move through village at night.

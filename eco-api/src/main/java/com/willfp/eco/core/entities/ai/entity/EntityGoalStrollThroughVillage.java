@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Stroll through village.
+ * Allows the entity to create paths around the village.
  *
  * @param searchRange The search range.
  */

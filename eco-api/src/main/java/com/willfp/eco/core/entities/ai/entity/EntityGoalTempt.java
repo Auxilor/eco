@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 
 /**
- * Be tempted by holding items.
+ * Allows an entity to be tempted by a set item.
  *
  * @param speed       The speed at which the entity follows the item.
  * @param items       The items that the entity will be attracted by.

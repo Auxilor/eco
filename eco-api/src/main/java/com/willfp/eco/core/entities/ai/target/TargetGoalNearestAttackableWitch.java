@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 /**
- * Target nearest attackable witch.
+ * Allows an entity to attack the closest target within a given subset of specific target types.
  *
  * @param targetClass      The types of entities to attack.
  * @param checkVisibility  If visibility should be checked.

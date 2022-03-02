@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Melee attack target.
+ * Allows entities to make close combat melee attacks.
  *
  * @param speed            The speed at which to attack the target.
  * @param pauseWhenMobIdle If the entity should pause attacking when the target is idle.

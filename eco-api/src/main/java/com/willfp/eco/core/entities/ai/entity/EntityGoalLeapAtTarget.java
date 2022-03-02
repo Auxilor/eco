@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import org.bukkit.entity.Mob;
 
 /**
- * Leap at target.
+ * Allows an entity to jump towards a target.
  *
  * @param velocity The leap velocity.
  */

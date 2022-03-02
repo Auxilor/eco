@@ -5,7 +5,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoor
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir
-import com.willfp.eco.core.entities.ai.entity.EntityGoalEatBlock
+import com.willfp.eco.core.entities.ai.entity.EntityGoalEatCarriedItem
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats
@@ -37,7 +37,7 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomStrol
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.AvoidEntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreakDoorGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreatheAirGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.ai.entity.EatBlockGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.EatCarriedItemGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FleeSunGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FloatGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FollowBoatsGoalFactory
@@ -81,7 +81,7 @@ fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
         is EntityGoalAvoidEntity -> AvoidEntityGoalFactory
         is EntityGoalBreakDoor -> BreakDoorGoalFactory
         is EntityGoalBreatheAir -> BreatheAirGoalFactory
-        is EntityGoalEatBlock -> EatBlockGoalFactory
+        is EntityGoalEatCarriedItem -> EatCarriedItemGoalFactory
         is EntityGoalFleeSun -> FleeSunGoalFactory
         is EntityGoalFloat -> FloatGoalFactory
         is EntityGoalFollowBoats -> FollowBoatsGoalFactory
