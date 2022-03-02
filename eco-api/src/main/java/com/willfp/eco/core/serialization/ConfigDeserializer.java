@@ -6,6 +6,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Deserialize objects from configs.
+ * <p>
+ * Deserializers should <b>never</b> throw errors due to invalid configs,
+ * all edge cases must be covered, and all failures must be encapsulated as null.
  *
  * @param <T> The type of object to deserialize.
  */

@@ -18,10 +18,9 @@ public final class EntityGoals {
      */
     private static final Map<NamespacedKey, KeyedDeserializer<? extends EntityGoal<?>>> BY_KEY = HashBiMap.create();
 
-    /**
-     * minecraft:avoid_entity.
-     */
-    public static final KeyedDeserializer<EntityGoalAvoidEntity> AVOID_ENTITY = register(EntityGoalAvoidEntity.DESERIALIZER);
+    static {
+        register(EntityGoalAvoidEntity.DESERIALIZER);
+    }
 
     /**
      * Get deserializer by key.
@@ -34,7 +33,15 @@ public final class EntityGoals {
         return BY_KEY.get(key);
     }
 
-    private static <T extends KeyedDeserializer<? extends EntityGoal<?>>> T register(@NotNull final T toRegister) {
+    /**
+     * Register a deserializer for an entity goal.
+     *
+     * @param toRegister The entity goal to register.
+     * @param <T>        The type of deserializer.
+     * @return The deserializer.
+     */
+    @NotNull
+    public static <T extends KeyedDeserializer<? extends EntityGoal<?>>> T register(@NotNull final T toRegister) {
         BY_KEY.put(toRegister.getKey(), toRegister);
         return toRegister;
     }
