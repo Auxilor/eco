@@ -13,7 +13,7 @@ object LookAtPlayerGoalFactory : EntityGoalFactory<EntityGoalLookAtPlayer> {
             entity,
             Player::class.java,
             apiGoal.range.toFloat(),
-            apiGoal.chance.toFloat() / 100f,
+            apiGoal.chance.toFloat(),
         )
     }
 }

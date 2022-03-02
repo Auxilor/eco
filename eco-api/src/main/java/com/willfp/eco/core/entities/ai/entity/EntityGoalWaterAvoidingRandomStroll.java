@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * Stroll randomly while avoiding water.
  *
  * @param speed  The speed.
- * @param chance The chance to stroll every tick, as a percentage.
+ * @param chance The chance to stroll every tick, between 0 and 1.
  */
 public record EntityGoalWaterAvoidingRandomStroll(
         double speed,

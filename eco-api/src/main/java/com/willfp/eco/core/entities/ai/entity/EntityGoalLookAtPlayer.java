@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * Allows an entity to look at the player by rotating the head bone pose within a set limit.
  *
  * @param range  The range at which to look at the player.
- * @param chance The chance to look at the player, as a percentage.
+ * @param chance The chance to look at the player, between 0 and 1.
  */
 public record EntityGoalLookAtPlayer(
         double range,

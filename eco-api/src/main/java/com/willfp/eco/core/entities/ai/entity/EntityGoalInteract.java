@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param target The type of entity to interact with.
  * @param range  The range at which to interact.
- * @param chance The chance for interaction, as a percentage.
+ * @param chance The chance for interaction, between 0 and 1.
  */
 public record EntityGoalInteract(
         @NotNull TestableEntity target,

@@ -16,7 +16,7 @@ object InteractGoalFactory : EntityGoalFactory<EntityGoalInteract> {
             entity,
             apiGoal.target,
             apiGoal.range.toFloat(),
-            apiGoal.chance.toFloat() / 100f,
+            apiGoal.chance.toFloat(),
         )
     }
 }

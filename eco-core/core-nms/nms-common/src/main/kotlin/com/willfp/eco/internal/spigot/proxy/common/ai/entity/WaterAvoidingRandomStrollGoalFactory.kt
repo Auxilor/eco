@@ -11,7 +11,7 @@ object WaterAvoidingRandomStrollGoalFactory : EntityGoalFactory<EntityGoalWaterA
         return WaterAvoidingRandomStrollGoal(
             entity,
             apiGoal.speed,
-            apiGoal.chance.toFloat() / 100
+            apiGoal.chance.toFloat()
         )
     }
 }
