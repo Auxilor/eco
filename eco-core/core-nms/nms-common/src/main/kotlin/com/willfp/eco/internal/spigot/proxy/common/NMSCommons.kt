@@ -25,7 +25,7 @@ fun ItemStack.asNMSStack(): net.minecraft.world.item.ItemStack =
     impl.asNMSStack(this)
 
 fun ItemStack.mergeIfNeeded(nmsStack: net.minecraft.world.item.ItemStack) =
-    impl.asNMSStack(this)
+    impl.mergeIfNeeded(this, nmsStack)
 
 fun LivingEntity.toBukkitEntity(): org.bukkit.entity.LivingEntity? =
     impl.toBukkitEntity(this)
