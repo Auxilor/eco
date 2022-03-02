@@ -6,30 +6,23 @@ import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.EntityGoal;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.function.Predicate;
-
 /**
  * Avoid entities.
  *
- * @param avoidClass   The entity classes to avoid.
+ * @param entity       The entity type to avoid.
  * @param fleeDistance The distance to flee to.
  * @param slowSpeed    The slow movement speed.
  * @param fastSpeed    The fast movement speed.
- * @param filter       The filter for entities to check if they should be avoided.
  */
 public record EntityGoalAvoidEntity(
-        @NotNull Class<? extends LivingEntity> avoidClass,
+        @NotNull TestableEntity entity,
         double fleeDistance,
         double slowSpeed,
-        double fastSpeed,
-        @NotNull Predicate<LivingEntity> filter
+        double fastSpeed
 ) implements EntityGoal<Mob> {
     /**
      * The deserializer for the goal.
@@ -45,27 +38,22 @@ public record EntityGoalAvoidEntity(
         @Nullable
         public EntityGoalAvoidEntity deserialize(@NotNull final Config config) {
             if (!(
-                    config.has("avoidClass")
+                    config.has("entity")
                             && config.has("fleeDistance")
                             && config.has("slowSpeed")
                             && config.has("fastSpeed")
-                            && config.has("filter")
             )) {
                 return null;
             }
 
             try {
-                TestableEntity filter = Entities.lookup(config.getString("filter"));
+                TestableEntity entity = Entities.lookup(config.getString("entity"));
 
                 return new EntityGoalAvoidEntity(
-                        (Class<? extends LivingEntity>)
-                                Objects.requireNonNull(
-                                        EntityType.valueOf(config.getString("avoidClass").toUpperCase()).getEntityClass()
-                                ),
+                        entity,
                         config.getDouble("fleeDistance"),
                         config.getDouble("slowSpeed"),
-                        config.getDouble("fastSpeed"),
-                        filter::matches
+                        config.getDouble("fastSpeed")
                 );
             } catch (Exception e) {
                 /*
