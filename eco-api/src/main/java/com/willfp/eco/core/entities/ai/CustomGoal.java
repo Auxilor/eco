@@ -56,4 +56,11 @@ public interface CustomGoal<T extends Mob> extends EntityGoal<T>, TargetGoal<T> 
     default void stop() {
         // Override when needed.
     }
+
+    @Override
+    default T addToEntity(@NotNull T entity, int priority) {
+        throw new UnsupportedOperationException(
+                "Shorthand syntax is not supported for custom goals by default as they can be both entity and target goals."
+        );
+    }
 }
