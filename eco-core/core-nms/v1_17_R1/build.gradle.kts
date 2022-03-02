@@ -11,18 +11,18 @@ dependencies {
 }
 
 tasks {
-    reobfJar {
-        dependsOn(shadowJar)
-    }
-
     build {
         dependsOn(reobfJar)
     }
 
+    reobfJar {
+        mustRunAfter(shadowJar)
+    }
+
     shadowJar {
         relocate(
-            "com.willfp.internal.spigot.proxy.common",
-            "com.willfp.internal.spigot.proxy.v1_17_R1.common"
+            "com.willfp.eco.internal.spigot.proxy.common",
+            "com.willfp.eco.internal.spigot.proxy.v1_17_R1.common"
         )
     }
 }
