@@ -26,6 +26,15 @@ public record TargetGoalNearestHealableRaider(
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Raider> {
     /**
+     * @param target          The target.
+     * @param checkVisibility If visibility should be checked.
+     */
+    public TargetGoalNearestHealableRaider(@NotNull final TestableEntity target,
+                                           final boolean checkVisibility) {
+        this(target, checkVisibility, it -> true);
+    }
+
+    /**
      * The deserializer for the goal.
      */
     public static final KeyedDeserializer<TargetGoalNearestHealableRaider> DESERIALIZER = new TargetGoalNearestHealableRaider.Deserializer();
@@ -40,19 +49,25 @@ public record TargetGoalNearestHealableRaider(
             if (!(
                     config.has("target")
                             && config.has("checkVisibility")
-                            && config.has("targetFilter")
             )) {
                 return null;
             }
 
             try {
-                TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
+                if (config.has("targetFilter")) {
+                    TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
-                return new TargetGoalNearestHealableRaider(
-                        Entities.lookup(config.getString("target")),
-                        config.getBool("checkVisibility"),
-                        filter::matches
-                );
+                    return new TargetGoalNearestHealableRaider(
+                            Entities.lookup(config.getString("target")),
+                            config.getBool("checkVisibility"),
+                            filter::matches
+                    );
+                } else {
+                    return new TargetGoalNearestHealableRaider(
+                            Entities.lookup(config.getString("target")),
+                            config.getBool("checkVisibility")
+                    );
+                }
             } catch (Exception e) {
                 /*
                 Exceptions could be caused by configs having values of a wrong type,

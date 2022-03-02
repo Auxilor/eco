@@ -13,13 +13,13 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Only supports mobs that have ranged attacks.
  *
- * @param mobSpeed    The mob speed.
+ * @param speed       The speed.
  * @param minInterval The minimum interval between attacks (in ticks).
  * @param maxInterval The maximum interval between attacks (in ticks).
  * @param maxRange    The max range at which to attack.
  */
 public record EntityGoalRangedAttack(
-        double mobSpeed,
+        double speed,
         int minInterval,
         int maxInterval,
         double maxRange

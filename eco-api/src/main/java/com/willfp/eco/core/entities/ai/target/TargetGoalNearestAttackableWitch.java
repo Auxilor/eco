@@ -30,6 +30,19 @@ public record TargetGoalNearestAttackableWitch(
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Raider> {
     /**
+     * @param target           The type of entities to attack.
+     * @param checkVisibility  If visibility should be checked.
+     * @param checkCanNavigate If navigation should be checked.
+     * @param reciprocalChance 1 in reciprocalChance chance of not activating on any tick.
+     */
+    public TargetGoalNearestAttackableWitch(@NotNull final TestableEntity target,
+                                            final boolean checkVisibility,
+                                            final boolean checkCanNavigate,
+                                            final int reciprocalChance) {
+        this(target, checkVisibility, checkCanNavigate, reciprocalChance, it -> true);
+    }
+
+    /**
      * The deserializer for the goal.
      */
     public static final KeyedDeserializer<TargetGoalNearestAttackableWitch> DESERIALIZER = new TargetGoalNearestAttackableWitch.Deserializer();
@@ -46,21 +59,29 @@ public record TargetGoalNearestAttackableWitch(
                             && config.has("checkVisibility")
                             && config.has("checkCanNavigate")
                             && config.has("reciprocalChance")
-                            && config.has("targetFilter")
             )) {
                 return null;
             }
 
             try {
-                TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
+                if (config.has("targetFilter")) {
+                    TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
-                return new TargetGoalNearestAttackableWitch(
-                        Entities.lookup(config.getString("target")),
-                        config.getBool("checkVisibility"),
-                        config.getBool("checkCanNavigate"),
-                        config.getInt("reciprocalChance"),
-                        filter::matches
-                );
+                    return new TargetGoalNearestAttackableWitch(
+                            Entities.lookup(config.getString("target")),
+                            config.getBool("checkVisibility"),
+                            config.getBool("checkCanNavigate"),
+                            config.getInt("reciprocalChance"),
+                            filter::matches
+                    );
+                } else {
+                    return new TargetGoalNearestAttackableWitch(
+                            Entities.lookup(config.getString("target")),
+                            config.getBool("checkVisibility"),
+                            config.getBool("checkCanNavigate"),
+                            config.getInt("reciprocalChance")
+                    );
+                }
             } catch (Exception e) {
                 /*
                 Exceptions could be caused by configs having values of a wrong type,

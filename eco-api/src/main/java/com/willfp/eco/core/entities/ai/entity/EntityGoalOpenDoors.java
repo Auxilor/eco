@@ -11,10 +11,10 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Allows an entity to interact and open a door.
  *
- * @param delayedClose If closing the door should be delayed.
+ * @param delayClosing If closing the door should be delayed.
  */
 public record EntityGoalOpenDoors(
-        boolean delayedClose
+        boolean delayClosing
 ) implements EntityGoal<Mob> {
     /**
      * The deserializer for the goal.
@@ -29,14 +29,14 @@ public record EntityGoalOpenDoors(
         @Nullable
         public EntityGoalOpenDoors deserialize(@NotNull final Config config) {
             if (!(
-                    config.has("delayedClose")
+                    config.has("delayClosing")
             )) {
                 return null;
             }
 
             try {
                 return new EntityGoalOpenDoors(
-                        config.getBool("delayedClose")
+                        config.getBool("delayClosing")
                 );
             } catch (Exception e) {
                 /*

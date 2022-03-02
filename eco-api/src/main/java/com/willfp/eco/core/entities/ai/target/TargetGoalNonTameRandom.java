@@ -26,6 +26,15 @@ public record TargetGoalNonTameRandom(
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Tameable> {
     /**
+     * @param target          The types of entities to heal.
+     * @param checkVisibility If visibility should be checked.
+     */
+    public TargetGoalNonTameRandom(@NotNull final TestableEntity target,
+                                   final boolean checkVisibility) {
+        this(target, checkVisibility, it -> true);
+    }
+
+    /**
      * The deserializer for the goal.
      */
     public static final KeyedDeserializer<TargetGoalNonTameRandom> DESERIALIZER = new TargetGoalNonTameRandom.Deserializer();
@@ -40,19 +49,25 @@ public record TargetGoalNonTameRandom(
             if (!(
                     config.has("targetClass")
                             && config.has("checkVisibility")
-                            && config.has("targetFilter")
             )) {
                 return null;
             }
 
             try {
-                TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
+                if (config.has("targetFilter")) {
+                    TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
-                return new TargetGoalNonTameRandom(
-                        Entities.lookup(config.getString("target")),
-                        config.getBool("checkVisibility"),
-                        filter::matches
-                );
+                    return new TargetGoalNonTameRandom(
+                            Entities.lookup(config.getString("target")),
+                            config.getBool("checkVisibility"),
+                            filter::matches
+                    );
+                } else {
+                    return new TargetGoalNonTameRandom(
+                            Entities.lookup(config.getString("target")),
+                            config.getBool("checkVisibility")
+                    );
+                }
             } catch (Exception e) {
                 /*
                 Exceptions could be caused by configs having values of a wrong type,

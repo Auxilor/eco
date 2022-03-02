@@ -11,10 +11,10 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Allows an entity to break down doors.
  *
- * @param maxProgress The time taken to break the door (any integer above 240).
+ * @param ticks The time taken to break the door. Minimum value is 240, as set by the game.
  */
 public record EntityGoalBreakDoors(
-        int maxProgress
+        int ticks
 ) implements EntityGoal<Mob> {
     /**
      * The deserializer for the goal.
@@ -29,14 +29,14 @@ public record EntityGoalBreakDoors(
         @Nullable
         public EntityGoalBreakDoors deserialize(@NotNull final Config config) {
             if (!(
-                    config.has("maxProgress")
+                    config.has("ticks")
             )) {
                 return null;
             }
 
             try {
                 return new EntityGoalBreakDoors(
-                        config.getInt("maxProgress")
+                        config.getInt("ticks")
                 );
             } catch (Exception e) {
                 /*

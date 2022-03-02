@@ -14,13 +14,13 @@ import org.jetbrains.annotations.Nullable;
  * Avoid entities.
  *
  * @param entity       The entity type to avoid.
- * @param fleeDistance The distance to flee to.
+ * @param distance The distance to flee to.
  * @param slowSpeed    The slow movement speed.
  * @param fastSpeed    The fast movement speed.
  */
 public record EntityGoalAvoidEntity(
         @NotNull TestableEntity entity,
-        double fleeDistance,
+        double distance,
         double slowSpeed,
         double fastSpeed
 ) implements EntityGoal<Mob> {
@@ -38,7 +38,7 @@ public record EntityGoalAvoidEntity(
         public EntityGoalAvoidEntity deserialize(@NotNull final Config config) {
             if (!(
                     config.has("entity")
-                            && config.has("fleeDistance")
+                            && config.has("distance")
                             && config.has("slowSpeed")
                             && config.has("fastSpeed")
             )) {
@@ -50,7 +50,7 @@ public record EntityGoalAvoidEntity(
 
                 return new EntityGoalAvoidEntity(
                         entity,
-                        config.getDouble("fleeDistance"),
+                        config.getDouble("distance"),
                         config.getDouble("slowSpeed"),
                         config.getDouble("fastSpeed")
                 );

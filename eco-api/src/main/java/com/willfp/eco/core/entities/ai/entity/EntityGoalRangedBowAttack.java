@@ -14,12 +14,12 @@ import org.jetbrains.annotations.Nullable;
  * Only supports monsters that have bow attacks.
  *
  * @param speed          The speed.
- * @param attackInterval The interval between attacks (in ticks).
+ * @param interval The interval between attacks (in ticks).
  * @param range          The max range at which to attack.
  */
 public record EntityGoalRangedBowAttack(
         double speed,
-        int attackInterval,
+        int interval,
         double range
 ) implements EntityGoal<Monster> {
     /**
@@ -36,7 +36,7 @@ public record EntityGoalRangedBowAttack(
         public EntityGoalRangedBowAttack deserialize(@NotNull final Config config) {
             if (!(
                     config.has("speed")
-                            && config.has("attackInterval")
+                            && config.has("interval")
                             && config.has("range")
             )) {
                 return null;
@@ -45,7 +45,7 @@ public record EntityGoalRangedBowAttack(
             try {
                 return new EntityGoalRangedBowAttack(
                         config.getDouble("speed"),
-                        config.getInt("attackInterval"),
+                        config.getInt("interval"),
                         config.getDouble("range")
                 );
             } catch (Exception e) {

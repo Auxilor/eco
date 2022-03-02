@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param blacklist The entities not to attack when hurt by.
  */
-@SuppressWarnings({"varargs", "unchecked"})
+@SuppressWarnings({"varargs"})
 public record TargetGoalHurtBy(
         @NotNull TestableEntity blacklist
 ) implements TargetGoal<Mob> {
