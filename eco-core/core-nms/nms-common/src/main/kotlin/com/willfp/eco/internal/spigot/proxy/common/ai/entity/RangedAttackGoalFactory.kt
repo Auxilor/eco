@@ -11,7 +11,7 @@ object RangedAttackGoalFactory : EntityGoalFactory<EntityGoalRangedAttack> {
     override fun create(apiGoal: EntityGoalRangedAttack, entity: PathfinderMob): Goal? {
         return RangedAttackGoal(
             entity as? RangedAttackMob ?: return null,
-            apiGoal.mobSpeed,
+            apiGoal.speed,
             apiGoal.minInterval,
             apiGoal.maxInterval,
             apiGoal.maxRange.toFloat()

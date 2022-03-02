@@ -10,7 +10,7 @@ object BreakDoorsGoalFactory : EntityGoalFactory<EntityGoalBreakDoors> {
     override fun create(apiGoal: EntityGoalBreakDoors, entity: PathfinderMob): Goal {
         return BreakDoorGoal(
             entity,
-            apiGoal.maxProgress
+            apiGoal.ticks
         ) { true }
     }
 }

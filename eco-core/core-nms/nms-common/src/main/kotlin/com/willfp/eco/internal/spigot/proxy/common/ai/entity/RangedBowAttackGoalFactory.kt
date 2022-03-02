@@ -16,7 +16,7 @@ object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack>
         return RangedBowAttackGoal(
             entity,
             apiGoal.speed,
-            apiGoal.attackInterval,
+            apiGoal.interval,
             apiGoal.range.toFloat()
         )
     }

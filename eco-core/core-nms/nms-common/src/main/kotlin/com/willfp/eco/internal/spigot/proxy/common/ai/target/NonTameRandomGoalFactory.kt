@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.common.ai.target
 
 import com.willfp.eco.core.entities.ai.target.TargetGoalNonTameRandom
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
-import com.willfp.eco.internal.spigot.proxy.common.ai.toBukkitEntity
+import com.willfp.eco.internal.spigot.proxy.common.toBukkitEntity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.TamableAnimal
@@ -16,7 +16,7 @@ object NonTameRandomGoalFactory : TargetGoalFactory<TargetGoalNonTameRandom> {
             LivingEntity::class.java,
             apiGoal.checkVisibility,
         ) {
-            apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.test(it.toBukkitEntity())
+            apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
         }
     }
 }

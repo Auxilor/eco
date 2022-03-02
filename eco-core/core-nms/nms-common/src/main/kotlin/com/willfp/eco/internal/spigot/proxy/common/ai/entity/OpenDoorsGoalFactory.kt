@@ -10,7 +10,7 @@ object OpenDoorsGoalFactory : EntityGoalFactory<EntityGoalOpenDoors> {
     override fun create(apiGoal: EntityGoalOpenDoors, entity: PathfinderMob): Goal {
         return OpenDoorGoal(
             entity,
-            apiGoal.delayedClose
+            apiGoal.delayClosing
         )
     }
 }
