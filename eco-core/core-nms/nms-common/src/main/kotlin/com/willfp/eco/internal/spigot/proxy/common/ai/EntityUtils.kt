@@ -1,7 +1,8 @@
-package com.willfp.eco.internal.spigot.proxy.v1_18_R1.ai
+package com.willfp.eco.internal.spigot.proxy.common.ai
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.world.entity.AgeableMob
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.TamableAnimal
@@ -11,11 +12,6 @@ import net.minecraft.world.entity.monster.AbstractIllager
 import net.minecraft.world.entity.monster.SpellcasterIllager
 import net.minecraft.world.entity.monster.piglin.AbstractPiglin
 import net.minecraft.world.entity.player.Player
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.craftbukkit.v1_18_R1.CraftServer
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity
 import org.bukkit.entity.AbstractHorse
 import org.bukkit.entity.AbstractSkeleton
 import org.bukkit.entity.AbstractVillager
@@ -56,21 +52,11 @@ private val cache: LoadingCache<Class<out org.bukkit.entity.LivingEntity>, Optio
                 return@build Optional.of(mapped)
             }
 
-            val world = Bukkit.getWorlds().first() as CraftWorld
-
-            @Suppress("UNCHECKED_CAST")
-            val nmsClass = Optional.ofNullable(runCatching {
-                world.createEntity(
-                    Location(world, 0.0, 100.0, 0.0),
-                    it
-                )::class.java as Class<out LivingEntity>
-            }.getOrNull())
-
-            return@build nmsClass
+            return@build commonsProvider.toNMSClass(it)
         }
 
 fun <T : org.bukkit.entity.LivingEntity> Class<T>.toNMSClass(): Class<out LivingEntity> =
     cache.get(this).orElseThrow { IllegalArgumentException("Invalid/Unsupported entity type!") }
 
 fun LivingEntity.toBukkitEntity(): org.bukkit.entity.LivingEntity? =
-    CraftEntity.getEntity(Bukkit.getServer() as CraftServer, this) as? org.bukkit.entity.LivingEntity
+    commonsProvider.toBukkitEntity(this)

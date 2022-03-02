@@ -1,10 +1,10 @@
-package com.willfp.eco.internal.spigot.proxy.v1_17_R1.ai
+package com.willfp.eco.internal.spigot.proxy.common.ai
 
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.entities.ai.goals.EntityGoal
 import com.willfp.eco.core.entities.ai.goals.TargetGoal
+import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.world.entity.PathfinderMob
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity
 import org.bukkit.entity.Mob
 
 class EcoEntityController<T : Mob>(
@@ -64,8 +64,7 @@ class EcoEntityController<T : Mob>(
     }
 
     private fun getNms(): PathfinderMob? {
-        val craft = handle as? CraftEntity ?: return null
-        return craft.handle as? PathfinderMob
+        return commonsProvider.toPathfinderMob(handle)
     }
 
     override fun getEntity(): T {

@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v1_18_R1.ai
+package com.willfp.eco.internal.spigot.proxy.common.ai
 
 import com.willfp.eco.core.entities.ai.goals.CustomGoal
 import com.willfp.eco.core.entities.ai.goals.EntityGoal
@@ -34,6 +34,7 @@ import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalTryFindWater
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalUseItem
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalWaterAvoidingRandomFlying
 import com.willfp.eco.core.entities.ai.goals.entity.EntityGoalWaterAvoidingRandomStroll
+import com.willfp.eco.internal.spigot.proxy.common.commonsProvider
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal
@@ -74,8 +75,6 @@ import net.minecraft.world.entity.monster.Monster
 import net.minecraft.world.entity.monster.RangedAttackMob
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.crafting.Ingredient
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftNamespacedKey
 
 fun <T : EntityGoal> T.getGoalFactory(): EntityGoalFactory<T>? {
     @Suppress("UNCHECKED_CAST")
@@ -393,7 +392,7 @@ object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
         return TemptGoal(
             entity,
             apiGoal.speed,
-            Ingredient.of(*apiGoal.items.map { CraftItemStack.asNMSCopy(it) }.toTypedArray()),
+            Ingredient.of(*apiGoal.items.map { commonsProvider.toNMSStack(it) }.toTypedArray()),
             apiGoal.canBeScared
         )
     }
@@ -411,8 +410,8 @@ object UseItemGoalFactory : EntityGoalFactory<EntityGoalUseItem> {
     override fun create(apiGoal: EntityGoalUseItem, entity: PathfinderMob): Goal {
         return UseItemGoal(
             entity,
-            CraftItemStack.asNMSCopy(apiGoal.item),
-            SoundEvent(CraftNamespacedKey.toMinecraft(apiGoal.sound.key)),
+            commonsProvider.toNMSStack(apiGoal.item),
+            SoundEvent(commonsProvider.toResourceLocation(apiGoal.sound.key)),
         ) {
             apiGoal.condition.test(it.toBukkitEntity())
         }

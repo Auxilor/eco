@@ -16,6 +16,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import kotlin.experimental.and
 
+@Suppress("UsePropertyAccessSyntax")
 class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemStack<ItemStack>(
     itemStack.getNMSStack(), itemStack
 ) {
@@ -23,9 +24,9 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantmentNBT =
-            if (checkStored && handle.item === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
+            if (checkStored && handle.getItem() === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
                 handle
-            ) else handle.enchantmentTags
+            ) else handle.getEnchantmentTags()
         val foundEnchantments: MutableMap<Enchantment, Int> = HashMap()
         for (base in enchantmentNBT) {
             val compound = base as CompoundTag
@@ -44,9 +45,9 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         checkStored: Boolean
     ): Int {
         val enchantmentNBT =
-            if (checkStored && handle.item === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
+            if (checkStored && handle.getItem() === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
                 handle
-            ) else handle.enchantmentTags
+            ) else handle.getEnchantmentTags()
         for (base in enchantmentNBT) {
             val compound = base as CompoundTag
             val key = compound.getString("id")
@@ -103,7 +104,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
         }
 
         val loreTag = displayTag.getList("Lore", CraftMagicNumbers.NBT.TAG_STRING)
-        val lore = mutableListOf<String>()
+        val lore = ArrayList<String>(loreTag.size)
 
         for (i in loreTag.indices) {
             lore.add(loreTag.getString(i))
@@ -151,16 +152,16 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
 
     private var flagBits: Int
         get() =
-            if (handle.hasTag() && handle.tag.contains(
+            if (handle.hasTag() && handle.getTag()!!.contains(
                     "HideFlags",
                     99
                 )
-            ) handle.tag.getInt("HideFlags") else 0
+            ) handle.getTag()!!.getInt("HideFlags") else 0
         set(value) =
-            handle.orCreateTag.putInt("HideFlags", value)
+            handle.getOrCreateTag().putInt("HideFlags", value)
 
     override fun getRepairCost(): Int {
-        return handle.baseRepairCost
+        return handle.getBaseRepairCost()
     }
 
     override fun setRepairCost(cost: Int) {
@@ -176,8 +177,7 @@ class NMSFastItemStack(itemStack: org.bukkit.inventory.ItemStack) : EcoFastItemS
     }
 
     override fun hashCode(): Int {
-        @Suppress("KotlinDeprecation")
-        return handle.tag?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.item))
+        return handle.getTag()?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.getItem()))
     }
 
     private fun apply() {

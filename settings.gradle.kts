@@ -11,6 +11,7 @@ rootProject.name = "eco"
 include(":eco-api")
 include(":eco-core")
 include(":eco-core:core-nms")
+include(":eco-core:core-nms:nms-common")
 include(":eco-core:core-nms:v1_17_R1")
 include(":eco-core:core-nms:v1_18_R1")
 include(":eco-core:core-proxy")

@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v1_17_R1.ai
+package com.willfp.eco.internal.spigot.proxy.common.ai
 
 import com.willfp.eco.core.entities.ai.goals.CustomGoal
 import com.willfp.eco.core.entities.ai.goals.TargetGoal

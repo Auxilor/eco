@@ -29,9 +29,10 @@ import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -42,6 +43,10 @@ import java.util.logging.Logger
 
 @Suppress("UNUSED")
 class EcoHandler : EcoSpigotPlugin(), Handler {
+    init {
+        getProxy(CommonsInitializerProxy::class.java).init()
+    }
+
     override val dataYml = DataYml(this)
 
     private val cleaner = EcoCleaner()
