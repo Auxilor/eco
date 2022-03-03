@@ -34,7 +34,6 @@ import java.util.logging.Logger;
  * @see Eco#getHandler()
  */
 @ApiStatus.Internal
-@SuppressWarnings("removal")
 public interface Handler {
     /**
      * Create a scheduler.
