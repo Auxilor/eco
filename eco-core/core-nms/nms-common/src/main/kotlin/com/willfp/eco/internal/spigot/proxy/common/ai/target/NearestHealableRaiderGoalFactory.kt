@@ -19,4 +19,6 @@ object NearestHealableRaiderGoalFactory : TargetGoalFactory<TargetGoalNearestHea
             apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
         }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is NearestHealableRaiderTargetGoal<*>
 }

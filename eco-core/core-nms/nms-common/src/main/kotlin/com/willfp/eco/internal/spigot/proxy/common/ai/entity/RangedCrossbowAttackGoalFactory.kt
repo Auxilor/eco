@@ -21,4 +21,6 @@ object RangedCrossbowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedCross
             apiGoal.range.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is RangedCrossbowAttackGoal<*>
 }

@@ -13,4 +13,6 @@ object LeapAtTargetGoalFactory : EntityGoalFactory<EntityGoalLeapAtTarget> {
             apiGoal.velocity.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is LeapAtTargetGoal
 }

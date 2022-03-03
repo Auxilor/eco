@@ -6,6 +6,7 @@ import com.willfp.eco.internal.spigot.proxy.common.toBukkitEntity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableWitchTargetGoal
 import net.minecraft.world.entity.raid.Raider
 
@@ -21,4 +22,6 @@ object NearestAttackableWitchGoalFactory : TargetGoalFactory<TargetGoalNearestAt
             apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
         }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is NearestAttackableTargetGoal<*>
 }

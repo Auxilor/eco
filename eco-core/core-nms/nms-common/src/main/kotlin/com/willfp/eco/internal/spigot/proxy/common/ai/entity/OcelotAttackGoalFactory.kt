@@ -12,4 +12,6 @@ object OcelotAttackGoalFactory : EntityGoalFactory<EntityGoalOcelotAttack> {
             entity
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is OcelotAttackGoal
 }

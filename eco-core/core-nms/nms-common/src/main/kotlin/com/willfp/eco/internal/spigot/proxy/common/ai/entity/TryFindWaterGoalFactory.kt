@@ -12,4 +12,6 @@ object TryFindWaterGoalFactory : EntityGoalFactory<EntityGoalTryFindWater> {
             entity
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is TryFindWaterGoal
 }

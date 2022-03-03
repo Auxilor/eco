@@ -20,4 +20,6 @@ object NearestAttackableGoalFactory : TargetGoalFactory<TargetGoalNearestAttacka
             apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
         }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is NearestAttackableTargetGoal<*>
 }

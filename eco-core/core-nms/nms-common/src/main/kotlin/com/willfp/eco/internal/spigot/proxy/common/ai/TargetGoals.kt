@@ -42,4 +42,5 @@ fun <T : TargetGoal<*>> T.getGoalFactory(): TargetGoalFactory<T>? {
 
 interface TargetGoalFactory<T : TargetGoal<*>> {
     fun create(apiGoal: T, entity: PathfinderMob): Goal?
+    fun isGoalOfType(goal: Goal): Boolean
 }

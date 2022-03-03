@@ -1,10 +1,12 @@
 package com.willfp.eco.internal.spigot.proxy.common.ai
 
+import com.willfp.eco.core.entities.ai.CustomGoal
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.toPathfinderMob
 import net.minecraft.world.entity.PathfinderMob
+import net.minecraft.world.entity.ai.goal.Goal
 import org.bukkit.entity.Mob
 
 class EcoEntityController<T : Mob>(
@@ -23,9 +25,18 @@ class EcoEntityController<T : Mob>(
 
     override fun removeEntityGoal(goal: EntityGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
-        nms.goalSelector.removeGoal(
-            goal.getGoalFactory()?.create(goal, nms) ?: return this
-        )
+
+        val predicate: (Goal) -> Boolean = if (goal is CustomGoal<*>) {
+            { CustomGoalFactory.isGoalOfType(it, goal) }
+        } else {
+            { goal.getGoalFactory()?.isGoalOfType(it) == true }
+        }
+
+        for (wrapped in nms.goalSelector.availableGoals.toSet()) {
+            if (predicate(wrapped.goal)) {
+                nms.goalSelector.removeGoal(wrapped.goal)
+            }
+        }
 
         return this
     }
@@ -50,9 +61,18 @@ class EcoEntityController<T : Mob>(
 
     override fun removeTargetGoal(goal: TargetGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
-        nms.targetSelector.removeGoal(
-            goal.getGoalFactory()?.create(goal, nms) ?: return this
-        )
+
+        val predicate: (Goal) -> Boolean = if (goal is CustomGoal<*>) {
+            { CustomGoalFactory.isGoalOfType(it, goal) }
+        } else {
+            { goal.getGoalFactory()?.isGoalOfType(it) == true }
+        }
+
+        for (wrapped in nms.targetSelector.availableGoals.toSet()) {
+            if (predicate(wrapped.goal)) {
+                nms.targetSelector.removeGoal(wrapped.goal)
+            }
+        }
 
         return this
     }

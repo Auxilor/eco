@@ -14,4 +14,6 @@ object CatSitOnBedGoalFactory : EntityGoalFactory<EntityGoalCatSitOnBed> {
             apiGoal.speed
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is CatSitOnBlockGoal
 }

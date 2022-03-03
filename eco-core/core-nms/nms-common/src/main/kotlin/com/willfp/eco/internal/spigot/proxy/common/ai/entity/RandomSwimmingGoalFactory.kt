@@ -14,4 +14,6 @@ object RandomSwimmingGoalFactory : EntityGoalFactory<EntityGoalRandomSwimming> {
             apiGoal.interval
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is RandomSwimmingGoal
 }

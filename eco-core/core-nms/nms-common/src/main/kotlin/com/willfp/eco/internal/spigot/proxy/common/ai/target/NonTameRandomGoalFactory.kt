@@ -19,4 +19,6 @@ object NonTameRandomGoalFactory : TargetGoalFactory<TargetGoalNonTameRandom> {
             apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
         }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is NonTameRandomTargetGoal<*>
 }

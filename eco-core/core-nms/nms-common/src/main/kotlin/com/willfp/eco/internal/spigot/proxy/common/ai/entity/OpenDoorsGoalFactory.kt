@@ -13,4 +13,6 @@ object OpenDoorsGoalFactory : EntityGoalFactory<EntityGoalOpenDoors> {
             apiGoal.delayClosing
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is OpenDoorGoal
 }

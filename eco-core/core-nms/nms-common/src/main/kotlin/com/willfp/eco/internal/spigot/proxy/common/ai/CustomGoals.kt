@@ -10,6 +10,15 @@ object CustomGoalFactory : EntityGoalFactory<CustomGoal<*>>, TargetGoalFactory<C
     override fun create(apiGoal: CustomGoal<*>, entity: PathfinderMob): Goal {
         return NMSCustomGoal(apiGoal, entity)
     }
+
+    override fun isGoalOfType(goal: Goal): Boolean = goal is NMSCustomGoal<*>
+
+    fun isGoalOfType(goal: Goal, apiGoal: CustomGoal<*>): Boolean {
+        if (goal !is NMSCustomGoal<*>) return false
+
+        // ew
+        return goal.customEntityGoal::class.java.name == apiGoal::class.java.name
+    }
 }
 
 private fun Collection<Goal.Flag>.toEcoFlags(): Collection<GoalFlag> {
@@ -37,7 +46,7 @@ private fun Collection<GoalFlag>.toNMSFlags(): Collection<Goal.Flag> {
 }
 
 private class NMSCustomGoal<T : org.bukkit.entity.Mob>(
-    private val customEntityGoal: CustomGoal<T>,
+    val customEntityGoal: CustomGoal<T>,
     entity: PathfinderMob
 ) : Goal() {
     init {

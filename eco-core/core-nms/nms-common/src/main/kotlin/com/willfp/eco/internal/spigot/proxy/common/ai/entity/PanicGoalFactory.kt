@@ -13,4 +13,6 @@ object PanicGoalFactory : EntityGoalFactory<EntityGoalPanic> {
             apiGoal.speed
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is PanicGoal
 }

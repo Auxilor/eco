@@ -15,4 +15,6 @@ object CatLieOnBedGoalFactory : EntityGoalFactory<EntityGoalCatLieOnBed> {
             apiGoal.range
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is CatLieOnBedGoal
 }

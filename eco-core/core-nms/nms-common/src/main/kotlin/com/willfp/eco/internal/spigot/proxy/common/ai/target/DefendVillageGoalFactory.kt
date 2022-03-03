@@ -13,4 +13,6 @@ object DefendVillageGoalFactory : TargetGoalFactory<TargetGoalDefendVillage> {
             entity as? IronGolem ?: return null
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is DefendVillageTargetGoal
 }

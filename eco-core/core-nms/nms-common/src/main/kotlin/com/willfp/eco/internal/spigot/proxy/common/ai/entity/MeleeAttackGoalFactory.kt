@@ -14,4 +14,6 @@ object MeleeAttackGoalFactory : EntityGoalFactory<EntityGoalMeleeAttack> {
             apiGoal.pauseWhenMobIdle
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is MeleeAttackGoal
 }

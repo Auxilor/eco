@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
+import net.minecraft.world.entity.ai.goal.TemptGoal
 import net.minecraft.world.entity.ai.targeting.TargetingConditions
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity
 import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory
@@ -24,6 +25,8 @@ object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
             apiGoal.canBeScared
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is TemptGoal || goal is EnhancedTemptGoal
 }
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")

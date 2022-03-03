@@ -14,4 +14,6 @@ object MoveBackToVillageGoalFactory : EntityGoalFactory<EntityGoalMoveBackToVill
             apiGoal.canDespawn
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is MoveBackToVillageGoal
 }

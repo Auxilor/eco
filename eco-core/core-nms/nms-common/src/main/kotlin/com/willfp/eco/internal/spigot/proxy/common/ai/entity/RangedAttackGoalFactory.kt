@@ -17,4 +17,6 @@ object RangedAttackGoalFactory : EntityGoalFactory<EntityGoalRangedAttack> {
             apiGoal.maxRange.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is RangedAttackGoal
 }

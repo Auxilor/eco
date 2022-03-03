@@ -14,5 +14,7 @@ object WaterAvoidingRandomStrollGoalFactory : EntityGoalFactory<EntityGoalWaterA
             apiGoal.chance.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is WaterAvoidingRandomStrollGoal
 }
 

@@ -15,4 +15,6 @@ object FollowMobsGoalFactory : EntityGoalFactory<EntityGoalFollowMobs> {
             apiGoal.maxDistance.toFloat(),
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is FollowMobGoal
 }

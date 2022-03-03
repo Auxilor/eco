@@ -13,4 +13,6 @@ object FleeSunGoalFactory : EntityGoalFactory<EntityGoalFleeSun> {
             apiGoal.speed
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is FleeSunGoal
 }

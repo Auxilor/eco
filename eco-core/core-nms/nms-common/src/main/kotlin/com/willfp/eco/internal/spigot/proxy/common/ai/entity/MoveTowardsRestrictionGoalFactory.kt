@@ -13,4 +13,6 @@ object MoveTowardsRestrictionGoalFactory : EntityGoalFactory<EntityGoalMoveTowar
             apiGoal.speed
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is MoveTowardsRestrictionGoal
 }

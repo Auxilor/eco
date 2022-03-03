@@ -16,4 +16,6 @@ object LookAtPlayerGoalFactory : EntityGoalFactory<EntityGoalLookAtPlayer> {
             apiGoal.chance.toFloat(),
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is LookAtPlayerGoal
 }

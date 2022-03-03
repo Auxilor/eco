@@ -14,4 +14,6 @@ object MoveTowardsTargetGoalFactory : EntityGoalFactory<EntityGoalMoveTowardsTar
             apiGoal.maxDistance.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is MoveTowardsTargetGoal
 }

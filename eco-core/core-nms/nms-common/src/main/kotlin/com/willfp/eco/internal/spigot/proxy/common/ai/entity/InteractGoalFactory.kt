@@ -19,6 +19,8 @@ object InteractGoalFactory : EntityGoalFactory<EntityGoalInteract> {
             apiGoal.chance.toFloat(),
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is InteractGoal
 }
 
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")

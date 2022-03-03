@@ -18,4 +18,6 @@ object AvoidEntityGoalFactory : EntityGoalFactory<EntityGoalAvoidEntity> {
             apiGoal.fastSpeed
         ) { apiGoal.entity.test(it.toBukkitEntity()) }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is AvoidEntityGoal<*>
 }

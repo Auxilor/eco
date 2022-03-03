@@ -20,4 +20,6 @@ object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack>
             apiGoal.range.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is RangedBowAttackGoal<*>
 }

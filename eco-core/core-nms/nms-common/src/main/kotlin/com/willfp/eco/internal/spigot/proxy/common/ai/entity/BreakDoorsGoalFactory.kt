@@ -13,4 +13,6 @@ object BreakDoorsGoalFactory : EntityGoalFactory<EntityGoalBreakDoors> {
             apiGoal.ticks
         ) { true }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is BreakDoorGoal
 }

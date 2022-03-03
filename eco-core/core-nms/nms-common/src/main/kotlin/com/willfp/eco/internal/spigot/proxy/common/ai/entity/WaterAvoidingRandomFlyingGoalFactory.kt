@@ -13,4 +13,6 @@ object WaterAvoidingRandomFlyingGoalFactory : EntityGoalFactory<EntityGoalWaterA
             apiGoal.speed
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is WaterAvoidingRandomFlyingGoal
 }

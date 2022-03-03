@@ -13,4 +13,6 @@ object StrollThroughVillageGoalFactory : EntityGoalFactory<EntityGoalStrollThrou
             apiGoal.searchRange
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is StrollThroughVillageGoal
 }

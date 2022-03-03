@@ -15,4 +15,6 @@ object MoveThroughVillageGoalFactory : EntityGoalFactory<EntityGoalMoveThroughVi
             apiGoal.distance
         ) { apiGoal.canPassThroughDoors }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is MoveThroughVillageGoal
 }

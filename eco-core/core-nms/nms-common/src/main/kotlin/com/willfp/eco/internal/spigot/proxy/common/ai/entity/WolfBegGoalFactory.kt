@@ -14,4 +14,6 @@ object WolfBegGoalFactory : EntityGoalFactory<EntityGoalWolfBeg> {
             apiGoal.distance.toFloat()
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is BegGoal
 }

@@ -20,4 +20,6 @@ object UseItemGoalFactory : EntityGoalFactory<EntityGoalUseItem> {
             apiGoal.condition.test(it.toBukkitEntity())
         }
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is UseItemGoal<*>
 }

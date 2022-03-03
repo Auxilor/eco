@@ -12,4 +12,6 @@ object FloatGoalFactory : EntityGoalFactory<EntityGoalFloat> {
             entity
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is FloatGoal
 }

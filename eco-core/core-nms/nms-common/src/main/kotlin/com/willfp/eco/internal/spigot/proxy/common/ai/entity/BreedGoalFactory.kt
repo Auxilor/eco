@@ -14,4 +14,6 @@ object BreedGoalFactory : EntityGoalFactory<EntityGoalBreed> {
             apiGoal.speed
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is BreedGoal
 }

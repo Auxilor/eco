@@ -16,4 +16,6 @@ object ResetUniversalAngerGoalFactory : TargetGoalFactory<TargetGoalResetUnivers
             apiGoal.triggerOthers
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is ResetUniversalAngerTargetGoal<*>
 }

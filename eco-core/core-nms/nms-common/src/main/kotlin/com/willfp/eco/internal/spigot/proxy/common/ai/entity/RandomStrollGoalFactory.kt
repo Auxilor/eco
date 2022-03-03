@@ -15,4 +15,6 @@ object RandomStrollGoalFactory : EntityGoalFactory<EntityGoalRandomStroll> {
             apiGoal.canDespawn
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is RandomStrollGoal
 }

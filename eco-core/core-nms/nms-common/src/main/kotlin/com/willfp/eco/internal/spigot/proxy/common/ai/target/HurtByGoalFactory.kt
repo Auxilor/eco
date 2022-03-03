@@ -17,6 +17,8 @@ object HurtByGoalFactory : TargetGoalFactory<TargetGoalHurtBy> {
             apiGoal.blacklist
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is HurtByTargetGoal
 }
 
 private class EnhancedHurtByTargetGoal(

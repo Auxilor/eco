@@ -12,4 +12,6 @@ object RandomLookAroundGoalFactory : EntityGoalFactory<EntityGoalRandomLookAroun
             entity
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is RandomLookAroundGoal
 }

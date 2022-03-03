@@ -15,4 +15,7 @@ object IllusionerBlindnessSpellGoalFactory : EntityGoalFactory<EntityGoalLeapAtT
             entity
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is IllusionerBlindnessSpellGoal
+            || goal::class.java.name.contains("IllusionerBlindnessSpellGoal")
 }

@@ -13,4 +13,6 @@ object OwnerHurtByGoalFactory : TargetGoalFactory<TargetGoalOwnerHurtBy> {
             entity as? TamableAnimal ?: return null
         )
     }
+
+    override fun isGoalOfType(goal: Goal) = goal is OwnerHurtByTargetGoal
 }
