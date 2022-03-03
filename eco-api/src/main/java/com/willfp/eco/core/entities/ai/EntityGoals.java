@@ -12,6 +12,8 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowMobs;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalIllusionerBlindnessSpell;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalIllusionerMirrorSpell;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalInteract;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalLeapAtTarget;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalLookAtPlayer;
@@ -91,6 +93,8 @@ public final class EntityGoals {
         register(EntityGoalBreed.DESERIALIZER);
         register(EntityGoalCatSitOnBed.DESERIALIZER);
         register(EntityGoalCatLieOnBed.DESERIALIZER);
+        register(EntityGoalIllusionerBlindnessSpell.DESERIALIZER);
+        register(EntityGoalIllusionerMirrorSpell.DESERIALIZER);
     }
 
     /**

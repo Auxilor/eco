@@ -13,6 +13,8 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowMobs
+import com.willfp.eco.core.entities.ai.entity.EntityGoalIllusionerBlindnessSpell
+import com.willfp.eco.core.entities.ai.entity.EntityGoalIllusionerMirrorSpell
 import com.willfp.eco.core.entities.ai.entity.EntityGoalInteract
 import com.willfp.eco.core.entities.ai.entity.EntityGoalLeapAtTarget
 import com.willfp.eco.core.entities.ai.entity.EntityGoalLookAtPlayer
@@ -49,6 +51,8 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FleeSunGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FloatGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FollowBoatsGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FollowMobsGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.IllusionerBlindnessSpellGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.IllusionerMirrorSpellGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.InteractGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.LeapAtTargetGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.LookAtPlayerGoalFactory
@@ -122,6 +126,8 @@ fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
         is EntityGoalBreed -> BreedGoalFactory
         is EntityGoalCatSitOnBed -> CatSitOnBedGoalFactory
         is EntityGoalCatLieOnBed -> CatLieOnBedGoalFactory
+        is EntityGoalIllusionerBlindnessSpell -> IllusionerBlindnessSpellGoalFactory
+        is EntityGoalIllusionerMirrorSpell -> IllusionerMirrorSpellGoalFactory
         is CustomGoal<*> -> CustomGoalFactory
         else -> null
     } as EntityGoalFactory<T>?
