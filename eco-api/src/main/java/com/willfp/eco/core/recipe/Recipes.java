@@ -31,6 +31,7 @@ public final class Recipes {
      * Cached recipes from matrix.
      */
     private static final LoadingCache<ItemStack[], Optional<CraftingRecipe>> RECIPES_FROM_MATRIX = Caffeine.newBuilder()
+            .maximumSize(2048L)
             .build(
                     matrix -> RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst()
             );
