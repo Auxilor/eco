@@ -35,6 +35,7 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomFlyin
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomStroll;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,8 +92,23 @@ public final class EntityGoals {
      * @return The deserializer, or null if not found.
      */
     @Nullable
-    public static KeyedDeserializer<? extends EntityGoal<?>> getByKey(@NotNull final NamespacedKey key) {
+    public static KeyedDeserializer<? extends EntityGoal<? extends Mob>> getByKey(@NotNull final NamespacedKey key) {
         return BY_KEY.get(key);
+    }
+
+    /**
+     * Get deserializer by key, with a defined type (to prevent cluttering code with unsafe casts).
+     *
+     * @param key   The key.
+     * @param clazz The type of target goal.
+     * @param <T>   The type of mob the goal can be applied to.
+     * @return The deserializer, or null if not found.
+     */
+    @Nullable
+    @SuppressWarnings({"unchecked", "unused"})
+    public static <T extends Mob> KeyedDeserializer<EntityGoal<T>> getByKeyOfType(@NotNull final NamespacedKey key,
+                                                                                  @NotNull final Class<T> clazz) {
+        return (KeyedDeserializer<EntityGoal<T>>) BY_KEY.get(key);
     }
 
     /**
