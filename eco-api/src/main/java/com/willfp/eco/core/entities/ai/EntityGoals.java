@@ -4,6 +4,9 @@ import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoors;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalBreed;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalCatLieOnBed;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalCatSitOnBed;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGrass;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat;
@@ -33,6 +36,7 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalTryFindWater;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalUseItem;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomFlying;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomStroll;
+import com.willfp.eco.core.entities.ai.entity.EntityGoalWolfBeg;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
@@ -83,6 +87,10 @@ public final class EntityGoals {
         register(EntityGoalUseItem.DESERIALIZER);
         register(EntityGoalWaterAvoidingRandomFlying.DESERIALIZER);
         register(EntityGoalWaterAvoidingRandomStroll.DESERIALIZER);
+        register(EntityGoalWolfBeg.DESERIALIZER);
+        register(EntityGoalBreed.DESERIALIZER);
+        register(EntityGoalCatSitOnBed.DESERIALIZER);
+        register(EntityGoalCatLieOnBed.DESERIALIZER);
     }
 
     /**

@@ -5,6 +5,9 @@ import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoors
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir
+import com.willfp.eco.core.entities.ai.entity.EntityGoalBreed
+import com.willfp.eco.core.entities.ai.entity.EntityGoalCatLieOnBed
+import com.willfp.eco.core.entities.ai.entity.EntityGoalCatSitOnBed
 import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGrass
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat
@@ -34,9 +37,13 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalTryFindWater
 import com.willfp.eco.core.entities.ai.entity.EntityGoalUseItem
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomFlying
 import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomStroll
+import com.willfp.eco.core.entities.ai.entity.EntityGoalWolfBeg
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.AvoidEntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreakDoorsGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreatheAirGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.BreedGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.CatLieOnBedGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.CatSitOnBedGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.EatGrassGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FleeSunGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.FloatGoalFactory
@@ -66,6 +73,7 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.entity.TryFindWaterGoalFac
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.UseItemGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WaterAvoidingRandomFlyingGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WaterAvoidingRandomStrollGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.ai.entity.WolfBegGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.getVersionSpecificEntityGoalFactory
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
@@ -110,6 +118,10 @@ fun <T : EntityGoal<*>> T.getGoalFactory(): EntityGoalFactory<T>? {
         is EntityGoalUseItem -> UseItemGoalFactory
         is EntityGoalWaterAvoidingRandomFlying -> WaterAvoidingRandomFlyingGoalFactory
         is EntityGoalWaterAvoidingRandomStroll -> WaterAvoidingRandomStrollGoalFactory
+        is EntityGoalWolfBeg -> WolfBegGoalFactory
+        is EntityGoalBreed -> BreedGoalFactory
+        is EntityGoalCatSitOnBed -> CatSitOnBedGoalFactory
+        is EntityGoalCatLieOnBed -> CatLieOnBedGoalFactory
         is CustomGoal<*> -> CustomGoalFactory
         else -> null
     } as EntityGoalFactory<T>?
