@@ -8,7 +8,7 @@ import net.minecraft.world.entity.monster.SpellcasterIllager
 import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory
 
 @Suppress("UNCHECKED_CAST")
-class OpenSpellcaster(private val handle: SpellcasterIllager) : SpellcasterIllager(
+class DelegatedSpellcaster(private val handle: SpellcasterIllager) : SpellcasterIllager(
     handle.type as EntityType<out SpellcasterIllager>,
     handle.level
 ) {
@@ -21,11 +21,10 @@ class OpenSpellcaster(private val handle: SpellcasterIllager) : SpellcasterIllag
     val openCastingSoundEvent = this.castingSoundEvent
 
     override fun applyRaidBuffs(wave: Int, unused: Boolean) {
-        // Mock
+        handle.applyRaidBuffs(wave, unused)
     }
 
     override fun getCelebrateSound(): SoundEvent {
-        // Mock
         return handle.celebrateSound
     }
 
@@ -38,10 +37,10 @@ class OpenSpellcaster(private val handle: SpellcasterIllager) : SpellcasterIllag
 abstract class OpenUseSpellGoal(
     private val handle: SpellcasterIllager
 ) : Goal() {
-    protected var attackWarmupDelay = 0
-    protected var nextAttackTickCount = 0
+    private var attackWarmupDelay = 0
+    private var nextAttackTickCount = 0
 
-    private val openHandle = OpenSpellcaster(handle)
+    private val openHandle = DelegatedSpellcaster(handle)
 
     override fun canUse(): Boolean {
         val entityliving: LivingEntity = handle.target ?: return false
@@ -82,10 +81,9 @@ abstract class OpenUseSpellGoal(
     }
 
     protected abstract fun performSpellCasting()
-    protected open val castWarmupTime: Int
-        get() = 20
     protected abstract val castingTime: Int
     protected abstract val castingInterval: Int
     protected abstract val spellPrepareSound: SoundEvent?
     protected abstract val spell: SpellcasterIllager.IllagerSpell?
+    protected open val castWarmupTime: Int = 60
 }
