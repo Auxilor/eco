@@ -114,6 +114,7 @@ allprojects {
         exclude(group = "org.spongepowered", module = "configurate-hocon")
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
+        exclude(group = "net.wesjd", module = "anvilgui")
     }
 
     configurations.testImplementation {

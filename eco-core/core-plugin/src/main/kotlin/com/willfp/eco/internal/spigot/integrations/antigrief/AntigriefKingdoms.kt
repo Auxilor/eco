@@ -5,8 +5,8 @@ import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.kingdoms.constants.kingdom.Kingdom
-import org.kingdoms.constants.kingdom.model.KingdomRelation
+import org.kingdoms.constants.group.Kingdom
+import org.kingdoms.constants.group.model.KingdomRelation
 import org.kingdoms.constants.land.Land
 import org.kingdoms.constants.player.DefaultKingdomPermission
 import org.kingdoms.constants.player.KingdomPlayer
