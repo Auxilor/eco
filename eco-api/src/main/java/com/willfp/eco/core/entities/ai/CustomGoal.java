@@ -3,8 +3,8 @@ package com.willfp.eco.core.entities.ai;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -98,7 +98,16 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
      *
      * @param flags The flags.
      */
-    public void setFlags(@NotNull final Collection<GoalFlag> flags) {
+    public final void setFlags(@NotNull final GoalFlag... flags) {
+        this.setFlags(EnumSet.copyOf(List.of(flags)));
+    }
+
+    /**
+     * Set the flags for the goal.
+     *
+     * @param flags The flags.
+     */
+    public void setFlags(@NotNull final EnumSet<GoalFlag> flags) {
         this.flags.clear();
         this.flags.addAll(flags);
     }

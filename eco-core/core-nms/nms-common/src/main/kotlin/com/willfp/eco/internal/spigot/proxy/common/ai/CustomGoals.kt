@@ -72,6 +72,6 @@ private class NMSCustomGoal<T : org.bukkit.entity.Mob>(
 
     override fun setFlags(controls: EnumSet<Flag>) {
         super.setFlags(controls)
-        customEntityGoal.setFlags(controls.toEcoFlags())
+        customEntityGoal.flags = EnumSet.copyOf(controls.toEcoFlags())
     }
 }
