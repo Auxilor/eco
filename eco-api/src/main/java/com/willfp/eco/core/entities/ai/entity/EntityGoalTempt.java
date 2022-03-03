@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public record EntityGoalTempt(
         double speed,
-        Collection<TestableItem> items,
+        @NotNull Collection<TestableItem> items,
         boolean canBeScared
 ) implements EntityGoal<Mob> {
     /**
