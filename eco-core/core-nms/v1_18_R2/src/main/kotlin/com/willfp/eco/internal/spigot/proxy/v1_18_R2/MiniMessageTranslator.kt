@@ -14,9 +14,13 @@ class MiniMessageTranslator : MiniMessageTranslatorProxy {
             mut = mut.substring(2)
         }
 
-        val miniMessage = MiniMessage.miniMessage().deserialize(
-            mut.replace('§', '&')
-        ).toLegacy()
+        mut = mut.replace('§', '&')
+
+        val miniMessage = runCatching {
+            MiniMessage.miniMessage().deserialize(
+                mut
+            ).toLegacy()
+        }.getOrNull() ?: mut
 
         if (startsWithPrefix) {
             mut = Display.PREFIX + miniMessage
