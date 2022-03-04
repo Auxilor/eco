@@ -132,7 +132,6 @@ allprojects {
 
         shadowJar {
             relocate("org.bstats", "com.willfp.eco.libs.bstats")
-            relocate("net.kyori.adventure.text.minimessage", "com.willfp.eco.libs.minimessage")
             relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
         }
 

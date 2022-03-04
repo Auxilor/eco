@@ -13,6 +13,7 @@ dependencies {
         version {
             strictly("4.10.0")
         }
+        exclude(group = "net.kyori", module = "adventure-api")
     }
 }
 
