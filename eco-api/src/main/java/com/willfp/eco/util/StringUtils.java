@@ -323,10 +323,11 @@ public final class StringUtils {
 
     private static String processFormatting(@NotNull final String message) {
         String processedMessage = message;
+        // Run MiniMessage first so it doesn't complain
+        processedMessage = translateMiniMessage(processedMessage);
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = translateMiniMessage(processedMessage);
         return processedMessage;
     }
 
