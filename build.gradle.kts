@@ -98,7 +98,7 @@ allprojects {
         compileOnly("net.kyori:adventure-text-serializer-legacy:4.10.0")
 
         // Other
-        compileOnly("com.google.guava:guava:31.0.1-jre")
+        compileOnly("com.google.guava:guava:31.1-jre")
         compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.5")
     }
 
