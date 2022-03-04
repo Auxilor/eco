@@ -62,7 +62,7 @@ class ChatComponent : ChatComponentProxy {
         }
 
         val newShowItem = showItem.nbt(
-            BinaryTagHolder.of(
+            BinaryTagHolder.binaryTagHolder(
                 CraftItemStack.asNMSCopy(
                     Display.display(
                         CraftItemStack.asBukkitCopy(
