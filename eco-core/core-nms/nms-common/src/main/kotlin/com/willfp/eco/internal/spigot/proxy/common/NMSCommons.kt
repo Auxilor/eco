@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 
 private lateinit var impl: CommonsProvider
 
-val NBT_TAG_STRING = impl.nbtTagString
+val NBT_TAG_STRING by lazy { impl.nbtTagString }
 
 fun Mob.toPathfinderMob(): PathfinderMob? =
     impl.toPathfinderMob(this)
