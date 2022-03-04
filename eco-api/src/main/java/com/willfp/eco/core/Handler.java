@@ -265,6 +265,15 @@ public interface Handler {
                          @NotNull Class<? extends EcoPlugin> plugin);
 
     /**
+     * Format a string with MiniMessage.
+     *
+     * @param message The message.
+     * @return The formatted string.
+     */
+    @NotNull
+    String formatMiniMessage(@NotNull String message);
+
+    /**
      * Create controlled entity from a mob.
      *
      * @param mob The mob.

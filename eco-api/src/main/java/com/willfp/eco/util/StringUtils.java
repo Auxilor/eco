@@ -5,11 +5,10 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
-import com.willfp.eco.core.Prerequisite;
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -327,14 +326,12 @@ public final class StringUtils {
         processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
         processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
-        if (Prerequisite.HAS_PAPER.isMet()) {
-            processedMessage = translateMiniMessage(processedMessage);
-        }
+        processedMessage = translateMiniMessage(processedMessage);
         return processedMessage;
     }
 
     private static String translateMiniMessage(@NotNull final String message) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.miniMessage().deserialize(message));
+        return Eco.getHandler().formatMiniMessage(message);
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {

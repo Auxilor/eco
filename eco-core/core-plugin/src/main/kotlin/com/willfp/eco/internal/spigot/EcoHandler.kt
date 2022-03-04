@@ -33,6 +33,7 @@ import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -171,5 +172,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun <T : Mob> createEntityController(mob: T): EntityController<T> {
         return getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
+    }
+
+    override fun formatMiniMessage(message: String): String {
+        return getProxy(MiniMessageTranslatorProxy::class.java).format(message)
     }
 }

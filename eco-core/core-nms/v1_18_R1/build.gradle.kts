@@ -8,6 +8,12 @@ version = rootProject.version
 dependencies {
     implementation(project(":eco-core:core-nms:nms-common"))
     paperDevBundle("1.18.1-R0.1-SNAPSHOT")
+
+    implementation("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT") {
+        version {
+            strictly("4.2.0-SNAPSHOT")
+        }
+    }
 }
 
 tasks {
@@ -23,6 +29,10 @@ tasks {
         relocate(
             "com.willfp.eco.internal.spigot.proxy.common",
             "com.willfp.eco.internal.spigot.proxy.v1_18_R1.common"
+        )
+        relocate(
+            "net.kyori.adventure.text.minimessage",
+            "com.willfp.eco.internal.spigot.proxy.v1_18_R1.minimessage"
         )
     }
 }
