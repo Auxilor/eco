@@ -334,7 +334,7 @@ public final class StringUtils {
     }
 
     private static String translateMiniMessage(@NotNull final String message) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.get().parse(message));
+        return LEGACY_COMPONENT_SERIALIZER.serialize(MiniMessage.miniMessage().deserialize(message));
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {
