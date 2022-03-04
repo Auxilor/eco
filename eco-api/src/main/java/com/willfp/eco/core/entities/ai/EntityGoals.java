@@ -1,6 +1,7 @@
 package com.willfp.eco.core.entities.ai;
 
 import com.google.common.collect.HashBiMap;
+import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoors;
 import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir;
@@ -121,6 +122,38 @@ public final class EntityGoals {
     public static <T extends Mob> KeyedDeserializer<EntityGoal<T>> getByKeyOfType(@NotNull final NamespacedKey key,
                                                                                   @NotNull final Class<T> clazz) {
         return (KeyedDeserializer<EntityGoal<T>>) BY_KEY.get(key);
+    }
+
+    /**
+     * Apply goal to entity given key and config.
+     * <p>
+     * If the key or config are invalid, the goal will not be applied.
+     *
+     * @param entity   The entity.
+     * @param key      The key.
+     * @param config   The config.
+     * @param priority The priority.
+     * @param <T>      The entity type.
+     * @return The entity.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public static <T extends Mob> T applyToEntity(@NotNull final T entity,
+                                                  @NotNull final NamespacedKey key,
+                                                  @NotNull final Config config,
+                                                  final int priority) {
+        KeyedDeserializer<EntityGoal<T>> deserializer = getByKeyOfType(key, (Class<T>) entity.getClass());
+        if (deserializer == null) {
+            return entity;
+        }
+
+        EntityGoal<T> goal = deserializer.deserialize(config);
+
+        if (goal == null) {
+            return entity;
+        }
+
+        return goal.addToEntity(entity, priority);
     }
 
     /**
