@@ -93,9 +93,9 @@ allprojects {
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
         
         // Adventure
-        compileOnly("net.kyori:adventure-api:4.9.3")
-        compileOnly("net.kyori:adventure-text-serializer-gson:4.9.3")
-        compileOnly("net.kyori:adventure-text-serializer-legacy:4.9.3")
+        compileOnly("net.kyori:adventure-api:4.10.0")
+        compileOnly("net.kyori:adventure-text-serializer-gson:4.10.0")
+        compileOnly("net.kyori:adventure-text-serializer-legacy:4.10.0")
 
         // Other
         compileOnly("com.google.guava:guava:31.0.1-jre")

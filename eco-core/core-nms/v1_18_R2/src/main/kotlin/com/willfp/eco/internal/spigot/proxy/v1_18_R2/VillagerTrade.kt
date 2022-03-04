@@ -3,7 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_18_R2
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxy.VillagerTradeProxy
 import net.minecraft.world.item.trading.MerchantOffer
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftMerchantRecipe
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftMerchantRecipe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MerchantRecipe
 import java.lang.reflect.Field
