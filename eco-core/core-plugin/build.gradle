@@ -2,11 +2,11 @@ group 'com.willfp'
 version rootProject.version
 
 dependencies {
-    implementation('net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT') {
+    implementation('net.kyori:adventure-text-minimessage:4.10.0') {
         exclude group: 'net.kyori', module: 'adventure-api'
     }
     implementation 'com.github.Redempt:Crunch:1.0'
-    compileOnly 'net.kyori:adventure-platform-bukkit:4.0.0'
+    compileOnly 'net.kyori:adventure-platform-bukkit:4.1.0'
     compileOnly 'org.apache.maven:maven-artifact:3.8.1'
     compileOnly 'com.google.code.gson:gson:2.8.8'
     compileOnly 'org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT'
