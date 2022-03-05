@@ -55,7 +55,7 @@ libraries:
   - 'org.jetbrains.exposed:exposed-dao:0.37.3'
   - 'org.jetbrains.exposed:exposed-jdbc:0.37.3'
   - 'mysql:mysql-connector-java:8.0.25'
-  - 'com.google.guava:guava:31.0.1-jre'
+  - 'com.google.guava:guava:31.1-jre'
   - 'com.zaxxer:HikariCP:5.0.0'
   - 'org.objenesis:objenesis:3.2'
   - 'com.github.ben-manes.caffeine:caffeine:3.0.5'
