@@ -170,6 +170,10 @@ class EcoFastItemStack(
         handle.setRepairCost(cost)
     }
 
+    override fun hasAnyNBT(): Boolean {
+        return handle.hasTag()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other !is EcoFastItemStack) {
             return false

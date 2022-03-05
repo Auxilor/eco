@@ -2,6 +2,7 @@ package com.willfp.eco.core.items;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -45,6 +46,10 @@ public final class Items {
             .expireAfterAccess(5, TimeUnit.MINUTES)
             .build(
                     key -> {
+                        if (!FastItemStack.wrap(key.getItem()).hasAnyNBT()) {
+                            return Optional.empty();
+                        }
+
                         TestableItem match = null;
                         for (TestableItem item : REGISTRY.values()) {
                             if (item.matches(key.getItem())) {
