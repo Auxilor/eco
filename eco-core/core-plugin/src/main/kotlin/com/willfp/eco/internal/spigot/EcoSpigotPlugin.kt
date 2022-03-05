@@ -96,8 +96,8 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustom
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
-import com.willfp.eco.internal.spigot.integrations.customitems.mythicmobs.MythicDropListener
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
@@ -255,10 +255,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
 
             // Custom Entities
-            IntegrationLoader("MythicMobs") {
-                CustomEntitiesManager.register(CustomEntitiesMythicMobs());
-                this.eventManager.registerListener(MythicDropListener())
-                                            },
+            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
@@ -270,6 +267,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 CustomRecipeCustomCrafting()
             )
             },
+            IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
