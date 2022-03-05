@@ -117,13 +117,6 @@ public interface FastItemStack {
     boolean hasItemFlag(@NotNull ItemFlag flag);
 
     /**
-     * Get if the item has any nbt data.
-     *
-     * @return If any nbt data is present on the item.
-     */
-    boolean hasAnyNBT();
-
-    /**
      * Get the Bukkit ItemStack again.
      *
      * @return The ItemStack.

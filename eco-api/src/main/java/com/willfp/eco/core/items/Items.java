@@ -2,7 +2,6 @@ package com.willfp.eco.core.items;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -43,10 +42,10 @@ public final class Items {
      * Cached custom item lookups, using {@link HashedItem}.
      */
     private static final LoadingCache<HashedItem, Optional<TestableItem>> CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
                     key -> {
-                        if (!FastItemStack.wrap(key.getItem()).hasAnyNBT()) {
+                        if (!key.getItem().hasItemMeta()) {
                             return Optional.empty();
                         }
 
