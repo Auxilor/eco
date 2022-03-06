@@ -298,7 +298,7 @@ public final class Items {
      * @param itemStack The itemStack to check.
      * @return If is recipe.
      */
-    public static boolean isCustomItem(@NotNull final ItemStack itemStack) {
+    public static boolean isCustomItem(@Nullable final ItemStack itemStack) {
         return getCustomItem(itemStack) != null;
     }
 
@@ -309,7 +309,11 @@ public final class Items {
      * @return The custom item, or null if not exists.
      */
     @Nullable
-    public static CustomItem getCustomItem(@NotNull final ItemStack itemStack) {
+    public static CustomItem getCustomItem(@Nullable final ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+
         return CACHE.get(HashedItem.of(itemStack)).map(Items::getOrWrap).orElse(null);
     }
 
