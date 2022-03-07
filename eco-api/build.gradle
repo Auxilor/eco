@@ -12,6 +12,10 @@ dependencies {
 group 'com.willfp'
 version rootProject.version
 
+java {
+    withJavadocJar()
+}
+
 build.dependsOn publishToMavenLocal
 
 publishing {
