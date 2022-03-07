@@ -1,16 +1,19 @@
 package com.willfp.eco.internal.spigot.recipes
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
+import com.willfp.eco.core.recipe.recipes.CraftingRecipe
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.CraftingInventory
+import org.bukkit.inventory.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
@@ -38,13 +41,18 @@ class StackedRecipeListener(
 
         val recipe = Recipes.getMatch(matrix) ?: return
 
+        // Get the handler for the type of recipe
+        @Suppress("UNCHECKED_CAST")
+        val handler = handlers.firstOrNull { recipe::class.java.isAssignableFrom(it.recipeType) } ?: return
+
         var isStackedRecipe = false
         var maxCraftable = Int.MAX_VALUE
 
         // Start by calculating the maximum number of items to craft
+        val maxToCraftData = handler.makeData(recipe)
         for (i in 0..8) {
             val item = inventory.matrix.getOrNull(i) ?: continue
-            val part = recipe.parts[i].let {
+            val part = handler.getPart(recipe, i, item, maxToCraftData).let {
                 if (it is GroupedTestableItems) {
                     it.getMatchingChild(item)
                 } else it
@@ -68,9 +76,11 @@ class StackedRecipeListener(
         val existingResult = inventory.result
 
         // Deduct the correct number of items from the inventory
+
+        val deductionData = handler.makeData(recipe)
         for (i in 0..8) {
             val item = inventory.matrix.getOrNull(i) ?: continue
-            val part = recipe.parts[i].let {
+            val part = handler.getPart(recipe, i, item, deductionData).let {
                 if (it is GroupedTestableItems) {
                     it.getMatchingChild(item)
                 } else it
@@ -128,4 +138,18 @@ class StackedRecipeListener(
         block()
         plugin.scheduler.run(block)
     }
+
+    companion object {
+        private val handlers = mutableListOf<StackedRecipeHandler>()
+
+        fun registerHandler(handler: StackedRecipeHandler) {
+            handlers.add(handler)
+        }
+    }
+}
+
+interface StackedRecipeHandler {
+    fun makeData(recipe: CraftingRecipe): Any?
+    fun getPart(recipe: CraftingRecipe, position: Int, item: ItemStack, data: Any?): TestableItem?
+    val recipeType: Class<out CraftingRecipe>
 }

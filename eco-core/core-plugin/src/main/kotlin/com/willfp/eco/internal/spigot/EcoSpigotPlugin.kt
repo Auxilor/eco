@@ -111,10 +111,11 @@ import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
-import com.willfp.eco.internal.spigot.recipes.ShapelessStackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
+import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
+import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
@@ -159,6 +160,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         CraftingRecipeListener.registerListener(ComplexInComplex())
         CraftingRecipeListener.registerListener(ComplexInVanilla())
+
+        StackedRecipeListener.registerHandler(ShapedCraftingRecipeStackHandler())
+        StackedRecipeListener.registerHandler(ShapelessCraftingRecipeStackHandler())
 
         SegmentParserGroup().register()
         SegmentParserUseIfPresent().register()
@@ -319,7 +323,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             EntityDeathByEntityListeners(this),
             CraftingRecipeListener(),
             StackedRecipeListener(this),
-            ShapelessStackedRecipeListener(this),
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
