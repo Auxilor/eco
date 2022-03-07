@@ -40,9 +40,9 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Tick the goal.
      * <p>
-     * Runs ever tick as long as {@link this#canUse()} returns true.
+     * Runs ever tick as long as canUse returns true.
      * <p>
-     * Runs after {@link this#start()}.
+     * Runs after start().
      */
     public void tick() {
         // Override when needed.
@@ -51,7 +51,7 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Start the goal.
      * <p>
-     * Runs once {@link this#canUse()} returns true.
+     * Runs once canUse() returns true.
      */
     public void start() {
         // Override when needed.
@@ -60,7 +60,7 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Stop the goal.
      * <p>
-     * Runs once {@link this#canUse()} returns false.
+     * Runs once canUse() returns false.
      */
     public void stop() {
         // Override when needed.

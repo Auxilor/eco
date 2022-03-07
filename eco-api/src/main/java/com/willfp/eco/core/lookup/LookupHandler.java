@@ -16,7 +16,7 @@ public interface LookupHandler<T extends Testable<?>> {
      * <p>
      * You shouldn't override this method unless you're doing something
      * technically interesting or weird. This is the entry point for all
-     * lookup parsers, {@link this#parse(String[])} is to specify implementation-specific
+     * lookup parsers, parse() is to specify implementation-specific
      * parsing.
      *
      * @param key The key.
@@ -56,7 +56,7 @@ public interface LookupHandler<T extends Testable<?>> {
     /**
      * Get the failsafe object.
      * <p>
-     * A failsafe object should never pass {@link this#validate(Testable)}, as this will
+     * A failsafe object should never pass validate(), as this will
      * cause issues with segment parsers. See {@link com.willfp.eco.core.items.ItemsLookupHandler} and
      * {@link com.willfp.eco.core.recipe.parts.EmptyTestableItem} for examples.
      *
