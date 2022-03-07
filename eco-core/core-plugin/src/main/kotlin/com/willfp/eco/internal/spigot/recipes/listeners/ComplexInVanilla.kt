@@ -2,9 +2,9 @@ package com.willfp.eco.internal.spigot.recipes.listeners
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
 import com.willfp.eco.internal.spigot.recipes.GenericCraftEvent
 import com.willfp.eco.internal.spigot.recipes.RecipeListener
-import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
 
 class ComplexInVanilla : RecipeListener {
     override fun handle(event: GenericCraftEvent) {
@@ -12,7 +12,7 @@ class ComplexInVanilla : RecipeListener {
             return
         }
 
-        if (ShapedRecipeListener.validators.any { it.validate(event) }) {
+        if (CraftingRecipeListener.validators.any { it.validate(event) }) {
             return
         }
 

@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.event.player.PlayerRecipeDiscoverEvent
 
-class ShapedRecipeListener : Listener {
+class CraftingRecipeListener : Listener {
     @EventHandler
     fun preventLearningDisplayedRecipes(event: PlayerRecipeDiscoverEvent) {
         if (!EcoPlugin.getPluginNames().contains(event.recipe.namespace)) {

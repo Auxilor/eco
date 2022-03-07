@@ -2,9 +2,9 @@ package com.willfp.eco.internal.spigot.recipes.listeners
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.Recipes
+import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
 import com.willfp.eco.internal.spigot.recipes.GenericCraftEvent
 import com.willfp.eco.internal.spigot.recipes.RecipeListener
-import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
 import org.bukkit.entity.Player
 
 class ComplexInComplex : RecipeListener {
@@ -19,7 +19,7 @@ class ComplexInComplex : RecipeListener {
 
         val matrix = event.inventory.matrix
 
-        if (ShapedRecipeListener.validators.any { it.validate(event) }) {
+        if (CraftingRecipeListener.validators.any { it.validate(event) }) {
             return
         }
 

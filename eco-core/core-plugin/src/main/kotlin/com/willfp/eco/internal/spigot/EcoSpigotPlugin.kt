@@ -110,7 +110,8 @@ import com.willfp.eco.internal.spigot.math.evaluateExpression
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
-import com.willfp.eco.internal.spigot.recipes.ShapedRecipeListener
+import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
+import com.willfp.eco.internal.spigot.recipes.ShapelessStackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
@@ -156,8 +157,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserSilent())
         Entities.registerArgParser(EntityArgParserEquipment())
 
-        ShapedRecipeListener.registerListener(ComplexInComplex())
-        ShapedRecipeListener.registerListener(ComplexInVanilla())
+        CraftingRecipeListener.registerListener(ComplexInComplex())
+        CraftingRecipeListener.registerListener(ComplexInVanilla())
 
         SegmentParserGroup().register()
         SegmentParserUseIfPresent().register()
@@ -263,9 +264,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
             IntegrationLoader("CustomCrafting") {
-                CustomItemsManager.register(CustomItemsCustomCrafting()); ShapedRecipeListener.registerValidator(
-                CustomRecipeCustomCrafting()
-            )
+                CustomItemsManager.register(CustomItemsCustomCrafting())
+                CraftingRecipeListener.registerValidator(CustomRecipeCustomCrafting())
             },
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
 
@@ -317,8 +317,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
-            ShapedRecipeListener(),
+            CraftingRecipeListener(),
             StackedRecipeListener(this),
+            ShapelessStackedRecipeListener(this),
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),

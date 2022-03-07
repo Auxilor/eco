@@ -8,24 +8,23 @@ import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems;
 import com.willfp.eco.core.recipe.parts.TestableStack;
-import com.willfp.eco.util.ListUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Shaped 3x3 crafting recipe.
+ * Shapeless crafting recipe.
  */
-public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> implements CraftingRecipe {
+public final class ShapelessCraftingRecipe extends PluginDependent<EcoPlugin> implements CraftingRecipe {
     /**
      * Recipe parts.
      */
@@ -51,11 +50,11 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
      */
     private final String permission;
 
-    private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
-                                 @NotNull final String key,
-                                 @NotNull final List<TestableItem> parts,
-                                 @NotNull final ItemStack output,
-                                 @Nullable final String permission) {
+    private ShapelessCraftingRecipe(@NotNull final EcoPlugin plugin,
+                                    @NotNull final String key,
+                                    @NotNull final List<TestableItem> parts,
+                                    @NotNull final ItemStack output,
+                                    @Nullable final String permission) {
         super(plugin);
 
         this.parts = parts;
@@ -65,17 +64,27 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         this.permission = permission;
     }
 
+    /**
+     * Make a new test.
+     *
+     * @return The test.
+     */
+    @NotNull
+    public RecipeTest newTest() {
+        return new RecipeTest(this);
+    }
+
     @Override
     public boolean test(@NotNull final ItemStack[] matrix) {
-        List<ItemStack> dynamicMatrix = Arrays.asList(matrix);
-        boolean matches = true;
-        for (int i = 0; i < 9; i++) {
-            if (!parts.get(i).matches(ListUtils.getOrNull(dynamicMatrix, i))) {
-                matches = false;
+        RecipeTest test = newTest();
+
+        for (ItemStack stack : matrix) {
+            if (test.matchAndRemove(stack) == null) {
+                return false;
             }
         }
 
-        return matches;
+        return true;
     }
 
     @Override
@@ -85,31 +94,18 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         Bukkit.getServer().removeRecipe(this.getKey());
         Bukkit.getServer().removeRecipe(this.getDisplayedKey());
 
-        ShapedRecipe shapedRecipe = new ShapedRecipe(this.getKey(), this.getOutput());
-        shapedRecipe.shape("012", "345", "678");
-        for (int i = 0; i < 9; i++) {
-            if (parts.get(i) instanceof EmptyTestableItem) {
-                continue;
-            }
-
-            char character = String.valueOf(i).toCharArray()[0];
-            shapedRecipe.setIngredient(character, parts.get(i).getItem().getType());
+        ShapelessRecipe shapelessRecipe = new ShapelessRecipe(this.getKey(), this.getOutput());
+        for (TestableItem part : parts) {
+            shapelessRecipe.addIngredient(part.getItem().getType());
         }
 
-        ShapedRecipe displayedRecipe = new ShapedRecipe(this.getDisplayedKey(), this.getOutput());
-        displayedRecipe.shape("012", "345", "678");
-        for (int i = 0; i < 9; i++) {
-            if (parts.get(i) instanceof EmptyTestableItem) {
-                continue;
-            }
-
-            char character = String.valueOf(i).toCharArray()[0];
-
+        ShapelessRecipe displayedRecipe = new ShapelessRecipe(this.getDisplayedKey(), this.getOutput());
+        for (TestableItem part : parts) {
             List<TestableItem> items = new ArrayList<>();
-            if (parts.get(i) instanceof GroupedTestableItems group) {
+            if (part instanceof GroupedTestableItems group) {
                 items.addAll(group.getChildren());
             } else {
-                items.add(parts.get(i));
+                items.add(part);
             }
 
             List<ItemStack> displayedItems = new ArrayList<>();
@@ -135,10 +131,10 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
                 }
             }
 
-            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(displayedItems));
+            displayedRecipe.addIngredient(new RecipeChoice.ExactChoice(displayedItems));
         }
 
-        Bukkit.getServer().addRecipe(shapedRecipe);
+        Bukkit.getServer().addRecipe(shapelessRecipe);
         Bukkit.getServer().addRecipe(displayedRecipe);
     }
 
@@ -216,7 +212,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         /**
          * The recipe parts.
          */
-        private final List<TestableItem> recipeParts = new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null)); // Jank
+        private final List<TestableItem> recipeParts = new ArrayList<>();
 
         /**
          * The output of the recipe.
@@ -251,28 +247,13 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         }
 
         /**
-         * Set a recipe part.
+         * Add a recipe part.
          *
-         * @param position The position of the recipe within a crafting matrix.
-         * @param part     The part of the recipe.
+         * @param part The part of the recipe.
          * @return The builder.
          */
-        public Builder setRecipePart(@NotNull final RecipePosition position,
-                                     @NotNull final TestableItem part) {
-            recipeParts.set(position.getIndex(), part);
-            return this;
-        }
-
-        /**
-         * Set a recipe part.
-         *
-         * @param position The position of the recipe within a crafting matrix.
-         * @param part     The part of the recipe.
-         * @return The builder.
-         */
-        public Builder setRecipePart(final int position,
-                                     @NotNull final TestableItem part) {
-            recipeParts.set(position, part);
+        public Builder addRecipePart(@NotNull final TestableItem part) {
+            recipeParts.add(part);
             return this;
         }
 
@@ -317,14 +298,44 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
          *
          * @return The built recipe.
          */
-        public ShapedCraftingRecipe build() {
-            for (int i = 0; i < 9; i++) {
-                if (recipeParts.get(i) == null) {
-                    recipeParts.set(i, new EmptyTestableItem());
-                }
+        public ShapelessCraftingRecipe build() {
+            return new ShapelessCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission);
+        }
+    }
+
+    /**
+     * Test for shapeless recipes.
+     */
+    public static final class RecipeTest {
+        /**
+         * The remaining items left to be found.
+         */
+        private final List<TestableItem> remaining;
+
+        private RecipeTest(@NotNull final ShapelessCraftingRecipe recipe) {
+            this.remaining = new ArrayList<>(recipe.getParts());
+        }
+
+        /**
+         * If the item is in the recipe, remove it from the remaining items to test and
+         * return the matching item.
+         *
+         * @param itemStack The item.
+         * @return The matching item, or null if no match was found.
+         */
+        @Nullable
+        public TestableItem matchAndRemove(@NotNull final ItemStack itemStack) {
+            if (remaining.isEmpty() && !(new EmptyTestableItem().matches(itemStack))) {
+                return null;
             }
 
-            return new ShapedCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission);
+            Optional<TestableItem> match = remaining.stream()
+                    .filter(item -> item.matches(itemStack))
+                    .findFirst();
+
+            match.ifPresent(remaining::remove);
+
+            return match.orElse(null);
         }
     }
 }
