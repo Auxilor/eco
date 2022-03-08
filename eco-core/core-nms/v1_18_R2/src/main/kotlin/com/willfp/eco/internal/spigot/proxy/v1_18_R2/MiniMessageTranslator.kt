@@ -22,8 +22,10 @@ class MiniMessageTranslator : MiniMessageTranslatorProxy {
             ).toLegacy()
         }.getOrNull() ?: mut
 
-        if (startsWithPrefix) {
-            mut = Display.PREFIX + miniMessage
+        mut = if (startsWithPrefix) {
+            Display.PREFIX + miniMessage
+        } else {
+            miniMessage
         }
 
         return mut
