@@ -2,7 +2,7 @@ group 'com.willfp'
 version rootProject.version
 
 dependencies {
-    implementation 'com.github.Redempt:Crunch:1.0'
+    implementation 'com.github.Redempt:Crunch:1.1.2'
     compileOnly 'net.kyori:adventure-platform-bukkit:4.1.0'
     compileOnly 'org.apache.maven:maven-artifact:3.8.1'
     compileOnly 'com.google.code.gson:gson:2.8.8'
