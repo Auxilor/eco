@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.JSONConfig
+import com.willfp.eco.core.placeholder.StaticPlaceholder
 import com.willfp.eco.util.StringUtils
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
@@ -22,6 +23,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
     val values = ConcurrentHashMap<String, Any?>()
 
     private val cache = ConcurrentHashMap<String, Any>()
+    var injections = mutableListOf<StaticPlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -62,7 +64,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         }
         return if (values[closestPath] is Map<*, *> && path != closestPath) {
             val section =
-                EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!)
+                EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!, injections)
             section.getOfKnownType(path.substring(closestPath.length + 1), clazz, false)
         } else {
             if (values.containsKey(closestPath)) {
@@ -88,7 +90,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         for (key in values.keys) {
             list.add(root + key)
             if (values[key] is Map<*, *>) {
-                val section = EcoJSONConfigSection((values[key] as Map<String, Any?>?)!!)
+                val section = EcoJSONConfigSection((values[key] as Map<String, Any?>?)!!, injections)
                 list.addAll(section.getDeepKeys(list, "$root$key."))
             }
         }
@@ -117,7 +119,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
             closestPath = split[0]
         }
         if (values[closestPath] is Map<*, *> && path != closestPath) {
-            val section = EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!)
+            val section = EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!, injections)
             section.setRecursively(path.substring(closestPath.length + 1), obj)
             values[closestPath] = section.values
         } else {
@@ -130,13 +132,13 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getSubsection(path: String): JSONConfig {
-        return getSubsectionOrNull(path) ?: EcoJSONConfigSection(mutableMapOf())
+        return getSubsectionOrNull(path) ?: EcoJSONConfigSection(mutableMapOf(), injections)
     }
 
     override fun getSubsectionOrNull(path: String): JSONConfig? {
         return if (values.containsKey(path)) {
             val subsection = values[path] as Map<String, Any>
-            EcoJSONConfigSection(subsection)
+            EcoJSONConfigSection(subsection, injections)
         } else {
             null
         }
@@ -147,7 +149,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
             ?: return null
         val configs = mutableListOf<JSONConfig>()
         for (map in maps) {
-            configs.add(EcoJSONConfigSection(map))
+            configs.add(EcoJSONConfigSection(map, injections))
         }
         return configs.toMutableList()
     }
@@ -206,11 +208,19 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return (getOfKnownType(path, Any::class.java) as Collection<Double>?)?.toMutableList()
     }
 
+    override fun injectPlaceholders(vararg placeholders: StaticPlaceholder) {
+        injections.addAll(placeholders)
+    }
+
+    override fun getInjectedPlaceholders(): List<StaticPlaceholder> {
+        return injections.toList()
+    }
+
     override fun getType(): ConfigType {
         return ConfigType.JSON
     }
 
     override fun clone(): JSONConfig {
-        return EcoJSONConfigSection(this.values.toMutableMap())
+        return EcoJSONConfigSection(this.values.toMutableMap(), injections)
     }
 }

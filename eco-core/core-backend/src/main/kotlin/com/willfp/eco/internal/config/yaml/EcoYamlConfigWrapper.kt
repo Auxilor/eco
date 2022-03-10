@@ -2,6 +2,7 @@ package com.willfp.eco.internal.config.yaml
 
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.placeholder.StaticPlaceholder
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
@@ -11,6 +12,7 @@ import java.io.StringReader
 open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     lateinit var handle: T
     private val cache = mutableMapOf<String, Any?>()
+    var injections = mutableListOf<StaticPlaceholder>()
 
     protected fun init(config: T): Config {
         handle = config
@@ -57,7 +59,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
             if (raw == null) {
                 cache[path] = null
             } else {
-                cache[path] = EcoYamlConfigSection(raw)
+                cache[path] = EcoYamlConfigSection(raw, injections)
             }
             getSubsectionOrNull(path)
         }
@@ -214,7 +216,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
                 for (map in mapList) {
                     val temp = YamlConfiguration.loadConfiguration(StringReader(""))
                     temp.createSection("a", map)
-                    configList.add(EcoYamlConfigSection(temp.getConfigurationSection("a")!!))
+                    configList.add(EcoYamlConfigSection(temp.getConfigurationSection("a")!!, injections))
                 }
 
                 cache[path] = if (has(path)) configList else emptyList()
@@ -223,6 +225,14 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         } else {
             null
         }
+    }
+
+    override fun injectPlaceholders(vararg placeholders: StaticPlaceholder) {
+        injections.addAll(placeholders)
+    }
+
+    override fun getInjectedPlaceholders(): List<StaticPlaceholder> {
+        return injections.toList()
     }
 
     override fun getType(): ConfigType {
@@ -235,7 +245,8 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
                 StringReader(
                     toPlaintext()
                 )
-            )
+            ),
+            injections
         )
     }
 }

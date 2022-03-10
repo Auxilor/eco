@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
@@ -7,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiFunction;
 
 /**
  * Utilities / API methods for numbers.
@@ -24,7 +25,7 @@ public final class NumberUtils {
     /**
      * Crunch handler.
      */
-    private static BiFunction<String, Player, Double> crunch = null;
+    private static CrunchHandler crunch = null;
 
     /**
      * Set of roman numerals to look up.
@@ -251,7 +252,21 @@ public final class NumberUtils {
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player) {
-        return crunch.apply(expression, player);
+        return evaluateExpression(expression, player, Collections.emptyList());
+    }
+
+    /**
+     * Evaluate an expression with respect to a player (for placeholders).
+     *
+     * @param expression The expression.
+     * @param player     The player.
+     * @param statics    The static placeholders.
+     * @return The value of the expression, or zero if invalid.
+     */
+    public static double evaluateExpression(@NotNull final String expression,
+                                            @Nullable final Player player,
+                                            @NotNull final Iterable<StaticPlaceholder> statics) {
+        return crunch.evaluate(expression, player, statics);
     }
 
     /**
@@ -260,9 +275,27 @@ public final class NumberUtils {
      * @param handler The handler.
      */
     @ApiStatus.Internal
-    public static void initCrunch(@NotNull final BiFunction<String, Player, Double> handler) {
+    public static void initCrunch(@NotNull final CrunchHandler handler) {
         Validate.isTrue(crunch == null, "Already initialized!");
         crunch = handler;
+    }
+
+    /**
+     * Bridge component for crunch.
+     */
+    @ApiStatus.Internal
+    public interface CrunchHandler {
+        /**
+         * Evaluate an expression.
+         *
+         * @param expression The expression.
+         * @param player     The player.
+         * @param statics    The statics.
+         * @return The value of the expression, or zero if invalid.
+         */
+        double evaluate(@NotNull String expression,
+                        @Nullable Player player,
+                        @NotNull Iterable<StaticPlaceholder> statics);
     }
 
     private NumberUtils() {

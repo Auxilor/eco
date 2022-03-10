@@ -2,6 +2,8 @@ package com.willfp.eco.core.config.interfaces;
 
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.TransientConfig;
+import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
@@ -9,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,7 +21,7 @@ import java.util.Objects;
  * Contains all methods that must exist in yaml and json configurations.
  */
 @SuppressWarnings("unused")
-public interface Config extends Cloneable {
+public interface Config extends Cloneable, PlaceholderInjectable {
     /**
      * Clears cache.
      */
@@ -563,7 +566,7 @@ public interface Config extends Cloneable {
      */
     default double getDoubleFromExpression(@NotNull String path,
                                            @Nullable Player player) {
-        return NumberUtils.evaluateExpression(this.getString(path), player);
+        return NumberUtils.evaluateExpression(this.getString(path), player, this.getInjectedPlaceholders());
     }
 
     /**
@@ -629,4 +632,14 @@ public interface Config extends Cloneable {
      * @return The clone.
      */
     Config clone();
+
+    @Override
+    default void injectPlaceholders(@NotNull StaticPlaceholder... placeholders) {
+        // Do nothing.
+    }
+
+    @Override
+    default List<StaticPlaceholder> getInjectedPlaceholders() {
+        return Collections.emptyList();
+    }
 }

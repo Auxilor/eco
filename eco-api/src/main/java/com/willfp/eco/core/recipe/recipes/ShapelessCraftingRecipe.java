@@ -1,5 +1,6 @@
 package com.willfp.eco.core.recipe.recipes;
 
+import com.google.common.annotations.Beta;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginDependent;
@@ -24,6 +25,7 @@ import java.util.Optional;
 /**
  * Shapeless crafting recipe.
  */
+@Beta
 public final class ShapelessCraftingRecipe extends PluginDependent<EcoPlugin> implements CraftingRecipe {
     /**
      * Recipe parts.

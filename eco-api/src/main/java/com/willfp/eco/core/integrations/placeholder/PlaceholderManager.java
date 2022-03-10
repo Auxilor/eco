@@ -4,11 +4,16 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.placeholder.Placeholder;
+import com.willfp.eco.core.placeholder.PlayerPlaceholder;
+import com.willfp.eco.core.placeholder.PlayerlessPlaceholder;
+import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,11 +24,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Class to handle placeholder integrations.
  */
+@SuppressWarnings("removal")
 public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final Map<EcoPlugin, Map<String, PlaceholderEntry>> REGISTERED_PLACEHOLDERS = new HashMap<>();
+    private static final Map<EcoPlugin, Map<String, Placeholder>> REGISTERED_PLACEHOLDERS = new HashMap<>();
 
     /**
      * All registered placeholder integrations.
@@ -35,7 +41,7 @@ public final class PlaceholderManager {
      */
     private static final LoadingCache<EntryWithPlayer, String> PLACEHOLDER_CACHE = Caffeine.newBuilder()
             .expireAfterWrite(50, TimeUnit.MILLISECONDS)
-            .build(key -> key.entry.getResult(key.player));
+            .build(key -> key.entry.getValue(key.player));
 
     /**
      * Register a new placeholder integration.
@@ -50,14 +56,29 @@ public final class PlaceholderManager {
     /**
      * Register a placeholder.
      *
-     * @param expansion The {@link com.willfp.eco.core.integrations.placeholder.PlaceholderEntry} to register.
+     * @param placeholder The placeholder to register.
      */
-    public static void registerPlaceholder(@NotNull final PlaceholderEntry expansion) {
-        EcoPlugin plugin = expansion.getPlugin() == null ? Eco.getHandler().getEcoPlugin() : expansion.getPlugin();
-        Map<String, PlaceholderEntry> pluginPlaceholders = REGISTERED_PLACEHOLDERS
+    public static void registerPlaceholder(@NotNull final Placeholder placeholder) {
+        if (placeholder instanceof StaticPlaceholder) {
+            throw new IllegalArgumentException("Static placeholders cannot be registered!");
+        }
+
+        EcoPlugin plugin = placeholder.getPlugin() == null ? Eco.getHandler().getEcoPlugin() : placeholder.getPlugin();
+        Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS
                 .getOrDefault(plugin, new HashMap<>());
-        pluginPlaceholders.put(expansion.getIdentifier(), expansion);
+        pluginPlaceholders.put(placeholder.getIdentifier(), placeholder);
         REGISTERED_PLACEHOLDERS.put(plugin, pluginPlaceholders);
+    }
+
+    /**
+     * Register a placeholder.
+     *
+     * @param placeholder The placeholder to register.
+     * @deprecated Uses old placeholder system.
+     */
+    @Deprecated(since = "6.28.0", forRemoval = true)
+    public static void registerPlaceholder(@NotNull final PlaceholderEntry placeholder) {
+        registerPlaceholder(placeholder.toModernPlaceholder());
     }
 
     /**
@@ -82,29 +103,36 @@ public final class PlaceholderManager {
      * @param plugin     The plugin for the placeholder.
      * @return The value of the placeholder.
      */
+    @NotNull
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier,
                                    @Nullable final EcoPlugin plugin) {
         EcoPlugin owner = plugin == null ? Eco.getHandler().getEcoPlugin() : plugin;
-        PlaceholderEntry entry = REGISTERED_PLACEHOLDERS.getOrDefault(owner, new HashMap<>()).get(identifier.toLowerCase());
+        Placeholder placeholder = REGISTERED_PLACEHOLDERS.getOrDefault(owner, new HashMap<>()).get(identifier.toLowerCase());
 
-        if (entry == null && plugin != null) {
-            PlaceholderEntry alternate = REGISTERED_PLACEHOLDERS.getOrDefault(Eco.getHandler().getEcoPlugin(), new HashMap<>())
+        if (placeholder == null && plugin != null) {
+            Placeholder alternate = REGISTERED_PLACEHOLDERS.getOrDefault(Eco.getHandler().getEcoPlugin(), new HashMap<>())
                     .get(identifier.toLowerCase());
             if (alternate != null) {
-                entry = alternate;
+                placeholder = alternate;
             }
         }
 
-        if (entry == null) {
+        if (placeholder == null) {
             return "";
         }
 
-        if (player == null && entry.requiresPlayer()) {
+        if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
+            if (player == null) {
+                return "";
+            } else {
+                return PLACEHOLDER_CACHE.get(new EntryWithPlayer(playerPlaceholder, player));
+            }
+        } else if (placeholder instanceof PlayerlessPlaceholder playerlessPlaceholder) {
+            return playerlessPlaceholder.getValue();
+        } else {
             return "";
         }
-
-        return PLACEHOLDER_CACHE.get(new EntryWithPlayer(entry, player));
     }
 
     /**
@@ -116,9 +144,27 @@ public final class PlaceholderManager {
      */
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
+        return translatePlaceholders(text, player, Collections.emptyList());
+    }
+
+    /**
+     * Translate all placeholders with respect to a player.
+     *
+     * @param text    The text that may contain placeholders to translate.
+     * @param player  The player to translate the placeholders with respect to.
+     * @param statics Extra static placeholders.
+     * @return The text, translated.
+     */
+    public static String translatePlaceholders(@NotNull final String text,
+                                               @Nullable final Player player,
+                                               @NotNull final List<StaticPlaceholder> statics) {
         String processed = text;
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
             processed = integration.translate(processed, player);
+        }
+        for (StaticPlaceholder placeholder : statics) {
+            // Do I know this is a bad way of doing this? Yes.
+            processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
         }
         return processed;
     }
@@ -138,8 +184,8 @@ public final class PlaceholderManager {
         return found;
     }
 
-    private static record EntryWithPlayer(@NotNull PlaceholderEntry entry,
-                                          @Nullable Player player) {
+    private record EntryWithPlayer(@NotNull PlayerPlaceholder entry,
+                                   @NotNull Player player) {
 
     }
 
