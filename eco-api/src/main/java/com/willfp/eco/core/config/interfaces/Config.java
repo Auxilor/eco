@@ -634,7 +634,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     Config clone();
 
     @Override
-    default void injectPlaceholders(@NotNull StaticPlaceholder... placeholders) {
+    default void injectPlaceholders(@NotNull Iterable<StaticPlaceholder> placeholders) {
         // Do nothing.
     }
 

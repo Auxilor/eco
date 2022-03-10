@@ -227,7 +227,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         }
     }
 
-    override fun injectPlaceholders(vararg placeholders: StaticPlaceholder) {
+    override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
         injections.addAll(placeholders)
     }
 

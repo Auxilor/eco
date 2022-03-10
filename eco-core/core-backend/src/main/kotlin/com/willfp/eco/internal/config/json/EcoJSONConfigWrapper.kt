@@ -208,7 +208,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return (getOfKnownType(path, Any::class.java) as Collection<Double>?)?.toMutableList()
     }
 
-    override fun injectPlaceholders(vararg placeholders: StaticPlaceholder) {
+    override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
         injections.addAll(placeholders)
     }
 

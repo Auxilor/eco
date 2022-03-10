@@ -13,7 +13,16 @@ public interface PlaceholderInjectable {
      *
      * @param placeholders The placeholders.
      */
-    void injectPlaceholders(@NotNull StaticPlaceholder... placeholders);
+    default void injectPlaceholders(@NotNull StaticPlaceholder... placeholders) {
+        this.injectPlaceholders(List.of(placeholders));
+    }
+
+    /**
+     * Inject placeholder.
+     *
+     * @param placeholders The placeholders.
+     */
+    void injectPlaceholders(@NotNull Iterable<StaticPlaceholder> placeholders);
 
     /**
      * Get injected placeholders.
