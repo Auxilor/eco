@@ -228,6 +228,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     }
 
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
+        injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
         injections.addAll(placeholders)
     }
 
