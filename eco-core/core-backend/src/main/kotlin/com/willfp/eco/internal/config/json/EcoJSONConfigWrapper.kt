@@ -211,6 +211,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
         injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
         injections.addAll(placeholders)
+        this.clearCache()
     }
 
     override fun getInjectedPlaceholders(): List<StaticPlaceholder> {
@@ -219,6 +220,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
 
     override fun clearInjectedPlaceholders() {
         injections.clear()
+        this.clearCache()
     }
 
     override fun getType(): ConfigType {
