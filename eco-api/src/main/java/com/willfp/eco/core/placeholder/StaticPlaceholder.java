@@ -3,7 +3,9 @@ package com.willfp.eco.core.placeholder;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -49,5 +51,21 @@ public final class StaticPlaceholder implements Placeholder {
     @Override
     public String getIdentifier() {
         return this.identifier;
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StaticPlaceholder that)) {
+            return false;
+        }
+        return Objects.equals(this.getIdentifier(), that.getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getIdentifier());
     }
 }

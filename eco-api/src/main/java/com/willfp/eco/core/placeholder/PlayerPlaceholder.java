@@ -4,7 +4,9 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -69,5 +71,22 @@ public final class PlayerPlaceholder implements Placeholder {
     @Override
     public String getIdentifier() {
         return this.identifier;
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StaticPlaceholder that)) {
+            return false;
+        }
+        return Objects.equals(this.getIdentifier(), that.getIdentifier())
+                && Objects.equals(this.getPlugin(), that.getPlugin());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getIdentifier(), this.getPlugin());
     }
 }
