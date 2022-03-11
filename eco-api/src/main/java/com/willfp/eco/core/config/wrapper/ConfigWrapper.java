@@ -2,6 +2,7 @@ package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -132,6 +133,21 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Override
     public @NotNull ConfigType getType() {
         return handle.getType();
+    }
+
+    @Override
+    public void injectPlaceholders(@NotNull final StaticPlaceholder... placeholders) {
+        handle.injectPlaceholders(placeholders);
+    }
+
+    @Override
+    public void injectPlaceholders(@NotNull final Iterable<StaticPlaceholder> placeholders) {
+        handle.injectPlaceholders(placeholders);
+    }
+
+    @Override
+    public List<StaticPlaceholder> getInjectedPlaceholders() {
+        return handle.getInjectedPlaceholders();
     }
 
     /**
