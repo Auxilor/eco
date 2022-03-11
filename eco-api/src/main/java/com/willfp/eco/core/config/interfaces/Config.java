@@ -642,4 +642,9 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     default List<StaticPlaceholder> getInjectedPlaceholders() {
         return Collections.emptyList();
     }
+
+    @Override
+    default void clearInjectedPlaceholders() {
+        // Do nothing.
+    }
 }

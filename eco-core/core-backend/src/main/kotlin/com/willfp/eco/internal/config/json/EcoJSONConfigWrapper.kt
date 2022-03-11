@@ -217,6 +217,10 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return injections.toList()
     }
 
+    override fun clearInjectedPlaceholders() {
+        injections.clear()
+    }
+
     override fun getType(): ConfigType {
         return ConfigType.JSON
     }

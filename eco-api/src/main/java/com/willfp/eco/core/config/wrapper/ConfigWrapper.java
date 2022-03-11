@@ -150,6 +150,11 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
         return handle.getInjectedPlaceholders();
     }
 
+    @Override
+    public void clearInjectedPlaceholders() {
+        handle.clearInjectedPlaceholders();
+    }
+
     /**
      * Get the handle.
      *

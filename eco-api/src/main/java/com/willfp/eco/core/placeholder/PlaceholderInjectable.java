@@ -25,6 +25,11 @@ public interface PlaceholderInjectable {
     void injectPlaceholders(@NotNull Iterable<StaticPlaceholder> placeholders);
 
     /**
+     * Clear injected placeholders.
+     */
+    void clearInjectedPlaceholders();
+
+    /**
      * Get injected placeholders.
      *
      * @return Injected placeholders.
