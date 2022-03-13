@@ -8,6 +8,7 @@ import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.core.recipe.parts.TestableStack;
+import com.willfp.eco.core.recipe.parts.UnrestrictedMaterialTestableItem;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Material;
@@ -155,11 +156,16 @@ public final class Items {
         String[] split = args[0].toLowerCase().split(":");
 
         if (split.length == 1) {
-            Material material = Material.getMaterial(args[0].toUpperCase());
+            String itemType = args[0];
+            boolean isWildcard = itemType.startsWith("*");
+            if (isWildcard) {
+                itemType = itemType.substring(1);
+            }
+            Material material = Material.getMaterial(itemType.toUpperCase());
             if (material == null || material == Material.AIR) {
                 return new EmptyTestableItem();
             }
-            item = new MaterialTestableItem(material);
+            item = isWildcard ? new UnrestrictedMaterialTestableItem(material) : new MaterialTestableItem(material);
         }
 
         if (split.length == 2) {
@@ -183,11 +189,16 @@ public final class Items {
             This has been superseded by id amount
              */
             if (part == null) {
-                Material material = Material.getMaterial(split[0].toUpperCase());
+                String itemType = split[0];
+                boolean isWildcard = itemType.startsWith("*");
+                if (isWildcard) {
+                    itemType = itemType.substring(1);
+                }
+                Material material = Material.getMaterial(itemType.toUpperCase());
                 if (material == null || material == Material.AIR) {
                     return new EmptyTestableItem();
                 }
-                item = new MaterialTestableItem(material);
+                item = isWildcard ? new UnrestrictedMaterialTestableItem(material) : new MaterialTestableItem(material);
                 stackAmount = Integer.parseInt(split[1]);
             } else {
                 item = part;
