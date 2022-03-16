@@ -97,6 +97,13 @@ public interface Menu {
     Set<NamespacedKey> getKeys(@NotNull Player player);
 
     /**
+     * Re-render the menu for a player.
+     *
+     * @param player The player.
+     */
+    void refresh(@NotNull Player player);
+
+    /**
      * Create a builder with a given amount of rows.
      *
      * @param rows The rows.

@@ -19,7 +19,7 @@ class EcoMenu(
     val slots: List<MutableList<EcoSlot>>,
     private val title: String,
     private val onClose: CloseHandler
-): Menu {
+) : Menu {
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
             return slots[0][0]
@@ -46,7 +46,7 @@ class EcoMenu(
                 if (meta != null) {
                     val lore = meta.lore
                     if (lore != null) {
-                        lore.replaceAll{ s -> StringUtils.format(s, player) }
+                        lore.replaceAll { s -> StringUtils.format(s, player) }
                         meta.lore = lore
                     }
                     slotItem.itemMeta = meta
@@ -102,5 +102,10 @@ class EcoMenu(
         val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory)
         inventory ?: return HashSet()
         return inventory.data.keys
+    }
+
+    override fun refresh(player: Player) {
+        val inventory = MenuHandler.getExtendedInventory(player.openInventory.topInventory) ?: return
+        inventory.refresh(player)
     }
 }
