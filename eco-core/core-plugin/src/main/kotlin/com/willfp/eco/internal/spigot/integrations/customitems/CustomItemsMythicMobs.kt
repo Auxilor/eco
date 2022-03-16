@@ -4,14 +4,14 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
-import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitItemStack
-import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicDropLoadEvent
-import io.lumine.xikage.mythicmobs.drops.Drop
-import io.lumine.xikage.mythicmobs.drops.DropMetadata
-import io.lumine.xikage.mythicmobs.drops.IMultiDrop
-import io.lumine.xikage.mythicmobs.drops.LootBag
-import io.lumine.xikage.mythicmobs.drops.droppables.ItemDrop
-import io.lumine.xikage.mythicmobs.io.MythicLineConfig
+import io.lumine.mythic.api.config.MythicLineConfig
+import io.lumine.mythic.api.drops.DropMetadata
+import io.lumine.mythic.api.drops.IMultiDrop
+import io.lumine.mythic.bukkit.adapters.BukkitItemStack
+import io.lumine.mythic.bukkit.events.MythicDropLoadEvent
+import io.lumine.mythic.core.drops.Drop
+import io.lumine.mythic.core.drops.LootBag
+import io.lumine.mythic.core.drops.droppables.ItemDrop
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -42,9 +42,9 @@ class CustomItemsMythicMobs(
 
     private class MythicMobsDrop(
         private val plugin: EcoPlugin,
-        private val config: MythicLineConfig
-    ) : Drop(config.line, config), IMultiDrop {
-        private val id = config.getString(arrayOf("type", "t", "item", "i"), this.dropVar)
+        itemConfig: MythicLineConfig
+    ) : Drop(itemConfig.line, itemConfig), IMultiDrop {
+        private val id = itemConfig.getString(arrayOf("type", "t", "item", "i"), this.dropVar)
 
         override fun get(data: DropMetadata): LootBag {
             val bag = LootBag(data)
