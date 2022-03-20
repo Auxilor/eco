@@ -35,7 +35,7 @@ class CustomItemsHeadDatabase(
         private lateinit var api: HeadDatabaseAPI
 
         override fun provideForKey(key: String): TestableItem? {
-            if (this::api.isInitialized) {
+            if (!this::api.isInitialized) {
                 return null
             }
 
