@@ -99,7 +99,7 @@ allprojects {
 
         // Other
         compileOnly("com.google.guava:guava:31.1-jre")
-        compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.5")
+        compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.6")
     }
 
     tasks.withType<JavaCompile> {
