@@ -1,32 +1,29 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
+import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import java.util.WeakHashMap
 
-object MenuHandler {
-    private val menus = WeakHashMap<ExtendedInventory, EcoMenu>()
-    private val inventories = WeakHashMap<Inventory, ExtendedInventory>()
+private val inventories = WeakHashMap<Inventory, MenuRenderedInventory>()
 
-    fun registerMenu(
+object MenuHandler {
+    fun registerInventory(
         inventory: Inventory,
-        menu: EcoMenu
+        menu: EcoMenu,
+        player: Player
     ) {
-        val extendedInventory = ExtendedInventory(inventory, menu)
-        inventories[inventory] = extendedInventory
-        menus[extendedInventory] = menu
+        val rendered = MenuRenderedInventory(menu, inventory, player)
+        inventories[inventory] = rendered
     }
 
-    fun unregisterMenu(inventory: Inventory) {
-        menus.remove(inventories[inventory])
+    fun unregisterInventory(inventory: Inventory) {
         inventories.remove(inventory)
     }
-
-    fun getMenu(inventory: Inventory): Menu? {
-        return menus[inventories[inventory]]
-    }
-
-    fun getExtendedInventory(inventory: Inventory): ExtendedInventory? {
-        return inventories[inventory]
-    }
 }
+
+fun Inventory.asRenderedInventory(): MenuRenderedInventory? =
+    inventories[this]
+
+fun Inventory.getMenu(): Menu? =
+    this.asRenderedInventory()?.menu

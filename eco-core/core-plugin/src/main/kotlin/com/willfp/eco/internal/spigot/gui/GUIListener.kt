@@ -1,67 +1,42 @@
 package com.willfp.eco.internal.spigot.gui
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
+import com.willfp.eco.internal.gui.menu.asRenderedInventory
+import com.willfp.eco.internal.gui.menu.getMenu
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.MenuUtils
-import org.apache.commons.lang.Validate
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 
 class GUIListener(private val plugin: EcoPlugin) : Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     fun handleSlotClick(event: InventoryClickEvent) {
-        val player = event.whoClicked
-        if (player !is Player) {
-            return
-        }
-        val menu = MenuHandler.getMenu(event.clickedInventory ?: return) ?: return
+        val rendered = event.clickedInventory?.asRenderedInventory() ?: return
+
+        val menu = rendered.menu
+
         val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot)
-        val slot = menu.getSlot(row, column)
-        Validate.isTrue(slot is EcoSlot, "Slot not instance of EcoSlot!")
-        val ecoSlot = menu.getSlot(row, column) as EcoSlot
-        event.isCancelled = true
-        ecoSlot.handleInventoryClick(event, menu)
 
-        if (event.clickedInventory == null) {
-            return
-        }
+        val slot = menu.getSlot(row, column) as? EcoSlot ?: return
 
-        val extendedInventory = MenuHandler.getExtendedInventory(event.clickedInventory!!) ?: return
+        slot.handleInventoryClick(event, menu)
 
-        plugin.scheduler.run { extendedInventory.refresh(player) }
+        plugin.scheduler.run { rendered.render() }
     }
 
-    @EventHandler
-    fun handleCaptivatorSlots(event: InventoryClickEvent) {
-        val player = event.whoClicked
-        if (player !is Player) {
-            return
-        }
-
-        MenuHandler.getMenu(player.openInventory.topInventory) ?: return
-        MenuHandler.getExtendedInventory(player.openInventory.topInventory) ?: return
-
-        plugin.scheduler.run { MenuHandler.getExtendedInventory(player.openInventory.topInventory)?.refresh(player) }
-    }
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     fun handleShiftClick(event: InventoryClickEvent) {
-        if (!(event.click == ClickType.SHIFT_RIGHT || event.click == ClickType.SHIFT_LEFT)) {
+        if (!event.isShiftClick) {
             return
         }
 
-        val player = event.whoClicked
-        if (player !is Player) {
-            return
-        }
+        val player = event.whoClicked as? Player ?: return
 
         val inv = player.openInventory.topInventory
 
@@ -69,9 +44,10 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
             return
         }
 
-        val menu = MenuHandler.getMenu(inv) ?: return
+        val menu = inv.getMenu() ?: return
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())
+
         val slot = menu.getSlot(row, column)
 
         if (!slot.isCaptive) {
@@ -81,21 +57,10 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     fun handleClose(event: InventoryCloseEvent) {
-        val player = event.player
-        if (player !is Player) {
-            return
-        }
-        val menu = MenuHandler.getMenu(event.inventory) ?: return
-        Validate.isTrue(menu is EcoMenu, "Menu not instance of EcoMenu!")
-        val ecoMenu = menu as EcoMenu
-        ecoMenu.handleClose(event)
+        val menu = event.inventory.getMenu() as? EcoMenu ?: return
 
-        DropQueue(player)
-            .addItems(ecoMenu.getCaptiveItems(player))
-            .setLocation(player.location)
-            .forceTelekinesis()
-            .push()
+        menu.handleClose(event)
 
-        plugin.scheduler.run { MenuHandler.unregisterMenu(event.inventory) }
+        plugin.scheduler.run { MenuHandler.unregisterInventory(event.inventory) }
     }
 }
