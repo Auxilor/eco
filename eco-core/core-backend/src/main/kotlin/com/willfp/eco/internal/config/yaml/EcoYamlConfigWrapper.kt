@@ -52,13 +52,13 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         path: String,
         obj: Any?
     ) {
-        cache.invalidate(path)
+        this.clearCache()
         handle[path] = obj
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
         return cache.get(path) {
-            val raw = handle.getConfigurationSection(path)
+            val raw = handle.getConfigurationSection(it)
             if (raw == null) {
                 return@get Optional.empty()
             } else {
@@ -69,40 +69,40 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getIntOrNull(path: String): Int? {
         return (cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getDouble(path).toInt()
+            val raw = handle.getDouble(it).toInt()
             Optional.of(raw)
         }.orElse(null) as? Number)?.toInt()
     }
 
     override fun getIntsOrNull(path: String): List<Int>? {
         return (cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getIntegerList(path)
+            val raw = handle.getIntegerList(it)
             Optional.of(raw)
         }.orElse(null) as? Iterable<Number>)?.toList()?.map { it.toInt() }
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
         return cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getBoolean(path)
+            val raw = handle.getBoolean(it)
             Optional.of(raw)
         }.orElse(null) as? Boolean
     }
 
     override fun getBoolsOrNull(path: String): List<Boolean>? {
         return (cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getBooleanList(path)
+            val raw = handle.getBooleanList(it)
             Optional.of(raw)
         }.orElse(null) as? Iterable<Boolean>)?.toList()
     }
@@ -113,10 +113,10 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         option: StringUtils.FormatOption
     ): String? {
         val string = cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getString(path)
+            val raw = handle.getString(it)
             Optional.ofNullable(raw)
         }.orElse(null) as? String ?: return null
 
@@ -129,10 +129,10 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         option: StringUtils.FormatOption
     ): List<String>? {
         val strings = (cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getStringList(path)
+            val raw = handle.getStringList(it)
             Optional.of(raw)
         }.orElse(null) as? Iterable<String>)?.toList() ?: return null
 
@@ -141,32 +141,32 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getDoubleOrNull(path: String): Double? {
         return (cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getDouble(path)
+            val raw = handle.getDouble(it)
             Optional.of(raw)
         }.orElse(null) as? Number)?.toDouble()
     }
 
     override fun getDoublesOrNull(path: String): List<Double>? {
         return (cache.get(path) {
-            if (!handle.contains(path)) {
+            if (!handle.contains(it)) {
                 return@get Optional.empty()
             }
-            val raw = handle.getIntegerList(path)
+            val raw = handle.getIntegerList(it)
             Optional.of(raw)
         }.orElse(null) as? Iterable<Number>)?.toList()?.map { it.toDouble() }
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
         return (cache.get(path) {
-            val raw = handle.getMapList(path)
+            val raw = handle.getMapList(it)
             val configs = mutableListOf<Config>()
 
             for (map in raw) {
                 val temp = YamlConfiguration.loadConfiguration(StringReader("")) // Empty config
-                temp.createSection("temp")
+                temp.createSection("temp", map)
                 configs.add(EcoYamlConfigSection(temp.getConfigurationSection("temp")!!, injections))
             }
 
