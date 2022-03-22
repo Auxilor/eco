@@ -29,7 +29,8 @@ import java.lang.annotation.Target;
  * }</pre>
  * <p>
  * If using kotlin, you have to annotate the method with {@code @JvmStatic}
- * in order to prevent null pointer exceptions.
+ * in order to prevent null pointer exceptions - this also means that you cannot
+ * have config updater methods in companion objects.
  * <p>
  * Config update methods in all classes in a plugin jar will be called
  * on reload.
