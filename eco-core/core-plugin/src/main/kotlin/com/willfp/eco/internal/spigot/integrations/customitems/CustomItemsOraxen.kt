@@ -18,11 +18,12 @@ class CustomItemsOraxen : CustomItemsWrapper {
     }
 
     private class OraxenProvider : ItemProvider("oraxen") {
-        override fun provideForKey(id: String): TestableItem? {
-            val item = OraxenItems.getItemById(id) ?: return null
-            val key = NamespacedKeyUtils.create("oraxen", id)
+        override fun provideForKey(key: String): TestableItem? {
+            val item = OraxenItems.getItemById(key) ?: return null
+            val id = OraxenItems.getIdByItem(item)
+            val namespacedKey = NamespacedKeyUtils.create("oraxen", id)
             return CustomItem(
-                key,
+                namespacedKey,
                 { id.equals(OraxenItems.getIdByItem(it), ignoreCase = true) },
                 item.build()
             )
