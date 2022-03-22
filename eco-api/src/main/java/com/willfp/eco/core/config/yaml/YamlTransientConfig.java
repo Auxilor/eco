@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.yaml.wrapper.YamlConfigWrapper;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.StringReader;
@@ -17,7 +18,9 @@ import java.io.StringReader;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(since = "6.17.0")
+@SuppressWarnings("removal")
+@Deprecated(since = "6.17.0", forRemoval = true)
+@ApiStatus.ScheduledForRemoval(inVersion = "6.30.0")
 public class YamlTransientConfig extends YamlConfigWrapper {
     /**
      * @param config The YamlConfiguration handle.

@@ -1,18 +1,15 @@
-@file:Suppress("DEPRECATION")
-
 package com.willfp.eco.internal.config.json
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.interfaces.JSONConfig
+import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.StaticPlaceholder
 import com.willfp.eco.util.StringUtils
-import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
-open class EcoJSONConfigWrapper : JSONConfig {
+open class EcoJSONConfigWrapper : Config {
     companion object {
         val gson: Gson = GsonBuilder()
             .setPrettyPrinting()
@@ -21,8 +18,6 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     val values = ConcurrentHashMap<String, Any?>()
-
-    private val cache = ConcurrentHashMap<String, Any>()
     var injections = mutableListOf<StaticPlaceholder>()
 
     fun init(values: Map<String, Any?>) {
@@ -31,7 +26,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun clearCache() {
-        cache.clear()
+        // No cache
     }
 
     override fun toPlaintext(): String {
@@ -42,58 +37,75 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return getOfKnownType(path, Any::class.java) != null
     }
 
-    private fun <T : Any?> getOfKnownType(
+    private fun <T> getOfKnownType(
         path: String,
         clazz: Class<T>
     ): T? {
-        return getOfKnownType(path, clazz, true)
+        val nearestPath = path.split(".")[0]
+
+        if (path.contains(".")) {
+            val remainingPath = path.removePrefix("${nearestPath}.")
+            return getOfKnownType(remainingPath, clazz)
+        }
+
+        val found = values[nearestPath] ?: return null
+        return if (found is Map<*, *>) {
+            val rawSection = found as Map<String, Any?>
+            EcoJSONConfigSection(rawSection, injections) as? T?
+        } else if (found is Iterable<*>) {
+            val first = found.firstOrNull() // Type erasure
+            if (first is Map<*, *>) {
+                val rawSections = found as Iterable<Map<String, Any?>>
+                rawSections.map { EcoJSONConfigSection(it, injections) }
+            } else {
+                found
+            }
+        } else {
+            found
+        } as? T?
     }
 
-    protected fun <T> getOfKnownType(
+    private fun setRecursively(
         path: String,
-        clazz: Class<T>,
-        isBase: Boolean
-    ): T? {
-        var closestPath = path
-        if (cache.containsKey(path) && isBase) {
-            return cache[path] as T?
-        }
+        obj: Any?
+    ) {
+        this.clearCache()
+        val nearestPath = path.split(".")[0]
+
         if (path.contains(".")) {
-            val split = path.split("\\.".toRegex()).toTypedArray()
-            closestPath = split[0]
-        }
-        return if (values[closestPath] is Map<*, *> && path != closestPath) {
-            val section =
-                EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!, injections)
-            section.getOfKnownType(path.substring(closestPath.length + 1), clazz, false)
-        } else {
-            if (values.containsKey(closestPath)) {
-                values[closestPath] as T?
-            } else {
-                null
+            val remainingPath = path.removePrefix("${nearestPath}.")
+            val section = getOfKnownType(nearestPath, EcoJSONConfigWrapper::class.java)
+            if (section == null) {
+                values[nearestPath] = EcoJSONConfigSection(emptyMap(), injections)
+                return setRecursively(path, obj)
             }
+
+            section.setRecursively(remainingPath, obj)
         }
+
+        values[path] = if (obj is EcoJSONConfigWrapper) obj.values else obj
     }
 
     override fun getKeys(deep: Boolean): List<String> {
         return if (deep) {
-            ArrayList(getDeepKeys(HashSet(), ""))
+            recurseKeys(mutableSetOf()).toList()
         } else {
-            ArrayList(values.keys)
+            values.keys.toList()
         }
     }
 
-    protected fun getDeepKeys(
+    protected fun recurseKeys(
         list: MutableSet<String>,
-        root: String
+        root: String = ""
     ): Set<String> {
-        for (key in values.keys) {
+        for (key in getKeys(false)) {
             list.add(root + key)
-            if (values[key] is Map<*, *>) {
-                val section = EcoJSONConfigSection((values[key] as Map<String, Any?>?)!!, injections)
-                list.addAll(section.getDeepKeys(list, "$root$key."))
+            val found = get(key)
+            if (found is EcoJSONConfigWrapper) {
+                list.addAll(found.recurseKeys(list, "$root$key."))
             }
         }
+
         return list
     }
 
@@ -103,55 +115,21 @@ open class EcoJSONConfigWrapper : JSONConfig {
 
     override fun set(
         path: String,
-        `object`: Any?
-    ) {
-        setRecursively(path, `object`)
-        clearCache()
-    }
-
-    protected fun setRecursively(
-        path: String,
         obj: Any?
     ) {
-        var closestPath = path
-        if (path.contains(".")) {
-            val split = path.split("\\.".toRegex()).toTypedArray()
-            closestPath = split[0]
-        }
-        if (values[closestPath] is Map<*, *> && path != closestPath) {
-            val section = EcoJSONConfigSection((values[closestPath] as Map<String, Any?>?)!!, injections)
-            section.setRecursively(path.substring(closestPath.length + 1), obj)
-            values[closestPath] = section.values
-        } else {
-            var ob = obj
-            if (ob is JSONConfig) {
-                ob = (obj as EcoJSONConfigWrapper).values
-            }
-            values[path] = ob
-        }
+        setRecursively(path, obj)
     }
 
-    override fun getSubsection(path: String): JSONConfig {
+    override fun getSubsection(path: String): Config {
         return getSubsectionOrNull(path) ?: EcoJSONConfigSection(mutableMapOf(), injections)
     }
 
-    override fun getSubsectionOrNull(path: String): JSONConfig? {
-        return if (values.containsKey(path)) {
-            val subsection = values[path] as Map<String, Any>
-            EcoJSONConfigSection(subsection, injections)
-        } else {
-            null
-        }
+    override fun getSubsectionOrNull(path: String): Config? {
+        return getOfKnownType(path, Config::class.java)
     }
 
-    override fun getSubsectionsOrNull(path: String): List<JSONConfig>? {
-        val maps = getOfKnownType(path, Any::class.java) as List<Map<String, Any>>?
-            ?: return null
-        val configs = mutableListOf<JSONConfig>()
-        for (map in maps) {
-            configs.add(EcoJSONConfigSection(map, injections))
-        }
-        return configs.toMutableList()
+    override fun getSubsectionsOrNull(path: String): List<Config>? {
+        return (getOfKnownType(path, Iterable::class.java) as? Iterable<Config>)?.toList()
     }
 
     override fun getIntOrNull(path: String): Int? {
@@ -159,7 +137,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getIntsOrNull(path: String): MutableList<Int>? {
-        return (getOfKnownType(path, Any::class.java) as Collection<Int>?)?.toMutableList()
+        return (getOfKnownType(path, Iterable::class.java) as Iterable<Int>?)?.toMutableList()
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
@@ -167,7 +145,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
-        return (getOfKnownType(path, Any::class.java) as Collection<Boolean>?)?.toMutableList()
+        return (getOfKnownType(path, Iterable::class.java) as Iterable<Boolean>?)?.toMutableList()
     }
 
     override fun getStringOrNull(
@@ -175,29 +153,17 @@ open class EcoJSONConfigWrapper : JSONConfig {
         format: Boolean,
         option: StringUtils.FormatOption
     ): String? {
-        return if (has(path)) {
-            val string = getOfKnownType(path, String::class.java) ?: ""
-            return if (format) StringUtils.format(string, option) else string
-        } else {
-            null
-        }
+        val string = getOfKnownType(path, String::class.java) ?: return null
+        return if (format) StringUtils.format(string, option) else string
     }
 
     override fun getStringsOrNull(
         path: String,
         format: Boolean,
         option: StringUtils.FormatOption
-    ): MutableList<String>? {
-        return if (has(path)) {
-            val strings =
-                (Objects.requireNonNullElse(
-                    getOfKnownType(path, Any::class.java),
-                    emptyList<String>()
-                ) as List<String>).toMutableList()
-            return if (format) StringUtils.formatList(strings, option) else strings
-        } else {
-            null
-        }
+    ): List<String>? {
+        val strings = (getOfKnownType(path, Iterable::class.java) as Iterable<String>?)?.toList() ?: return null
+        return if (format) StringUtils.formatList(strings, option) else strings
     }
 
     override fun getDoubleOrNull(path: String): Double? {
@@ -205,7 +171,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
     }
 
     override fun getDoublesOrNull(path: String): MutableList<Double>? {
-        return (getOfKnownType(path, Any::class.java) as Collection<Double>?)?.toMutableList()
+        return (getOfKnownType(path, Iterable::class.java) as Iterable<Double>?)?.toMutableList()
     }
 
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
@@ -227,7 +193,7 @@ open class EcoJSONConfigWrapper : JSONConfig {
         return ConfigType.JSON
     }
 
-    override fun clone(): JSONConfig {
+    override fun clone(): Config {
         return EcoJSONConfigSection(this.values.toMutableMap(), injections)
     }
 }

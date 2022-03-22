@@ -1,10 +1,7 @@
-@file:Suppress("DEPRECATION")
-
 package com.willfp.eco.internal.config.yaml
 
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.config.interfaces.LoadableConfig
-import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.FileOutputStream
@@ -16,7 +13,7 @@ open class EcoLoadableYamlConfig(
     private val plugin: PluginLike,
     private val subDirectoryPath: String,
     val source: Class<*>
-) : EcoYamlConfigWrapper<YamlConfiguration>(), WrappedYamlConfiguration, LoadableConfig {
+) : EcoYamlConfigWrapper<YamlConfiguration>(), LoadableConfig {
 
     private val configFile: File
     private val name: String = "$configName.yml"

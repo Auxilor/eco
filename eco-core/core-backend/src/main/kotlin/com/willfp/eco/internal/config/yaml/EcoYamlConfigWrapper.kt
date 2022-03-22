@@ -1,5 +1,7 @@
 package com.willfp.eco.internal.config.yaml
 
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.StaticPlaceholder
@@ -7,12 +9,15 @@ import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
+import java.util.Optional
 
 @Suppress("UNCHECKED_CAST")
 open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     lateinit var handle: T
-    private val cache = mutableMapOf<String, Any?>()
     var injections = mutableListOf<StaticPlaceholder>()
+
+    private val cache: Cache<String, Optional<Any>> = Caffeine.newBuilder()
+        .build()
 
     protected fun init(config: T): Config {
         handle = config
@@ -28,7 +33,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     }
 
     override fun clearCache() {
-        cache.clear()
+        cache.invalidateAll()
     }
 
     override fun has(path: String): Boolean {
@@ -47,74 +52,59 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         path: String,
         obj: Any?
     ) {
-        cache.remove(path)
+        cache.invalidate(path)
         handle[path] = obj
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
-        return if (cache.containsKey(path)) {
-            cache[path] as Config?
-        } else {
+        return cache.get(path) {
             val raw = handle.getConfigurationSection(path)
             if (raw == null) {
-                cache[path] = null
+                return@get Optional.empty()
             } else {
-                cache[path] = EcoYamlConfigSection(raw, injections)
+                return@get Optional.of(EcoYamlConfigSection(raw, injections))
             }
-            getSubsectionOrNull(path)
-        }
+        }.orElse(null) as? Config
     }
 
     override fun getIntOrNull(path: String): Int? {
-        return if (cache.containsKey(path)) {
-            (cache[path] as Number).toInt()
-        } else {
-            if (has(path)) {
-                cache[path] = handle.getDouble(path).toInt()
-            } else {
-                return null
+        return (cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-            getIntOrNull(path)
-        }
+            val raw = handle.getDouble(path).toInt()
+            Optional.of(raw)
+        }.orElse(null) as? Number)?.toInt()
     }
 
-    override fun getIntsOrNull(path: String): MutableList<Int>? {
-        return if (cache.containsKey(path)) {
-            (cache[path] as Collection<Int>).toMutableList()
-        } else {
-            if (has(path)) {
-                cache[path] = handle.getIntegerList(path).toMutableList()
-            } else {
-                return null
+    override fun getIntsOrNull(path: String): List<Int>? {
+        return (cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-            getIntsOrNull(path)
-        }
+            val raw = handle.getIntegerList(path)
+            Optional.of(raw)
+        }.orElse(null) as? Iterable<Number>)?.toList()?.map { it.toInt() }
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
-        return if (cache.containsKey(path)) {
-            cache[path] as Boolean
-        } else {
-            if (has(path)) {
-                cache[path] = handle.getBoolean(path)
-            } else {
-                return null
+        return cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-            getBoolOrNull(path)
-        }
+            val raw = handle.getBoolean(path)
+            Optional.of(raw)
+        }.orElse(null) as? Boolean
     }
 
-    override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
-        return if (cache.containsKey(path)) {
-            (cache[path] as Collection<Boolean>).toMutableList()
-        } else {
-            if (has(path)) {
-                cache[path] = handle.getBooleanList(path).toMutableList()
-            } else {
-                return null
+    override fun getBoolsOrNull(path: String): List<Boolean>? {
+        return (cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-            getBoolsOrNull(path)
-        }
+            val raw = handle.getBooleanList(path)
+            Optional.of(raw)
+        }.orElse(null) as? Iterable<Boolean>)?.toList()
     }
 
     override fun getStringOrNull(
@@ -122,109 +112,70 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         format: Boolean,
         option: StringUtils.FormatOption
     ): String? {
-        return if (has(path)) {
-            if (format && option == StringUtils.FormatOption.WITHOUT_PLACEHOLDERS) {
-                return if (cache.containsKey("$path\$FMT")) {
-                    cache["$path\$FMT"] as String
-                } else {
-                    val string: String = handle.getString(path, "")!!
-                    cache["$path\$FMT"] = StringUtils.format(string, option)
-                    getString(path, format, option)
-                }
-            } else {
-                val string = if (cache.containsKey(path)) {
-                    cache[path] as String
-                } else {
-                    cache[path] = handle.getString(path, "")!!
-                    getString(path, format, option)
-                }
-
-                return if (format) StringUtils.format(string) else string
+        val string = cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-        } else {
-            null
-        }
+            val raw = handle.getString(path)
+            Optional.ofNullable(raw)
+        }.orElse(null) as? String ?: return null
+
+        return if (format) StringUtils.format(string, option) else string
     }
 
     override fun getStringsOrNull(
         path: String,
         format: Boolean,
         option: StringUtils.FormatOption
-    ): MutableList<String>? {
-        return if (has(path)) {
-            if (format && option == StringUtils.FormatOption.WITHOUT_PLACEHOLDERS) {
-                return if (cache.containsKey("$path\$FMT")) {
-                    (cache["$path\$FMT"] as MutableList<String>).toMutableList()
-                } else {
-                    val list = if (has(path)) handle.getStringList(path) else mutableListOf<String>()
-                    cache["$path\$FMT"] = StringUtils.formatList(list, option)
-                    getStrings(path, true, option)
-                }
-            } else {
-                val strings = if (cache.containsKey(path)) {
-                    (cache[path] as MutableList<String>).toMutableList()
-                } else {
-                    cache[path] =
-                        if (has(path)) ArrayList(handle.getStringList(path)) else mutableListOf<String>()
-                    getStrings(path, false, option)
-                }
-
-                return if (format) {
-                    StringUtils.formatList(strings, StringUtils.FormatOption.WITH_PLACEHOLDERS)
-                } else {
-                    strings
-                }
+    ): List<String>? {
+        val strings = (cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-        } else {
-            null
-        }
+            val raw = handle.getStringList(path)
+            Optional.of(raw)
+        }.orElse(null) as? Iterable<String>)?.toList() ?: return null
+
+        return if (format) StringUtils.formatList(strings, option) else strings
     }
 
     override fun getDoubleOrNull(path: String): Double? {
-        return if (cache.containsKey(path)) {
-            (cache[path] as Number).toDouble()
-        } else {
-            if (has(path)) {
-                cache[path] = handle.getDouble(path)
-            } else {
-                return null
+        return (cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-            getDoubleOrNull(path)
-        }
+            val raw = handle.getDouble(path)
+            Optional.of(raw)
+        }.orElse(null) as? Number)?.toDouble()
     }
 
-    override fun getDoublesOrNull(path: String): MutableList<Double>? {
-        return if (cache.containsKey(path)) {
-            (cache[path] as Collection<Double>).toMutableList()
-        } else {
-            if (has(path)) {
-                cache[path] = handle.getDoubleList(path).toMutableList()
-            } else {
-                return null
+    override fun getDoublesOrNull(path: String): List<Double>? {
+        return (cache.get(path) {
+            if (!handle.contains(path)) {
+                return@get Optional.empty()
             }
-            getDoublesOrNull(path)
-        }
+            val raw = handle.getIntegerList(path)
+            Optional.of(raw)
+        }.orElse(null) as? Iterable<Number>)?.toList()?.map { it.toDouble() }
     }
 
-    override fun getSubsectionsOrNull(path: String): MutableList<out Config>? {
-        return if (has(path)) {
-            return if (cache.containsKey(path)) {
-                (cache[path] as Collection<Config>).toMutableList()
-            } else {
-                val mapList = ArrayList(handle.getMapList(path)) as List<Map<String, Any?>>
-                val configList = mutableListOf<Config>()
-                for (map in mapList) {
-                    val temp = YamlConfiguration.loadConfiguration(StringReader(""))
-                    temp.createSection("a", map)
-                    configList.add(EcoYamlConfigSection(temp.getConfigurationSection("a")!!, injections))
-                }
+    override fun getSubsectionsOrNull(path: String): List<Config>? {
+        return (cache.get(path) {
+            val raw = handle.getMapList(path)
+            val configs = mutableListOf<Config>()
 
-                cache[path] = if (has(path)) configList else emptyList()
-                getSubsections(path)
+            for (map in raw) {
+                val temp = YamlConfiguration.loadConfiguration(StringReader("")) // Empty config
+                temp.createSection("temp")
+                configs.add(EcoYamlConfigSection(temp.getConfigurationSection("temp")!!, injections))
             }
-        } else {
-            null
-        }
+
+            if (configs.isEmpty()) {
+                return@get Optional.empty()
+            } else {
+                return@get Optional.of(configs)
+            }
+        }.orElse(null) as? Iterable<Config>)?.toList()
     }
 
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {

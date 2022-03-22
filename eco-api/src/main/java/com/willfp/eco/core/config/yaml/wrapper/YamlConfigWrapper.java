@@ -3,7 +3,9 @@ package com.willfp.eco.core.config.yaml.wrapper;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.interfaces.WrappedYamlConfiguration;
 import com.willfp.eco.core.config.wrapper.ConfigWrapper;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -13,7 +15,9 @@ import org.jetbrains.annotations.NotNull;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(since = "6.17.0")
+@SuppressWarnings("removal")
+@Deprecated(since = "6.17.0", forRemoval = true)
+@ApiStatus.ScheduledForRemoval(inVersion = "6.30.0")
 public abstract class YamlConfigWrapper extends ConfigWrapper<Config> implements WrappedYamlConfiguration {
     /**
      * Create a config wrapper.
@@ -27,5 +31,9 @@ public abstract class YamlConfigWrapper extends ConfigWrapper<Config> implements
     @Override
     public YamlConfiguration getBukkitHandle() {
         return ((WrappedYamlConfiguration) this.getHandle()).getBukkitHandle();
+    }
+
+    static {
+        Bukkit.getLogger().severe("JSONConfig is scheduled for removal in the next release!");
     }
 }

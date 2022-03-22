@@ -6,6 +6,7 @@ import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.JSONConfig;
 import com.willfp.eco.core.config.json.wrapper.LoadableJSONConfigWrapper;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,7 +22,9 @@ import org.jetbrains.annotations.NotNull;
  * eg {@link com.willfp.eco.core.config.TransientConfig}, {@link com.willfp.eco.core.config.BaseConfig}.
  * These configs will be removed eventually.
  */
-@Deprecated(since = "6.17.0")
+@SuppressWarnings("removal")
+@Deprecated(since = "6.17.0", forRemoval = true)
+@ApiStatus.ScheduledForRemoval(inVersion = "6.30.0")
 public abstract class JSONExtendableConfig extends LoadableJSONConfigWrapper {
     /**
      * @param configName       The name of the config
