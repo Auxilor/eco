@@ -29,6 +29,13 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * @param config The YamlConfiguration handle.
+     */
+    public TransientConfig(@NotNull final YamlConfiguration config) {
+        super(Eco.getHandler().getConfigFactory().createConfig(config));
+    }
+
+    /**
      * @param stream The InputStream.
      */
     public TransientConfig(@Nullable final InputStream stream) {
