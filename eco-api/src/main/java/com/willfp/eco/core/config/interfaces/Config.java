@@ -252,35 +252,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      *
      * @param path   The key to fetch the value from.
      * @param format If the string should be formatted.
-     * @return The found value, or an empty string if not found.
-     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
-     */
-    @Deprecated(since = "6.18.0")
-    default String getString(@NotNull String path,
-                             boolean format) {
-        return this.getString(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
-    }
-
-    /**
-     * Get a string from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param option The format option.
-     * @return The found value, or an empty string if not found.
-     * @deprecated Use {@link Config#getFormattedString(String, StringUtils.FormatOption)} instead.
-     */
-    @NotNull
-    @Deprecated
-    default String getString(@NotNull String path,
-                             @NotNull final StringUtils.FormatOption option) {
-        return this.getString(path, true, option);
-    }
-
-    /**
-     * Get a string from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param format If the string should be formatted.
      * @param option The format option.
      * @return The found value, or an empty string if not found.
      */
@@ -326,36 +297,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     @Nullable
     default String getStringOrNull(@NotNull String path) {
         return getStringOrNull(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
-    }
-
-    /**
-     * Get a string from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param format If the string should be formatted.
-     * @return The found value, or null if not found.
-     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
-     */
-    @Nullable
-    @Deprecated(since = "6.18.0")
-    default String getStringOrNull(@NotNull String path,
-                                   boolean format) {
-        return this.getStringOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
-    }
-
-    /**
-     * Get a string from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param option The format option.
-     * @return The found value, or null if not found.
-     * @deprecated Use {@link Config#getFormattedString(String, StringUtils.FormatOption)} instead.
-     */
-    @Nullable
-    @Deprecated
-    default String getStringOrNull(@NotNull String path,
-                                   @NotNull StringUtils.FormatOption option) {
-        return this.getStringOrNull(path, true, option);
     }
 
     /**
@@ -417,36 +358,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      *
      * @param path   The key to fetch the value from.
      * @param format If the strings should be formatted.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
-     */
-    @NotNull
-    @Deprecated(since = "6.18.0")
-    default List<String> getStrings(@NotNull String path,
-                                    boolean format) {
-        return this.getStrings(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
-    }
-
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param option The format option.
-     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
-     * @deprecated Use {@link Config#getFormattedStrings(String, StringUtils.FormatOption)} instead.
-     */
-    @NotNull
-    @Deprecated
-    default List<String> getStrings(@NotNull String path,
-                                    @NotNull StringUtils.FormatOption option) {
-        return getStrings(path, false, option);
-    }
-
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param format If the strings should be formatted.
      * @param option The option.
      * @return The found value, or a blank {@link java.util.ArrayList} if not found.
      */
@@ -498,36 +409,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     @Nullable
     default List<String> getStringsOrNull(@NotNull String path) {
         return getStringsOrNull(path, false, StringUtils.FormatOption.WITH_PLACEHOLDERS);
-    }
-
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param format If the strings should be formatted.
-     * @return The found value, or null if not found.
-     * @deprecated Since 6.18.0, {@link Config#getString(String)} is not formatted by default.
-     */
-    @Nullable
-    @Deprecated(since = "6.18.0")
-    default List<String> getStringsOrNull(@NotNull String path,
-                                          boolean format) {
-        return getStringsOrNull(path, format, StringUtils.FormatOption.WITH_PLACEHOLDERS);
-    }
-
-    /**
-     * Get a list of strings from config.
-     *
-     * @param path   The key to fetch the value from.
-     * @param option The format option.
-     * @return The found value, or null if not found.
-     * @deprecated Use {@link Config#getFormattedStringsOrNull(String, StringUtils.FormatOption)} instead.
-     */
-    @Nullable
-    @Deprecated
-    default List<String> getStringsOrNull(@NotNull String path,
-                                          @NotNull StringUtils.FormatOption option) {
-        return getStringsOrNull(path, false, option);
     }
 
     /**

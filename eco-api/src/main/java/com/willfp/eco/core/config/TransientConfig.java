@@ -39,11 +39,11 @@ public class TransientConfig extends ConfigWrapper<Config> {
 
     /**
      * @param file The File.
+     * @deprecated Specify the config type to prevent bugs.
      */
+    @Deprecated(since = "6.30.0", forRemoval = true)
     public TransientConfig(@Nullable final File file) {
-        super(file != null ? Eco.getHandler().getConfigFactory().createConfig(YamlConfiguration.loadConfiguration(
-                file
-        )) : new TransientConfig());
+        this(file, ConfigType.YAML);
     }
 
     /**
