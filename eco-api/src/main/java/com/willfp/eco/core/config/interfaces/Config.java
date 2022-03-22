@@ -1,6 +1,6 @@
 package com.willfp.eco.core.config.interfaces;
 
-import com.willfp.eco.core.config.ConfigBuilder;
+import com.willfp.eco.core.config.BuildableConfig;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.TransientConfig;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
@@ -560,7 +560,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      *
      * @return The builder.
      */
-    static ConfigBuilder builder() {
-        return new ConfigBuilder();
+    static BuildableConfig builder() {
+        return new BuildableConfig();
     }
 }

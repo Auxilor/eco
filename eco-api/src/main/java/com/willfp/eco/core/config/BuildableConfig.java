@@ -6,11 +6,11 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Builder for configs to create them programmatically.
  */
-public class ConfigBuilder extends TransientConfig {
+public class BuildableConfig extends TransientConfig {
     /**
      * Create a new empty config builder.
      */
-    public ConfigBuilder() {
+    public BuildableConfig() {
         super();
     }
 
@@ -21,8 +21,8 @@ public class ConfigBuilder extends TransientConfig {
      * @param object The object.
      * @return The builder.
      */
-    public ConfigBuilder add(@NotNull final String path,
-                             @Nullable final Object object) {
+    public BuildableConfig add(@NotNull final String path,
+                               @Nullable final Object object) {
         set(path, object);
         return this;
     }
