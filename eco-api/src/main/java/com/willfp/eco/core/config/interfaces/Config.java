@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -550,7 +549,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * @return The values.
      */
     default ConfigurationSection toBukkit() {
-        YamlConfiguration empty = YamlConfiguration.loadConfiguration(new StringReader(""));
+        YamlConfiguration empty = new YamlConfiguration();
         empty.createSection("temp", this.toMap());
         return empty.getConfigurationSection("temp");
     }

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.StaticPlaceholder
+import com.willfp.eco.internal.config.ensureConfigSerializable
 import com.willfp.eco.util.StringUtils
 import java.util.concurrent.ConcurrentHashMap
 
@@ -83,21 +84,7 @@ open class EcoJSONConfigWrapper : Config {
             section.setRecursively(remainingPath, obj)
         }
 
-        values[path] = when (obj) {
-            is Config -> obj.toMap()
-            is Collection<*> -> {
-                val first = obj.firstOrNull()
-                if (first is Config) {
-                    obj as Collection<Config>
-                    obj.map { it.toMap() }
-                } else if (obj.isEmpty()) {
-                    mutableListOf()
-                } else {
-                    obj.toList()
-                }
-            }
-            else -> obj
-        }
+        values[nearestPath] = obj?.ensureConfigSerializable()
     }
 
     override fun getKeys(deep: Boolean): List<String> {
