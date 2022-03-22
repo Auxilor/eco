@@ -14,7 +14,6 @@ class EcoUpdatableYamlConfig(
     private val removeUnused: Boolean,
     vararg updateBlacklist: String
 ) : EcoLoadableYamlConfig(configName, plugin, subDirectoryPath, source) {
-
     private val updateBlacklist: MutableList<String> = mutableListOf(*updateBlacklist)
 
     fun update() {
