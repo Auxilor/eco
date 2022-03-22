@@ -28,7 +28,7 @@ public final class DurabilityUtils {
      * @param slot   The slot in the inventory of the item.
      * @deprecated The slot is not required.
      */
-    @Deprecated(since = "6.24.0")
+    @Deprecated(since = "6.24.0", forRemoval = true)
     public static void damageItem(@NotNull final Player player,
                                   @NotNull final ItemStack item,
                                   final int damage,

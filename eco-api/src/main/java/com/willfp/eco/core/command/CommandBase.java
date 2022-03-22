@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Interface for all command implementations.
  */
+@SuppressWarnings("removal")
 public interface CommandBase {
     /**
      * Get command name.
@@ -81,7 +82,7 @@ public interface CommandBase {
      * @see CommandHandler
      * @deprecated Use {@link CommandBase#onExecute(CommandSender, List)} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     CommandHandler getHandler();
 
     /**
@@ -91,7 +92,7 @@ public interface CommandBase {
      * @see CommandHandler
      * @deprecated Handlers have been deprecated.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     void setHandler(@NotNull CommandHandler handler);
 
     /**
@@ -101,7 +102,7 @@ public interface CommandBase {
      * @see TabCompleteHandler
      * @deprecated Use {@link CommandBase#tabComplete(CommandSender, List)} instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     TabCompleteHandler getTabCompleter();
 
     /**
@@ -111,6 +112,6 @@ public interface CommandBase {
      * @see TabCompleteHandler
      * @deprecated Handlers have been deprecated.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     void setTabCompleter(@NotNull TabCompleteHandler handler);
 }

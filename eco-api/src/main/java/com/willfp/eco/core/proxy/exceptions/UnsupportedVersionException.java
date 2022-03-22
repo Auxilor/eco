@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @deprecated Poorly named, exception when it's actually an error, contains doubly nested errors.
  */
+@SuppressWarnings("removal")
 @Deprecated(since = "6.24.0", forRemoval = true)
 public class UnsupportedVersionException extends ProxyError {
     /**
@@ -16,7 +17,7 @@ public class UnsupportedVersionException extends ProxyError {
      * @param message The message to send.
      * @deprecated Use the default constructor.
      */
-    @Deprecated(since = "6.24.0")
+    @Deprecated(since = "6.24.0", forRemoval = true)
     public UnsupportedVersionException(@NotNull final String message) {
         super(message);
     }

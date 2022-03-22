@@ -24,7 +24,7 @@ public interface FastItemStack {
      * @return A map of all enchantments.
      * @deprecated Poorly named method. Use getEnchants instead.
      */
-    @Deprecated(since = "6.24.0")
+    @Deprecated(since = "6.24.0", forRemoval = true)
     default Map<Enchantment, Integer> getEnchantmentsOnItem(boolean checkStored) {
         return getEnchants(checkStored);
     }

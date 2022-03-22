@@ -71,7 +71,7 @@ public final class TeamUtils {
      * @deprecated Stupid method.
      */
     @NotNull
-    @Deprecated(since = "6.24.0")
+    @Deprecated(since = "6.24.0", forRemoval = true)
     public static Team getMaterialColorTeam(@NotNull final Material material) {
         return fromChatColor(MATERIAL_COLORS.getOrDefault(material, ChatColor.WHITE));
     }

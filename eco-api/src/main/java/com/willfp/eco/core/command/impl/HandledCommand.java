@@ -2,8 +2,6 @@ package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
-import com.willfp.eco.core.command.CommandHandler;
-import com.willfp.eco.core.command.TabCompleteHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
  * in order to execute the command-specific code. It's essentially an internal
  * layer, hence why it's a package-private class.
  */
-@SuppressWarnings({"DeprecatedIsStillUsed"})
+@SuppressWarnings({"DeprecatedIsStillUsed", "removal"})
 abstract class HandledCommand implements CommandBase {
     /**
      * The plugin.
@@ -54,14 +52,14 @@ abstract class HandledCommand implements CommandBase {
      */
     @Deprecated
     @Nullable
-    private CommandHandler handler = null;
+    private com.willfp.eco.core.command.CommandHandler handler = null;
 
     /**
      * The tab completion code to be executed in the command.
      */
     @Deprecated
     @Nullable
-    private TabCompleteHandler tabCompleter = null;
+    private com.willfp.eco.core.command.TabCompleteHandler tabCompleter = null;
 
     /**
      * All subcommands for the command.
@@ -256,27 +254,27 @@ abstract class HandledCommand implements CommandBase {
         return this.subcommands;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     @Override
-    public @Nullable CommandHandler getHandler() {
+    public @Nullable com.willfp.eco.core.command.CommandHandler getHandler() {
         return this.handler;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     @Override
-    public @Nullable TabCompleteHandler getTabCompleter() {
+    public @Nullable com.willfp.eco.core.command.TabCompleteHandler getTabCompleter() {
         return this.tabCompleter;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     @Override
-    public void setHandler(@Nullable final CommandHandler handler) {
+    public void setHandler(@Nullable final com.willfp.eco.core.command.CommandHandler handler) {
         this.handler = handler;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     @Override
-    public void setTabCompleter(@Nullable final TabCompleteHandler tabCompleter) {
+    public void setTabCompleter(@Nullable final com.willfp.eco.core.command.TabCompleteHandler tabCompleter) {
         this.tabCompleter = tabCompleter;
     }
 }

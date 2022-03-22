@@ -16,7 +16,7 @@ import java.util.List;
  * update to use the new system: {@link CommandBase#onExecute(CommandSender, List)}.
  */
 @FunctionalInterface
-@Deprecated(since = "6.17.0")
+@Deprecated(since = "6.17.0", forRemoval = true)
 public interface CommandHandler {
     /**
      * The code to be called on execution.

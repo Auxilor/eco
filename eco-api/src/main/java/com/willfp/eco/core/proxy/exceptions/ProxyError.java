@@ -23,7 +23,7 @@ public class ProxyError extends Error {
      * @param message The message to send.
      * @deprecated Proxy Errors should include a cause.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public ProxyError(@NotNull final String message) {
         super(message);
     }

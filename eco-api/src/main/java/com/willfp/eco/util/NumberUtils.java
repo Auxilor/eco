@@ -110,7 +110,7 @@ public final class NumberUtils {
      * @return The new value.
      * @deprecated Pointless method.
      */
-    @Deprecated(since = "6.19.0")
+    @Deprecated(since = "6.19.0", forRemoval = true)
     public static double equalIfOver(final double toChange,
                                      final double limit) {
         return Math.min(toChange, limit);
