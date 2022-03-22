@@ -29,10 +29,12 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * Exists for backwards compatibility, YamlConfigurations are ConfigurationSections.
+     *
      * @param config The YamlConfiguration handle.
      */
     public TransientConfig(@NotNull final YamlConfiguration config) {
-        super(Eco.getHandler().getConfigFactory().createConfig(config));
+        this((ConfigurationSection) config);
     }
 
     /**
