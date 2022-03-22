@@ -53,7 +53,20 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         obj: Any?
     ) {
         this.clearCache()
-        handle[path] = obj
+        handle[path] = when (obj) {
+            is EcoYamlConfigWrapper<*> -> obj.handle
+            is Iterable<*> -> {
+                val first = obj.firstOrNull()
+                if (first is EcoYamlConfigWrapper<*>) {
+                    obj as Iterable<EcoYamlConfigWrapper<*>>
+                    obj.map { it.handle }
+                } else {
+                    obj
+                }
+            }
+            else -> obj
+        }
+        handle[path] = if (obj is EcoYamlConfigWrapper<*>) obj.handle else obj
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
