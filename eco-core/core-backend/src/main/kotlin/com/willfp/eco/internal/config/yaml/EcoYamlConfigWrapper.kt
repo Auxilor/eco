@@ -61,9 +61,9 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
                     obj as Collection<Config>
                     obj.map { it.toBukkit() }
                 } else if (obj.isEmpty()) {
-                    emptyList()
+                    mutableListOf() // Don't use EmptyList, causes anchors as they have the same reference
                 } else {
-                    obj
+                    obj.toList()
                 }
             }
             else -> obj

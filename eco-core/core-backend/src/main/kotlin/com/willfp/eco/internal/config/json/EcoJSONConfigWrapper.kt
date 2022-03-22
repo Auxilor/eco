@@ -83,7 +83,21 @@ open class EcoJSONConfigWrapper : Config {
             section.setRecursively(remainingPath, obj)
         }
 
-        values[path] = if (obj is Config) obj.toMap() else obj
+        values[path] = when (obj) {
+            is Config -> obj.toMap()
+            is Collection<*> -> {
+                val first = obj.firstOrNull()
+                if (first is Config) {
+                    obj as Collection<Config>
+                    obj.map { it.toMap() }
+                } else if (obj.isEmpty()) {
+                    mutableListOf()
+                } else {
+                    obj.toList()
+                }
+            }
+            else -> obj
+        }
     }
 
     override fun getKeys(deep: Boolean): List<String> {
