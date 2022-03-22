@@ -12,11 +12,12 @@ import com.willfp.eco.internal.config.json.EcoUpdatableJSONConfig
 import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
 import com.willfp.eco.internal.config.yaml.EcoYamlConfigSection
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.StringReader
 
 object EcoConfigFactory : ConfigFactory {
-    override fun createConfig(config: YamlConfiguration): Config {
+    override fun createConfig(config: ConfigurationSection): Config {
         return EcoYamlConfigSection(config)
     }
 

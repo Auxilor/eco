@@ -1,5 +1,6 @@
 package com.willfp.eco.core.config.interfaces;
 
+import com.willfp.eco.core.config.ConfigBuilder;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.TransientConfig;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
@@ -671,5 +672,14 @@ public interface Config extends Cloneable, PlaceholderInjectable {
         YamlConfiguration empty = YamlConfiguration.loadConfiguration(new StringReader(""));
         empty.createSection("temp", this.toMap());
         return empty.getConfigurationSection("temp");
+    }
+
+    /**
+     * Create a new config builder.
+     *
+     * @return The builder.
+     */
+    static ConfigBuilder builder() {
+        return new ConfigBuilder();
     }
 }

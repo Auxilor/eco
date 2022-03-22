@@ -5,7 +5,7 @@ import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,7 +59,7 @@ public interface ConfigFactory {
      * @param config The handle.
      * @return The config implementation.
      */
-    Config createConfig(@NotNull YamlConfiguration config);
+    Config createConfig(@NotNull ConfigurationSection config);
 
     /**
      * Create config.

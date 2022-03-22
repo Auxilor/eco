@@ -3,12 +3,16 @@ package com.willfp.eco.core.config;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.wrapper.ConfigWrapper;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.Map;
 
 /**
@@ -18,9 +22,9 @@ import java.util.Map;
  */
 public class TransientConfig extends ConfigWrapper<Config> {
     /**
-     * @param config The YamlConfiguration handle.
+     * @param config The ConfigurationSection handle.
      */
-    public TransientConfig(@NotNull final YamlConfiguration config) {
+    public TransientConfig(@NotNull final ConfigurationSection config) {
         super(Eco.getHandler().getConfigFactory().createConfig(config));
     }
 
@@ -34,12 +38,45 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * @param file The File.
+     */
+    public TransientConfig(@Nullable final File file) {
+        super(file != null ? Eco.getHandler().getConfigFactory().createConfig(YamlConfiguration.loadConfiguration(
+                file
+        )) : new TransientConfig());
+    }
+
+    /**
+     * @param file The file.
+     * @param type The config type to try read from.
+     */
+    public TransientConfig(@Nullable final File file,
+                           @NotNull final ConfigType type) {
+        super(file != null ? Eco.getHandler().getConfigFactory().createConfig(readFile(file), type)
+                : new TransientConfig());
+    }
+
+    /**
      * Create a new empty transient config.
      *
      * @param values The values.
      */
     public TransientConfig(@NotNull final Map<String, Object> values) {
         super(Eco.getHandler().getConfigFactory().createConfig(values));
+    }
+
+    /**
+     * Create a new empty transient config.
+     *
+     * @param values The values.
+     * @param type   The type.
+     */
+    public TransientConfig(@NotNull final Map<String, Object> values,
+                           @NotNull final ConfigType type) {
+        super(
+                type == ConfigType.JSON ? Eco.getHandler().getConfigFactory().createConfig(values)
+                        : new TransientConfig(Eco.getHandler().getConfigFactory().createConfig(values).toBukkit())
+        );
     }
 
     /**
@@ -56,5 +93,23 @@ public class TransientConfig extends ConfigWrapper<Config> {
     public TransientConfig(@NotNull final String contents,
                            @NotNull final ConfigType type) {
         super(Eco.getHandler().getConfigFactory().createConfig(contents, type));
+    }
+
+    /**
+     * Read a file to a string.
+     *
+     * @param file The file.
+     * @return The string.
+     */
+    private static String readFile(@Nullable final File file) {
+        if (file == null) {
+            return "";
+        }
+
+        try {
+            return Files.readString(file.toPath());
+        } catch (IOException e) {
+            return "";
+        }
     }
 }
