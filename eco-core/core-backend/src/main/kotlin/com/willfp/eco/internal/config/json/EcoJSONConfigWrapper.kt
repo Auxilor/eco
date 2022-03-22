@@ -83,7 +83,7 @@ open class EcoJSONConfigWrapper : Config {
             section.setRecursively(remainingPath, obj)
         }
 
-        values[path] = if (obj is EcoJSONConfigWrapper) obj.values else obj
+        values[path] = if (obj is Config) obj.toMap() else obj
     }
 
     override fun getKeys(deep: Boolean): List<String> {
