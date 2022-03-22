@@ -17,8 +17,8 @@ class MenuRenderedInventory(
     fun render() {
         generateCaptive()
 
+        var i = 0
         for (row in menu.slots) {
-            var i = 0
             for (slot in row) {
                 if (i == menu.rows * 9) {
                     break

@@ -45,6 +45,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         }
 
         val menu = inv.getMenu() ?: return
+        val rendered = inv.asRenderedInventory() ?: return
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())
 
@@ -53,6 +54,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         if (!slot.isCaptive) {
             event.isCancelled = true
         }
+
+        plugin.scheduler.run { rendered.render() }
     }
 
     @EventHandler(priority = EventPriority.HIGH)

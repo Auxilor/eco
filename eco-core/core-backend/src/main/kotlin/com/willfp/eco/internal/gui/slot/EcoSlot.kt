@@ -6,6 +6,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 import com.willfp.eco.internal.gui.menu.getMenu
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -39,7 +40,7 @@ open class EcoSlot(
     override fun getItemStack(player: Player): ItemStack {
         val menu = player.openInventory.topInventory.getMenu()!!
         val prev = provider.provide(player, menu)
-        return updater.update(player, menu, prev)
+        return updater.update(player, menu, prev) ?: ItemStack(Material.AIR)
     }
 
     fun getItemStack(
@@ -47,7 +48,8 @@ open class EcoSlot(
         menu: Menu
     ): ItemStack {
         val prev = provider.provide(player, menu)
-        return updater.update(player, menu, prev)
+        val updated = updater.update(player, menu, prev)
+        return updated ?: ItemStack(Material.AIR)
     }
 
     override fun isCaptive(): Boolean {
