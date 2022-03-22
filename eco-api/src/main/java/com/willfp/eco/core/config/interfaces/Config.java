@@ -6,13 +6,18 @@ import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -646,5 +651,25 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     @Override
     default void clearInjectedPlaceholders() {
         // Do nothing.
+    }
+
+    /**
+     * Convert the config to a map of values.
+     *
+     * @return The values.
+     */
+    default Map<String, Object> toMap() {
+        return new HashMap<>();
+    }
+
+    /**
+     * Convert the config to a map of values.
+     *
+     * @return The values.
+     */
+    default ConfigurationSection toBukkit() {
+        YamlConfiguration empty = YamlConfiguration.loadConfiguration(new StringReader(""));
+        empty.createSection("temp", this.toMap());
+        return empty.getConfigurationSection("temp");
     }
 }

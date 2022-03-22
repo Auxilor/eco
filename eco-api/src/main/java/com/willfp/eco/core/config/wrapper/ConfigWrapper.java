@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Configs from eco have an internal implementation,
@@ -153,6 +154,11 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Override
     public void clearInjectedPlaceholders() {
         handle.clearInjectedPlaceholders();
+    }
+
+    @Override
+    public Map<String, Object> toMap() {
+        return this.handle.toMap();
     }
 
     /**

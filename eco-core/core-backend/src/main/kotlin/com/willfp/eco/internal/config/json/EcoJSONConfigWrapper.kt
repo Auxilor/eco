@@ -189,6 +189,10 @@ open class EcoJSONConfigWrapper : Config {
         this.clearCache()
     }
 
+    override fun toMap(): MutableMap<String, Any?> {
+        return values.toMutableMap()
+    }
+
     override fun getType(): ConfigType {
         return ConfigType.JSON
     }

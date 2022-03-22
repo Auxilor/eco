@@ -54,12 +54,12 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
     ) {
         this.clearCache()
         handle[path] = when (obj) {
-            is EcoYamlConfigWrapper<*> -> obj.handle
+            is Config -> obj.toBukkit()
             is Iterable<*> -> {
                 val first = obj.firstOrNull()
-                if (first is EcoYamlConfigWrapper<*>) {
-                    obj as Iterable<EcoYamlConfigWrapper<*>>
-                    obj.map { it.handle }
+                if (first is Config) {
+                    obj as Iterable<Config>
+                    obj.map { it.toBukkit() }
                 } else {
                     obj
                 }
@@ -208,6 +208,10 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
 
     override fun getType(): ConfigType {
         return ConfigType.JSON
+    }
+
+    override fun toMap(): MutableMap<String, Any?> {
+        return handle.getValues(true)
     }
 
     override fun clone(): Config {
