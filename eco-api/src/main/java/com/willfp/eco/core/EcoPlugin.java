@@ -694,7 +694,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     public final FileConfiguration getConfig() {
         this.getLogger().warning("Call to default config method in eco plugin!");
 
-        return Objects.requireNonNull(this.getConfigYml().getBukkitHandle());
+        return Objects.requireNonNull(this.getConfigYml().toBukkit());
     }
 
     /**

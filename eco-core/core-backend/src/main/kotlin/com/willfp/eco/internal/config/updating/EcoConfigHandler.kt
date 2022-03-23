@@ -4,11 +4,8 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.updating.ConfigHandler
 import com.willfp.eco.core.config.updating.ConfigUpdater
-import com.willfp.eco.internal.config.json.EcoLoadableJSONConfig
-import com.willfp.eco.internal.config.json.EcoUpdatableJSONConfig
-import com.willfp.eco.internal.config.updating.exceptions.InvalidUpdateMethodException
-import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
-import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
+import com.willfp.eco.internal.config.EcoLoadableConfig
+import com.willfp.eco.internal.config.EcoUpdatableConfig
 import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 
@@ -50,10 +47,8 @@ class EcoConfigHandler(
     override fun updateConfigs() {
         for (config in configs) {
             when (config) {
-                is EcoUpdatableYamlConfig -> config.update()
-                is EcoUpdatableJSONConfig -> config.update()
-                is EcoLoadableYamlConfig -> config.reloadFromFile()
-                is EcoLoadableJSONConfig -> config.reloadFromFile()
+                is EcoUpdatableConfig -> config.update()
+                is EcoLoadableConfig -> config.reloadFromFile()
             }
         }
     }

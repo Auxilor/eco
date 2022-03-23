@@ -5,38 +5,19 @@ import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.wrapper.ConfigFactory
-import com.willfp.eco.internal.config.json.EcoJSONConfigSection
-import com.willfp.eco.internal.config.json.EcoJSONConfigWrapper
-import com.willfp.eco.internal.config.json.EcoLoadableJSONConfig
-import com.willfp.eco.internal.config.json.EcoUpdatableJSONConfig
-import com.willfp.eco.internal.config.yaml.EcoLoadableYamlConfig
-import com.willfp.eco.internal.config.yaml.EcoUpdatableYamlConfig
-import com.willfp.eco.internal.config.yaml.EcoYamlConfigSection
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.configuration.file.YamlConfiguration
-import java.io.StringReader
+import java.io.BufferedReader
+import java.io.Reader
 
 object EcoConfigFactory : ConfigFactory {
-    override fun createConfig(config: ConfigurationSection): Config {
-        return EcoYamlConfigSection(config)
-    }
+    override fun createConfig(config: ConfigurationSection): Config =
+        createConfig(config.getValues(true), ConfigType.YAML)
 
-    override fun createConfig(values: MutableMap<String, Any>): Config {
-        return EcoJSONConfigSection(values)
-    }
+    override fun createConfig(values: Map<String, Any>, type: ConfigType): Config =
+        EcoConfigSection(type, values)
 
-    override fun createConfig(contents: String, type: ConfigType): Config {
-        return if (type == ConfigType.JSON) {
-            @Suppress("UNCHECKED_CAST")
-            EcoJSONConfigSection(
-                EcoJSONConfigWrapper.gson.fromJson(
-                    StringReader(contents), Map::class.java
-                ) as MutableMap<String, Any>
-            )
-        } else {
-            EcoYamlConfigSection(YamlConfiguration.loadConfiguration(StringReader(contents)))
-        }
-    }
+    override fun createConfig(contents: String, type: ConfigType): Config =
+        EcoConfigSection(type, type.handler.toMap(contents))
 
     override fun createLoadableConfig(
         configName: String,
@@ -44,23 +25,13 @@ object EcoConfigFactory : ConfigFactory {
         subDirectoryPath: String,
         source: Class<*>,
         type: ConfigType
-    ): LoadableConfig {
-        return if (type == ConfigType.JSON) {
-            EcoLoadableJSONConfig(
-                configName,
-                plugin,
-                subDirectoryPath,
-                source
-            )
-        } else {
-            EcoLoadableYamlConfig(
-                configName,
-                plugin,
-                subDirectoryPath,
-                source
-            )
-        }
-    }
+    ): LoadableConfig = EcoLoadableConfig(
+        type,
+        configName,
+        plugin,
+        subDirectoryPath,
+        source
+    )
 
     override fun createUpdatableConfig(
         configName: String,
@@ -70,25 +41,28 @@ object EcoConfigFactory : ConfigFactory {
         removeUnused: Boolean,
         type: ConfigType,
         vararg updateBlacklist: String
-    ): LoadableConfig {
-        return if (type == ConfigType.JSON) {
-            EcoUpdatableJSONConfig(
-                configName,
-                plugin,
-                subDirectoryPath,
-                source,
-                removeUnused,
-                *updateBlacklist
-            )
-        } else {
-            EcoUpdatableYamlConfig(
-                configName,
-                plugin,
-                subDirectoryPath,
-                source,
-                removeUnused,
-                *updateBlacklist
-            )
+    ): LoadableConfig = EcoUpdatableConfig(
+        type,
+        configName,
+        plugin,
+        subDirectoryPath,
+        source,
+        removeUnused,
+        *updateBlacklist
+    )
+}
+
+fun Reader.readToString(): String {
+    val input = this as? BufferedReader ?: BufferedReader(this)
+    val builder = StringBuilder()
+
+    var line: String?
+    input.use {
+        while (it.readLine().also { read -> line = read } != null) {
+            builder.append(line)
+            builder.append('\n')
         }
     }
+
+    return builder.toString()
 }

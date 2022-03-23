@@ -65,9 +65,11 @@ public interface ConfigFactory {
      * Create config.
      *
      * @param values The values.
+     * @param type   The config type.
      * @return The config implementation.
      */
-    Config createConfig(@NotNull Map<String, Object> values);
+    Config createConfig(@NotNull Map<String, Object> values,
+                        @NotNull ConfigType type);
 
     /**
      * Create config.

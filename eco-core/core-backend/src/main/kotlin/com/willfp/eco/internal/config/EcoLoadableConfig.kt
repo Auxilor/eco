@@ -1,27 +1,28 @@
-package com.willfp.eco.internal.config.json
+package com.willfp.eco.internal.config
 
 import com.willfp.eco.core.PluginLike
+import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.LoadableConfig
-import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import java.io.FileNotFoundException
+import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.FileReader
 import java.io.IOException
+import java.io.InputStreamReader
 import java.io.OutputStream
+import java.io.Reader
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
 @Suppress("UNCHECKED_CAST")
-open class EcoLoadableJSONConfig(
+open class EcoLoadableConfig(
+    type: ConfigType,
     configName: String,
     private val plugin: PluginLike,
     private val subDirectoryPath: String,
     val source: Class<*>
-) : EcoJSONConfigWrapper(), LoadableConfig {
-
+) : EcoConfig(type), LoadableConfig {
     private val configFile: File
-    private val name: String = "$configName.json"
+    private val name: String = "$configName.${type.extension}"
 
     fun reloadFromFile() {
         runCatching { init(configFile) }.onFailure { it.printStackTrace() }
@@ -64,9 +65,12 @@ open class EcoLoadableJSONConfig(
         }
     }
 
-    @Throws(FileNotFoundException::class)
+    protected fun init(reader: Reader) {
+        super.init(type.handler.toMap(reader.readToString()))
+    }
+
     fun init(file: File) {
-        super.init(gson.fromJson(FileReader(file), Map::class.java) as MutableMap<String, Any>)
+        init(InputStreamReader(FileInputStream(file), Charsets.UTF_8))
     }
 
     override fun getName(): String {
@@ -75,10 +79,6 @@ open class EcoLoadableJSONConfig(
 
     override fun getConfigFile(): File {
         return configFile
-    }
-
-    override fun getBukkitHandle(): YamlConfiguration? {
-        return null
     }
 
     init {

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -71,7 +72,7 @@ public class TransientConfig extends ConfigWrapper<Config> {
      * @param values The values.
      */
     public TransientConfig(@NotNull final Map<String, Object> values) {
-        super(Eco.getHandler().getConfigFactory().createConfig(values));
+        super(Eco.getHandler().getConfigFactory().createConfig(values, ConfigType.YAML));
     }
 
     /**
@@ -82,17 +83,14 @@ public class TransientConfig extends ConfigWrapper<Config> {
      */
     public TransientConfig(@NotNull final Map<String, Object> values,
                            @NotNull final ConfigType type) {
-        super(
-                type == ConfigType.JSON ? Eco.getHandler().getConfigFactory().createConfig(values)
-                        : new TransientConfig(Eco.getHandler().getConfigFactory().createConfig(values).toBukkit())
-        );
+        super(Eco.getHandler().getConfigFactory().createConfig(values, type));
     }
 
     /**
      * Create a new empty transient config.
      */
     public TransientConfig() {
-        super(Eco.getHandler().getConfigFactory().createConfig("", ConfigType.YAML));
+        this(new HashMap<>(), ConfigType.JSON);
     }
 
     /**

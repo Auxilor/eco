@@ -1,7 +1,7 @@
 package com.willfp.eco.core.config.interfaces;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -47,14 +47,21 @@ public interface LoadableConfig extends Config {
     /**
      * Get bukkit {@link YamlConfiguration}.
      * <p>
-     * This method is not recommended unless absolutely required as it
-     * only returns true if the type of config is {@link com.willfp.eco.core.config.ConfigType#YAML},
-     * and if the handle is an {@link YamlConfiguration} specifically. This depends on the internals
-     * and the implementation, and so may cause problems - it exists mostly for parity with
-     * {@link JavaPlugin#getConfig()}.
+     * This used to represent the underlying config, but since 6.30.0 configs use
+     * their own implementations internally, without relying on bukkit.
      *
      * @return The config, or null if config is not yaml-based.
+     * @deprecated Use toBukkit() instead.
      */
     @Nullable
-    YamlConfiguration getBukkitHandle();
+    @Deprecated(since = "6.30.0", forRemoval = true)
+    default YamlConfiguration getBukkitHandle() {
+        return this.toBukkit();
+    }
+
+    /**
+     * Convert the config to a bukkit {@link YamlConfiguration}.
+     */
+    @NotNull
+    YamlConfiguration toBukkit();
 }

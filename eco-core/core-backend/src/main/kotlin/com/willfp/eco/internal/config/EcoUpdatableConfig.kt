@@ -1,20 +1,21 @@
-package com.willfp.eco.internal.config.json
+package com.willfp.eco.internal.config
 
 import com.willfp.eco.core.PluginLike
-import org.bukkit.configuration.file.YamlConfiguration
+import com.willfp.eco.core.config.ConfigType
+import com.willfp.eco.core.config.interfaces.Config
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
-open class EcoUpdatableJSONConfig(
+open class EcoUpdatableConfig(
+    type: ConfigType,
     configName: String,
     plugin: PluginLike,
     subDirectoryPath: String,
     source: Class<*>,
     private val removeUnused: Boolean,
     vararg updateBlacklist: String
-) : EcoLoadableJSONConfig(configName, plugin, subDirectoryPath, source) {
-
+) : EcoLoadableConfig(type, configName, plugin, subDirectoryPath, source) {
     private val updateBlacklist: MutableList<String> = mutableListOf(*updateBlacklist)
 
     fun update() {
@@ -43,13 +44,14 @@ open class EcoUpdatableJSONConfig(
         this.save()
     }
 
-    private val configInJar: YamlConfiguration?
+    private val configInJar: Config?
         get() {
             val newIn = this.source.getResourceAsStream(resourcePath) ?: return null
             val reader = BufferedReader(InputStreamReader(newIn, StandardCharsets.UTF_8))
-            val newConfig = YamlConfiguration()
-            newConfig.load(reader)
-            return newConfig
+
+            val config = EcoConfigSection(type, emptyMap())
+            config.init(type.handler.toMap(reader.readToString()))
+            return config
         }
 
     init {
