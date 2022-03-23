@@ -28,37 +28,7 @@ open class EcoConfig(
     }
 
     override fun has(path: String): Boolean {
-        return getOfKnownType(path, Any::class.java) != null
-    }
-
-    private fun <T> getOfKnownType(
-        path: String,
-        clazz: Class<T>
-    ): T? {
-        val nearestPath = path.split(".")[0]
-
-        if (path.contains(".")) {
-            val remainingPath = path.removePrefix("${nearestPath}.")
-            return getOfKnownType(remainingPath, clazz)
-        }
-
-        val found = values[nearestPath] ?: return null
-
-        return if (found is Map<*, *>) {
-            val rawSection = found as Map<String, Any?>
-            EcoConfigSection(type, rawSection, injections) as? T?
-        } else if (found is Iterable<*>) {
-            val first = found.firstOrNull() // Type erasure
-            if (first is Map<*, *>) {
-                println("Amogus? $found")
-                val rawSections = found as Iterable<Map<String, Any?>>
-                rawSections.map { EcoConfigSection(type, it, injections) }
-            } else {
-                found
-            }
-        } else {
-            found
-        } as? T?
+        return get(path) != null
     }
 
     private fun setRecursively(
@@ -70,7 +40,7 @@ open class EcoConfig(
 
         if (path.contains(".")) {
             val remainingPath = path.removePrefix("${nearestPath}.")
-            val section = getOfKnownType(nearestPath, Any::class.java)
+            val section = get(nearestPath)
             if (section == null) {
                 values[nearestPath] = mutableMapOf<String, Any?>()
                 return setRecursively(path, obj)
@@ -101,7 +71,8 @@ open class EcoConfig(
         return if (deep) {
             recurseKeys(mutableSetOf()).toList()
         } else {
-            values.keys.filterIsInstance<String>().toList()
+            // Some keys actually aren't strings because broken
+            values.keys.map { it.toString() }.toList()
         }
     }
 
@@ -121,7 +92,29 @@ open class EcoConfig(
     }
 
     override fun get(path: String): Any? {
-        return getOfKnownType(path, Any::class.java)
+        val nearestPath = path.split(".")[0]
+
+        if (path.contains(".")) {
+            val remainingPath = path.removePrefix("${nearestPath}.")
+            return get(remainingPath)
+        }
+
+        val found = values[nearestPath] ?: return null
+
+        return if (found is Map<*, *>) {
+            val rawSection = found as Map<String, Any?>
+            EcoConfigSection(type, rawSection, injections)
+        } else if (found is Iterable<*>) {
+            val first = found.firstOrNull() // Type erasure
+            if (first is Map<*, *>) {
+                val rawSections = found as Iterable<Map<String, Any?>>
+                rawSections.map { EcoConfigSection(type, it, injections) }
+            } else {
+                found
+            }
+        } else {
+            found
+        }
     }
 
     override fun set(
@@ -136,11 +129,11 @@ open class EcoConfig(
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
-        return getOfKnownType(path, Config::class.java)
+        return get(path) as? Config
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
-        return (getOfKnownType(path, Iterable::class.java) as? Iterable<Config>)?.toList()
+        return (get(path) as? Iterable<Config>)?.toList()
     }
 
     override fun getType(): ConfigType {
@@ -148,19 +141,19 @@ open class EcoConfig(
     }
 
     override fun getIntOrNull(path: String): Int? {
-        return getOfKnownType(path, Number::class.java)?.toInt()
+        return (get(path) as? Number)?.toInt()
     }
 
-    override fun getIntsOrNull(path: String): MutableList<Int>? {
-        return (getOfKnownType(path, Iterable::class.java) as? Iterable<Int>)?.toMutableList()
+    override fun getIntsOrNull(path: String): List<Int>? {
+        return (get(path) as? Iterable<Int>)?.toList()
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
-        return getOfKnownType(path, Boolean::class.java)
+        return get(path) as? Boolean
     }
 
-    override fun getBoolsOrNull(path: String): MutableList<Boolean>? {
-        return (getOfKnownType(path, Iterable::class.java) as? Iterable<Boolean>)?.toMutableList()
+    override fun getBoolsOrNull(path: String): List<Boolean>? {
+        return (get(path) as? Iterable<Boolean>)?.toList()
     }
 
     override fun getStringOrNull(
@@ -168,7 +161,7 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): String? {
-        val string = getOfKnownType(path, String::class.java) ?: return null
+        val string = get(path)?.toString() ?: return null
         return if (format) StringUtils.format(string, option) else string
     }
 
@@ -177,16 +170,16 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): List<String>? {
-        val strings = (getOfKnownType(path, Iterable::class.java) as? Iterable<String>)?.toList() ?: return null
+        val strings = (get(path) as? Iterable<*>)?.map { it.toString() } ?: return null
         return if (format) StringUtils.formatList(strings, option) else strings
     }
 
     override fun getDoubleOrNull(path: String): Double? {
-        return getOfKnownType(path, Number::class.java)?.toDouble()
+        return (get(path) as? Number)?.toDouble()
     }
 
-    override fun getDoublesOrNull(path: String): MutableList<Double>? {
-        return (getOfKnownType(path, Iterable::class.java) as? Iterable<Double>)?.toMutableList()
+    override fun getDoublesOrNull(path: String): List<Double>? {
+        return (get(path) as? Iterable<Double>)?.toList()
     }
 
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
@@ -222,5 +215,9 @@ open class EcoConfig(
 
     override fun clone(): Config {
         return EcoConfigSection(type, this.values.toMutableMap(), injections)
+    }
+
+    override fun toString(): String {
+        return this.toPlaintext()
     }
 }

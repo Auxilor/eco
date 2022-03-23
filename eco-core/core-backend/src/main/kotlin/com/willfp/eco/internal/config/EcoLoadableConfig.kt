@@ -23,6 +23,7 @@ open class EcoLoadableConfig(
 ) : EcoConfig(type), LoadableConfig {
     private val configFile: File
     private val name: String = "$configName.${type.extension}"
+    private var hasChanged = false
 
     fun reloadFromFile() {
         runCatching { init(configFile) }.onFailure { it.printStackTrace() }
@@ -55,6 +56,10 @@ open class EcoLoadableConfig(
 
     @Throws(IOException::class)
     override fun save() {
+        if (!hasChanged) { // In order to preserve comments
+            return
+        }
+
         if (configFile.delete()) {
             Files.write(
                 configFile.toPath(),
@@ -79,6 +84,11 @@ open class EcoLoadableConfig(
 
     override fun getConfigFile(): File {
         return configFile
+    }
+
+    override fun set(path: String, obj: Any?) {
+        hasChanged = true
+        super.set(path, obj)
     }
 
     init {
