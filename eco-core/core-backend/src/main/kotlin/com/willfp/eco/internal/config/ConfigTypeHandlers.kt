@@ -13,6 +13,28 @@ import org.yaml.snakeyaml.representer.Representer
 val ConfigType.handler: ConfigTypeHandler
     get() = if (this == ConfigType.JSON) JSONConfigTypeHandler else YamlConfigTypeHandler
 
+fun Map<*, *>.ensureTypesForConfig(): Map<String, Any?> {
+    val building = mutableMapOf<String, Any?>()
+
+    for (entry in this.entries) {
+        val value = entry.value?.let {
+            if (it is Map<*, *>) {
+                it.ensureTypesForConfig()
+            } else {
+                it
+            }
+        }
+
+        if (entry.key == null || value == null) {
+            continue
+        }
+
+        building[entry.key.toString()] = value
+    }
+
+    return building
+}
+
 abstract class ConfigTypeHandler(
     val type: ConfigType
 ) {
@@ -21,29 +43,7 @@ abstract class ConfigTypeHandler(
             return emptyMap()
         }
 
-        return ensureMapTypes(parseToMap(input))
-    }
-
-    private fun ensureMapTypes(map: Map<*, *>): Map<String, Any?> {
-        val building = mutableMapOf<String, Any?>()
-
-        for (entry in map.entries) {
-            val value = entry.value?.let {
-                if (it is Map<*, *>) {
-                    ensureMapTypes(it.toMutableMap())
-                } else {
-                    it
-                }
-            }
-
-            if (entry.key == null) {
-                continue
-            }
-
-            building[entry.key.toString()] = value
-        }
-
-        return building
+        return parseToMap(input).ensureTypesForConfig()
     }
 
     protected abstract fun parseToMap(input: String): Map<*, *>

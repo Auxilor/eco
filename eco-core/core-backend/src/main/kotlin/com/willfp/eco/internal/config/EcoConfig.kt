@@ -16,7 +16,7 @@ open class EcoConfig(
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
-        this.values.putAll(values)
+        this.values.putAll(values.ensureTypesForConfig())
     }
 
     override fun clearCache() {
