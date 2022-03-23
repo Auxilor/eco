@@ -8,9 +8,9 @@ import org.bukkit.configuration.file.YamlConstructor
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.representer.Representer
 import java.io.BufferedReader
 import java.io.Reader
+
 
 fun ConfigType.toMap(input: String?): Map<String, Any?> =
     this.handler.toMap(input)
@@ -78,9 +78,9 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
     private fun newYaml(): Yaml {
         val yamlOptions = DumperOptions()
         val loaderOptions = LoaderOptions()
-        val representer = Representer()
+        val representer = AnchorlessRepresenter()
 
-        loaderOptions.maxAliasesForCollections = Int.MAX_VALUE
+        loaderOptions.maxAliasesForCollections = 0
         yamlOptions.indent = 2
         yamlOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
         representer.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
