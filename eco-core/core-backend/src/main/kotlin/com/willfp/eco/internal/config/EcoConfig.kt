@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 open class EcoConfig(
     private val configType: ConfigType
 ) : Config {
-    val values = ConcurrentHashMap<String, Any?>()
+    private val values = ConcurrentHashMap<String, Any?>()
     var injections = mutableListOf<StaticPlaceholder>()
 
     fun init(values: Map<String, Any?>) {
@@ -71,8 +71,7 @@ open class EcoConfig(
         return if (deep) {
             recurseKeys(mutableSetOf()).toList()
         } else {
-            // Some keys actually aren't strings because broken
-            values.keys.map { it.toString() }.toList()
+            values.keys.toList()
         }
     }
 
@@ -96,24 +95,33 @@ open class EcoConfig(
 
         if (path.contains(".")) {
             val remainingPath = path.removePrefix("${nearestPath}.")
-            return get(remainingPath)
+
+            val first = get(nearestPath)
+
+            return if (first is Config) {
+                first.get(remainingPath)
+            } else {
+                null
+            }
         }
 
         val found = values[nearestPath] ?: return null
 
-        return if (found is Map<*, *>) {
-            val rawSection = found as Map<String, Any?>
-            EcoConfigSection(type, rawSection, injections)
-        } else if (found is Iterable<*>) {
-            val first = found.firstOrNull() // Type erasure
-            if (first is Map<*, *>) {
-                val rawSections = found as Iterable<Map<String, Any?>>
-                rawSections.map { EcoConfigSection(type, it, injections) }
-            } else {
-                found
+        return when (found) {
+            is Map<*, *> -> {
+                val rawSection = found as Map<String, Any?>
+                EcoConfigSection(type, rawSection, injections)
             }
-        } else {
-            found
+            is Iterable<*> -> {
+                val first = found.firstOrNull() // Type erasure
+                if (first is Map<*, *>) {
+                    val rawSections = found as Iterable<Map<String, Any?>>
+                    rawSections.map { EcoConfigSection(type, it, injections) }
+                } else {
+                    found
+                }
+            }
+            else -> found
         }
     }
 
@@ -145,7 +153,7 @@ open class EcoConfig(
     }
 
     override fun getIntsOrNull(path: String): List<Int>? {
-        return (get(path) as? Iterable<Int>)?.toList()
+        return (get(path) as? Iterable<Number>)?.map { it.toInt() }
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
@@ -179,7 +187,7 @@ open class EcoConfig(
     }
 
     override fun getDoublesOrNull(path: String): List<Double>? {
-        return (get(path) as? Iterable<Double>)?.toList()
+        return (get(path) as? Iterable<Number>)?.map { it.toDouble() }
     }
 
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
