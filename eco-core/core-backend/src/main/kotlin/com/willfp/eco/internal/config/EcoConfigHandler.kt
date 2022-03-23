@@ -1,11 +1,9 @@
-package com.willfp.eco.internal.config.updating
+package com.willfp.eco.internal.config
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.updating.ConfigHandler
 import com.willfp.eco.core.config.updating.ConfigUpdater
-import com.willfp.eco.internal.config.EcoLoadableConfig
-import com.willfp.eco.internal.config.EcoUpdatableConfig
 import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 
@@ -53,3 +51,5 @@ class EcoConfigHandler(
         }
     }
 }
+
+class InvalidUpdateMethodException(message: String) : RuntimeException(message)

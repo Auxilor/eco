@@ -58,7 +58,7 @@ open class EcoLoadableConfig(
     @Throws(IOException::class)
     override fun save() {
         if (!hasChanged) { // In order to preserve comments
-            return
+            //return
         }
 
         val contents = StringBuilder()
@@ -100,8 +100,9 @@ open class EcoLoadableConfig(
     }
 
     protected fun init(reader: Reader) {
-        makeHeader(reader.readToString())
-        super.init(type.toMap(reader.readToString()))
+        val string = reader.readToString()
+        makeHeader(string)
+        super.init(type.toMap(string))
     }
 
     fun init(file: File) {

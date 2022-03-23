@@ -6,8 +6,6 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.config.wrapper.ConfigFactory
 import org.bukkit.configuration.ConfigurationSection
-import java.io.BufferedReader
-import java.io.Reader
 
 object EcoConfigFactory : ConfigFactory {
     override fun createConfig(config: ConfigurationSection): Config =
@@ -50,19 +48,4 @@ object EcoConfigFactory : ConfigFactory {
         removeUnused,
         *updateBlacklist
     )
-}
-
-fun Reader.readToString(): String {
-    val input = this as? BufferedReader ?: BufferedReader(this)
-    val builder = StringBuilder()
-
-    var line: String?
-    input.use {
-        while (it.readLine().also { read -> line = read } != null) {
-            builder.append(line)
-            builder.append('\n')
-        }
-    }
-
-    return builder.toString()
 }

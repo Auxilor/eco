@@ -9,15 +9,14 @@ import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.representer.Representer
+import java.io.BufferedReader
+import java.io.Reader
 
 fun ConfigType.toMap(input: String?): Map<String, Any?> =
     this.handler.toMap(input)
 
 fun ConfigType.toString(map: Map<String, Any?>): String =
     this.handler.toString(map)
-
-private val ConfigType.handler: ConfigTypeHandler
-    get() = if (this == ConfigType.JSON) JSONConfigTypeHandler else YamlConfigTypeHandler
 
 fun Map<*, *>.ensureTypesForConfig(): Map<String, Any?> {
     val building = mutableMapOf<String, Any?>()
@@ -40,6 +39,24 @@ fun Map<*, *>.ensureTypesForConfig(): Map<String, Any?> {
 
     return building
 }
+
+fun Reader.readToString(): String {
+    val input = this as? BufferedReader ?: BufferedReader(this)
+    val builder = StringBuilder()
+
+    var line: String?
+    input.use {
+        while (it.readLine().also { read -> line = read } != null) {
+            builder.append(line)
+            builder.append('\n')
+        }
+    }
+
+    return builder.toString()
+}
+
+private val ConfigType.handler: ConfigTypeHandler
+    get() = if (this == ConfigType.JSON) JSONConfigTypeHandler else YamlConfigTypeHandler
 
 private abstract class ConfigTypeHandler(
     val type: ConfigType

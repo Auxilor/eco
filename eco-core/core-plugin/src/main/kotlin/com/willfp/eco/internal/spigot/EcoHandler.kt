@@ -10,7 +10,7 @@ import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.Plugins
 import com.willfp.eco.internal.config.EcoConfigFactory
-import com.willfp.eco.internal.config.updating.EcoConfigHandler
+import com.willfp.eco.internal.config.EcoConfigHandler
 import com.willfp.eco.internal.drops.EcoDropQueueFactory
 import com.willfp.eco.internal.events.EcoEventManager
 import com.willfp.eco.internal.extensions.EcoExtensionLoader
