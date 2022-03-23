@@ -10,7 +10,13 @@ import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.representer.Representer
 
-val ConfigType.handler: ConfigTypeHandler
+fun ConfigType.toMap(input: String?): Map<String, Any?> =
+    this.handler.toMap(input)
+
+fun ConfigType.toString(map: Map<String, Any?>): String =
+    this.handler.toString(map)
+
+private val ConfigType.handler: ConfigTypeHandler
     get() = if (this == ConfigType.JSON) JSONConfigTypeHandler else YamlConfigTypeHandler
 
 fun Map<*, *>.ensureTypesForConfig(): Map<String, Any?> {
@@ -35,7 +41,7 @@ fun Map<*, *>.ensureTypesForConfig(): Map<String, Any?> {
     return building
 }
 
-abstract class ConfigTypeHandler(
+private abstract class ConfigTypeHandler(
     val type: ConfigType
 ) {
     fun toMap(input: String?): Map<String, Any?> {
@@ -51,7 +57,7 @@ abstract class ConfigTypeHandler(
     abstract fun toString(map: Map<String, Any?>): String
 }
 
-object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
+private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
     private fun newYaml(): Yaml {
         val yamlOptions = DumperOptions()
         val loaderOptions = LoaderOptions()
@@ -79,7 +85,7 @@ object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
     }
 }
 
-object JSONConfigTypeHandler : ConfigTypeHandler(ConfigType.JSON) {
+private object JSONConfigTypeHandler : ConfigTypeHandler(ConfigType.JSON) {
     private val gson = GsonBuilder()
         .setPrettyPrinting()
         .disableHtmlEscaping()

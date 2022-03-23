@@ -16,7 +16,7 @@ open class EcoUpdatableConfig(
     private val removeUnused: Boolean,
     vararg updateBlacklist: String
 ) : EcoLoadableConfig(type, configName, plugin, subDirectoryPath, source) {
-    private val updateBlacklist: MutableList<String> = mutableListOf(*updateBlacklist)
+    private val updateBlacklist = mutableListOf(*updateBlacklist)
 
     fun update() {
         super.clearCache()
@@ -50,7 +50,7 @@ open class EcoUpdatableConfig(
             val reader = BufferedReader(InputStreamReader(newIn, StandardCharsets.UTF_8))
 
             val config = EcoConfigSection(type, emptyMap())
-            config.init(type.handler.toMap(reader.readToString()))
+            config.init(type.toMap(reader.readToString()))
             return config
         }
 

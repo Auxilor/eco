@@ -24,7 +24,7 @@ open class EcoConfig(
     }
 
     override fun toPlaintext(): String {
-        return configType.handler.toString(this.values)
+        return configType.toString(this.values)
     }
 
     override fun has(path: String): Boolean {

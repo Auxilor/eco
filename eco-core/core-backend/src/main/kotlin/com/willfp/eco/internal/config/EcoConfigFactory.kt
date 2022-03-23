@@ -17,7 +17,7 @@ object EcoConfigFactory : ConfigFactory {
         EcoConfigSection(type, values)
 
     override fun createConfig(contents: String, type: ConfigType): Config =
-        EcoConfigSection(type, type.handler.toMap(contents))
+        EcoConfigSection(type, type.toMap(contents))
 
     override fun createLoadableConfig(
         configName: String,

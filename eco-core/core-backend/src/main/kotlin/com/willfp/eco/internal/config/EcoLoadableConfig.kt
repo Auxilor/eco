@@ -101,7 +101,7 @@ open class EcoLoadableConfig(
 
     protected fun init(reader: Reader) {
         makeHeader(reader.readToString())
-        super.init(type.handler.toMap(reader.readToString()))
+        super.init(type.toMap(reader.readToString()))
     }
 
     fun init(file: File) {

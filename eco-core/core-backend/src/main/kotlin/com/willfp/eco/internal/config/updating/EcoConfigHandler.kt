@@ -21,7 +21,7 @@ class EcoConfigHandler(
 
     override fun callUpdate() {
         for (method in reflections.getMethodsAnnotatedWith(ConfigUpdater::class.java)) {
-            kotlin.runCatching {
+            runCatching {
                 when (method.parameterCount) {
                     0 -> method.invoke(null)
                     1 -> method.invoke(null, this.plugin)
