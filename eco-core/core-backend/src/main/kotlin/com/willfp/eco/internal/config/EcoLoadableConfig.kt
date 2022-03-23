@@ -24,6 +24,7 @@ open class EcoLoadableConfig(
     private val configFile: File
     private val name: String = "$configName.${type.extension}"
     private var hasChanged = false
+    private val header = mutableListOf<String>()
 
     fun reloadFromFile() {
         runCatching { init(configFile) }.onFailure { it.printStackTrace() }
@@ -60,17 +61,46 @@ open class EcoLoadableConfig(
             return
         }
 
+        val contents = StringBuilder()
+
+        if (this.type == ConfigType.YAML) {
+            for (s in header) {
+                contents.append(s)
+            }
+
+            if (header.isNotEmpty()) {
+                contents.append("\n")
+            }
+        }
+
+        contents.append(this.toPlaintext())
+
         if (configFile.delete()) {
             Files.write(
                 configFile.toPath(),
-                toPlaintext().toByteArray(),
+                contents.toString().toByteArray(),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.WRITE
             )
         }
     }
 
+    private fun makeHeader(contents: String) {
+        val lines = contents.split("\r\n").toList()
+
+        if (this.type == ConfigType.YAML) {
+            for (line in lines) {
+                if (!line.startsWith("#")) {
+                    break
+                }
+
+                header.add(line)
+            }
+        }
+    }
+
     protected fun init(reader: Reader) {
+        makeHeader(reader.readToString())
         super.init(type.handler.toMap(reader.readToString()))
     }
 
