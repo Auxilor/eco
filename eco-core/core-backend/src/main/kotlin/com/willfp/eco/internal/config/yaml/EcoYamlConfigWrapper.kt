@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.StaticPlaceholder
+import com.willfp.eco.internal.config.ensureConfigSerializable
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
@@ -53,21 +54,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
         obj: Any?
     ) {
         this.clearCache()
-        handle[path] = when (obj) {
-            is Config -> obj.toBukkit()
-            is Collection<*> -> {
-                val first = obj.firstOrNull()
-                if (first is Config) {
-                    obj as Collection<Config>
-                    obj.map { it.toBukkit() }
-                } else if (obj.isEmpty()) {
-                    mutableListOf() // Don't use EmptyList, causes anchors as they have the same reference
-                } else {
-                    obj.toList()
-                }
-            }
-            else -> obj
-        }
+        handle[path] = obj?.ensureConfigSerializable()
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
@@ -179,7 +166,7 @@ open class EcoYamlConfigWrapper<T : ConfigurationSection> : Config {
             val configs = mutableListOf<Config>()
 
             for (map in raw) {
-                val temp = YamlConfiguration.loadConfiguration(StringReader("")) // Empty config
+                val temp = YamlConfiguration() // Empty config
                 temp.createSection("temp", map)
                 configs.add(EcoYamlConfigSection(temp.getConfigurationSection("temp")!!, injections))
             }
