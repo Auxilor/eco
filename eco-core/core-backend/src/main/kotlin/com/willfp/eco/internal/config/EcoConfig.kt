@@ -100,7 +100,11 @@ open class EcoConfig(
             }
         }
 
-        values[nearestPath] = obj.constrainConfigTypes(type)
+        if (obj == null) {
+            values.remove(nearestPath)
+        } else {
+            values[nearestPath] = obj.constrainConfigTypes(type)
+        }
     }
 
     override fun getSubsection(path: String): Config {
