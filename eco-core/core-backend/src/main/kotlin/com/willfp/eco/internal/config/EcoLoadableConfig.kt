@@ -58,14 +58,14 @@ open class EcoLoadableConfig(
     @Throws(IOException::class)
     override fun save() {
         if (!hasChanged) { // In order to preserve comments
-            return
+            //return
         }
 
         val contents = StringBuilder()
 
         if (this.type == ConfigType.YAML) {
             for (s in header) {
-                contents.append(s)
+                contents.append(s + "\n")
             }
 
             if (header.isNotEmpty()) {
@@ -86,10 +86,8 @@ open class EcoLoadableConfig(
     }
 
     private fun makeHeader(contents: String) {
-        val lines = contents.split("\r\n").toList()
-
         if (this.type == ConfigType.YAML) {
-            for (line in lines) {
+            for (line in contents.lines()) {
                 if (!line.startsWith("#")) {
                     break
                 }

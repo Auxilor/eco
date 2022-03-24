@@ -12,6 +12,8 @@ open class EcoConfig(
     private val configType: ConfigType
 ) : Config {
     private val values = ConcurrentHashMap<String, Any?>()
+
+    @Transient
     var injections = mutableListOf<StaticPlaceholder>()
 
     fun init(values: Map<String, Any?>) {
@@ -29,40 +31,6 @@ open class EcoConfig(
 
     override fun has(path: String): Boolean {
         return get(path) != null
-    }
-
-    private fun setRecursively(
-        path: String,
-        obj: Any?
-    ) {
-        this.clearCache()
-        val nearestPath = path.split(".")[0]
-
-        if (path.contains(".")) {
-            val remainingPath = path.removePrefix("${nearestPath}.")
-            val section = get(nearestPath)
-            if (section == null) {
-                values[nearestPath] = mutableMapOf<String, Any?>()
-                return setRecursively(path, obj)
-            } else if (section is EcoConfig) {
-                section.setRecursively(remainingPath, obj)
-            }
-        }
-
-        values[nearestPath] = when (obj) {
-            is Map<*, *> -> obj.ensureTypesForConfig(type)
-            is Collection<*> -> {
-                if (obj.isEmpty()) {
-                    mutableListOf<Any>()
-                } else if (obj.first() is Map<*, *>) {
-                    obj as Collection<Map<*, *>>
-                    obj.map { it.ensureTypesForConfig(type) }
-                } else {
-                    obj.toMutableList()
-                }
-            }
-            else -> obj
-        }
     }
 
     override fun getKeys(deep: Boolean): List<String> {
@@ -110,7 +78,21 @@ open class EcoConfig(
         path: String,
         obj: Any?
     ) {
-        setRecursively(path, obj)
+        this.clearCache()
+        val nearestPath = path.split(".")[0]
+
+        if (path.contains(".")) {
+            val remainingPath = path.removePrefix("${nearestPath}.")
+            val section = get(nearestPath)
+            if (section == null) {
+                values[nearestPath] = mutableMapOf<String, Any?>()
+                return set(path, obj)
+            } else if (section is Config) {
+                section.set(remainingPath, obj)
+            }
+        }
+
+        values[nearestPath] = obj.constrainConfigTypes(type)
     }
 
     override fun getSubsection(path: String): Config {

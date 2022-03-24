@@ -2,13 +2,11 @@
 
 package com.willfp.eco.internal.config
 
-import com.google.gson.GsonBuilder
 import com.willfp.eco.core.config.ConfigType
 import org.bukkit.configuration.file.YamlConstructor
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
-import org.yaml.snakeyaml.representer.Representer
 import java.io.BufferedReader
 import java.io.Reader
 
@@ -18,32 +16,32 @@ fun ConfigType.toMap(input: String?): Map<String, Any?> =
 fun ConfigType.toString(map: Map<String, Any?>): String =
     this.handler.toString(map)
 
+fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
+    is Map<*, *> -> EcoConfigSection(type, this.ensureTypesForConfig(type))
+    is Iterable<*> -> {
+        if (this.firstOrNull() == null) {
+            mutableListOf<Any>()
+        } else if (this.firstOrNull() is Map<*, *>) {
+            this as Iterable<Map<*, *>>
+            this.map { map -> EcoConfigSection(type, map.ensureTypesForConfig(type)) }
+        } else {
+            this.toMutableList()
+        }
+    }
+    else -> this
+}
+
 fun Map<*, *>.ensureTypesForConfig(type: ConfigType): Map<String, Any?> {
     val building = mutableMapOf<String, Any?>()
 
-    for (entry in this.entries) {
-        val value = entry.value?.let {
-            when (it) {
-                is Map<*, *> -> EcoConfigSection(type, it.ensureTypesForConfig(type))
-                is Collection<*> -> {
-                    if (it.isEmpty()) {
-                        mutableListOf<Any>()
-                    } else if (it.first() is Map<*, *>) {
-                        it as Collection<Map<*, *>>
-                        it.map { map -> map.ensureTypesForConfig(type) }
-                    } else {
-                        it.toMutableList()
-                    }
-                }
-                else -> it
-            }
-        }
-
-        if (entry.key == null || value == null) {
+    for ((key, value) in this.entries) {
+        if (key == null || value == null) {
             continue
         }
 
-        building[entry.key.toString()] = value
+        val constrained = value.constrainConfigTypes(type)
+
+        building[key.toString()] = constrained
     }
 
     return building
@@ -87,7 +85,7 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
     private fun newYaml(): Yaml {
         val yamlOptions = DumperOptions()
         val loaderOptions = LoaderOptions()
-        val representer = Representer()
+        val representer = EcoRepresenter()
 
         loaderOptions.maxAliasesForCollections = 0
         yamlOptions.indent = 2
@@ -112,16 +110,11 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
 }
 
 private object JSONConfigTypeHandler : ConfigTypeHandler(ConfigType.JSON) {
-    private val gson = GsonBuilder()
-        .setPrettyPrinting()
-        .disableHtmlEscaping()
-        .create()
-
     override fun parseToMap(input: String): Map<*, *> {
-        return gson.fromJson(input, Map::class.java)
+        return EcoGsonSerializer.gson.fromJson(input, Map::class.java)
     }
 
     override fun toString(map: Map<String, Any?>): String {
-        return gson.toJson(map)
+        return EcoGsonSerializer.gson.toJson(map)
     }
 }
