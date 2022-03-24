@@ -16,7 +16,7 @@ open class EcoConfig(
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
-        this.values.putAll(values.ensureTypesForConfig())
+        this.values.putAll(values.ensureTypesForConfig(this.type))
     }
 
     override fun clearCache() {
@@ -50,15 +50,13 @@ open class EcoConfig(
         }
 
         values[nearestPath] = when (obj) {
-            is Config -> obj.toMap()
+            is Map<*, *> -> obj.ensureTypesForConfig(type)
             is Collection<*> -> {
-                val first = obj.firstOrNull()
-                if (first is Config) {
-                    @Suppress("UNCHECKED_CAST")
-                    obj as Collection<Config>
-                    obj.map { it.toMap() }.toMutableList()
-                } else if (obj.isEmpty()) {
-                    mutableListOf() // Don't use EmptyList, causes anchors as they have the same reference
+                if (obj.isEmpty()) {
+                    mutableListOf<Any>()
+                } else if (obj.first() is Map<*, *>) {
+                    obj as Collection<Map<*, *>>
+                    obj.map { it.ensureTypesForConfig(type) }
                 } else {
                     obj.toMutableList()
                 }
@@ -105,24 +103,7 @@ open class EcoConfig(
             }
         }
 
-        val found = values[nearestPath] ?: return null
-
-        return when (found) {
-            is Map<*, *> -> {
-                val rawSection = found as Map<String, Any?>
-                EcoConfigSection(type, rawSection, injections)
-            }
-            is Iterable<*> -> {
-                val first = found.firstOrNull() // Type erasure
-                if (first is Map<*, *>) {
-                    val rawSections = found as Iterable<Map<String, Any?>>
-                    rawSections.map { EcoConfigSection(type, it, injections) }
-                } else {
-                    found
-                }
-            }
-            else -> found
-        }
+        return values[nearestPath]
     }
 
     override fun set(

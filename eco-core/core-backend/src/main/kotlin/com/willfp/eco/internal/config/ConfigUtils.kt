@@ -8,9 +8,9 @@ import org.bukkit.configuration.file.YamlConstructor
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.representer.Representer
 import java.io.BufferedReader
 import java.io.Reader
-
 
 fun ConfigType.toMap(input: String?): Map<String, Any?> =
     this.handler.toMap(input)
@@ -18,15 +18,24 @@ fun ConfigType.toMap(input: String?): Map<String, Any?> =
 fun ConfigType.toString(map: Map<String, Any?>): String =
     this.handler.toString(map)
 
-fun Map<*, *>.ensureTypesForConfig(): Map<String, Any?> {
+fun Map<*, *>.ensureTypesForConfig(type: ConfigType): Map<String, Any?> {
     val building = mutableMapOf<String, Any?>()
 
     for (entry in this.entries) {
         val value = entry.value?.let {
-            if (it is Map<*, *>) {
-                it.ensureTypesForConfig()
-            } else {
-                it
+            when (it) {
+                is Map<*, *> -> EcoConfigSection(type, it.ensureTypesForConfig(type))
+                is Collection<*> -> {
+                    if (it.isEmpty()) {
+                        mutableListOf<Any>()
+                    } else if (it.first() is Map<*, *>) {
+                        it as Collection<Map<*, *>>
+                        it.map { map -> map.ensureTypesForConfig(type) }
+                    } else {
+                        it.toMutableList()
+                    }
+                }
+                else -> it
             }
         }
 
@@ -66,7 +75,7 @@ private abstract class ConfigTypeHandler(
             return emptyMap()
         }
 
-        return parseToMap(input).ensureTypesForConfig()
+        return parseToMap(input).ensureTypesForConfig(type)
     }
 
     protected abstract fun parseToMap(input: String): Map<*, *>
@@ -78,7 +87,7 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
     private fun newYaml(): Yaml {
         val yamlOptions = DumperOptions()
         val loaderOptions = LoaderOptions()
-        val representer = AnchorlessRepresenter()
+        val representer = Representer()
 
         loaderOptions.maxAliasesForCollections = 0
         yamlOptions.indent = 2
