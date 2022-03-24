@@ -94,7 +94,6 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
 
         yamlOptions.indent = 2
         yamlOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        yamlOptions.isPrettyFlow = true
 
         representer.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
 
