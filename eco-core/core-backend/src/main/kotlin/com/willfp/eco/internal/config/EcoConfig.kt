@@ -35,25 +35,19 @@ open class EcoConfig(
 
     override fun getKeys(deep: Boolean): List<String> {
         return if (deep) {
-            recurseKeys(mutableSetOf()).toList()
+            val list = mutableSetOf<String>()
+            for (key in getKeys(false)) {
+                list.add(key)
+                val found = get(key)
+                if (found is Config) {
+                    list.addAll(found.getKeys(true).map { "$key.$it" })
+                }
+            }
+
+            list.toList()
         } else {
             values.keys.toList()
         }
-    }
-
-    protected fun recurseKeys(
-        list: MutableSet<String>,
-        root: String = ""
-    ): Set<String> {
-        for (key in getKeys(false)) {
-            list.add("$root$key")
-            val found = get(key)
-            if (found is EcoConfig) {
-                list.addAll(found.recurseKeys(list, "$root$key."))
-            }
-        }
-
-        return list
     }
 
     override fun get(path: String): Any? {
