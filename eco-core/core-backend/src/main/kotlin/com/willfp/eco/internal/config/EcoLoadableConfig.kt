@@ -58,7 +58,7 @@ open class EcoLoadableConfig(
     @Throws(IOException::class)
     override fun save() {
         if (!hasChanged) { // In order to preserve comments
-            //return
+            return
         }
 
         val contents = StringBuilder()
