@@ -19,8 +19,6 @@ open class EcoConfig(
     fun init(values: Map<String, Any?>) {
         this.values.clear()
         this.values.putAll(values.normalizeToConfig(this.type))
-
-        println(this.values.keys.toList())
     }
 
     override fun clearCache() {
