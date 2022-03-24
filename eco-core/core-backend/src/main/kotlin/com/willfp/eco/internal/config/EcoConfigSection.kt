@@ -6,7 +6,7 @@ import com.willfp.eco.core.placeholder.StaticPlaceholder
 @Suppress("UNCHECKED_CAST")
 class EcoConfigSection(
     type: ConfigType,
-    values: Map<String, Any?>,
+    values: Map<String, Any?> = emptyMap(),
     injections: Collection<StaticPlaceholder> = emptyList()
 ) : EcoConfig(type) {
     init {

@@ -17,13 +17,13 @@ fun ConfigType.toString(map: Map<String, Any?>): String =
     this.handler.toString(map)
 
 fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
-    is Map<*, *> -> EcoConfigSection(type, this.ensureTypesForConfig(type))
+    is Map<*, *> -> EcoConfigSection(type, this.normalizeToConfig(type))
     is Iterable<*> -> {
         if (this.firstOrNull() == null) {
             mutableListOf<Any>()
         } else if (this.firstOrNull() is Map<*, *>) {
             this as Iterable<Map<*, *>>
-            this.map { map -> EcoConfigSection(type, map.ensureTypesForConfig(type)) }
+            this.map { map -> EcoConfigSection(type, map.normalizeToConfig(type)) }
         } else {
             this.toMutableList()
         }
@@ -31,17 +31,19 @@ fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
     else -> this
 }
 
-fun Map<*, *>.ensureTypesForConfig(type: ConfigType): Map<String, Any?> {
+fun Map<*, *>.normalizeToConfig(type: ConfigType): Map<String, Any?> {
     val building = mutableMapOf<String, Any?>()
 
-    for ((key, value) in this.entries) {
-        if (key == null || value == null) {
+    for ((unprocessedKey, value) in this.entries) {
+        if (unprocessedKey == null || value == null) {
             continue
         }
 
+        val key = unprocessedKey.toString()
+
         val constrained = value.constrainConfigTypes(type)
 
-        building[key.toString()] = constrained
+        building[key] = constrained
     }
 
     return building
@@ -73,7 +75,7 @@ private abstract class ConfigTypeHandler(
             return emptyMap()
         }
 
-        return parseToMap(input).ensureTypesForConfig(type)
+        return parseToMap(input).normalizeToConfig(type)
     }
 
     protected abstract fun parseToMap(input: String): Map<*, *>

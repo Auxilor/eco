@@ -18,7 +18,9 @@ open class EcoConfig(
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
-        this.values.putAll(values.ensureTypesForConfig(this.type))
+        this.values.putAll(values.normalizeToConfig(this.type))
+
+        println(this.values.keys.toList())
     }
 
     override fun clearCache() {
@@ -92,10 +94,11 @@ open class EcoConfig(
 
             val section = get(nearestPath)
             if (section == null) {
-                values[nearestPath] = mutableMapOf<String, Any?>()
+                values[nearestPath] = EcoConfigSection(this.type)
                 return set(path, obj)
             } else if (section is Config) {
                 section.set(remainingPath, obj)
+                return
             }
         }
 
