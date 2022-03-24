@@ -61,24 +61,10 @@ open class EcoLoadableConfig(
             return
         }
 
-        val contents = StringBuilder()
-
-        if (this.type == ConfigType.YAML) {
-            for (s in header) {
-                contents.append(s + "\n")
-            }
-
-            if (header.isNotEmpty()) {
-                contents.append("\n")
-            }
-        }
-
-        contents.append(this.toPlaintext())
-
         if (configFile.delete()) {
             Files.write(
                 configFile.toPath(),
-                contents.toString().toByteArray(),
+                this.toPlaintext().toByteArray(),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.WRITE
             )
@@ -105,6 +91,30 @@ open class EcoLoadableConfig(
 
     fun init(file: File) {
         init(InputStreamReader(FileInputStream(file), Charsets.UTF_8))
+    }
+
+    override fun toPlaintext(): String {
+        val contents = StringBuilder()
+
+        if (this.type == ConfigType.YAML) {
+            for (s in header) {
+                contents.append(s + "\n")
+            }
+
+            if (header.isNotEmpty()) {
+                contents.append("\n")
+            }
+        }
+
+        for (line in super.toPlaintext().lines()) {
+            if (line.startsWith("#")) {
+                continue
+            }
+
+            contents.append(line + "\n")
+        }
+
+        return contents.toString()
     }
 
     override fun getName(): String {

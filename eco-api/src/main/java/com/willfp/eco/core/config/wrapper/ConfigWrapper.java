@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Configs from eco have an internal implementation,
@@ -59,6 +60,12 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     @Override
     public @NotNull List<String> getKeys(final boolean deep) {
         return handle.getKeys(deep);
+    }
+
+    @Override
+    public @NotNull List<String> recurseKeys(@NotNull final Set<String> found,
+                                             @NotNull final String root) {
+        return handle.recurseKeys(found, root);
     }
 
     @Override

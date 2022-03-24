@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * All configs implement this interface.
@@ -55,6 +56,19 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      */
     @NotNull
     List<String> getKeys(boolean deep);
+
+    /**
+     * Recurse config keys.
+     *
+     * @param found The found keys.
+     * @param root  The root.
+     * @return The keys.
+     */
+    @NotNull
+    default List<String> recurseKeys(@NotNull Set<String> found,
+                                     @NotNull String root) {
+        return new ArrayList<>();
+    }
 
     /**
      * Get an object from config.

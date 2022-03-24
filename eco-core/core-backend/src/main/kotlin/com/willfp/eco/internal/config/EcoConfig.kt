@@ -35,19 +35,23 @@ open class EcoConfig(
 
     override fun getKeys(deep: Boolean): List<String> {
         return if (deep) {
-            val list = mutableSetOf<String>()
-            for (key in getKeys(false)) {
-                list.add(key)
-                val found = get(key)
-                if (found is Config) {
-                    list.addAll(found.getKeys(true).map { "$key.$it" })
-                }
-            }
-
-            list.toList()
+            recurseKeys(mutableSetOf(), "")
         } else {
             values.keys.toList()
         }
+    }
+
+    override fun recurseKeys(current: MutableSet<String>, root: String): List<String> {
+        val list = mutableSetOf<String>()
+        for (key in getKeys(false)) {
+            list.add("$root$key")
+            val found = get(key)
+            if (found is Config) {
+                list.addAll(found.recurseKeys(current, "$root$key."))
+            }
+        }
+
+        return list.toList()
     }
 
     override fun get(path: String): Any? {
@@ -55,6 +59,10 @@ open class EcoConfig(
 
         if (path.contains(".")) {
             val remainingPath = path.removePrefix("${nearestPath}.")
+
+            if (remainingPath.isEmpty()) {
+                return null
+            }
 
             val first = get(nearestPath)
 
@@ -77,6 +85,11 @@ open class EcoConfig(
 
         if (path.contains(".")) {
             val remainingPath = path.removePrefix("${nearestPath}.")
+
+            if (remainingPath.isEmpty()) {
+                return
+            }
+
             val section = get(nearestPath)
             if (section == null) {
                 values[nearestPath] = mutableMapOf<String, Any?>()

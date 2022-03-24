@@ -14,7 +14,8 @@ class EcoRepresenter : Representer() {
         val handle: Represent
     ) : Represent {
         override fun representData(data: Any): Node {
-            return handle.representData((data as Config).toMap())
+            data as Config
+            return handle.representData(data.toMap())
         }
     }
 }

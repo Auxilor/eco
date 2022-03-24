@@ -87,9 +87,13 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
         val loaderOptions = LoaderOptions()
         val representer = EcoRepresenter()
 
-        loaderOptions.maxAliasesForCollections = 0
+        loaderOptions.maxAliasesForCollections = Int.MAX_VALUE
+        loaderOptions.isAllowDuplicateKeys = false
+
         yamlOptions.indent = 2
         yamlOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+        yamlOptions.isPrettyFlow = true
+
         representer.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
 
         return Yaml(
