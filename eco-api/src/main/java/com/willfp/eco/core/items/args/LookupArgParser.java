@@ -22,4 +22,12 @@ public interface LookupArgParser {
      */
     @Nullable Predicate<ItemStack> parseArguments(@NotNull String[] args,
                                                   @NotNull ItemMeta meta);
+
+    /**
+     * Parse an [Items] lookup string from meta.
+     *
+     * @param meta The item meta.
+     * @return Lookup string or null.
+     */
+    @Nullable String toLookupString(@NotNull ItemMeta meta);
 }

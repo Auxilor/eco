@@ -41,4 +41,11 @@ class ArgParserColor : LookupArgParser {
             )
         }
     }
+
+    override fun toLookupString(meta: ItemMeta): String? {
+        if (meta !is LeatherArmorMeta) {
+            return null
+        }
+        return "color:${meta.color.asRGB()}"
+    }
 }

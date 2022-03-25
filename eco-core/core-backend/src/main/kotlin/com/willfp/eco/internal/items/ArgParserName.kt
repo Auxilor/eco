@@ -30,4 +30,12 @@ class ArgParserName : LookupArgParser {
             testMeta.displayName == formatted
         }
     }
+
+    override fun toLookupString(meta: ItemMeta): String? {
+        return if (meta.hasDisplayName()) {
+            "name:\"${meta.displayName}\""
+        } else {
+            null
+        }
+    }
 }

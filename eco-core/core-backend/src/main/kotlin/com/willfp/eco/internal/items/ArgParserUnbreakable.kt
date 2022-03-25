@@ -27,4 +27,12 @@ class ArgParserUnbreakable : LookupArgParser {
             testMeta.isUnbreakable
         }
     }
+
+    override fun toLookupString(meta: ItemMeta): String? {
+        return if (meta.hasDisplayName()) {
+            "name:\"${meta.displayName}\""
+        } else {
+            null
+        }
+    }
 }

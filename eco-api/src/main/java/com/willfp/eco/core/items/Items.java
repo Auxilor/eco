@@ -388,6 +388,15 @@ public final class Items {
         return items;
     }
 
+    /**
+     * Get all registered lookup arg parsers.
+     *
+     * @return A list of registered lookup parsers.
+     */
+    public static List<LookupArgParser> getArgParsers() {
+        return ARG_PARSERS;
+    }
+
     private Items() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
