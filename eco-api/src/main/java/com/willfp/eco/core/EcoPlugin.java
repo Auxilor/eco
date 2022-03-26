@@ -489,9 +489,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     public final void reload() {
         this.getConfigHandler().updateConfigs();
 
+        this.getScheduler().cancelAll();
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
-        this.getScheduler().cancelAll();
 
         this.handleReload();
 
