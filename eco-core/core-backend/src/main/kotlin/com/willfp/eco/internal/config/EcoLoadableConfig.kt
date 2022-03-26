@@ -72,6 +72,8 @@ open class EcoLoadableConfig(
     }
 
     private fun makeHeader(contents: String) {
+        header.clear()
+
         if (this.type == ConfigType.YAML) {
             for (line in contents.lines()) {
                 if (!line.startsWith("#")) {
