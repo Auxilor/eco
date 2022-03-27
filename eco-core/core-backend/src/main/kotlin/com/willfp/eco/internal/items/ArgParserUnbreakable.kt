@@ -27,4 +27,12 @@ class ArgParserUnbreakable : LookupArgParser {
             testMeta.isUnbreakable
         }
     }
+
+    override fun serializeBack(meta: ItemMeta): String? {
+        if (!meta.isUnbreakable) {
+            return null
+        }
+
+        return "unbreakable"
+    }
 }

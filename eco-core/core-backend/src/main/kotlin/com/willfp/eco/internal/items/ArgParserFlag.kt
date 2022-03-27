@@ -27,4 +27,14 @@ class ArgParserFlag : LookupArgParser {
             testMeta.itemFlags.containsAll(flags)
         }
     }
+
+    override fun serializeBack(meta: ItemMeta): String? {
+        val flags = meta.itemFlags
+
+        if (flags.isEmpty()) {
+            return null
+        }
+
+        return flags.joinToString(" ") { it.name.lowercase() }
+    }
 }

@@ -116,6 +116,48 @@ public final class Items {
     }
 
     /**
+     * Turn an ItemStack back into a lookup string.
+     *
+     * @param itemStack The ItemStack.
+     * @return The lookup string.
+     */
+    @NotNull
+    public static String toLookupString(@Nullable final ItemStack itemStack) {
+        if (itemStack == null) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        CustomItem customItem = getCustomItem(itemStack);
+
+        if (customItem != null) {
+            builder.append(customItem.getKey());
+        } else {
+            builder.append(itemStack.getType().name().toLowerCase());
+        }
+
+        if (itemStack.getAmount() > 1) {
+            builder.append(" ")
+                    .append(itemStack.getAmount());
+        }
+
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if (meta != null) {
+            for (LookupArgParser parser : ARG_PARSERS) {
+                String parsed = parser.serializeBack(meta);
+                if (parsed != null) {
+                    builder.append(" ")
+                            .append(parsed);
+                }
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * This is the backbone of the entire eco item system.
      * <p>
      * You can look up a TestableItem for any material, custom item,

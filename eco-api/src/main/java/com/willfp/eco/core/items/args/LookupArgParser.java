@@ -22,4 +22,14 @@ public interface LookupArgParser {
      */
     @Nullable Predicate<ItemStack> parseArguments(@NotNull String[] args,
                                                   @NotNull ItemMeta meta);
+
+    /**
+     * Serialize the item back to a string.
+     *
+     * @param meta The ItemMeta.
+     * @return The string, or null if not required.
+     */
+    default @Nullable String serializeBack(@NotNull final ItemMeta meta) {
+        return null;
+    }
 }

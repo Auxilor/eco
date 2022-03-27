@@ -30,4 +30,12 @@ class ArgParserName : LookupArgParser {
             testMeta.displayName == formatted
         }
     }
+
+    override fun serializeBack(meta: ItemMeta): String? {
+        if (!meta.hasDisplayName()) {
+            return null
+        }
+
+        return "name:${meta.displayName}"
+    }
 }

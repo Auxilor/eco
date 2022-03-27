@@ -30,4 +30,12 @@ class ArgParserCustomModelData : LookupArgParser {
             testMeta.customModelData == modelData
         }
     }
+
+    override fun serializeBack(meta: ItemMeta): String? {
+        if (!meta.hasCustomModelData()) {
+            return null
+        }
+
+        return "custom-model-data:${meta.customModelData}"
+    }
 }

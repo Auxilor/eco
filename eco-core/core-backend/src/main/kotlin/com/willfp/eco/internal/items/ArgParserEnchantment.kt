@@ -52,4 +52,26 @@ class ArgParserEnchantment : LookupArgParser {
             true
         }
     }
+
+    override fun serializeBack(meta: ItemMeta): String? {
+        val enchants = mutableMapOf<Enchantment, Int>()
+
+        if (meta is EnchantmentStorageMeta) {
+            enchants.putAll(meta.storedEnchants)
+        } else {
+            enchants.putAll(meta.enchants)
+        }
+
+        if (enchants.isEmpty()) {
+            return null
+        }
+
+        val builder = StringBuilder()
+
+        for ((enchant, level) in enchants) {
+            builder.append("${enchant.key.key}:$level ")
+        }
+
+        return builder.toString().trimEnd()
+    }
 }

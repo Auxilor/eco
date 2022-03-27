@@ -36,4 +36,12 @@ class ArgParserTexture : LookupArgParser {
             texture == SkullUtils.getSkullTexture(testMeta)
         }
     }
+
+    override fun serializeBack(meta: ItemMeta): String? {
+        if (meta !is SkullMeta) {
+            return null
+        }
+
+        return "texture:${SkullUtils.getSkullTexture(meta)}"
+    }
 }
