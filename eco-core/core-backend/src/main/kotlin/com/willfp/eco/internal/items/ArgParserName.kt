@@ -36,6 +36,6 @@ class ArgParserName : LookupArgParser {
             return null
         }
 
-        return "name:${meta.displayName}"
+        return "name:\"${meta.displayName}\""
     }
 }
