@@ -42,11 +42,10 @@ class ArgParserColor : LookupArgParser {
         }
     }
 
-    override fun serializeBack(meta: ItemMeta): String? {
+    override fun toLookupString(meta: ItemMeta): String? {
         if (meta !is LeatherArmorMeta) {
             return null
         }
-
-        return "color:#${Integer.toHexString(meta.color.asRGB())}"
+        return "color:${meta.color.asRGB()}"
     }
 }

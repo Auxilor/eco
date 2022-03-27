@@ -31,11 +31,11 @@ class ArgParserName : LookupArgParser {
         }
     }
 
-    override fun serializeBack(meta: ItemMeta): String? {
-        if (!meta.hasDisplayName()) {
-            return null
+    override fun toLookupString(meta: ItemMeta): String? {
+        return if (meta.hasDisplayName()) {
+            "name:\"${meta.displayName}\""
+        } else {
+            null
         }
-
-        return "name:\"${meta.displayName}\""
     }
 }

@@ -3,6 +3,7 @@ package com.willfp.eco.internal.items
 import com.willfp.eco.core.items.args.LookupArgParser
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import java.util.function.Predicate
 
@@ -11,7 +12,7 @@ class ArgParserFlag : LookupArgParser {
         val flags = mutableSetOf<ItemFlag>()
 
         for (arg in args) {
-            val flag = runCatching { ItemFlag.valueOf(arg.uppercase()) }.getOrNull() ?: continue
+            val flag = kotlin.runCatching { ItemFlag.valueOf(arg.uppercase()) }.getOrNull() ?: continue
             flags.add(flag)
         }
 
@@ -28,13 +29,22 @@ class ArgParserFlag : LookupArgParser {
         }
     }
 
-    override fun serializeBack(meta: ItemMeta): String? {
+    override fun toLookupString(meta: ItemMeta): String? {
         val flags = meta.itemFlags
 
         if (flags.isEmpty()) {
             return null
         }
 
-        return flags.joinToString(" ") { it.name.lowercase() }
+        val result = StringBuilder()
+
+        flags.forEach {
+            result.append(it.name.lowercase())
+            if (it != flags.last()) {
+                result.append(" ")
+            }
+        }
+
+        return result.toString()
     }
 }

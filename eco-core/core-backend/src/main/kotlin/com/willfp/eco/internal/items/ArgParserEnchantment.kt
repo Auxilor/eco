@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.LeatherArmorMeta
 import java.util.function.Predicate
 
 class ArgParserEnchantment : LookupArgParser {
@@ -53,25 +54,26 @@ class ArgParserEnchantment : LookupArgParser {
         }
     }
 
-    override fun serializeBack(meta: ItemMeta): String? {
-        val enchants = mutableMapOf<Enchantment, Int>()
-
-        if (meta is EnchantmentStorageMeta) {
-            enchants.putAll(meta.storedEnchants)
+    override fun toLookupString(meta: ItemMeta): String? {
+        val enchants = if (meta is EnchantmentStorageMeta) {
+            meta.storedEnchants
         } else {
-            enchants.putAll(meta.enchants)
+            meta.enchants
         }
 
         if (enchants.isEmpty()) {
             return null
         }
 
-        val builder = StringBuilder()
+        val result = StringBuilder()
 
-        for ((enchant, level) in enchants) {
-            builder.append("${enchant.key.key}:$level ")
+        enchants.forEach {
+            result.append("${it.key.key.key}:${it.value}")
+            if (enchants.keys.last() != it.key) {
+                result.append(" ")
+            }
         }
 
-        return builder.toString().trimEnd()
+        return result.toString()
     }
 }

@@ -28,11 +28,11 @@ class ArgParserUnbreakable : LookupArgParser {
         }
     }
 
-    override fun serializeBack(meta: ItemMeta): String? {
-        if (!meta.isUnbreakable) {
-            return null
+    override fun toLookupString(meta: ItemMeta): String? {
+        return if (meta.hasDisplayName()) {
+            "name:\"${meta.displayName}\""
+        } else {
+            null
         }
-
-        return "unbreakable"
     }
 }

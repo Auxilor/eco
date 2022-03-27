@@ -3,6 +3,7 @@ package com.willfp.eco.internal.items
 import com.willfp.eco.core.items.args.LookupArgParser
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.LeatherArmorMeta
 import java.util.function.Predicate
 
 class ArgParserCustomModelData : LookupArgParser {
@@ -31,11 +32,10 @@ class ArgParserCustomModelData : LookupArgParser {
         }
     }
 
-    override fun serializeBack(meta: ItemMeta): String? {
+    override fun toLookupString(meta: ItemMeta): String? {
         if (!meta.hasCustomModelData()) {
             return null
         }
-
         return "custom-model-data:${meta.customModelData}"
     }
 }

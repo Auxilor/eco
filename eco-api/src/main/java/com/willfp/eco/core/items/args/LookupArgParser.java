@@ -24,12 +24,10 @@ public interface LookupArgParser {
                                                   @NotNull ItemMeta meta);
 
     /**
-     * Serialize the item back to a string.
+     * Parse an [Items] lookup string from meta.
      *
-     * @param meta The ItemMeta.
-     * @return The string, or null if not required.
+     * @param meta The item meta.
+     * @return Lookup string or null.
      */
-    default @Nullable String serializeBack(@NotNull final ItemMeta meta) {
-        return null;
-    }
+    @Nullable String toLookupString(@NotNull ItemMeta meta);
 }
