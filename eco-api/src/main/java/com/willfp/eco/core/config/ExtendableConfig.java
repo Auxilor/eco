@@ -38,6 +38,7 @@ public abstract class ExtendableConfig extends LoadableConfigWrapper {
                 source,
                 removeUnused,
                 type,
+                true,
                 updateBlacklist
         ));
     }

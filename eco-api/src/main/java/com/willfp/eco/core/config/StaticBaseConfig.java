@@ -26,7 +26,8 @@ public abstract class StaticBaseConfig extends LoadableConfigWrapper {
                 plugin,
                 "",
                 plugin.getClass(),
-                type
+                type,
+                true
         ));
     }
 }
