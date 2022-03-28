@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * All storable data key types.
@@ -77,6 +78,22 @@ public final class PersistentDataKeyType<T> {
 
         this.typeClass = typeClass;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (!(that instanceof PersistentDataKeyType type)) {
+            return false;
+        }
+        return Objects.equals(this.name, type.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.name);
     }
 
     /**
