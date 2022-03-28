@@ -23,5 +23,5 @@ interface DataHandler {
 
     fun <T> write(uuid: UUID, key: NamespacedKey, value: T)
     fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>)
-    fun <T> read(uuid: UUID, key: NamespacedKey): T?
+    fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T?
 }

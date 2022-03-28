@@ -102,9 +102,9 @@ class MySQLDataHandler(
         }
     }
 
-    override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
+    override fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         return applyFor(uuid) {
-            it.read(uuid, key)
+            it.read(uuid, key.key)
         }
     }
 

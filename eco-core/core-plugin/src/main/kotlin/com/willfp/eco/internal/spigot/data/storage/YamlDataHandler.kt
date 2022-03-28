@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.data.storage
 
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import org.bukkit.NamespacedKey
@@ -37,7 +38,13 @@ class YamlDataHandler(
         dataYml.set("player.$uuid.$key", value)
     }
 
-    override fun <T> read(uuid: UUID, key: NamespacedKey): T? {
-        return dataYml.get("player.$uuid.$key") as T?
+    override fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+        return when (key.type) {
+            PersistentDataKeyType.INT -> dataYml.getInt("player.$uuid.$key")
+            PersistentDataKeyType.DOUBLE -> dataYml.getDouble("player.$uuid.$key")
+            PersistentDataKeyType.STRING -> dataYml.getString("player.$uuid.$key")
+            PersistentDataKeyType.BOOLEAN -> dataYml.getBool("player.$uuid.$key")
+            else -> null
+        } as? T?
     }
 }

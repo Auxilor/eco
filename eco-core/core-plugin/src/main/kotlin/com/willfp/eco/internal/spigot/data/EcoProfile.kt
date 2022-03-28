@@ -27,7 +27,7 @@ abstract class EcoProfile(
             return this.data[key] as T
         }
 
-        this.data[key] = handler.read(uuid, key.key) ?: key.defaultValue
+        this.data[key] = handler.read(uuid, key) ?: key.defaultValue
         return read(key)
     }
 
