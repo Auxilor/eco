@@ -36,11 +36,11 @@ abstract class EcoProfile(
             return false
         }
 
-        return this.data == other.data && this.uuid == other.uuid
+        return this.uuid == other.uuid
     }
 
     override fun hashCode(): Int {
-        return this.data.hashCode()
+        return this.uuid.hashCode()
     }
 
     companion object {

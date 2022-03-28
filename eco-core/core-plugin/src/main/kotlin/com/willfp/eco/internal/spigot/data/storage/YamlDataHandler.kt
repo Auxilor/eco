@@ -39,12 +39,14 @@ class YamlDataHandler(
     }
 
     override fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
-        return when (key.type) {
-            PersistentDataKeyType.INT -> dataYml.getInt("player.$uuid.$key")
-            PersistentDataKeyType.DOUBLE -> dataYml.getDouble("player.$uuid.$key")
-            PersistentDataKeyType.STRING -> dataYml.getString("player.$uuid.$key")
-            PersistentDataKeyType.BOOLEAN -> dataYml.getBool("player.$uuid.$key")
+        val value = when (key.type) {
+            PersistentDataKeyType.INT -> dataYml.getInt("player.$uuid.${key.key}")
+            PersistentDataKeyType.DOUBLE -> dataYml.getDouble("player.$uuid.${key.key}")
+            PersistentDataKeyType.STRING -> dataYml.getString("player.$uuid.${key.key}")
+            PersistentDataKeyType.BOOLEAN -> dataYml.getBool("player.$uuid.${key.key}")
             else -> null
         } as? T?
+
+        return value
     }
 }
