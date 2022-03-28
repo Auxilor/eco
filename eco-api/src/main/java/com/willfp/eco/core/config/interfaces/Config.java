@@ -30,8 +30,13 @@ import java.util.Set;
 public interface Config extends Cloneable, PlaceholderInjectable {
     /**
      * Clears cache.
+     * <p>
+     * Configs no longer have caches as they have in previous versions.
      */
-    void clearCache();
+    @Deprecated(since = "6.31.1", forRemoval = true)
+    default void clearCache() {
+        // Do nothing.
+    }
 
     /**
      * Convert the config into readable text.

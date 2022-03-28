@@ -14,12 +14,12 @@ open class EcoUpdatableConfig(
     subDirectoryPath: String,
     source: Class<*>,
     private val removeUnused: Boolean,
+    requiresChangesToSave: Boolean,
     vararg updateBlacklist: String
-) : EcoLoadableConfig(type, configName, plugin, subDirectoryPath, source) {
+) : EcoLoadableConfig(type, configName, plugin, subDirectoryPath, source, requiresChangesToSave) {
     private val updateBlacklist = mutableListOf(*updateBlacklist)
 
     fun update() {
-        super.clearCache()
         this.init(configFile)
         val newConfig = configInJar ?: return
         if (newConfig.getKeys(true) == this.getKeys(true)) {

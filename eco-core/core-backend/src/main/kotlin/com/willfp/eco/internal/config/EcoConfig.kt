@@ -21,10 +21,6 @@ open class EcoConfig(
         this.values.putAll(values.normalizeToConfig(this.type))
     }
 
-    override fun clearCache() {
-        // No cache
-    }
-
     override fun toPlaintext(): String {
         return configType.toString(this.values)
     }
@@ -80,7 +76,6 @@ open class EcoConfig(
         path: String,
         obj: Any?
     ) {
-        this.clearCache()
         val nearestPath = path.split(".")[0]
 
         if (path.contains(".")) {
@@ -90,14 +85,10 @@ open class EcoConfig(
                 return
             }
 
-            val section = get(nearestPath)
-            if (section == null) {
-                values[nearestPath] = EcoConfigSection(this.type)
-                return set(path, obj)
-            } else if (section is Config) {
-                section.set(remainingPath, obj)
-                return
-            }
+            val section = getSubsection(nearestPath) // Creates a section if null, therefore it can be set.
+            section.set(remainingPath, obj)
+            values[nearestPath] = section // Set the value
+            return
         }
 
         if (obj == null) {
@@ -108,7 +99,7 @@ open class EcoConfig(
     }
 
     override fun getSubsection(path: String): Config {
-        return getSubsectionOrNull(path) ?: EcoConfigSection(type, mutableMapOf(), injections)
+        return getSubsectionOrNull(path) ?: EcoConfigSection(type, injections = injections)
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
@@ -168,7 +159,6 @@ open class EcoConfig(
     override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
         injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
         injections.addAll(placeholders)
-        this.clearCache()
     }
 
     override fun getInjectedPlaceholders(): List<StaticPlaceholder> {
@@ -177,7 +167,6 @@ open class EcoConfig(
 
     override fun clearInjectedPlaceholders() {
         injections.clear()
-        this.clearCache()
     }
 
     override fun toMap(): MutableMap<String, Any?> {

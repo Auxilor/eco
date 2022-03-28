@@ -20,13 +20,14 @@ public interface ConfigFactory {
     /**
      * Updatable config.
      *
-     * @param configName       The name of the config
-     * @param plugin           The plugin.
-     * @param subDirectoryPath The subdirectory path.
-     * @param source           The class that owns the resource.
-     * @param removeUnused     Whether keys not present in the default config should be removed on update.
-     * @param type             The config type.
-     * @param updateBlacklist  Substring of keys to not add/remove keys for.
+     * @param configName            The name of the config
+     * @param plugin                The plugin.
+     * @param subDirectoryPath      The subdirectory path.
+     * @param source                The class that owns the resource.
+     * @param removeUnused          Whether keys not present in the default config should be removed on update.
+     * @param type                  The config type.
+     * @param updateBlacklist       Substring of keys to not add/remove keys for.
+     * @param requiresChangesToSave If the config must be changed in order to save the config.
      * @return The config implementation.
      */
     LoadableConfig createUpdatableConfig(@NotNull String configName,
@@ -35,23 +36,26 @@ public interface ConfigFactory {
                                          @NotNull Class<?> source,
                                          boolean removeUnused,
                                          @NotNull ConfigType type,
+                                         boolean requiresChangesToSave,
                                          @NotNull String... updateBlacklist);
 
     /**
      * Loadable config.
      *
-     * @param configName       The name of the config
-     * @param plugin           The plugin.
-     * @param subDirectoryPath The subdirectory path.
-     * @param source           The class that owns the resource.
-     * @param type             The config type.
+     * @param configName            The name of the config
+     * @param plugin                The plugin.
+     * @param subDirectoryPath      The subdirectory path.
+     * @param source                The class that owns the resource.
+     * @param type                  The config type.
+     * @param requiresChangesToSave If the config must be changed in order to save the config.
      * @return The config implementation.
      */
     LoadableConfig createLoadableConfig(@NotNull String configName,
                                         @NotNull PluginLike plugin,
                                         @NotNull String subDirectoryPath,
                                         @NotNull Class<?> source,
-                                        @NotNull ConfigType type);
+                                        @NotNull ConfigType type,
+                                        boolean requiresChangesToSave);
 
     /**
      * Create config.

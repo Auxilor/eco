@@ -19,7 +19,8 @@ open class EcoLoadableConfig(
     configName: String,
     private val plugin: PluginLike,
     private val subDirectoryPath: String,
-    val source: Class<*>
+    val source: Class<*>,
+    private val requiresChangesToSave: Boolean
 ) : EcoConfig(type), LoadableConfig {
     private val configFile: File
     private val name: String = "$configName.${type.extension}"
@@ -57,8 +58,10 @@ open class EcoLoadableConfig(
 
     @Throws(IOException::class)
     override fun save() {
-        if (!hasChanged) { // In order to preserve comments
-            return
+        if (requiresChangesToSave) {
+            if (!hasChanged) { // In order to preserve comments
+                return
+            }
         }
 
         if (configFile.delete()) {

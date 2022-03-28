@@ -23,13 +23,31 @@ public abstract class BaseConfig extends LoadableConfigWrapper {
                          @NotNull final PluginLike plugin,
                          final boolean removeUnused,
                          @NotNull final ConfigType type) {
+        this(configName, plugin, removeUnused, type, true);
+    }
+
+    /**
+     * Create new Base Config.
+     *
+     * @param plugin               The plugin or extension.
+     * @param configName           The config name (excluding extension).
+     * @param removeUnused         If unused sections should be removed.
+     * @param type                 The config type.
+     * @param requiresChangeToSave If changes must be applied to save the config.
+     */
+    protected BaseConfig(@NotNull final String configName,
+                         @NotNull final PluginLike plugin,
+                         final boolean removeUnused,
+                         @NotNull final ConfigType type,
+                         final boolean requiresChangeToSave) {
         super(Eco.getHandler().getConfigFactory().createUpdatableConfig(
                 configName,
                 plugin,
                 "",
                 plugin.getClass(),
                 removeUnused,
-                type
+                type,
+                requiresChangeToSave
         ));
     }
 }

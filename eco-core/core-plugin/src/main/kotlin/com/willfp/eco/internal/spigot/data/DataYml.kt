@@ -10,5 +10,6 @@ class DataYml(
     "data",
     plugin,
     false,
-    ConfigType.YAML
+    ConfigType.YAML,
+    false
 )

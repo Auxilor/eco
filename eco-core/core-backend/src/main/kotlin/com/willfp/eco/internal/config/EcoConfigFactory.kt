@@ -28,13 +28,15 @@ object EcoConfigFactory : ConfigFactory {
         plugin: PluginLike,
         subDirectoryPath: String,
         source: Class<*>,
-        type: ConfigType
+        type: ConfigType,
+        requiresChangesToSave: Boolean
     ): LoadableConfig = EcoLoadableConfig(
         type,
         configName,
         plugin,
         subDirectoryPath,
-        source
+        source,
+        requiresChangesToSave
     )
 
     override fun createUpdatableConfig(
@@ -44,6 +46,7 @@ object EcoConfigFactory : ConfigFactory {
         source: Class<*>,
         removeUnused: Boolean,
         type: ConfigType,
+        requiresChangesToSave: Boolean,
         vararg updateBlacklist: String
     ): LoadableConfig = EcoUpdatableConfig(
         type,
@@ -52,6 +55,7 @@ object EcoConfigFactory : ConfigFactory {
         subDirectoryPath,
         source,
         removeUnused,
+        requiresChangesToSave,
         *updateBlacklist
     )
 }

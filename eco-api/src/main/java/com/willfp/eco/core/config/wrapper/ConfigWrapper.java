@@ -19,7 +19,7 @@ import java.util.Set;
  *
  * @param <T> The type of the handle.
  */
-@SuppressWarnings("MethodDoesntCallSuperMethod")
+@SuppressWarnings({"MethodDoesntCallSuperMethod", "removal"})
 public abstract class ConfigWrapper<T extends Config> implements Config {
     /**
      * Configs from eco have an internal implementation,
@@ -43,6 +43,7 @@ public abstract class ConfigWrapper<T extends Config> implements Config {
     }
 
     @Override
+    @Deprecated(since = "6.31.1", forRemoval = true)
     public void clearCache() {
         handle.clearCache();
     }

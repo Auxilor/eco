@@ -59,6 +59,10 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
      * @param base The ItemStack to start with.
      */
     protected AbstractItemStackBuilder(@NotNull final ItemStack base) {
+        if (base.getType() == Material.AIR) {
+            base.setType(Material.STONE); // Prevents NPEs.
+        }
+
         this.base = base;
         this.meta = (T) base.getItemMeta();
         assert meta != null;
