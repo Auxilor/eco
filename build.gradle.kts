@@ -85,21 +85,25 @@ allprojects {
     }
 
     dependencies {
-        compileOnly(kotlin("stdlib", version = "1.6.10"))
+        // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
+        compileOnly("com.google.guava:guava:31.1-jre")
 
         // Test
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-        
+
         // Adventure
-        compileOnly("net.kyori:adventure-api:4.10.0")
-        compileOnly("net.kyori:adventure-text-serializer-gson:4.10.0")
-        compileOnly("net.kyori:adventure-text-serializer-legacy:4.10.0")
+        compileOnly("net.kyori:adventure-api:4.10.1")
+        compileOnly("net.kyori:adventure-text-serializer-gson:4.10.1") {
+            exclude("com.google.code.gson", "gson") // Prevent shading into the jar
+        }
+        compileOnly("net.kyori:adventure-text-serializer-legacy:4.10.1")
 
         // Other
-        compileOnly("com.google.guava:guava:31.1-jre")
-        compileOnly("com.github.ben-manes.caffeine:caffeine:3.0.5")
+        implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
+        implementation("org.apache.maven:maven-artifact:3.8.4")
+        implementation(kotlin("stdlib", version = "1.6.10"))
     }
 
     tasks.withType<JavaCompile> {
@@ -118,7 +122,7 @@ allprojects {
     }
 
     configurations.testImplementation {
-        setExtendsFrom(listOf(configurations.compileOnly.get()))
+        setExtendsFrom(listOf(configurations.compileOnly.get(), configurations.implementation.get()))
     }
 
     tasks {
@@ -133,6 +137,27 @@ allprojects {
         shadowJar {
             relocate("org.bstats", "com.willfp.eco.libs.bstats")
             relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
+            relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
+            relocate("org.apache.maven", "com.willfp.eco.libs.maven")
+            relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")
+            relocate("org.intellij", "com.willfp.eco.libs.intellij")
+            relocate("org.jetbrains", "com.willfp.eco.libs.jetbrains")
+            relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
+            relocate("org.reflections", "com.willfp.eco.libs.reflections")
+            relocate("org.slf4j", "com.willfp.eco.libs.slf4j")
+            relocate("javassist", "com.willfp.eco.libs.javassist")
+            relocate("javax.annotation", "com.willfp.eco.libs.annotation")
+            relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
+            relocate("com.google.j2objc", "com.willfp.eco.libs.j2objc")
+            relocate("com.google.thirdparty", "com.willfp.eco.libs.google.thirdparty")
+            relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
+            relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
+            relocate("com.mysql", "com.willfp.eco.libs.mysql")
+            relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
+
+            /*
+            Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
+             */
         }
 
         compileJava {
