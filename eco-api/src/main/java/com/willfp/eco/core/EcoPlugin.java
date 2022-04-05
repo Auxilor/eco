@@ -354,7 +354,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                 if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
                     this.outdated = true;
                     this.getLogger().warning(this.getName() + " is out of date! (Version " + this.getDescription().getVersion() + ")");
-                    this.getLogger().warning("The newest version is &f" + version);
+                    this.getLogger().warning("The newest version is " + version);
                     this.getLogger().warning("Download the new version!");
                 }
             });
