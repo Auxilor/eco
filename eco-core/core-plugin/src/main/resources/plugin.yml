@@ -43,7 +43,3 @@ softdepend:
   - CustomCrafting
   - ExecutableItems
   - RPGHorses
-libraries: # Stuck using lib-loader for these
-  - "net.kyori:adventure-api:4.10.1"
-  - "net.kyori:adventure-text-serializer-gson:4.10.1"
-  - "net.kyori:adventure-text-serializer-legacy:4.10.1"
