@@ -13,6 +13,7 @@ import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -428,6 +429,64 @@ public final class Items {
         }
 
         return items;
+    }
+
+    /**
+     * Merge ItemStack onto another ItemStack.
+     *
+     * @param from The ItemStack to merge from.
+     * @param to   The ItemStack to merge onto.
+     * @return The ItemStack, merged (same instance as to).
+     */
+    @NotNull
+    public static ItemStack mergeFrom(@NotNull final ItemStack from,
+                                      @NotNull final ItemStack to) {
+        ItemMeta fromMeta = from.getItemMeta();
+        ItemMeta toMeta = to.getItemMeta();
+
+        if (fromMeta == null || toMeta == null) {
+            return to;
+        }
+
+        ItemMeta newMeta = mergeFrom(fromMeta, toMeta);
+
+        to.setItemMeta(newMeta);
+        to.setType(from.getType());
+        to.setAmount(from.getAmount());
+        return to;
+    }
+
+    /**
+     * Merge ItemMeta onto other ItemMeta.
+     *
+     * @param from The ItemMeta to merge from.
+     * @param to   The ItemMeta to merge onto.
+     * @return The ItemMeta, merged (same instance as to).
+     */
+    @NotNull
+    public static ItemMeta mergeFrom(@NotNull final ItemMeta from,
+                                     @NotNull final ItemMeta to) {
+        if (from.hasDisplayName()) {
+            to.setDisplayName(from.getDisplayName());
+        }
+
+        to.setLore(from.getLore());
+
+        for (Enchantment enchant : to.getEnchants().keySet()) {
+            to.removeEnchant(enchant);
+        }
+
+        for (Map.Entry<Enchantment, Integer> entry : from.getEnchants().entrySet()) {
+            to.addEnchant(entry.getKey(), entry.getValue(), true);
+        }
+
+        if (from.hasCustomModelData()) {
+            to.setCustomModelData(from.getCustomModelData());
+        } else {
+            to.setCustomModelData(null);
+        }
+
+        return to;
     }
 
     private Items() {
