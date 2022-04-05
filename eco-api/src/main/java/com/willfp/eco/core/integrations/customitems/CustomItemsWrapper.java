@@ -11,5 +11,14 @@ public interface CustomItemsWrapper extends Integration {
      *
      * @see com.willfp.eco.core.items.Items
      */
-    void registerAllItems();
+    default void registerAllItems() {
+        // Override when needed.
+    }
+
+    /**
+     * Register {@link com.willfp.eco.core.items.provider.ItemProvider}s.
+     */
+    default void registerProvider() {
+        // Override when needed.
+    }
 }

@@ -26,10 +26,6 @@ class CustomItemsMythicMobs(
         return "MythicMobs"
     }
 
-    override fun registerAllItems() {
-        // Do nothing.
-    }
-
     @EventHandler
     fun onLoad(event: MythicDropLoadEvent) {
         val name = event.dropName

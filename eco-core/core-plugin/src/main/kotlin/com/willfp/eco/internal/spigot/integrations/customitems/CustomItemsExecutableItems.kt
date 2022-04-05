@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 
 class CustomItemsExecutableItems : CustomItemsWrapper {
-    override fun registerAllItems() {
+    override fun registerProvider() {
         Items.registerItemProvider(ExecutableItemsProvider())
     }
 

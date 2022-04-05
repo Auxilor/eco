@@ -23,7 +23,7 @@ class CustomItemsHeadDatabase(
         plugin.eventManager.registerListener(provider)
     }
 
-    override fun registerAllItems() {
+    override fun registerProvider() {
         Items.registerItemProvider(HeadDBProvider())
     }
 

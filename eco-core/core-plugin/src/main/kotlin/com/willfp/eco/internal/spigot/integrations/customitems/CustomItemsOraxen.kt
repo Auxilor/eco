@@ -9,7 +9,7 @@ import com.willfp.eco.util.NamespacedKeyUtils
 import io.th0rgal.oraxen.items.OraxenItems
 
 class CustomItemsOraxen : CustomItemsWrapper {
-    override fun registerAllItems() {
+    override fun registerProvider() {
         Items.registerItemProvider(OraxenProvider())
     }
 

@@ -34,6 +34,17 @@ public final class CustomItemsManager {
         }
     }
 
+    /**
+     * Register all the custom items for a specific plugin into eco.
+     *
+     * @see com.willfp.eco.core.items.Items
+     */
+    public static void registerProviders() {
+        for (CustomItemsWrapper customItemsWrapper : REGISTERED) {
+            customItemsWrapper.registerProvider();
+        }
+    }
+
     private CustomItemsManager() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

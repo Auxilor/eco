@@ -178,6 +178,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         NumberUtils.initCrunch { expression, player, statics -> evaluateExpression(expression, player, statics) }
 
+        CustomItemsManager.registerProviders()
+
         postInit()
     }
 

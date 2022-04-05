@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 
 class CustomItemsCustomCrafting : CustomItemsWrapper {
-    override fun registerAllItems() {
+    override fun registerProvider() {
         Items.registerItemProvider(CustomCraftingProvider())
     }
 
