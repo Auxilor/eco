@@ -142,7 +142,8 @@ allprojects {
             relocate("org.apache.maven", "com.willfp.eco.libs.maven")
             relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")
             relocate("org.intellij", "com.willfp.eco.libs.intellij")
-            relocate("org.jetbrains", "com.willfp.eco.libs.jetbrains")
+            relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
+            //relocate("org.jetbrains.exposed", "com.willfp.eco.libs.exposed")
             relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
             relocate("org.reflections", "com.willfp.eco.libs.reflections")
             relocate("javassist", "com.willfp.eco.libs.javassist")
@@ -153,6 +154,7 @@ allprojects {
             relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
             relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
             relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
+            //relocate("com.mysql", "com.willfp.eco.libs.mysql")
 
             /*
             Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
