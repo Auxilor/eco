@@ -119,6 +119,7 @@ allprojects {
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
         exclude(group = "net.wesjd", module = "anvilgui")
+        exclude(group = "org.slf4j", module = "slf4j-api")
     }
 
     configurations.testImplementation {
@@ -144,7 +145,6 @@ allprojects {
             relocate("org.jetbrains", "com.willfp.eco.libs.jetbrains")
             relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
             relocate("org.reflections", "com.willfp.eco.libs.reflections")
-            relocate("org.slf4j", "com.willfp.eco.libs.slf4j")
             relocate("javassist", "com.willfp.eco.libs.javassist")
             relocate("javax.annotation", "com.willfp.eco.libs.annotation")
             relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
@@ -152,7 +152,6 @@ allprojects {
             relocate("com.google.thirdparty", "com.willfp.eco.libs.google.thirdparty")
             relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
             relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
-            relocate("com.mysql", "com.willfp.eco.libs.mysql")
             relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
 
             /*

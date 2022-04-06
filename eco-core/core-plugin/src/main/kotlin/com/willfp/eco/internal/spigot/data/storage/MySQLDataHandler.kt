@@ -46,7 +46,7 @@ class MySQLDataHandler(
 
     init {
         val config = HikariConfig()
-        config.driverClassName = "com.willfp.eco.libs.mysql.cj.jdbc.Driver"
+        config.driverClassName = "com.mysql.cj.jdbc.Driver"
         config.username = plugin.configYml.getString("mysql.user")
         config.password = plugin.configYml.getString("mysql.password")
         config.jdbcUrl = "jdbc:mysql://" +
