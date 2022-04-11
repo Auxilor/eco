@@ -52,7 +52,6 @@ dependencies {
 
     // CombatLogX V10 + NewbieHelper Expansion
     compileOnly 'com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT'
-    compileOnly 'com.SirBlobman.combatlogx.expansions:NewbieHelper:10.0.0.0-SNAPSHOT'
 
     // CombatLogX V11 + NewbieHelper Expansion
     compileOnly 'com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT'

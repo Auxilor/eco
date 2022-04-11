@@ -10,9 +10,6 @@ import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.TemptGoal
 import net.minecraft.world.entity.ai.targeting.TargetingConditions
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity
-import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory
-import org.bukkit.event.entity.EntityTargetEvent
 import java.util.EnumSet
 import kotlin.math.abs
 
@@ -57,19 +54,6 @@ class EnhancedTemptGoal(
             false
         } else {
             player = mob.level.getNearestPlayer(targetingConditions, mob as LivingEntity)
-            // CraftBukkit start
-            if (player != null) {
-                val event = CraftEventFactory.callEntityTargetLivingEvent(
-                    mob,
-                    player,
-                    EntityTargetEvent.TargetReason.TEMPT
-                )
-                if (event.isCancelled) {
-                    return false
-                }
-                player = if (event.target == null) null else (event.target as CraftLivingEntity?)!!.handle
-            }
-            // CraftBukkit end
             player != null
         }
     }

@@ -5,7 +5,6 @@ import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.monster.SpellcasterIllager
-import org.bukkit.craftbukkit.v1_17_R1.event.CraftEventFactory
 
 @Suppress("UNCHECKED_CAST")
 class DelegatedSpellcaster(private val handle: SpellcasterIllager) : SpellcasterIllager(
@@ -66,15 +65,6 @@ abstract class OpenUseSpellGoal(
     override fun tick() {
         --attackWarmupDelay
         if (attackWarmupDelay == 0) {
-            // CraftBukkit start
-            if (!CraftEventFactory.handleEntitySpellCastEvent(
-                    handle,
-                    spell
-                )
-            ) {
-                return
-            }
-            // CraftBukkit end
             performSpellCasting()
             handle.playSound(openHandle.openCastingSoundEvent, 1.0f, 1.0f)
         }
