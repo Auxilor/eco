@@ -3,7 +3,9 @@ package com.willfp.eco.internal.spigot.proxy.common.fast
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.common.NBT_TAG_STRING
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
+import com.willfp.eco.internal.spigot.proxy.common.makePdc
 import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
+import com.willfp.eco.internal.spigot.proxy.common.setPdc
 import com.willfp.eco.internal.spigot.proxy.common.toItem
 import com.willfp.eco.util.NamespacedKeyUtils
 import com.willfp.eco.util.StringUtils
@@ -16,8 +18,11 @@ import net.minecraft.nbt.StringTag
 import net.minecraft.world.item.EnchantedBookItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
+import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
+import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.persistence.PersistentDataType
 import kotlin.experimental.and
 
 @Suppress("UsePropertyAccessSyntax")
@@ -25,6 +30,7 @@ class EcoFastItemStack(
     private val bukkit: org.bukkit.inventory.ItemStack
 ) : FastItemStack {
     private val handle = bukkit.asNMSStack()
+    private val pdc = (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc()
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantmentNBT =
@@ -196,6 +202,10 @@ class EcoFastItemStack(
         handle.setRepairCost(cost)
     }
 
+    override fun getPersistentDataContainer(): PersistentDataContainer {
+        return ContinuallyAppliedPersistentDataContainer(this.pdc, this)
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other !is EcoFastItemStack) {
             return false
@@ -209,7 +219,11 @@ class EcoFastItemStack(
         return handle.getTag()?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.getItem()))
     }
 
-    private fun apply() {
+    internal fun apply() {
+        if (handle.hasTag()) {
+            handle.getTag()?.setPdc(this.pdc)
+        }
+
         bukkit.mergeIfNeeded(handle)
     }
 
@@ -219,5 +233,20 @@ class EcoFastItemStack(
 
     override fun unwrap(): org.bukkit.inventory.ItemStack {
         return bukkit
+    }
+}
+
+private class ContinuallyAppliedPersistentDataContainer(
+    val handle: PersistentDataContainer,
+    val fis: EcoFastItemStack
+) : PersistentDataContainer by handle {
+    override fun <T : Any, Z : Any> set(key: NamespacedKey, type: PersistentDataType<T, Z>, value: Z) {
+        handle.set(key, type, value)
+        fis.apply()
+    }
+
+    override fun remove(key: NamespacedKey) {
+        handle.remove(key)
+        fis.apply()
     }
 }

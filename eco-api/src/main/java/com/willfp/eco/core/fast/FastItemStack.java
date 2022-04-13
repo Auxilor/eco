@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.
  */
-public interface FastItemStack {
+public interface FastItemStack extends PersistentDataHolder {
     /**
      * Get all enchantments on an item.
      *

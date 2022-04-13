@@ -5,6 +5,7 @@ import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
 import net.minecraft.core.Registry
+import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
@@ -13,6 +14,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataContainer
 
 private lateinit var impl: CommonsProvider
 
@@ -50,8 +52,18 @@ fun Material.toItem(): Item =
             .orElseThrow { IllegalArgumentException("Material is not item!") }
     }
 
+fun CompoundTag.makePdc(): PersistentDataContainer =
+    impl.makePdc(this)
+
+fun CompoundTag.setPdc(pdc: PersistentDataContainer) =
+    impl.setPdc(this, pdc)
+
 interface CommonsProvider {
     val nbtTagString: Int
+
+    fun makePdc(tag: CompoundTag): PersistentDataContainer
+
+    fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer)
 
     fun toPathfinderMob(mob: Mob): PathfinderMob?
 
