@@ -39,6 +39,6 @@ class Skull : SkullProxy {
         val profile = profile[meta] as GameProfile? ?: return null
         val properties = profile.properties ?: return null
         val prop = properties["textures"] ?: return null
-        return prop.toMutableList().firstOrNull()?.name
+        return prop.toMutableList().firstOrNull()?.value
     }
 }
