@@ -12,10 +12,22 @@ fun String.toComponent(): Component =
     StringUtils.toComponent(this)
 
 /**
+ * @see StringUtils.jsonToComponent
+ */
+fun String.jsonToComponent(): Component =
+    StringUtils.jsonToComponent(this)
+
+/**
  * @see StringUtils.toLegacy
  */
 fun Component.toLegacy(): String =
     StringUtils.toLegacy(this)
+
+/**
+ * @see StringUtils.componentToJson
+ */
+fun Component.toJSON(): String =
+    StringUtils.componentToJson(this)
 
 /**
  * @see StringUtils.format

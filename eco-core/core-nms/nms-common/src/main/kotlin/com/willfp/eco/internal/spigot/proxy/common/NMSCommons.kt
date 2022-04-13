@@ -4,9 +4,12 @@ import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
+import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
+import net.minecraft.world.item.Item
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
@@ -38,6 +41,14 @@ fun <T : EntityGoal<*>> T.getVersionSpecificEntityGoalFactory(): EntityGoalFacto
 
 fun <T : TargetGoal<*>> T.getVersionSpecificEntityGoalFactory(): TargetGoalFactory<T>? =
     impl.getVersionSpecificTargetGoalFactory(this)
+
+private val MATERIAL_TO_ITEM = mutableMapOf<Material, Item>()
+
+fun Material.toItem(): Item =
+    MATERIAL_TO_ITEM.getOrPut(this) {
+        Registry.ITEM.getOptional(this.key.toResourceLocation())
+            .orElseThrow { IllegalArgumentException("Material is not item!") }
+    }
 
 interface CommonsProvider {
     val nbtTagString: Int

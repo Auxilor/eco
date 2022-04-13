@@ -1,6 +1,7 @@
 package com.willfp.eco.core.fast;
 
 import com.willfp.eco.core.Eco;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -65,12 +66,53 @@ public interface FastItemStack {
     void setLore(@Nullable List<String> lore);
 
     /**
+     * Set the item lore.
+     *
+     * @param lore The lore.
+     */
+    void setLoreComponents(@Nullable List<Component> lore);
+
+    /**
      * Get the item lore.
      *
      * @return The lore.
      */
     List<String> getLore();
 
+    /**
+     * Get the item lore.
+     *
+     * @return The lore.
+     */
+    List<Component> getLoreComponents();
+
+    /**
+     * Set the item name.
+     *
+     * @param name The name.
+     */
+    void setDisplayName(@Nullable Component name);
+
+    /**
+     * Set the item name.
+     *
+     * @param name The name.
+     */
+    void setDisplayName(@Nullable String name);
+
+    /**
+     * Get the item display name.
+     *
+     * @return The display name.
+     */
+    Component getDisplayNameComponent();
+
+    /**
+     * Get the item display name.
+     *
+     * @return The display name.
+     */
+    String getDisplayName();
 
     /**
      * Set the rework penalty.

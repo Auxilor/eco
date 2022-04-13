@@ -4,8 +4,12 @@ import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.common.NBT_TAG_STRING
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
+import com.willfp.eco.internal.spigot.proxy.common.toItem
 import com.willfp.eco.util.NamespacedKeyUtils
 import com.willfp.eco.util.StringUtils
+import com.willfp.eco.util.toComponent
+import com.willfp.eco.util.toLegacy
+import net.kyori.adventure.text.Component
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.ListTag
 import net.minecraft.nbt.StringTag
@@ -20,7 +24,6 @@ import kotlin.experimental.and
 class EcoFastItemStack(
     private val bukkit: org.bukkit.inventory.ItemStack
 ) : FastItemStack {
-    private var loreCache: List<String>? = null
     private val handle = bukkit.asNMSStack()
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
@@ -60,13 +63,14 @@ class EcoFastItemStack(
         return 0
     }
 
-    override fun setLore(lore: List<String>?) {
-        loreCache = null
-        val jsonLore: MutableList<String> = ArrayList()
+    override fun setLore(lore: List<String>?) = setLoreComponents(lore?.map { it.toComponent() })
+
+    override fun setLoreComponents(lore: List<Component>?) {
+        val jsonLore = mutableListOf<String>()
 
         if (lore != null) {
             for (s in lore) {
-                jsonLore.add(StringUtils.legacyToJson(s))
+                jsonLore.add(StringUtils.componentToJson(s))
             }
         }
 
@@ -87,17 +91,7 @@ class EcoFastItemStack(
         apply()
     }
 
-    override fun getLore(): List<String> {
-        if (loreCache != null) {
-            return loreCache!!
-        }
-
-        val lore = this.getLoreJSON().map { StringUtils.jsonToLegacy(it) }
-        loreCache = lore
-        return lore
-    }
-
-    private fun getLoreJSON(): List<String> {
+    override fun getLoreComponents(): List<Component> {
         val displayTag = handle.getTagElement("display") ?: return emptyList()
 
         if (!displayTag.contains("Lore")) {
@@ -105,14 +99,46 @@ class EcoFastItemStack(
         }
 
         val loreTag = displayTag.getList("Lore", NBT_TAG_STRING)
-        val lore = ArrayList<String>(loreTag.size)
+        val jsonLore = mutableListOf<String>()
 
         for (i in loreTag.indices) {
-            lore.add(loreTag.getString(i))
+            jsonLore.add(loreTag.getString(i))
         }
 
-        return lore
+        return jsonLore.map { StringUtils.jsonToComponent(it) }
     }
+
+    override fun getLore(): List<String> =
+        getLoreComponents().map { StringUtils.toLegacy(it) }
+
+    override fun setDisplayName(name: Component?) {
+        val displayTag = handle.getOrCreateTagElement("display")
+
+        displayTag.remove("Name")
+
+        if (name != null) {
+            displayTag.put("Name", StringTag.valueOf(StringUtils.componentToJson(name)))
+        }
+
+        apply()
+    }
+
+    override fun setDisplayName(name: String?) = setDisplayName(name?.toComponent())
+
+    override fun getDisplayNameComponent(): Component {
+        val displayTag =
+            handle.getTagElement("display") ?: return Component.translatable(bukkit.type.toItem().getDescriptionId())
+
+        if (!displayTag.contains("Name")) {
+            return Component.translatable(bukkit.type.toItem().getDescriptionId())
+        }
+
+        val nameTag = displayTag.getString("Name")
+
+        return StringUtils.jsonToComponent(nameTag)
+    }
+
+    override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
     override fun addItemFlags(vararg hideFlags: ItemFlag) {
         for (flag in hideFlags) {

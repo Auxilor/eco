@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
@@ -76,33 +77,37 @@ public final class StringUtils {
             .build(StringUtils::processFormatting);
 
     /**
-     * Json -> Legacy Cache.
+     * Json -> Component Cache.
      */
-    private static final LoadingCache<String, String> JSON_TO_LEGACY = Caffeine.newBuilder()
+    private static final Cache<String, Component> JSON_TO_COMPONENT = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.SECONDS)
-            .build(
-                    json -> {
-                        try {
-                            Component component = GSON_COMPONENT_SERIALIZER.deserialize(json);
-                            return LEGACY_COMPONENT_SERIALIZER.serialize(component);
-                        } catch (JsonSyntaxException e) {
-                            return json;
-                        }
-                    }
-            );
+            .build();
 
     /**
-     * Legacy -> Json Cache.
+     * Component -> Json Cache.
      */
-    private static final LoadingCache<String, String> LEGACY_TO_JSON = Caffeine.newBuilder()
+    private static final Cache<Component, String> COMPONENT_TO_JSON = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.SECONDS)
-            .build(
-                    legacy -> GSON_COMPONENT_SERIALIZER.serialize(
-                            Component.empty().decoration(TextDecoration.ITALIC, false).append(
-                                    LEGACY_COMPONENT_SERIALIZER.deserialize(legacy)
-                            )
-                    )
-            );
+            .build();
+
+    /**
+     * Legacy -> Component Cache.
+     */
+    private static final Cache<String, Component> LEGACY_TO_COMPONENT = Caffeine.newBuilder()
+            .expireAfterAccess(10, TimeUnit.SECONDS)
+            .build();
+
+    /**
+     * Component -> Legacy Cache.
+     */
+    private static final Cache<Component, String> COMPONENT_TO_LEGACY = Caffeine.newBuilder()
+            .expireAfterAccess(10, TimeUnit.SECONDS)
+            .build();
+
+    /**
+     * Empty JSON.
+     */
+    private static final String EMPTY_JSON = GSON_COMPONENT_SERIALIZER.serialize(Component.empty());
 
     /**
      * Color map.
@@ -483,12 +488,7 @@ public final class StringUtils {
      */
     @NotNull
     public static String legacyToJson(@Nullable final String legacy) {
-        String processed = legacy;
-        if (legacy == null) {
-            processed = "";
-        }
-
-        return LEGACY_TO_JSON.get(processed);
+        return componentToJson(toComponent(legacy));
     }
 
     /**
@@ -499,11 +499,53 @@ public final class StringUtils {
      */
     @NotNull
     public static String jsonToLegacy(@Nullable final String json) {
-        if (json == null || json.isEmpty()) {
-            return "";
+        return toLegacy(jsonToComponent(json));
+    }
+
+    /**
+     * Convert Component to JSON String.
+     *
+     * @param component The Component.
+     * @return The JSON string.
+     */
+    @NotNull
+    public static String componentToJson(@Nullable final Component component) {
+        if (component == null) {
+            return EMPTY_JSON;
         }
 
-        return JSON_TO_LEGACY.get(json);
+        return COMPONENT_TO_JSON.get(component, it -> {
+            try {
+                return GSON_COMPONENT_SERIALIZER.serialize(
+                        Component.empty().decoration(TextDecoration.ITALIC, false).append(
+                                it
+                        )
+                );
+            } catch (JsonSyntaxException e) {
+                return GSON_COMPONENT_SERIALIZER.serialize(Component.empty());
+            }
+        });
+    }
+
+    /**
+     * Convert JSON String to Component.
+     *
+     * @param json The JSON String.
+     * @return The component.
+     */
+    @NotNull
+    public static Component jsonToComponent(@Nullable final String json) {
+        if (json == null || json.isEmpty()) {
+            return Component.empty();
+        }
+
+        return JSON_TO_COMPONENT.get(json, it -> {
+            try {
+                return GSON_COMPONENT_SERIALIZER.deserialize(it);
+            } catch (JsonSyntaxException e) {
+                return Component.empty();
+            }
+        });
     }
 
     /**
@@ -514,12 +556,7 @@ public final class StringUtils {
      */
     @NotNull
     public static Component toComponent(@Nullable final String legacy) {
-        String processed = legacy;
-        if (legacy == null) {
-            processed = "";
-        }
-
-        return LEGACY_COMPONENT_SERIALIZER.deserialize(processed);
+        return LEGACY_TO_COMPONENT.get(legacy == null ? "" : legacy, LEGACY_COMPONENT_SERIALIZER::deserialize);
     }
 
     /**
@@ -530,7 +567,7 @@ public final class StringUtils {
      */
     @NotNull
     public static String toLegacy(@NotNull final Component component) {
-        return LEGACY_COMPONENT_SERIALIZER.serialize(component);
+        return COMPONENT_TO_LEGACY.get(component, LEGACY_COMPONENT_SERIALIZER::serialize);
     }
 
     /**
