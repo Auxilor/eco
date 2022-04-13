@@ -52,6 +52,16 @@ public interface FastItemStack {
      * Get the level of an enchantment on an item.
      *
      * @param enchantment The enchantment.
+     * @return The enchantment level, or 0 if not found.
+     */
+    default int getLevelOnItem(@NotNull Enchantment enchantment) {
+        return getLevelOnItem(enchantment, false);
+    }
+
+    /**
+     * Get the level of an enchantment on an item.
+     *
+     * @param enchantment The enchantment.
      * @param checkStored If the stored NBT should also be checked.
      * @return The enchantment level, or 0 if not found.
      */
