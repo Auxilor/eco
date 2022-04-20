@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
     }
 }
 
@@ -13,7 +13,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.6.21"
 }
 
 dependencies {
@@ -100,7 +100,7 @@ allprojects {
         // Other
         implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
         implementation("org.apache.maven:maven-artifact:3.8.4")
-        implementation(kotlin("stdlib", version = "1.6.10"))
+        implementation(kotlin("stdlib", version = "1.6.21"))
     }
 
     tasks.withType<JavaCompile> {
