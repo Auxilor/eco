@@ -123,7 +123,6 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The lore.
      */
-    @NotNull
     List<Component> getLoreComponents();
 
     /**
@@ -145,7 +144,6 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The display name.
      */
-    @NotNull
     Component getDisplayNameComponent();
 
     /**
@@ -153,7 +151,6 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The display name.
      */
-    @NotNull
     String getDisplayName();
 
     /**
@@ -165,7 +162,6 @@ public interface FastItemStack extends PersistentDataHolder {
 
     /**
      * Get the rework penalty.
-     * .
      *
      * @return The rework penalty found on the item.
      */
@@ -190,7 +186,6 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The flags.
      */
-    @NotNull
     Set<ItemFlag> getItemFlags();
 
     /**
@@ -208,7 +203,6 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The base NBT tag.
      */
-    @NotNull
     PersistentDataContainer getBaseTag();
 
     /**
