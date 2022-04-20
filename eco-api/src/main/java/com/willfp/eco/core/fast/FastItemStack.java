@@ -116,7 +116,6 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The lore.
      */
-    @NotNull
     List<String> getLore();
 
     /**
