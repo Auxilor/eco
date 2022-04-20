@@ -71,9 +71,6 @@ allprojects {
         // CombatLogX
         maven("https://nexus.sirblobman.xyz/repository/public/")
 
-        // IridiumSkyblock
-        maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
-
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
 

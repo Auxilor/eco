@@ -40,7 +40,6 @@ dependencies {
     compileOnly 'com.github.EssentialsX:Essentials:2.18.2'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:1.8.3'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
-    compileOnly 'com.iridium:IridiumSkyblock:3.1.2'
     compileOnly 'com.github.WhipDevelopment:CrashClaim:f9cd7d92eb'
     compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0'
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.1.2'
