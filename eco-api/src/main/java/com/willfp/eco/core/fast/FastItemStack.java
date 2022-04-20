@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +48,7 @@ public interface FastItemStack extends PersistentDataHolder {
      * @param checkStored If stored enchantments should be accounted for.
      * @return A map of all enchantments.
      */
+    @NotNull
     Map<Enchantment, Integer> getEnchants(boolean checkStored);
 
     /**
@@ -54,9 +56,11 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @param enchantment The enchantment.
      * @return The enchantment level, or 0 if not found.
+     * @deprecated Poorly named method. Use getEnchantmentLevel instead.
      */
+    @Deprecated(since = "6.34.0", forRemoval = true)
     default int getLevelOnItem(@NotNull Enchantment enchantment) {
-        return getLevelOnItem(enchantment, false);
+        return getEnchantmentLevel(enchantment, false);
     }
 
     /**
@@ -65,9 +69,33 @@ public interface FastItemStack extends PersistentDataHolder {
      * @param enchantment The enchantment.
      * @param checkStored If the stored NBT should also be checked.
      * @return The enchantment level, or 0 if not found.
+     * @deprecated Poorly named method. Use getEnchantmentLevel instead.
      */
-    int getLevelOnItem(@NotNull Enchantment enchantment,
-                       boolean checkStored);
+    @Deprecated(since = "6.34.0", forRemoval = true)
+    default int getLevelOnItem(@NotNull Enchantment enchantment,
+                               boolean checkStored) {
+        return getEnchantmentLevel(enchantment, checkStored);
+    }
+
+    /**
+     * Get the level of an enchantment.
+     *
+     * @param enchantment The enchantment.
+     * @return The enchantment level, or 0 if not found.
+     */
+    default int getEnchantmentLevel(@NotNull Enchantment enchantment) {
+        return getLevelOnItem(enchantment, false);
+    }
+
+    /**
+     * Get the level of an enchantment.
+     *
+     * @param enchantment The enchantment.
+     * @param checkStored If the stored NBT should also be checked.
+     * @return The enchantment level, or 0 if not found.
+     */
+    int getEnchantmentLevel(@NotNull Enchantment enchantment,
+                            boolean checkStored);
 
     /**
      * Set the item lore.
@@ -88,6 +116,7 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The lore.
      */
+    @NotNull
     List<String> getLore();
 
     /**
@@ -95,6 +124,7 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The lore.
      */
+    @NotNull
     List<Component> getLoreComponents();
 
     /**
@@ -116,6 +146,7 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The display name.
      */
+    @NotNull
     Component getDisplayNameComponent();
 
     /**
@@ -123,6 +154,7 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The display name.
      */
+    @NotNull
     String getDisplayName();
 
     /**
@@ -159,6 +191,7 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The flags.
      */
+    @NotNull
     Set<ItemFlag> getItemFlags();
 
     /**
@@ -170,10 +203,28 @@ public interface FastItemStack extends PersistentDataHolder {
     boolean hasItemFlag(@NotNull ItemFlag flag);
 
     /**
+     * Get the base NBT tag (Not PublicBukkitValues, the base) as a PersistentDataContainer.
+     * <p>
+     * The returned PersistentDataContainer will not modify the item until the tag is set.
+     *
+     * @return The base NBT tag.
+     */
+    @NotNull
+    PersistentDataContainer getBaseTag();
+
+    /**
+     * Set the base NBT tag (Not PublicBukkitValues, the base) from a PersistentDataContainer.
+     *
+     * @param container The PersistentDataContainer.
+     */
+    void setBaseTag(@Nullable PersistentDataContainer container);
+
+    /**
      * Get the Bukkit ItemStack again.
      *
      * @return The ItemStack.
      */
+    @NotNull
     ItemStack unwrap();
 
     /**

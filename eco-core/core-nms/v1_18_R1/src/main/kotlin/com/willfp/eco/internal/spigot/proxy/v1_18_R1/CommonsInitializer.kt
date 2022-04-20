@@ -32,9 +32,10 @@ class CommonsInitializer : CommonsInitializerProxy {
             isAccessible = true
         }
 
-        private val pdcRegsitry: Field = Class.forName("org.bukkit.craftbukkit.v1_18_R1.inventory.CraftMetaItem")
+        private val pdcRegsitry = Class.forName("org.bukkit.craftbukkit.v1_18_R1.inventory.CraftMetaItem")
             .getDeclaredField("DATA_TYPE_REGISTRY")
             .apply { isAccessible = true }
+            .get(null) as CraftPersistentDataTypeRegistry
 
         override val nbtTagString = CraftMagicNumbers.NBT.TAG_STRING
 
@@ -67,29 +68,64 @@ class CommonsInitializer : CommonsInitializerProxy {
         override fun toBukkitEntity(entity: net.minecraft.world.entity.LivingEntity): LivingEntity? =
             CraftEntity.getEntity(Bukkit.getServer() as CraftServer, entity) as? LivingEntity
 
-        override fun makePdc(tag: CompoundTag): PersistentDataContainer {
-            val pdc = CraftPersistentDataContainer(pdcRegsitry.get(null) as CraftPersistentDataTypeRegistry)
-            if (tag.contains("PublicBukkitValues")) {
-                val compound = tag.getCompound("PublicBukkitValues")
-                val keys = compound.allKeys
+        override fun makePdc(tag: CompoundTag, base: Boolean): PersistentDataContainer {
+            fun emptyPdc(): CraftPersistentDataContainer = CraftPersistentDataContainer(pdcRegsitry)
+
+            fun CompoundTag?.toPdc(): PersistentDataContainer {
+                val pdc = emptyPdc()
+                this ?: return pdc
+                val keys = this.allKeys
                 for (key in keys) {
-                    pdc.put(key, compound[key])
+                    pdc.put(key, this[key])
                 }
+
+                return pdc
             }
 
-            return pdc
+            return if (base) {
+                tag.toPdc()
+            } else {
+                if (tag.contains("PublicBukkitValues")) {
+                    tag.getCompound("PublicBukkitValues").toPdc()
+                } else {
+                    emptyPdc()
+                }
+            }
         }
 
-        override fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer) {
-            pdc as CraftPersistentDataContainer
-
-            if (!pdc.isEmpty) {
-                val bukkitCustomCompound = CompoundTag()
-                val rawPublicMap: Map<String, Tag> = pdc.raw
+        override fun setPdc(
+            tag: CompoundTag,
+            pdc: PersistentDataContainer?,
+            item: net.minecraft.world.item.ItemStack?
+        ) {
+            fun CraftPersistentDataContainer.toTag(): CompoundTag {
+                val compound = CompoundTag()
+                val rawPublicMap: Map<String, Tag> = this.raw
                 for ((key, value) in rawPublicMap) {
-                    bukkitCustomCompound.put(key, value)
+                    compound.put(key, value)
                 }
-                tag.put("PublicBukkitValues", bukkitCustomCompound)
+
+                return compound
+            }
+
+            pdc as CraftPersistentDataContainer?
+
+            if (item != null) {
+                if (pdc != null && !pdc.isEmpty) {
+                    for (key in tag.allKeys.toSet()) {
+                        tag.remove(key)
+                    }
+
+                    tag.merge(pdc.toTag())
+                } else {
+                    item.setTag(null)
+                }
+            } else {
+                if (pdc != null && !pdc.isEmpty) {
+                    tag.put("PublicBukkitValues", pdc.toTag())
+                } else {
+                    tag.remove("PublicBukkitValues")
+                }
             }
         }
     }

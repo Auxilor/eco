@@ -50,7 +50,7 @@ class EcoFastItemStack(
         return foundEnchantments
     }
 
-    override fun getLevelOnItem(
+    override fun getEnchantmentLevel(
         enchantment: Enchantment,
         checkStored: Boolean
     ): Int {
@@ -181,6 +181,14 @@ class EcoFastItemStack(
     override fun hasItemFlag(flag: ItemFlag): Boolean {
         val bitModifier = getBitModifier(flag)
         return this.flagBits and bitModifier == bitModifier
+    }
+
+    override fun getBaseTag(): PersistentDataContainer =
+        (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc(base = true)
+
+    override fun setBaseTag(container: PersistentDataContainer?) {
+        (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).setPdc(container, item = handle)
+        apply()
     }
 
     @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")

@@ -52,18 +52,18 @@ fun Material.toItem(): Item =
             .orElseThrow { IllegalArgumentException("Material is not item!") }
     }
 
-fun CompoundTag.makePdc(): PersistentDataContainer =
-    impl.makePdc(this)
+fun CompoundTag.makePdc(base: Boolean = false): PersistentDataContainer =
+    impl.makePdc(this, base)
 
-fun CompoundTag.setPdc(pdc: PersistentDataContainer) =
-    impl.setPdc(this, pdc)
+fun CompoundTag.setPdc(pdc: PersistentDataContainer?, item: net.minecraft.world.item.ItemStack? = null) =
+    impl.setPdc(this, pdc, item)
 
 interface CommonsProvider {
     val nbtTagString: Int
 
-    fun makePdc(tag: CompoundTag): PersistentDataContainer
+    fun makePdc(tag: CompoundTag, base: Boolean): PersistentDataContainer
 
-    fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer)
+    fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer?, item: net.minecraft.world.item.ItemStack? = null)
 
     fun toPathfinderMob(mob: Mob): PathfinderMob?
 
