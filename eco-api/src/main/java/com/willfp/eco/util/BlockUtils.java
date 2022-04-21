@@ -18,25 +18,31 @@ import java.util.Set;
  * Utilities / API methods for blocks.
  */
 public final class BlockUtils {
-    private static Set<Block> getNearbyBlocks(@NotNull final Block start,
+    /**
+     * Max blocks to mine (yes, this is to prevent a stack overflow).
+     */
+    private static final int MAX_BLOCKS = 2500;
+
+    private static Set<Block> getNearbyBlocks(@NotNull final Block origin,
                                               @NotNull final List<Material> allowedMaterials,
                                               @NotNull final Set<Block> blocks,
                                               final int limit) {
         for (BlockFace face : BlockFace.values()) {
-            Block block = start.getRelative(face);
+            Block block = origin.getRelative(face);
+
+            if (!allowedMaterials.contains(block.getType())) {
+                continue;
+            }
+
             if (blocks.contains(block)) {
                 continue;
             }
 
-            if (allowedMaterials.contains(block.getType())) {
-                blocks.add(block);
-
-                if (blocks.size() > limit || blocks.size() > 2500) {
-                    return blocks;
-                }
-
-                blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
+            if (blocks.size() >= limit || blocks.size() > MAX_BLOCKS) {
+                return blocks;
             }
+
+            blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
         }
 
         return blocks;
