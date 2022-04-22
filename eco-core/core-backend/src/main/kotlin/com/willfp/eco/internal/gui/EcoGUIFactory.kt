@@ -7,7 +7,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 
-class EcoGUIFactory : GUIFactory {
+object EcoGUIFactory : GUIFactory {
     override fun createSlotBuilder(provider: SlotProvider): SlotBuilder {
         return EcoSlotBuilder(provider)
     }

@@ -61,116 +61,93 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
-    override fun createScheduler(plugin: EcoPlugin): EcoScheduler = EcoScheduler(plugin)
+    override fun createScheduler(plugin: EcoPlugin): EcoScheduler =
+        EcoScheduler(plugin)
 
-    override fun createEventManager(plugin: EcoPlugin) = EcoEventManager(plugin)
+    override fun createEventManager(plugin: EcoPlugin): EcoEventManager =
+        EcoEventManager(plugin)
 
-    override fun createNamespacedKeyFactory(plugin: EcoPlugin): EcoNamespacedKeyFactory {
-        return EcoNamespacedKeyFactory(plugin)
-    }
+    override fun createNamespacedKeyFactory(plugin: EcoPlugin): EcoNamespacedKeyFactory =
+        EcoNamespacedKeyFactory(plugin)
 
-    override fun createMetadataValueFactory(plugin: EcoPlugin): EcoMetadataValueFactory {
-        return EcoMetadataValueFactory(plugin)
-    }
+    override fun createMetadataValueFactory(plugin: EcoPlugin): EcoMetadataValueFactory =
+        EcoMetadataValueFactory(plugin)
 
-    override fun createRunnableFactory(plugin: EcoPlugin): EcoRunnableFactory {
-        return EcoRunnableFactory(plugin)
-    }
+    override fun createRunnableFactory(plugin: EcoPlugin): EcoRunnableFactory =
+        EcoRunnableFactory(plugin)
 
-    override fun createExtensionLoader(plugin: EcoPlugin): EcoExtensionLoader {
-        return EcoExtensionLoader(plugin)
-    }
+    override fun createExtensionLoader(plugin: EcoPlugin): EcoExtensionLoader =
+        EcoExtensionLoader(plugin)
 
-    override fun createConfigHandler(plugin: EcoPlugin): EcoConfigHandler {
-        return EcoConfigHandler(plugin)
-    }
+    override fun createConfigHandler(plugin: EcoPlugin): EcoConfigHandler =
+        EcoConfigHandler(plugin)
 
-    override fun createLogger(plugin: EcoPlugin): Logger {
-        return EcoLogger(plugin)
-    }
+    override fun createLogger(plugin: EcoPlugin): Logger =
+        EcoLogger(plugin)
 
-    override fun createPAPIIntegration(plugin: EcoPlugin): PlaceholderIntegration {
-        return PlaceholderIntegrationPAPI(plugin)
-    }
+    override fun createPAPIIntegration(plugin: EcoPlugin): PlaceholderIntegration =
+        PlaceholderIntegrationPAPI(plugin)
 
-    override fun getEcoPlugin(): EcoPlugin {
-        return this
-    }
+    override fun getEcoPlugin(): EcoPlugin =
+        this
 
-    override fun getConfigFactory(): EcoConfigFactory {
-        return EcoConfigFactory
-    }
+    override fun getConfigFactory(): EcoConfigFactory =
+        EcoConfigFactory
 
-    override fun getDropQueueFactory(): EcoDropQueueFactory {
-        return EcoDropQueueFactory()
-    }
+    override fun getDropQueueFactory(): EcoDropQueueFactory =
+        EcoDropQueueFactory
 
-    override fun getGUIFactory(): EcoGUIFactory {
-        return EcoGUIFactory()
-    }
+    override fun getGUIFactory(): EcoGUIFactory =
+        EcoGUIFactory
 
-    override fun getCleaner(): EcoCleaner {
-        return cleaner
-    }
+    override fun getCleaner(): EcoCleaner =
+        cleaner
 
-    override fun createProxyFactory(plugin: EcoPlugin): EcoProxyFactory {
-        return EcoProxyFactory(plugin)
-    }
+    override fun createProxyFactory(plugin: EcoPlugin): EcoProxyFactory =
+        EcoProxyFactory(plugin)
 
     override fun addNewPlugin(plugin: EcoPlugin) {
         Plugins.LOADED_ECO_PLUGINS[plugin.name.lowercase()] = plugin
     }
 
-    override fun getLoadedPlugins(): List<String> {
-        return Plugins.LOADED_ECO_PLUGINS.keys.toMutableList()
-    }
+    override fun getLoadedPlugins(): List<String> =
+        Plugins.LOADED_ECO_PLUGINS.keys.toMutableList()
 
-    override fun getPluginByName(name: String): EcoPlugin? {
-        return Plugins.LOADED_ECO_PLUGINS[name.lowercase()]
-    }
+    override fun getPluginByName(name: String): EcoPlugin? =
+        Plugins.LOADED_ECO_PLUGINS[name.lowercase()]
 
-    override fun createFastItemStack(itemStack: ItemStack): FastItemStack {
-        return getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
-    }
+    override fun createFastItemStack(itemStack: ItemStack): FastItemStack =
+        getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
 
-    override fun registerBStats(plugin: EcoPlugin) {
+    override fun registerBStats(plugin: EcoPlugin) =
         MetricHandler.createMetrics(plugin)
-    }
 
-    override fun getAdventure(): BukkitAudiences? {
-        return adventure
-    }
+    override fun getAdventure(): BukkitAudiences? =
+        adventure
 
-    override fun getKeyRegistry(): EcoKeyRegistry {
-        return keyRegistry
-    }
+    override fun getKeyRegistry(): EcoKeyRegistry =
+        keyRegistry
 
-    override fun getProfileHandler(): EcoProfileHandler {
-        return playerProfileHandler
-    }
+    override fun getProfileHandler(): EcoProfileHandler =
+        playerProfileHandler
 
     fun setAdventure(adventure: BukkitAudiences) {
         this.adventure = adventure
     }
 
-    override fun createDummyEntity(location: Location): Entity {
-        return getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
-    }
+    override fun createDummyEntity(location: Location): Entity =
+        getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
 
-    override fun createNamespacedKey(namespace: String, key: String): NamespacedKey {
-        @Suppress("DEPRECATION")
-        return keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
-    }
+    @Suppress("DEPRECATION")
+    override fun createNamespacedKey(namespace: String, key: String): NamespacedKey =
+        keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
 
-    override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>): PluginProps {
-        return existing ?: EcoPropsParser.parseForPlugin(plugin)
-    }
+    override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>): PluginProps =
+        existing ?: EcoPropsParser.parseForPlugin(plugin)
 
-    override fun <T : Mob> createEntityController(mob: T): EntityController<T> {
-        return getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
-    }
+    override fun <T : Mob> createEntityController(mob: T): EntityController<T> =
+        getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
 
-    override fun formatMiniMessage(message: String): String {
-        return getProxy(MiniMessageTranslatorProxy::class.java).format(message)
-    }
+    override fun formatMiniMessage(message: String): String =
+        getProxy(MiniMessageTranslatorProxy::class.java).format(message)
 }
