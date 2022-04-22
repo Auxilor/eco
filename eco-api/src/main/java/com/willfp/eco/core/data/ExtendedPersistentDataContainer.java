@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
+/**
+ * Persistent data container wrapper that allows for full string (non-namespaced) keys.
+ */
 public interface ExtendedPersistentDataContainer extends PersistentDataContainer {
     /**
      * Set a key.
