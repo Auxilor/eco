@@ -76,7 +76,7 @@ public final class PlayerlessPlaceholder implements Placeholder {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StaticPlaceholder that)) {
+        if (!(o instanceof PlayerlessPlaceholder that)) {
             return false;
         }
         return Objects.equals(this.getIdentifier(), that.getIdentifier())

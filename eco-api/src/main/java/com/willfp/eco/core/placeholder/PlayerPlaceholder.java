@@ -78,7 +78,7 @@ public final class PlayerPlaceholder implements Placeholder {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StaticPlaceholder that)) {
+        if (!(o instanceof PlayerPlaceholder that)) {
             return false;
         }
         return Objects.equals(this.getIdentifier(), that.getIdentifier())
