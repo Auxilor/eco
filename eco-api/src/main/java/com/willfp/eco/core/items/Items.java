@@ -518,7 +518,7 @@ public final class Items {
     }
 
     /**
-     * Get the base NBT tag on an item.
+     * Set the items destroy speed.
      *
      * @param itemStack  The ItemStack.
      * @param multiplier The multiplier

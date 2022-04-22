@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_18_R2
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import javassist.ClassPool
@@ -7,7 +8,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.PathfinderMob
-import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer
@@ -53,7 +53,9 @@ class CommonsInitializer : CommonsInitializerProxy {
             """.trimIndent()
         )
 
-        clazz.toClass(Item::class.java)
+        Eco.getHandler().ecoPlugin.logger.info("Patching server jar...")
+        clazz.writeFile(clazz.classFile.sourceFile)
+        Eco.getHandler().ecoPlugin.logger.info("Patched jar! If this is the first time you see this message, make sure to restart the server.")
     }
 
     object CommonsProviderImpl : CommonsProvider {

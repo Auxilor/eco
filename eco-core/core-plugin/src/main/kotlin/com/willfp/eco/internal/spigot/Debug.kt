@@ -3,19 +3,19 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.util.toLegacy
-import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.AsyncPlayerChatEvent
 
 object Debug : Listener {
     @EventHandler
-    fun a(event: AsyncChatEvent) {
+    fun a(event: AsyncPlayerChatEvent) {
         val player = event.player
-        val text = event.message().toLegacy()
+        val text = event.message
 
         val words = text.split(" ")
 
+        println(text)
         if (words[0] != "debug") {
             return
         }
