@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Handler
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
@@ -32,6 +33,7 @@ import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -40,6 +42,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataContainer
 import java.util.logging.Logger
 
 @Suppress("UNUSED")
@@ -150,4 +153,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun formatMiniMessage(message: String): String =
         getProxy(MiniMessageTranslatorProxy::class.java).format(message)
+
+    override fun adaptPdc(container: PersistentDataContainer): ExtendedPersistentDataContainer =
+        getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).adapt(container)
 }

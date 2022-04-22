@@ -2,6 +2,7 @@ package com.willfp.eco.core;
 
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.config.wrapper.ConfigFactory;
+import com.willfp.eco.core.data.ExtendedPersistentDataContainer;
 import com.willfp.eco.core.data.ProfileHandler;
 import com.willfp.eco.core.data.keys.KeyRegistry;
 import com.willfp.eco.core.drops.DropQueueFactory;
@@ -23,6 +24,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -280,6 +282,14 @@ public interface Handler {
      * @param <T> The mob type.
      * @return The controlled entity.
      */
+    @NotNull <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
+
+    /**
+     * Adapt base PDC to extended PDC.
+     *
+     * @param container The container.
+     * @return The extended container.
+     */
     @NotNull
-    <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
+    ExtendedPersistentDataContainer adaptPdc(@NotNull PersistentDataContainer container);
 }

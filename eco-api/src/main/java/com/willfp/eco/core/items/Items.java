@@ -2,6 +2,7 @@ package com.willfp.eco.core.items;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.data.ExtendedPersistentDataContainer;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
@@ -530,8 +531,8 @@ public final class Items {
     public static ItemStack setDestroySpeedMultiplier(@NotNull final ItemStack itemStack,
                                                       final double multiplier) {
         FastItemStack fis = FastItemStack.wrap(itemStack);
-        PersistentDataContainer tag = fis.getBaseTag();
-        tag.set(NamespacedKeyUtils.createEcoKey("break_speed"), PersistentDataType.DOUBLE, multiplier);
+        ExtendedPersistentDataContainer tag = fis.getBaseTag();
+        tag.set("BreakSpeed", PersistentDataType.DOUBLE, multiplier);
         fis.setBaseTag(tag);
         return fis.unwrap();
     }
@@ -544,9 +545,9 @@ public final class Items {
      */
     public static double getDestroySpeedMultiplier(@NotNull final ItemStack itemStack) {
         FastItemStack fis = FastItemStack.wrap(itemStack);
-        PersistentDataContainer tag = fis.getBaseTag();
+        ExtendedPersistentDataContainer tag = fis.getBaseTag();
         return Objects.requireNonNullElse(
-                tag.get(NamespacedKeyUtils.createEcoKey("break_speed"), PersistentDataType.DOUBLE),
+                tag.get("BreakSpeed", PersistentDataType.DOUBLE),
                 1.0
         );
     }

@@ -108,21 +108,25 @@ class CommonsInitializer : CommonsInitializerProxy {
                 return compound
             }
 
-            pdc as CraftPersistentDataContainer?
+            val container = when (pdc) {
+                is CraftPersistentDataContainer? -> pdc
+                is ExtendedPersistentDataContainerFactory.EcoPersistentDataContainer? -> pdc?.handle
+                else -> null
+            }
 
             if (item != null) {
-                if (pdc != null && !pdc.isEmpty) {
+                if (container != null && !container.isEmpty) {
                     for (key in tag.allKeys.toSet()) {
                         tag.remove(key)
                     }
 
-                    tag.merge(pdc.toTag())
+                    tag.merge(container.toTag())
                 } else {
                     item.setTag(null)
                 }
             } else {
-                if (pdc != null && !pdc.isEmpty) {
-                    tag.put("PublicBukkitValues", pdc.toTag())
+                if (container != null && !container.isEmpty) {
+                    tag.put("PublicBukkitValues", container.toTag())
                 } else {
                     tag.remove("PublicBukkitValues")
                 }
