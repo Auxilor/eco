@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.items.Items
 import org.bukkit.event.EventHandler
@@ -20,16 +19,13 @@ object Debug : Listener {
             return
         }
 
-        Eco.getHandler().ecoPlugin.scheduler.run {
-            val speed = words[1].toDouble()
+        val speed = words[1].toDouble()
 
-            val item = Items.lookup(words.subList(2, words.size - 1).joinToString(" ")).item
-            Items.setDestroySpeedMultiplier(item, speed)
-            DropQueue(player)
-                .addItem(item)
-                .forceTelekinesis()
-                .push()
-        }
-
+        val item = Items.lookup(words.subList(2, words.size).joinToString(" ")).item
+        Items.setDestroySpeedMultiplier(item, speed)
+        DropQueue(player)
+            .addItem(item)
+            .forceTelekinesis()
+            .push()
     }
 }
