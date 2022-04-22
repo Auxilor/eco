@@ -213,6 +213,64 @@ public interface FastItemStack extends PersistentDataHolder {
     void setBaseTag(@Nullable PersistentDataContainer container);
 
     /**
+     * Get the type of the item.
+     *
+     * @return The type.
+     */
+    @NotNull
+    Material getType();
+
+    /**
+     * Set the type of the item.
+     *
+     * @param material The type.
+     */
+    void setType(@NotNull Material material);
+
+    /**
+     * Get the amount of the item.
+     *
+     * @return The amount.
+     */
+    int getAmount();
+
+    /**
+     * Set the amount of the item.
+     *
+     * @param amount The amount.
+     */
+    void setAmount(int amount);
+
+    /**
+     * Get the custom model data.
+     *
+     * @return The data, or null if none.
+     */
+    @Nullable
+    Integer getCustomModelData();
+
+    /**
+     * Set the custom model data.
+     *
+     * @param data The data, null to remove.
+     */
+    void setCustomModelData(@Nullable Integer data);
+
+    /**
+     * Get the speed multiplier.
+     *
+     * @return The multiplier.
+     */
+    double getDestroySpeedMultiplier();
+
+    /**
+     * Set the speed multiplier.
+     *
+     * @param multiplier The multiplier.
+     */
+    void setDestroySpeedMultiplier(double multiplier);
+
+    /**
      * Get the Bukkit ItemStack again.
      *
      * @return The ItemStack.

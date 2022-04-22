@@ -52,6 +52,15 @@ fun Material.toItem(): Item =
             .orElseThrow { IllegalArgumentException("Material is not item!") }
     }
 
+private val ITEM_TO_MATERIAL = mutableMapOf<Item, Material>()
+
+fun Item.toMaterial(): Material =
+    ITEM_TO_MATERIAL.getOrPut(this) {
+        val material = Material.getMaterial(Registry.ITEM.getKey(this).path.uppercase())
+            ?: throw IllegalArgumentException("Invalid material!")
+        material
+    }
+
 fun CompoundTag.makePdc(base: Boolean = false): PersistentDataContainer =
     impl.makePdc(this, base)
 

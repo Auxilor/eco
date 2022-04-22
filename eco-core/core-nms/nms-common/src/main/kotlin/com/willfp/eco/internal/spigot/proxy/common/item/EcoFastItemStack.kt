@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.common.fast
+package com.willfp.eco.internal.spigot.proxy.common.item
 
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.common.NBT_TAG_STRING
@@ -7,6 +7,7 @@ import com.willfp.eco.internal.spigot.proxy.common.makePdc
 import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
 import com.willfp.eco.internal.spigot.proxy.common.setPdc
 import com.willfp.eco.internal.spigot.proxy.common.toItem
+import com.willfp.eco.internal.spigot.proxy.common.toMaterial
 import com.willfp.eco.util.NamespacedKeyUtils
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toComponent
@@ -18,6 +19,7 @@ import net.minecraft.nbt.StringTag
 import net.minecraft.world.item.EnchantedBookItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
@@ -208,10 +210,64 @@ class EcoFastItemStack(
 
     override fun setRepairCost(cost: Int) {
         handle.setRepairCost(cost)
+        apply()
     }
 
     override fun getPersistentDataContainer(): PersistentDataContainer {
         return ContinuallyAppliedPersistentDataContainer(this.pdc, this)
+    }
+
+    override fun getAmount(): Int = handle.getCount()
+
+    override fun setAmount(amount: Int) {
+        handle.setCount(amount)
+    }
+
+    override fun setType(material: Material) {
+        if (material == Material.AIR) {
+            handle.setTag(null)
+        }
+        @Suppress("DEPRECATION")
+        handle.setItem(material.toItem())
+        apply()
+    }
+
+    override fun getType(): Material = handle.getItem().toMaterial()
+
+    override fun getCustomModelData(): Int? = handle.getTag()?.getInt("CustomModelData")
+
+    override fun setCustomModelData(data: Int?) {
+        if (data == null) {
+            val tag = handle.getTag() ?: return
+            tag.remove("CustomModelData")
+        } else {
+            handle.getOrCreateTag().putInt("CustomModelData", data)
+        }
+
+        apply()
+    }
+
+    override fun getDestroySpeedMultiplier(): Double {
+        val item = handle.item
+        return if (item is ControllableItem) {
+            item.destroySpeedMultiplier
+        } else {
+            1.0
+        }
+    }
+
+    override fun setDestroySpeedMultiplier(multiplier: Double) {
+        val item = handle.item
+        if (item is ControllableItem) {
+            item.destroySpeedMultiplier = multiplier
+        } else {
+            @Suppress("DEPRECATION")
+            handle.setItem(ControllableItem(item).apply {
+                destroySpeedMultiplier = multiplier
+            })
+        }
+
+        apply()
     }
 
     override fun equals(other: Any?): Boolean {
