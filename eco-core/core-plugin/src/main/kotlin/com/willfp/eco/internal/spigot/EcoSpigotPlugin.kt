@@ -176,7 +176,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         val tpsProxy = getProxy(TPSProxy::class.java)
         ServerUtils.initialize { tpsProxy.getTPS() }
 
-        NumberUtils.initCrunch { expression, player, statics -> evaluateExpression(expression, player, statics) }
+        NumberUtils.initCrunch { expression, player, context -> evaluateExpression(expression, player, context) }
 
         CustomItemsManager.registerProviders()
 

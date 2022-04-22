@@ -2,7 +2,7 @@ package com.willfp.eco.internal.config
 
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.placeholder.StaticPlaceholder
+import com.willfp.eco.core.placeholder.InjectablePlaceholder
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.concurrent.ConcurrentHashMap
@@ -14,7 +14,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = mutableListOf<StaticPlaceholder>()
+    var injections = mutableListOf<InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -156,13 +156,13 @@ open class EcoConfig(
         return (get(path) as? Iterable<Number>)?.map { it.toDouble() }
     }
 
-    override fun injectPlaceholders(placeholders: Iterable<StaticPlaceholder>) {
+    override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
         injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
         injections.addAll(placeholders)
     }
 
-    override fun getInjectedPlaceholders(): List<StaticPlaceholder> {
-        return injections.toList()
+    override fun getPlaceholderInjections(): List<InjectablePlaceholder> {
+        return injections.toList();
     }
 
     override fun clearInjectedPlaceholders() {

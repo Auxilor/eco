@@ -4,8 +4,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
+import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.PlayerPlaceholder;
+import com.willfp.eco.core.placeholder.PlayerStaticPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.bukkit.entity.Player;
@@ -154,17 +157,47 @@ public final class PlaceholderManager {
      * @param player  The player to translate the placeholders with respect to.
      * @param statics Extra static placeholders.
      * @return The text, translated.
+     * @deprecated Use new static system.
      */
+    @Deprecated(since = "6.35.0", forRemoval = true)
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final List<StaticPlaceholder> statics) {
+        return translatePlaceholders(text, player, new PlaceholderInjectable() {
+            @Override
+            public void clearInjectedPlaceholders() {
+                // Do nothing.
+            }
+
+            @Override
+            public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+                return new ArrayList<>(statics);
+            }
+        });
+    }
+
+    /**
+     * Translate all placeholders with respect to a player.
+     *
+     * @param text    The text that may contain placeholders to translate.
+     * @param player  The player to translate the placeholders with respect to.
+     * @param context The injectable context.
+     * @return The text, translated.
+     */
+    public static String translatePlaceholders(@NotNull final String text,
+                                               @Nullable final Player player,
+                                               @NotNull final PlaceholderInjectable context) {
         String processed = text;
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
             processed = integration.translate(processed, player);
         }
-        for (StaticPlaceholder placeholder : statics) {
+        for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
             // Do I know this is a bad way of doing this? Yes.
-            processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
+            if (injection instanceof StaticPlaceholder placeholder) {
+                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
+            } else if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {
+                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue(player));
+            }
         }
         return processed;
     }

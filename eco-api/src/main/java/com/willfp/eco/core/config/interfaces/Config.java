@@ -3,8 +3,8 @@ package com.willfp.eco.core.config.interfaces;
 import com.willfp.eco.core.config.BuildableConfig;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.TransientConfig;
+import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -471,7 +471,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      */
     default double getDoubleFromExpression(@NotNull String path,
                                            @Nullable Player player) {
-        return NumberUtils.evaluateExpression(this.getString(path), player, this.getInjectedPlaceholders());
+        return NumberUtils.evaluateExpression(this.getString(path), player, this);
     }
 
     /**
@@ -539,12 +539,12 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     Config clone();
 
     @Override
-    default void injectPlaceholders(@NotNull Iterable<StaticPlaceholder> placeholders) {
+    default void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
         // Do nothing.
     }
 
     @Override
-    default List<StaticPlaceholder> getInjectedPlaceholders() {
+    default @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
         return Collections.emptyList();
     }
 

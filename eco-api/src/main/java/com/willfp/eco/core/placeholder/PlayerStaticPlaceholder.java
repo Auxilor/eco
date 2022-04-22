@@ -1,15 +1,16 @@
 package com.willfp.eco.core.placeholder;
 
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * A placeholder that cannot be registered, and exists purely in injection.
  */
-public final class StaticPlaceholder implements InjectablePlaceholder {
+public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     /**
      * The name of the placeholder.
      */
@@ -18,7 +19,7 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     /**
      * The function to retrieve the output of the placeholder.
      */
-    private final Supplier<String> function;
+    private final Function<Player, String> function;
 
     /**
      * Create a new player placeholder.
@@ -26,8 +27,8 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
      * @param identifier The identifier.
      * @param function   The function to retrieve the value.
      */
-    public StaticPlaceholder(@NotNull final String identifier,
-                             @NotNull final Supplier<String> function) {
+    public PlayerStaticPlaceholder(@NotNull final String identifier,
+                                   @NotNull final Function<Player, String> function) {
         this.identifier = identifier;
         this.function = function;
     }
@@ -35,10 +36,11 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     /**
      * Get the value of the placeholder.
      *
+     * @param player The player.
      * @return The value.
      */
-    public String getValue() {
-        return function.get();
+    public String getValue(@NotNull final Player player) {
+        return function.apply(player);
     }
 
     @Override
@@ -51,7 +53,7 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof StaticPlaceholder that)) {
+        if (!(o instanceof PlayerStaticPlaceholder that)) {
             return false;
         }
         return Objects.equals(this.getIdentifier(), that.getIdentifier());

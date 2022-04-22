@@ -1,5 +1,7 @@
 package com.willfp.eco.util;
 
+import com.willfp.eco.core.placeholder.InjectablePlaceholder;
+import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
@@ -8,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -252,7 +256,17 @@ public final class NumberUtils {
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player) {
-        return evaluateExpression(expression, player, Collections.emptyList());
+        return evaluateExpression(expression, player, new PlaceholderInjectable() {
+            @Override
+            public void clearInjectedPlaceholders() {
+                // Nothing.
+            }
+
+            @Override
+            public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+                return Collections.emptyList();
+            }
+        });
     }
 
     /**
@@ -262,11 +276,41 @@ public final class NumberUtils {
      * @param player     The player.
      * @param statics    The static placeholders.
      * @return The value of the expression, or zero if invalid.
+     * @deprecated Use new statics system.
      */
+    @Deprecated(since = "6.35.0", forRemoval = true)
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player,
                                             @NotNull final Iterable<StaticPlaceholder> statics) {
-        return crunch.evaluate(expression, player, statics);
+        return crunch.evaluate(expression, player, new PlaceholderInjectable() {
+            @Override
+            public void clearInjectedPlaceholders() {
+                // Do nothing.
+            }
+
+            @Override
+            public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+                List<InjectablePlaceholder> injections = new ArrayList<>();
+                for (StaticPlaceholder placeholder : statics) {
+                    injections.add(placeholder);
+                }
+                return injections;
+            }
+        });
+    }
+
+    /**
+     * Evaluate an expression with respect to a player (for placeholders).
+     *
+     * @param expression The expression.
+     * @param player     The player.
+     * @param context The injectable placeholders.
+     * @return The value of the expression, or zero if invalid.
+     */
+    public static double evaluateExpression(@NotNull final String expression,
+                                            @Nullable final Player player,
+                                            @NotNull final PlaceholderInjectable context) {
+        return crunch.evaluate(expression, player, context);
     }
 
     /**
@@ -290,12 +334,12 @@ public final class NumberUtils {
          *
          * @param expression The expression.
          * @param player     The player.
-         * @param statics    The statics.
+         * @param injectable The injectable placeholders.
          * @return The value of the expression, or zero if invalid.
          */
         double evaluate(@NotNull String expression,
                         @Nullable Player player,
-                        @NotNull Iterable<StaticPlaceholder> statics);
+                        @NotNull PlaceholderInjectable injectable);
     }
 
     private NumberUtils() {

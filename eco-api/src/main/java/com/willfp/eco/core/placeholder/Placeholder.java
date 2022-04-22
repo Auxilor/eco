@@ -5,7 +5,7 @@ import com.willfp.eco.core.EcoPlugin;
 /**
  * A placeholder represents a string that can hold a value.
  */
-public sealed interface Placeholder permits PlayerPlaceholder, PlayerlessPlaceholder, StaticPlaceholder {
+public sealed interface Placeholder permits PlayerPlaceholder, PlayerlessPlaceholder, InjectablePlaceholder {
     /**
      * Get the plugin that holds the placeholder.
      *

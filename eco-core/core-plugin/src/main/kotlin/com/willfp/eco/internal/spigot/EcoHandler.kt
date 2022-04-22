@@ -61,13 +61,9 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
-    override fun createScheduler(plugin: EcoPlugin): EcoScheduler {
-        return EcoScheduler(plugin)
-    }
+    override fun createScheduler(plugin: EcoPlugin): EcoScheduler = EcoScheduler(plugin)
 
-    override fun createEventManager(plugin: EcoPlugin): EcoEventManager {
-        return EcoEventManager(plugin)
-    }
+    override fun createEventManager(plugin: EcoPlugin) = EcoEventManager(plugin)
 
     override fun createNamespacedKeyFactory(plugin: EcoPlugin): EcoNamespacedKeyFactory {
         return EcoNamespacedKeyFactory(plugin)
