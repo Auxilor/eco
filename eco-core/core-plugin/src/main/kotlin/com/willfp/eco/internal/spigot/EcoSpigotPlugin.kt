@@ -329,7 +329,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
             DataListener(this),
-            PlayerBlockListener(this)
+            PlayerBlockListener(this),
+            Debug
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {

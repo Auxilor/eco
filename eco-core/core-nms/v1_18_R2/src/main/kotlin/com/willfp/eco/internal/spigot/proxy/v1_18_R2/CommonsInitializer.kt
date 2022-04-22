@@ -2,10 +2,12 @@ package com.willfp.eco.internal.spigot.proxy.v1_18_R2
 
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
+import javassist.ClassPool
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.PathfinderMob
+import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_18_R2.CraftServer
@@ -25,6 +27,33 @@ import java.lang.reflect.Field
 class CommonsInitializer : CommonsInitializerProxy {
     override fun init() {
         CommonsProvider.setIfNeeded(CommonsProviderImpl)
+
+        allowItemModification()
+    }
+
+    private fun allowItemModification() {
+        val cp = ClassPool.getDefault()
+        val clazz = cp.get("net.minecraft.world.item.ItemStack")
+        val method = clazz.getDeclaredMethod(
+            "a",
+            arrayOf(cp.get("net.minecraft.world.level.block.state.IBlockData"))
+        )
+
+        method.setBody(
+            """
+            {
+            double destroySpeed = this.c().a(this, $1);
+            
+            if (this.s()) {
+                return destroySpeed * this.t().k("DestroySpeedMultiplier");
+            } else {
+                return destroySpeed;
+            }
+            }
+            """.trimIndent()
+        )
+
+        clazz.toClass(Item::class.java)
     }
 
     object CommonsProviderImpl : CommonsProvider {

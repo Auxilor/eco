@@ -151,6 +151,7 @@ allprojects {
             relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
             relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
             relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
+            relocate("javassist", "com.willfp.eco.libs.javassist")
             //relocate("com.mysql", "com.willfp.eco.libs.mysql")
 
             /*

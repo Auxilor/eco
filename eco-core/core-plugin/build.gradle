@@ -13,6 +13,7 @@ dependencies {
     implementation 'org.jetbrains.exposed:exposed-jdbc:0.37.3'
     implementation 'com.zaxxer:HikariCP:5.0.0'
     implementation 'net.kyori:adventure-platform-bukkit:4.1.0'
+    implementation 'org.javassist:javassist:3.28.0-GA'
 
     // Included in spigot jar
     compileOnly 'com.google.code.gson:gson:2.8.8'

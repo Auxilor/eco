@@ -247,25 +247,11 @@ class EcoFastItemStack(
         apply()
     }
 
-    override fun getDestroySpeedMultiplier(): Double {
-        val item = handle.item
-        return if (item is ControllableItem) {
-            item.destroySpeedMultiplier
-        } else {
-            1.0
-        }
-    }
+    override fun getDestroySpeedMultiplier(): Double =
+        handle.getTag()?.getDouble("DestroySpeedMultiplier") ?: 1.0
 
     override fun setDestroySpeedMultiplier(multiplier: Double) {
-        val item = handle.item
-        if (item is ControllableItem) {
-            item.destroySpeedMultiplier = multiplier
-        } else {
-            @Suppress("DEPRECATION")
-            handle.setItem(ControllableItem(item).apply {
-                destroySpeedMultiplier = multiplier
-            })
-        }
+        handle.getOrCreateTag().putDouble("DestroySpeedMultiplier", multiplier)
 
         apply()
     }
