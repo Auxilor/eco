@@ -73,6 +73,14 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
     void remove(@NotNull String key);
 
     /**
+     * Get the base PDC.
+     *
+     * @return The base.
+     */
+    @NotNull
+    PersistentDataContainer getBase();
+
+    /**
      * Convert regular persistent data container to extended persistent data container.
      * <p>
      * Only use this with FastItemStack, you're likely to create problems otherwise.

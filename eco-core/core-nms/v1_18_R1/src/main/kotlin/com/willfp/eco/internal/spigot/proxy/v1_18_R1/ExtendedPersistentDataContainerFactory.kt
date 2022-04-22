@@ -59,5 +59,9 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
         override fun getAllKeys(): MutableSet<String> {
             return customDataTags.keys
         }
+
+        override fun getBase(): PersistentDataContainer {
+            return handle
+        }
     }
 }
