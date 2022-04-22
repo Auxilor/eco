@@ -1,9 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_18_R2
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
-import javassist.ClassPool
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
@@ -27,35 +25,6 @@ import java.lang.reflect.Field
 class CommonsInitializer : CommonsInitializerProxy {
     override fun init() {
         CommonsProvider.setIfNeeded(CommonsProviderImpl)
-
-        allowItemModification()
-    }
-
-    private fun allowItemModification() {
-        val cp = ClassPool.getDefault()
-        val clazz = cp.get("net.minecraft.world.item.ItemStack")
-        val method = clazz.getDeclaredMethod(
-            "a",
-            arrayOf(cp.get("net.minecraft.world.level.block.state.IBlockData"))
-        )
-
-        method.setBody(
-            """
-            {
-            double destroySpeed = this.c().a(this, $1);
-            
-            if (this.s()) {
-                return destroySpeed * this.t().k("DestroySpeedMultiplier");
-            } else {
-                return destroySpeed;
-            }
-            }
-            """.trimIndent()
-        )
-
-        Eco.getHandler().ecoPlugin.logger.info("Patching server jar...")
-        clazz.writeFile(clazz.classFile.sourceFile)
-        Eco.getHandler().ecoPlugin.logger.info("Patched jar! If this is the first time you see this message, make sure to restart the server.")
     }
 
     object CommonsProviderImpl : CommonsProvider {

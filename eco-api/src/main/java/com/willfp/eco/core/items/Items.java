@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -528,7 +530,9 @@ public final class Items {
     public static ItemStack setDestroySpeedMultiplier(@NotNull final ItemStack itemStack,
                                                       final double multiplier) {
         FastItemStack fis = FastItemStack.wrap(itemStack);
-        fis.setDestroySpeedMultiplier(multiplier);
+        PersistentDataContainer tag = fis.getBaseTag();
+        tag.set(NamespacedKeyUtils.createEcoKey("break_speed"), PersistentDataType.DOUBLE, multiplier);
+        fis.setBaseTag(tag);
         return fis.unwrap();
     }
 
@@ -540,7 +544,11 @@ public final class Items {
      */
     public static double getDestroySpeedMultiplier(@NotNull final ItemStack itemStack) {
         FastItemStack fis = FastItemStack.wrap(itemStack);
-        return fis.getDestroySpeedMultiplier();
+        PersistentDataContainer tag = fis.getBaseTag();
+        return Objects.requireNonNullElse(
+                tag.get(NamespacedKeyUtils.createEcoKey("break_speed"), PersistentDataType.DOUBLE),
+                1.0
+        );
     }
 
     private Items() {

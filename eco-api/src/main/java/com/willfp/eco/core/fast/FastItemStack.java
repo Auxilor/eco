@@ -257,20 +257,6 @@ public interface FastItemStack extends PersistentDataHolder {
     void setCustomModelData(@Nullable Integer data);
 
     /**
-     * Get the speed multiplier.
-     *
-     * @return The multiplier.
-     */
-    double getDestroySpeedMultiplier();
-
-    /**
-     * Set the speed multiplier.
-     *
-     * @param multiplier The multiplier.
-     */
-    void setDestroySpeedMultiplier(double multiplier);
-
-    /**
      * Get the Bukkit ItemStack again.
      *
      * @return The ItemStack.
