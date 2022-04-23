@@ -9,6 +9,11 @@ import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
 class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFactoryProxy {
+    @Suppress("UNCHECKED_CAST")
+    private val registry: CraftPersistentDataTypeRegistry =
+        CraftPersistentDataContainer::class.java.getDeclaredField("registry")
+            .apply { isAccessible = true }.get(null) as CraftPersistentDataTypeRegistry
+
     override fun adapt(pdc: PersistentDataContainer): ExtendedPersistentDataContainer {
         return when (pdc) {
             is ExtendedPersistentDataContainer -> pdc
@@ -17,18 +22,17 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
         }
     }
 
-    class EcoPersistentDataContainer(
+    override fun newPdc(): PersistentDataContainer {
+        return CraftPersistentDataContainer(registry)
+    }
+
+    inner class EcoPersistentDataContainer(
         val handle: CraftPersistentDataContainer
     ) : ExtendedPersistentDataContainer, PersistentDataContainer by handle {
         @Suppress("UNCHECKED_CAST")
         private val customDataTags: MutableMap<String, Tag> =
             CraftPersistentDataContainer::class.java.getDeclaredField("customDataTags")
                 .apply { isAccessible = true }.get(handle) as MutableMap<String, Tag>
-
-        @Suppress("UNCHECKED_CAST")
-        private val registry: CraftPersistentDataTypeRegistry =
-            CraftPersistentDataContainer::class.java.getDeclaredField("registry")
-                .apply { isAccessible = true }.get(handle) as CraftPersistentDataTypeRegistry
 
         override fun <T : Any, Z : Any> set(key: String, dataType: PersistentDataType<T, Z>, value: Z) {
             customDataTags[key] = registry.wrap(dataType.primitiveType, dataType.toPrimitive(value, adapterContext))

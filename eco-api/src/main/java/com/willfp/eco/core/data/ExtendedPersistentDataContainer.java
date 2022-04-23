@@ -43,7 +43,8 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
      * @param <Z>      The type.
      * @return The value, or null if not found.
      */
-    @Nullable <T, Z> Z get(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType);
+    @Nullable
+    <T, Z> Z get(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType);
 
     /**
      * Get a value or default if not present.
@@ -55,7 +56,8 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
      * @param <Z>          The type.
      * @return The value, or the default if not found.
      */
-    @NotNull <T, Z> Z getOrDefault(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType, @NotNull Z defaultValue);
+    @NotNull
+    <T, Z> Z getOrDefault(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType, @NotNull Z defaultValue);
 
     /**
      * Get all keys, including namespaced keys.
@@ -90,5 +92,14 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
      */
     static ExtendedPersistentDataContainer wrap(@NotNull PersistentDataContainer base) {
         return Eco.getHandler().adaptPdc(base);
+    }
+
+    /**
+     * Create a new extended container.
+     *
+     * @return The extended container.
+     */
+    static ExtendedPersistentDataContainer create() {
+        return wrap(Eco.getHandler().newPdc());
     }
 }

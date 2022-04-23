@@ -156,4 +156,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun adaptPdc(container: PersistentDataContainer): ExtendedPersistentDataContainer =
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).adapt(container)
+
+    override fun newPdc(): PersistentDataContainer =
+        getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).newPdc()
 }

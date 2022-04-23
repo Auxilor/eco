@@ -282,7 +282,8 @@ public interface Handler {
      * @param <T> The mob type.
      * @return The controlled entity.
      */
-    @NotNull <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
+    @NotNull
+    <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
 
     /**
      * Adapt base PDC to extended PDC.
@@ -292,4 +293,12 @@ public interface Handler {
      */
     @NotNull
     ExtendedPersistentDataContainer adaptPdc(@NotNull PersistentDataContainer container);
+
+    /**
+     * Create new PDC.
+     *
+     * @return The container.
+     */
+    @NotNull
+    PersistentDataContainer newPdc();
 }

@@ -5,4 +5,5 @@ import org.bukkit.persistence.PersistentDataContainer
 
 interface ExtendedPersistentDataContainerFactoryProxy {
     fun adapt(pdc: PersistentDataContainer): ExtendedPersistentDataContainer
+    fun newPdc(): PersistentDataContainer
 }
