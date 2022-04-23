@@ -520,38 +520,6 @@ public final class Items {
         return fis.unwrap();
     }
 
-    /**
-     * Set the items destroy speed.
-     *
-     * @param itemStack  The ItemStack.
-     * @param multiplier The multiplier
-     * @return The item, modified. Not required to use, as this modifies the instance.
-     */
-    @NotNull
-    public static ItemStack setDestroySpeedMultiplier(@NotNull final ItemStack itemStack,
-                                                      final double multiplier) {
-        FastItemStack fis = FastItemStack.wrap(itemStack);
-        ExtendedPersistentDataContainer tag = fis.getBaseTag();
-        tag.set("BreakSpeed", PersistentDataType.DOUBLE, multiplier);
-        fis.setBaseTag(tag);
-        return fis.unwrap();
-    }
-
-    /**
-     * Get the items destroy speed.
-     *
-     * @param itemStack The ItemStack.
-     * @return The speed multiplier.
-     */
-    public static double getDestroySpeedMultiplier(@NotNull final ItemStack itemStack) {
-        FastItemStack fis = FastItemStack.wrap(itemStack);
-        ExtendedPersistentDataContainer tag = fis.getBaseTag();
-        return Objects.requireNonNullElse(
-                tag.get("BreakSpeed", PersistentDataType.DOUBLE),
-                1.0
-        );
-    }
-
     private Items() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
