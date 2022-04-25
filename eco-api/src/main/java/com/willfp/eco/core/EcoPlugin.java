@@ -319,6 +319,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         Eco.getHandler().addNewPlugin(this);
 
+        this.getLogger().info("Initializing " + this.getColor() + this.getName());
+
         /*
         The minimum eco version check was moved here because it's very common
         to add a lot of code in the constructor of plugins; meaning that the plugin
