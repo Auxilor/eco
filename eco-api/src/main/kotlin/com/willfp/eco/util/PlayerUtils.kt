@@ -5,6 +5,7 @@ package com.willfp.eco.util
 import net.kyori.adventure.audience.Audience
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
 /**
@@ -30,3 +31,15 @@ fun CommandSender.asAudience(): Audience =
  */
 fun Player.runExempted(action: () -> Unit) =
     PlayerUtils.runExempted(this, action)
+
+/**
+ * @see PlayerUtils.runExempted
+ */
+fun Player.runExempted(action: (Player) -> Unit) =
+    PlayerUtils.runExempted(this, action)
+
+/**
+ * @see PlayerUtils.tryAsPlayer
+ */
+fun Entity?.tryAsPlayer(): Player? =
+    PlayerUtils.tryAsPlayer(this)

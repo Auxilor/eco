@@ -10,8 +10,14 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.AnimalTamer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Tameable;
+import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -140,6 +146,39 @@ public final class PlayerUtils {
         } finally {
             AnticheatManager.unexemptPlayer(player);
         }
+    }
+
+    /**
+     * Try an entity as a player.
+     *
+     * @param entity The entity.
+     * @return The player, or null if no player could be found.
+     */
+    @Nullable
+    public static Player tryAsPlayer(@Nullable final Entity entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        if (entity instanceof Player player) {
+            return player;
+        }
+
+        if (entity instanceof Projectile projectile) {
+            ProjectileSource shooter = projectile.getShooter();
+            if (shooter instanceof Player player) {
+                return player;
+            }
+        }
+
+        if (entity instanceof Tameable tameable) {
+            AnimalTamer tamer = tameable.getOwner();
+            if (tamer instanceof Player player) {
+                return player;
+            }
+        }
+
+        return null;
     }
 
     private PlayerUtils() {
