@@ -43,3 +43,6 @@ softdepend:
   - CustomCrafting
   - ExecutableItems
   - RPGHorses
+  - EconomyShopGUI
+  - zShop
+  - DeluxeSellwands

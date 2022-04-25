@@ -44,6 +44,7 @@ dependencies {
     compileOnly 'com.github.WhipDevelopment:CrashClaim:f9cd7d92eb'
     compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0'
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.1.2'
+    compileOnly 'com.github.Gypopo:EconomyShopGUI-API:1.1.0'
 
     // MythicMobs
     compileOnly 'io.lumine:Mythic:5.0.1'

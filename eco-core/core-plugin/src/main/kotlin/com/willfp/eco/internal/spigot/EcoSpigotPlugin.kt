@@ -105,7 +105,10 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHologr
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicDisplays
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
+import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
+import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
+import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
 import com.willfp.eco.internal.spigot.math.evaluateExpression
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
@@ -276,7 +279,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
 
             // Shop
-            IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
+            IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus(this)) },
+            IntegrationLoader("zShop") { ShopManager.register(ShopZShop(this)) },
+            IntegrationLoader("DeluxeSellwands") { ShopManager.register(ShopDeluxeSellwands(this)) },
+            IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI(this)) },
 
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },

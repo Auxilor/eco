@@ -1,13 +1,26 @@
 package com.willfp.eco.internal.spigot.integrations.shop
 
+import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.integrations.shop.ShopSellEvent
 import com.willfp.eco.core.integrations.shop.ShopWrapper
 import com.willfp.eco.core.items.Items
 import net.brcdev.shopgui.ShopGuiPlusApi
+import net.brcdev.shopgui.event.ShopPreTransactionEvent
 import net.brcdev.shopgui.provider.item.ItemProvider
+import net.brcdev.shopgui.shop.ShopManager
+import org.bukkit.Bukkit
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
-class ShopShopGuiPlus : ShopWrapper {
+class ShopShopGuiPlus(
+    plugin: EcoPlugin
+) : ShopWrapper {
+    init {
+        plugin.eventManager.registerListener(ShopGuiPlusSellEventListeners)
+    }
+
     override fun registerEcoProvider() {
         ShopGuiPlusApi.registerItemProvider(EcoShopGuiPlusProvider())
     }
@@ -26,6 +39,23 @@ class ShopShopGuiPlus : ShopWrapper {
 
         override fun compare(itemStack1: ItemStack, itemStack2: ItemStack): Boolean {
             return Items.getCustomItem(itemStack1)?.key == Items.getCustomItem(itemStack2)?.key
+        }
+    }
+
+    object ShopGuiPlusSellEventListeners : Listener {
+        @EventHandler
+        fun shopEventToEcoEvent(event: ShopPreTransactionEvent) {
+            if (event.isCancelled) {
+                return
+            }
+
+            if (event.shopAction == ShopManager.ShopAction.BUY) {
+                return
+            }
+
+            val ecoEvent = ShopSellEvent(event.player, event.price, event.shopItem.item)
+            Bukkit.getPluginManager().callEvent(ecoEvent)
+            event.price = ecoEvent.price
         }
     }
 
