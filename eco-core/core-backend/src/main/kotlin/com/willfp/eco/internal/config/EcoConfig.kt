@@ -162,7 +162,7 @@ open class EcoConfig(
     }
 
     override fun getPlaceholderInjections(): List<InjectablePlaceholder> {
-        return injections.toList();
+        return injections.toList()
     }
 
     override fun clearInjectedPlaceholders() {

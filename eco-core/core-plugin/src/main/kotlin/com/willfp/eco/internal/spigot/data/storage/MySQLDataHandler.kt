@@ -149,7 +149,7 @@ class MySQLDataHandler(
 private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
-    private val plugin: EcoPlugin,
+    plugin: EcoPlugin,
     private val knownKeys: Collection<PersistentDataKey<*>>
 ) {
     private val columns = Caffeine.newBuilder()

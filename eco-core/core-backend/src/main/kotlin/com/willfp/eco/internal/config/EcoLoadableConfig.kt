@@ -145,6 +145,10 @@ open class EcoLoadableConfig(
         }
         configFile = File(directory, name)
         init(configFile)
+        addToHandler(plugin)
+    }
+
+    private fun addToHandler(plugin: PluginLike) {
         plugin.configHandler.addConfig(this)
     }
 }

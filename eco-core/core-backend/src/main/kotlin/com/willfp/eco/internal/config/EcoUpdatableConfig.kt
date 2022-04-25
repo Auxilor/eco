@@ -56,6 +56,10 @@ open class EcoUpdatableConfig(
 
     init {
         this.updateBlacklist.removeIf { obj: String -> obj.isEmpty() }
+        postInit(plugin)
+    }
+
+    private fun postInit(plugin: PluginLike) {
         plugin.configHandler.addConfig(this)
         update()
     }

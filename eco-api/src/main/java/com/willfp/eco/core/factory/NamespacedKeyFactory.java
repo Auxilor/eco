@@ -13,5 +13,6 @@ public interface NamespacedKeyFactory {
      * @param key The key in the {@link NamespacedKey}.
      * @return The created {@link NamespacedKey}.
      */
+    @NotNull
     NamespacedKey create(@NotNull String key);
 }

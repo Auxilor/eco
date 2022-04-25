@@ -102,7 +102,7 @@ allprojects {
 
         // Other
         implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
-        implementation("org.apache.maven:maven-artifact:3.8.4")
+        implementation("org.apache.maven:maven-artifact:3.8.5")
     }
 
     tasks.withType<JavaCompile> {

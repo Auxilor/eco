@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Utilities / API methods for teams.
@@ -49,7 +48,7 @@ public final class TeamUtils {
 
         Team team;
 
-        if (!SCOREBOARD.getTeams().stream().map(Team::getName).collect(Collectors.toList()).contains("EC-" + color.name())) {
+        if (!SCOREBOARD.getTeams().stream().map(Team::getName).toList().contains("EC-" + color.name())) {
             team = SCOREBOARD.registerNewTeam("EC-" + color.name());
         } else {
             team = SCOREBOARD.getTeam("EC-" + color.name());

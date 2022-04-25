@@ -109,8 +109,8 @@ public final class DurabilityUtils {
             return;
         }
 
-
-        Damageable meta = (Damageable) item.getItemMeta();
+        // Suppression because when I fix it, it causes weird compile bugs.
+        @SuppressWarnings("PatternVariableCanBeUsed") Damageable meta = (Damageable) item.getItemMeta();
         meta.setDamage(meta.getDamage() + damage);
 
         if (meta.getDamage() >= item.getType().getMaxDurability()) {

@@ -12,7 +12,7 @@ object EcoGsonSerializer : JsonSerializer<Config> {
         .setPrettyPrinting()
         .disableHtmlEscaping()
         .registerTypeAdapter(Config::class.java, this)
-        .create()
+        .create()!!
 
     override fun serialize(src: Config, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         return gson.toJsonTree(src.toMap())
