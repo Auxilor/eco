@@ -193,6 +193,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun handleEnable() {
         CollatedRunnable(this)
 
+        // Register events for ShopSellEvent
+        ShopManager.registerEvents(this)
+
         if (!Prerequisite.HAS_PAPER.isMet) {
             (Eco.getHandler() as EcoHandler).setAdventure(BukkitAudiences.create(this))
         }
@@ -279,10 +282,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
 
             // Shop
-            IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus(this)) },
-            IntegrationLoader("zShop") { ShopManager.register(ShopZShop(this)) },
-            IntegrationLoader("DeluxeSellwands") { ShopManager.register(ShopDeluxeSellwands(this)) },
-            IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI(this)) },
+            IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
+            IntegrationLoader("zShop") { ShopManager.register(ShopZShop()) },
+            IntegrationLoader("DeluxeSellwands") { ShopManager.register(ShopDeluxeSellwands()) },
+            IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI()) },
 
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },

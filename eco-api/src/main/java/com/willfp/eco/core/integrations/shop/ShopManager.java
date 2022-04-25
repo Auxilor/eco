@@ -1,5 +1,8 @@
 package com.willfp.eco.core.integrations.shop;
 
+import com.willfp.eco.core.EcoPlugin;
+import org.bukkit.event.Listener;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -21,6 +24,22 @@ public final class ShopManager {
      */
     public static void register(@NotNull final ShopWrapper integration) {
         REGISTERED.add(integration);
+    }
+
+    /**
+     * Register the events with eco.
+     *
+     * @param plugin Instance of eco.
+     */
+    @ApiStatus.Internal
+    public static void registerEvents(@NotNull final EcoPlugin plugin) {
+        for (ShopWrapper wrapper : REGISTERED) {
+            Listener listener = wrapper.getSellEventAdapter();
+
+            if (listener != null) {
+                plugin.getEventManager().registerListener(listener);
+            }
+        }
     }
 
     /**

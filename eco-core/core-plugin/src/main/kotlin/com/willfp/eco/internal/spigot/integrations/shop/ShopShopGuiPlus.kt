@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.integrations.shop
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.shop.ShopSellEvent
 import com.willfp.eco.core.integrations.shop.ShopWrapper
 import com.willfp.eco.core.items.Items
@@ -14,15 +13,13 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
-class ShopShopGuiPlus(
-    plugin: EcoPlugin
-) : ShopWrapper {
-    init {
-        plugin.eventManager.registerListener(ShopGuiPlusSellEventListeners)
-    }
-
+class ShopShopGuiPlus : ShopWrapper {
     override fun registerEcoProvider() {
         ShopGuiPlusApi.registerItemProvider(EcoShopGuiPlusProvider())
+    }
+
+    override fun getSellEventAdapter(): Listener {
+        return ShopGuiPlusSellEventListeners
     }
 
     class EcoShopGuiPlusProvider : ItemProvider("eco") {

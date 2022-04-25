@@ -1,6 +1,8 @@
 package com.willfp.eco.core.integrations.shop;
 
 import com.willfp.eco.core.integrations.Integration;
+import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Wrapper class for shop integrations.
@@ -9,5 +11,16 @@ public interface ShopWrapper extends Integration {
     /**
      * Register eco item provider for shop plugins.
      */
-    void registerEcoProvider();
+    default void registerEcoProvider() {
+        // Do nothing unless overridden.
+    }
+
+    /**
+     * Register sell event adapters.
+     */
+    @Nullable
+    default Listener getSellEventAdapter() {
+        // Do nothing unless overridden.
+        return null;
+    }
 }

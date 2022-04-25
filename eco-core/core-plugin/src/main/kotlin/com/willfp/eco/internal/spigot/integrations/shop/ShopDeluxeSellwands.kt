@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.integrations.shop
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.shop.ShopSellEvent
 import com.willfp.eco.core.integrations.shop.ShopWrapper
 import dev.norska.dsw.api.DeluxeSellwandSellEvent
@@ -8,15 +7,9 @@ import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
-class ShopDeluxeSellwands(
-    plugin: EcoPlugin
-) : ShopWrapper {
-    init {
-        plugin.eventManager.registerListener(DeluxeSellwandsSellEventListeners)
-    }
-
-    override fun registerEcoProvider() {
-        // Do nothing.
+class ShopDeluxeSellwands : ShopWrapper {
+    override fun getSellEventAdapter(): Listener {
+        return DeluxeSellwandsSellEventListeners
     }
 
     object DeluxeSellwandsSellEventListeners : Listener {
