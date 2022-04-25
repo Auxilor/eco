@@ -8,6 +8,11 @@ import com.willfp.eco.core.config.interfaces.Config
  * Helper class to create configs with a kotlin DSL.
  */
 class DSLConfig internal constructor(type: ConfigType) : TransientConfig(emptyMap(), type) {
+    /**
+     * Map a key to a value.
+     *
+     * @param value The value.
+     */
     infix fun String.to(value: Any?) =
         set(this, value)
 
