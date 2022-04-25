@@ -14,7 +14,7 @@ class ArrowDataListener(
 ) : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
-    fun onLaunch(event:ProjectileLaunchEvent) {
+    fun onLaunch(event: ProjectileLaunchEvent) {
         val arrow = event.entity
 
         if (arrow !is Arrow) {
