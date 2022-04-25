@@ -16,7 +16,9 @@ public interface ShopWrapper extends Integration {
     }
 
     /**
-     * Register sell event adapters.
+     * Get the sell event adapter.
+     *
+     * @return The listener.
      */
     @Nullable
     default Listener getSellEventAdapter() {

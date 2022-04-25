@@ -82,6 +82,10 @@ allprojects {
     }
 
     dependencies {
+        // Kotlin
+        implementation(kotlin("stdlib", version = "1.6.21"))
+        implementation(kotlin("scripting-jsr223", version = "1.6.21"))
+
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
         compileOnly("com.google.guava:guava:31.1-jre")
@@ -100,7 +104,6 @@ allprojects {
         // Other
         implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
         implementation("org.apache.maven:maven-artifact:3.8.4")
-        implementation(kotlin("stdlib", version = "1.6.21"))
     }
 
     tasks.withType<JavaCompile> {
