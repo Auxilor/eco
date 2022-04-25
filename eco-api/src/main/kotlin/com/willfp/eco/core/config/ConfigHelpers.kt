@@ -31,7 +31,6 @@ fun config(builder: DSLConfig.() -> Unit): Config =
 fun config(type: ConfigType, builder: DSLConfig.() -> Unit): Config =
     DSLConfig(type).apply(builder)
 
-
 /**
  * Helper function to create configs with a kotlin DSL.
  *
