@@ -84,7 +84,6 @@ allprojects {
     dependencies {
         // Kotlin
         implementation(kotlin("stdlib", version = "1.6.21"))
-        implementation(kotlin("scripting-jsr223", version = "1.6.21"))
 
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
