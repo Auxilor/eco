@@ -10,6 +10,17 @@ import com.willfp.eco.core.config.interfaces.Config
 class DSLConfig internal constructor(type: ConfigType) : TransientConfig(emptyMap(), type) {
     infix fun String.to(value: Any?) =
         set(this, value)
+
+    /**
+     * Helper function to create configs with a kotlin DSL.
+     *
+     * Inherits the config type of the sub-builder.
+     *
+     * @param builder The builder.
+     * @return The config.
+     */
+    fun config(builder: DSLConfig.() -> Unit): Config =
+        DSLConfig(type).apply(builder)
 }
 
 /**
@@ -30,14 +41,3 @@ fun config(builder: DSLConfig.() -> Unit): Config =
  */
 fun config(type: ConfigType, builder: DSLConfig.() -> Unit): Config =
     DSLConfig(type).apply(builder)
-
-/**
- * Helper function to create configs with a kotlin DSL.
- *
- * Inherits the config type of the sub-builder.
- *
- * @param builder The builder.
- * @return The config.
- */
-fun DSLConfig.config(builder: DSLConfig.() -> Unit): Config =
-    DSLConfig(this.type).apply(builder)
