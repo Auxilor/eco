@@ -47,6 +47,21 @@ public final class PlaceholderManager {
             .build(key -> key.entry.getValue(key.player));
 
     /**
+     * Empty injectable object.
+     */
+    private static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
+        @Override
+        public void clearInjectedPlaceholders() {
+            // Do nothing.
+        }
+
+        @Override
+        public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+            return Collections.emptyList();
+        }
+    };
+
+    /**
      * Register a new placeholder integration.
      *
      * @param integration The {@link com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration} to register.
@@ -147,7 +162,7 @@ public final class PlaceholderManager {
      */
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
-        return translatePlaceholders(text, player, Collections.emptyList());
+        return translatePlaceholders(text, player, EMPTY_INJECTABLE);
     }
 
     /**
@@ -163,17 +178,7 @@ public final class PlaceholderManager {
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final List<StaticPlaceholder> statics) {
-        return translatePlaceholders(text, player, new PlaceholderInjectable() {
-            @Override
-            public void clearInjectedPlaceholders() {
-                // Do nothing.
-            }
-
-            @Override
-            public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
-                return new ArrayList<>(statics);
-            }
-        });
+        return translatePlaceholders(text, player, EMPTY_INJECTABLE);
     }
 
     /**
