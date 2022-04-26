@@ -26,4 +26,47 @@ public class StringUtilsTest {
                 StringUtils.splitAround("one|| two", "||")
         );
     }
+
+    @Test
+    public void testProgressBar() {
+        Assertions.assertEquals(
+                "&a--------",
+                StringUtils.createProgressBar(
+                        '-',
+                        8,
+                        1,
+                        "&a", "&e", "&c"
+                )
+        );
+
+        Assertions.assertEquals(
+                "&a-------&e-",
+                StringUtils.createProgressBar(
+                        '-',
+                        8,
+                        0.99,
+                        "&a", "&e", "&c"
+                )
+        );
+
+        Assertions.assertEquals(
+                "&e-&c-------",
+                StringUtils.createProgressBar(
+                        '-',
+                        8,
+                        0.0001,
+                        "&a", "&e", "&c"
+                )
+        );
+
+        Assertions.assertEquals(
+                "&a----&e-&c---",
+                StringUtils.createProgressBar(
+                        '-',
+                        8,
+                        0.5,
+                        "&a", "&e", "&c"
+                )
+        );
+    }
 }

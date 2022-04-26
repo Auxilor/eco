@@ -13,6 +13,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -631,6 +632,59 @@ public final class StringUtils {
     public static String[] splitAround(@NotNull final String input,
                                        @NotNull final String separator) {
         return SPACE_AROUND_CHARACTER.get(separator).split(input);
+    }
+
+    /**
+     * Create progress bar.
+     *
+     * @param character        The bar character.
+     * @param bars             The number of bars.
+     * @param progress         The bar progress, between 0 and 1.
+     * @param completeFormat   The color of a complete bar section.
+     * @param inProgressFormat The color of an in-progress bar section.
+     * @param incompleteFormat The color of an incomplete bar section.
+     * @return The progress bar.
+     */
+    @NotNull
+    public static String createProgressBar(final char character,
+                                           final int bars,
+                                           final double progress,
+                                           @NotNull final String completeFormat,
+                                           @NotNull final String inProgressFormat,
+                                           @NotNull final String incompleteFormat) {
+        Validate.isTrue(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
+        Validate.isTrue(bars > 1, "Must have at least 2 bars!");
+
+        String completeColor = format(completeFormat);
+        String inProgressColor = format(inProgressFormat);
+        String incompleteColor = format(incompleteFormat);
+
+        StringBuilder builder = new StringBuilder();
+
+        // Full bar special case.
+        if (progress == 1) {
+            builder.append(completeColor);
+            builder.append(String.valueOf(character).repeat(bars));
+            return builder.toString();
+        }
+
+        int completeBars = (int) Math.floor(progress * bars);
+        int incompleteBars = bars - completeBars - 1;
+
+        if (completeBars > 0) {
+            builder.append(completeColor)
+                    .append(String.valueOf(character).repeat(completeBars));
+        }
+
+        builder.append(inProgressColor)
+                .append(character);
+
+        if (incompleteBars > 0) {
+            builder.append(incompleteColor)
+                    .append(String.valueOf(character).repeat(incompleteBars));
+        }
+
+        return builder.toString();
     }
 
     /**
