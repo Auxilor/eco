@@ -1,6 +1,5 @@
 package com.willfp.eco.core;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -234,7 +233,6 @@ public final class PluginProps {
      * @param supportsExtensions If the plugin should attempt to look for extensions.
      * @return The props.
      */
-    @ApiStatus.Internal
     static PluginProps createSimple(final int resourceId,
                                     final int bStatsId,
                                     @NotNull final String proxyPackage,

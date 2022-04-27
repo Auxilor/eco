@@ -34,8 +34,8 @@ public final class ShopManager {
      */
     @ApiStatus.Internal
     public static void registerEvents(@NotNull final EcoPlugin plugin) {
-        for (ShopIntegration Integration : REGISTERED) {
-            Listener listener = Integration.getSellEventAdapter();
+        for (ShopIntegration integration : REGISTERED) {
+            Listener listener = integration.getSellEventAdapter();
 
             if (listener != null) {
                 plugin.getEventManager().registerListener(listener);

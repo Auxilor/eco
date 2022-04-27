@@ -30,8 +30,8 @@ public final class CustomEntitiesManager {
      * @see com.willfp.eco.core.entities.Entities
      */
     public static void registerAllEntities() {
-        for (CustomEntitiesIntegration Integration : REGISTERED) {
-            Integration.registerAllEntities();
+        for (CustomEntitiesIntegration integration : REGISTERED) {
+            integration.registerAllEntities();
         }
     }
 

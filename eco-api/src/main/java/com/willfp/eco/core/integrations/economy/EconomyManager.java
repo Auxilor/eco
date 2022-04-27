@@ -43,8 +43,8 @@ public final class EconomyManager {
      */
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
                                     final double amount) {
-        for (EconomyIntegration Integration : REGISTERED) {
-            return Integration.hasAmount(player, amount);
+        for (EconomyIntegration integration : REGISTERED) {
+            return integration.hasAmount(player, amount);
         }
 
         return false;
@@ -59,8 +59,8 @@ public final class EconomyManager {
      */
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
                                     final double amount) {
-        for (EconomyIntegration Integration : REGISTERED) {
-            return Integration.giveMoney(player, amount);
+        for (EconomyIntegration integration : REGISTERED) {
+            return integration.giveMoney(player, amount);
         }
 
         return false;
@@ -75,8 +75,8 @@ public final class EconomyManager {
      */
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
                                       final double amount) {
-        for (EconomyIntegration Integration : REGISTERED) {
-            return Integration.removeMoney(player, amount);
+        for (EconomyIntegration integration : REGISTERED) {
+            return integration.removeMoney(player, amount);
         }
 
         return false;
@@ -89,8 +89,8 @@ public final class EconomyManager {
      * @return The balance.
      */
     public static double getBalance(@NotNull final OfflinePlayer player) {
-        for (EconomyIntegration Integration : REGISTERED) {
-            return Integration.getBalance(player);
+        for (EconomyIntegration integration : REGISTERED) {
+            return integration.getBalance(player);
         }
 
         return 0;

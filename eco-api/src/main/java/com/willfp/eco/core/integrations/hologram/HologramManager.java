@@ -35,8 +35,8 @@ public final class HologramManager {
      */
     public static Hologram createHologram(@NotNull final Location location,
                                           @NotNull final List<String> contents) {
-        for (HologramIntegration Integration : REGISTERED) {
-            return Integration.createHologram(location, contents);
+        for (HologramIntegration integration : REGISTERED) {
+            return integration.createHologram(location, contents);
         }
 
         return new DummyHologram();
