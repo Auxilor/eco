@@ -13,7 +13,7 @@ class MenuRenderedInventory(
     val captiveItems = mutableListOf<ItemStack>()
     val state = mutableMapOf<String, Any?>()
 
-    fun render(fromStateChange: Boolean = false) {
+    fun render() {
         generateCaptive()
 
         var i = 0
