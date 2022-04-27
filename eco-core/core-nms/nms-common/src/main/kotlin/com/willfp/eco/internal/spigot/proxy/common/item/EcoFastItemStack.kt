@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.proxy.common.item
 
-import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.common.NBT_TAG_STRING
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
@@ -186,8 +185,8 @@ class EcoFastItemStack(
         return this.flagBits and bitModifier == bitModifier
     }
 
-    override fun getBaseTag(): ExtendedPersistentDataContainer =
-        ExtendedPersistentDataContainer.extend((if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc(base = true))
+    override fun getBaseTag(): PersistentDataContainer =
+        (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc(base = true)
 
     override fun setBaseTag(container: PersistentDataContainer?) {
         (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).setPdc(container, item = handle)

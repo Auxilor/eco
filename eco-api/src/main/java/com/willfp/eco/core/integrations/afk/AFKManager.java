@@ -31,8 +31,8 @@ public final class AFKManager {
      * @return If afk.
      */
     public static boolean isAfk(@NotNull final Player player) {
-        for (AFKIntegration AFKIntegration : REGISTERED) {
-            if (AFKIntegration.isAfk(player)) {
+        for (AFKIntegration integration : REGISTERED) {
+            if (integration.isAfk(player)) {
                 return true;
             }
         }

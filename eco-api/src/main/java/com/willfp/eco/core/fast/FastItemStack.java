@@ -1,7 +1,6 @@
 package com.willfp.eco.core.fast;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.data.ExtendedPersistentDataContainer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -204,7 +203,7 @@ public interface FastItemStack extends PersistentDataHolder {
      *
      * @return The base NBT tag.
      */
-    ExtendedPersistentDataContainer getBaseTag();
+    PersistentDataContainer getBaseTag();
 
     /**
      * Set the base NBT tag (Not PublicBukkitValues, the base) from a PersistentDataContainer.

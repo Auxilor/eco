@@ -5,6 +5,7 @@ package com.willfp.eco.core.integrations.hologram;
  *
  * @deprecated Use HologramIntegration instead.
  */
+@Deprecated(since = "6.35.0", forRemoval = true)
 public interface HologramWrapper extends HologramIntegration {
 
 }

@@ -260,12 +260,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             },
 
             // Anticheat
-            IntegrationLoader("AAC5") { AnticheatManager.register(this, AnticheatAAC()) },
-            IntegrationLoader("Matrix") { AnticheatManager.register(this, AnticheatMatrix()) },
-            IntegrationLoader("NoCheatPlus") { AnticheatManager.register(this, AnticheatNCP()) },
-            IntegrationLoader("Spartan") { AnticheatManager.register(this, AnticheatSpartan()) },
-            IntegrationLoader("Vulcan") { AnticheatManager.register(this, AnticheatVulcan()) },
-            IntegrationLoader("Alice") { AnticheatManager.register(this, AnticheatAlice()) },
+            IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
+            IntegrationLoader("Matrix") { AnticheatManager.register(AnticheatMatrix()) },
+            IntegrationLoader("NoCheatPlus") { AnticheatManager.register(AnticheatNCP()) },
+            IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
+            IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
+            IntegrationLoader("Alice") { AnticheatManager.register(AnticheatAlice()) },
 
             // Custom Entities
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
