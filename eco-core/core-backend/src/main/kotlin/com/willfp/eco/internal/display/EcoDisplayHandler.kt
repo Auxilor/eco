@@ -42,7 +42,9 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
 
         Display.revert(itemStack)
 
-        itemStack.itemMeta ?: return itemStack
+        if (!itemStack.hasItemMeta()) {
+            return itemStack
+        }
 
         for (priority in DisplayPriority.values()) {
             val modules = registeredModules[priority] ?: continue
@@ -86,27 +88,18 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
             return itemStack
         }
 
-        val meta = itemStack.itemMeta ?: return itemStack
+        itemStack.fast().persistentDataContainer.set(finalizeKey, PersistentDataType.INTEGER, 1)
 
-        val container = meta.persistentDataContainer
-        container.set(finalizeKey, PersistentDataType.INTEGER, 1)
-        itemStack.itemMeta = meta
         return itemStack
     }
 
     override fun unfinalize(itemStack: ItemStack): ItemStack {
-        val meta = itemStack.itemMeta ?: return itemStack
+        itemStack.fast().persistentDataContainer.remove(finalizeKey)
 
-        val container = meta.persistentDataContainer
-        container.remove(finalizeKey)
-        itemStack.itemMeta = meta
         return itemStack
     }
 
     override fun isFinalized(itemStack: ItemStack): Boolean {
-        val meta = itemStack.itemMeta ?: return false
-
-        val container = meta.persistentDataContainer
-        return container.has(finalizeKey, PersistentDataType.INTEGER)
+        return itemStack.fast().persistentDataContainer.has(finalizeKey, PersistentDataType.INTEGER)
     }
 }
