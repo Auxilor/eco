@@ -114,19 +114,6 @@ public final class Display {
     }
 
     /**
-     * Initialize the display system.
-     *
-     * @param handler The handler.
-     */
-    @ApiStatus.Internal
-    public static void init(@NotNull final DisplayHandler handler) {
-        if (Display.handler != null) {
-            throw new IllegalArgumentException("Already Initialized!");
-        }
-        Display.handler = handler;
-    }
-
-    /**
      * Set the display handler.
      * <p>
      * Internal API component, you will cause bugs if you create your own handler.
