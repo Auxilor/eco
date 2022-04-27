@@ -4,6 +4,7 @@ import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.slot.EcoSlot
+import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -73,20 +74,30 @@ class EcoMenu(
         key: NamespacedKey,
         type: PersistentDataType<T, Z>,
         value: Z
-    ) {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
-        inventory.data[key] = value
-        inventory.render()
-    }
+    ) = addState(player, key.toString(), value)
 
-    override fun <T : Any, Z : Any> readData(player: Player, key: NamespacedKey, type: PersistentDataType<T, Z>): T? {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return null
-        return inventory.data[key] as? T?
-    }
+    override fun <T : Any, Z : Any> readData(player: Player, key: NamespacedKey, type: PersistentDataType<T, Z>): T? =
+        getState(player, key.toString())
 
     override fun getKeys(player: Player): Set<NamespacedKey> {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptySet()
-        return inventory.data.keys
+        return inventory.state.keys.mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }.toSet()
+    }
+
+    override fun addState(player: Player, key: String, value: Any?) {
+        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
+        inventory.state[key] = value
+        inventory.render()
+    }
+
+    override fun getState(player: Player): Map<String, Any?> {
+        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptyMap()
+        return inventory.state.toMap()
+    }
+
+    override fun <T : Any> getState(player: Player, key: String): T? {
+        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return null
+        return inventory.state[key] as? T?
     }
 
     override fun refresh(player: Player) {

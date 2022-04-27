@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.util.MenuUtils
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -12,7 +11,7 @@ class MenuRenderedInventory(
     val player: Player
 ) {
     val captiveItems = mutableListOf<ItemStack>()
-    val data = mutableMapOf<NamespacedKey, Any>()
+    val state = mutableMapOf<String, Any?>()
 
     fun render() {
         generateCaptive()
