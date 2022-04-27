@@ -19,7 +19,7 @@ class EcoMenu(
     val slots: List<MutableList<EcoSlot>>,
     private val title: String,
     private val onClose: CloseHandler,
-    private val onRender: (Player) -> Unit
+    private val onRender: (Player, Menu) -> Unit
 ) : Menu {
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
@@ -105,5 +105,5 @@ class EcoMenu(
         player.openInventory.topInventory.asRenderedInventory()?.render()
     }
 
-    fun runOnRender(player: Player) = onRender(player)
+    fun runOnRender(player: Player) = onRender(player, this)
 }

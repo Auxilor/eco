@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -73,7 +74,7 @@ public interface MenuBuilder {
      * @param action The action.
      * @return The builder.
      */
-    MenuBuilder onRender(@NotNull Consumer<Player> action);
+    MenuBuilder onRender(@NotNull BiConsumer<Player, Menu> action);
 
     /**
      * Build the menu.
