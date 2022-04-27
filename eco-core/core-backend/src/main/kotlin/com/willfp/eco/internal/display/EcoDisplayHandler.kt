@@ -4,7 +4,6 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.display.DisplayHandler
 import com.willfp.eco.core.display.DisplayModule
-import com.willfp.eco.core.display.DisplayPriority
 import com.willfp.eco.core.fast.fast
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -12,33 +11,27 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
-    private val registeredModules = mutableMapOf<DisplayPriority, MutableList<DisplayModule>>()
+    private val registeredModules = sortedMapOf<Int, MutableList<DisplayModule>>()
     private val finalizeKey: NamespacedKey = plugin.namespacedKeyFactory.create("finalized")
 
-    init {
-        for (priority in DisplayPriority.values()) {
-            registeredModules[priority] = mutableListOf()
-        }
-    }
-
     override fun registerDisplayModule(module: DisplayModule) {
-        val modules = registeredModules[module.priority] ?: return
-        modules.removeIf { module1: DisplayModule ->
-            module1.pluginName.equals(module.pluginName, ignoreCase = true)
+        val modules = registeredModules[module.weight] ?: mutableListOf()
+        modules.removeIf {
+            it.pluginName.equals(module.pluginName, ignoreCase = true)
         }
         modules.add(module)
-        registeredModules[module.priority] = modules
+        registeredModules[module.weight] = modules
     }
 
     override fun display(itemStack: ItemStack, player: Player?): ItemStack {
         val pluginVarArgs = mutableMapOf<String, Array<Any>>()
 
-        for (priority in DisplayPriority.values()) {
-            val modules = registeredModules[priority] ?: continue
+        for ((_, modules) in registeredModules) {
             for (module in modules) {
                 pluginVarArgs[module.pluginName] = module.generateVarArgs(itemStack)
             }
         }
+
 
         Display.revert(itemStack)
 
@@ -46,8 +39,8 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
             return itemStack
         }
 
-        for (priority in DisplayPriority.values()) {
-            val modules = registeredModules[priority] ?: continue
+
+        for ((_, modules) in registeredModules) {
             for (module in modules) {
                 val varargs = pluginVarArgs[module.pluginName] ?: continue
                 Display.callDisplayModule(module, itemStack, player, *varargs)
@@ -73,8 +66,7 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
             fast.lore = lore
         }
 
-        for (priority in DisplayPriority.values()) {
-            val modules = registeredModules[priority] ?: continue
+        for ((_, modules) in registeredModules) {
             for (module in modules) {
                 module.revert(itemStack)
             }

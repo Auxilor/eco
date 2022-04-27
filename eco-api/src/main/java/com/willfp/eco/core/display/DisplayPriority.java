@@ -5,22 +5,50 @@ package com.willfp.eco.core.display;
  */
 public enum DisplayPriority {
     /**
+     * Custom weight.
+     */
+    CUSTOM(250),
+
+    /**
      * Ran first.
      */
-    LOWEST,
+    LOWEST(100),
 
     /**
      * Ran second.
      */
-    LOW,
+    LOW(200),
 
     /**
      * Ran third.
      */
-    HIGH,
+    HIGH(300),
 
     /**
      * Ran last.
      */
-    HIGHEST
+    HIGHEST(400);
+
+    /**
+     * The display priority weight.
+     */
+    private final int weight;
+
+    /**
+     * Create new display priority.
+     *
+     * @param weight The weight.
+     */
+    DisplayPriority(final int weight) {
+        this.weight = weight;
+    }
+
+    /**
+     * Get the weight.
+     *
+     * @return The weight.
+     */
+    public int getWeight() {
+        return weight;
+    }
 }

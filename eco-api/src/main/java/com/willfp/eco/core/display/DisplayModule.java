@@ -14,7 +14,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
     /**
      * The priority of the module.
      */
-    private final DisplayPriority priority;
+    private final int weight;
 
     /**
      * Create a new display module.
@@ -25,7 +25,19 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
     protected DisplayModule(@NotNull final EcoPlugin plugin,
                             @NotNull final DisplayPriority priority) {
         super(plugin);
-        this.priority = priority;
+        this.weight = priority.getWeight();
+    }
+
+    /**
+     * Create a new display module.
+     *
+     * @param plugin The plugin that the display is for.
+     * @param weight The weight/priority of the module.
+     */
+    protected DisplayModule(@NotNull final EcoPlugin plugin,
+                            final int weight) {
+        super(plugin);
+        this.weight = weight;
     }
 
     /**
@@ -84,8 +96,25 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      * Get the display priority.
      *
      * @return The priority.
+     * @deprecated Use getWeight instead.
      */
+    @Deprecated(since = "6.35.0", forRemoval = true)
     public DisplayPriority getPriority() {
-        return this.priority;
+        return switch (this.weight) {
+            case 100 -> DisplayPriority.LOWEST;
+            case 200 -> DisplayPriority.LOW;
+            case 300 -> DisplayPriority.HIGH;
+            case 400 -> DisplayPriority.HIGHEST;
+            default -> DisplayPriority.CUSTOM;
+        };
+    }
+
+    /**
+     * Get the display weight.
+     *
+     * @return The weight.
+     */
+    public int getWeight() {
+        return this.weight;
     }
 }
