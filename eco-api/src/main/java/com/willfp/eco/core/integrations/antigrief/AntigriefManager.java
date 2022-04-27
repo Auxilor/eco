@@ -24,6 +24,7 @@ public final class AntigriefManager {
      * @param antigrief The integration to register.
      */
     public static void register(@NotNull final AntigriefIntegration antigrief) {
+        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
         REGISTERED.add(antigrief);
     }
 

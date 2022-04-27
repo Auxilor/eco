@@ -20,6 +20,7 @@ public final class CustomItemsManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final CustomItemsIntegration integration) {
+        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
         REGISTERED.add(integration);
     }
 

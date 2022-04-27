@@ -22,6 +22,7 @@ public final class HologramManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final HologramIntegration integration) {
+        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
         REGISTERED.add(integration);
     }
 

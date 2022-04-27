@@ -40,6 +40,7 @@ public final class AnticheatManager {
         if (anticheat instanceof Listener) {
             Eco.getHandler().getEcoPlugin().getEventManager().registerListener((Listener) anticheat);
         }
+        ANTICHEATS.removeIf(it -> it.getPluginName().equalsIgnoreCase(anticheat.getPluginName()));
         ANTICHEATS.add(anticheat);
     }
 
