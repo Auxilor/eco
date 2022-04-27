@@ -43,7 +43,12 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
         for ((_, modules) in registeredModules) {
             for (module in modules) {
                 val varargs = pluginVarArgs[module.pluginName] ?: continue
-                Display.callDisplayModule(module, itemStack, player, *varargs)
+
+                module.invokeWithoutPlayer(itemStack, *varargs)
+
+                if (player != null) {
+                    module.invokeWithPlayer(itemStack, player, *varargs)
+                }
             }
         }
 
@@ -95,3 +100,9 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
         return itemStack.fast().persistentDataContainer.has(finalizeKey, PersistentDataType.INTEGER)
     }
 }
+
+private fun DisplayModule.invokeWithPlayer(itemStack: ItemStack, player: Player?, vararg varargs: Any) =
+    this.display(itemStack, player, varargs)
+
+private fun DisplayModule.invokeWithoutPlayer(itemStack: ItemStack, vararg varargs: Any) =
+    this.display(itemStack, varargs)

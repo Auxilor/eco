@@ -127,39 +127,6 @@ public final class Display {
     }
 
     /**
-     * Extremely janky method - also internal, so don't use it. <b>This method is
-     * NOT part of the API and may be removed at any time!</b>
-     * <p>
-     * This calls a display module with the specified parameters, now
-     * you might ask why I need a static java method when the DisplayHandler
-     * implementation could just call it itself? Well, kotlin doesn't really
-     * like dealing with vararg ambiguity, and so while kotlin can't figure out
-     * what is and isn't a vararg when I call display with a player, java can.
-     * <p>
-     * Because of this, I need to have this part of the code in java.
-     *
-     * <b>Don't call this method as part of your plugins!</b>
-     * <p>
-     * No, seriously - don't. This skips a bunch of checks and you'll almost
-     * definitely break something.
-     *
-     * @param module    The display module.
-     * @param itemStack The ItemStack.
-     * @param player    The player.
-     * @param args      The args.
-     */
-    @ApiStatus.Internal
-    public static void callDisplayModule(@NotNull final DisplayModule module,
-                                         @NotNull final ItemStack itemStack,
-                                         @Nullable final Player player,
-                                         @NotNull final Object... args) {
-        module.display(itemStack, args);
-        if (player != null) {
-            module.display(itemStack, player, args);
-        }
-    }
-
-    /**
      * Set the display handler.
      * <p>
      * Internal API component, you will cause bugs if you create your own handler.
