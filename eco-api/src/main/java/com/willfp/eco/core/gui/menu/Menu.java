@@ -71,6 +71,22 @@ public interface Menu {
                   @NotNull String key,
                   @Nullable Object value);
 
+    /**
+     * Remove state for a player.
+     *
+     * @param player The player.
+     * @param key    The key.
+     */
+    void removeState(@NotNull Player player,
+                     @NotNull String key);
+
+    /**
+     * Clear state for a player.
+     *
+     * @param player The player.
+     */
+    void clearState(@NotNull Player player);
+
 
     /**
      * Get state for a player.
