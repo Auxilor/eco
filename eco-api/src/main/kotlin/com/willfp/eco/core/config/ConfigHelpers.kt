@@ -34,15 +34,5 @@ class DSLConfig internal constructor(type: ConfigType) : TransientConfig(emptyMa
  * @param builder The builder.
  * @return The config.
  */
-fun config(builder: DSLConfig.() -> Unit): Config =
-    DSLConfig(ConfigType.YAML).apply(builder)
-
-/**
- * Helper function to create configs with a kotlin DSL.
- *
- * @param type The config type.
- * @param builder The builder.
- * @return The config.
- */
-fun config(type: ConfigType, builder: DSLConfig.() -> Unit): Config =
+fun config(type: ConfigType = ConfigType.YAML, builder: DSLConfig.() -> Unit): Config =
     DSLConfig(type).apply(builder)
