@@ -93,6 +93,12 @@ fun MenuBuilder.modify(modifier: (MenuBuilder) -> Unit): MenuBuilder =
     this.modfiy { modifier(it) }
 
 /**
+ * @see MenuBuilder.onRender
+ */
+fun MenuBuilder.onRender(action: (Player) -> Unit): MenuBuilder =
+    this.onRender { action(it) }
+
+/**
  * Kotlin builder for menus.
  */
 fun menu(

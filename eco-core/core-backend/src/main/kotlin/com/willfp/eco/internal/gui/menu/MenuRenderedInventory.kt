@@ -30,6 +30,8 @@ class MenuRenderedInventory(
                 i++
             }
         }
+
+        menu.runOnRender(player)
     }
 
     private fun generateCaptive() {

@@ -2,6 +2,7 @@ package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +66,14 @@ public interface MenuBuilder {
      * @return The builder.
      */
     MenuBuilder onClose(@NotNull CloseHandler action);
+
+    /**
+     * Set the action to run on render.
+     *
+     * @param action The action.
+     * @return The builder.
+     */
+    MenuBuilder onRender(@NotNull Consumer<Player> action);
 
     /**
      * Build the menu.

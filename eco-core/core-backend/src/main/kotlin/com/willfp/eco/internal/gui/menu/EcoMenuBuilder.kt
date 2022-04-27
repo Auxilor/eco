@@ -11,6 +11,7 @@ import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.StringUtils
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.function.Consumer
 
@@ -19,6 +20,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     private var maskSlots: List<MutableList<Slot?>>
     private val slots: List<MutableList<Slot?>> = ListUtils.create2DList(rows, 9)
     private var onClose = CloseHandler { _, _ -> }
+    private var onRender: (Player) -> Unit = {}
 
     override fun setTitle(title: String): MenuBuilder {
         this.title = StringUtils.format(title)
@@ -51,6 +53,11 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
         return this
     }
 
+    override fun onRender(action: Consumer<Player>): MenuBuilder {
+        onRender = { action.accept(it) }
+        return this
+    }
+
     override fun build(): Menu {
         val tempSlots: MutableList<MutableList<Slot?>> = ArrayList(maskSlots)
 
@@ -75,7 +82,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
             finalSlots.add(tempRow)
         }
 
-        return EcoMenu(rows, finalSlots, title, onClose)
+        return EcoMenu(rows, finalSlots, title, onClose, onRender)
     }
 
     init {
