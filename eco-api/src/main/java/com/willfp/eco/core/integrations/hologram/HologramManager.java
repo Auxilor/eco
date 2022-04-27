@@ -14,14 +14,14 @@ public final class HologramManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<HologramWrapper> REGISTERED = new HashSet<>();
+    private static final Set<HologramIntegration> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
      *
      * @param integration The integration to register.
      */
-    public static void register(@NotNull final HologramWrapper integration) {
+    public static void register(@NotNull final HologramIntegration integration) {
         REGISTERED.add(integration);
     }
 
@@ -34,8 +34,8 @@ public final class HologramManager {
      */
     public static Hologram createHologram(@NotNull final Location location,
                                           @NotNull final List<String> contents) {
-        for (HologramWrapper wrapper : REGISTERED) {
-            return wrapper.createHologram(location, contents);
+        for (HologramIntegration Integration : REGISTERED) {
+            return Integration.createHologram(location, contents);
         }
 
         return new DummyHologram();

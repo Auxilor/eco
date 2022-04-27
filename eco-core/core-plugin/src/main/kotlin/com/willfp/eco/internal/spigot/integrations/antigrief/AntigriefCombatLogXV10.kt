@@ -4,14 +4,14 @@ import com.SirBlobman.combatlogx.api.ICombatLogX
 import com.SirBlobman.combatlogx.api.expansion.Expansion
 import com.SirBlobman.combatlogx.expansion.newbie.helper.NewbieHelper
 import com.SirBlobman.combatlogx.expansion.newbie.helper.listener.ListenerPVP
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class AntigriefCombatLogXV10 : AntigriefWrapper {
+class AntigriefCombatLogXV10 : AntigriefIntegration {
     private val instance: ICombatLogX = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX
     private var disabled = false
 
@@ -72,7 +72,7 @@ class AntigriefCombatLogXV10 : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

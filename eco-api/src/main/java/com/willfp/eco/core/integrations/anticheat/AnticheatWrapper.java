@@ -1,24 +1,11 @@
 package com.willfp.eco.core.integrations.anticheat;
 
-import com.willfp.eco.core.integrations.Integration;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Wrapper class for anticheat integrations.
+ *
+ * @deprecated Use AnticheatIntegration instead.
  */
-public interface AnticheatWrapper extends Integration {
-    /**
-     * Exempt a player from checks.
-     *
-     * @param player The player to exempt.
-     */
-    void exempt(@NotNull Player player);
+@Deprecated(since = "6.35.0", forRemoval = true)
+public interface AnticheatWrapper extends AnticheatIntegration {
 
-    /**
-     * Unexempt a player from checks.
-     *
-     * @param player The player to unexempt.
-     */
-    void unexempt(@NotNull Player player);
 }

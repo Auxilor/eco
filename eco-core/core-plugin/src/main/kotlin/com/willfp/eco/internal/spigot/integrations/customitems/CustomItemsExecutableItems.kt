@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
 import com.ssomar.executableitems.api.ExecutableItemsAPI
-import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
+import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
@@ -10,7 +10,7 @@ import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 
-class CustomItemsExecutableItems : CustomItemsWrapper {
+class CustomItemsExecutableItems : CustomItemsIntegration {
     override fun registerProvider() {
         Items.registerItemProvider(ExecutableItemsProvider())
     }

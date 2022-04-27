@@ -13,14 +13,14 @@ public final class AFKManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<AFKWrapper> REGISTERED = new HashSet<>();
+    private static final Set<AFKIntegration> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
      *
      * @param integration The integration to register.
      */
-    public static void register(@NotNull final AFKWrapper integration) {
+    public static void register(@NotNull final AFKIntegration integration) {
         REGISTERED.add(integration);
     }
 
@@ -31,8 +31,8 @@ public final class AFKManager {
      * @return If afk.
      */
     public static boolean isAfk(@NotNull final Player player) {
-        for (AFKWrapper afkWrapper : REGISTERED) {
-            if (afkWrapper.isAfk(player)) {
+        for (AFKIntegration AFKIntegration : REGISTERED) {
+            if (AFKIntegration.isAfk(player)) {
                 return true;
             }
         }

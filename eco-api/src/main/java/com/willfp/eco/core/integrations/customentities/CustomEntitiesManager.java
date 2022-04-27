@@ -12,14 +12,14 @@ public final class CustomEntitiesManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<CustomEntitiesWrapper> REGISTERED = new HashSet<>();
+    private static final Set<CustomEntitiesIntegration> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
      *
      * @param integration The integration to register.
      */
-    public static void register(@NotNull final CustomEntitiesWrapper integration) {
+    public static void register(@NotNull final CustomEntitiesIntegration integration) {
         REGISTERED.add(integration);
     }
 
@@ -29,8 +29,8 @@ public final class CustomEntitiesManager {
      * @see com.willfp.eco.core.entities.Entities
      */
     public static void registerAllEntities() {
-        for (CustomEntitiesWrapper wrapper : REGISTERED) {
-            wrapper.registerAllEntities();
+        for (CustomEntitiesIntegration Integration : REGISTERED) {
+            Integration.registerAllEntities();
         }
     }
 

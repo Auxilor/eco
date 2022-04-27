@@ -2,13 +2,13 @@ package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.iridium.iridiumskyblock.PermissionType
 import com.iridium.iridiumskyblock.api.IridiumSkyblockAPI
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class AntigriefIridiumSkyblock : AntigriefWrapper {
+class AntigriefIridiumSkyblock : AntigriefIntegration {
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -58,7 +58,7 @@ class AntigriefIridiumSkyblock : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

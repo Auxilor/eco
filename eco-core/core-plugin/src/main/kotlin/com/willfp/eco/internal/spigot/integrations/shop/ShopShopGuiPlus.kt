@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.shop
 
+import com.willfp.eco.core.integrations.shop.ShopIntegration
 import com.willfp.eco.core.integrations.shop.ShopSellEvent
-import com.willfp.eco.core.integrations.shop.ShopWrapper
 import com.willfp.eco.core.items.Items
 import net.brcdev.shopgui.ShopGuiPlusApi
 import net.brcdev.shopgui.event.ShopPreTransactionEvent
@@ -13,7 +13,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
-class ShopShopGuiPlus : ShopWrapper {
+class ShopShopGuiPlus : ShopIntegration {
     override fun registerEcoProvider() {
         ShopGuiPlusApi.registerItemProvider(EcoShopGuiPlusProvider())
     }

@@ -16,14 +16,14 @@ public final class AntigriefManager {
     /**
      * Registered antigriefs.
      */
-    private static final Set<AntigriefWrapper> REGISTERED = new HashSet<>();
+    private static final Set<AntigriefIntegration> REGISTERED = new HashSet<>();
 
     /**
      * Register a new AntiGrief/Land Management integration.
      *
      * @param antigrief The integration to register.
      */
-    public static void register(@NotNull final AntigriefWrapper antigrief) {
+    public static void register(@NotNull final AntigriefIntegration antigrief) {
         REGISTERED.add(antigrief);
     }
 
@@ -32,7 +32,7 @@ public final class AntigriefManager {
      *
      * @param antigrief The integration to unregister.
      */
-    public static void unregister(@NotNull final AntigriefWrapper antigrief) {
+    public static void unregister(@NotNull final AntigriefIntegration antigrief) {
         REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
         REGISTERED.remove(antigrief);
     }
@@ -46,7 +46,7 @@ public final class AntigriefManager {
      */
     public static boolean canPickupItem(@NotNull final Player player,
                                         @NotNull final Location location) {
-        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPickupItem(player, location));
+        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canPickupItem(player, location));
     }
 
     /**
@@ -58,7 +58,7 @@ public final class AntigriefManager {
      */
     public static boolean canBreakBlock(@NotNull final Player player,
                                         @NotNull final Block block) {
-        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canBreakBlock(player, block));
+        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canBreakBlock(player, block));
     }
 
     /**
@@ -70,7 +70,7 @@ public final class AntigriefManager {
      */
     public static boolean canCreateExplosion(@NotNull final Player player,
                                              @NotNull final Location location) {
-        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canCreateExplosion(player, location));
+        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canCreateExplosion(player, location));
     }
 
     /**
@@ -82,7 +82,7 @@ public final class AntigriefManager {
      */
     public static boolean canPlaceBlock(@NotNull final Player player,
                                         @NotNull final Block block) {
-        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canPlaceBlock(player, block));
+        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canPlaceBlock(player, block));
     }
 
     /**
@@ -94,7 +94,7 @@ public final class AntigriefManager {
      */
     public static boolean canInjure(@NotNull final Player player,
                                     @NotNull final LivingEntity victim) {
-        return REGISTERED.stream().allMatch(antigriefWrapper -> antigriefWrapper.canInjure(player, victim));
+        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canInjure(player, victim));
     }
 
     private AntigriefManager() {

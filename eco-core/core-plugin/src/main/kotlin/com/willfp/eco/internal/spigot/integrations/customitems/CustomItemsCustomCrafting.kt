@@ -2,7 +2,7 @@
 
 package com.willfp.eco.internal.spigot.integrations.customitems
 
-import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
+import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
@@ -13,7 +13,7 @@ import me.wolfyscript.utilities.util.Registry
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
 
-class CustomItemsCustomCrafting : CustomItemsWrapper {
+class CustomItemsCustomCrafting : CustomItemsIntegration {
     override fun registerProvider() {
         Items.registerItemProvider(CustomCraftingProvider())
     }

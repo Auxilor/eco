@@ -5,14 +5,14 @@ import com.bgsoftware.superiorskyblock.api.enums.HitActionResult
 import com.bgsoftware.superiorskyblock.api.island.Island
 import com.bgsoftware.superiorskyblock.api.island.IslandPrivilege
 import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 
-class AntigriefSuperiorSkyblock2 : AntigriefWrapper {
+class AntigriefSuperiorSkyblock2 : AntigriefIntegration {
     override fun getPluginName(): String {
         return "SuperiorSkyblock2"
     }

@@ -6,13 +6,13 @@ import com.massivecraft.factions.FPlayer
 import com.massivecraft.factions.FPlayers
 import com.massivecraft.factions.Faction
 import com.massivecraft.factions.perms.PermissibleAction
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class AntigriefFactionsUUID : AntigriefWrapper {
+class AntigriefFactionsUUID : AntigriefIntegration {
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -74,7 +74,7 @@ class AntigriefFactionsUUID : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

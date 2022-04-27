@@ -7,7 +7,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin
 import com.sk89q.worldguard.protection.flags.Flags
 import com.sk89q.worldguard.protection.regions.RegionContainer
 import com.sk89q.worldguard.protection.regions.RegionQuery
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.apache.commons.lang.Validate
 import org.bukkit.Location
 import org.bukkit.block.Block
@@ -16,7 +16,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 
-class AntigriefWorldGuard : AntigriefWrapper {
+class AntigriefWorldGuard : AntigriefIntegration {
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -117,7 +117,7 @@ class AntigriefWorldGuard : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

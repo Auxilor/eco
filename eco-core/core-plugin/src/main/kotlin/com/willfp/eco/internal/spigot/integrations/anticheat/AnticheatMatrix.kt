@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.anticheat
 
-import com.willfp.eco.core.integrations.anticheat.AnticheatWrapper
+import com.willfp.eco.core.integrations.anticheat.AnticheatIntegration
 import me.rerere.matrix.api.events.PlayerViolationEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -8,7 +8,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import java.util.UUID
 
-class AnticheatMatrix : AnticheatWrapper, Listener {
+class AnticheatMatrix : AnticheatIntegration, Listener {
     private val exempt: MutableSet<UUID> = HashSet()
     override fun getPluginName(): String {
         return "Matrix"

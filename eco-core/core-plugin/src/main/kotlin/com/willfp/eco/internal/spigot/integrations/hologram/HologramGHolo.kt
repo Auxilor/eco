@@ -1,13 +1,13 @@
 package com.willfp.eco.internal.spigot.integrations.hologram
 
 import com.willfp.eco.core.integrations.hologram.Hologram
-import com.willfp.eco.core.integrations.hologram.HologramWrapper
+import com.willfp.eco.core.integrations.hologram.HologramIntegration
 import me.gholo.api.GHoloAPI
 import org.bukkit.Location
 import java.util.UUID
 
 @Suppress("DEPRECATION")
-class HologramGHolo : HologramWrapper {
+class HologramGHolo : HologramIntegration {
     companion object {
         private val api = GHoloAPI()
     }

@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
-import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
+import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
@@ -8,7 +8,7 @@ import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
 import io.th0rgal.oraxen.items.OraxenItems
 
-class CustomItemsOraxen : CustomItemsWrapper {
+class CustomItemsOraxen : CustomItemsIntegration {
     override fun registerProvider() {
         Items.registerItemProvider(OraxenProvider())
     }

@@ -3,12 +3,12 @@ package com.willfp.eco.internal.spigot.integrations.hologram
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.hologram.Hologram
-import com.willfp.eco.core.integrations.hologram.HologramWrapper
+import com.willfp.eco.core.integrations.hologram.HologramIntegration
 import org.bukkit.Location
 
 class HologramHolographicDisplays(
     private val plugin: EcoPlugin
-) : HologramWrapper {
+) : HologramIntegration {
 
     override fun createHologram(location: Location, contents: MutableList<String>): Hologram {
         val hologram = HologramImplHolographicDisplays(

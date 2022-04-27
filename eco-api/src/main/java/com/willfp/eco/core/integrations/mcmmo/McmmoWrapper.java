@@ -1,27 +1,11 @@
 package com.willfp.eco.core.integrations.mcmmo;
 
-import com.willfp.eco.core.integrations.Integration;
-import org.bukkit.block.Block;
-import org.bukkit.event.Event;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Wrapper class for mcmmo integrations.
+ *
+ * @deprecated Use McmmoIntegration instead.
  */
-public interface McmmoWrapper extends Integration {
-    /**
-     * Get bonus drop count of block.
-     *
-     * @param block The block.
-     * @return The drop multiplier.
-     */
-    int getBonusDropCount(@NotNull Block block);
+@Deprecated(since = "6.35.0", forRemoval = true)
+public interface McmmoWrapper extends McmmoIntegration {
 
-    /**
-     * Get if event is fake.
-     *
-     * @param event The event.
-     * @return If is fake.
-     */
-    boolean isFake(@NotNull Event event);
 }

@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import me.ryanhamshire.GriefPrevention.Claim
 import me.ryanhamshire.GriefPrevention.GriefPrevention
 import org.bukkit.Location
@@ -8,7 +8,7 @@ import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class AntigriefGriefPrevention : AntigriefWrapper {
+class AntigriefGriefPrevention : AntigriefIntegration {
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -60,7 +60,7 @@ class AntigriefGriefPrevention : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

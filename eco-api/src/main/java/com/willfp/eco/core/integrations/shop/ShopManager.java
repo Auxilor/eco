@@ -15,14 +15,14 @@ public final class ShopManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<ShopWrapper> REGISTERED = new HashSet<>();
+    private static final Set<ShopIntegration> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
      *
      * @param integration The integration to register.
      */
-    public static void register(@NotNull final ShopWrapper integration) {
+    public static void register(@NotNull final ShopIntegration integration) {
         REGISTERED.add(integration);
     }
 
@@ -33,8 +33,8 @@ public final class ShopManager {
      */
     @ApiStatus.Internal
     public static void registerEvents(@NotNull final EcoPlugin plugin) {
-        for (ShopWrapper wrapper : REGISTERED) {
-            Listener listener = wrapper.getSellEventAdapter();
+        for (ShopIntegration Integration : REGISTERED) {
+            Listener listener = Integration.getSellEventAdapter();
 
             if (listener != null) {
                 plugin.getEventManager().registerListener(listener);
@@ -46,8 +46,8 @@ public final class ShopManager {
      * Register eco item provider for shop plugins.
      */
     public static void registerEcoProvider() {
-        for (ShopWrapper shopWrapper : REGISTERED) {
-            shopWrapper.registerEcoProvider();
+        for (ShopIntegration shopIntegration : REGISTERED) {
+            shopIntegration.registerEcoProvider();
         }
     }
 

@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.github.sirblobman.combatlogx.api.ICombatLogX
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import combatlogx.expansion.newbie.helper.NewbieHelperExpansion
 import combatlogx.expansion.newbie.helper.manager.PVPManager
 import combatlogx.expansion.newbie.helper.manager.ProtectionManager
@@ -11,7 +11,7 @@ import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class AntigriefCombatLogXV11 : AntigriefWrapper {
+class AntigriefCombatLogXV11 : AntigriefIntegration {
     private val instance: ICombatLogX = Bukkit.getPluginManager().getPlugin("CombatLogX") as ICombatLogX
     private var disabled = false
 
@@ -74,7 +74,7 @@ class AntigriefCombatLogXV11 : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

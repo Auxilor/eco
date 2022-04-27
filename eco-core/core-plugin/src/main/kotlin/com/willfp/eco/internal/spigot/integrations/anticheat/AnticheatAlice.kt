@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.anticheat
 
-import com.willfp.eco.core.integrations.anticheat.AnticheatWrapper
+import com.willfp.eco.core.integrations.anticheat.AnticheatIntegration
 import me.nik.alice.api.events.AliceViolationEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -8,7 +8,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import java.util.UUID
 
-class AnticheatAlice : AnticheatWrapper, Listener {
+class AnticheatAlice : AnticheatIntegration, Listener {
     private val exempt: MutableSet<UUID> = HashSet()
 
     override fun getPluginName(): String {

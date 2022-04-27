@@ -12,14 +12,14 @@ public final class CustomItemsManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<CustomItemsWrapper> REGISTERED = new HashSet<>();
+    private static final Set<CustomItemsIntegration> REGISTERED = new HashSet<>();
 
     /**
      * Register a new integration.
      *
      * @param integration The integration to register.
      */
-    public static void register(@NotNull final CustomItemsWrapper integration) {
+    public static void register(@NotNull final CustomItemsIntegration integration) {
         REGISTERED.add(integration);
     }
 
@@ -29,8 +29,8 @@ public final class CustomItemsManager {
      * @see com.willfp.eco.core.items.Items
      */
     public static void registerAllItems() {
-        for (CustomItemsWrapper customItemsWrapper : REGISTERED) {
-            customItemsWrapper.registerAllItems();
+        for (CustomItemsIntegration customItemsIntegration : REGISTERED) {
+            customItemsIntegration.registerAllItems();
         }
     }
 
@@ -40,8 +40,8 @@ public final class CustomItemsManager {
      * @see com.willfp.eco.core.items.Items
      */
     public static void registerProviders() {
-        for (CustomItemsWrapper customItemsWrapper : REGISTERED) {
-            customItemsWrapper.registerProvider();
+        for (CustomItemsIntegration customItemsIntegration : REGISTERED) {
+            customItemsIntegration.registerProvider();
         }
     }
 

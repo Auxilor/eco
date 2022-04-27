@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.integrations.customitems.CustomItemsWrapper
+import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import io.lumine.mythic.api.config.MythicLineConfig
@@ -17,7 +17,7 @@ import org.bukkit.event.Listener
 
 class CustomItemsMythicMobs(
     private val plugin: EcoPlugin
-) : CustomItemsWrapper, Listener {
+) : CustomItemsIntegration, Listener {
     init {
         plugin.eventManager.registerListener(this)
     }

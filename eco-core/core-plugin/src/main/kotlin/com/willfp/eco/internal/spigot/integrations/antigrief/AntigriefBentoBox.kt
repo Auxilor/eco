@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
-import com.willfp.eco.core.integrations.antigrief.AntigriefWrapper
+import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Block
@@ -11,7 +11,7 @@ import world.bentobox.bentobox.BentoBox
 import world.bentobox.bentobox.api.user.User
 import world.bentobox.bentobox.lists.Flags
 
-class AntigriefBentoBox : AntigriefWrapper {
+class AntigriefBentoBox : AntigriefIntegration {
     override fun canBreakBlock(
         player: Player,
         block: Block
@@ -67,7 +67,7 @@ class AntigriefBentoBox : AntigriefWrapper {
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other !is AntigriefWrapper) {
+        if (other !is AntigriefIntegration) {
             return false
         }
 

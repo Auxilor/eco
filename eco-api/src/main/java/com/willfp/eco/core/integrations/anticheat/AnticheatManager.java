@@ -15,7 +15,7 @@ public final class AnticheatManager {
     /**
      * A set of all registered anticheats.
      */
-    private static final Set<AnticheatWrapper> ANTICHEATS = new HashSet<>();
+    private static final Set<AnticheatIntegration> ANTICHEATS = new HashSet<>();
 
     /**
      * Register a new anticheat.
@@ -24,7 +24,7 @@ public final class AnticheatManager {
      * @param anticheat The anticheat to register.
      */
     public static void register(@NotNull final EcoPlugin plugin,
-                                @NotNull final AnticheatWrapper anticheat) {
+                                @NotNull final AnticheatIntegration anticheat) {
         if (anticheat instanceof Listener) {
             plugin.getEventManager().registerListener((Listener) anticheat);
         }
