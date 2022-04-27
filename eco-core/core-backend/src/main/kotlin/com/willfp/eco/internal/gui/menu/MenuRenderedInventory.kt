@@ -12,14 +12,9 @@ class MenuRenderedInventory(
 ) {
     val captiveItems = mutableListOf<ItemStack>()
     val state = mutableMapOf<String, Any?>()
-    var isStateChanging = false
 
     fun render(fromStateChange: Boolean = false) {
         generateCaptive()
-
-        if (fromStateChange) {
-            isStateChanging = true
-        }
 
         var i = 0
         for (row in menu.slots) {
@@ -37,10 +32,6 @@ class MenuRenderedInventory(
         }
 
         menu.runOnRender(player)
-
-        if (fromStateChange) {
-            isStateChanging = false
-        }
     }
 
     private fun generateCaptive() {

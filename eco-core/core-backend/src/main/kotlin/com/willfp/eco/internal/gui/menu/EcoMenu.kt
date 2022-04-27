@@ -88,9 +88,6 @@ class EcoMenu(
     override fun addState(player: Player, key: String, value: Any?) {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
         inventory.state[key] = value
-        if (!inventory.isStateChanging) {
-            inventory.render(fromStateChange = true)
-        }
     }
 
     override fun getState(player: Player): Map<String, Any?> {
@@ -106,17 +103,11 @@ class EcoMenu(
     override fun removeState(player: Player, key: String) {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
         inventory.state.remove(key)
-        if (!inventory.isStateChanging) {
-            inventory.render(fromStateChange = true)
-        }
     }
 
     override fun clearState(player: Player) {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
         inventory.state.clear()
-        if (!inventory.isStateChanging) {
-            inventory.render(fromStateChange = true)
-        }
     }
 
     override fun refresh(player: Player) {
