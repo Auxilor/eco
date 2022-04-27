@@ -16,7 +16,6 @@ class ExtendedPersistentDataContainerFactory: ExtendedPersistentDataContainerFac
 
     override fun adapt(pdc: PersistentDataContainer): ExtendedPersistentDataContainer {
         return when (pdc) {
-            is ExtendedPersistentDataContainer -> pdc
             is CraftPersistentDataContainer -> EcoPersistentDataContainer(pdc)
             else -> throw IllegalArgumentException("Custom PDC instance is not supported!")
         }
@@ -28,14 +27,14 @@ class ExtendedPersistentDataContainerFactory: ExtendedPersistentDataContainerFac
 
     inner class EcoPersistentDataContainer(
         val handle: CraftPersistentDataContainer
-    ) : ExtendedPersistentDataContainer, PersistentDataContainer by handle {
+    ) : ExtendedPersistentDataContainer {
         @Suppress("UNCHECKED_CAST")
         private val customDataTags: MutableMap<String, Tag> =
             CraftPersistentDataContainer::class.java.getDeclaredField("customDataTags")
                 .apply { isAccessible = true }.get(handle) as MutableMap<String, Tag>
 
         override fun <T : Any, Z : Any> set(key: String, dataType: PersistentDataType<T, Z>, value: Z) {
-            customDataTags[key] = registry.wrap(dataType.primitiveType, dataType.toPrimitive(value, adapterContext))
+            customDataTags[key] = registry.wrap(dataType.primitiveType, dataType.toPrimitive(value, handle.adapterContext))
         }
 
         override fun <T : Any, Z : Any> has(key: String, dataType: PersistentDataType<T, Z>): Boolean {
@@ -45,7 +44,7 @@ class ExtendedPersistentDataContainerFactory: ExtendedPersistentDataContainerFac
 
         override fun <T : Any, Z : Any> get(key: String, dataType: PersistentDataType<T, Z>): Z? {
             val value = customDataTags[key] ?: return null
-            return dataType.fromPrimitive(registry.extract(dataType.primitiveType, value), adapterContext)
+            return dataType.fromPrimitive(registry.extract(dataType.primitiveType, value), handle.adapterContext)
         }
 
         override fun <T : Any, Z : Any> getOrDefault(

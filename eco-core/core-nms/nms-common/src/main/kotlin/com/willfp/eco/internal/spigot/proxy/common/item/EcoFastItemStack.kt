@@ -187,7 +187,7 @@ class EcoFastItemStack(
     }
 
     override fun getBaseTag(): ExtendedPersistentDataContainer =
-        ExtendedPersistentDataContainer.wrap((if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc(base = true))
+        ExtendedPersistentDataContainer.extend((if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc(base = true))
 
     override fun setBaseTag(container: PersistentDataContainer?) {
         (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).setPdc(container, item = handle)

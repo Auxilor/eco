@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Persistent data container wrapper that allows for full string (non-namespaced) keys.
  */
-public interface ExtendedPersistentDataContainer extends PersistentDataContainer {
+public interface ExtendedPersistentDataContainer {
     /**
      * Set a key.
      *
@@ -43,8 +43,7 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
      * @param <Z>      The type.
      * @return The value, or null if not found.
      */
-    @Nullable
-    <T, Z> Z get(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType);
+    @Nullable <T, Z> Z get(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType);
 
     /**
      * Get a value or default if not present.
@@ -56,8 +55,7 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
      * @param <Z>          The type.
      * @return The value, or the default if not found.
      */
-    @NotNull
-    <T, Z> Z getOrDefault(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType, @NotNull Z defaultValue);
+    @NotNull <T, Z> Z getOrDefault(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType, @NotNull Z defaultValue);
 
     /**
      * Get all keys, including namespaced keys.
@@ -83,14 +81,12 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
     PersistentDataContainer getBase();
 
     /**
-     * Convert regular persistent data container to extended persistent data container.
-     * <p>
-     * Only use this with FastItemStack, you're likely to create problems otherwise.
+     * Get extension for PersistentDataContainers to add non-namespaced keys.
      *
      * @param base The base container.
      * @return The extended container.
      */
-    static ExtendedPersistentDataContainer wrap(@NotNull PersistentDataContainer base) {
+    static ExtendedPersistentDataContainer extend(@NotNull PersistentDataContainer base) {
         return Eco.getHandler().adaptPdc(base);
     }
 
@@ -100,6 +96,6 @@ public interface ExtendedPersistentDataContainer extends PersistentDataContainer
      * @return The extended container.
      */
     static ExtendedPersistentDataContainer create() {
-        return wrap(Eco.getHandler().newPdc());
+        return extend(Eco.getHandler().newPdc());
     }
 }

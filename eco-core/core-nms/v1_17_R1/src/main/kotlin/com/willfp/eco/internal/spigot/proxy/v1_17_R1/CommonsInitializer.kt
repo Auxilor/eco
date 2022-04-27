@@ -110,7 +110,6 @@ class CommonsInitializer : CommonsInitializerProxy {
 
             val container = when (pdc) {
                 is CraftPersistentDataContainer? -> pdc
-                is ExtendedPersistentDataContainerFactory.EcoPersistentDataContainer? -> pdc?.handle
                 else -> null
             }
 
