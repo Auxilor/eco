@@ -23,26 +23,25 @@ public final class BlockUtils {
      */
     private static final int MAX_BLOCKS = 2500;
 
-    private static Set<Block> getNearbyBlocks(@NotNull final Block origin,
+    private static Set<Block> getNearbyBlocks(@NotNull final Block start,
                                               @NotNull final List<Material> allowedMaterials,
                                               @NotNull final Set<Block> blocks,
                                               final int limit) {
         for (BlockFace face : BlockFace.values()) {
-            Block block = origin.getRelative(face);
-
-            if (!allowedMaterials.contains(block.getType())) {
-                continue;
-            }
-
+            Block block = start.getRelative(face);
             if (blocks.contains(block)) {
                 continue;
             }
 
-            if (blocks.size() >= limit || blocks.size() > MAX_BLOCKS) {
-                return blocks;
-            }
+            if (allowedMaterials.contains(block.getType())) {
+                blocks.add(block);
 
-            blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
+                if (blocks.size() > limit || blocks.size() > MAX_BLOCKS) {
+                    return blocks;
+                }
+
+                blocks.addAll(getNearbyBlocks(block, allowedMaterials, blocks, limit));
+            }
         }
 
         return blocks;
