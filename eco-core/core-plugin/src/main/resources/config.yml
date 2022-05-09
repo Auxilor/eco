@@ -19,6 +19,11 @@ mysql:
   user: username
   password: passy
 
+# Options to manage the conflict finder
+conflicts:
+  whitelist: # Plugins that should never be marked as conflicts
+    - eco
+
 # Options to fix villager bugs left behind from old (buggy) versions.
 villager-display-fix: false
 

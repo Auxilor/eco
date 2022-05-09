@@ -192,7 +192,27 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     }
 
     override fun handleEnable() {
+        this.logger.info("Scanning for conflicts...")
+        val conflicts = ConflictFinder.searchForConflicts(this)
+        for (conflict in conflicts) {
+            this.logger.warning(conflict.conflictMessage)
+        }
+        if (conflicts.isNotEmpty()) {
+            this.logger.warning(
+                "You can fix the conflicts by either removing the conflicting plugins," +
+                        "or by asking on the support discord to have them patched!"
+            )
+            this.logger.warning(
+                "Only remove potentially conflicting plugins if you see" +
+                        "Loader Constraint Violation / LinkageError anywhere"
+            )
+        } else {
+            this.logger.info("No conflicts found!")
+        }
+
+
         CollatedRunnable(this)
+        CustomItemsManager.registerProviders() // Do it again here
 
         // Register events for ShopSellEvent
         ShopManager.registerEvents(this)
