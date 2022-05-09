@@ -376,12 +376,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             PlaceholderManager.addIntegration(Eco.getHandler().createPAPIIntegration(this));
         }
 
-        this.loadIntegrationLoaders().forEach((integrationLoader -> {
+        this.loadIntegrationLoaders().forEach(integrationLoader -> {
             if (enabledPlugins.contains(integrationLoader.getPluginName().toLowerCase())) {
                 this.loadedIntegrations.add(integrationLoader.getPluginName());
                 integrationLoader.load();
             }
-        }));
+        });
 
         this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
 
