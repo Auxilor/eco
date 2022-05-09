@@ -199,11 +199,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         }
         if (conflicts.isNotEmpty()) {
             this.logger.warning(
-                "You can fix the conflicts by either removing the conflicting plugins," +
+                "You can fix the conflicts by either removing the conflicting plugins, " +
                         "or by asking on the support discord to have them patched!"
             )
             this.logger.warning(
-                "Only remove potentially conflicting plugins if you see" +
+                "Only remove potentially conflicting plugins if you see " +
                         "Loader Constraint Violation / LinkageError anywhere"
             )
         } else {
