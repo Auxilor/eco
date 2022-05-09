@@ -222,7 +222,10 @@ public final class Items {
 
             if (part == null && PROVIDERS.containsKey(namespace)) {
                 ItemProvider provider = PROVIDERS.get(namespace);
-                item = provider.provideForKey(keyID);
+
+                val reformattedKey = keyID.replace("__", ":")
+
+                item = provider.provideForKey(reformattedKey);
                 if (item instanceof EmptyTestableItem || item == null) {
                     return new EmptyTestableItem();
                 }

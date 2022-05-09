@@ -21,9 +21,7 @@ class CustomItemsItemsAdder : CustomItemsIntegration {
 
     private class ItemsAdderProvider : ItemProvider("itemsadder") {
         override fun provideForKey(key: String): TestableItem? {
-            val internalId = if (key.contains("__")) {
-                key.split("__").joinToString(":")
-            } else "itemsadder:$key"
+            val internalId = if (key.contains(":")) key else "itemsadder:$key"
 
             val item = CustomStack.getInstance(internalId) ?: return null
             val id = item.id
