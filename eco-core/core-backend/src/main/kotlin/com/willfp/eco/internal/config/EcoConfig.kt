@@ -103,13 +103,11 @@ open class EcoConfig(
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
-        return (get(path) as? Config)?.apply { injectPlaceholders(*injections.toTypedArray()) }
+        return get(path) as? Config
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
-        return (get(path) as? Iterable<Config>)
-            ?.map { it.apply { injectPlaceholders(*injections.toTypedArray()) } }
-            ?.toList()
+        return (get(path) as? Iterable<Config>)?.toList()
     }
 
     override fun getType(): ConfigType {
