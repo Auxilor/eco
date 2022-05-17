@@ -20,6 +20,10 @@ class Skull : SkullProxy {
             setProfile = meta.javaClass.getDeclaredMethod("setProfile", GameProfile::class.java)
             setProfile.isAccessible = true
         }
+        if (base64.length < 20) {
+            return
+        }
+
         val uuid = UUID(
             base64.substring(base64.length - 20).hashCode().toLong(),
             base64.substring(base64.length - 10).hashCode().toLong()
@@ -39,6 +43,6 @@ class Skull : SkullProxy {
         val profile = profile[meta] as GameProfile? ?: return null
         val properties = profile.properties ?: return null
         val prop = properties["textures"] ?: return null
-        return prop.toMutableList().firstOrNull()?.value
+        return prop.toMutableList().firstOrNull()?.name
     }
 }

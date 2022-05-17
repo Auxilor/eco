@@ -26,7 +26,7 @@ public class Prerequisite {
      * Requires the server to be running an implementation of paper.
      */
     public static final Prerequisite HAS_PAPER = new Prerequisite(
-            () -> ClassUtils.exists("com.destroystokyo.paper.event.player.PlayerElytraBoostEvent"),
+            () -> ClassUtils.exists("com.destroystokyo.paper.event.block.BeaconEffectEvent"),
             "Requires server to be running paper (or a fork)"
     );
 
