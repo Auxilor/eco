@@ -26,6 +26,8 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 @Suppress("UsePropertyAccessSyntax")
 class EcoFastItemStack(
@@ -149,35 +151,25 @@ class EcoFastItemStack(
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
     override fun addItemFlags(vararg hideFlags: ItemFlag) {
-        for (flag in hideFlags) {
-            this.flagBits = this.flagBits or getBitModifier(flag)
+        for (f in hideFlags) {
+            this.flagBits = this.flagBits or getBitModifier(f)
         }
-
-        apply()
     }
 
     override fun removeItemFlags(vararg hideFlags: ItemFlag) {
-        for (flag in hideFlags) {
-            this.flagBits = this.flagBits and getBitModifier(flag)
+        for (f in hideFlags) {
+            this.flagBits = this.flagBits and getBitModifier(f).inv()
         }
-
-        apply()
     }
 
-    override fun getItemFlags(): MutableSet<ItemFlag> {
-        val flags = mutableSetOf<ItemFlag>()
-
-        var flagArr: Array<ItemFlag>
-        val size = ItemFlag.values().also { flagArr = it }.size
-
-        for (i in 0 until size) {
-            val flag = flagArr[i]
-            if (this.hasItemFlag(flag)) {
-                flags.add(flag)
+    override fun getItemFlags(): Set<ItemFlag> {
+        val currentFlags = mutableSetOf<ItemFlag>()
+        for (f in ItemFlag.values()) {
+            if (hasItemFlag(f)) {
+                currentFlags.add(f)
             }
         }
-
-        return flags
+        return currentFlags
     }
 
     override fun hasItemFlag(flag: ItemFlag): Boolean {
@@ -194,15 +186,15 @@ class EcoFastItemStack(
     }
 
     @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
-    private var flagBits: Int
+    private var flagBits: Byte
         get() =
             if (handle.hasTag() && handle.getTag()!!.contains(
                     "HideFlags",
                     99
                 )
-            ) handle.getTag()!!.getInt("HideFlags") else 0
+            ) handle.getTag()!!.getByte("HideFlags") else 0
         set(value) =
-            handle.getOrCreateTag().putInt("HideFlags", value)
+            handle.getOrCreateTag().putByte("HideFlags", value)
 
     override fun getRepairCost(): Int {
         return handle.getBaseRepairCost()
@@ -268,8 +260,8 @@ class EcoFastItemStack(
         bukkit.mergeIfNeeded(handle)
     }
 
-    private fun getBitModifier(hideFlag: ItemFlag): Int {
-        return 1 shl hideFlag.ordinal
+    private fun getBitModifier(hideFlag: ItemFlag): Byte {
+        return (1 shl hideFlag.ordinal).toByte()
     }
 
     override fun unwrap(): org.bukkit.inventory.ItemStack {
