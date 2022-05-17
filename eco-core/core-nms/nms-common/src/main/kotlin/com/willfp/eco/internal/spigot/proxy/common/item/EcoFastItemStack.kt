@@ -154,12 +154,16 @@ class EcoFastItemStack(
         for (f in hideFlags) {
             this.flagBits = this.flagBits or getBitModifier(f)
         }
+
+        apply()
     }
 
     override fun removeItemFlags(vararg hideFlags: ItemFlag) {
         for (f in hideFlags) {
             this.flagBits = this.flagBits and getBitModifier(f).inv()
         }
+
+        apply()
     }
 
     override fun getItemFlags(): Set<ItemFlag> {
