@@ -43,6 +43,7 @@ public final class StringUtils {
             .add(Pattern.compile("<G#([0-9A-Fa-f]{6})>(.*?)</G#([0-9A-Fa-f]{6})>", Pattern.CASE_INSENSITIVE))
             .add(Pattern.compile("<#:([0-9A-Fa-f]{6})>(.*?)</#:([0-9A-Fa-f]{6})>"))
             .add(Pattern.compile("\\{#:([0-9A-Fa-f]{6})}(.*?)\\{/#:([0-9A-Fa-f]{6})}"))
+            .add(Pattern.compile("\\{#([0-9A-Fa-f]{6})>}(.*?)\\{#([0-9A-Fa-f]{6})<}"))
             .build();
 
     /**
