@@ -63,7 +63,8 @@ import com.willfp.eco.internal.spigot.display.PacketWindowItems
 import com.willfp.eco.internal.spigot.display.frame.clearFrames
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
-import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListeners
+import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
+import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
@@ -191,7 +192,27 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     }
 
     override fun handleEnable() {
+        this.logger.info("Scanning for conflicts...")
+        val conflicts = ConflictFinder.searchForConflicts(this)
+        for (conflict in conflicts) {
+            this.logger.warning(conflict.conflictMessage)
+        }
+        if (conflicts.isNotEmpty()) {
+            this.logger.warning(
+                "You can fix the conflicts by either removing the conflicting plugins, " +
+                        "or by asking on the support discord to have them patched!"
+            )
+            this.logger.warning(
+                "Only remove potentially conflicting plugins if you see " +
+                        "Loader Constraint Violation / LinkageError anywhere"
+            )
+        } else {
+            this.logger.info("No conflicts found!")
+        }
+
+
         CollatedRunnable(this)
+        CustomItemsManager.registerProviders() // Do it again here
 
         // Register events for ShopSellEvent
         ShopManager.registerEvents(this)
@@ -329,7 +350,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
-            NaturalExpGainListeners(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
             CraftingRecipeListener(),
@@ -343,8 +363,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         if (Prerequisite.HAS_PAPER.isMet) {
             listeners.add(PlayerJumpListenersPaper())
+            listeners.add(NaturalExpGainListenersPaper())
         } else {
             listeners.add(PlayerJumpListenersSpigot())
+            listeners.add(NaturalExpGainListenersSpigot())
         }
 
         return listeners

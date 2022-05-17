@@ -1,11 +1,28 @@
 package com.willfp.eco.internal.spigot.eventlisteners
 
+import com.willfp.eco.core.events.NaturalExpGainEvent
+import org.bukkit.Bukkit
+import org.bukkit.entity.ThrownExpBottle
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.ExpBottleEvent
 import org.bukkit.event.player.PlayerExpChangeEvent
 
-class NaturalExpGainListeners : Listener {
+class NaturalExpGainListenersPaper : Listener {
+    @EventHandler
+    fun onEvent(event: PlayerExpChangeEvent) {
+        val source = event.source
+
+        if (source is ThrownExpBottle) {
+            return
+        }
+
+        val ecoEvent = NaturalExpGainEvent(event)
+        Bukkit.getPluginManager().callEvent(ecoEvent)
+    }
+}
+
+class NaturalExpGainListenersSpigot : Listener {
     private val events: MutableSet<NaturalExpGainBuilder> = HashSet()
 
     @EventHandler

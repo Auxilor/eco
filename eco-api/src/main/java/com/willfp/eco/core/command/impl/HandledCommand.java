@@ -167,7 +167,10 @@ abstract class HandledCommand implements CommandBase {
 
             StringUtil.copyPartialMatches(
                     args[0],
-                    this.getSubcommands().stream().map(CommandBase::getName).collect(Collectors.toList()),
+                    this.getSubcommands().stream()
+                            .filter(subCommand -> sender.hasPermission(subCommand.getPermission()))
+                            .map(CommandBase::getName)
+                            .collect(Collectors.toList()),
                     completions
             );
 
@@ -182,6 +185,10 @@ abstract class HandledCommand implements CommandBase {
             HandledCommand command = null;
 
             for (CommandBase subcommand : this.getSubcommands()) {
+                if (!sender.hasPermission(subcommand.getPermission())) {
+                    continue;
+                }
+
                 if (args[0].equalsIgnoreCase(subcommand.getName())) {
                     command = (HandledCommand) subcommand;
                 }
