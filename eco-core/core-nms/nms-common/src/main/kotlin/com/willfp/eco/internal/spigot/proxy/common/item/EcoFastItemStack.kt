@@ -192,9 +192,9 @@ class EcoFastItemStack(
                     "HideFlags",
                     99
                 )
-            ) handle.getTag()!!.getByte("HideFlags") else 0
+            ) handle.getTag()!!.getInt("HideFlags").toByte() else 0
         set(value) =
-            handle.getOrCreateTag().putByte("HideFlags", value)
+            handle.getOrCreateTag().putInt("HideFlags", value.toInt())
 
     override fun getRepairCost(): Int {
         return handle.getBaseRepairCost()
