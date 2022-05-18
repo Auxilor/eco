@@ -3,6 +3,7 @@ package com.willfp.eco.internal.config
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
+import com.willfp.eco.core.placeholder.StaticPlaceholder
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.concurrent.ConcurrentHashMap
@@ -137,7 +138,12 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): String? {
-        val string = get(path)?.toString() ?: return null
+        var string = get(path)?.toString() ?: return null
+        for (injection in placeholderInjections) {
+            if (injection is StaticPlaceholder) {
+                string = string.replace("%${injection.identifier}%", injection.value)
+            }
+        }
         return if (format) StringUtils.format(string, option) else string
     }
 
@@ -146,7 +152,18 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): List<String>? {
-        val strings = (get(path) as? Iterable<*>)?.map { it.toString() } ?: return null
+        val strings = (get(path) as? Iterable<*>)?.map { it.toString() }?.toMutableList() ?: return null
+        if (placeholderInjections.isNotEmpty()) {
+            strings.replaceAll {
+                var string = it
+                for (injection in placeholderInjections) {
+                    if (injection is StaticPlaceholder) {
+                        string = string.replace("%${injection.identifier}%", injection.value)
+                    }
+                }
+                string
+            }
+        }
         return if (format) StringUtils.formatList(strings, option) else strings
     }
 
