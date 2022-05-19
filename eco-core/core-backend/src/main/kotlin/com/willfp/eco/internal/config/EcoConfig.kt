@@ -139,9 +139,11 @@ open class EcoConfig(
         option: StringUtils.FormatOption
     ): String? {
         var string = get(path)?.toString() ?: return null
-        for (injection in placeholderInjections) {
-            if (injection is StaticPlaceholder) {
-                string = string.replace("%${injection.identifier}%", injection.value)
+        if (format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
+            for (injection in placeholderInjections) {
+                if (injection is StaticPlaceholder) {
+                    string = string.replace("%${injection.identifier}%", injection.value)
+                }
             }
         }
         return if (format) StringUtils.format(string, option) else string
@@ -153,7 +155,7 @@ open class EcoConfig(
         option: StringUtils.FormatOption
     ): List<String>? {
         val strings = (get(path) as? Iterable<*>)?.map { it.toString() }?.toMutableList() ?: return null
-        if (placeholderInjections.isNotEmpty()) {
+        if (placeholderInjections.isNotEmpty() && format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
             strings.replaceAll {
                 var string = it
                 for (injection in placeholderInjections) {
