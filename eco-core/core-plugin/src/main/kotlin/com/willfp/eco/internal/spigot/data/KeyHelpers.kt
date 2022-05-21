@@ -21,6 +21,11 @@ object KeyHelpers {
                 type as PersistentDataKeyType<String>,
                 if (split.size >= 3) split.toList().subList(2, split.size).joinToString("") else ""
             )
+            PersistentDataKeyType.LONG_STRING -> PersistentDataKey(
+                key,
+                type as PersistentDataKeyType<String>,
+                if (split.size >= 3) split.toList().subList(2, split.size).joinToString("") else ""
+            )
             PersistentDataKeyType.INT -> PersistentDataKey(
                 key,
                 type as PersistentDataKeyType<Int>,

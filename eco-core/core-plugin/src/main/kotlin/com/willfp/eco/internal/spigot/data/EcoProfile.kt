@@ -14,6 +14,10 @@ abstract class EcoProfile(
     private val handler: DataHandler
 ) : Profile {
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
+        if (!key.type.isValid(value)) {
+            throw IllegalArgumentException("Invalid value provided for type ${key.type.name()}")
+        }
+
         this.data[key] = value
 
         val changedKeys = CHANGE_MAP[uuid] ?: mutableSetOf()

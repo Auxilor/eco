@@ -23,6 +23,7 @@ import org.jetbrains.exposed.sql.DoubleColumnType
 import org.jetbrains.exposed.sql.IntegerColumnType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.TextColumnType
 import org.jetbrains.exposed.sql.VarCharColumnType
 import org.jetbrains.exposed.sql.exposedLogger
 import org.jetbrains.exposed.sql.insert
@@ -288,6 +289,8 @@ private class ImplementedMySQLHandler(
                 PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(key.key.toString(), BooleanColumnType())
                     .default(key.defaultValue as Boolean)
                 PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(512))
+                    .default(key.defaultValue as String)
+                PersistentDataKeyType.LONG_STRING -> registerColumn<String>(key.key.toString(), TextColumnType())
                     .default(key.defaultValue as String)
 
                 else -> throw NullPointerException("Null value found!")
