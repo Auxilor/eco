@@ -43,7 +43,6 @@ class YamlDataHandler(
             PersistentDataKeyType.INT -> dataYml.getIntOrNull("player.$uuid.${key.key}")
             PersistentDataKeyType.DOUBLE -> dataYml.getDoubleOrNull("player.$uuid.${key.key}")
             PersistentDataKeyType.STRING -> dataYml.getStringOrNull("player.$uuid.${key.key}")
-            PersistentDataKeyType.LONG_STRING -> dataYml.getStringOrNull("player.$uuid.${key.key}")
             PersistentDataKeyType.BOOLEAN -> dataYml.getBoolOrNull("player.$uuid.${key.key}")
             else -> null
         } as? T?

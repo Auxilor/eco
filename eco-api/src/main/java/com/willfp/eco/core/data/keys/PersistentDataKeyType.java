@@ -6,7 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * All storable data key types.
@@ -20,14 +19,9 @@ public final class PersistentDataKeyType<T> {
     private static final List<PersistentDataKeyType<?>> VALUES = new ArrayList<>();
 
     /**
-     * String (Under 512 characters).
+     * String.
      */
-    public static final PersistentDataKeyType<String> STRING = new PersistentDataKeyType<>(String.class, "STRING", it -> it.length() < 512);
-
-    /**
-     * Long String.
-     */
-    public static final PersistentDataKeyType<String> LONG_STRING = new PersistentDataKeyType<>(String.class, "LONG_STRING");
+    public static final PersistentDataKeyType<String> STRING = new PersistentDataKeyType<>(String.class, "STRING");
 
     /**
      * Boolean.
@@ -55,11 +49,6 @@ public final class PersistentDataKeyType<T> {
     private final String name;
 
     /**
-     * The data validator.
-     */
-    private final Predicate<T> validator;
-
-    /**
      * Get the class of the type.
      *
      * @return The class.
@@ -85,34 +74,10 @@ public final class PersistentDataKeyType<T> {
      */
     private PersistentDataKeyType(@NotNull final Class<T> typeClass,
                                   @NotNull final String name) {
-        this(typeClass, name, it -> true);
-    }
-
-    /**
-     * Create new PersistentDataKeyType.
-     *
-     * @param typeClass The type class.
-     * @param name      The name.
-     * @param validator The validator.
-     */
-    private PersistentDataKeyType(@NotNull final Class<T> typeClass,
-                                  @NotNull final String name,
-                                  @NotNull final Predicate<T> validator) {
         VALUES.add(this);
 
         this.typeClass = typeClass;
         this.name = name;
-        this.validator = validator;
-    }
-
-    /**
-     * Test if the value is valid for this column.
-     *
-     * @param value The value.
-     * @return If valid.
-     */
-    public boolean isValid(@NotNull final T value) {
-        return validator.test(value);
     }
 
     @Override

@@ -24,7 +24,7 @@ class EcoKeyRegistry : KeyRegistry {
         return registry.values.toMutableSet()
     }
 
-    private fun <T> validateKey(key: PersistentDataKey<T>) where T : Any {
+    private fun <T> validateKey(key: PersistentDataKey<T>) {
         when (key.type) {
             PersistentDataKeyType.INT -> if (key.defaultValue !is Int) {
                 throw IllegalArgumentException("Invalid Data Type! Should be Int")
@@ -38,17 +38,9 @@ class EcoKeyRegistry : KeyRegistry {
             PersistentDataKeyType.STRING -> if (key.defaultValue !is String) {
                 throw IllegalArgumentException("Invalid Data Type! Should be String")
             }
-            PersistentDataKeyType.LONG_STRING -> if (key.defaultValue !is String) {
-                throw IllegalArgumentException("Invalid Data Type! Should be String")
-            }
 
             else -> throw NullPointerException("Null value found!")
         }
-
-        if (!key.type.isValid(key.defaultValue as T)) {
-            throw IllegalArgumentException("Invalid default value! Does not match test.")
-        }
-
     }
 
     override fun markKeyAs(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
