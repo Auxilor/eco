@@ -7,6 +7,8 @@ import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.storage.DataHandler
+import com.willfp.eco.internal.spigot.data.storage.HandlerType
+import com.willfp.eco.internal.spigot.data.storage.MongoDataHandler
 import com.willfp.eco.internal.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.internal.spigot.data.storage.YamlDataHandler
 import java.util.UUID
@@ -14,12 +16,16 @@ import java.util.UUID
 val serverProfileUUID = UUID(0, 0)
 
 class EcoProfileHandler(
-    useSql: Boolean,
+    type: HandlerType,
     plugin: EcoSpigotPlugin
 ) : ProfileHandler {
     private val loaded = mutableMapOf<UUID, Profile>()
-    val handler: DataHandler = if (useSql) MySQLDataHandler(plugin, this) else
-        YamlDataHandler(plugin, this)
+
+    val handler: DataHandler = when(type) {
+        HandlerType.YAML -> YamlDataHandler(plugin, this)
+        HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
+        HandlerType.MONGO -> MongoDataHandler(plugin)
+    }
 
     fun loadGenericProfile(uuid: UUID): Profile {
         val found = loaded[uuid]

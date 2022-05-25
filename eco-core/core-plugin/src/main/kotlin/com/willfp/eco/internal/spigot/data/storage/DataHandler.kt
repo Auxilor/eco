@@ -6,7 +6,10 @@ import org.bukkit.NamespacedKey
 import java.util.UUID
 
 interface DataHandler {
-    fun save()
+    fun save() {
+
+    }
+
     fun saveAll(uuids: Iterable<UUID>)
 
     fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {

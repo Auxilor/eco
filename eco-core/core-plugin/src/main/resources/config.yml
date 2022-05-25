@@ -3,8 +3,13 @@
 # by Auxilor
 #
 
+handler-type: yaml # Pick from yaml/mongo/mysql - MongoDB is recommended over MySQL for networks.
+
+mongodb:
+  # The full MongoDB connection URL.
+  url: ""
+
 mysql:
-  enabled: false # Set to false, data.yml will be used instead.
   # How many threads to execute statements on. Higher numbers can be faster however
   # very high numbers can cause issues with OS configuration. If writes are taking
   # too long, increase this value.

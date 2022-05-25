@@ -84,6 +84,7 @@ allprojects {
     dependencies {
         // Kotlin
         implementation(kotlin("stdlib", version = "1.6.21"))
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
