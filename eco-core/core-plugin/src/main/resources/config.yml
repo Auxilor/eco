@@ -3,7 +3,7 @@
 # by Auxilor
 #
 
-handler-type: yaml # Pick from yaml/mongo/mysql - MongoDB is recommended over MySQL for networks.
+data-handler: yaml # Pick from yaml/mongo/mysql - MongoDB is recommended over MySQL for networks.
 
 mongodb:
   # The full MongoDB connection URL.

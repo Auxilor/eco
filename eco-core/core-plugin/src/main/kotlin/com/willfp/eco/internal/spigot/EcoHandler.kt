@@ -58,7 +58,11 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     private var adventure: BukkitAudiences? = null
     private val keyRegistry = EcoKeyRegistry()
-    private val playerProfileHandler = EcoProfileHandler(HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()), this)
+    private val playerProfileHandler = EcoProfileHandler(
+        HandlerType.valueOf(
+            this.configYml.getString("data-handler").uppercase()
+        ), this
+    )
 
     @Suppress("RedundantNullableReturnType")
     private val keyFactory: InternalNamespacedKeyFactory? =

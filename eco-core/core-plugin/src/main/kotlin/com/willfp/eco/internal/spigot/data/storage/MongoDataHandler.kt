@@ -47,9 +47,9 @@ class MongoDataHandler(
 
         val newData = profile.data.apply {
             if (value == null) {
-                this.remove(key)
+                this.remove(key.toString())
             } else {
-                this[key] = value
+                this[key.toString()] = value
             }
         }
 
@@ -74,7 +74,7 @@ class MongoDataHandler(
 
     private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
         val profile = collection.findOne(SerializableProfile::uuid eq uuid) ?: return key.defaultValue
-        return profile.data[key.key] as? T?
+        return profile.data[key.key.toString()] as? T?
     }
 
     private suspend fun getOrCreateDocument(uuid: UUID): SerializableProfile {
@@ -97,5 +97,6 @@ class MongoDataHandler(
 private data class SerializableProfile(
     @BsonId
     val uuid: UUID,
-    val data: MutableMap<NamespacedKey, Any>
+    // Storing NamespacedKeys as strings for serialization
+    val data: MutableMap<String, Any>
 )

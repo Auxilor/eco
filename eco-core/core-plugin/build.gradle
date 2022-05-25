@@ -14,7 +14,7 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:5.0.0'
     implementation 'net.kyori:adventure-platform-bukkit:4.1.0'
     implementation 'org.javassist:javassist:3.28.0-GA'
-    implementation 'org.mongodb:mongo-java-driver:2.12.3'
+    implementation 'org.mongodb:mongodb-driver-sync:4.6.0'
     implementation 'org.litote.kmongo:kmongo-coroutine:4.6.0'
 
     // Included in spigot jar
