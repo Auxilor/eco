@@ -31,7 +31,10 @@ class MongoDataHandler(
         )
 
         // Shut up, please
-        Logger.getLogger("org.mongodb.driver").level = Level.WARNING
+        Logger.getLogger("org.mongodb.driver").level = Level.OFF
+        Logger.getLogger("org.mongodb.driver.cluster").level = Level.OFF
+        Logger.getLogger("org.mongodb.driver.connection").level = Level.OFF
+        Logger.getLogger("org.mongodb.driver.client").level = Level.OFF
 
         val url = plugin.configYml.getString("mongodb.url")
 

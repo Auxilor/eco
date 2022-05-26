@@ -71,14 +71,14 @@ class EcoProfileHandler(
         handler.save()
     }
 
-    override fun migrateIfNeeded() {
+    private fun migrateIfNeeded() {
         if (!plugin.configYml.getBool("perform-data-migration")) {
             return
         }
 
         if (!plugin.dataYml.has("previous-handler")) {
             plugin.dataYml.set("previous-handler", type.name)
-            return
+            plugin.dataYml.save()
         }
 
         val previousHandlerType = HandlerType.valueOf(plugin.dataYml.getString("previous-handler"))
@@ -103,8 +103,8 @@ class EcoProfileHandler(
 
         var i = 1
         for (uuid in players) {
+            plugin.logger.info("Migrating data for $uuid... ($i / ${players.size})")
             for (key in PersistentDataKey.values()) {
-                plugin.logger.info("Migrating data for $uuid... ($i / ${players.size})")
                 handler.write(uuid, key.key, previousHandler.read(uuid, key))
             }
 
@@ -113,12 +113,21 @@ class EcoProfileHandler(
 
         plugin.logger.info("Updating previous handler...")
         plugin.dataYml.set("previous-handler", type.name)
+        plugin.dataYml.save()
         plugin.logger.info("Done!")
         plugin.logger.info("Restarting server...")
         Bukkit.getServer().shutdown()
     }
 
     fun initialize() {
+        plugin.dataYml.getStrings("categorized-keys.player")
+            .mapNotNull { KeyHelpers.deserializeFromString(it) }
+
+        plugin.dataYml.getStrings("categorized-keys.server")
+            .mapNotNull { KeyHelpers.deserializeFromString(it, server = true) }
+
         handler.initialize()
+
+        migrateIfNeeded()
     }
 }

@@ -81,7 +81,7 @@ class MySQLDataHandler(
             UUIDTable("eco_server"),
             plugin,
             plugin.dataYml.getStrings("categorized-keys.server")
-                .mapNotNull { KeyHelpers.deserializeFromString(it) }
+                .mapNotNull { KeyHelpers.deserializeFromString(it, server = true) }
         )
     }
 
