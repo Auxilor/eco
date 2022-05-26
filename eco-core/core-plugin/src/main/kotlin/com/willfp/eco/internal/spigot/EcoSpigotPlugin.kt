@@ -251,6 +251,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         CustomItemsManager.registerAllItems()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
+
+        this.scheduler.runLater(2) {
+            Eco.getHandler().profileHandler.migrateIfNeeded()
+        }
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {

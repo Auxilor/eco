@@ -11,17 +11,18 @@ import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.data.storage.MongoDataHandler
 import com.willfp.eco.internal.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.internal.spigot.data.storage.YamlDataHandler
+import org.bukkit.Bukkit
 import java.util.UUID
 
 val serverProfileUUID = UUID(0, 0)
 
 class EcoProfileHandler(
-    type: HandlerType,
-    plugin: EcoSpigotPlugin
+    private val type: HandlerType,
+    private val plugin: EcoSpigotPlugin
 ) : ProfileHandler {
     private val loaded = mutableMapOf<UUID, Profile>()
 
-    val handler: DataHandler = when(type) {
+    val handler: DataHandler = when (type) {
         HandlerType.YAML -> YamlDataHandler(plugin, this)
         HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
         HandlerType.MONGO -> MongoDataHandler(plugin)
@@ -68,6 +69,53 @@ class EcoProfileHandler(
 
     override fun save() {
         handler.save()
+    }
+
+    override fun migrateIfNeeded() {
+        if (!plugin.configYml.getBool("perform-data-migration")) {
+            return
+        }
+
+        if (!plugin.dataYml.has("previous-handler")) {
+            plugin.dataYml.set("previous-handler", type.name)
+            return
+        }
+
+        val previousHandlerType = HandlerType.valueOf(plugin.dataYml.getString("previous-handler"))
+
+        if (previousHandlerType == type) {
+            return
+        }
+
+        val previousHandler = when (previousHandlerType) {
+            HandlerType.YAML -> YamlDataHandler(plugin, this)
+            HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
+            HandlerType.MONGO -> MongoDataHandler(plugin)
+        }
+
+        plugin.logger.info("eco has detected a change in data handler!")
+        plugin.logger.info("Migrating server data from ${previousHandlerType.name} to ${type.name}")
+        plugin.logger.info("This will take a while!")
+
+        val players = Bukkit.getOfflinePlayers().map { it.uniqueId }
+
+        plugin.logger.info("Found data for ${players.size} players!")
+
+        var i = 1
+        for (uuid in players) {
+            for (key in PersistentDataKey.values()) {
+                plugin.logger.info("Migrating data for $uuid... ($i / ${players.size})")
+                handler.write(uuid, key.key, previousHandler.read(uuid, key))
+            }
+
+            i++
+        }
+
+        plugin.logger.info("Updating previous handler...")
+        plugin.dataYml.set("previous-handler", type.name)
+        plugin.logger.info("Done!")
+        plugin.logger.info("Restarting server...")
+        Bukkit.getServer().shutdown()
     }
 
     fun initialize() {

@@ -86,4 +86,9 @@ public interface ProfileHandler {
      * Does nothing if using MySQL.
      */
     void save();
+
+    /**
+     * Migrate all player data from previous storage format.
+     */
+    void migrateIfNeeded();
 }

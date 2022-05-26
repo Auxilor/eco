@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.data.storage
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.bson.codecs.pojo.annotations.BsonId
@@ -13,15 +14,25 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.setValue
 import java.util.UUID
+import java.util.logging.Level
+import java.util.logging.Logger
 
 @Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
     plugin: EcoPlugin
 ) : DataHandler {
     private val client: CoroutineClient
-    private val collection: CoroutineCollection<SerializableProfile>
+    private val collection: CoroutineCollection<UUIDProfile>
 
     init {
+        System.setProperty(
+            "org.litote.mongo.mapping.service",
+            "org.litote.kmongo.jackson.JacksonClassMappingTypeService"
+        )
+
+        // Shut up, please
+        Logger.getLogger("org.mongodb.driver").level = Level.WARNING
+
         val url = plugin.configYml.getString("mongodb.url")
 
         client = KMongo.createClient(url).coroutine
@@ -36,7 +47,7 @@ class MongoDataHandler(
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
         runBlocking {
-            launch {
+            launch(Dispatchers.IO) {
                 doWrite(uuid, key, value)
             }
         }
@@ -53,12 +64,12 @@ class MongoDataHandler(
             }
         }
 
-        collection.updateOne(SerializableProfile::uuid eq uuid, setValue(SerializableProfile::data, newData))
+        collection.updateOne(UUIDProfile::uuid eq uuid.toString(), setValue(UUIDProfile::data, newData))
     }
 
     override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         runBlocking {
-            launch {
+            launch(Dispatchers.IO) {
                 for (key in keys) {
                     doWrite(uuid, key.key, read(uuid, key))
                 }
@@ -73,16 +84,16 @@ class MongoDataHandler(
     }
 
     private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
-        val profile = collection.findOne(SerializableProfile::uuid eq uuid) ?: return key.defaultValue
+        val profile = collection.findOne(UUIDProfile::uuid eq uuid.toString()) ?: return key.defaultValue
         return profile.data[key.key.toString()] as? T?
     }
 
-    private suspend fun getOrCreateDocument(uuid: UUID): SerializableProfile {
-        val profile = collection.findOne(SerializableProfile::uuid eq uuid)
+    private suspend fun getOrCreateDocument(uuid: UUID): UUIDProfile {
+        val profile = collection.findOne(UUIDProfile::uuid eq uuid.toString())
         return if (profile == null) {
             collection.insertOne(
-                SerializableProfile(
-                    uuid,
+                UUIDProfile(
+                    uuid.toString(),
                     mutableMapOf()
                 )
             )
@@ -94,9 +105,10 @@ class MongoDataHandler(
     }
 }
 
-private data class SerializableProfile(
+private data class UUIDProfile(
+    // Storing UUID as strings for serialization
     @BsonId
-    val uuid: UUID,
+    val uuid: String,
     // Storing NamespacedKeys as strings for serialization
     val data: MutableMap<String, Any>
 )
