@@ -160,6 +160,7 @@ allprojects {
             relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
             relocate("org.bson", "com.willfp.eco.libs.bson")
             relocate("org.litote", "com.willfp.eco.libs.litote")
+            relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
             relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
 
             /*
