@@ -108,7 +108,7 @@ class MySQLDataHandler(
         }
     }
 
-    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         applyFor(uuid) {
             it.write(uuid, key, value)
         }
@@ -243,12 +243,6 @@ private class ImplementedMySQLHandler(
 
     fun saveKeysForRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         saveRow(uuid, keys)
-    }
-
-    fun saveAll(uuids: Iterable<UUID>) {
-        for (uuid in uuids) {
-            saveRow(uuid, PersistentDataKey.values())
-        }
     }
 
     private fun saveRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {

@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data.storage
 
+import com.willfp.eco.core.data.Profile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
@@ -8,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.bson.codecs.pojo.annotations.BsonId
-import org.bukkit.NamespacedKey
 import org.litote.kmongo.coroutine.CoroutineClient
 import org.litote.kmongo.coroutine.CoroutineCollection
 import org.litote.kmongo.coroutine.coroutine
@@ -45,9 +45,9 @@ class MongoDataHandler(
         }
     }
 
-    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         scope.launch {
-            doWrite(uuid, key.key, value)
+            doWrite(uuid, key, value)
         }
     }
 
@@ -56,19 +56,24 @@ class MongoDataHandler(
 
         scope.launch {
             for (key in keys) {
-                doWrite(uuid, key.key, profile.read(key))
+                saveKey(profile, uuid, key)
             }
         }
     }
 
-    private suspend fun <T> doWrite(uuid: UUID, key: NamespacedKey, value: T) {
+    private suspend fun <T : Any> saveKey(profile: Profile, uuid: UUID, key: PersistentDataKey<T>) {
+        val data = profile.read(key)
+        doWrite(uuid, key, data)
+    }
+
+    private suspend fun <T> doWrite(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         val profile = getOrCreateDocument(uuid)
 
         val newData = profile.data.apply {
             if (value == null) {
-                this.remove(key.toString())
+                this.remove(key.key.toString())
             } else {
-                this[key.toString()] = value
+                this[key.key.toString()] = value
             }
         }
 

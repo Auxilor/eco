@@ -12,11 +12,8 @@ interface DataHandler {
 
     /**
      * Write value to a key.
-     *
-     * The value is set to the Any type rather than T because of generic casts
-     * with unknown types.
      */
-    fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any)
+    fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T)
 
     /**
      * Save a set of keys for a given UUID.

@@ -52,11 +52,7 @@ class EcoProfileHandler(
     }
 
     override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = loadGenericProfile(uuid)
-
-        for (key in keys) {
-            handler.write(uuid, key, profile.read(key))
-        }
+        handler.saveKeysFor(uuid, keys)
     }
 
     override fun unloadPlayer(uuid: UUID) {
@@ -97,12 +93,22 @@ class EcoProfileHandler(
 
         plugin.logger.info("Found data for ${players.size} players!")
 
+        /*
+        Declared here as its own function to be able to use T.
+         */
+        fun <T : Any> migrateKey(uuid: UUID, key: PersistentDataKey<T>, from: DataHandler, to: DataHandler) {
+            val previous: T? = from.read(uuid, key)
+            if (previous != null) {
+                to.write(uuid, key, previous)
+            }
+        }
+
         var i = 1
         for (uuid in players) {
             plugin.logger.info("Migrating data for $uuid... ($i / ${players.size})")
 
             for (key in PersistentDataKey.values()) {
-                handler.write(uuid, key, previousHandler.read(uuid, key) as Any)
+                migrateKey(uuid, key, previousHandler, handler)
             }
 
             i++

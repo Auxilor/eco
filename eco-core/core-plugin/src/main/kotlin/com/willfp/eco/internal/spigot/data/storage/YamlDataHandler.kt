@@ -32,7 +32,7 @@ class YamlDataHandler(
         return value
     }
 
-    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         doWrite(uuid, key.key, value)
     }
 
