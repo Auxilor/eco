@@ -1,6 +1,7 @@
 #
 # eco
 # by Auxilor
+# Default config (With Comments) can be found here: https://github.com/Auxilor/eco/blob/master/eco-core/core-plugin/src/main/resources/config.yml
 #
 
 # How player/server data is saved:
