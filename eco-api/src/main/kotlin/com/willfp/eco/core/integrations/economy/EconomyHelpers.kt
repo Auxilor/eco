@@ -10,6 +10,11 @@ import org.bukkit.OfflinePlayer
 var OfflinePlayer.balance: Double
     get() = EconomyManager.getBalance(this)
     set(value) {
+        if (value <= 0) {
+            EconomyManager.removeMoney(this, this.balance)
+            return
+        }
+
         val diff = this.balance - value
 
         if (diff > 0) {
