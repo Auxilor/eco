@@ -50,7 +50,7 @@ private fun Plugin.getConflict(): Conflict? {
     val zip = ZipFile(File(this::class.java.protectionDomain.codeSource.location.toURI()))
 
     for (entry in zip.entries()) {
-        if (entry.name.startsWith("kotlin/")) {
+        if (entry.name.startsWith("kotlin/") || entry.name.startsWith("kotlinx/")) {
             return Conflict(this, ConflictType.KOTLIN_SHADE)
         }
     }
