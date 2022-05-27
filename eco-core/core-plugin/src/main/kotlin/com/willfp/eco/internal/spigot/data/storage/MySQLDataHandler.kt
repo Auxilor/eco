@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit
 The MySQL data handler is hot garbage for several reasons:
 - Using MySQL on unstructured data: it's being horrifically misused, but that's just how it has to be.
 - Can't remove un-needed keys, there's wasted space in the columns everywhere.
-- No support for the STRING_LIST type, instead it 'serializes' the lists with semicolons as separators.
+- No native support for the STRING_LIST type, instead it 'serializes' the lists with semicolons as separators.
 - General lack of flexibility, it's too rigid.
 
 That's why I added the MongoDB handler, it's far, far better suited for what eco does - use it over
