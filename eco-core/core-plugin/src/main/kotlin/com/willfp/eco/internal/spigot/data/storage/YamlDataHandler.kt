@@ -18,30 +18,6 @@ class YamlDataHandler(
         dataYml.save()
     }
 
-    override fun saveAll(uuids: Iterable<UUID>) {
-        for (uuid in uuids) {
-            savePlayer(uuid)
-        }
-
-        save()
-    }
-
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
-        for (key in keys) {
-            doWrite(uuid, key.key, profile.read(key))
-        }
-    }
-
-    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
-        doWrite(uuid, key.key, value)
-    }
-
-    private fun doWrite(uuid: UUID, key: NamespacedKey, value: Any) {
-        dataYml.set("player.$uuid.$key", value)
-    }
-
     override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         // Separate `as T?` for each branch to prevent compiler warnings.
         val value = when (key.type) {
@@ -54,5 +30,21 @@ class YamlDataHandler(
         }
 
         return value
+    }
+
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+        doWrite(uuid, key.key, value)
+    }
+
+    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        val profile = handler.loadGenericProfile(uuid)
+
+        for (key in keys) {
+            doWrite(uuid, key.key, profile.read(key))
+        }
+    }
+
+    private fun doWrite(uuid: UUID, key: NamespacedKey, value: Any) {
+        dataYml.set("player.$uuid.$key", value)
     }
 }

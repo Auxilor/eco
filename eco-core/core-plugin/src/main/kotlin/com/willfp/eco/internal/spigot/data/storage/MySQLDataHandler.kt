@@ -102,9 +102,10 @@ class MySQLDataHandler(
         )
     }
 
-    override fun saveAll(uuids: Iterable<UUID>) {
-        serverHandler.saveAll(uuids.filter { it == serverProfileUUID })
-        playerHandler.saveAll(uuids.filter { it != serverProfileUUID })
+    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+        return applyFor(uuid) {
+            it.read(uuid, key)
+        }
     }
 
     override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
@@ -116,12 +117,6 @@ class MySQLDataHandler(
     override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         applyFor(uuid) {
             it.saveKeysForRow(uuid, keys)
-        }
-    }
-
-    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
-        return applyFor(uuid) {
-            it.read(uuid, key)
         }
     }
 

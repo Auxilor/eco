@@ -63,10 +63,6 @@ class EcoProfileHandler(
         loaded.remove(uuid)
     }
 
-    override fun saveAll() {
-        handler.saveAll(loaded.keys.toList())
-    }
-
     override fun save() {
         handler.save()
     }

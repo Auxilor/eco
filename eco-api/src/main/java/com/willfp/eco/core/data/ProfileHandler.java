@@ -68,7 +68,7 @@ public interface ProfileHandler {
      * @param async If the saving should be done asynchronously.
      * @deprecated async is now handled automatically depending on implementation.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     default void saveAll(boolean async) {
         saveAll();
     }
@@ -77,8 +77,13 @@ public interface ProfileHandler {
      * Save all player data.
      * <p>
      * Can run async if using MySQL.
+     *
+     * @deprecated Never used.
      */
-    void saveAll();
+    @Deprecated(since = "6.36.0", forRemoval = true)
+    default void saveAll() {
+        // Do nothing.
+    }
 
     /**
      * Commit all changes to the file.

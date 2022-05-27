@@ -5,14 +5,29 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import java.util.UUID
 
 interface DataHandler {
-    fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any)
+    /**
+     * Read value from a key.
+     */
     fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T?
+
+    /**
+     * Write value to a key.
+     *
+     * The value is set to the Any type rather than T because of generic casts
+     * with unknown types.
+     */
+    fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any)
+
+    /**
+     * Save a set of keys for a given UUID.
+     */
+    fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>)
+
+    // Everything below this are methods that are only needed for certain implementations.
 
     fun save() {
 
     }
-
-    fun saveAll(uuids: Iterable<UUID>)
 
     fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
 
@@ -21,10 +36,4 @@ interface DataHandler {
     fun initialize() {
 
     }
-
-    fun savePlayer(uuid: UUID) {
-        saveKeysFor(uuid, PersistentDataKey.values())
-    }
-
-    fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>)
 }

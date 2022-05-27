@@ -239,7 +239,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun handleReload() {
         CollatedRunnable(this)
         DropManager.update(this)
-        ProfileSaver(this)
+        ProfileSaver(this, Eco.getHandler().profileHandler)
         this.scheduler.runTimer(
             { clearFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),

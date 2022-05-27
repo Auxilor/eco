@@ -39,15 +39,25 @@ class MongoDataHandler(
         collection = client.getDatabase("eco").getCollection()
     }
 
-    override fun saveAll(uuids: Iterable<UUID>) {
-        for (uuid in uuids) {
-            saveKeysFor(uuid, PersistentDataKey.values())
+    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+        return runBlocking {
+            doRead(uuid, key)
         }
     }
 
     override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
         scope.launch {
             doWrite(uuid, key.key, value)
+        }
+    }
+
+    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        val profile = handler.loadGenericProfile(uuid)
+
+        scope.launch {
+            for (key in keys) {
+                doWrite(uuid, key.key, profile.read(key))
+            }
         }
     }
 
@@ -63,22 +73,6 @@ class MongoDataHandler(
         }
 
         collection.updateOne(UUIDProfile::uuid eq uuid.toString(), setValue(UUIDProfile::data, newData))
-    }
-
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
-        scope.launch {
-            for (key in keys) {
-                doWrite(uuid, key.key, profile.read(key))
-            }
-        }
-    }
-
-    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
-        return runBlocking {
-            doRead(uuid, key)
-        }
     }
 
     private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
