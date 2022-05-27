@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.data.storage
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -22,6 +23,8 @@ class MongoDataHandler(
     private val client: CoroutineClient
     private val collection: CoroutineCollection<UUIDProfile>
 
+    private val scope = CoroutineScope(Dispatchers.IO)
+
     init {
         System.setProperty(
             "org.litote.mongo.mapping.service",
@@ -41,10 +44,8 @@ class MongoDataHandler(
     }
 
     override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
-        runBlocking {
-            launch(Dispatchers.IO) {
-                doWrite(uuid, key, value)
-            }
+        scope.launch {
+            doWrite(uuid, key, value)
         }
     }
 
@@ -63,11 +64,9 @@ class MongoDataHandler(
     }
 
     override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        runBlocking {
-            launch(Dispatchers.IO) {
-                for (key in keys) {
-                    doWrite(uuid, key.key, read(uuid, key))
-                }
+        scope.launch {
+            for (key in keys) {
+                doWrite(uuid, key.key, read(uuid, key))
             }
         }
     }
