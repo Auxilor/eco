@@ -36,6 +36,23 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
+/*
+
+The MySQL data handler is hot garbage for several reasons:
+- Using MySQL on unstructured data: it's being horrifically misused, but that's just how it has to be.
+- Can't remove un-needed keys, there's wasted space in the columns everywhere.
+- No support for the STRING_LIST type, instead it 'serializes' the lists with semicolons as separators.
+- General lack of flexibility, it's too rigid.
+
+That's why I added the MongoDB handler, it's far, far better suited for what eco does - use it over
+MySQL if you can.
+
+Oh, also - I don't really know how this class works. I've rewritten it and hacked it together several ways
+in several sessions, and it's basically complete gibberish to me. Adding the STRING_LIST type is probably
+the worst bodge I've shipped in production.
+
+ */
+
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
     private val plugin: EcoSpigotPlugin,
