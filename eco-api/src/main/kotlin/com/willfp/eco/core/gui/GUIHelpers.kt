@@ -59,6 +59,11 @@ fun SlotBuilder.setUpdater(action: (Player, Menu, ItemStack) -> ItemStack): Slot
 /**
  * Kotlin builder for slots.
  */
+fun captiveSlot(): Slot = Slot.builder().setCaptive().build()
+
+/**
+ * Kotlin builder for slots.
+ */
 fun slot(
     item: ItemStack,
     init: SlotBuilder.() -> Unit
@@ -72,6 +77,13 @@ fun slot(
  * Kotlin builder for slots.
  */
 fun slot(
+    item: ItemStack
+): Slot = Slot.builder(item).build()
+
+/**
+ * Kotlin builder for slots.
+ */
+fun slot(
     provider: (Player, Menu) -> ItemStack,
     init: SlotBuilder.() -> Unit
 ): Slot {
@@ -79,6 +91,13 @@ fun slot(
     init(builder)
     return builder.build()
 }
+
+/**
+ * Kotlin builder for slots.
+ */
+fun slot(
+    provider: (Player, Menu) -> ItemStack
+): Slot = Slot.builder { a, b -> provider(a, b) }.build()
 
 /**
  * @see MenuBuilder.onClose
