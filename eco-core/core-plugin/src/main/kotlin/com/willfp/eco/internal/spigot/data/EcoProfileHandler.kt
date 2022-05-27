@@ -118,8 +118,6 @@ class EcoProfileHandler(
         plugin.dataYml.set("previous-handler", type.name)
         plugin.dataYml.save()
         plugin.logger.info("Done!")
-        plugin.logger.info("Restarting server...")
-        Bukkit.getServer().shutdown()
     }
 
     fun initialize() {
