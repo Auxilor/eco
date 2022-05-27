@@ -11,6 +11,7 @@ So, I've 'fixed' the problem at the source - the class in the jar now always ret
 logger that can't do anything. At least there's no console spam anymore.
  */
 
+@Suppress("UNUSED")
 object Loggers {
     private const val PREFIX = "org.mongodb.driver"
 
