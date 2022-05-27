@@ -14,7 +14,6 @@ import com.willfp.eco.internal.spigot.data.serverProfileUUID
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.apache.logging.log4j.Level
-import org.bukkit.NamespacedKey
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.BooleanColumnType
 import org.jetbrains.exposed.sql.Column
@@ -31,7 +30,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import java.util.UUID
 import java.util.concurrent.Callable
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -128,21 +126,21 @@ class MySQLDataHandler(
 
     override fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
         if (category == KeyRegistry.KeyCategory.SERVER) {
-            serverHandler.ensureKeyRegistration(key.key)
+            serverHandler.ensureKeyRegistration(key)
         } else {
-            playerHandler.ensureKeyRegistration(key.key)
+            playerHandler.ensureKeyRegistration(key)
         }
     }
 
     override fun save() {
         plugin.dataYml.set(
             "categorized-keys.player",
-            playerHandler.registeredKeys.values
+            playerHandler.registeredKeys
                 .map { KeyHelpers.serializeToString(it) }
         )
         plugin.dataYml.set(
             "categorized-keys.server",
-            serverHandler.registeredKeys.values
+            serverHandler.registeredKeys
                 .map { KeyHelpers.serializeToString(it) }
         )
         plugin.dataYml.save()
@@ -170,7 +168,7 @@ private class ImplementedMySQLHandler(
 
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
-    val registeredKeys = ConcurrentHashMap<NamespacedKey, PersistentDataKey<*>>()
+    val registeredKeys = mutableSetOf<PersistentDataKey<*>>()
 
     init {
         transaction {
@@ -184,31 +182,29 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    fun ensureKeyRegistration(key: NamespacedKey) {
+    fun ensureKeyRegistration(key: PersistentDataKey<*>) {
         if (registeredKeys.contains(key)) {
             return
         }
 
-        val persistentKey = Eco.getHandler().keyRegistry.getKeyFrom(key) ?: return
-
         if (table.columns.any { it.name == key.toString() }) {
-            registeredKeys[key] = persistentKey
+            registeredKeys.add(key)
             return
         }
 
         transaction {
-            registerColumn(persistentKey, table)
+            registerColumn(key, table)
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
-        registeredKeys[key] = persistentKey
+        registeredKeys.add(key)
     }
 
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
         getOrCreateRow(uuid)
-        doWrite(uuid, key.key, key.type.constrainSQLTypes(value))
+        doWrite(uuid, key, key.type.constrainSQLTypes(value))
     }
 
-    private fun doWrite(uuid: UUID, key: NamespacedKey, constrainedValue: Any) {
+    private fun doWrite(uuid: UUID, key: PersistentDataKey<*>, constrainedValue: Any) {
         val column: Column<Any> = getColumn(key) as Column<Any>
 
         executor.submit {
@@ -232,7 +228,7 @@ private class ImplementedMySQLHandler(
                 getOrCreateRow(uuid)
 
                 for (key in keys) {
-                    doWrite(uuid, key.key, key.type.constrainSQLTypes(profile.read(key)))
+                    doWrite(uuid, key, key.type.constrainSQLTypes(profile.read(key)))
                 }
             }
         }
@@ -243,13 +239,13 @@ private class ImplementedMySQLHandler(
             var value: T? = null
             transaction {
                 val row = getOrCreateRow(uuid)
-                value = key.type.fromConstrained(row[getColumn(key.key)])
+                value = key.type.fromConstrained(row[getColumn(key)])
             }
 
             return@Callable value
         }
 
-        ensureKeyRegistration(key.key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
+        ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
 
         return if (Eco.getHandler().ecoPlugin.configYml.getBool("mysql.async-reads")) {
             executor.submit(doRead).get()
@@ -281,10 +277,10 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    private fun getColumn(key: NamespacedKey): Column<*> {
+    private fun getColumn(key: PersistentDataKey<*>): Column<*> {
         ensureKeyRegistration(key)
 
-        val name = key.toString()
+        val name = key.key.toString()
 
         return columns.get(name) {
             table.columns.first { it.name == name }
