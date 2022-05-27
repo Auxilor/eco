@@ -25,7 +25,7 @@ class EcoProfileHandler(
     val handler: DataHandler = when (type) {
         HandlerType.YAML -> YamlDataHandler(plugin, this)
         HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
-        HandlerType.MONGO -> MongoDataHandler(plugin)
+        HandlerType.MONGO -> MongoDataHandler(plugin, this)
     }
 
     fun loadGenericProfile(uuid: UUID): Profile {
@@ -55,7 +55,7 @@ class EcoProfileHandler(
         val profile = loadGenericProfile(uuid)
 
         for (key in keys) {
-            handler.write(uuid, key.key, profile.read(key))
+            handler.write(uuid, key, profile.read(key))
         }
     }
 
@@ -90,7 +90,7 @@ class EcoProfileHandler(
         val previousHandler = when (previousHandlerType) {
             HandlerType.YAML -> YamlDataHandler(plugin, this)
             HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
-            HandlerType.MONGO -> MongoDataHandler(plugin)
+            HandlerType.MONGO -> MongoDataHandler(plugin, this)
         }
 
         plugin.logger.info("eco has detected a change in data handler!")
@@ -104,8 +104,9 @@ class EcoProfileHandler(
         var i = 1
         for (uuid in players) {
             plugin.logger.info("Migrating data for $uuid... ($i / ${players.size})")
+
             for (key in PersistentDataKey.values()) {
-                handler.write(uuid, key.key, previousHandler.read(uuid, key))
+                handler.write(uuid, key, previousHandler.read(uuid, key) as Any)
             }
 
             i++

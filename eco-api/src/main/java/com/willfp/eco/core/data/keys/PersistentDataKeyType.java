@@ -39,6 +39,11 @@ public final class PersistentDataKeyType<T> {
     public static final PersistentDataKeyType<Double> DOUBLE = new PersistentDataKeyType<>(Double.class, "DOUBLE");
 
     /**
+     * String List.
+     */
+    public static final PersistentDataKeyType<List<String>> STRING_LIST = new PersistentDataKeyType<>(null, "STRING_LIST");
+
+    /**
      * The class of the type.
      */
     private final Class<T> typeClass;
@@ -52,7 +57,10 @@ public final class PersistentDataKeyType<T> {
      * Get the class of the type.
      *
      * @return The class.
+     * @deprecated String list type will return null.
      */
+    @Deprecated(since = "6.36.0", forRemoval = true)
+    @Nullable
     public Class<T> getTypeClass() {
         return typeClass;
     }
@@ -72,7 +80,7 @@ public final class PersistentDataKeyType<T> {
      * @param typeClass The type class.
      * @param name      The name.
      */
-    private PersistentDataKeyType(@NotNull final Class<T> typeClass,
+    private PersistentDataKeyType(@Nullable final Class<T> typeClass,
                                   @NotNull final String name) {
         VALUES.add(this);
 

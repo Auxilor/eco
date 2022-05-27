@@ -30,22 +30,28 @@ class YamlDataHandler(
         val profile = handler.loadGenericProfile(uuid)
 
         for (key in keys) {
-            write(uuid, key.key, profile.read(key))
+            doWrite(uuid, key.key, profile.read(key))
         }
     }
 
-    override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+        doWrite(uuid, key.key, value)
+    }
+
+    private fun doWrite(uuid: UUID, key: NamespacedKey, value: Any) {
         dataYml.set("player.$uuid.$key", value)
     }
 
-    override fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+        // Separate `as T?` for each branch to prevent compiler warnings.
         val value = when (key.type) {
-            PersistentDataKeyType.INT -> dataYml.getIntOrNull("player.$uuid.${key.key}")
-            PersistentDataKeyType.DOUBLE -> dataYml.getDoubleOrNull("player.$uuid.${key.key}")
-            PersistentDataKeyType.STRING -> dataYml.getStringOrNull("player.$uuid.${key.key}")
-            PersistentDataKeyType.BOOLEAN -> dataYml.getBoolOrNull("player.$uuid.${key.key}")
+            PersistentDataKeyType.INT -> dataYml.getIntOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.DOUBLE -> dataYml.getDoubleOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.STRING -> dataYml.getStringOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.BOOLEAN -> dataYml.getBoolOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.STRING_LIST -> dataYml.getStringsOrNull("player.$uuid.${key.key}") as T?
             else -> null
-        } as? T?
+        }
 
         return value
     }

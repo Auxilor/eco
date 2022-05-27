@@ -1,7 +1,8 @@
 package com.willfp.eco.internal.spigot.data.storage
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.internal.spigot.EcoSpigotPlugin
+import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +19,8 @@ import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
-    plugin: EcoPlugin
+    plugin: EcoSpigotPlugin,
+    private val handler: EcoProfileHandler
 ) : DataHandler {
     private val client: CoroutineClient
     private val collection: CoroutineCollection<UUIDProfile>
@@ -43,9 +45,9 @@ class MongoDataHandler(
         }
     }
 
-    override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
         scope.launch {
-            doWrite(uuid, key, value)
+            doWrite(uuid, key.key, value)
         }
     }
 
@@ -64,14 +66,16 @@ class MongoDataHandler(
     }
 
     override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+        val profile = handler.loadGenericProfile(uuid)
+
         scope.launch {
             for (key in keys) {
-                doWrite(uuid, key.key, read(uuid, key))
+                doWrite(uuid, key.key, profile.read(key))
             }
         }
     }
 
-    override fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         return runBlocking {
             doRead(uuid, key)
         }

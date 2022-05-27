@@ -90,7 +90,7 @@ class MySQLDataHandler(
         playerHandler.saveAll(uuids.filter { it != serverProfileUUID })
     }
 
-    override fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+    override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
         applyFor(uuid) {
             it.write(uuid, key, value)
         }
@@ -102,9 +102,9 @@ class MySQLDataHandler(
         }
     }
 
-    override fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         return applyFor(uuid) {
-            it.read(uuid, key.key)
+            it.read(uuid, key)
         }
     }
 
@@ -212,18 +212,18 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    fun <T> write(uuid: UUID, key: NamespacedKey, value: T) {
+    fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
         getOrCreateRow(uuid)
-        doWrite(uuid, key, value)
+        doWrite(uuid, key.key, key.type.constrainSQLTypes(value))
     }
 
-    private fun <T> doWrite(uuid: UUID, key: NamespacedKey, value: T) {
-        val column: Column<T> = getColumn(key) as Column<T>
+    private fun doWrite(uuid: UUID, key: NamespacedKey, constrainedValue: Any) {
+        val column: Column<Any> = getColumn(key) as Column<Any>
 
         executor.submit {
             transaction {
                 table.update({ table.id eq uuid }) {
-                    it[column] = value
+                    it[column] = constrainedValue
                 }
             }
         }
@@ -247,24 +247,24 @@ private class ImplementedMySQLHandler(
                 getOrCreateRow(uuid)
 
                 for (key in keys) {
-                    doWrite(uuid, key.key, profile.read(key))
+                    doWrite(uuid, key.key, key.type.constrainSQLTypes(profile.read(key)))
                 }
             }
         }
     }
 
-    fun <T> read(uuid: UUID, key: NamespacedKey): T? {
+    fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         val doRead = Callable<T?> {
             var value: T? = null
             transaction {
                 val row = getOrCreateRow(uuid)
-                value = row[getColumn(key)] as T?
+                value = key.type.fromConstrained(row[getColumn(key.key)])
             }
 
             return@Callable value
         }
 
-        ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
+        ensureKeyRegistration(key.key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
 
         return if (Eco.getHandler().ecoPlugin.configYml.getBool("mysql.async-reads")) {
             executor.submit(doRead).get()
@@ -288,6 +288,8 @@ private class ImplementedMySQLHandler(
                     .default(key.defaultValue as Boolean)
                 PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(512))
                     .default(key.defaultValue as String)
+                PersistentDataKeyType.STRING_LIST -> registerColumn<String>(key.key.toString(), VarCharColumnType(8192))
+                    .default(PersistentDataKeyType.STRING_LIST.constrainSQLTypes(key.defaultValue as List<String>) as String)
 
                 else -> throw NullPointerException("Null value found!")
             }
@@ -324,4 +326,28 @@ private class ImplementedMySQLHandler(
             }
         }
     }
+}
+
+private fun <T> PersistentDataKeyType<T>.constrainSQLTypes(value: Any): Any {
+    return if (this == PersistentDataKeyType.STRING_LIST) {
+        @Suppress("UNCHECKED_CAST")
+        value as List<String>
+        value.joinToString(separator = ";")
+    } else {
+        this
+    }
+}
+
+private fun <T> PersistentDataKeyType<T>.fromConstrained(constrained: Any?): T? {
+    if (constrained == null) {
+        return null
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    return if (this == PersistentDataKeyType.STRING_LIST) {
+        constrained as String
+        constrained.split(";").toList()
+    } else {
+        constrained
+    } as T
 }
