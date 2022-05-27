@@ -68,6 +68,7 @@ dependencies {
 shadowJar {
     minimize {
         exclude(dependency('org.litote.kmongo:kmongo-coroutine:.*'))
+        exclude(dependency('org.jetbrains.exposed:.*:.*'))
     }
 }
 
