@@ -33,7 +33,6 @@ import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 /*
@@ -172,7 +171,6 @@ private class ImplementedMySQLHandler(
     private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
     private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
     val registeredKeys = ConcurrentHashMap<NamespacedKey, PersistentDataKey<*>>()
-    private val currentlyProcessingRegistration = ConcurrentHashMap<NamespacedKey, Future<*>>()
 
     init {
         transaction {
@@ -198,21 +196,11 @@ private class ImplementedMySQLHandler(
             return
         }
 
-        val future = currentlyProcessingRegistration[key]
-
-        if (future != null) {
-            future.get()
-            return
+        transaction {
+            registerColumn(persistentKey, table)
+            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
-
-        currentlyProcessingRegistration[key] = executor.submit {
-            transaction {
-                registerColumn(persistentKey, table)
-                SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-            }
-            registeredKeys[key] = persistentKey
-            currentlyProcessingRegistration.remove(key)
-        }
+        registeredKeys[key] = persistentKey
     }
 
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
