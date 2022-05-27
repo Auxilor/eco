@@ -14,8 +14,6 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.setValue
 import java.util.UUID
-import java.util.logging.Level
-import java.util.logging.Logger
 
 @Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
@@ -29,12 +27,6 @@ class MongoDataHandler(
             "org.litote.mongo.mapping.service",
             "org.litote.kmongo.jackson.JacksonClassMappingTypeService"
         )
-
-        // Shut up, please
-        Logger.getLogger("org.mongodb.driver").level = Level.OFF
-        Logger.getLogger("org.mongodb.driver.cluster").level = Level.OFF
-        Logger.getLogger("org.mongodb.driver.connection").level = Level.OFF
-        Logger.getLogger("org.mongodb.driver.client").level = Level.OFF
 
         val url = plugin.configYml.getString("mongodb.url")
 
