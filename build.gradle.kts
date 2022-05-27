@@ -18,7 +18,7 @@ plugins {
 
 dependencies {
     implementation(project(":eco-api"))
-    implementation(project(":eco-core:core-plugin"))
+    implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
     implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
@@ -120,6 +120,7 @@ allprojects {
         exclude(group = "com.github.cryptomorin", module = "XSeries")
         exclude(group = "net.wesjd", module = "anvilgui")
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "org.reactivestreams", module = "reactive-streams")
     }
 
     configurations.testImplementation {
@@ -155,6 +156,12 @@ allprojects {
             relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
             relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
             //relocate("com.mysql", "com.willfp.eco.libs.mysql")
+            relocate("de.undercouch.bson4jackson", "com.willfp.eco.libs.bson4jackson")
+            relocate("com.fasterxml.jackson", "com.willfp.eco.libs.jackson")
+            relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
+            relocate("org.bson", "com.willfp.eco.libs.bson")
+            relocate("org.litote", "com.willfp.eco.libs.litote")
+            relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
 
             /*
             Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.

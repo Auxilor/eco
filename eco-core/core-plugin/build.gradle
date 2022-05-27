@@ -65,6 +65,10 @@ dependencies {
     compileOnly fileTree(dir: '../../lib', include: ['*.jar'])
 }
 
+shadowJar {
+    minimize()
+}
+
 processResources {
     filesNotMatching(["**/*.png", "**/models/**", "**/textures/**"]) {
         expand projectVersion: project.version
