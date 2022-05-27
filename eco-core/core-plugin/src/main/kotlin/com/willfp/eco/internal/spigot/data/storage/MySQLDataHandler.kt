@@ -205,12 +205,18 @@ private class ImplementedMySQLHandler(
     }
 
     private fun doWrite(uuid: UUID, key: PersistentDataKey<*>, constrainedValue: Any) {
+        println("Writing $constrainedValue to ${key.key} for player $uuid")
         val column: Column<Any> = getColumn(key) as Column<Any>
+        println("Column fetched! ${column.name}")
 
         executor.submit {
+            println("Submitted async task!")
             transaction {
+                println("Executing transaction!")
                 table.update({ table.id eq uuid }) {
+                    println("Updating column...")
                     it[column] = constrainedValue
+                    println("Updated column!")
                 }
             }
         }
@@ -315,7 +321,7 @@ private fun <T> PersistentDataKeyType<T>.constrainSQLTypes(value: Any): Any {
         value as List<String>
         value.joinToString(separator = ";")
     } else {
-        this
+        value
     }
 }
 
