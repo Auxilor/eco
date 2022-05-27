@@ -62,6 +62,9 @@ class MySQLDataHandler(
     private val serverHandler: ImplementedMySQLHandler
 
     init {
+        plugin.logger.warning("You're using the MySQL Data Handler")
+        plugin.logger.warning("It's recommended to switch to MongoDB (mongo)!")
+
         val config = HikariConfig()
         config.driverClassName = "com.mysql.cj.jdbc.Driver"
         config.username = plugin.configYml.getString("mysql.user")

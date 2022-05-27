@@ -6,7 +6,7 @@
 # How player/server data is saved:
 # yaml - Stored in data.yml: Good option for single-node servers (i.e. no BungeeCord/Velocity)
 # mongo - (Recommended) If you're running on a network (Bungee/Velocity), you should use MongoDB if you can.
-# mysql - The basic choice for Bungee/Velocity networks, less flexible and worse performance than MongoDB. Use only if you can't use MongoDB.
+# mysql - (Not Recommended) The basic choice for Bungee/Velocity networks, less flexible and worse performance than MongoDB. Only use it if you can't use MongoDB.
 data-handler: yaml
 
 # If data should be migrated automatically when changing data handler.
