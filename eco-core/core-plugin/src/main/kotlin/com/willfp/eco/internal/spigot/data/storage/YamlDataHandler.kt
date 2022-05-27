@@ -11,7 +11,7 @@ import java.util.UUID
 class YamlDataHandler(
     plugin: EcoSpigotPlugin,
     private val handler: EcoProfileHandler
-) : DataHandler {
+) : DataHandler(HandlerType.YAML) {
     private val dataYml = plugin.dataYml
 
     override fun save() {

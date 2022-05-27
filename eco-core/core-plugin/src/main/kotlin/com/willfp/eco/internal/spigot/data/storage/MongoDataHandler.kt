@@ -21,7 +21,7 @@ import java.util.UUID
 class MongoDataHandler(
     plugin: EcoSpigotPlugin,
     private val handler: EcoProfileHandler
-) : DataHandler {
+) : DataHandler(HandlerType.MONGO) {
     private val client: CoroutineClient
     private val collection: CoroutineCollection<UUIDProfile>
 

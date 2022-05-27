@@ -57,7 +57,7 @@ the worst bodge I've shipped in production.
 class MySQLDataHandler(
     private val plugin: EcoSpigotPlugin,
     handler: EcoProfileHandler
-) : DataHandler {
+) : DataHandler(HandlerType.MYSQL) {
     private val playerHandler: ImplementedMySQLHandler
     private val serverHandler: ImplementedMySQLHandler
 
