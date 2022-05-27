@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.Profile
 import com.willfp.eco.core.data.ProfileHandler
@@ -97,6 +98,10 @@ class EcoProfileHandler(
         Declared here as its own function to be able to use T.
          */
         fun <T : Any> migrateKey(uuid: UUID, key: PersistentDataKey<T>, from: DataHandler, to: DataHandler) {
+            val category = Eco.getHandler().keyRegistry.getCategory(key)
+            if (category != null) {
+                from.categorize(key, category)
+            }
             val previous: T? = from.read(uuid, key)
             if (previous != null) {
                 to.write(uuid, key, previous)

@@ -13,7 +13,6 @@ import com.willfp.eco.internal.spigot.data.KeyHelpers
 import com.willfp.eco.internal.spigot.data.serverProfileUUID
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.apache.logging.log4j.Level
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.BooleanColumnType
 import org.jetbrains.exposed.sql.Column
@@ -23,7 +22,6 @@ import org.jetbrains.exposed.sql.IntegerColumnType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.VarCharColumnType
-import org.jetbrains.exposed.sql.exposedLogger
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -73,17 +71,6 @@ class MySQLDataHandler(
         config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
 
         Database.connect(HikariDataSource(config))
-
-        // Get Exposed to shut the hell up
-        runCatching {
-            exposedLogger::class.java.getDeclaredField("logger").apply { isAccessible = true }
-                .apply {
-                    get(exposedLogger).apply {
-                        this.javaClass.getDeclaredMethod("setLevel", Level::class.java)
-                            .invoke(this, Level.OFF)
-                    }
-                }
-        }
 
         playerHandler = ImplementedMySQLHandler(
             handler,
@@ -158,10 +145,6 @@ private class ImplementedMySQLHandler(
     private val table: UUIDTable,
     plugin: EcoPlugin
 ) {
-    private val columns = Caffeine.newBuilder()
-        .expireAfterWrite(3, TimeUnit.SECONDS)
-        .build<String, Column<*>>()
-
     private val rows = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.SECONDS)
         .build<UUID, ResultRow>()
@@ -183,40 +166,27 @@ private class ImplementedMySQLHandler(
     }
 
     fun ensureKeyRegistration(key: PersistentDataKey<*>) {
-        if (registeredKeys.contains(key)) {
-            return
-        }
-
-        if (table.columns.any { it.name == key.toString() }) {
+        if (table.columns.any { it.name == key.key.toString() }) {
             registeredKeys.add(key)
             return
         }
 
-        transaction {
-            registerColumn(key, table)
-            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-        }
+        registerColumn(key)
         registeredKeys.add(key)
     }
 
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
-        getOrCreateRow(uuid)
+        getRow(uuid)
         doWrite(uuid, key, key.type.constrainSQLTypes(value))
     }
 
     private fun doWrite(uuid: UUID, key: PersistentDataKey<*>, constrainedValue: Any) {
-        println("Writing $constrainedValue to ${key.key} for player $uuid")
         val column: Column<Any> = getColumn(key) as Column<Any>
-        println("Column fetched! ${column.name}")
 
         executor.submit {
-            println("Submitted async task!")
             transaction {
-                println("Executing transaction!")
                 table.update({ table.id eq uuid }) {
-                    println("Updating column...")
                     it[column] = constrainedValue
-                    println("Updated column!")
                 }
             }
         }
@@ -231,7 +201,7 @@ private class ImplementedMySQLHandler(
 
         executor.submit {
             transaction {
-                getOrCreateRow(uuid)
+                getRow(uuid)
 
                 for (key in keys) {
                     doWrite(uuid, key, key.type.constrainSQLTypes(profile.read(key)))
@@ -242,13 +212,12 @@ private class ImplementedMySQLHandler(
 
     fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         val doRead = Callable<T?> {
-            var value: T? = null
             transaction {
-                val row = getOrCreateRow(uuid)
-                value = key.type.fromConstrained(row[getColumn(key)])
+                val row = getRow(uuid)
+                val column = getColumn(key)
+                val raw = row[column]
+                key.type.fromConstrained(raw)
             }
-
-            return@Callable value
         }
 
         ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
@@ -260,26 +229,28 @@ private class ImplementedMySQLHandler(
         }
     }
 
-    private fun <T> registerColumn(key: PersistentDataKey<T>, table: UUIDTable) {
-        table.apply {
-            if (this.columns.stream().anyMatch { it.name == key.key.toString() }) {
-                return@apply
+    private fun <T> registerColumn(key: PersistentDataKey<T>) {
+        transaction {
+            table.apply {
+                when (key.type) {
+                    PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
+                        .default(key.defaultValue as Int)
+                    PersistentDataKeyType.DOUBLE -> registerColumn<Double>(key.key.toString(), DoubleColumnType())
+                        .default(key.defaultValue as Double)
+                    PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(key.key.toString(), BooleanColumnType())
+                        .default(key.defaultValue as Boolean)
+                    PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(512))
+                        .default(key.defaultValue as String)
+                    PersistentDataKeyType.STRING_LIST -> registerColumn<String>(
+                        key.key.toString(),
+                        VarCharColumnType(8192)
+                    ).default(PersistentDataKeyType.STRING_LIST.constrainSQLTypes(key.defaultValue as List<String>) as String)
+
+                    else -> throw NullPointerException("Null value found!")
+                }
             }
 
-            when (key.type) {
-                PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
-                    .default(key.defaultValue as Int)
-                PersistentDataKeyType.DOUBLE -> registerColumn<Double>(key.key.toString(), DoubleColumnType())
-                    .default(key.defaultValue as Double)
-                PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(key.key.toString(), BooleanColumnType())
-                    .default(key.defaultValue as Boolean)
-                PersistentDataKeyType.STRING -> registerColumn<String>(key.key.toString(), VarCharColumnType(512))
-                    .default(key.defaultValue as String)
-                PersistentDataKeyType.STRING_LIST -> registerColumn<String>(key.key.toString(), VarCharColumnType(8192))
-                    .default(PersistentDataKeyType.STRING_LIST.constrainSQLTypes(key.defaultValue as List<String>) as String)
-
-                else -> throw NullPointerException("Null value found!")
-            }
+            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
     }
 
@@ -288,12 +259,10 @@ private class ImplementedMySQLHandler(
 
         val name = key.key.toString()
 
-        return columns.get(name) {
-            table.columns.first { it.name == name }
-        }
+        return table.columns.first { it.name == name }
     }
 
-    private fun getOrCreateRow(uuid: UUID): ResultRow {
+    private fun getRow(uuid: UUID): ResultRow {
         fun select(uuid: UUID): ResultRow? {
             return transaction {
                 table.select { table.id eq uuid }.limit(1).singleOrNull()

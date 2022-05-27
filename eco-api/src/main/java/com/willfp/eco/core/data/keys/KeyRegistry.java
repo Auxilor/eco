@@ -22,6 +22,15 @@ public interface KeyRegistry {
     void registerKey(@NotNull PersistentDataKey<?> key);
 
     /**
+     * Get a key's category.
+     *
+     * @param key The key.
+     * @return The category.
+     */
+    @Nullable
+    KeyCategory getCategory(@NotNull PersistentDataKey<?> key);
+
+    /**
      * Get all registered keys.
      *
      * @return The keys.

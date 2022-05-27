@@ -24,6 +24,10 @@ class EcoKeyRegistry : KeyRegistry {
         return registry.values.toMutableSet()
     }
 
+    override fun getCategory(key: PersistentDataKey<*>): KeyRegistry.KeyCategory? {
+        return categories[key.key]
+    }
+
     private fun <T> validateKey(key: PersistentDataKey<T>) {
         when (key.type) {
             PersistentDataKeyType.INT -> if (key.defaultValue !is Int) {
