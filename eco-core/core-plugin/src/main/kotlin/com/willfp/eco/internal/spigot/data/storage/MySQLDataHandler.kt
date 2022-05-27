@@ -91,17 +91,13 @@ class MySQLDataHandler(
         playerHandler = ImplementedMySQLHandler(
             handler,
             UUIDTable("eco_players"),
-            plugin,
-            plugin.dataYml.getStrings("categorized-keys.player")
-                .mapNotNull { KeyHelpers.deserializeFromString(it) }
+            plugin
         )
 
         serverHandler = ImplementedMySQLHandler(
             handler,
             UUIDTable("eco_server"),
-            plugin,
-            plugin.dataYml.getStrings("categorized-keys.server")
-                .mapNotNull { KeyHelpers.deserializeFromString(it, server = true) }
+            plugin
         )
     }
 
@@ -163,8 +159,7 @@ class MySQLDataHandler(
 private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
-    plugin: EcoPlugin,
-    private val knownKeys: Collection<PersistentDataKey<*>>
+    plugin: EcoPlugin
 ) {
     private val columns = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.SECONDS)
@@ -187,14 +182,7 @@ private class ImplementedMySQLHandler(
 
     fun initialize() {
         transaction {
-            for (key in knownKeys) {
-                registerColumn(key, table)
-            }
-
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-            for (key in knownKeys) {
-                registeredKeys[key.key] = key
-            }
         }
     }
 
