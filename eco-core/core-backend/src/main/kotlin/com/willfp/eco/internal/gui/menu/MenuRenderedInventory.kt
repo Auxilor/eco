@@ -43,20 +43,11 @@ class MenuRenderedInventory(
                 val renderedItem = slot.getItemStack(player)
                 val itemStack = inventory.getItem(i) ?: continue
 
-                if (itemStack.type.isAir || itemStack.amount == 0) {
+                val isCaptiveDefault = (slot.getCaptiveDefault(player)?.matches(itemStack))
+                    ?: (renderedItem == itemStack)
+
+                if (isCaptiveDefault || itemStack.type.isAir || itemStack.amount == 0) {
                     continue
-                }
-
-                val captiveDefault = slot.getCaptiveDefault(player)
-
-                if (captiveDefault == null) {
-                    if (renderedItem == itemStack) {
-                        continue
-                    }
-                } else {
-                    if (captiveDefault.matches(itemStack)) {
-                        continue
-                    }
                 }
 
                 captiveItems.add(itemStack)
