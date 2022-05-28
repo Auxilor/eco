@@ -49,11 +49,13 @@ class EcoMenu(
 
         player.openInventory(inventory)
         MenuHandler.registerInventory(inventory, this, player)
+        inventory.asRenderedInventory()?.generateCaptive()
         return inventory
     }
 
     fun handleClose(event: InventoryCloseEvent) {
         onClose.handle(event, this)
+        event.inventory.asRenderedInventory()?.generateCaptive()
         MenuHandler.unregisterInventory(event.inventory)
     }
 

@@ -34,7 +34,7 @@ class MenuRenderedInventory(
         menu.runOnRender(player)
     }
 
-    private fun generateCaptive() {
+    fun generateCaptive() {
         captiveItems.clear()
         for (i in 0 until inventory.size) {
             val (row, column) = MenuUtils.convertSlotToRowColumn(i)
