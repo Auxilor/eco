@@ -72,3 +72,11 @@ use-safer-namespacedkey-creation: false
 # If the stack traces of extensions that failed to load should be logged. Disabled by
 # default to prevent users from reporting bugs. Enable if you're a developer.
 log-full-extension-errors: false
+
+# To make the custom crafting system work better for players, players are also sent an
+# additional recipe containing the displayed items as ingredients. However, with a large
+# number of recipes, this can create PacketTooLargeExceptions. If you have this exception,
+# disable this option. Bear in mind that this means the auto-craft preview will fail to
+# render items nicely, which may degrade the user experience on your server. If you use
+# a custom crafting table, though, this won't affect anything, and you should disable the option.
+displayed-recipes: true

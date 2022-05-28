@@ -101,43 +101,46 @@ public final class ShapelessCraftingRecipe extends PluginDependent<EcoPlugin> im
             shapelessRecipe.addIngredient(part.getItem().getType());
         }
 
-        ShapelessRecipe displayedRecipe = new ShapelessRecipe(this.getDisplayedKey(), this.getOutput());
-        for (TestableItem part : parts) {
-            List<TestableItem> items = new ArrayList<>();
-            if (part instanceof GroupedTestableItems group) {
-                items.addAll(group.getChildren());
-            } else {
-                items.add(part);
-            }
-
-            List<ItemStack> displayedItems = new ArrayList<>();
-
-            for (TestableItem testableItem : items) {
-                if (testableItem instanceof TestableStack) {
-                    ItemStack item = testableItem.getItem().clone();
-                    ItemMeta meta = item.getItemMeta();
-                    assert meta != null;
-
-                    List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-                    assert lore != null;
-                    lore.add("");
-                    String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
-                    add = add.replace("%amount%", String.valueOf(item.getAmount()));
-                    lore.add(add);
-                    meta.setLore(lore);
-                    item.setItemMeta(meta);
-
-                    displayedItems.add(item);
+        if (Eco.getHandler().getEcoPlugin().getConfigYml().getBool("displayed-recipes")) {
+            ShapelessRecipe displayedRecipe = new ShapelessRecipe(this.getDisplayedKey(), this.getOutput());
+            for (TestableItem part : parts) {
+                List<TestableItem> items = new ArrayList<>();
+                if (part instanceof GroupedTestableItems group) {
+                    items.addAll(group.getChildren());
                 } else {
-                    displayedItems.add(testableItem.getItem());
+                    items.add(part);
                 }
+
+                List<ItemStack> displayedItems = new ArrayList<>();
+
+                for (TestableItem testableItem : items) {
+                    if (testableItem instanceof TestableStack) {
+                        ItemStack item = testableItem.getItem().clone();
+                        ItemMeta meta = item.getItemMeta();
+                        assert meta != null;
+
+                        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                        assert lore != null;
+                        lore.add("");
+                        String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
+                        add = add.replace("%amount%", String.valueOf(item.getAmount()));
+                        lore.add(add);
+                        meta.setLore(lore);
+                        item.setItemMeta(meta);
+
+                        displayedItems.add(item);
+                    } else {
+                        displayedItems.add(testableItem.getItem());
+                    }
+                }
+
+                displayedRecipe.addIngredient(new RecipeChoice.ExactChoice(displayedItems));
             }
 
-            displayedRecipe.addIngredient(new RecipeChoice.ExactChoice(displayedItems));
+            Bukkit.getServer().addRecipe(displayedRecipe);
         }
 
         Bukkit.getServer().addRecipe(shapelessRecipe);
-        Bukkit.getServer().addRecipe(displayedRecipe);
     }
 
     /**

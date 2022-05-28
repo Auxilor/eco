@@ -15,6 +15,10 @@ class PacketAutoRecipe(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packet
         player: Player,
         event: PacketEvent
     ) {
+        if (!this.getPlugin().configYml.getBool("displayed-recipes")) {
+            return
+        }
+
         if (!EcoPlugin.getPluginNames()
                 .contains(packet.minecraftKeys.values[0].fullKey.split(":".toRegex()).toTypedArray()[0])
         ) {

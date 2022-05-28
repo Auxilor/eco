@@ -96,50 +96,53 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
             shapedRecipe.setIngredient(character, parts.get(i).getItem().getType());
         }
 
-        ShapedRecipe displayedRecipe = new ShapedRecipe(this.getDisplayedKey(), this.getOutput());
-        displayedRecipe.shape("012", "345", "678");
-        for (int i = 0; i < 9; i++) {
-            if (parts.get(i) instanceof EmptyTestableItem) {
-                continue;
-            }
-
-            char character = String.valueOf(i).toCharArray()[0];
-
-            List<TestableItem> items = new ArrayList<>();
-            if (parts.get(i) instanceof GroupedTestableItems group) {
-                items.addAll(group.getChildren());
-            } else {
-                items.add(parts.get(i));
-            }
-
-            List<ItemStack> displayedItems = new ArrayList<>();
-
-            for (TestableItem testableItem : items) {
-                if (testableItem instanceof TestableStack) {
-                    ItemStack item = testableItem.getItem().clone();
-                    ItemMeta meta = item.getItemMeta();
-                    assert meta != null;
-
-                    List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-                    assert lore != null;
-                    lore.add("");
-                    String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
-                    add = add.replace("%amount%", String.valueOf(item.getAmount()));
-                    lore.add(add);
-                    meta.setLore(lore);
-                    item.setItemMeta(meta);
-
-                    displayedItems.add(item);
-                } else {
-                    displayedItems.add(testableItem.getItem());
+        if (Eco.getHandler().getEcoPlugin().getConfigYml().getBool("displayed-recipes")) {
+            ShapedRecipe displayedRecipe = new ShapedRecipe(this.getDisplayedKey(), this.getOutput());
+            displayedRecipe.shape("012", "345", "678");
+            for (int i = 0; i < 9; i++) {
+                if (parts.get(i) instanceof EmptyTestableItem) {
+                    continue;
                 }
+
+                char character = String.valueOf(i).toCharArray()[0];
+
+                List<TestableItem> items = new ArrayList<>();
+                if (parts.get(i) instanceof GroupedTestableItems group) {
+                    items.addAll(group.getChildren());
+                } else {
+                    items.add(parts.get(i));
+                }
+
+                List<ItemStack> displayedItems = new ArrayList<>();
+
+                for (TestableItem testableItem : items) {
+                    if (testableItem instanceof TestableStack) {
+                        ItemStack item = testableItem.getItem().clone();
+                        ItemMeta meta = item.getItemMeta();
+                        assert meta != null;
+
+                        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                        assert lore != null;
+                        lore.add("");
+                        String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
+                        add = add.replace("%amount%", String.valueOf(item.getAmount()));
+                        lore.add(add);
+                        meta.setLore(lore);
+                        item.setItemMeta(meta);
+
+                        displayedItems.add(item);
+                    } else {
+                        displayedItems.add(testableItem.getItem());
+                    }
+                }
+
+                displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(displayedItems));
             }
 
-            displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(displayedItems));
+            Bukkit.getServer().addRecipe(displayedRecipe);
         }
 
         Bukkit.getServer().addRecipe(shapedRecipe);
-        Bukkit.getServer().addRecipe(displayedRecipe);
     }
 
     /**
