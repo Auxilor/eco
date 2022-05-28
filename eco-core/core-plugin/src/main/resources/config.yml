@@ -40,9 +40,6 @@ conflicts:
   whitelist: # Plugins that should never be marked as conflicts
     - eco
 
-# Options to fix villager bugs left behind from old (buggy) versions.
-villager-display-fix: false
-
 # DropQueue by default uses a faster collated queue system where all drops
 # that originate from the same player on the same tick are dropped together.
 # Disable it if it changes drop mechanics too much for you.
