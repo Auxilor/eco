@@ -19,6 +19,11 @@ class RecipePacketFixer(
     override fun onSend(packet: PacketContainer, player: Player, event: PacketEvent) {
         val nmsPackets = this.getPlugin().getProxy(RecipePacketProxy::class.java).splitPacket(packet.handle)
 
+        if (nmsPackets.size <= 1) {
+            return
+        }
+
+        event.isCancelled = true
         for (nmsPacket in nmsPackets) {
             val protocolLibPacket = PacketContainer.fromPacket(nmsPacket)
             ProtocolLibrary.getProtocolManager().sendServerPacket(player, protocolLibPacket, false)
