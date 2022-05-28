@@ -2,12 +2,9 @@ package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
-import com.willfp.eco.core.items.TestableItem
-import org.bukkit.entity.Player
 
 class EcoCaptiveSlot(
-    provider: SlotProvider,
-    private val captiveDefault: ((Player) -> TestableItem?)?
+    provider: SlotProvider
 ) : EcoSlot(
     provider,
     allowMovingItem,
@@ -19,10 +16,6 @@ class EcoCaptiveSlot(
 ) {
     override fun isCaptive(): Boolean {
         return true
-    }
-
-    override fun getCaptiveDefault(player: Player): TestableItem? {
-        return captiveDefault?.invoke(player)
     }
 }
 

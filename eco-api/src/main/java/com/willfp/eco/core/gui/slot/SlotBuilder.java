@@ -3,14 +3,10 @@ package com.willfp.eco.core.gui.slot;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
-import com.willfp.eco.core.items.TestableItem;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * Builder to create slots.
@@ -134,17 +130,7 @@ public interface SlotBuilder {
      *
      * @return The builder.
      */
-    default SlotBuilder setCaptive() {
-        return setCaptive(null);
-    }
-
-    /**
-     * Set slot to be a captive default with a default provider.
-     *
-     * @param provider The provider.
-     * @return The builder.
-     */
-    SlotBuilder setCaptive(@Nullable Function<Player, TestableItem> provider);
+    SlotBuilder setCaptive();
 
     /**
      * Build the slot.
