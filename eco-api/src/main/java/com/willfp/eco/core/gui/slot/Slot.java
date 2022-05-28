@@ -36,7 +36,10 @@ public interface Slot {
      * @param player The player.
      * @return The item, or null if no captive default was found.
      */
-    @Nullable TestableItem getCaptiveDefault(@NotNull Player player);
+    @Nullable
+    default TestableItem getCaptiveDefault(@NotNull Player player) {
+        return null;
+    }
 
     /**
      * Create a builder for an ItemStack.
