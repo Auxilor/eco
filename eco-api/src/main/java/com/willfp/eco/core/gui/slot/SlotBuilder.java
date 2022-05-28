@@ -130,7 +130,17 @@ public interface SlotBuilder {
      *
      * @return The builder.
      */
-    SlotBuilder setCaptive();
+    default SlotBuilder setCaptive() {
+        return setCaptive(false);
+    }
+
+    /**
+     * Set slot to be a captive slot.
+     *
+     * @param fromEmpty If an item with the same output as the rendered item counts as captive.
+     * @return The builder.
+     */
+    SlotBuilder setCaptive(boolean fromEmpty);
 
     /**
      * Build the slot.

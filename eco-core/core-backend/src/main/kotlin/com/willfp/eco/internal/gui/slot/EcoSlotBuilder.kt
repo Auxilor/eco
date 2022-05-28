@@ -8,6 +8,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 
 class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captive = false
+    private var captiveFromEmpty = false
     private var updater: SlotUpdater = SlotUpdater { player, menu, _ -> provider.provide(player, menu) }
 
     private var onLeftClick =
@@ -46,8 +47,9 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
         return this
     }
 
-    override fun setCaptive(): SlotBuilder {
+    override fun setCaptive(fromEmpty: Boolean): SlotBuilder {
         captive = true
+        captiveFromEmpty = fromEmpty
         return this
     }
 
@@ -58,7 +60,7 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
 
     override fun build(): Slot {
         return if (captive) {
-            EcoCaptiveSlot(provider)
+            EcoCaptiveSlot(provider, captiveFromEmpty)
         } else {
             EcoSlot(provider, onLeftClick, onRightClick, onShiftLeftClick, onShiftRightClick, onMiddleClick, updater)
         }
