@@ -32,10 +32,6 @@ fun SlotBuilder.onShiftRightClick(action: (InventoryClickEvent, Slot, Menu) -> U
 fun SlotBuilder.onMiddleClick(action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
     this.onMiddleClick { a, b, c -> action(a, b, c) }
 
-/** @see SlotBuilder.setCaptive */
-fun SlotBuilder.setCaptive(default: (Player) -> TestableItem?): SlotBuilder =
-    this.setCaptive { a -> default(a) }
-
 /**
  * @see SlotBuilder.setModifier
  * @deprecated Use SlotUpdater instead.
