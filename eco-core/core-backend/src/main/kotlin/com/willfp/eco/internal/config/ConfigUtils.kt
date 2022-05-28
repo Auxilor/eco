@@ -16,7 +16,7 @@ fun ConfigType.toMap(input: String?): Map<String, Any?> =
 fun ConfigType.toString(map: Map<String, Any?>): String =
     this.handler.toString(map)
 
-fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
+internal fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
     is Map<*, *> -> EcoConfigSection(type, this.normalizeToConfig(type))
     is Iterable<*> -> {
         if (this.firstOrNull() == null) {
@@ -31,7 +31,7 @@ fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
     else -> this
 }
 
-fun Map<*, *>.normalizeToConfig(type: ConfigType): Map<String, Any?> {
+internal fun Map<*, *>.normalizeToConfig(type: ConfigType): Map<String, Any?> {
     val building = mutableMapOf<String, Any?>()
 
     for ((unprocessedKey, value) in this.entries) {
