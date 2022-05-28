@@ -2,10 +2,12 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
+import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -27,6 +29,14 @@ public interface Slot {
      * @return If captive.
      */
     boolean isCaptive();
+
+    /**
+     * Get default captive item.
+     *
+     * @param player The player.
+     * @return The item, or null if no captive default was found.
+     */
+    @Nullable TestableItem getCaptiveDefault(@NotNull Player player);
 
     /**
      * Create a builder for an ItemStack.

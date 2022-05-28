@@ -5,6 +5,7 @@ import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
+import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.internal.gui.menu.getMenu
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -54,5 +55,9 @@ open class EcoSlot(
 
     override fun isCaptive(): Boolean {
         return false
+    }
+
+    override fun getCaptiveDefault(player: Player): TestableItem? {
+        return null
     }
 }
