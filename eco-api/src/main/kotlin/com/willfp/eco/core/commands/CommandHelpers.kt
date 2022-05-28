@@ -121,8 +121,8 @@ fun CommandBase.addSubcommand(
 }
 
 /**
- * Kotlin builder for commands.
- * Inherits plugin, permission, players only.
+ * Kotlin builder for commands. Inherits plugin, permission, players
+ * only.
  *
  * @param name The command name.
  * @param init The builder.

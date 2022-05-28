@@ -4,8 +4,6 @@ package com.willfp.eco.util
 
 import org.bukkit.Server
 
-/**
- * @see ServerUtils.getTps
- */
+/** @see ServerUtils.getTps */
 val Server.tps: Double
     get() = ServerUtils.getTps()

@@ -4,14 +4,10 @@ package com.willfp.eco.util
 
 import org.bukkit.util.Vector
 
-/**
- * @see VectorUtils.isFinite
- */
+/** @see VectorUtils.isFinite */
 val Vector.isFinite: Boolean
     get() = VectorUtils.isFinite(this)
 
-/**
- * @see VectorUtils.simplifyVector
- */
+/** @see VectorUtils.simplifyVector */
 fun Vector.simplify(): Vector =
     VectorUtils.simplifyVector(this)

@@ -6,21 +6,15 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataContainer
 
-/**
- * @see Items.toLookupString
- */
+/** @see Items.toLookupString */
 fun ItemStack?.toLookupString(): String =
     Items.toLookupString(this)
 
-/**
- * @see Items.mergeFrom
- */
+/** @see Items.mergeFrom */
 fun ItemStack.mergeFrom(other: ItemStack): ItemStack =
     Items.mergeFrom(other, this)
 
-/**
- * @see Items.mergeFrom
- */
+/** @see Items.mergeFrom */
 fun ItemMeta.mergeFrom(other: ItemMeta): ItemMeta =
     Items.mergeFrom(other, this)
 
@@ -34,8 +28,6 @@ var ItemStack.baseNBT: PersistentDataContainer
         Items.setBaseNBT(this, value)
     }
 
-/**
- * @see Items.setBaseNBT
- */
+/** @see Items.setBaseNBT */
 fun ItemStack.clearNBT() =
     Items.setBaseNBT(this, null)

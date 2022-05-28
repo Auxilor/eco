@@ -4,9 +4,7 @@ package com.willfp.eco.core.config
 
 import com.willfp.eco.core.config.interfaces.Config
 
-/**
- * Helper class to create configs with a kotlin DSL.
- */
+/** Helper class to create configs with a kotlin DSL. */
 class DSLConfig internal constructor(type: ConfigType) : TransientConfig(emptyMap(), type) {
     /**
      * Map a key to a value.

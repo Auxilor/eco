@@ -4,9 +4,7 @@ package com.willfp.eco.core.integrations.economy
 
 import org.bukkit.OfflinePlayer
 
-/**
- * @see EconomyManager
- */
+/** @see EconomyManager */
 var OfflinePlayer.balance: Double
     get() = EconomyManager.getBalance(this)
     set(value) {

@@ -5,33 +5,23 @@ package com.willfp.eco.util
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
-/**
- * @see StringUtils.toComponent
- */
+/** @see StringUtils.toComponent */
 fun String.toComponent(): Component =
     StringUtils.toComponent(this)
 
-/**
- * @see StringUtils.jsonToComponent
- */
+/** @see StringUtils.jsonToComponent */
 fun String.jsonToComponent(): Component =
     StringUtils.jsonToComponent(this)
 
-/**
- * @see StringUtils.toLegacy
- */
+/** @see StringUtils.toLegacy */
 fun Component.toLegacy(): String =
     StringUtils.toLegacy(this)
 
-/**
- * @see StringUtils.componentToJson
- */
+/** @see StringUtils.componentToJson */
 fun Component.toJSON(): String =
     StringUtils.componentToJson(this)
 
-/**
- * @see StringUtils.format
- */
+/** @see StringUtils.format */
 fun String.formatEco(
     player: Player? = null,
     formatPlaceholders: Boolean = false
@@ -41,9 +31,7 @@ fun String.formatEco(
     if (formatPlaceholders) StringUtils.FormatOption.WITH_PLACEHOLDERS else StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
 )
 
-/**
- * @see StringUtils.formatList
- */
+/** @see StringUtils.formatList */
 fun List<String>.formatEco(
     player: Player? = null,
     formatPlaceholders: Boolean = false
@@ -53,14 +41,10 @@ fun List<String>.formatEco(
     if (formatPlaceholders) StringUtils.FormatOption.WITH_PLACEHOLDERS else StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
 )
 
-/**
- * @see StringUtils.splitAround
- */
+/** @see StringUtils.splitAround */
 fun String.splitAround(separator: String): Array<String> =
     StringUtils.splitAround(this, separator)
 
-/**
- * @see StringUtils.toNiceString
- */
+/** @see StringUtils.toNiceString */
 fun Any?.toNiceString(): String =
     StringUtils.toNiceString(this)
