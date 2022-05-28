@@ -115,7 +115,6 @@ import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
-import com.willfp.eco.internal.spigot.recipes.RecipePacketFixer
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
@@ -345,8 +344,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             PacketSetSlot(this),
             PacketWindowItems(this),
             PacketHeldWindowItems(this),
-            PacketOpenWindowMerchant(this),
-            RecipePacketFixer(this)
+            PacketOpenWindowMerchant(this)
         )
     }
 
