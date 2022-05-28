@@ -2,7 +2,10 @@ package com.willfp.eco.internal.spigot.proxy.v1_18_R1
 
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxy.VillagerTradeProxy
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.trading.MerchantOffer
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftMerchantRecipe
 import org.bukkit.entity.Player
 import org.bukkit.inventory.MerchantRecipe
@@ -15,20 +18,17 @@ class VillagerTrade : VillagerTradeProxy {
         recipe: MerchantRecipe,
         player: Player
     ): MerchantRecipe {
-        val oldRecipe = recipe as CraftMerchantRecipe
-        val newRecipe = CraftMerchantRecipe(
-            Display.display(recipe.getResult().clone(), player),
-            recipe.getUses(),
-            recipe.getMaxUses(),
-            recipe.hasExperienceReward(),
-            recipe.getVillagerExperience(),
-            recipe.getPriceMultiplier()
-        )
-        for (ingredient in recipe.getIngredients()) {
-            newRecipe.addIngredient(Display.display(ingredient.clone(), player))
+        recipe as CraftMerchantRecipe
+
+        val nbt = getHandle(recipe).createTag()
+        for (tag in arrayOf("buy", "buyB", "sell")) {
+            val nms = ItemStack.of(nbt.getCompound(tag))
+            val displayed = Display.display(CraftItemStack.asBukkitCopy(nms), player)
+            val itemNBT = CraftItemStack.asNMSCopy(displayed).save(CompoundTag())
+            nbt.put(tag, itemNBT)
         }
-        getHandle(newRecipe).setSpecialPriceDiff(getHandle(oldRecipe).getSpecialPriceDiff())
-        return newRecipe
+
+        return CraftMerchantRecipe(MerchantOffer(nbt))
     }
 
     private fun getHandle(recipe: CraftMerchantRecipe): MerchantOffer {
