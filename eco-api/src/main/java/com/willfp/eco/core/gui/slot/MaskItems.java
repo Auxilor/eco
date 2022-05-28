@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,6 +18,15 @@ import java.util.List;
  * @param items The items.
  */
 public record MaskItems(@NotNull TestableItem... items) {
+    /**
+     * Create mask items from materials.
+     *
+     * @param materials The materials.
+     */
+    public MaskItems(@NotNull final Material... materials) {
+        this(Arrays.stream(materials).map(MaterialTestableItem::new).toList().toArray(new TestableItem[0]));
+    }
+
     /**
      * Create MaskItems from a list of item names.
      *
