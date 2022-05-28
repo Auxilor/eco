@@ -44,11 +44,8 @@ allprojects {
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
 
-        // NMS (for jitpack compilation)
-        maven("https://repo.codemc.org/repository/nms/")
-
         // mcMMO, BentoBox
-        maven("https://repo.codemc.org/repository/maven-public/")
+        maven("https://repo.codemc.io/repository/maven-public/")
 
         // Spigot API, Bungee API
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
