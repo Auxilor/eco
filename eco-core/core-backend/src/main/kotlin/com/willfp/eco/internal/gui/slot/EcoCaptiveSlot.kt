@@ -5,14 +5,19 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider
 
 class EcoCaptiveSlot(
     provider: SlotProvider,
-    private val captiveFromEmpty: Boolean
+    private val captiveFromEmpty: Boolean,
+    onLeftClick: SlotHandler,
+    onRightClick: SlotHandler,
+    onShiftLeftClick: SlotHandler,
+    onShiftRightClick: SlotHandler,
+    onMiddleClick: SlotHandler,
 ) : EcoSlot(
     provider,
-    allowMovingItem,
-    allowMovingItem,
-    allowMovingItem,
-    allowMovingItem,
-    allowMovingItem,
+    onLeftClick.captiveIfNoop(),
+    onRightClick.captiveIfNoop(),
+    onShiftLeftClick.captiveIfNoop(),
+    onShiftRightClick.captiveIfNoop(),
+    onMiddleClick.captiveIfNoop(),
     { _, _, prev -> prev }
 ) {
     override fun isCaptive(): Boolean {
@@ -21,6 +26,14 @@ class EcoCaptiveSlot(
 
     override fun isCaptiveFromEmpty(): Boolean {
         return captiveFromEmpty
+    }
+}
+
+private fun SlotHandler.captiveIfNoop(): SlotHandler {
+    return if (this == NoOpSlot) {
+        allowMovingItem
+    } else {
+        this
     }
 }
 

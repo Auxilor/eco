@@ -103,6 +103,13 @@ public interface SlotBuilder {
     SlotBuilder onMiddleClick(@NotNull SlotHandler handler);
 
     /**
+     * Prevent all clicks.
+     *
+     * @return The builder.
+     */
+    SlotBuilder preventAllClicks();
+
+    /**
      * Modify the ItemStack.
      *
      * @param modifier The modifier.
