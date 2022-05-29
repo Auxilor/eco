@@ -159,7 +159,7 @@ allprojects {
             relocate("org.litote", "com.willfp.eco.libs.litote")
             relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
             relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
-
+            relocate("com.github.benmanes.caffeine", "com.willfp.eco.libs.caffeine")
             /*
             Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
             Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
