@@ -47,7 +47,13 @@ private fun Plugin.getConflict(): Conflict? {
         return Conflict(this, ConflictType.LIB_LOADER)
     }
 
-    val zip = ZipFile(File(this::class.java.protectionDomain.codeSource.location.toURI()))
+    val file = File(this::class.java.protectionDomain.codeSource.location.toURI())
+
+    if (!file.exists() || file.name.contains("PolymartHelper")) {
+        return null
+    }
+
+    val zip = ZipFile(file)
 
     for (entry in zip.entries()) {
         if (entry.name.startsWith("kotlin/") || entry.name.startsWith("kotlinx/")) {
