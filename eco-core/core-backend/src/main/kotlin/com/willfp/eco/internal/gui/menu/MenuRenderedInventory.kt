@@ -43,6 +43,10 @@ class MenuRenderedInventory(
                 val renderedItem = slot.getItemStack(player)
                 val itemStack = inventory.getItem(i) ?: continue
 
+                if (slot.isNotCaptiveFor(player)) {
+                    continue
+                }
+
                 if (!slot.isCaptiveFromEmpty) {
                     if (itemStack == renderedItem) {
                         continue

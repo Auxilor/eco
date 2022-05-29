@@ -3,10 +3,12 @@ package com.willfp.eco.core.gui.slot;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 /**
  * Builder to create slots.
@@ -103,11 +105,12 @@ public interface SlotBuilder {
     SlotBuilder onMiddleClick(@NotNull SlotHandler handler);
 
     /**
-     * Prevent all clicks.
+     * Prevent captive for players that match a predicate.
      *
+     * @param predicate The predicate. Returns true when the slot should not be captive.
      * @return The builder.
      */
-    SlotBuilder preventAllClicks();
+    SlotBuilder notCaptiveFor(@NotNull Predicate<Player> predicate);
 
     /**
      * Modify the ItemStack.

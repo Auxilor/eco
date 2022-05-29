@@ -29,6 +29,16 @@ public interface Slot {
     boolean isCaptive();
 
     /**
+     * If the slot is not captive for a player.
+     *
+     * @param player The player.
+     * @return If not captive for the player.
+     */
+    default boolean isNotCaptiveFor(@NotNull Player player) {
+        return false;
+    }
+
+    /**
      * If the slot is captive from empty.
      * If true, a captive item will be returned even if the item is the same as the rendered item.
      *

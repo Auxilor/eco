@@ -20,6 +20,17 @@ public final class MenuUtils {
         return new Pair<>(row + 1, column + 1);
     }
 
+    /**
+     * Convert row and column to 0-53 slot.
+     *
+     * @param row    The row.
+     * @param column The column.
+     * @return The slot.
+     */
+    public static int rowColumnToSlot(final int row, final int column) {
+        return (column - 1) + ((row - 1) * 9);
+    }
+
     private MenuUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
