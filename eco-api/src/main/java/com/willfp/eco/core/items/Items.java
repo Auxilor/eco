@@ -187,12 +187,7 @@ public final class Items {
     @NotNull
     public static TestableItem lookup(@NotNull final String key) {
         if (key.startsWith("{")) {
-            ItemStack generated = fromSNBT(key);
-            if (generated != null) {
-                return new ExactTestableItem(generated);
-            } else {
-                return new EmptyTestableItem();
-            }
+            return Eco.getHandler().getSNBTHandler().createTestable(key);
         }
 
         return ITEMS_LOOKUP_HANDLER.parseKey(key);

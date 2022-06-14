@@ -29,4 +29,13 @@ public interface SNBTHandler {
      */
     @NotNull
     String toSNBT(@NotNull ItemStack itemStack);
+
+    /**
+     * Make TestableItem from SNBT.
+     *
+     * @param snbt The NBT string.
+     * @return The TestableItem.
+     */
+    @NotNull
+    TestableItem createTestable(@NotNull String snbt);
 }
