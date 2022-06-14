@@ -15,6 +15,7 @@ import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.GUIFactory;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
+import com.willfp.eco.core.items.SNBTHandler;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
@@ -282,8 +283,7 @@ public interface Handler {
      * @param <T> The mob type.
      * @return The controlled entity.
      */
-    @NotNull
-    <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
+    @NotNull <T extends Mob> EntityController<T> createEntityController(@NotNull T mob);
 
     /**
      * Adapt base PDC to extended PDC.
@@ -301,4 +301,12 @@ public interface Handler {
      */
     @NotNull
     PersistentDataContainer newPdc();
+
+    /**
+     * Get SNBT handler.
+     *
+     * @return The SNBT handler.
+     */
+    @NotNull
+    SNBTHandler getSNBTHandler();
 }

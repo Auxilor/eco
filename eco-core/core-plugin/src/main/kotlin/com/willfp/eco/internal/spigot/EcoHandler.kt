@@ -7,6 +7,7 @@ import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
+import com.willfp.eco.core.items.SNBTHandler
 import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.Plugins
@@ -31,6 +32,7 @@ import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
+import com.willfp.eco.internal.spigot.items.EcoSNBTHandler
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
@@ -69,6 +71,8 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
             )
         }, this
     )
+
+    private val snbtHandler = EcoSNBTHandler(this)
 
     @Suppress("RedundantNullableReturnType")
     private val keyFactory: InternalNamespacedKeyFactory? =
@@ -170,4 +174,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun newPdc(): PersistentDataContainer =
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).newPdc()
+
+    override fun getSNBTHandler(): SNBTHandler =
+        snbtHandler
 }
