@@ -4,16 +4,16 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
+import io.lumine.mythic.api.adapters.AbstractItemStack
 import io.lumine.mythic.api.config.MythicLineConfig
 import io.lumine.mythic.api.drops.DropMetadata
-import io.lumine.mythic.api.drops.IMultiDrop
+import io.lumine.mythic.api.drops.IItemDrop
 import io.lumine.mythic.bukkit.adapters.BukkitItemStack
 import io.lumine.mythic.bukkit.events.MythicDropLoadEvent
-import io.lumine.mythic.core.drops.Drop
-import io.lumine.mythic.core.drops.LootBag
-import io.lumine.mythic.core.drops.droppables.ItemDrop
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 
 class CustomItemsMythicMobs(
     private val plugin: EcoPlugin
@@ -39,19 +39,16 @@ class CustomItemsMythicMobs(
     private class MythicMobsDrop(
         private val plugin: EcoPlugin,
         itemConfig: MythicLineConfig
-    ) : Drop(itemConfig.line, itemConfig), IMultiDrop {
-        private val id = itemConfig.getString(arrayOf("type", "t", "item", "i"), this.dropVar)
+    ) : IItemDrop {
+        private val id = itemConfig.getString(arrayOf("type", "t", "item", "i"), "eco")
 
-        override fun get(data: DropMetadata): LootBag {
-            val bag = LootBag(data)
-
+        override fun getDrop(data: DropMetadata, v: Double): AbstractItemStack {
             val item = Items.lookup(id)
             if (item is EmptyTestableItem) {
                 plugin.logger.warning("Item with ID $id is invalid, check your configs!")
-                return bag
+                return BukkitItemStack(ItemStack(Material.AIR))
             }
-            bag.add(data, ItemDrop(this.line, this.config, BukkitItemStack(item.item)))
-            return bag
+            return BukkitItemStack(item.item.apply { amount = v.toInt() })
         }
     }
 }
