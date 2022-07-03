@@ -77,3 +77,6 @@ log-full-extension-errors: false
 # render items nicely, which may degrade the user experience on your server. If you use
 # a custom crafting table, though, this won't affect anything, and you should disable the option.
 displayed-recipes: true
+
+# Save health on leave and set it back on join - works around attribute modifiers.
+health-fixer: false

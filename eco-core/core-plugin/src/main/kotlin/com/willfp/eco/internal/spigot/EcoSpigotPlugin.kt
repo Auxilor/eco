@@ -111,6 +111,7 @@ import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
 import com.willfp.eco.internal.spigot.math.evaluateExpression
+import com.willfp.eco.internal.spigot.player.PlayerHealthFixer
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
@@ -358,7 +359,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
             DataListener(this),
-            PlayerBlockListener(this)
+            PlayerBlockListener(this),
+            PlayerHealthFixer(this)
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {
