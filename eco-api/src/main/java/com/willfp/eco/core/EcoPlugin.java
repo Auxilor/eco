@@ -304,6 +304,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.color = props.getColor();
         this.supportingExtensions = props.isSupportingExtensions();
 
+        this.logger = Eco.getHandler().createLogger(this);
+
+        this.getLogger().info("Initializing " + this.getColor() + this.getName());
+
         this.scheduler = Eco.getHandler().createScheduler(this);
         this.eventManager = Eco.getHandler().createEventManager(this);
         this.namespacedKeyFactory = Eco.getHandler().createNamespacedKeyFactory(this);
@@ -311,15 +315,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.runnableFactory = Eco.getHandler().createRunnableFactory(this);
         this.extensionLoader = Eco.getHandler().createExtensionLoader(this);
         this.configHandler = Eco.getHandler().createConfigHandler(this);
-        this.logger = Eco.getHandler().createLogger(this);
         this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.getHandler().createProxyFactory(this);
 
         this.langYml = this.createLangYml();
         this.configYml = this.createConfigYml();
 
         Eco.getHandler().addNewPlugin(this);
-
-        this.getLogger().info("Initializing " + this.getColor() + this.getName());
 
         /*
         The minimum eco version check was moved here because it's very common
