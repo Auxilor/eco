@@ -304,6 +304,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.color = props.getColor();
         this.supportingExtensions = props.isSupportingExtensions();
 
+        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.getHandler().createProxyFactory(this);
         this.logger = Eco.getHandler().createLogger(this);
 
         this.getLogger().info("Initializing " + this.getColor() + this.getName());
@@ -315,7 +316,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.runnableFactory = Eco.getHandler().createRunnableFactory(this);
         this.extensionLoader = Eco.getHandler().createExtensionLoader(this);
         this.configHandler = Eco.getHandler().createConfigHandler(this);
-        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.getHandler().createProxyFactory(this);
 
         this.langYml = this.createLangYml();
         this.configYml = this.createConfigYml();
