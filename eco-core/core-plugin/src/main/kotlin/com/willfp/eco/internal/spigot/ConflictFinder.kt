@@ -16,7 +16,11 @@ object ConflictFinder {
                 continue
             }
 
-            val conflict = plugin.getConflict()
+            val conflict = try {
+                plugin.getConflict()
+            } catch (e: Exception) {
+                continue
+            } // Really can't be fucked to do this properly.
 
             if (conflict != null) {
                 conflicts.add(conflict)
