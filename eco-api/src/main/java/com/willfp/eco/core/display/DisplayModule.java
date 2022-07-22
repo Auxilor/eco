@@ -65,6 +65,21 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
     }
 
     /**
+     * Display an item.
+     *
+     * @param itemStack  The item.
+     * @param player     The player.
+     * @param properties The properties.
+     * @param args       Optional args for display.
+     */
+    public void display(@NotNull final ItemStack itemStack,
+                        @Nullable final Player player,
+                        @NotNull final DisplayProperties properties,
+                        @NotNull final Object... args) {
+        // Technically optional.
+    }
+
+    /**
      * Revert an item.
      *
      * @param itemStack The item.

@@ -4,6 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.display.DisplayHandler
 import com.willfp.eco.core.display.DisplayModule
+import com.willfp.eco.core.display.DisplayProperties
 import com.willfp.eco.core.fast.fast
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -32,13 +33,21 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
             }
         }
 
-
         Display.revert(itemStack)
 
         if (!itemStack.hasItemMeta()) {
             return itemStack
         }
 
+        val original = itemStack.clone()
+        val inventory = player?.openInventory?.topInventory
+        val inInventory = inventory?.contains(original) ?: false
+
+        val props = DisplayProperties(
+            inInventory,
+            inInventory && inventory?.holder == null,
+            original
+        )
 
         for ((_, modules) in registeredModules) {
             for (module in modules) {
@@ -48,6 +57,7 @@ class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
 
                 if (player != null) {
                     module.display(itemStack, player as Player?, *varargs)
+                    module.display(itemStack, player as Player?, props, *varargs)
                 }
             }
         }

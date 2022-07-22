@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
     }
 }
 
@@ -13,7 +13,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.7.10"
 }
 
 dependencies {
@@ -81,8 +81,8 @@ allprojects {
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "1.6.21"))
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
+        implementation(kotlin("stdlib", version = "1.7.10"))
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
 
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
