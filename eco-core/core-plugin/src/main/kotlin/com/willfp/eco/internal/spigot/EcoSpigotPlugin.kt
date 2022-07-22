@@ -38,6 +38,7 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
+import com.willfp.eco.internal.gui.menu.getMenu
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -121,6 +122,7 @@ import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
+import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.NumberUtils
 import com.willfp.eco.util.ServerUtils
 import com.willfp.eco.util.SkullUtils
@@ -182,6 +184,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         ServerUtils.initialize { tpsProxy.getTPS() }
 
         NumberUtils.initCrunch { expression, player, context -> evaluateExpression(expression, player, context) }
+
+        MenuUtils.initialize { it.openInventory.topInventory.getMenu() }
 
         CustomItemsManager.registerProviders()
 

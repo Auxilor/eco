@@ -38,7 +38,7 @@ open class EcoSlot(
     }
 
     override fun getItemStack(player: Player): ItemStack {
-        val menu = player.openInventory.topInventory.getMenu()!!
+        val menu = player.openInventory.topInventory.getMenu() ?: return ItemStack(Material.AIR)
         val prev = provider.provide(player, menu)
         return updater.update(player, menu, prev) ?: ItemStack(Material.AIR)
     }
