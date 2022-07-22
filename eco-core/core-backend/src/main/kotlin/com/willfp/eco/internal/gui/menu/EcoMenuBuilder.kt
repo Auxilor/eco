@@ -3,6 +3,7 @@ package com.willfp.eco.internal.gui.menu
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.core.gui.slot.FillerMask
 import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
@@ -21,6 +22,7 @@ class EcoMenuBuilder(private val rows: Int ) : MenuBuilder {
     private var maskSlots: List<MutableList<Slot?>>
     private val slots: List<MutableList<Slot?>> = ListUtils.create2DList(rows, 9)
     private var onClose = CloseHandler { _, _ -> }
+    private var onOpen = OpenHandler { _, _ -> }
     private var onRender: (Player, Menu) -> Unit = { _, _ -> }
 
     override fun setTitle(title: String): MenuBuilder {
@@ -54,6 +56,11 @@ class EcoMenuBuilder(private val rows: Int ) : MenuBuilder {
         return this
     }
 
+    override fun onOpen(action: OpenHandler): MenuBuilder {
+        onOpen = action
+        return this
+    }
+
     override fun onRender(action: BiConsumer<Player, Menu>): MenuBuilder {
         onRender = { a, b -> action.accept(a, b) }
         return this
@@ -83,7 +90,7 @@ class EcoMenuBuilder(private val rows: Int ) : MenuBuilder {
             finalSlots.add(tempRow)
         }
 
-        return EcoMenu(rows, finalSlots, title, onClose, onRender)
+        return EcoMenu(rows, finalSlots, title, onClose, onRender, onOpen)
     }
 
     init {

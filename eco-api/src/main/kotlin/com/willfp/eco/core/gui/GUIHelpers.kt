@@ -109,6 +109,10 @@ fun slot(
 fun MenuBuilder.onClose(action: (InventoryCloseEvent, Menu) -> Unit): MenuBuilder =
     this.onClose { a, b -> action(a, b) }
 
+/** @see MenuBuilder.onOpen */
+fun MenuBuilder.onOpen(action: (Player, Menu) -> Unit): MenuBuilder =
+    this.onOpen { a, b -> action(a, b) }
+
 /** @see MenuBuilder.modify */
 fun MenuBuilder.modify(modifier: (MenuBuilder) -> Unit): MenuBuilder =
     this.modfiy { modifier(it) }

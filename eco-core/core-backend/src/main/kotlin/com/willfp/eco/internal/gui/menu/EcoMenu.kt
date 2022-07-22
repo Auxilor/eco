@@ -2,6 +2,7 @@ package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
+import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.NamespacedKeyUtils
@@ -19,7 +20,8 @@ class EcoMenu(
     val slots: List<MutableList<EcoSlot>>,
     private val title: String,
     private val onClose: CloseHandler,
-    private val onRender: (Player, Menu) -> Unit
+    private val onRender: (Player, Menu) -> Unit,
+    private val onOpen: OpenHandler
 ) : Menu {
     override fun getSlot(row: Int, column: Int): Slot {
         if (row < 1 || row > this.rows) {
@@ -49,6 +51,7 @@ class EcoMenu(
 
         player.openInventory(inventory)
         MenuHandler.registerInventory(inventory, this, player)
+        onOpen.handle(player, this)
         inventory.asRenderedInventory()?.generateCaptive()
         return inventory
     }

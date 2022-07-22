@@ -69,6 +69,14 @@ public interface MenuBuilder {
     MenuBuilder onClose(@NotNull CloseHandler action);
 
     /**
+     * Set the menu open handler.
+     *
+     * @param action The handler.
+     * @return The builder.
+     */
+    MenuBuilder onOpen(@NotNull OpenHandler action);
+
+    /**
      * Set the action to run on render.
      *
      * @param action The action.
