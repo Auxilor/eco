@@ -11,3 +11,7 @@ val Vector.isFinite: Boolean
 /** @see VectorUtils.simplifyVector */
 fun Vector.simplify(): Vector =
     VectorUtils.simplifyVector(this)
+
+/** @see VectorUtils.isSafeVelocity */
+val Vector.isSafeVelocity: Boolean
+    get() = VectorUtils.isSafeVelocity(this)

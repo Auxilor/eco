@@ -152,6 +152,20 @@ public final class VectorUtils {
         return vectors.toArray(new Vector[0]);
     }
 
+    /**
+     * Get if a vector is a safe velocity.
+     *
+     * @param vec The vector to check.
+     * @return If safe.
+     */
+    public static boolean isSafeVelocity(@NotNull final Vector vec) {
+        double x = Math.abs(vec.getX());
+        double y = Math.abs(vec.getY());
+        double z = Math.abs(vec.getZ());
+
+        return x < 4 && y < 4 && z < 4;
+    }
+
     private VectorUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
