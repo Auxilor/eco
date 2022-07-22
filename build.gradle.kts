@@ -129,8 +129,6 @@ allprojects {
             kotlinOptions {
                 jvmTarget = "17"
             }
-            targetCompatibility = "17"
-            sourceCompatibility = "17"
         }
 
         shadowJar {
