@@ -17,11 +17,13 @@ class PacketSetSlot(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketTyp
         player: Player,
         event: PacketEvent
     ) {
-        packet.itemModifier.modify(0) { item: ItemStack? ->
-            Display.display(
-                item!!, player
-            )
-        }
+        packet.itemModifier.modify(0, object : VersionCompatiblePLibFunction<ItemStack> {
+            override fun apply(item: ItemStack) =
+                Display.display(
+                    item,
+                    player
+                )
+        })
 
         player.lastDisplayFrame = DisplayFrame.EMPTY
     }
