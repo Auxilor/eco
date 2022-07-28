@@ -39,7 +39,7 @@ and many more.
 # For developers
 
 ## Javadoc
-The 6.27.2 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.27.2/javadoc/)
+The 6.38.2 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.38.2/javadoc/)
 
 ## Plugin Information
 
