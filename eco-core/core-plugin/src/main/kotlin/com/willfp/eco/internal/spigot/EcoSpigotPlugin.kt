@@ -93,6 +93,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
@@ -264,6 +265,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("IridiumSkyblock") { AntigriefManager.register(AntigriefIridiumSkyblock()) },
             IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
+            IntegrationLoader("FabledSkyBlock") { AntigriefManager.register(AntigriefFabledSkyBlock()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
