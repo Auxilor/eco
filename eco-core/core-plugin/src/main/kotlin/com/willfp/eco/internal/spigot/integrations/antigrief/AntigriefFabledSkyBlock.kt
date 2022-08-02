@@ -31,6 +31,7 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
     }
 
     override fun canCreateExplosion(player: Player, location: Location): Boolean {
+
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(location) ?: return true
 
