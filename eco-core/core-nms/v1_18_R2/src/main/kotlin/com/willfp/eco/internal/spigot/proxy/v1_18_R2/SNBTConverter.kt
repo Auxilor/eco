@@ -30,10 +30,11 @@ class SNBTConverter : SNBTConverterProxy {
 
         nbt.remove("Count")
 
-        return SNBTTestableItem(nbt)
+        return SNBTTestableItem(CraftItemStack.asBukkitCopy(nms), nbt)
     }
 
     class SNBTTestableItem(
+        private val item: ItemStack,
         private val tag: CompoundTag
     ) : TestableItem {
         override fun matches(itemStack: ItemStack?): Boolean {
@@ -47,8 +48,6 @@ class SNBTConverter : SNBTConverterProxy {
             return tag.copy().merge(nmsTag) == nmsTag
         }
 
-        override fun getItem(): ItemStack {
-            return CraftItemStack.asBukkitCopy(net.minecraft.world.item.ItemStack.of(tag))
-        }
+        override fun getItem(): ItemStack = item
     }
 }
