@@ -77,6 +77,9 @@ allprojects {
 
         // LibsDisguises
         maven("https://repo.md-5.net/content/groups/public/")
+
+        // FabledSkyblock
+        maven("https://repo.songoda.com/repository/public/")
     }
 
     dependencies {
