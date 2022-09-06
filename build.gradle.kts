@@ -61,7 +61,7 @@ allprojects {
         maven("https://maven.enginehub.org/repo/")
 
         // FactionsUUID
-        maven("https://ci.ender.zone/plugin/repository/everything/")
+        //maven("https://ci.ender.zone/plugin/repository/everything/")
 
         // NoCheatPlus
         maven("https://repo.md-5.net/content/repositories/snapshots/")
