@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
@@ -11,11 +12,13 @@ import com.willfp.eco.core.placeholder.PlayerPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerStaticPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
+import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class to handle placeholder integrations.
@@ -56,10 +61,16 @@ public final class PlaceholderManager {
         }
 
         @Override
-        public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+        public @NotNull
+        List<InjectablePlaceholder> getPlaceholderInjections() {
             return Collections.emptyList();
         }
     };
+
+    /**
+     * The default PlaceholderAPI pattern; brought in for compatibility.
+     */
+    private static final Pattern PATTERN = Pattern.compile("[%]([^%]+)[%]");
 
     /**
      * Register a new placeholder integration.
@@ -192,7 +203,45 @@ public final class PlaceholderManager {
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context) {
+        return translatePlaceholders(text, player, context, new ArrayList<>());
+    }
+
+    /**
+     * Translate all placeholders with respect to a player.
+     *
+     * @param text              The text that may contain placeholders to translate.
+     * @param player            The player to translate the placeholders with respect to.
+     * @param context           The injectable context.
+     * @param additionalPlayers Additional players to translate placeholders for.
+     * @return The text, translated.
+     */
+    public static String translatePlaceholders(@NotNull final String text,
+                                               @Nullable final Player player,
+                                               @NotNull final PlaceholderInjectable context,
+                                               @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
         String processed = text;
+
+        // Prevent running 2 scans if there are no additional players.
+        if (!additionalPlayers.isEmpty()) {
+            List<String> found = findPlaceholdersIn(text);
+
+            for (AdditionalPlayer additionalPlayer : additionalPlayers) {
+                for (String placeholder : found) {
+                    String prefix = "%" + additionalPlayer.getIdentifier() + "_";
+
+                    if (placeholder.startsWith(prefix)) {
+                        processed = processed.replace(
+                                placeholder,
+                                translatePlaceholders(
+                                        "%" + StringUtils.removePrefix(prefix, placeholder),
+                                        additionalPlayer.getPlayer()
+                                )
+                        );
+                    }
+                }
+            }
+        }
+
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
             processed = integration.translate(processed, player);
         }
@@ -214,12 +263,21 @@ public final class PlaceholderManager {
      * @return The placeholders.
      */
     public static List<String> findPlaceholdersIn(@NotNull final String text) {
-        List<String> found = new ArrayList<>();
+        Set<String> found = new HashSet<>();
+
+        // Mock PAPI for those without it installed
+        if (REGISTERED_INTEGRATIONS.isEmpty()) {
+            Matcher matcher = PATTERN.matcher(text);
+            while (matcher.find()) {
+                found.add(matcher.group());
+            }
+        }
+
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
             found.addAll(integration.findPlaceholdersIn(text));
         }
 
-        return found;
+        return new ArrayList<>(found);
     }
 
     private record EntryWithPlayer(@NotNull PlayerPlaceholder entry,

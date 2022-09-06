@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -263,7 +265,8 @@ public final class NumberUtils {
             }
 
             @Override
-            public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+            public @NotNull
+            List<InjectablePlaceholder> getPlaceholderInjections() {
                 return Collections.emptyList();
             }
         });
@@ -282,7 +285,7 @@ public final class NumberUtils {
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player,
                                             @NotNull final Iterable<StaticPlaceholder> statics) {
-        return crunch.evaluate(expression, player, new PlaceholderInjectable() {
+        return evaluateExpression(expression, player, new PlaceholderInjectable() {
             @Override
             public void clearInjectedPlaceholders() {
                 // Do nothing.
@@ -304,13 +307,29 @@ public final class NumberUtils {
      *
      * @param expression The expression.
      * @param player     The player.
-     * @param context The injectable placeholders.
+     * @param context    The injectable placeholders.
      * @return The value of the expression, or zero if invalid.
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player,
                                             @NotNull final PlaceholderInjectable context) {
-        return crunch.evaluate(expression, player, context);
+        return evaluateExpression(expression, player, context, new ArrayList<>());
+    }
+
+    /**
+     * Evaluate an expression with respect to a player (for placeholders).
+     *
+     * @param expression        The expression.
+     * @param player            The player.
+     * @param context           The injectable placeholders.
+     * @param additionalPlayers Additional players to parse placeholders for.
+     * @return The value of the expression, or zero if invalid.
+     */
+    public static double evaluateExpression(@NotNull final String expression,
+                                            @Nullable final Player player,
+                                            @NotNull final PlaceholderInjectable context,
+                                            @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
+        return crunch.evaluate(expression, player, context, additionalPlayers);
     }
 
     /**
@@ -332,14 +351,16 @@ public final class NumberUtils {
         /**
          * Evaluate an expression.
          *
-         * @param expression The expression.
-         * @param player     The player.
-         * @param injectable The injectable placeholders.
+         * @param expression        The expression.
+         * @param player            The player.
+         * @param injectable        The injectable placeholders.
+         * @param additionalPlayers The additional players.
          * @return The value of the expression, or zero if invalid.
          */
         double evaluate(@NotNull String expression,
                         @Nullable Player player,
-                        @NotNull PlaceholderInjectable injectable);
+                        @NotNull PlaceholderInjectable injectable,
+                        @NotNull Collection<AdditionalPlayer> additionalPlayers);
     }
 
     private NumberUtils() {
