@@ -5,7 +5,7 @@ import com.massivecraft.factions.FLocation
 import com.massivecraft.factions.FPlayer
 import com.massivecraft.factions.FPlayers
 import com.massivecraft.factions.Faction
-import com.massivecraft.factions.perms.PermissibleAction
+import com.massivecraft.factions.perms.PermissibleActions
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
@@ -20,7 +20,7 @@ class AntigriefFactionsUUID : AntigriefIntegration {
         val fplayer: FPlayer = FPlayers.getInstance().getByPlayer(player)
         val flocation = FLocation(block.location)
         val faction: Faction = Board.getInstance().getFactionAt(flocation)
-        return if (!faction.hasAccess(fplayer, PermissibleAction.DESTROY)) {
+        return if (!faction.hasAccess(fplayer, PermissibleActions.DESTROY, flocation)) {
             fplayer.isAdminBypassing
         } else true
     }
@@ -41,7 +41,7 @@ class AntigriefFactionsUUID : AntigriefIntegration {
         val fplayer: FPlayer = FPlayers.getInstance().getByPlayer(player)
         val flocation = FLocation(block.location)
         val faction: Faction = Board.getInstance().getFactionAt(flocation)
-        return if (!faction.hasAccess(fplayer, PermissibleAction.BUILD)) {
+        return if (!faction.hasAccess(fplayer, PermissibleActions.BUILD, flocation)) {
             fplayer.isAdminBypassing
         } else true
     }
@@ -58,7 +58,7 @@ class AntigriefFactionsUUID : AntigriefIntegration {
                 return fplayer.isAdminBypassing
             }
         } else {
-            if (faction.hasAccess(fplayer, PermissibleAction.DESTROY)) {
+            if (faction.hasAccess(fplayer, PermissibleActions.DESTROY, flocation)) {
                 return fplayer.isAdminBypassing
             }
         }
