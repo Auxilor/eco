@@ -3,6 +3,7 @@ package com.willfp.eco.core.config.interfaces;
 import com.willfp.eco.core.config.BuildableConfig;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.TransientConfig;
+import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.util.NumberUtils;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -157,6 +159,20 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     default int getIntFromExpression(@NotNull String path,
                                      @Nullable Player player) {
         return Double.valueOf(getDoubleFromExpression(path, player)).intValue();
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path              The key to fetch the value from.
+     * @param player            The player to evaluate placeholders with respect to.
+     * @param additionalPlayers The additional players to evaluate placeholders with respect to.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default int getIntFromExpression(@NotNull String path,
+                                     @Nullable Player player,
+                                     @NotNull Collection<AdditionalPlayer> additionalPlayers) {
+        return Double.valueOf(getDoubleFromExpression(path, player, additionalPlayers)).intValue();
     }
 
 
@@ -472,6 +488,20 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     default double getDoubleFromExpression(@NotNull String path,
                                            @Nullable Player player) {
         return NumberUtils.evaluateExpression(this.getString(path), player, this);
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path   The key to fetch the value from.
+     * @param player The player to evaluate placeholders with respect to.
+     * @param additionalPlayers The additional players to evaluate placeholders with respect to.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default double getDoubleFromExpression(@NotNull String path,
+                                           @Nullable Player player,
+                                           @NotNull Collection<AdditionalPlayer> additionalPlayers) {
+        return NumberUtils.evaluateExpression(this.getString(path), player, this, additionalPlayers);
     }
 
     /**
