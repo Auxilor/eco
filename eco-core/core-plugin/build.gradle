@@ -43,6 +43,7 @@ dependencies {
     compileOnly 'com.github.EssentialsX:Essentials:2.18.2'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:1.8.3'
     compileOnly 'com.songoda:skyblock:2.3.30'
+    compileOnly 'com.github.drtshock:Factions:0.6.15'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'com.github.WhipDevelopment:CrashClaim:f9cd7d92eb'
     compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0'
