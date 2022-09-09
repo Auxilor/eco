@@ -19,15 +19,15 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(block.location) ?: return true
 
-        if (!player.hasPermission("fabledskyblock.bypass.destroy")) {
-            return false
+        if (player.hasPermission("fabledskyblock.bypass.destroy")) {
+            return true
         }
 
-        if (!skyblock.permissionManager.hasPermission(island, "Destroy", island.getRole(player))) {
-            return false
+        if (skyblock.permissionManager.hasPermission(island, "Destroy", island.getRole(player))) {
+            return true
         }
 
-        return true
+        return false
     }
 
     override fun canCreateExplosion(player: Player, location: Location): Boolean {
@@ -35,15 +35,15 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(location) ?: return true
 
-        if (!player.hasPermission("fabledskyblock.bypass.explosions")) {
-            return false
+        if (player.hasPermission("fabledskyblock.bypass.explosions")) {
+            return true
         }
 
-        if (!skyblock.permissionManager.hasPermission(island, "Explosions", island.getRole(player))) {
-            return false
+        if (skyblock.permissionManager.hasPermission(island, "Explosions", island.getRole(player))) {
+            return true
         }
 
-        return true
+        return false
     }
 
     override fun canPlaceBlock(player: Player, block: Block): Boolean {
@@ -51,15 +51,15 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(block.location) ?: return true
 
-        if (!player.hasPermission("fabledskyblock.bypass.place")) {
-            return false
+        if (player.hasPermission("fabledskyblock.bypass.place")) {
+            return true
         }
 
-        if (!skyblock.permissionManager.hasPermission(island, "Place", island.getRole(player))) {
-            return false
+        if (skyblock.permissionManager.hasPermission(island, "Place", island.getRole(player))) {
+            return true
         }
 
-        return true
+        return false
     }
 
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
@@ -74,11 +74,11 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
             else -> "MobHurting"
         }
 
-        if (!skyblock.permissionManager.hasPermission(island, islandPermission, island.getRole(player))) {
-            return false
+        if (skyblock.permissionManager.hasPermission(island, islandPermission, island.getRole(player))) {
+            return true
         }
 
-        return true
+        return false
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {
@@ -86,14 +86,14 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
         val skyblock = SkyBlock.getInstance()
         val island = SkyBlock.getInstance().islandManager.getIslandAtLocation(location) ?: return true
 
-        if (!player.hasPermission("fabledskyblock.bypass.itempickup")) {
-            return false
+        if (player.hasPermission("fabledskyblock.bypass.itempickup")) {
+            return true
         }
 
-        if (!skyblock.permissionManager.hasPermission(island, "ItemPickup", island.getRole(player))) {
-            return false
+        if (skyblock.permissionManager.hasPermission(island, "ItemPickup", island.getRole(player))) {
+            return true
         }
 
-        return true
+        return false
     }
 }
