@@ -22,29 +22,11 @@ public interface KeyRegistry {
     void registerKey(@NotNull PersistentDataKey<?> key);
 
     /**
-     * Get a key's category.
-     *
-     * @param key The key.
-     * @return The category.
-     */
-    @Nullable
-    KeyCategory getCategory(@NotNull PersistentDataKey<?> key);
-
-    /**
      * Get all registered keys.
      *
      * @return The keys.
      */
     Set<PersistentDataKey<?>> getRegisteredKeys();
-
-    /**
-     * Mark key as category.
-     *
-     * @param key      The key.
-     * @param category The category.
-     */
-    void markKeyAs(@NotNull PersistentDataKey<?> key,
-                   @NotNull KeyRegistry.KeyCategory category);
 
     /**
      * Get persistent data key from namespaced key.
@@ -54,19 +36,4 @@ public interface KeyRegistry {
      */
     @Nullable
     PersistentDataKey<?> getKeyFrom(@NotNull NamespacedKey namespacedKey);
-
-    /**
-     * Locations for key categorization.
-     */
-    enum KeyCategory {
-        /**
-         * Player keys.
-         */
-        PLAYER,
-
-        /**
-         * Server keys.
-         */
-        SERVER
-    }
 }

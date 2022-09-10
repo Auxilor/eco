@@ -83,28 +83,40 @@ public final class PersistentDataKey<T> {
     }
 
     /**
+     * In older eco versions, keys would have to be categorized in order
+     * to register the columns in the MySQL database. This is no longer needed.
+     * <p>
+     * Old description is below:
+     * <p>
      * Categorize key as a server key, will register new column to MySQL
      * database immediately rather than waiting for auto-categorization.
      * <p>
      * This will improve performance.
      *
      * @return The key.
+     * @deprecated Not required since the new MySQL data handler was introduced.
      */
+    @Deprecated(since = "6.40.0", forRemoval = true)
     public PersistentDataKey<T> server() {
-        Eco.getHandler().getKeyRegistry().markKeyAs(this, KeyRegistry.KeyCategory.SERVER);
         return this;
     }
 
     /**
+     * In older eco versions, keys would have to be categorized in order
+     * to register the columns in the MySQL database. This is no longer needed.
+     * <p>
+     * Old description is below:
+     * <p>
      * Categorize key as a player key, will register new column to MySQL
      * database immediately rather than waiting for auto-categorization.
      * <p>
      * This will improve performance.
      *
      * @return The key.
+     * @deprecated Not required since the new MySQL data handler was introduced.
      */
+    @Deprecated(since = "6.40.0", forRemoval = true)
     public PersistentDataKey<T> player() {
-        Eco.getHandler().getKeyRegistry().markKeyAs(this, KeyRegistry.KeyCategory.PLAYER);
         return this;
     }
 

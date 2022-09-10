@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.data.storage
 
-import com.willfp.eco.core.data.keys.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import java.util.UUID
 
@@ -25,10 +24,6 @@ abstract class DataHandler(
     // Everything below this are methods that are only needed for certain implementations.
 
     open fun save() {
-
-    }
-
-    open fun categorize(key: PersistentDataKey<*>, category: KeyRegistry.KeyCategory) {
 
     }
 

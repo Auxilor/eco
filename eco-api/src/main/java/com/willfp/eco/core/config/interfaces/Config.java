@@ -79,7 +79,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
 
     /**
      * Get an object from config.
-     * Default implementations call {@link org.bukkit.configuration.file.YamlConfiguration#get(String)}.
      *
      * @param path The path.
      * @return The object.
@@ -89,7 +88,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
 
     /**
      * Set an object in config.
-     * Default implementations call {@link org.bukkit.configuration.file.YamlConfiguration#set(String, Object)}
      *
      * @param path   The path.
      * @param object The object.

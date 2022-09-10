@@ -59,17 +59,12 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     private val cleaner = EcoCleaner()
 
     private var adventure: BukkitAudiences? = null
+
     private val keyRegistry = EcoKeyRegistry()
+
     private val playerProfileHandler = EcoProfileHandler(
-        if (this.configYml.getBool("mysql.enabled")) {
-            this.configYml.set("mysql.enabled", false)
-            this.configYml.set("data-handler", "mysql")
-            HandlerType.MYSQL
-        } else {
-            HandlerType.valueOf(
-                this.configYml.getString("data-handler").uppercase()
-            )
-        }, this
+        HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()),
+        this
     )
 
     private val snbtHandler = EcoSNBTHandler(this)

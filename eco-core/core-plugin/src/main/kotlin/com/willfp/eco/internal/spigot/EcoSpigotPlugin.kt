@@ -245,6 +245,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun handleReload() {
         CollatedRunnable(this)
         DropManager.update(this)
+
+        this.scheduler.runLater(3) {
+            (Eco.getHandler().profileHandler as EcoProfileHandler).migrateIfNeeded()
+        }
+
         ProfileSaver(this, Eco.getHandler().profileHandler)
         this.scheduler.runTimer(
             { clearFrames() },
@@ -366,7 +371,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ArmorChangeEventListeners(this),
             DataListener(this),
             PlayerBlockListener(this),
-            PlayerHealthFixer(this)
+            PlayerHealthFixer(this),
+            ServerLocking
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {
