@@ -116,7 +116,7 @@ class LegacyMySQLDataHandler(
 private class ImplementedMySQLHandler(
     private val handler: EcoProfileHandler,
     private val table: UUIDTable,
-    plugin: EcoPlugin
+    private val plugin: EcoPlugin
 ) {
     private val rows = Caffeine.newBuilder()
         .expireAfterWrite(3, TimeUnit.SECONDS)
@@ -241,11 +241,15 @@ private class ImplementedMySQLHandler(
                     }
 
                     SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    plugin.logger.info("MySQL Error 1!")
+                    e.printStackTrace()
                     // What's that? Two enormous exception catches? That's right! This code sucks.
                 }
             }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            plugin.logger.info("MySQL Error 2!")
+            e.printStackTrace()
             // It might fail. Who cares? This is legacy.
         }
     }

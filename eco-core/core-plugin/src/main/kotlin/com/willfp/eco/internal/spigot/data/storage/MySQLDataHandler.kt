@@ -90,12 +90,10 @@ class MySQLDataHandler(
     }
 
     override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-        executor.submit {
-            val data = getData(uuid)
-            data.set(key.key.toString(), value)
+        val data = getData(uuid)
+        data.set(key.key.toString(), value)
 
-            setData(uuid, data)
-        }
+        setData(uuid, data)
     }
 
     override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {

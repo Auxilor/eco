@@ -5,6 +5,7 @@ import com.willfp.eco.core.data.Profile
 import com.willfp.eco.core.data.ProfileHandler
 import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.profile
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.ServerLocking
 import com.willfp.eco.internal.spigot.data.storage.DataHandler
@@ -113,6 +114,7 @@ class EcoProfileHandler(
         fun <T : Any> migrateKey(uuid: UUID, key: PersistentDataKey<T>, from: DataHandler, to: DataHandler) {
             val previous: T? = from.read(uuid, key)
             if (previous != null) {
+                Bukkit.getOfflinePlayer(uuid).profile.write(key, previous) // Nope, no idea.
                 to.write(uuid, key, previous)
             }
         }
@@ -129,7 +131,7 @@ class EcoProfileHandler(
                 try {
                     migrateKey(uuid, key, previousHandler, handler)
                 } catch (e: Exception) {
-                    plugin.logger.info("Could not migrate ${key.key} for $uuid!")
+                    plugin.logger.info("Could not migrate ${key.key} for $uuid! This is probably because they do not have any data.")
                 }
             }
 
