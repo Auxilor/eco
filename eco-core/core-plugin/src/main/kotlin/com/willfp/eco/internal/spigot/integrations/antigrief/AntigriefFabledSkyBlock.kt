@@ -15,7 +15,6 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
     }
 
     override fun canBreakBlock(player: Player, block: Block): Boolean {
-
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(block.location) ?: return true
 
@@ -31,7 +30,6 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
     }
 
     override fun canCreateExplosion(player: Player, location: Location): Boolean {
-
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(location) ?: return true
 
@@ -47,7 +45,6 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
     }
 
     override fun canPlaceBlock(player: Player, block: Block): Boolean {
-
         val skyblock = SkyBlock.getInstance()
         val island = skyblock.islandManager.getIslandAtLocation(block.location) ?: return true
 
@@ -63,7 +60,6 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
     }
 
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
-
         val skyblock = SkyBlock.getInstance()
         val island = SkyBlock.getInstance().islandManager.getIslandAtLocation(victim.location) ?: return true
 
@@ -82,7 +78,6 @@ class AntigriefFabledSkyBlock : AntigriefIntegration {
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {
-
         val skyblock = SkyBlock.getInstance()
         val island = SkyBlock.getInstance().islandManager.getIslandAtLocation(location) ?: return true
 
