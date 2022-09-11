@@ -350,7 +350,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getLogger().info("");
         this.getLogger().info("Loading " + this.getColor() + this.getName());
 
-        if (this.getResourceId() != 0) {
+        if (this.getResourceId() != 0 && !Eco.getHandler().getEcoPlugin().getConfigYml().getBool("no-update-checker")) {
             new UpdateChecker(this).getVersion(version -> {
                 DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
                 DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);

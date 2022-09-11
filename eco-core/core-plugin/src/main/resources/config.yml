@@ -75,3 +75,8 @@ displayed-recipes: true
 
 # Save health on leave and set it back on join - works around attribute modifiers.
 health-fixer: false
+
+# If eco plugins should not check for updates; only enable this if you know what you're doing
+# as there can be urgent hotfixes that you are then not notified about. If you're confident
+# that you can manage updates on your own, turn this on.
+no-update-checker: false
