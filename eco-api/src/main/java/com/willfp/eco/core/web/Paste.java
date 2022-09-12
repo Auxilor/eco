@@ -26,12 +26,29 @@ public class Paste {
     private final String contents;
 
     /**
+     * The host.
+     */
+    private final String host;
+
+    /**
      * Create a new paste.
      *
      * @param contents The contents.
      */
     public Paste(@NotNull final String contents) {
+        this(contents, "https://paste.willfp.com");
+    }
+
+    /**
+     * Create a new paste.
+     *
+     * @param contents The contents.
+     * @param host     The host.
+     */
+    public Paste(@NotNull final String contents,
+                 @NotNull final String host) {
         this.contents = contents;
+        this.host = host;
     }
 
     /**
@@ -47,7 +64,7 @@ public class Paste {
                 byte[] postData = URLEncoder.encode(contents, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
-                String requestURL = "https://paste.willfp.com/documents";
+                String requestURL = this.host + "/documents";
                 URL url = new URL(requestURL);
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setDoOutput(true);
@@ -85,14 +102,26 @@ public class Paste {
      * @return The paste.
      */
     public static Paste getFromHastebin(@NotNull final String token) {
+        return getFromHastebin(token, "https://paste.willfp.com");
+    }
+
+    /**
+     * Get paste from hastebin.
+     *
+     * @param token The token.
+     * @param host  The host.
+     * @return The paste.
+     */
+    public static Paste getFromHastebin(@NotNull final String token,
+                                        @NotNull final String host) {
         try {
             StringBuilder result = new StringBuilder();
-            URL url = new URL("https://paste.willfp.com/raw/" + token);
+            URL url = new URL(host + "/raw/" + token);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             try (var reader = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()))) {
-                for (String line; (line = reader.readLine()) != null;) {
+                for (String line; (line = reader.readLine()) != null; ) {
                     result.append(line);
                 }
             }
