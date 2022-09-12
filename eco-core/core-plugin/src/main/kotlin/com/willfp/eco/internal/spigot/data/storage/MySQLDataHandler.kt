@@ -67,7 +67,6 @@ class MySQLDataHandler(
 
             table.apply {
                 registerColumn<String>("json_data", TextColumnType())
-                    .default("{}")
             }
 
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
@@ -124,7 +123,7 @@ class MySQLDataHandler(
                 }
             }
 
-            row[dataColumn]
+            row.getOrNull(dataColumn) ?: "{}"
         }
 
 
