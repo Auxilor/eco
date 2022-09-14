@@ -9,6 +9,7 @@ import net.brcdev.shopgui.provider.item.ItemProvider
 import net.brcdev.shopgui.shop.ShopManager
 import org.bukkit.Bukkit
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
@@ -20,6 +21,14 @@ class ShopShopGuiPlus : ShopIntegration {
 
     override fun getSellEventAdapter(): Listener {
         return ShopGuiPlusSellEventListeners
+    }
+
+    override fun getPrice(itemStack: ItemStack): Double {
+        return ShopGuiPlusApi.getItemStackPriceSell(itemStack)
+    }
+
+    override fun getPrice(itemStack: ItemStack, player: Player): Double {
+        return ShopGuiPlusApi.getItemStackPriceSell(player, itemStack)
     }
 
     class EcoShopGuiPlusProvider : ItemProvider("eco") {
