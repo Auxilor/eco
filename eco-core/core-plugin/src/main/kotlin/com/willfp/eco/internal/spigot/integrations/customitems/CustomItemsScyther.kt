@@ -27,11 +27,11 @@ class CustomItemsScyther : CustomItemsIntegration {
                 Scyther.getInstance(),
                 material,
                 0,
-                null,
+                1.0,
                 1,
                 Int.MAX_VALUE,
-                null,
-                null
+                "AUTOSELL",
+                true
             )
 
             val namespacedKey = NamespacedKeyUtils.create("scyther", key)

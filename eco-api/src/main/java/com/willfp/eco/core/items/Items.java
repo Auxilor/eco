@@ -230,8 +230,8 @@ public final class Items {
 
                 String reformattedKey = keyID.replace("__", ":");
 
-                item = provider.provideForKey(reformattedKey);
-                if (item instanceof EmptyTestableItem || item == null) {
+                part = provider.provideForKey(reformattedKey);
+                if (part instanceof EmptyTestableItem || part == null) {
                     return new EmptyTestableItem();
                 }
                 registerCustomItem(namespacedKey, item);
