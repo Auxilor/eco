@@ -20,18 +20,32 @@ class CustomItemsScyther : CustomItemsIntegration {
     }
 
     private class ScytherProvider : ItemProvider("scyther") {
-        override fun provideForKey(key: String): TestableItem? {
-            val material = Material.matchMaterial(key.uppercase()) ?: Material.WOODEN_HOE
+        override fun provideForKey(key: String): TestableItem {
+            val split = key.split("::")
+
+            val material = Material.matchMaterial(split.first().uppercase()) ?: Material.WOODEN_HOE
+
+            val materialData = split.getOrNull(1)?.toIntOrNull() ?: -1
+
+            val sellMultiplier = split.getOrNull(2)?.toDoubleOrNull() ?: 1.0
+
+            val dropMultiplier = split.getOrNull(3)?.toIntOrNull() ?: 1
+
+            val uses = split.getOrNull(4)?.toIntOrNull() ?: 1
+
+            val defaultMode = split.getOrNull(4)?: "autosell"
+
+            val glow = split.getOrNull(5)?.toBoolean() ?: false
 
             val hoe = ScytherAPI.createHarvesterHoe(
                 Scyther.getInstance(),
                 material,
-                0,
-                null,
-                1,
-                Int.MAX_VALUE,
-                null,
-                null
+                materialData,
+                sellMultiplier,
+                dropMultiplier,
+                uses,
+                defaultMode,
+                glow
             )
 
             val namespacedKey = NamespacedKeyUtils.create("scyther", key)
