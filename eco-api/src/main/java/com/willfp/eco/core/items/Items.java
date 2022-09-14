@@ -234,7 +234,7 @@ public final class Items {
                 if (part instanceof EmptyTestableItem || part == null) {
                     return new EmptyTestableItem();
                 }
-                registerCustomItem(namespacedKey, item);
+                registerCustomItem(namespacedKey, part);
             }
 
             /*
