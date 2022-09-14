@@ -3,6 +3,7 @@
 package com.willfp.eco.core.integrations.economy
 
 import org.bukkit.OfflinePlayer
+import java.math.BigDecimal
 
 /** @see EconomyManager */
 var OfflinePlayer.balance: Double
@@ -19,5 +20,23 @@ var OfflinePlayer.balance: Double
             EconomyManager.removeMoney(this, diff)
         } else if (diff < 0) {
             EconomyManager.giveMoney(this, -diff)
+        }
+    }
+
+/** @see EconomyManager */
+var OfflinePlayer.exactBalance: BigDecimal
+    get() = EconomyManager.getBalance(this).toBigDecimal()
+    set(value) {
+        if (value <= BigDecimal.ZERO) {
+            EconomyManager.removeMoney(this, this.balance)
+            return
+        }
+
+        val diff = this.exactBalance - value
+
+        if (diff > BigDecimal.ZERO) {
+            EconomyManager.removeMoney(this, diff.toDouble())
+        } else if (diff < BigDecimal.ZERO) {
+            EconomyManager.giveMoney(this, -diff.toDouble())
         }
     }

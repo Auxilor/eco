@@ -101,6 +101,7 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDa
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
@@ -313,6 +314,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 CraftingRecipeListener.registerValidator(CustomRecipeCustomCrafting())
             },
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
+            IntegrationLoader("Scyther") { CustomItemsManager.register(CustomItemsScyther()) },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },

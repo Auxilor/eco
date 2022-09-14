@@ -3,6 +3,7 @@ package com.willfp.eco.core.integrations.economy;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -94,6 +95,20 @@ public final class EconomyManager {
         }
 
         return 0;
+    }
+
+    /**
+     * Get the balance of a player.
+     *
+     * @param player The player.
+     * @return The balance.
+     */
+    public static BigDecimal getExactBalance(@NotNull final OfflinePlayer player) {
+        for (EconomyIntegration integration : REGISTERED) {
+            return integration.getExactBalance(player);
+        }
+
+        return BigDecimal.ZERO;
     }
 
     private EconomyManager() {

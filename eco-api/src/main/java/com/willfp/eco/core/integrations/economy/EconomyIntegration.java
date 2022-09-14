@@ -4,6 +4,8 @@ import com.willfp.eco.core.integrations.Integration;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 /**
  * Wrapper class for economy integrations.
  */
@@ -45,4 +47,14 @@ public interface EconomyIntegration extends Integration {
      * @return The balance.
      */
     double getBalance(@NotNull OfflinePlayer player);
+
+    /**
+     * Get the balance of a player.
+     *
+     * @param player The player.
+     * @return The balance.
+     */
+    default BigDecimal getExactBalance(@NotNull OfflinePlayer player) {
+        return BigDecimal.valueOf(getBalance(player));
+    }
 }
