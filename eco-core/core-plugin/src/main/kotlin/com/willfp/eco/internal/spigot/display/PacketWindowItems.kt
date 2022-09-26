@@ -21,6 +21,12 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
         player: Player,
         event: PacketEvent
     ) {
+        packet.itemModifier.modify(0) {
+            Display.display(
+                it, player
+            )
+        }
+
         if (ignorePacketList.contains(player.name)) {
             ignorePacketList.remove(player.name)
             return
@@ -28,6 +34,11 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         val windowId = packet.integers.read(0)
 
+        // TODO
+        /*
+        Bug here is that sometimes a non-zero window ID packet is then proceeded by three
+        zero ones, causing display frame bugs.
+         */
         if (windowId != 0) {
             player.lastDisplayFrame = DisplayFrame.EMPTY
         }

@@ -9,7 +9,6 @@ import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.display.frame.lastDisplayFrame
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 
 class PacketSetSlot(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketType.Play.Server.SET_SLOT, false) {
     override fun onSend(
@@ -17,13 +16,12 @@ class PacketSetSlot(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketTyp
         player: Player,
         event: PacketEvent
     ) {
-        packet.itemModifier.modify(0, object : VersionCompatiblePLibFunction<ItemStack> {
-            override fun apply(item: ItemStack) =
-                Display.display(
-                    item,
-                    player
-                )
-        })
+        packet.itemModifier.modify(0) {
+            Display.display(
+                it,
+                player
+            )
+        }
 
         player.lastDisplayFrame = DisplayFrame.EMPTY
     }
