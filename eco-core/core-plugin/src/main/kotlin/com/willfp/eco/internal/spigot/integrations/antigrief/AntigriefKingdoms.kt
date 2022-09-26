@@ -6,9 +6,9 @@ import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.kingdoms.constants.group.Kingdom
-import org.kingdoms.constants.group.model.KingdomRelation
+import org.kingdoms.constants.group.model.relationships.StandardRelationAttribute
 import org.kingdoms.constants.land.Land
-import org.kingdoms.constants.player.DefaultKingdomPermission
+import org.kingdoms.constants.player.StandardKingdomPermission
 import org.kingdoms.constants.player.KingdomPlayer
 import org.kingdoms.managers.PvPManager
 
@@ -23,11 +23,11 @@ class AntigriefKingdoms : AntigriefIntegration {
         }
         val kingdom: Kingdom = kp.kingdom ?: return false
         val land = Land.getLand(block) ?: return true
-        val permission: DefaultKingdomPermission =
-            if (land.isNexusLand) DefaultKingdomPermission.NEXUS_BUILD else DefaultKingdomPermission.BUILD
+        val permission: StandardKingdomPermission =
+            if (land.isNexusLand) StandardKingdomPermission.NEXUS_BUILD else StandardKingdomPermission.BUILD
         return if (!kp.hasPermission(permission)) {
             false
-        } else kingdom.hasAttribute(land.kingdom, KingdomRelation.Attribute.BUILD)
+        } else kingdom.hasAttribute(land.kingdom, StandardRelationAttribute.BUILD)
     }
 
     override fun canCreateExplosion(
