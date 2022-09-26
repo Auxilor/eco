@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class PacketHeldWindowItems(plugin: EcoPlugin) :
-    AbstractPacketAdapter(plugin, PacketType.Play.Server.WINDOW_ITEMS, false) {
+    AbstractPacketAdapter(plugin, PacketType.Play.Server.HELD_ITEM_SLOT, false) {
     override fun onSend(
         packet: PacketContainer,
         player: Player,
