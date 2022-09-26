@@ -28,9 +28,17 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
 
         val windowId = packet.integers.read(0)
 
-        if (windowId != 0) {
+        /*When things are working well, windowId is non-zero
+        * but occasionally this onsend method is called
+        * more than once with the additional calls having
+        * a windowId of 0. Those additional calls didn't
+        * allow the DisplayFrame to be set to empty and
+        * caused the display to break for tiers and enchants
+        * -Bradarr */
+
+        //if (windowId != 0) {
             player.lastDisplayFrame = DisplayFrame.EMPTY
-        }
+        //}
 
         val itemStacks = packet.itemListModifier.read(0) ?: return
 
