@@ -25,7 +25,6 @@ dependencies {
     compileOnly 'com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT'
     compileOnly 'com.github.TechFortress:GriefPrevention:16.17.1'
-    compileOnly 'com.github.cryptomorin:kingdoms:1.14.0'
     compileOnly('com.github.TownyAdvanced:Towny:0.97.2.6') {
         exclude group: 'com.zaxxer', module: 'HikariCP'
     }
