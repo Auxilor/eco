@@ -17,12 +17,6 @@ class PacketHeldItemSlot(plugin: EcoPlugin) :
         player: Player,
         event: PacketEvent
     ) {
-        packet.itemModifier.modify(0) {
-            Display.display(
-                it, player
-            )
-        }
-
         player.lastDisplayFrame = DisplayFrame.EMPTY
     }
 }
