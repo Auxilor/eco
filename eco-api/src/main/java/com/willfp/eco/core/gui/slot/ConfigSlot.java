@@ -102,12 +102,12 @@ public class ConfigSlot extends CustomSlot {
             if (console()) {
                 Bukkit.dispatchCommand(
                         Bukkit.getConsoleSender(),
-                        command()
+                        command().replace("%player%", player.getName())
                 );
             } else {
                 Bukkit.dispatchCommand(
                         player,
-                        command()
+                        command().replace("%player%", player.getName())
                 );
             }
         }
