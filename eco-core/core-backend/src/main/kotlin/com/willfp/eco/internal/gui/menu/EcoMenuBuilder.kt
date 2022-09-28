@@ -17,13 +17,15 @@ import org.bukkit.inventory.ItemStack
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
-class EcoMenuBuilder(private val rows: Int ) : MenuBuilder {
+class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     private var title = "Menu"
     private var maskSlots: List<MutableList<Slot?>>
     private val slots: List<MutableList<Slot?>> = ListUtils.create2DList(rows, 9)
     private var onClose = CloseHandler { _, _ -> }
     private var onOpen = OpenHandler { _, _ -> }
     private var onRender: (Player, Menu) -> Unit = { _, _ -> }
+
+    override fun getRows() = rows
 
     override fun setTitle(title: String): MenuBuilder {
         this.title = StringUtils.format(title)

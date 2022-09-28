@@ -87,6 +87,16 @@ fun slot(
 
 /** Kotlin builder for slots. */
 fun slot(
+    item: TestableItem,
+    init: SlotBuilder.() -> Unit
+): Slot {
+    val builder = Slot.builder(item)
+    init(builder)
+    return builder.build()
+}
+
+/** Kotlin builder for slots. */
+fun slot(
     item: TestableItem
 ): Slot = Slot.builder(item.item).build()
 

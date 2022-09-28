@@ -1,7 +1,9 @@
 package com.willfp.eco.core.gui.menu;
 
+import com.willfp.eco.core.gui.component.GUIComponent;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +15,13 @@ import java.util.function.Consumer;
  * Builder to create menus.
  */
 public interface MenuBuilder {
+    /**
+     * Get the amount of rows.
+     *
+     * @return The amount of rows.
+     */
+    int getRows();
+
     /**
      * Set the menu title.
      *
@@ -32,6 +41,32 @@ public interface MenuBuilder {
     MenuBuilder setSlot(int row,
                         int column,
                         @NotNull Slot slot);
+
+    /**
+     * Add a component.
+     *
+     * @param row       The row of the top left corner.
+     * @param column    The column of the top left corner.
+     * @param component The component.
+     * @return The builder.
+     */
+    default MenuBuilder addComponent(final int row,
+                                     final int column,
+                                     @NotNull GUIComponent component) {
+        Validate.isTrue(column + component.getColumns() - 1 <= 9, "Component is too large to be placed here!");
+        Validate.isTrue(row + component.getRows() - 1 <= this.getRows(), "Component is too large to be placed here!");
+
+        for (int currentRow = row; currentRow < row + component.getRows(); currentRow++) {
+            for (int currentCol = column; currentCol < column + component.getColumns(); currentCol++) {
+                Slot slot = component.getSlotAt(currentRow, currentCol);
+                if (slot != null) {
+                    setSlot(currentRow, currentCol, slot);
+                }
+            }
+        }
+
+        return this;
+    }
 
     /**
      * Run function to modify the builder.

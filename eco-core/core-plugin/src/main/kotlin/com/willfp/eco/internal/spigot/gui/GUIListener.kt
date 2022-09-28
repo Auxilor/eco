@@ -1,6 +1,8 @@
 package com.willfp.eco.internal.spigot.gui
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.gui.slot.CustomSlot
+import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
 import com.willfp.eco.internal.gui.menu.asRenderedInventory
@@ -16,6 +18,13 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 
 class GUIListener(private val plugin: EcoPlugin) : Listener {
+    private fun Slot.handle(event: InventoryClickEvent, menu: EcoMenu) {
+        when (this) {
+            is EcoSlot -> this.handleInventoryClick(event, menu)
+            is CustomSlot -> this.delegate.handle(event, menu)
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     fun handleSlotClick(event: InventoryClickEvent) {
         val rendered = event.clickedInventory?.asRenderedInventory() ?: return
@@ -24,9 +33,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot)
 
-        val slot = menu.getSlot(row, column) as? EcoSlot ?: return
-
-        slot.handleInventoryClick(event, menu)
+        menu.getSlot(row, column).handle(event, menu)
 
         plugin.scheduler.run { rendered.render() }
     }
