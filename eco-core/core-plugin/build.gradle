@@ -6,7 +6,7 @@ dependencies {
     compileOnly project(":eco-core:core-backend")
 
     // Libraries
-    implementation 'com.github.Redempt:Crunch:master-SNAPSHOT'
+    implementation 'com.github.WillFP:Crunch:1.1.3'
     implementation 'mysql:mysql-connector-java:8.0.25'
     implementation 'org.jetbrains.exposed:exposed-core:0.37.3'
     implementation 'org.jetbrains.exposed:exposed-dao:0.37.3'
