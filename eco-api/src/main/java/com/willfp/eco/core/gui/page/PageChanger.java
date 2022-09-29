@@ -25,6 +25,7 @@ public final class PageChanger implements GUIComponent {
     /**
      * Create a new page change slot.
      *
+     * @param itemStack The ItemStack.
      * @param direction The direction.
      */
     public PageChanger(@NotNull final ItemStack itemStack,
@@ -58,10 +59,11 @@ public final class PageChanger implements GUIComponent {
     }
 
     @Override
-    public @Nullable Slot getSlotAt(final int row,
-                                    final int column,
-                                    @NotNull final Player player,
-                                    @NotNull final Menu menu) {
+    public @Nullable
+    Slot getSlotAt(final int row,
+                   final int column,
+                   @NotNull final Player player,
+                   @NotNull final Menu menu) {
         int page = Page.getPage(player, menu);
         int maxPage = Page.getMaxPage(player, menu);
 
