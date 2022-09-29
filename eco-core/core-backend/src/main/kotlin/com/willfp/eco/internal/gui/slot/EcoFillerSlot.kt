@@ -1,16 +1,16 @@
 package com.willfp.eco.internal.gui.slot
 
-import org.bukkit.Material
+import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import org.bukkit.inventory.ItemStack
 
-open class EcoFillerSlot(itemStack: ItemStack) : EcoSlot(
+private val noop = SlotHandler { _, _, _ -> }
+
+class EcoFillerSlot(itemStack: ItemStack) : EcoSlot(
     { _, _ -> itemStack },
-    { _, _, _ -> },
-    { _, _, _ -> },
-    { _, _, _ -> },
-    { _, _, _ -> },
-    { _, _, _ -> },
+    noop,
+    noop,
+    noop,
+    noop,
+    noop,
     { _, _, prev -> prev }
 )
-
-object EmptyFillerSlot : EcoFillerSlot(ItemStack(Material.AIR))

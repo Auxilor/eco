@@ -64,7 +64,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val slots = mutableMapOf<Anchor, Slot>()
+        val componentsAtPoints = mutableMapOf<Anchor, OffsetComponent>()
 
         for (row in (1..rows)) {
             for (column in (1..9)) {
@@ -84,13 +84,17 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
 
                     val slot = component.getSlotAt(rowOffset, columnOffset)
                     if (slot != null) {
-                        slots[Anchor(row, column)] = slot
+                        componentsAtPoints[Anchor(row, column)] = OffsetComponent(
+                            component,
+                            rowOffset,
+                            columnOffset
+                        )
                     }
                 }
             }
         }
 
-        return EcoMenu(rows, slots, title, onClose, onRender, onOpen)
+        return EcoMenu(rows, componentsAtPoints, title, onClose, onRender, onOpen)
     }
 
     init {

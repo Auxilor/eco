@@ -1,6 +1,12 @@
 package com.willfp.eco.core.gui.component;
 
+import com.willfp.eco.core.gui.menu.Menu;
+import com.willfp.eco.core.gui.slot.FillerSlot;
 import com.willfp.eco.core.gui.slot.Slot;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,6 +36,28 @@ public interface GUIComponent {
      * @return The slot, or null if no slot at the location.
      */
     @Nullable
-    Slot getSlotAt(final int row,
-                   final int column);
+    default Slot getSlotAt(int row,
+                           int column) {
+        return new FillerSlot(new ItemStack(Material.AIR));
+    }
+
+    /**
+     * Get the slot at a certain position in the component.
+     * <p>
+     * If your component doesn't use context data (player, menu),
+     * then it will default to the raw slot.
+     *
+     * @param row    The row (1-indexed).
+     * @param column The column (1-indexed).
+     * @param player The player.
+     * @param menu   The menu.
+     * @return The slot, or null if no slot at the location.
+     */
+    @Nullable
+    default Slot getSlotAt(int row,
+                           int column,
+                           @NotNull Player player,
+                           @NotNull Menu menu) {
+        return getSlotAt(row, column);
+    }
 }

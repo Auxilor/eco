@@ -21,7 +21,7 @@ class MenuRenderedInventory(
         for (row in (1..menu.rows)) {
             for (column in (1..9)) {
                 val bukkit = MenuUtils.rowColumnToSlot(row, column)
-                val item = menu.getSlot(row, column).getItemStack(player)
+                val item = menu.getSlot(row, column, player, menu).getItemStack(player)
 
                 inventory.setItem(bukkit, item)
             }
@@ -36,7 +36,9 @@ class MenuRenderedInventory(
         captiveItems.clear()
         for (i in 0 until inventory.size) {
             val (row, column) = MenuUtils.convertSlotToRowColumn(i)
-            val slot = menu.getSlot(row, column)
+
+            val slot = menu.getSlot(row, column, player, menu)
+
             if (slot.isCaptive) {
                 val renderedItem = slot.getItemStack(player)
                 val itemStack = inventory.getItem(i) ?: continue

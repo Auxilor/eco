@@ -1,12 +1,14 @@
 package com.willfp.eco.internal.gui.menu
 
+import com.willfp.eco.core.gui.component.GUIComponent
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.internal.gui.slot.EmptyFillerSlot
+import com.willfp.eco.internal.gui.slot.EcoFillerSlot
 import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -17,18 +19,38 @@ import org.bukkit.persistence.PersistentDataType
 @Suppress("UNCHECKED_CAST")
 class EcoMenu(
     private val rows: Int,
-    private val slots: Map<Anchor, Slot>,
+    private val componentsAtPoints: Map<Anchor, OffsetComponent>,
     private val title: String,
     private val onClose: CloseHandler,
     private val onRender: (Player, Menu) -> Unit,
     private val onOpen: OpenHandler
 ) : Menu {
-    override fun getSlot(row: Int, column: Int): Slot {
+    private fun getComponent(row: Int, column: Int): OffsetComponent? {
         if (row < 1 || row > this.rows || column < 1 || column > 9) {
-            return EmptyFillerSlot
+            return emptyOffsetComponent
         }
 
-        return slots[Anchor(row, column)] ?: EmptyFillerSlot
+        return componentsAtPoints[Anchor(row, column)]
+    }
+
+    override fun getSlot(row: Int, column: Int): Slot {
+        val found = getComponent(row, column) ?: return emptyFillerSlot
+
+        return found.component.getSlotAt(
+            found.rowOffset,
+            found.columnOffset
+        ) ?: emptyFillerSlot
+    }
+
+    override fun getSlot(row: Int, column: Int, player: Player, menu: Menu): Slot {
+        val found = getComponent(row, column) ?: return emptyFillerSlot
+
+        return found.component.getSlotAt(
+            found.rowOffset,
+            found.columnOffset,
+            player,
+            menu
+        ) ?: emptyFillerSlot
     }
 
     override fun open(player: Player): Inventory {
@@ -63,6 +85,7 @@ class EcoMenu(
         return inventory.captiveItems
     }
 
+    @Deprecated("Deprecated in Java", ReplaceWith("addState(player, key.toString(), value)"))
     override fun <T : Any, Z : Any> writeData(
         player: Player,
         key: NamespacedKey,
@@ -70,9 +93,11 @@ class EcoMenu(
         value: Z
     ) = addState(player, key.toString(), value)
 
+    @Deprecated("Deprecated in Java", ReplaceWith("getState(player, key.toString())"))
     override fun <T : Any, Z : Any> readData(player: Player, key: NamespacedKey, type: PersistentDataType<T, Z>): T? =
         getState(player, key.toString())
 
+    @Deprecated("Deprecated in Java")
     override fun getKeys(player: Player): Set<NamespacedKey> {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptySet()
         return inventory.state.keys.mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }.toSet()
@@ -109,3 +134,17 @@ class EcoMenu(
 
     fun runOnRender(player: Player) = onRender(player, this)
 }
+
+data class OffsetComponent(
+    val component: GUIComponent,
+    val rowOffset: Int,
+    val columnOffset: Int
+)
+
+data class Anchor(
+    val row: Int,
+    val column: Int
+)
+
+val emptyFillerSlot = EcoFillerSlot(ItemStack(Material.AIR))
+val emptyOffsetComponent = OffsetComponent(emptyFillerSlot, 0, 0)

@@ -29,11 +29,13 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     fun handleSlotClick(event: InventoryClickEvent) {
         val rendered = event.clickedInventory?.asRenderedInventory() ?: return
 
+        val player = event.whoClicked as? Player ?: return
+
         val menu = rendered.menu
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot)
 
-        menu.getSlot(row, column).handle(event, menu)
+        menu.getSlot(row, column, player, menu).handle(event, menu)
 
         plugin.scheduler.run { rendered.render() }
     }
@@ -56,7 +58,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty())
 
-        val slot = menu.getSlot(row, column)
+        val slot = menu.getSlot(row, column, player, menu)
 
         if (!slot.isCaptive) {
             event.isCancelled = true

@@ -28,7 +28,10 @@ public interface Menu {
     int getRows();
 
     /**
-     * Get slot at given row and column.
+     * Get a static slot at a given row and column.
+     * <p>
+     * If the slot at the location is reactive, this will return
+     * an empty slot.
      *
      * @param row    The row.
      * @param column The column.
@@ -36,6 +39,24 @@ public interface Menu {
      */
     Slot getSlot(int row,
                  int column);
+
+    /**
+     * Get a slot at a given row and column.
+     * <p>
+     * Defaults to static slot if no reactive slot exists.
+     *
+     * @param row    The row.
+     * @param column The column.
+     * @param player The player
+     * @param menu   The menu.
+     * @return The slot.
+     */
+    default Slot getSlot(int row,
+                         int column,
+                         @NotNull Player player,
+                         @NotNull Menu menu) {
+        return this.getSlot(row, column);
+    }
 
     /**
      * Get the menu title.
