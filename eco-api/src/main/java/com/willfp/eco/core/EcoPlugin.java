@@ -20,8 +20,10 @@ import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -920,5 +922,27 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     @Nullable
     public ProxyFactory getProxyFactory() {
         return this.proxyFactory;
+    }
+
+    /**
+     * Create a NamespacedKey.
+     *
+     * @param key The key.
+     * @return The namespaced key.
+     */
+    @NotNull
+    public NamespacedKey createNamespacedKey(@NotNull final String key) {
+        return this.getNamespacedKeyFactory().create(key);
+    }
+
+    /**
+     * Create a metadata value.
+     *
+     * @param value The value.
+     * @return The metadata value.
+     */
+    @NotNull
+    public FixedMetadataValue createMetadataValue(@NotNull final Object value) {
+        return this.getMetadataValueFactory().create(value);
     }
 }
