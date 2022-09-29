@@ -2,6 +2,7 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Material;
@@ -32,6 +33,23 @@ public interface Slot extends GUIComponent {
      * @return If captive.
      */
     boolean isCaptive();
+
+    /**
+     * Get the real slot to be shown.
+     * <p>
+     * This is mostly internal, if you want to implement custom slots you should
+     * turn to {@link CustomSlot} or {@link ReactiveSlot}, which abstract this
+     * behaviour away.
+     * <p>
+     * **Never** return {@code this} from this method. Always make sure that your
+     * slots eventually delegate to a slot created by {@link Slot#builder()}.
+     *
+     * @param player The player.
+     * @param menu   The menu.
+     * @return The slot.
+     */
+    Slot getRealSlot(@NotNull final Player player,
+                     @NotNull final Menu menu);
 
     /**
      * If the slot is not captive for a player.

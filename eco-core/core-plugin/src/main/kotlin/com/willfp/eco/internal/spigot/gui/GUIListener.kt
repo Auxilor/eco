@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.spigot.gui
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.gui.slot.CustomSlot
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
@@ -18,10 +17,30 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 
 class GUIListener(private val plugin: EcoPlugin) : Listener {
-    private fun Slot.handle(event: InventoryClickEvent, menu: EcoMenu) {
-        when (this) {
-            is EcoSlot -> this.handleInventoryClick(event, menu)
-            is CustomSlot -> this.delegate.handle(event, menu)
+    // Prevents StackOverflow exceptions with poorly implemented custom slots.
+    private val depthLimit = 32
+
+    private fun Slot.handle(
+        player: Player,
+        event: InventoryClickEvent,
+        menu: EcoMenu,
+        depth: Int = 0
+    ) {
+        // Always cancel on first depth to prevent bugs with custom slot implementations.
+        if (depth == 0) {
+            event.isCancelled = true
+        }
+
+        if (depth >= depthLimit) {
+            return
+        }
+
+        val delegate = this.getRealSlot(player, menu)
+
+        if (delegate is EcoSlot) {
+            delegate.handleInventoryClick(event, menu)
+        } else {
+            delegate.handle(player, event, menu, depth + 1)
         }
     }
 
@@ -35,7 +54,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot)
 
-        menu.getSlot(row, column, player, menu).handle(event, menu)
+        menu.getSlot(row, column, player, menu).handle(player, event, menu)
 
         plugin.scheduler.run { rendered.render() }
     }

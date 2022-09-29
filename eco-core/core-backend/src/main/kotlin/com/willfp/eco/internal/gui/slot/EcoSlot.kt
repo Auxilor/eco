@@ -24,8 +24,6 @@ open class EcoSlot(
         event: InventoryClickEvent,
         menu: Menu
     ) {
-        event.isCancelled = true
-
         handlers[event.click]?.handle(event, this, menu)
     }
 
@@ -47,4 +45,6 @@ open class EcoSlot(
     override fun isCaptive(): Boolean {
         return false
     }
+
+    override fun getRealSlot(player: Player, menu: Menu): EcoSlot = this
 }

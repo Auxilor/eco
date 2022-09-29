@@ -1,5 +1,6 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.gui.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -27,17 +28,6 @@ public abstract class CustomSlot implements Slot {
      */
     protected void init(@NotNull final Slot slot) {
         this.delegate = slot;
-    }
-
-    /**
-     * Get the delegate slot.
-     * <p>
-     * This is not required to add the slot to a menu, but is instead used internally.
-     *
-     * @return The slot.
-     */
-    public Slot getDelegate() {
-        return this.delegate;
     }
 
     @Override
@@ -74,6 +64,25 @@ public abstract class CustomSlot implements Slot {
         }
 
         return delegate.isCaptiveFromEmpty();
+    }
+
+    /**
+     * Get the delegate slot.
+     * <p>
+     * This is not required to add the slot to a menu, but is instead used internally.
+     *
+     * @return The slot.
+     * @deprecated Replaced with {@link Slot#getRealSlot(Player, Menu)}
+     */
+    @Deprecated(since = "6.43.0", forRemoval = true)
+    public Slot getDelegate() {
+        return this.delegate;
+    }
+
+    @Override
+    public final Slot getRealSlot(@NotNull final Player player,
+                                  @NotNull final Menu menu) {
+        return delegate;
     }
 
     @Override
