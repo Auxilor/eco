@@ -2,6 +2,7 @@ package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.gui.component.GUIComponent;
 import com.willfp.eco.core.gui.page.Page;
+import com.willfp.eco.core.gui.page.PageBuilder;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
@@ -15,14 +16,7 @@ import java.util.function.Function;
 /**
  * Builder to create menus.
  */
-public interface MenuBuilder {
-    /**
-     * Get the amount of rows.
-     *
-     * @return The amount of rows.
-     */
-    int getRows();
-
+public interface MenuBuilder extends PageBuilder {
     /**
      * Set the menu title.
      *
@@ -39,11 +33,10 @@ public interface MenuBuilder {
      * @param slot   The slot.
      * @return The builder.
      */
-    default MenuBuilder setSlot(final int row,
-                                final int column,
-                                @NotNull final Slot slot) {
-        return this.addComponent(row, column, slot);
-    }
+    @Override
+    MenuBuilder setSlot(final int row,
+                        final int column,
+                        @NotNull final Slot slot);
 
 
     /**
@@ -55,6 +48,7 @@ public interface MenuBuilder {
      * @param component The component.
      * @return The builder.
      */
+    @Override
     MenuBuilder addComponent(@NotNull MenuLayer layer,
                              int row,
                              int column,
@@ -69,11 +63,10 @@ public interface MenuBuilder {
      * @param component The component.
      * @return The builder.
      */
-    default MenuBuilder addComponent(final int row,
-                                     final int column,
-                                     @NotNull final GUIComponent component) {
-        return this.addComponent(MenuLayer.MIDDLE, row, column, component);
-    }
+    @Override
+    MenuBuilder addComponent(final int row,
+                             final int column,
+                             @NotNull final GUIComponent component);
 
     /**
      * Run function to modify the builder.
@@ -89,9 +82,8 @@ public interface MenuBuilder {
      * @param mask The mask.
      * @return The builder.
      */
-    default MenuBuilder setMask(@NotNull final FillerMask mask) {
-        return this.addComponent(MenuLayer.BACKGROUND, 1, 1, mask);
-    }
+    @Override
+    MenuBuilder setMask(@NotNull final FillerMask mask);
 
     /**
      * Add a page.
