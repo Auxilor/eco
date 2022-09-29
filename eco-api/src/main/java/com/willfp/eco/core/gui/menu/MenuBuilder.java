@@ -72,7 +72,7 @@ public interface MenuBuilder {
     default MenuBuilder addComponent(final int row,
                                      final int column,
                                      @NotNull final GUIComponent component) {
-        return this.addComponent(MenuLayer.BACKGROUND, row, column, component);
+        return this.addComponent(MenuLayer.MIDDLE, row, column, component);
     }
 
     /**
