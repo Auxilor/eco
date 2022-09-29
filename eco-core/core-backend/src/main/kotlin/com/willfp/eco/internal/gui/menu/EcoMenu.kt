@@ -156,4 +156,3 @@ data class Anchor(
 )
 
 val emptyFillerSlot = FillerSlot(ItemStack(Material.AIR))
-val emptyOffsetComponent = OffsetComponent(emptyFillerSlot, 0, 0)
