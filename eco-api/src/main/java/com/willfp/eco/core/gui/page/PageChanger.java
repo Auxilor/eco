@@ -37,7 +37,7 @@ public final class PageChanger implements GUIComponent {
                     Player player = (Player) event.getWhoClicked();
                     int page = Page.getPage(player, menu);
                     int newPage = Math.max(
-                            0,
+                            1,
                             Math.min(
                                     page + direction.getChange(),
                                     Page.getMaxPage(player, menu)
