@@ -14,8 +14,11 @@ import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.GUIFactory;
+import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.items.SNBTHandler;
+import com.willfp.eco.core.placeholder.AdditionalPlayer;
+import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
@@ -24,12 +27,15 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -309,4 +315,52 @@ public interface Handler {
      */
     @NotNull
     SNBTHandler getSNBTHandler();
+
+    /**
+     * Get the texture of a skull.
+     *
+     * @param meta The skull meta.
+     * @return The texture, or null if not found.
+     */
+    @Nullable
+    String getSkullTexture(@NotNull SkullMeta meta);
+
+    /**
+     * Set the texture of a skull.
+     *
+     * @param meta   The skull meta.
+     * @param base64 The texture.
+     */
+    void setSkullTexture(@NotNull SkullMeta meta,
+                         @NotNull String base64);
+
+    /**
+     * Get the current server TPS.
+     *
+     * @return The TPS.
+     */
+    double getTPS();
+
+    /**
+     * Evaluate an expression.
+     *
+     * @param expression        The expression.
+     * @param player            The player.
+     * @param injectable        The injectable placeholders.
+     * @param additionalPlayers The additional players.
+     * @return The value of the expression, or zero if invalid.
+     */
+    double evaluate(@NotNull String expression,
+                    @Nullable Player player,
+                    @NotNull PlaceholderInjectable injectable,
+                    @NotNull Collection<AdditionalPlayer> additionalPlayers);
+
+    /**
+     * Get the menu a player currently has open.
+     *
+     * @param player The player.
+     * @return The menu, or null if no menu open.
+     */
+    @Nullable
+    Menu getOpenMenu(@NotNull Player player);
 }

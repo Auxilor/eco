@@ -1,12 +1,11 @@
 package com.willfp.eco.util;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
-import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +26,6 @@ public final class NumberUtils {
      * Sin lookup table.
      */
     private static final double[] SIN_LOOKUP = new double[65536];
-
-    /**
-     * Crunch handler.
-     */
-    private static CrunchHandler crunch = null;
 
     /**
      * Set of roman numerals to look up.
@@ -329,38 +323,7 @@ public final class NumberUtils {
                                             @Nullable final Player player,
                                             @NotNull final PlaceholderInjectable context,
                                             @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
-        return crunch.evaluate(expression, player, context, additionalPlayers);
-    }
-
-    /**
-     * Init crunch handler.
-     *
-     * @param handler The handler.
-     */
-    @ApiStatus.Internal
-    public static void initCrunch(@NotNull final CrunchHandler handler) {
-        Validate.isTrue(crunch == null, "Already initialized!");
-        crunch = handler;
-    }
-
-    /**
-     * Bridge component for crunch.
-     */
-    @ApiStatus.Internal
-    public interface CrunchHandler {
-        /**
-         * Evaluate an expression.
-         *
-         * @param expression        The expression.
-         * @param player            The player.
-         * @param injectable        The injectable placeholders.
-         * @param additionalPlayers The additional players.
-         * @return The value of the expression, or zero if invalid.
-         */
-        double evaluate(@NotNull String expression,
-                        @Nullable Player player,
-                        @NotNull PlaceholderInjectable injectable,
-                        @NotNull Collection<AdditionalPlayer> additionalPlayers);
+        return Eco.getHandler().evaluate(expression, player, context, additionalPlayers);
     }
 
     private NumberUtils() {

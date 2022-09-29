@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.tuples.Pair;
 import org.apache.commons.lang.Validate;
@@ -14,11 +15,6 @@ import java.util.function.Function;
  * Utilities / API methods for menus.
  */
 public final class MenuUtils {
-    /**
-     * The menu supplier.
-     */
-    private static Function<Player, Menu> menuGetter = null;
-
     /**
      * Convert 0-53 slot to row and column pair.
      *
@@ -51,19 +47,7 @@ public final class MenuUtils {
      */
     @Nullable
     public static Menu getOpenMenu(@NotNull final Player player) {
-        return menuGetter.apply(player);
-    }
-
-    /**
-     * Initialize the tps supplier function.
-     *
-     * @param function The function.
-     */
-    @ApiStatus.Internal
-    public static void initialize(@NotNull final Function<Player, Menu> function) {
-        Validate.isTrue(menuGetter == null, "Already initialized!");
-
-        menuGetter = function;
+        return Eco.getHandler().getOpenMenu(player);
     }
 
     private MenuUtils() {

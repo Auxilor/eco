@@ -38,7 +38,6 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
-import com.willfp.eco.internal.gui.menu.getMenu
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -113,21 +112,14 @@ import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
-import com.willfp.eco.internal.spigot.math.evaluateExpression
 import com.willfp.eco.internal.spigot.player.PlayerHealthFixer
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.SkullProxy
-import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
-import com.willfp.eco.util.MenuUtils
-import com.willfp.eco.util.NumberUtils
-import com.willfp.eco.util.ServerUtils
-import com.willfp.eco.util.SkullUtils
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
@@ -175,19 +167,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         SegmentParserGroup().register()
         SegmentParserUseIfPresent().register()
-
-        val skullProxy = getProxy(SkullProxy::class.java)
-        SkullUtils.initialize(
-            { meta, base64 -> skullProxy.setSkullTexture(meta, base64) },
-            { meta -> skullProxy.getSkullTexture(meta) }
-        )
-
-        val tpsProxy = getProxy(TPSProxy::class.java)
-        ServerUtils.initialize { tpsProxy.getTPS() }
-
-        NumberUtils.initCrunch(::evaluateExpression)
-
-        MenuUtils.initialize { it.openInventory.topInventory.getMenu() }
 
         CustomItemsManager.registerProviders()
 

@@ -6,8 +6,11 @@ import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import com.willfp.eco.core.items.SNBTHandler
+import com.willfp.eco.core.placeholder.AdditionalPlayer
+import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.Plugins
@@ -23,6 +26,7 @@ import com.willfp.eco.internal.fast.FastInternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.InternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.EcoGUIFactory
+import com.willfp.eco.internal.gui.menu.getMenu
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
@@ -33,18 +37,23 @@ import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.items.EcoSNBTHandler
+import com.willfp.eco.internal.spigot.math.evaluateExpression
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxy.SkullProxy
+import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.util.logging.Logger
 
@@ -172,4 +181,23 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     override fun getSNBTHandler(): SNBTHandler =
         snbtHandler
+
+    override fun getSkullTexture(meta: SkullMeta): String? =
+        getProxy(SkullProxy::class.java).getSkullTexture(meta)
+
+    override fun setSkullTexture(meta: SkullMeta, base64: String) =
+        getProxy(SkullProxy::class.java).setSkullTexture(meta, base64)
+
+    override fun getTPS(): Double =
+        getProxy(TPSProxy::class.java).getTPS()
+
+    override fun evaluate(
+        expression: String,
+        player: Player?,
+        injectable: PlaceholderInjectable,
+        additionalPlayers: MutableCollection<AdditionalPlayer>
+    ): Double = evaluateExpression(expression, player, injectable, additionalPlayers)
+
+    override fun getOpenMenu(player: Player): Menu? =
+        player.openInventory.topInventory.getMenu()
 }
