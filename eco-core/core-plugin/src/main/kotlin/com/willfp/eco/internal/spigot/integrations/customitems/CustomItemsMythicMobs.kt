@@ -1,20 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
-import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem
-import io.lumine.mythic.api.adapters.AbstractItemStack
-import io.lumine.mythic.api.config.MythicLineConfig
-import io.lumine.mythic.api.drops.DropMetadata
-import io.lumine.mythic.api.drops.IItemDrop
-import io.lumine.mythic.bukkit.adapters.BukkitItemStack
-import io.lumine.mythic.bukkit.events.MythicDropLoadEvent
-import org.bukkit.Material
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.inventory.ItemStack
-
+/*
 class CustomItemsMythicMobs(
     private val plugin: EcoPlugin
 ) : CustomItemsIntegration, Listener {
@@ -52,3 +38,4 @@ class CustomItemsMythicMobs(
         }
     }
 }
+ */

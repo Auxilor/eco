@@ -13,23 +13,18 @@ class MenuRenderedInventory(
     val captiveItems = mutableListOf<ItemStack>()
     val state = mutableMapOf<String, Any?>()
 
-    fun render(noSideEffects: Boolean = false) {
-        if (!noSideEffects) {
-            generateCaptive()
-        }
+    fun render() {
+        generateCaptive()
 
         for (row in (1..menu.rows)) {
             for (column in (1..9)) {
                 val bukkit = MenuUtils.rowColumnToSlot(row, column)
                 val item = menu.getSlot(row, column, player, menu).getItemStack(player)
-
                 inventory.setItem(bukkit, item)
             }
         }
 
-        if (!noSideEffects) {
-            menu.runOnRender(player)
-        }
+        menu.runOnRender(player)
     }
 
     fun generateCaptive() {

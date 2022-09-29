@@ -6,6 +6,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 import com.willfp.eco.internal.gui.menu.getMenu
+import com.willfp.eco.util.openMenu
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -28,7 +29,7 @@ open class EcoSlot(
     }
 
     override fun getItemStack(player: Player): ItemStack {
-        val menu = player.openInventory.topInventory.getMenu() ?: return ItemStack(Material.AIR)
+        val menu = player.openMenu ?: return ItemStack(Material.AIR)
         val prev = provider.provide(player, menu)
         return updater.update(player, menu, prev) ?: ItemStack(Material.AIR)
     }

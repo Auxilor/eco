@@ -129,6 +129,6 @@ public class FillerMask implements GUIComponent {
     @Override
     public @Nullable Slot getSlotAt(final int row,
                                     final int column) {
-        return mask.get(row).get(column);
+        return mask.get(row - 1).get(column - 1);
     }
 }

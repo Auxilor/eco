@@ -49,14 +49,31 @@ public interface MenuBuilder {
     /**
      * Add a component.
      *
+     * @param layer     The layer.
      * @param row       The row of the top left corner.
      * @param column    The column of the top left corner.
      * @param component The component.
      * @return The builder.
      */
-    MenuBuilder addComponent(int row,
+    MenuBuilder addComponent(@NotNull MenuLayer layer,
+                             int row,
                              int column,
                              @NotNull GUIComponent component);
+
+
+    /**
+     * Add a component.
+     *
+     * @param row       The row of the top left corner.
+     * @param column    The column of the top left corner.
+     * @param component The component.
+     * @return The builder.
+     */
+    default MenuBuilder addComponent(final int row,
+                                     final int column,
+                                     @NotNull final GUIComponent component) {
+        return this.addComponent(MenuLayer.BACKGROUND, row, column, component);
+    }
 
     /**
      * Run function to modify the builder.
@@ -73,7 +90,7 @@ public interface MenuBuilder {
      * @return The builder.
      */
     default MenuBuilder setMask(@NotNull final FillerMask mask) {
-        return this.addComponent(0, 0, mask);
+        return this.addComponent(MenuLayer.BACKGROUND, 1, 1, mask);
     }
 
     /**
@@ -83,7 +100,7 @@ public interface MenuBuilder {
      * @return The builder.
      */
     default MenuBuilder addPage(@NotNull final Page page) {
-        return this.addComponent(0, 0, page);
+        return this.addComponent(MenuLayer.TOP, 1, 1, page);
     }
 
     /**

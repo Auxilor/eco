@@ -70,7 +70,7 @@ allprojects {
         maven("https://nexus.sirblobman.xyz/repository/public/")
 
         // MythicMobs
-        maven("https://mvn.lumine.io/repository/maven-public/")
+        //maven("https://mvn.lumine.io/repository/maven-public/")
 
         // Crunch
         maven("https://redempt.dev")
