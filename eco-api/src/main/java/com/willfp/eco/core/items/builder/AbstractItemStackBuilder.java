@@ -1,5 +1,6 @@
 package com.willfp.eco.core.items.builder;
 
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.util.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -28,7 +29,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
     /**
      * The ItemMeta used while building.
      */
-    private final T meta;
+    private T meta;
 
     /**
      * The ItemStack.
@@ -113,10 +114,15 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
 
     @Override
     public U addLoreLine(@NotNull final String line) {
-        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-        assert lore != null;
+        base.setItemMeta(meta);
+
+        FastItemStack fis = FastItemStack.wrap(base);
+
+        List<String> lore = fis.getLore();
         lore.add(StringUtils.format(line));
-        meta.setLore(lore);
+        fis.setLore(lore);
+
+        meta = (T) base.getItemMeta();
 
         return (U) this;
     }
@@ -130,12 +136,19 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
 
     @Override
     public U addLoreLines(@NotNull final List<String> lines) {
-        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-        assert lore != null;
+        base.setItemMeta(meta);
+
+        FastItemStack fis = FastItemStack.wrap(base);
+
+        List<String> lore = fis.getLore();
+
         for (String line : lines) {
             lore.add(StringUtils.format(line));
         }
-        meta.setLore(lore);
+
+        fis.setLore(lore);
+
+        meta = (T) base.getItemMeta();
 
         return (U) this;
     }
