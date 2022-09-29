@@ -6,7 +6,7 @@ import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
-import com.willfp.eco.internal.gui.page.DelegateMenu
+import com.willfp.eco.internal.gui.page.MergedStateMenu
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 
 object EcoGUIFactory : GUIFactory {
@@ -19,6 +19,6 @@ object EcoGUIFactory : GUIFactory {
     }
 
     override fun blendMenuState(base: Menu, additional: Menu): Menu {
-        return DelegateMenu(base, additional)
+        return MergedStateMenu(base, additional)
     }
 }

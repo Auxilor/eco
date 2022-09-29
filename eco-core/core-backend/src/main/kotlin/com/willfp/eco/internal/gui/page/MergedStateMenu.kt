@@ -3,7 +3,7 @@ package com.willfp.eco.internal.gui.page
 import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.entity.Player
 
-class DelegateMenu(
+class MergedStateMenu(
     private val base: Menu,
     private val additional: Menu
 ) : Menu by base {
@@ -17,9 +17,11 @@ class DelegateMenu(
 
     override fun clearState(player: Player) {
         base.clearState(player)
+        additional.clearState(player)
     }
 
     override fun removeState(player: Player, key: String) {
         base.removeState(player, key)
+        additional.removeState(player, key)
     }
 }
