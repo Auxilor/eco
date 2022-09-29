@@ -26,7 +26,7 @@ import com.willfp.eco.internal.fast.FastInternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.InternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.EcoGUIFactory
-import com.willfp.eco.internal.gui.menu.getMenu
+import com.willfp.eco.internal.gui.menu.openMenuInternal
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
@@ -199,5 +199,5 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     ): Double = evaluateExpression(expression, player, injectable, additionalPlayers)
 
     override fun getOpenMenu(player: Player): Menu? =
-        player.openInventory.topInventory.getMenu()
+        player.openMenuInternal
 }

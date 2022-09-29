@@ -60,14 +60,17 @@ class EcoMenu(
 
     override fun open(player: Player): Inventory {
         val inventory = Bukkit.createInventory(null, rows * 9, title)
+        player.forceMenuOpen(this)
 
         MenuHandler.registerInventory(inventory, this, player)
+
+        inventory.asRenderedInventory()?.render()
 
         player.openInventory(inventory)
 
         onOpen.forEach { it.handle(player, this) }
 
-        inventory.asRenderedInventory()?.render()
+        player.stopForceMenuOpen()
         return inventory
     }
 
