@@ -35,7 +35,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
             return
         }
 
-        val delegate = this.getRealSlot(player, menu)
+        val delegate = this.getActionableSlot(player, menu)
 
         if (delegate is EcoSlot) {
             delegate.handleInventoryClick(event, menu)

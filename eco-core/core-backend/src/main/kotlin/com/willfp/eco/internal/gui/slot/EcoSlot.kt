@@ -37,5 +37,5 @@ open class EcoSlot(
         return false
     }
 
-    override fun getRealSlot(player: Player, menu: Menu): EcoSlot = this
+    override fun getActionableSlot(player: Player, menu: Menu): EcoSlot = this
 }

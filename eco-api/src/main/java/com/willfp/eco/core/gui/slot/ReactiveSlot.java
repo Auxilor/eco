@@ -39,8 +39,8 @@ public abstract class ReactiveSlot implements Slot {
     }
 
     @Override
-    public final Slot getRealSlot(@NotNull final Player player,
-                                  @NotNull final Menu menu) {
+    public final Slot getActionableSlot(@NotNull final Player player,
+                                        @NotNull final Menu menu) {
         return getSlot(player, menu);
     }
 

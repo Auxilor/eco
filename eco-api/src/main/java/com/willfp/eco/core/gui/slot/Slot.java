@@ -35,7 +35,7 @@ public interface Slot extends GUIComponent {
     boolean isCaptive();
 
     /**
-     * Get the real slot to be shown.
+     * Get the actionable slot to be shown.
      * <p>
      * This is mostly internal, if you want to implement custom slots you should
      * turn to {@link CustomSlot} or {@link ReactiveSlot}, which abstract this
@@ -48,8 +48,8 @@ public interface Slot extends GUIComponent {
      * @param menu   The menu.
      * @return The slot.
      */
-    Slot getRealSlot(@NotNull final Player player,
-                     @NotNull final Menu menu);
+    Slot getActionableSlot(@NotNull final Player player,
+                           @NotNull final Menu menu);
 
     /**
      * If the slot is not captive for a player.

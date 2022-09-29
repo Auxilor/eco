@@ -72,7 +72,7 @@ public abstract class CustomSlot implements Slot {
      * This is not required to add the slot to a menu, but is instead used internally.
      *
      * @return The slot.
-     * @deprecated Replaced with {@link Slot#getRealSlot(Player, Menu)}
+     * @deprecated Replaced with {@link Slot#getActionableSlot(Player, Menu)}
      */
     @Deprecated(since = "6.43.0", forRemoval = true)
     public Slot getDelegate() {
@@ -80,8 +80,8 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public final Slot getRealSlot(@NotNull final Player player,
-                                  @NotNull final Menu menu) {
+    public final Slot getActionableSlot(@NotNull final Player player,
+                                        @NotNull final Menu menu) {
         return delegate;
     }
 
