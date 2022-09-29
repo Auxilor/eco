@@ -41,7 +41,9 @@ class EcoFastItemStack(
             if (checkStored && handle.getItem() === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
                 handle
             ) else handle.getEnchantmentTags()
-        val foundEnchantments: MutableMap<Enchantment, Int> = HashMap()
+
+        val foundEnchantments = mutableMapOf<Enchantment, Int>()
+
         for (base in enchantmentNBT) {
             val compound = base as CompoundTag
             val key = compound.getString("id")
@@ -62,6 +64,7 @@ class EcoFastItemStack(
             if (checkStored && handle.getItem() === Items.ENCHANTED_BOOK) EnchantedBookItem.getEnchantments(
                 handle
             ) else handle.getEnchantmentTags()
+
         for (base in enchantmentNBT) {
             val compound = base as CompoundTag
             val key = compound.getString("id")

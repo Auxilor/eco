@@ -69,7 +69,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val tempSlots: MutableList<MutableList<Slot?>> = ArrayList(maskSlots)
+        val tempSlots = mutableListOf<MutableList<Slot?>>()
 
         for (i in slots.indices) {
             for (j in slots[i].indices) {
