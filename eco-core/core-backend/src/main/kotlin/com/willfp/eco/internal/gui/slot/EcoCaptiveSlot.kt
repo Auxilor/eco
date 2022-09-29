@@ -2,7 +2,9 @@ package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
+import com.willfp.eco.util.toSingletonList
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType
 
 class EcoCaptiveSlot(
     provider: SlotProvider,
@@ -10,11 +12,9 @@ class EcoCaptiveSlot(
     private val notCaptiveFor: (Player) -> Boolean
 ) : EcoSlot(
     provider,
-    captiveWithTest(notCaptiveFor),
-    captiveWithTest(notCaptiveFor),
-    captiveWithTest(notCaptiveFor),
-    captiveWithTest(notCaptiveFor),
-    captiveWithTest(notCaptiveFor),
+    ClickType.values().associateWith {
+        captiveWithTest(notCaptiveFor).toSingletonList()
+    },
     { _, _, prev -> prev }
 ) {
     override fun isCaptive(): Boolean {

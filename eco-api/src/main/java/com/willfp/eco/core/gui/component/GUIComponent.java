@@ -30,6 +30,8 @@ public interface GUIComponent {
 
     /**
      * Get the slot at a certain position in the component.
+     * <p>
+     * It's safe to assume to the row and column will always be in bounds.
      *
      * @param row    The row (1-indexed).
      * @param column The column (1-indexed).
@@ -46,6 +48,8 @@ public interface GUIComponent {
      * <p>
      * If your component doesn't use context data (player, menu),
      * then it will default to the raw slot.
+     * <p>
+     * It's safe to assume to the row and column will always be in bounds.
      *
      * @param row    The row (1-indexed).
      * @param column The column (1-indexed).

@@ -1,5 +1,6 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.gui.component.GUIComponent;
 import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
@@ -7,6 +8,7 @@ import com.willfp.eco.util.ListUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,11 +28,16 @@ import java.util.List;
  * "11111111"
  * );
  */
-public class FillerMask {
+public class FillerMask implements GUIComponent {
     /**
      * Mask.
      */
     private final List<List<Slot>> mask;
+
+    /**
+     * Rows.
+     */
+    private final int rows;
 
     /**
      * Create a new filler mask.
@@ -71,7 +78,8 @@ public class FillerMask {
             throw new IllegalArgumentException("Items cannot be empty!");
         }
 
-        mask = ListUtils.create2DList(6, 9);
+        rows = pattern.length;
+        mask = ListUtils.create2DList(rows, 9);
 
         for (int i = 0; i < items.items().length; i++) {
             ItemStack itemStack = new ItemStackBuilder(items.items()[i])
@@ -106,5 +114,21 @@ public class FillerMask {
      */
     public List<List<Slot>> getMask() {
         return this.mask;
+    }
+
+    @Override
+    public int getRows() {
+        return rows;
+    }
+
+    @Override
+    public int getColumns() {
+        return 9;
+    }
+
+    @Override
+    public @Nullable Slot getSlotAt(final int row,
+                                    final int column) {
+        return mask.get(row).get(column);
     }
 }

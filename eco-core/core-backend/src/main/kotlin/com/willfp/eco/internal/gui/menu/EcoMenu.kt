@@ -4,8 +4,8 @@ import com.willfp.eco.core.gui.component.GUIComponent
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.OpenHandler
+import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.internal.gui.slot.EcoFillerSlot
 import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -19,39 +19,44 @@ import org.bukkit.persistence.PersistentDataType
 @Suppress("UNCHECKED_CAST")
 class EcoMenu(
     private val rows: Int,
-    private val componentsAtPoints: Map<Anchor, OffsetComponent>,
+    private val componentsAtPoints: Map<Anchor, List<OffsetComponent>>,
     private val title: String,
     private val onClose: CloseHandler,
     private val onRender: (Player, Menu) -> Unit,
     private val onOpen: OpenHandler
 ) : Menu {
-    private fun getComponent(row: Int, column: Int): OffsetComponent? {
+    private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?, menu: Menu?): Slot {
         if (row < 1 || row > this.rows || column < 1 || column > 9) {
-            return emptyOffsetComponent
+            return emptyFillerSlot
         }
 
-        return componentsAtPoints[Anchor(row, column)]
+        val anchor = Anchor(row, column)
+        val components = componentsAtPoints[anchor] ?: return emptyFillerSlot
+
+        for (component in components) {
+            val found = if (player != null && menu != null) component.component.getSlotAt(
+                component.rowOffset,
+                component.columnOffset,
+                player,
+                menu
+            ) else component.component.getSlotAt(
+                component.rowOffset,
+                component.columnOffset
+            )
+
+            if (found != null) {
+                return found
+            }
+        }
+
+        return emptyFillerSlot
     }
 
-    override fun getSlot(row: Int, column: Int): Slot {
-        val found = getComponent(row, column) ?: return emptyFillerSlot
+    override fun getSlot(row: Int, column: Int): Slot =
+        getPossiblyReactiveSlot(row, column, null, null)
 
-        return found.component.getSlotAt(
-            found.rowOffset,
-            found.columnOffset
-        ) ?: emptyFillerSlot
-    }
-
-    override fun getSlot(row: Int, column: Int, player: Player, menu: Menu): Slot {
-        val found = getComponent(row, column) ?: return emptyFillerSlot
-
-        return found.component.getSlotAt(
-            found.rowOffset,
-            found.columnOffset,
-            player,
-            menu
-        ) ?: emptyFillerSlot
-    }
+    override fun getSlot(row: Int, column: Int, player: Player, menu: Menu): Slot =
+        getPossiblyReactiveSlot(row, column, player, menu)
 
     override fun open(player: Player): Inventory {
         val inventory = Bukkit.createInventory(null, rows * 9, title)
@@ -146,5 +151,5 @@ data class Anchor(
     val column: Int
 )
 
-val emptyFillerSlot = EcoFillerSlot(ItemStack(Material.AIR))
+val emptyFillerSlot = FillerSlot(ItemStack(Material.AIR))
 val emptyOffsetComponent = OffsetComponent(emptyFillerSlot, 0, 0)

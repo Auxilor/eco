@@ -14,27 +14,19 @@ import org.bukkit.inventory.ItemStack
 
 open class EcoSlot(
     private val provider: SlotProvider,
-    private val onLeftClick: SlotHandler,
-    private val onRightClick: SlotHandler,
-    private val onShiftLeftClick: SlotHandler,
-    private val onShiftRightClick: SlotHandler,
-    private val onMiddleClick: SlotHandler,
+    private val handlers: Map<ClickType, List<SlotHandler>>,
     private val updater: SlotUpdater
 ) : Slot {
+    private fun List<SlotHandler>.handle(event: InventoryClickEvent, slot: Slot, menu: Menu) =
+        this.forEach { it.handle(event, slot, menu) }
+
     fun handleInventoryClick(
         event: InventoryClickEvent,
         menu: Menu
     ) {
         event.isCancelled = true
 
-        when (event.click) {
-            ClickType.LEFT -> this.onLeftClick.handle(event, this, menu)
-            ClickType.RIGHT -> this.onRightClick.handle(event, this, menu)
-            ClickType.SHIFT_LEFT -> this.onShiftLeftClick.handle(event, this, menu)
-            ClickType.SHIFT_RIGHT -> this.onShiftRightClick.handle(event, this, menu)
-            ClickType.MIDDLE -> this.onMiddleClick.handle(event, this, menu)
-            else -> {}
-        }
+        handlers[event.click]?.handle(event, this, menu)
     }
 
     override fun getItemStack(player: Player): ItemStack {

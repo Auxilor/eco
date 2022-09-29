@@ -70,7 +70,9 @@ public interface MenuBuilder {
      * @param mask The mask.
      * @return The builder.
      */
-    MenuBuilder setMask(@NotNull FillerMask mask);
+    default MenuBuilder setMask(@NotNull FillerMask mask) {
+        return this.addComponent(0, 0, mask);
+    }
 
     /**
      * Set the menu close handler.
@@ -79,8 +81,7 @@ public interface MenuBuilder {
      * @return The builder.
      */
     default MenuBuilder onClose(@NotNull Consumer<InventoryCloseEvent> action) {
-        onClose((event, menu) -> action.accept(event));
-        return this;
+        return this.onClose((event, menu) -> action.accept(event));
     }
 
     /**

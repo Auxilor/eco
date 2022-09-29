@@ -5,9 +5,6 @@ import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.OpenHandler
-import com.willfp.eco.core.gui.slot.FillerMask
-import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.util.ListUtils
 import com.willfp.eco.util.StringUtils
 import org.bukkit.entity.Player
 import java.util.function.BiConsumer
@@ -15,8 +12,7 @@ import java.util.function.Consumer
 
 class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     private var title = "Menu"
-    private var maskSlots: List<MutableList<Slot?>>
-    private val components = mutableMapOf<Anchor, GUIComponent>()
+    private val components = mutableMapOf<Anchor, MutableList<GUIComponent>>()
     private var onClose = CloseHandler { _, _ -> }
     private var onOpen = OpenHandler { _, _ -> }
     private var onRender: (Player, Menu) -> Unit = { _, _ -> }
@@ -34,17 +30,14 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
         require(column + component.columns - 1 <= 9) { "Component is too large to be placed here!" }
         require(row + component.rows - 1 <= getRows()) { "Component is too large to be placed here!" }
 
-        components[Anchor(row, column)] = component
+        val anchor = Anchor(row, column)
+        components.computeIfAbsent(anchor) { mutableListOf() } += component
+
         return this
     }
 
     override fun modfiy(modifier: Consumer<MenuBuilder>): MenuBuilder {
         modifier.accept(this)
-        return this
-    }
-
-    override fun setMask(mask: FillerMask): MenuBuilder {
-        maskSlots = mask.mask
         return this
     }
 
@@ -64,27 +57,28 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun build(): Menu {
-        val componentsAtPoints = mutableMapOf<Anchor, OffsetComponent>()
+        val componentsAtPoints = mutableMapOf<Anchor, MutableList<OffsetComponent>>()
 
+        // 4 nested for loops? Shut up. Silence. Quiet.
         for (row in (1..rows)) {
             for (column in (1..9)) {
-                for ((anchor, component) in components) {
-                    // Too far to the top / left to be in bounds
-                    if (anchor.row > row || anchor.column > column) {
-                        continue
-                    }
+                for ((anchor, availableComponents) in components) {
+                    for (component in availableComponents) {
+                        // Too far to the top / left to be in bounds
+                        if (anchor.row > row || anchor.column > column) {
+                            continue
+                        }
 
-                    // Too far to the bottom / left to be in bounds
-                    if (row > anchor.row + component.rows - 1 || column > anchor.column + component.columns - 1) {
-                        continue
-                    }
+                        // Too far to the bottom / left to be in bounds
+                        if (row > anchor.row + component.rows - 1 || column > anchor.column + component.columns - 1) {
+                            continue
+                        }
 
-                    val rowOffset = anchor.row - row
-                    val columnOffset = anchor.column - column
+                        val rowOffset = anchor.row - row
+                        val columnOffset = anchor.column - column
 
-                    val slot = component.getSlotAt(rowOffset, columnOffset)
-                    if (slot != null) {
-                        componentsAtPoints[Anchor(row, column)] = OffsetComponent(
+                        val point = Anchor(row, column)
+                        componentsAtPoints.computeIfAbsent(point) { mutableListOf() } += OffsetComponent(
                             component,
                             rowOffset,
                             columnOffset
@@ -95,9 +89,5 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
         }
 
         return EcoMenu(rows, componentsAtPoints, title, onClose, onRender, onOpen)
-    }
-
-    init {
-        maskSlots = ListUtils.create2DList(rows, 9)
     }
 }
