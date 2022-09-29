@@ -21,9 +21,9 @@ class EcoMenu(
     private val rows: Int,
     private val componentsAtPoints: Map<Anchor, List<OffsetComponent>>,
     private val title: String,
-    private val onClose: CloseHandler,
-    private val onRender: (Player, Menu) -> Unit,
-    private val onOpen: OpenHandler
+    private val onClose: List<CloseHandler>,
+    private val onRender: List<(Player, Menu) -> Unit>,
+    private val onOpen: List<OpenHandler>
 ) : Menu {
     private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?, menu: Menu?): Slot {
         if (row < 1 || row > this.rows || column < 1 || column > 9) {
@@ -65,14 +65,14 @@ class EcoMenu(
 
         player.openInventory(inventory)
 
-        onOpen.handle(player, this)
+        onOpen.forEach { it.handle(player, this) }
 
         inventory.asRenderedInventory()?.generateCaptive()
         return inventory
     }
 
     fun handleClose(event: InventoryCloseEvent) {
-        onClose.handle(event, this)
+        onClose.forEach { it.handle(event, this) }
         event.inventory.asRenderedInventory()?.generateCaptive()
         MenuHandler.unregisterInventory(event.inventory)
     }
@@ -137,7 +137,8 @@ class EcoMenu(
         player.openInventory.topInventory.asRenderedInventory()?.render()
     }
 
-    fun runOnRender(player: Player) = onRender(player, this)
+    fun runOnRender(player: Player) =
+        onRender.forEach { it(player, this) }
 }
 
 data class OffsetComponent(

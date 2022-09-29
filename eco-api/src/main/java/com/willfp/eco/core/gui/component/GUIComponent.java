@@ -1,11 +1,8 @@
 package com.willfp.eco.core.gui.component;
 
 import com.willfp.eco.core.gui.menu.Menu;
-import com.willfp.eco.core.gui.slot.FillerSlot;
 import com.willfp.eco.core.gui.slot.Slot;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,9 +35,9 @@ public interface GUIComponent {
      * @return The slot, or null if no slot at the location.
      */
     @Nullable
-    default Slot getSlotAt(int row,
-                           int column) {
-        return new FillerSlot(new ItemStack(Material.AIR));
+    default Slot getSlotAt(final int row,
+                           final int column) {
+        return null;
     }
 
     /**
@@ -58,10 +55,10 @@ public interface GUIComponent {
      * @return The slot, or null if no slot at the location.
      */
     @Nullable
-    default Slot getSlotAt(int row,
-                           int column,
-                           @NotNull Player player,
-                           @NotNull Menu menu) {
+    default Slot getSlotAt(final int row,
+                           final int column,
+                           @NotNull final Player player,
+                           @NotNull final Menu menu) {
         return getSlotAt(row, column);
     }
 }

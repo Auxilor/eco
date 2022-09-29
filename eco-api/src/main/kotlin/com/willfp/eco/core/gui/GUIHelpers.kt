@@ -4,6 +4,7 @@ package com.willfp.eco.core.gui
 
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.page.Page
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.items.TestableItem
@@ -130,6 +131,10 @@ fun MenuBuilder.modify(modifier: (MenuBuilder) -> Unit): MenuBuilder =
 /** @see MenuBuilder.onRender */
 fun MenuBuilder.onRender(action: (Player, Menu) -> Unit): MenuBuilder =
     this.onRender { a, b -> action(a, b) }
+
+/** @see MenuBuilder.addPage */
+fun MenuBuilder.addPage(page: Int, creation: MenuBuilder.() -> MenuBuilder): MenuBuilder =
+    this.addPage(Page(page, Menu.builder(this.rows).creation().build()))
 
 /** Kotlin builder for menus. */
 fun menu(

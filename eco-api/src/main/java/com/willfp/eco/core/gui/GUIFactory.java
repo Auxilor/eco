@@ -1,6 +1,7 @@
 package com.willfp.eco.core.gui;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
@@ -21,6 +22,7 @@ public interface GUIFactory {
      * @param provider The provider.
      * @return The builder.
      */
+    @NotNull
     SlotBuilder createSlotBuilder(@NotNull SlotProvider provider);
 
     /**
@@ -29,5 +31,17 @@ public interface GUIFactory {
      * @param rows The amount of rows.
      * @return The builder.
      */
+    @NotNull
     MenuBuilder createMenuBuilder(int rows);
+
+    /**
+     * Combine the state of two menus together.
+     *
+     * @param base       The base menu.
+     * @param additional The additional state.
+     * @return The menu.
+     */
+    @NotNull
+    Menu blendMenuState(@NotNull Menu base,
+                        @NotNull Menu additional);
 }

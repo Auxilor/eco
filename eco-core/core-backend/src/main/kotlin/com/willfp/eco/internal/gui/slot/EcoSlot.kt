@@ -33,15 +33,6 @@ open class EcoSlot(
         return updater.update(player, menu, prev) ?: ItemStack(Material.AIR)
     }
 
-    fun getItemStack(
-        player: Player,
-        menu: Menu
-    ): ItemStack {
-        val prev = provider.provide(player, menu)
-        val updated = updater.update(player, menu, prev)
-        return updated ?: ItemStack(Material.AIR)
-    }
-
     override fun isCaptive(): Boolean {
         return false
     }

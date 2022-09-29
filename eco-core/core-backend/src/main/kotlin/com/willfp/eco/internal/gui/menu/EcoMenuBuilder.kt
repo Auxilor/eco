@@ -13,9 +13,9 @@ import java.util.function.Consumer
 class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     private var title = "Menu"
     private val components = mutableMapOf<Anchor, MutableList<GUIComponent>>()
-    private var onClose = CloseHandler { _, _ -> }
-    private var onOpen = OpenHandler { _, _ -> }
-    private var onRender: (Player, Menu) -> Unit = { _, _ -> }
+    private var onClose = mutableListOf<CloseHandler>()
+    private var onOpen = mutableListOf<OpenHandler>()
+    private var onRender = mutableListOf<(Player, Menu) -> Unit>()
 
     override fun getRows() = rows
 
@@ -42,17 +42,17 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     }
 
     override fun onClose(action: CloseHandler): MenuBuilder {
-        onClose = action
+        onClose += action
         return this
     }
 
     override fun onOpen(action: OpenHandler): MenuBuilder {
-        onOpen = action
+        onOpen += action
         return this
     }
 
     override fun onRender(action: BiConsumer<Player, Menu>): MenuBuilder {
-        onRender = { a, b -> action.accept(a, b) }
+        onRender += { a, b -> action.accept(a, b) }
         return this
     }
 

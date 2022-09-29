@@ -1,6 +1,7 @@
 package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.page.Page;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Builder to create menus.
@@ -70,8 +72,38 @@ public interface MenuBuilder {
      * @param mask The mask.
      * @return The builder.
      */
-    default MenuBuilder setMask(@NotNull FillerMask mask) {
+    default MenuBuilder setMask(@NotNull final FillerMask mask) {
         return this.addComponent(0, 0, mask);
+    }
+
+    /**
+     * Add a page.
+     *
+     * @param page The page.
+     * @return The builder.
+     */
+    default MenuBuilder addPage(@NotNull final Page page) {
+        return this.addComponent(0, 0, page);
+    }
+
+    /**
+     * Set the max pages.
+     *
+     * @param pages The max pages.
+     * @return The builder.
+     */
+    default MenuBuilder maxPages(final int pages) {
+        return this.maxPages(player -> pages);
+    }
+
+    /**
+     * Set the max pages dynamically for a player.
+     *
+     * @param pages The max pages.
+     * @return The builder.
+     */
+    default MenuBuilder maxPages(@NotNull final Function<Player, Integer> pages) {
+        return onOpen((player, menu) -> menu.addState(player, Page.MAX_PAGE_KEY, pages.apply(player)));
     }
 
     /**
@@ -80,7 +112,7 @@ public interface MenuBuilder {
      * @param action The handler.
      * @return The builder.
      */
-    default MenuBuilder onClose(@NotNull Consumer<InventoryCloseEvent> action) {
+    default MenuBuilder onClose(@NotNull final Consumer<InventoryCloseEvent> action) {
         return this.onClose((event, menu) -> action.accept(event));
     }
 
