@@ -3,7 +3,6 @@ package com.willfp.eco.core.gui.menu;
 import com.willfp.eco.core.gui.component.GUIComponent;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
@@ -38,9 +37,12 @@ public interface MenuBuilder {
      * @param slot   The slot.
      * @return The builder.
      */
-    MenuBuilder setSlot(int row,
-                        int column,
-                        @NotNull Slot slot);
+    default MenuBuilder setSlot(final int row,
+                                final int column,
+                                @NotNull final Slot slot) {
+        return this.addComponent(row, column, slot);
+    }
+
 
     /**
      * Add a component.
@@ -50,23 +52,9 @@ public interface MenuBuilder {
      * @param component The component.
      * @return The builder.
      */
-    default MenuBuilder addComponent(final int row,
-                                     final int column,
-                                     @NotNull GUIComponent component) {
-        Validate.isTrue(column + component.getColumns() - 1 <= 9, "Component is too large to be placed here!");
-        Validate.isTrue(row + component.getRows() - 1 <= this.getRows(), "Component is too large to be placed here!");
-
-        for (int currentRow = row; currentRow < row + component.getRows(); currentRow++) {
-            for (int currentCol = column; currentCol < column + component.getColumns(); currentCol++) {
-                Slot slot = component.getSlotAt(currentRow, currentCol);
-                if (slot != null) {
-                    setSlot(currentRow, currentCol, slot);
-                }
-            }
-        }
-
-        return this;
-    }
+    MenuBuilder addComponent(int row,
+                             int column,
+                             @NotNull GUIComponent component);
 
     /**
      * Run function to modify the builder.
