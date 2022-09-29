@@ -76,7 +76,7 @@ class EcoMenu(
 
     fun handleClose(event: InventoryCloseEvent) {
         onClose.forEach { it.handle(event, this) }
-        event.inventory.asRenderedInventory()?.generateCaptive()
+        event.inventory.asRenderedInventory()?.render()
         MenuHandler.unregisterInventory(event.inventory)
     }
 
