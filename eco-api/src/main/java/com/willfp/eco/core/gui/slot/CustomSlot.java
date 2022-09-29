@@ -26,10 +26,6 @@ public abstract class CustomSlot implements Slot {
      * @param slot The slot to delegate to.
      */
     protected void init(@NotNull final Slot slot) {
-        if (delegate == null) {
-            throw new IllegalStateException("Custom Slot was not initialized!");
-        }
-
         this.delegate = slot;
     }
 
