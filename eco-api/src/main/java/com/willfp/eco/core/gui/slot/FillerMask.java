@@ -90,9 +90,6 @@ public class FillerMask implements GUIComponent {
 
             for (String patternRow : pattern) {
                 int column = 0;
-                if (patternRow.length() != 9) {
-                    throw new IllegalArgumentException("Invalid amount of columns in pattern!");
-                }
                 for (char c : patternRow.toCharArray()) {
                     if (c == '0') {
                         mask.get(row).set(column, null);

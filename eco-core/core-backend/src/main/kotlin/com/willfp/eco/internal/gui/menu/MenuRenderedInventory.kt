@@ -26,13 +26,15 @@ class MenuRenderedInventory(
     val inventory: Inventory,
     val player: Player
 ) {
-    val captiveItems = mutableListOf<ItemStack>()
+    val captiveItems = mutableMapOf<GUIPosition, ItemStack>()
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
+        captiveItems.clear()
+
         for (row in (1..menu.rows)) {
-            for (column in (1..9)) {
-                val bukkit = MenuUtils.rowColumnToSlot(row, column)
+            for (column in (1..menu.columns)) {
+                val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
 
                 val slot = menu.getSlot(row, column, player, menu)
                 val renderedItem = slot.getItemStack(player)
@@ -50,7 +52,7 @@ class MenuRenderedInventory(
                         continue
                     }
 
-                    captiveItems.add(itemStack)
+                    captiveItems[GUIPosition(row, column)] = itemStack
                 } else {
                     inventory.setItem(bukkit, renderedItem)
                 }

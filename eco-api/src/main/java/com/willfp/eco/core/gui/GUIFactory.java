@@ -3,6 +3,7 @@ package com.willfp.eco.core.gui;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuBuilder;
+import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import org.bukkit.inventory.ItemStack;
@@ -29,10 +30,12 @@ public interface GUIFactory {
      * Create menu builder.
      *
      * @param rows The amount of rows.
+     * @param type The type.
      * @return The builder.
      */
     @NotNull
-    MenuBuilder createMenuBuilder(int rows);
+    MenuBuilder createMenuBuilder(int rows,
+                                  @NotNull MenuType type);
 
     /**
      * Combine the state of two menus together.

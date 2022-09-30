@@ -14,6 +14,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
@@ -21,7 +22,8 @@ import org.bukkit.persistence.PersistentDataType
 @Suppress("UNCHECKED_CAST")
 class EcoMenu(
     private val rows: Int,
-    private val componentsAtPoints: Map<Anchor, List<OffsetComponent>>,
+    private val columns: Int,
+    private val componentsAtPoints: Map<GUIPosition, List<OffsetComponent>>,
     private val title: String,
     private val onClose: List<CloseHandler>,
     private val onRender: List<(Player, Menu) -> Unit>,
@@ -29,12 +31,12 @@ class EcoMenu(
     private val signalHandlers: List<SignalHandler<*>>
 ) : Menu {
     private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?, menu: Menu?): Slot {
-        if (row < 1 || row > this.rows || column < 1 || column > 9) {
+        if (row < 1 || row > this.rows || column < 1 || column > this.columns) {
             return emptyFillerSlot
         }
 
-        val anchor = Anchor(row, column)
-        val components = componentsAtPoints[anchor] ?: return emptyFillerSlot
+        val guiPosition = GUIPosition(row, column)
+        val components = componentsAtPoints[guiPosition] ?: return emptyFillerSlot
 
         for (component in components) {
             val found = if (player != null && menu != null) component.component.getSlotAt(
@@ -62,7 +64,12 @@ class EcoMenu(
         getPossiblyReactiveSlot(row, column, player, menu)
 
     override fun open(player: Player): Inventory {
-        val inventory = Bukkit.createInventory(null, rows * 9, title)
+        val inventory = if (columns == 9) {
+            Bukkit.createInventory(null, rows * columns, title)
+        } else {
+            Bukkit.createInventory(null, InventoryType.DISPENSER, title)
+        }
+
         player.forceMenuOpen(this)
 
         MenuHandler.registerInventory(inventory, this, player)
@@ -83,17 +90,24 @@ class EcoMenu(
         MenuHandler.unregisterInventory(event.inventory)
     }
 
-    override fun getRows(): Int {
-        return rows
-    }
+    override fun getRows() = rows
 
-    override fun getTitle(): String {
-        return title
-    }
+    override fun getColumns() = columns
+
+    override fun getTitle() = title
 
     override fun getCaptiveItems(player: Player): List<ItemStack> {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptyList()
-        return inventory.captiveItems
+        return inventory.captiveItems.values.toList()
+    }
+
+    override fun getCaptiveItem(player: Player, row: Int, column: Int): ItemStack? {
+        if (row < 1 || row > this.rows || column < 1 || column > this.columns) {
+            return null
+        }
+
+        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return null
+        return inventory.captiveItems[GUIPosition(row, column)]
     }
 
     override fun sendSignal(player: Player, signal: Signal) {
@@ -165,7 +179,7 @@ data class OffsetComponent(
     val columnOffset: Int
 )
 
-data class Anchor(
+data class GUIPosition(
     val row: Int,
     val column: Int
 )

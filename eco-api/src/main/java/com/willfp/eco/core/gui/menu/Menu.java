@@ -28,6 +28,15 @@ public interface Menu {
     int getRows();
 
     /**
+     * Get the amount of columns.
+     *
+     * @return The amount of columns.
+     */
+    default int getColumns() {
+        return 9;
+    }
+
+    /**
      * Get a static slot at a given row and column.
      * <p>
      * If the slot at the location is reactive, this will return
@@ -80,6 +89,21 @@ public interface Menu {
      * @return The items.
      */
     List<ItemStack> getCaptiveItems(@NotNull Player player);
+
+    /**
+     * Get a captive item at a specific position.
+     *
+     * @param player The player.
+     * @param row    The row.
+     * @param column The column.
+     * @return The captive item.
+     */
+    @Nullable
+    default ItemStack getCaptiveItem(@NotNull final Player player,
+                                     final int row,
+                                     final int column) {
+        return null;
+    }
 
     /**
      * Add state for a player.
@@ -196,6 +220,19 @@ public interface Menu {
      * @return The builder.
      */
     static MenuBuilder builder(final int rows) {
-        return Eco.getHandler().getGUIFactory().createMenuBuilder(rows);
+        return Eco.getHandler().getGUIFactory().createMenuBuilder(
+                rows,
+                MenuType.NORMAL
+        );
+    }
+
+    /**
+     * Create a builder with a given type.
+     *
+     * @param type The menu type.
+     * @return The builder.
+     */
+    static MenuBuilder builder(@NotNull final MenuType type) {
+        return Eco.getHandler().getGUIFactory().createMenuBuilder(type.getDefaultRows(), type);
     }
 }

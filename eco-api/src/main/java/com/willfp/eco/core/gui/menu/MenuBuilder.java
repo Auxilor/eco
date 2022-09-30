@@ -102,6 +102,22 @@ public interface MenuBuilder extends PageBuilder {
     }
 
     /**
+     * Add a page.
+     *
+     * @param pageNumber  The page number.
+     * @param pageBuilder The page builder.
+     * @return The builder.
+     */
+    default MenuBuilder addPage(final int pageNumber,
+                                @NotNull final Consumer<PageBuilder> pageBuilder) {
+        MenuBuilder builder = Menu.builder(this.getRows());
+        pageBuilder.accept(builder);
+
+        Page page = new Page(pageNumber, builder.build());
+        return this.addPage(page);
+    }
+
+    /**
      * Set the max pages.
      *
      * @param pages The max pages.

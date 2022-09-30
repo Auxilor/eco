@@ -1,19 +1,14 @@
 package com.willfp.eco.core.gui.page;
 
 import com.willfp.eco.core.gui.component.GUIComponent;
-import com.willfp.eco.core.gui.menu.CloseHandler;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuLayer;
-import com.willfp.eco.core.gui.menu.OpenHandler;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Builder to create pages.
@@ -25,6 +20,13 @@ public interface PageBuilder {
      * @return The amount of rows.
      */
     int getRows();
+
+    /**
+     * Get the amount of columns.
+     *
+     * @return The amount of columns.
+     */
+    int getColumns();
 
     /**
      * Set a slot.

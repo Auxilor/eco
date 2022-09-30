@@ -3,14 +3,12 @@ package com.willfp.eco.core.gui.page;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.component.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
-import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
  * A page is a component representing another menu.
@@ -43,6 +41,16 @@ public final class Page implements GUIComponent {
     private Menu delegate = null;
 
     /**
+     * The rows for the page to have.
+     */
+    private int rows = 6;
+
+    /**
+     * The columns for the page to have.
+     */
+    private int columns = 9;
+
+    /**
      * Create a new page.
      *
      * @param pageNumber The page number.
@@ -52,20 +60,6 @@ public final class Page implements GUIComponent {
                 @NotNull final Menu page) {
         this.pageNumber = pageNumber;
         this.page = page;
-    }
-
-    /**
-     * Create a new page.
-     *
-     * @param pageNumber The page number.
-     * @param page       The base menu.
-     */
-    public Page(final int pageNumber,
-                @NotNull final Consumer<PageBuilder> page) {
-        this.pageNumber = pageNumber;
-        MenuBuilder builder = Menu.builder(6);
-        page.accept(builder);
-        this.page = builder.build();
     }
 
     /**
@@ -94,13 +88,20 @@ public final class Page implements GUIComponent {
     }
 
     @Override
+    public void init(final int maxRows,
+                     final int maxColumns) {
+        this.rows = maxRows;
+        this.columns = maxColumns;
+    }
+
+    @Override
     public int getRows() {
-        return page.getRows();
+        return rows;
     }
 
     @Override
     public int getColumns() {
-        return 9;
+        return columns;
     }
 
     /**
