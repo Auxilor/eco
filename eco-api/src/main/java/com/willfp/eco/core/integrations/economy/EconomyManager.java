@@ -44,6 +44,18 @@ public final class EconomyManager {
      */
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
                                     final double amount) {
+        return hasAmount(player, BigDecimal.valueOf(amount));
+    }
+
+    /**
+     * Get if a player has a certain amount.
+     *
+     * @param player The player.
+     * @param amount The amount.
+     * @return If the player has the amount.
+     */
+    public static boolean hasAmount(@NotNull final OfflinePlayer player,
+                                    final BigDecimal amount) {
         for (EconomyIntegration integration : REGISTERED) {
             return integration.hasAmount(player, amount);
         }
@@ -60,6 +72,18 @@ public final class EconomyManager {
      */
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
                                     final double amount) {
+        return giveMoney(player, BigDecimal.valueOf(amount));
+    }
+
+    /**
+     * Give money to a player.
+     *
+     * @param player The player.
+     * @param amount The amount to give.
+     * @return If the transaction was a success.
+     */
+    public static boolean giveMoney(@NotNull final OfflinePlayer player,
+                                    @NotNull final BigDecimal amount) {
         for (EconomyIntegration integration : REGISTERED) {
             return integration.giveMoney(player, amount);
         }
@@ -76,6 +100,18 @@ public final class EconomyManager {
      */
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
                                       final double amount) {
+        return removeMoney(player, BigDecimal.valueOf(amount));
+    }
+
+    /**
+     * Remove money from a player.
+     *
+     * @param player The player.
+     * @param amount The amount to remove.
+     * @return If the transaction was a success.
+     */
+    public static boolean removeMoney(@NotNull final OfflinePlayer player,
+                                      @NotNull final BigDecimal amount) {
         for (EconomyIntegration integration : REGISTERED) {
             return integration.removeMoney(player, amount);
         }
@@ -90,11 +126,7 @@ public final class EconomyManager {
      * @return The balance.
      */
     public static double getBalance(@NotNull final OfflinePlayer player) {
-        for (EconomyIntegration integration : REGISTERED) {
-            return integration.getBalance(player);
-        }
-
-        return 0;
+        return getExactBalance(player).doubleValue();
     }
 
     /**
