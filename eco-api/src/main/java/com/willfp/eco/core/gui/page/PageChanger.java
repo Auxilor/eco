@@ -43,7 +43,16 @@ public final class PageChanger implements GUIComponent {
                                     Page.getMaxPage(player, menu)
                             )
                     );
+
+                    if (newPage == page) {
+                        return;
+                    }
+
                     menu.addState(player, Page.PAGE_KEY, newPage);
+                    menu.sendSignal(player, new PageChangeSignal(
+                            newPage,
+                            page
+                    ));
                 })
                 .build();
     }

@@ -122,7 +122,7 @@ public interface MenuBuilder extends PageBuilder {
     }
 
     /**
-     * Set the menu close handler.
+     * Add a menu close handler.
      *
      * @param action The handler.
      * @return The builder.
@@ -132,7 +132,7 @@ public interface MenuBuilder extends PageBuilder {
     }
 
     /**
-     * Set the menu close handler.
+     * Add a menu close handler.
      *
      * @param action The handler.
      * @return The builder.
@@ -140,7 +140,7 @@ public interface MenuBuilder extends PageBuilder {
     MenuBuilder onClose(@NotNull CloseHandler action);
 
     /**
-     * Set the menu open handler.
+     * Add a menu open handler.
      *
      * @param action The handler.
      * @return The builder.
@@ -148,12 +148,22 @@ public interface MenuBuilder extends PageBuilder {
     MenuBuilder onOpen(@NotNull OpenHandler action);
 
     /**
-     * Set the action to run on render.
+     * Add an action to run on render.
      *
      * @param action The action.
      * @return The builder.
      */
     MenuBuilder onRender(@NotNull BiConsumer<Player, Menu> action);
+
+    /**
+     * Add an action to run on signal receive.
+     *
+     * @param action The action.
+     * @return THe builder.
+     */
+    default MenuBuilder onSignalReceive(@NotNull final SignalHandler action) {
+        return this;
+    }
 
     /**
      * Build the menu.

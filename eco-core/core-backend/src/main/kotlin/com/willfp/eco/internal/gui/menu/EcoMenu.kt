@@ -4,6 +4,8 @@ import com.willfp.eco.core.gui.component.GUIComponent
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.OpenHandler
+import com.willfp.eco.core.gui.menu.Signal
+import com.willfp.eco.core.gui.menu.SignalHandler
 import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.util.NamespacedKeyUtils
@@ -23,7 +25,8 @@ class EcoMenu(
     private val title: String,
     private val onClose: List<CloseHandler>,
     private val onRender: List<(Player, Menu) -> Unit>,
-    private val onOpen: List<OpenHandler>
+    private val onOpen: List<OpenHandler>,
+    private val signalHandlers: List<SignalHandler<*>>
 ) : Menu {
     private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?, menu: Menu?): Slot {
         if (row < 1 || row > this.rows || column < 1 || column > 9) {
@@ -91,6 +94,18 @@ class EcoMenu(
     override fun getCaptiveItems(player: Player): List<ItemStack> {
         val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptyList()
         return inventory.captiveItems
+    }
+
+    override fun sendSignal(player: Player, signal: Signal) {
+        for (handler in signalHandlers) {
+            if (handler.canHandleSignal(signal)) {
+                handler.handle(signal, player)
+            }
+        }
+    }
+
+    private fun <T : Signal> SignalHandler<T>.handle(signal: Signal, player: Player) {
+        this.handle(player, this@EcoMenu, signal as T)
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("addState(player, key.toString(), value)"))

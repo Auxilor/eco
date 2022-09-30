@@ -4,6 +4,8 @@ package com.willfp.eco.core.gui
 
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.menu.Signal
+import com.willfp.eco.core.gui.menu.SignalHandler
 import com.willfp.eco.core.gui.page.Page
 import com.willfp.eco.core.gui.page.PageBuilder
 import com.willfp.eco.core.gui.slot.Slot
@@ -138,6 +140,14 @@ fun MenuBuilder.addPage(page: Int, creation: PageBuilder.() -> Unit): MenuBuilde
     val builder = Menu.builder(this.rows)
     creation(builder)
     return this.addPage(Page(page, builder.build()))
+}
+
+/** @see MenuBuilder.onSignalReceive */
+inline fun <reified T : Signal> MenuBuilder.onSignalReceive(crossinline handler: (Player, Menu, T) -> Unit): MenuBuilder {
+    return this.onSignalReceive(object : SignalHandler<T>(T::class.java) {
+        override fun handle(player: Player, menu: Menu, signal: T) =
+            handler(player, menu, signal)
+    })
 }
 
 /** Kotlin builder for menus. */
