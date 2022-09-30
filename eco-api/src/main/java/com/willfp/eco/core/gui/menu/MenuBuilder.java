@@ -34,9 +34,11 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     @Override
-    MenuBuilder setSlot(final int row,
-                        final int column,
-                        @NotNull final Slot slot);
+    default MenuBuilder setSlot(final int row,
+                                final int column,
+                                @NotNull final Slot slot) {
+        return this.addComponent(row, column, slot);
+    }
 
 
     /**
@@ -64,9 +66,11 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     @Override
-    MenuBuilder addComponent(final int row,
-                             final int column,
-                             @NotNull final GUIComponent component);
+    default MenuBuilder addComponent(final int row,
+                                     final int column,
+                                     @NotNull final GUIComponent component) {
+        return this.addComponent(MenuLayer.MIDDLE, row, column, component);
+    }
 
     /**
      * Run function to modify the builder.
@@ -83,7 +87,9 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     @Override
-    MenuBuilder setMask(@NotNull final FillerMask mask);
+    default MenuBuilder setMask(@NotNull final FillerMask mask) {
+        return this.addComponent(MenuLayer.BACKGROUND, 1, 1, mask);
+    }
 
     /**
      * Add a page.
