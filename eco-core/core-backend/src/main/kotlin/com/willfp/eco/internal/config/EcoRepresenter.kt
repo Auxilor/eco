@@ -5,6 +5,7 @@ import org.yaml.snakeyaml.nodes.Node
 import org.yaml.snakeyaml.representer.Represent
 import org.yaml.snakeyaml.representer.Representer
 
+@Suppress("DEPRECATION")
 class EcoRepresenter : Representer() {
     init {
         multiRepresenters[Config::class.java] = RepresentConfig(multiRepresenters[Map::class.java]!!)
