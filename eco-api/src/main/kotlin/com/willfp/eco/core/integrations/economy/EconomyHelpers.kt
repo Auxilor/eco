@@ -28,15 +28,15 @@ var OfflinePlayer.exactBalance: BigDecimal
     get() = EconomyManager.getBalance(this).toBigDecimal()
     set(value) {
         if (value <= BigDecimal.ZERO) {
-            EconomyManager.removeMoney(this, this.balance)
+            EconomyManager.removeMoney(this, this.exactBalance)
             return
         }
 
         val diff = this.exactBalance - value
 
         if (diff > BigDecimal.ZERO) {
-            EconomyManager.removeMoney(this, diff.toDouble())
+            EconomyManager.removeMoney(this, diff)
         } else if (diff < BigDecimal.ZERO) {
-            EconomyManager.giveMoney(this, -diff.toDouble())
+            EconomyManager.giveMoney(this, -diff)
         }
     }
