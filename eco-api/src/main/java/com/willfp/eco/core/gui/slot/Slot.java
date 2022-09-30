@@ -9,15 +9,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
 /**
  * A slot is an item in a GUI that can handle clicks.
  * <p>
- * Don't create custom Slot implementations directly from this class,
- * rather extend {@link CustomSlot}.
+ * While you can create custom Slot implementations directly from this class,
+ * it's heavily encouraged to extend {@link CustomSlot}, which will abstract
+ * internal functionality away.
+ * <p>
+ * A lot of methods here are marked as default as in 6.43.0 the GUI system
+ * was overhauled, but to preserve backwards compatibility, the new methods
+ * had to be marked default, and many old methods became deprecated.
  */
 public interface Slot extends GUIComponent {
     /**
