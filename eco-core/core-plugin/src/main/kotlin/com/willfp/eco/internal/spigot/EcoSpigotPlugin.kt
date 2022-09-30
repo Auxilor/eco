@@ -93,10 +93,12 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
@@ -279,7 +281,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("Alice") { AnticheatManager.register(AnticheatAlice()) },
 
             // Custom Entities
-            //IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
+            IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
@@ -290,7 +292,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 CustomItemsManager.register(CustomItemsCustomCrafting())
                 CraftingRecipeListener.registerValidator(CustomRecipeCustomCrafting())
             },
-            //IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
+            IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
             IntegrationLoader("Scyther") { CustomItemsManager.register(CustomItemsScyther()) },
 
             // Shop
