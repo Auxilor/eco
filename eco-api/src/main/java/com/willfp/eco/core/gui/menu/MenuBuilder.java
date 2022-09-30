@@ -26,6 +26,15 @@ public interface MenuBuilder extends PageBuilder {
     MenuBuilder setTitle(@NotNull String title);
 
     /**
+     * Get the menu title.
+     *
+     * @return The builder.
+     */
+    default String getTitle() {
+        return "";
+    }
+
+    /**
      * Set a slot.
      *
      * @param row    The row.
@@ -104,17 +113,13 @@ public interface MenuBuilder extends PageBuilder {
     /**
      * Add a page.
      *
-     * @param pageNumber  The page number.
-     * @param pageBuilder The page builder.
+     * @param pageNumber The page number.
+     * @param builder    The page builder.
      * @return The builder.
      */
     default MenuBuilder addPage(final int pageNumber,
-                                @NotNull final Consumer<PageBuilder> pageBuilder) {
-        MenuBuilder builder = Menu.builder(this.getRows());
-        pageBuilder.accept(builder);
-
-        Page page = new Page(pageNumber, builder.build());
-        return this.addPage(page);
+                                @NotNull final PageBuilder builder) {
+        return this.addPage(new Page(pageNumber, ((MenuBuilder) builder).build()));
     }
 
     /**
@@ -172,12 +177,12 @@ public interface MenuBuilder extends PageBuilder {
     MenuBuilder onRender(@NotNull BiConsumer<Player, Menu> action);
 
     /**
-     * Add an action to run on signal receive.
+     * Add an action to run on an event.
      *
      * @param action The action.
-     * @return THe builder.
+     * @return The builder.
      */
-    default MenuBuilder onSignal(@NotNull final SignalHandler action) {
+    default MenuBuilder onEvent(@NotNull final MenuEventHandler<?> action) {
         return this;
     }
 

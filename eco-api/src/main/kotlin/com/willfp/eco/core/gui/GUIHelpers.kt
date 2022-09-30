@@ -5,37 +5,70 @@ package com.willfp.eco.core.gui
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuType
-import com.willfp.eco.core.gui.menu.Signal
-import com.willfp.eco.core.gui.menu.SignalHandler
+import com.willfp.eco.core.gui.menu.MenuEvent
+import com.willfp.eco.core.gui.menu.MenuEventHandler
 import com.willfp.eco.core.gui.page.Page
 import com.willfp.eco.core.gui.page.PageBuilder
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.items.TestableItem
 import org.bukkit.entity.Player
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
+
+/** Shorthand for the `event.whoClicked as Player` pattern used everywhere. */
+val InventoryClickEvent.player: Player
+    get() = this.whoClicked as Player
 
 /** @see SlotBuilder.onLeftClick */
 fun SlotBuilder.onLeftClick(action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
     this.onLeftClick { a, b, c -> action(a, b, c) }
 
+/** @see SlotBuilder.onLeftClick */
+fun SlotBuilder.onLeftClick(action: (Player, InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onLeftClick { a, b, c -> action(a.player, a, b, c) }
+
 /** @see SlotBuilder.onRightClick */
 fun SlotBuilder.onRightClick(action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
     this.onRightClick { a, b, c -> action(a, b, c) }
 
+/** @see SlotBuilder.onRightClick */
+fun SlotBuilder.onRightClick(action: (Player, InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onRightClick { a, b, c -> action(a.player, a, b, c) }
+
 /** @see SlotBuilder.onShiftLeftClick */
 fun SlotBuilder.onShiftLeftClick(action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
     this.onShiftLeftClick { a, b, c -> action(a, b, c) }
+
+/** @see SlotBuilder.onShiftLeftClick */
+fun SlotBuilder.onShiftLeftClick(action: (Player, InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onShiftLeftClick { a, b, c -> action(a.player, a, b, c) }
 
 /** @see SlotBuilder.onShiftRightClick */
 fun SlotBuilder.onShiftRightClick(action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
     this.onShiftRightClick { a, b, c -> action(a, b, c) }
 
 /** @see SlotBuilder.onShiftRightClick */
+fun SlotBuilder.onShiftRightClick(action: (Player, InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onShiftRightClick { a, b, c -> action(a.player, a, b, c) }
+
+/** @see SlotBuilder.onMiddleClick */
 fun SlotBuilder.onMiddleClick(action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
     this.onMiddleClick { a, b, c -> action(a, b, c) }
+
+/** @see SlotBuilder.onMiddleClick */
+fun SlotBuilder.onMiddleClick(action: (Player, InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onMiddleClick { a, b, c -> action(a.player, a, b, c) }
+
+/** @see SlotBuilder.onClick */
+fun SlotBuilder.onClick(clickType: ClickType, action: (InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onClick(clickType) { a, b, c -> action(a, b, c) }
+
+/** @see SlotBuilder.onClick */
+fun SlotBuilder.onClick(clickType: ClickType, action: (Player, InventoryClickEvent, Slot, Menu) -> Unit): SlotBuilder =
+    this.onClick(clickType) { a, b, c -> action(a.player, a, b, c) }
 
 /** @see SlotBuilder.notCaptiveFor */
 fun SlotBuilder.notCaptiveFor(test: (Player) -> Boolean): SlotBuilder =
@@ -143,11 +176,11 @@ fun MenuBuilder.addPage(page: Int, creation: PageBuilder.() -> Unit): MenuBuilde
     return this.addPage(Page(page, builder.build()))
 }
 
-/** @see MenuBuilder.onSignal */
-inline fun <reified T : Signal> MenuBuilder.onSignal(crossinline handler: (Player, Menu, T) -> Unit): MenuBuilder {
-    return this.onSignal(object : SignalHandler<T>(T::class.java) {
-        override fun handle(player: Player, menu: Menu, signal: T) =
-            handler(player, menu, signal)
+/** @see MenuBuilder.onEvent */
+inline fun <reified T : MenuEvent> MenuBuilder.onEvent(crossinline handler: (Player, Menu, T) -> Unit): MenuBuilder {
+    return this.onEvent(object : MenuEventHandler<T>(T::class.java) {
+        override fun handle(player: Player, menu: Menu, event: T) =
+            handler(player, menu, event)
     })
 }
 

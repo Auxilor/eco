@@ -1,6 +1,6 @@
 package com.willfp.eco.core.gui.page;
 
-import com.willfp.eco.core.gui.menu.Signal;
+import com.willfp.eco.core.gui.menu.MenuEvent;
 
 /**
  * Represents a page change.
@@ -8,9 +8,9 @@ import com.willfp.eco.core.gui.menu.Signal;
  * @param newPage The new page.
  * @param oldPage The old page.
  */
-public record PageChangeSignal(
+public record PageChangeEvent(
         int newPage,
         int oldPage
-) implements Signal {
+) implements MenuEvent {
 
 }

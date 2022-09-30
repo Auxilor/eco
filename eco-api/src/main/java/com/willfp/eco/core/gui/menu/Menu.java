@@ -160,13 +160,13 @@ public interface Menu {
     void refresh(@NotNull Player player);
 
     /**
-     * Send a signal to the menu.
+     * Call a menu event.
      *
-     * @param player The player.
-     * @param signal The signal.
+     * @param player    The player.
+     * @param menuEvent The event.
      */
-    default void sendSignal(@NotNull final Player player,
-                            @NotNull final Signal signal) {
+    default void callEvent(@NotNull final Player player,
+                           @NotNull final MenuEvent menuEvent) {
         // Override when needed.
     }
 

@@ -3,6 +3,7 @@ package com.willfp.eco.core.gui.page;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.component.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
+import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -128,5 +129,15 @@ public final class Page implements GUIComponent {
                                  @NotNull final Menu menu) {
         Integer pageState = menu.getState(player, Page.MAX_PAGE_KEY);
         return Objects.requireNonNullElse(pageState, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Create a new page builder.
+     *
+     * @param context The context to create the page for.
+     * @return The page builder.
+     */
+    public static PageBuilder builder(@NotNull final MenuBuilder context) {
+        return Menu.builder(context.getRows());
     }
 }

@@ -6,7 +6,7 @@ import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.menu.OpenHandler
-import com.willfp.eco.core.gui.menu.SignalHandler
+import com.willfp.eco.core.gui.menu.MenuEventHandler
 import com.willfp.eco.util.StringUtils
 import org.bukkit.entity.Player
 import java.util.function.BiConsumer
@@ -21,7 +21,7 @@ class EcoMenuBuilder(
     private val onClose = mutableListOf<CloseHandler>()
     private val onOpen = mutableListOf<OpenHandler>()
     private val onRender = mutableListOf<(Player, Menu) -> Unit>()
-    private val signalHandlers = mutableListOf<SignalHandler<*>>()
+    private val menuEventHandlers = mutableListOf<MenuEventHandler<*>>()
 
     override fun getRows() = rows
     override fun getColumns() = columns
@@ -29,6 +29,10 @@ class EcoMenuBuilder(
     override fun setTitle(title: String): MenuBuilder {
         this.title = StringUtils.format(title)
         return this
+    }
+
+    override fun getTitle(): String {
+        return title
     }
 
     override fun addComponent(layer: MenuLayer, row: Int, column: Int, component: GUIComponent): MenuBuilder {
@@ -70,8 +74,8 @@ class EcoMenuBuilder(
         return this
     }
 
-    override fun onSignal(action: SignalHandler<*>): MenuBuilder {
-        signalHandlers += action
+    override fun onEvent(action: MenuEventHandler<*>): MenuBuilder {
+        menuEventHandlers += action
         return this
     }
 
@@ -117,6 +121,6 @@ class EcoMenuBuilder(
             }
         }
 
-        return EcoMenu(rows, columns, componentsAtPoints, title, onClose, onRender, onOpen, signalHandlers)
+        return EcoMenu(rows, columns, componentsAtPoints, title, onClose, onRender, onOpen, menuEventHandlers)
     }
 }
