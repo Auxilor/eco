@@ -4,6 +4,7 @@ package com.willfp.eco.core.gui
 
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.menu.Signal
 import com.willfp.eco.core.gui.menu.SignalHandler
 import com.willfp.eco.core.gui.page.Page
@@ -156,6 +157,15 @@ fun menu(
     init: MenuBuilder.() -> Unit
 ): Menu {
     val builder = Menu.builder(rows)
+    init(builder)
+    return builder.build()
+}
+
+/** Kotlin builder for menus. */
+fun dispenserMenu(
+    init: MenuBuilder.() -> Unit
+): Menu {
+    val builder = Menu.builder(MenuType.DISPENSER)
     init(builder)
     return builder.build()
 }
