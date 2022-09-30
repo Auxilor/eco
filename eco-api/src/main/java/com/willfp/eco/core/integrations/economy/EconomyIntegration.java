@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  * If you're adding your economy to be supported in eco,
  * it's recommended to override the {@link BigDecimal} methods
  * as opposed to the {@code double} methods.
- *
+ * <p>
  * <strong>You must override at least one of all methods</strong>,
  * i.e. one {@code hasAmount}, one {@code giveMoney}, etc.,
  * otherwise your integration will cause {@link StackOverflowError}.
