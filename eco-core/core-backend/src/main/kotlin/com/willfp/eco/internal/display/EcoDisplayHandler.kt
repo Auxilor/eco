@@ -13,7 +13,7 @@ import org.bukkit.persistence.PersistentDataType
 
 class EcoDisplayHandler(plugin: EcoPlugin) : DisplayHandler {
     private val registeredModules = sortedMapOf<Int, MutableList<DisplayModule>>()
-    private val finalizeKey: NamespacedKey = plugin.namespacedKeyFactory.create("finalized")
+    private val finalizeKey: NamespacedKey = plugin.createNamespacedKey("finalized")
 
     override fun registerDisplayModule(module: DisplayModule) {
         val modules = registeredModules[module.weight] ?: mutableListOf()

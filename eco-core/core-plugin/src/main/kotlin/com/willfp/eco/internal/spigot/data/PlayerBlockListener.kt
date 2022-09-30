@@ -103,7 +103,7 @@ class PlayerBlockListener(
     private fun writeKey(location: Location) {
         val loc = location.hashCode().toString(16)
         location.chunk.persistentDataContainer.set(
-            plugin.namespacedKeyFactory.create(loc.lowercase()),
+            plugin.createNamespacedKey(loc.lowercase()),
             PersistentDataType.INTEGER,
             1
         )
@@ -115,6 +115,6 @@ class PlayerBlockListener(
 
     private fun removeKey(location: Location) {
         val loc = location.hashCode().toString(16)
-        location.chunk.persistentDataContainer.remove(plugin.namespacedKeyFactory.create(loc.lowercase()))
+        location.chunk.persistentDataContainer.remove(plugin.createNamespacedKey(loc.lowercase()))
     }
 }

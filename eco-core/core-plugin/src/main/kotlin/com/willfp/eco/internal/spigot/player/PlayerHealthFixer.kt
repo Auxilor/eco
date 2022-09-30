@@ -13,7 +13,7 @@ class PlayerHealthFixer(
     private val plugin: EcoPlugin
 ): Listener {
     private val lastHealthKey = PersistentDataKey(
-        plugin.namespacedKeyFactory.create("last_health"),
+        plugin.createNamespacedKey("last_health"),
         PersistentDataKeyType.DOUBLE,
         0.0
     )

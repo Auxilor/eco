@@ -18,4 +18,4 @@ fun namespacedKeyOf(namespace: String, key: String) =
 
 /** @see EcoPlugin.namespacedKeyFactory */
 fun namespacedKeyOf(plugin: EcoPlugin, key: String) =
-    plugin.namespacedKeyFactory.create(key)
+    plugin.createNamespacedKey(key)

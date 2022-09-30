@@ -37,6 +37,6 @@ class ArrowDataListener(
             return
         }
 
-        arrow.setMetadata("shot-from", this.plugin.metadataValueFactory.create(item))
+        arrow.setMetadata("shot-from", this.plugin.createMetadataValue(item))
     }
 }
