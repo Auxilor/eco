@@ -91,7 +91,12 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
 
         loaderOptions.maxAliasesForCollections = Int.MAX_VALUE
         loaderOptions.isAllowDuplicateKeys = false
-        loaderOptions.codePointLimit = 256 * 1024 * 1024
+        // Jank incoming!
+        try {
+            loaderOptions.codePointLimit = 256 * 1024 * 1024
+        } catch (e: NoSuchMethodError) {
+            // Ignore it
+        }
 
         yamlOptions.indent = 2
         yamlOptions.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
