@@ -30,9 +30,14 @@ public interface Slot extends GUIComponent {
     /**
      * If the slot is captive. (Can items be placed in it).
      *
+     * @param player The player.
+     * @param menu   The menu.
      * @return If captive.
      */
-    boolean isCaptive();
+    default boolean isCaptive(@NotNull final Player player,
+                              @NotNull final Menu menu) {
+        return false;
+    }
 
     /**
      * Get the actionable slot to be shown.
@@ -43,22 +48,16 @@ public interface Slot extends GUIComponent {
      * <p>
      * **Never** return {@code this} from this method. Always make sure that your
      * slots eventually delegate to a slot created by {@link Slot#builder()}.
+     * <p>
+     * {@code this} is returned by default for backwards-compatibility.
      *
      * @param player The player.
      * @param menu   The menu.
      * @return The slot.
      */
-    Slot getActionableSlot(@NotNull final Player player,
-                           @NotNull final Menu menu);
-
-    /**
-     * If the slot is not captive for a player.
-     *
-     * @param player The player.
-     * @return If not captive for the player.
-     */
-    default boolean isNotCaptiveFor(@NotNull Player player) {
-        return false;
+    default Slot getActionableSlot(@NotNull final Player player,
+                                   @NotNull final Menu menu) {
+        return this;
     }
 
     /**
@@ -134,5 +133,28 @@ public interface Slot extends GUIComponent {
      */
     static SlotBuilder builder(@NotNull final SlotProvider provider) {
         return Eco.getHandler().getGUIFactory().createSlotBuilder(provider);
+    }
+
+    /**
+     * If the slot is not captive for a player.
+     *
+     * @param player The player.
+     * @return If not captive for the player.
+     * @deprecated Captivity is now reactive, this method can produce incorrect results.
+     */
+    @Deprecated(since = "6.43.0", forRemoval = true)
+    default boolean isNotCaptiveFor(@NotNull Player player) {
+        return false;
+    }
+
+    /**
+     * If the slot is captive. (Can items be placed in it).
+     *
+     * @return If captive.
+     * @deprecated Captivity is now reactive, this method can produce incorrect results.
+     */
+    @Deprecated(since = "6.43.0", forRemoval = true)
+    default boolean isCaptive() {
+        return false;
     }
 }

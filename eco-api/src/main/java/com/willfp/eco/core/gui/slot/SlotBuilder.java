@@ -146,21 +146,6 @@ public interface SlotBuilder {
     SlotBuilder notCaptiveFor(@NotNull Predicate<Player> predicate);
 
     /**
-     * Modify the ItemStack.
-     *
-     * @param modifier The modifier.
-     * @return The builder.
-     * @deprecated Use {@link SlotBuilder#setUpdater(SlotUpdater)} instead.
-     */
-    @Deprecated
-    default SlotBuilder setModifier(@NotNull SlotModifier modifier) {
-        return setUpdater((player, menu, previous) -> {
-            modifier.modify(player, menu, previous);
-            return previous;
-        });
-    }
-
-    /**
      * Set the ItemStack updater.
      *
      * @param updater The updater.
@@ -191,4 +176,19 @@ public interface SlotBuilder {
      * @return The slot.
      */
     Slot build();
+
+    /**
+     * Modify the ItemStack.
+     *
+     * @param modifier The modifier.
+     * @return The builder.
+     * @deprecated Use {@link SlotBuilder#setUpdater(SlotUpdater)} instead.
+     */
+    @Deprecated
+    default SlotBuilder setModifier(@NotNull SlotModifier modifier) {
+        return setUpdater((player, menu, previous) -> {
+            modifier.modify(player, menu, previous);
+            return previous;
+        });
+    }
 }

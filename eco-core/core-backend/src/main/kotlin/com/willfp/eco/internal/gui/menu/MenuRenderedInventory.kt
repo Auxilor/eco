@@ -37,12 +37,8 @@ class MenuRenderedInventory(
                 val slot = menu.getSlot(row, column, player, menu)
                 val renderedItem = slot.getItemStack(player)
 
-                if (slot.isCaptive) {
+                if (slot.isCaptive(player, menu)) {
                     val itemStack = inventory.getItem(bukkit) ?: continue
-
-                    if (slot.isNotCaptiveFor(player)) {
-                        continue
-                    }
 
                     if (!slot.isCaptiveFromEmpty) {
                         if (itemStack == renderedItem) {

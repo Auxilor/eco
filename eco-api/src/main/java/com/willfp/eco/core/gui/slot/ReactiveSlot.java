@@ -34,8 +34,9 @@ public abstract class ReactiveSlot implements Slot {
     }
 
     @Override
-    public boolean isCaptive() {
-        return false;
+    public boolean isCaptive(@NotNull final Player player,
+                             @NotNull final Menu menu) {
+        return getSlot(player, menu).isCaptive(player, menu);
     }
 
     @Override

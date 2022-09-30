@@ -39,6 +39,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         if (delegate is EcoSlot) {
             delegate.handleInventoryClick(event, menu)
+        } else if (delegate === this) {
+            return
         } else {
             delegate.handle(player, event, menu, depth + 1)
         }
@@ -79,7 +81,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val slot = menu.getSlot(row, column, player, menu)
 
-        if (!slot.isCaptive) {
+        if (!slot.isCaptive(player, menu)) {
             event.isCancelled = true
         }
     }

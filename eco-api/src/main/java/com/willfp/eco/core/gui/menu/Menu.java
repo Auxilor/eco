@@ -129,6 +129,13 @@ public interface Menu {
     Map<String, Object> getState(@NotNull Player player);
 
     /**
+     * Re-render the menu for a player.
+     *
+     * @param player The player.
+     */
+    void refresh(@NotNull Player player);
+
+    /**
      * Write data.
      *
      * @param player The player.
@@ -170,13 +177,6 @@ public interface Menu {
      */
     @Deprecated(since = "6.35.0", forRemoval = true)
     Set<NamespacedKey> getKeys(@NotNull Player player);
-
-    /**
-     * Re-render the menu for a player.
-     *
-     * @param player The player.
-     */
-    void refresh(@NotNull Player player);
 
     /**
      * Create a builder with a given amount of rows.
