@@ -31,3 +31,7 @@ var ItemStack.baseNBT: PersistentDataContainer
 /** @see Items.setBaseNBT */
 fun ItemStack.clearNBT() =
     Items.setBaseNBT(this, null)
+
+/** @see Items.toSNBT */
+fun ItemStack.toSNBT() =
+    Items.toSNBT(this)
