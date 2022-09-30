@@ -30,6 +30,12 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
     override fun addComponent(layer: MenuLayer, row: Int, column: Int, component: GUIComponent): MenuBuilder {
         require(row in 1..rows) { "Invalid row number!" }
         require(column in 1..9) { "Invalid column number!" }
+
+        val maxRows = 1 + rows - row
+        val maxColumns = 10 - column
+
+        component.init(maxRows, maxColumns)
+
         require(column + component.columns - 1 <= 9) { "Component is too large to be placed here!" }
         require(row + component.rows - 1 <= getRows()) { "Component is too large to be placed here!" }
 
@@ -60,7 +66,7 @@ class EcoMenuBuilder(private val rows: Int) : MenuBuilder {
         return this
     }
 
-    override fun onSignalReceive(action: SignalHandler<*>): MenuBuilder {
+    override fun onSignal(action: SignalHandler<*>): MenuBuilder {
         signalHandlers += action
         return this
     }

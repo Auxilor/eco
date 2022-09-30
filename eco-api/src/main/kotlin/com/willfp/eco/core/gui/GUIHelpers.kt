@@ -142,9 +142,9 @@ fun MenuBuilder.addPage(page: Int, creation: PageBuilder.() -> Unit): MenuBuilde
     return this.addPage(Page(page, builder.build()))
 }
 
-/** @see MenuBuilder.onSignalReceive */
-inline fun <reified T : Signal> MenuBuilder.onSignalReceive(crossinline handler: (Player, Menu, T) -> Unit): MenuBuilder {
-    return this.onSignalReceive(object : SignalHandler<T>(T::class.java) {
+/** @see MenuBuilder.onSignal */
+inline fun <reified T : Signal> MenuBuilder.onSignal(crossinline handler: (Player, Menu, T) -> Unit): MenuBuilder {
+    return this.onSignal(object : SignalHandler<T>(T::class.java) {
         override fun handle(player: Player, menu: Menu, signal: T) =
             handler(player, menu, signal)
     })

@@ -161,7 +161,7 @@ public interface MenuBuilder extends PageBuilder {
      * @param action The action.
      * @return THe builder.
      */
-    default MenuBuilder onSignalReceive(@NotNull final SignalHandler action) {
+    default MenuBuilder onSignal(@NotNull final SignalHandler action) {
         return this;
     }
 

@@ -26,6 +26,24 @@ public interface GUIComponent {
     int getColumns();
 
     /**
+     * Initialize the component.
+     * <p>
+     * This is called before getRows / getColumns is queried,
+     * and allows for dynamically sized components.
+     * <p>
+     * getRows and getColumns can return values bigger than this,
+     * it will simply prevent the component from being added at
+     * this position (for minimum-sized components).
+     *
+     * @param maxRows    The maximum number of rows.
+     * @param maxColumns The maximum number of columns.
+     */
+    default void init(final int maxRows,
+                      final int maxColumns) {
+        // Most components will not require initialization.
+    }
+
+    /**
      * Get the slot at a certain position in the component.
      * <p>
      * It's safe to assume to the row and column will always be in bounds.
