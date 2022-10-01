@@ -6,6 +6,7 @@ import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
 import com.willfp.eco.internal.gui.menu.asRenderedInventory
 import com.willfp.eco.internal.gui.menu.getMenu
+import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.MenuUtils
 import org.bukkit.entity.Player
@@ -105,12 +106,14 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     fun forceRender(event: PlayerItemHeldEvent) {
         val player = event.player
         player.renderActiveMenu()
+
+        if (player.renderedInventory != null) {
+            event.isCancelled = true
+        }
     }
 
     private fun Player.renderActiveMenu() {
-        val inv = this.openInventory.topInventory
-
-        val rendered = inv.asRenderedInventory() ?: return
+        val rendered = this.renderedInventory ?: return
 
         rendered.render()
         plugin.scheduler.run { rendered.render() }
