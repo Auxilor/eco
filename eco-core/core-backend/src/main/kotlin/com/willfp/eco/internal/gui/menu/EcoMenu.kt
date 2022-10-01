@@ -3,21 +3,18 @@ package com.willfp.eco.internal.gui.menu
 import com.willfp.eco.core.gui.component.GUIComponent
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.core.gui.menu.MenuEvent
 import com.willfp.eco.core.gui.menu.MenuEventHandler
+import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.core.gui.slot.FillerSlot
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.bukkit.persistence.PersistentDataType
 
 @Suppress("UNCHECKED_CAST")
 class EcoMenu(
@@ -70,23 +67,32 @@ class EcoMenu(
             Bukkit.createInventory(null, InventoryType.DISPENSER, title)
         }
 
-        player.forceMenuOpen(this)
+        // Register the inventory first
+        val rendered = MenuHandler.registerInventory(inventory, this, player)
 
-        MenuHandler.registerInventory(inventory, this, player)
+        // Set the player's open menu forcefully
+        player.forceRenderedInventory(rendered)
 
-        inventory.asRenderedInventory()?.render()
+        // Render default captive items
+        rendered.renderDefaultCaptiveItems()
 
-        player.openInventory(inventory)
-
+        // Run onOpen with items already there
         onOpen.forEach { it.handle(player, this) }
 
-        player.stopForceMenuOpen()
+        // Run second render with updated state from onOpen
+        rendered.render()
+
+        // Show the inventory to the player
+        player.openInventory(inventory)
+
+        // Stop forcing the menu to be open, as Player#openInventory#topInventory is now the menu
+        player.removeForcedRenderedInventory()
+
         return inventory
     }
 
     fun handleClose(event: InventoryCloseEvent) {
         onClose.forEach { it.handle(event, this) }
-        event.inventory.asRenderedInventory()?.render()
         MenuHandler.unregisterInventory(event.inventory)
     }
 
@@ -97,7 +103,7 @@ class EcoMenu(
     override fun getTitle() = title
 
     override fun getCaptiveItems(player: Player): List<ItemStack> {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptyList()
+        val inventory = player.renderedInventory ?: return emptyList()
         return inventory.captiveItems.values.toList()
     }
 
@@ -106,7 +112,7 @@ class EcoMenu(
             return null
         }
 
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return null
+        val inventory = player.renderedInventory ?: return null
         return inventory.captiveItems[GUIPosition(row, column)]
     }
 
@@ -122,51 +128,33 @@ class EcoMenu(
         this.handle(player, this@EcoMenu, event as T)
     }
 
-    @Deprecated("Deprecated in Java", ReplaceWith("addState(player, key.toString(), value)"))
-    override fun <T : Any, Z : Any> writeData(
-        player: Player,
-        key: NamespacedKey,
-        type: PersistentDataType<T, Z>,
-        value: Z
-    ) = addState(player, key.toString(), value)
-
-    @Deprecated("Deprecated in Java", ReplaceWith("getState(player, key.toString())"))
-    override fun <T : Any, Z : Any> readData(player: Player, key: NamespacedKey, type: PersistentDataType<T, Z>): T? =
-        getState(player, key.toString())
-
-    @Deprecated("Deprecated in Java")
-    override fun getKeys(player: Player): Set<NamespacedKey> {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptySet()
-        return inventory.state.keys.mapNotNull { NamespacedKeyUtils.fromStringOrNull(it) }.toSet()
-    }
-
     override fun addState(player: Player, key: String, value: Any?) {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
+        val inventory = player.renderedInventory ?: return
         inventory.state[key] = value
     }
 
     override fun getState(player: Player): Map<String, Any?> {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return emptyMap()
+        val inventory = player.renderedInventory ?: return emptyMap()
         return inventory.state.toMap()
     }
 
     override fun <T : Any> getState(player: Player, key: String): T? {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return null
+        val inventory = player.renderedInventory ?: return null
         return inventory.state[key] as? T?
     }
 
     override fun removeState(player: Player, key: String) {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
+        val inventory = player.renderedInventory ?: return
         inventory.state.remove(key)
     }
 
     override fun clearState(player: Player) {
-        val inventory = player.openInventory.topInventory.asRenderedInventory() ?: return
+        val inventory = player.renderedInventory ?: return
         inventory.state.clear()
     }
 
     override fun refresh(player: Player) {
-        player.openInventory.topInventory.asRenderedInventory()?.render()
+        player.renderedInventory?.render()
     }
 
     fun runOnRender(player: Player) =

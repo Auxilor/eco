@@ -5,16 +5,17 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import java.util.WeakHashMap
 
-private val inventories = WeakHashMap<Inventory, MenuRenderedInventory>()
+private val inventories = WeakHashMap<Inventory, RenderedInventory>()
 
 object MenuHandler {
     fun registerInventory(
         inventory: Inventory,
         menu: EcoMenu,
         player: Player
-    ) {
-        val rendered = MenuRenderedInventory(menu, inventory, player)
+    ): RenderedInventory {
+        val rendered = RenderedInventory(menu, inventory, player)
         inventories[inventory] = rendered
+        return rendered
     }
 
     fun unregisterInventory(inventory: Inventory) {
@@ -22,7 +23,7 @@ object MenuHandler {
     }
 }
 
-fun Inventory.asRenderedInventory(): MenuRenderedInventory? =
+fun Inventory.asRenderedInventory(): RenderedInventory? =
     inventories[this]
 
 fun Inventory.getMenu(): Menu? =

@@ -4,6 +4,7 @@ import com.willfp.eco.core.gui.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface to run on slot display.
@@ -17,6 +18,7 @@ public interface SlotProvider {
      * @param menu   The menu.
      * @return The ItemStack.
      */
+    @Nullable
     ItemStack provide(@NotNull Player player,
                       @NotNull Menu menu);
 }

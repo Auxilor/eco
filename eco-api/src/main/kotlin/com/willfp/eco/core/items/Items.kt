@@ -35,3 +35,7 @@ fun ItemStack.clearNBT() =
 /** @see Items.toSNBT */
 fun ItemStack.toSNBT() =
     Items.toSNBT(this)
+
+/** @see Items.isEmpty */
+val ItemStack?.isEmpty: Boolean
+    get() = Items.isEmpty(this)

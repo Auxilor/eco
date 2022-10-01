@@ -2,6 +2,7 @@ package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.slot.Slot;
+import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,7 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * GUI version of {@link Inventory}.
@@ -182,10 +185,12 @@ public interface Menu {
      * @deprecated Use addState instead.
      */
     @Deprecated(since = "6.35.0", forRemoval = true)
-    <T, Z> void writeData(@NotNull Player player,
-                          @NotNull NamespacedKey key,
-                          @NotNull PersistentDataType<T, Z> type,
-                          @NotNull Z value);
+    default <T, Z> void writeData(@NotNull final Player player,
+                                  @NotNull final NamespacedKey key,
+                                  @NotNull final PersistentDataType<T, Z> type,
+                                  @NotNull final Z value) {
+        this.addState(player, key.toString(), value);
+    }
 
     /**
      * Read data.
@@ -199,9 +204,11 @@ public interface Menu {
      * @deprecated Use getState instead.
      */
     @Deprecated(since = "6.35.0", forRemoval = true)
-    @Nullable <T, Z> T readData(@NotNull Player player,
-                                @NotNull NamespacedKey key,
-                                @NotNull PersistentDataType<T, Z> type);
+    default @Nullable <T, Z> T readData(@NotNull final Player player,
+                                        @NotNull final NamespacedKey key,
+                                        @NotNull final PersistentDataType<T, Z> type) {
+        return this.getState(player, key.toString());
+    }
 
     /**
      * Get all data keys for a player.
@@ -211,7 +218,12 @@ public interface Menu {
      * @deprecated Use getState instead.
      */
     @Deprecated(since = "6.35.0", forRemoval = true)
-    Set<NamespacedKey> getKeys(@NotNull Player player);
+    default Set<NamespacedKey> getKeys(@NotNull final Player player) {
+        return this.getState(player).keySet().stream()
+                .map(NamespacedKeyUtils::fromStringOrNull)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
 
     /**
      * Create a builder with a given amount of rows.
