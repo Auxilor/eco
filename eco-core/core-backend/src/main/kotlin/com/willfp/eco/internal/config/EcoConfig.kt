@@ -154,7 +154,9 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): List<String>? {
-        val strings = (get(path) as? Iterable<*>)?.map { it.toString() }?.toMutableList() ?: return null
+        val strings = (get(path) as? Iterable<*>)
+            ?.map { it?.toString() ?: "" }
+            ?.toMutableList() ?: return null
         if (placeholderInjections.isNotEmpty() && format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
             strings.replaceAll {
                 var string = it
