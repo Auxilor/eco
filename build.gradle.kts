@@ -118,6 +118,7 @@ allprojects {
         exclude(group = "com.github.cryptomorin", module = "XSeries")
         exclude(group = "net.wesjd", module = "anvilgui")
         exclude(group = "org.slf4j", module = "slf4j-api")
+        exclude(group = "com.google", module = "gson")
     }
 
     configurations.testImplementation {
