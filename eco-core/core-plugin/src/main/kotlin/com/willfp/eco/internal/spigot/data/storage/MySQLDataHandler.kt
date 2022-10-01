@@ -117,7 +117,10 @@ class MySQLDataHandler(
                     row
                 } else {
                     transaction {
-                        table.insert { it[id] = uuid }
+                        table.insert {
+                            it[id] = uuid
+                            it[dataColumn] = "{}"
+                        }
                     }
                     table.select { table.id eq uuid }.limit(1).singleOrNull()
                 }
