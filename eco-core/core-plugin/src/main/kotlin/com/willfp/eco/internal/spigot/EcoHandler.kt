@@ -13,7 +13,6 @@ import com.willfp.eco.core.placeholder.AdditionalPlayer
 import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.EcoPropsParser
-import com.willfp.eco.internal.Plugins
 import com.willfp.eco.internal.config.EcoConfigFactory
 import com.willfp.eco.internal.config.EcoConfigHandler
 import com.willfp.eco.internal.drops.EcoDropQueueFactory
@@ -59,6 +58,8 @@ import java.util.logging.Logger
 
 @Suppress("UNUSED")
 class EcoHandler : EcoSpigotPlugin(), Handler {
+    private val loaded = mutableMapOf<String, EcoPlugin>()
+
     init {
         getProxy(CommonsInitializerProxy::class.java).init()
     }
@@ -129,14 +130,14 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         EcoProxyFactory(plugin)
 
     override fun addNewPlugin(plugin: EcoPlugin) {
-        Plugins.LOADED_ECO_PLUGINS[plugin.name.lowercase()] = plugin
+        loaded[plugin.name.lowercase()] = plugin
     }
 
     override fun getLoadedPlugins(): List<String> =
-        Plugins.LOADED_ECO_PLUGINS.keys.toMutableList()
+        loaded.keys.toList()
 
     override fun getPluginByName(name: String): EcoPlugin? =
-        Plugins.LOADED_ECO_PLUGINS[name.lowercase()]
+        loaded[name.lowercase()]
 
     override fun createFastItemStack(itemStack: ItemStack): FastItemStack =
         getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
