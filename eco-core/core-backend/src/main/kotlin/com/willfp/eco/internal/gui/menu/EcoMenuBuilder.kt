@@ -4,9 +4,9 @@ import com.willfp.eco.core.gui.component.GUIComponent
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
+import com.willfp.eco.core.gui.menu.MenuEventHandler
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.menu.OpenHandler
-import com.willfp.eco.core.gui.menu.MenuEventHandler
 import com.willfp.eco.util.StringUtils
 import org.bukkit.entity.Player
 import java.util.function.BiConsumer
@@ -22,6 +22,7 @@ class EcoMenuBuilder(
     private val onOpen = mutableListOf<OpenHandler>()
     private val onRender = mutableListOf<(Player, Menu) -> Unit>()
     private val menuEventHandlers = mutableListOf<MenuEventHandler<*>>()
+    private var allowsChangingHeldItem = false
 
     override fun getRows() = rows
     override fun getColumns() = columns
@@ -79,6 +80,11 @@ class EcoMenuBuilder(
         return this
     }
 
+    override fun allowChangingHeldItem(): MenuBuilder {
+        allowsChangingHeldItem = true
+        return this
+    }
+
     override fun build(): Menu {
         val layeredComponents = mutableMapOf<MenuLayer, MutableMap<GUIPosition, MutableList<OffsetComponent>>>()
 
@@ -121,6 +127,16 @@ class EcoMenuBuilder(
             }
         }
 
-        return EcoMenu(rows, columns, componentsAtPoints, title, onClose, onRender, onOpen, menuEventHandlers)
+        return EcoMenu(
+            rows,
+            columns,
+            componentsAtPoints,
+            title,
+            onClose,
+            onRender,
+            onOpen,
+            menuEventHandlers,
+            allowsChangingHeldItem
+        )
     }
 }

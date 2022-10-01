@@ -187,6 +187,15 @@ public interface MenuBuilder extends PageBuilder {
     }
 
     /**
+     * Allow the player to change their held item.
+     *
+     * @return The builder.
+     */
+    default MenuBuilder allowChangingHeldItem() {
+        return this;
+    }
+
+    /**
      * Build the menu.
      *
      * @return The menu.

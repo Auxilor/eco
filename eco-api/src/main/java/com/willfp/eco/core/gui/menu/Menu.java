@@ -163,6 +163,15 @@ public interface Menu {
     void refresh(@NotNull Player player);
 
     /**
+     * If the menu allows changing the held item.
+     *
+     * @return If allowed.
+     */
+    default boolean allowsChangingHeldItem() {
+        return false;
+    }
+
+    /**
      * Call a menu event.
      *
      * @param player    The player.

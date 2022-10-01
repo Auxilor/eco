@@ -110,39 +110,54 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     }
 
     @EventHandler(
-        priority = EventPriority.LOW
+        priority = EventPriority.HIGHEST
     )
-    fun forceRender(event: PlayerItemHeldEvent) {
+    fun preventNumberKey(event: PlayerItemHeldEvent) {
         val player = event.player
 
-        if (player.renderedInventory != null) {
-            event.isCancelled = true
+        val rendered = player.renderedInventory ?: return
+
+        if (rendered.menu.allowsChangingHeldItem()) {
+            return
         }
 
-        player.renderActiveMenu()
+        event.isCancelled = true
+    }
+
+    @EventHandler(
+        priority = EventPriority.LOW
+    )
+    fun preventNumberKey2(event: PlayerItemHeldEvent) {
+        val player = event.player
+
+        val rendered = player.renderedInventory ?: return
+
+        if (rendered.menu.allowsChangingHeldItem()) {
+            return
+        }
+
+        event.isCancelled = true
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun preventNumberKey(event: InventoryClickEvent) {
         val player = event.player
 
-        println(1)
-
         if (event.click != ClickType.NUMBER_KEY) {
             return
         }
 
-        println(2)
+        val rendered = player.renderedInventory ?: return
 
-        if (event.clickedInventory !is PlayerInventory) {
+        if (rendered.menu.allowsChangingHeldItem()) {
             return
         }
 
-        println(3)
+        if (event.hotbarButton == player.inventory.heldItemSlot) {
+            event.isCancelled = true
+        }
 
-        if (player.renderedInventory != null) {
-            println(4)
-
+        if (event.clickedInventory is PlayerInventory) {
             event.isCancelled = true
         }
     }

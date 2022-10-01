@@ -25,7 +25,8 @@ class EcoMenu(
     private val onClose: List<CloseHandler>,
     private val onRender: List<(Player, Menu) -> Unit>,
     private val onOpen: List<OpenHandler>,
-    private val menuEventHandlers: List<MenuEventHandler<*>>
+    private val menuEventHandlers: List<MenuEventHandler<*>>,
+    private val allowsChangingHeldItem: Boolean
 ) : Menu {
     private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?, menu: Menu?): Slot {
         if (row < 1 || row > this.rows || column < 1 || column > this.columns) {
@@ -155,6 +156,10 @@ class EcoMenu(
 
     override fun refresh(player: Player) {
         player.renderedInventory?.render()
+    }
+
+    override fun allowsChangingHeldItem(): Boolean {
+        return this.allowsChangingHeldItem
     }
 
     fun runOnRender(player: Player) =
