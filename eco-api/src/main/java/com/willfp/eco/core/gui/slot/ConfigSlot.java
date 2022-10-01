@@ -6,11 +6,13 @@ import com.willfp.eco.core.items.Items;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -35,14 +37,20 @@ public class ConfigSlot extends CustomSlot {
     public ConfigSlot(@NotNull final Config config) {
         this.config = config;
 
-        init(
-                Slot.builder(Items.lookup(config.getString("item")))
-                        .onLeftClick(dispatchCommandHandler("left-click"))
-                        .onRightClick(dispatchCommandHandler("right-click"))
-                        .onShiftLeftClick(dispatchCommandHandler("shift-left-click"))
-                        .onShiftRightClick(dispatchCommandHandler("shift-right-click"))
-                        .build()
-        );
+        SlotBuilder builder = Slot.builder(Items.lookup(config.getString("item")));
+
+        for (ClickType clickType : ClickType.values()) {
+            builder.onClick(
+                    clickType,
+                    dispatchCommandHandler(
+                            clickType.name().toLowerCase(Locale.ROOT)
+                                    .replace("_", "-")
+                                    + "-click"
+                    )
+            );
+        }
+
+        init(builder.build());
     }
 
     /**
