@@ -2,6 +2,8 @@
 
 package com.willfp.eco.internal.config
 
+import com.moandjiezana.toml.Toml
+import com.moandjiezana.toml.TomlWriter
 import com.willfp.eco.core.config.ConfigType
 import org.bukkit.configuration.file.YamlConstructor
 import org.yaml.snakeyaml.DumperOptions
@@ -65,7 +67,11 @@ fun Reader.readToString(): String {
 }
 
 private val ConfigType.handler: ConfigTypeHandler
-    get() = if (this == ConfigType.JSON) JSONConfigTypeHandler else YamlConfigTypeHandler
+    get() = when (this) {
+        ConfigType.JSON -> JSONConfigTypeHandler
+        ConfigType.YAML -> YamlConfigTypeHandler
+        ConfigType.TOML -> TOMLConfigTypeHandler
+    }
 
 private abstract class ConfigTypeHandler(
     val type: ConfigType
@@ -127,5 +133,18 @@ private object JSONConfigTypeHandler : ConfigTypeHandler(ConfigType.JSON) {
 
     override fun toString(map: Map<String, Any?>): String {
         return EcoGsonSerializer.gson.toJson(map)
+    }
+}
+
+private object TOMLConfigTypeHandler : ConfigTypeHandler(ConfigType.TOML) {
+    override fun parseToMap(input: String): Map<*, *> {
+        return Toml().read(input).toMap()
+    }
+
+    override fun toString(map: Map<String, Any?>): String {
+        val writer = TomlWriter.Builder()
+            .build()
+
+        return writer.write(map)
     }
 }

@@ -14,7 +14,12 @@ public enum ConfigType {
     /**
      * .yml config.
      */
-    YAML("yml");
+    YAML("yml"),
+
+    /**
+     * .toml config.
+     */
+    TOML("toml");
 
     /**
      * The file extension.

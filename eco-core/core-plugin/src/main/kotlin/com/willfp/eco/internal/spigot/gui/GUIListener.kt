@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.gui
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.gui.player
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
@@ -13,9 +14,11 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.inventory.PlayerInventory
 
 class GUIListener(private val plugin: EcoPlugin) : Listener {
     // Prevents StackOverflow exceptions with poorly implemented custom slots.
@@ -47,7 +50,9 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(
+        priority = EventPriority.HIGH
+    )
     fun handleSlotClick(event: InventoryClickEvent) {
         val rendered = event.clickedInventory?.asRenderedInventory() ?: return
 
@@ -62,7 +67,9 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         plugin.scheduler.run { rendered.render() }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(
+        priority = EventPriority.HIGH
+    )
     fun handleShiftClick(event: InventoryClickEvent) {
         if (!event.isShiftClick) {
             return
@@ -102,12 +109,40 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         player.renderActiveMenu()
     }
 
-    @EventHandler
+    @EventHandler(
+        priority = EventPriority.LOW
+    )
     fun forceRender(event: PlayerItemHeldEvent) {
         val player = event.player
-        player.renderActiveMenu()
 
         if (player.renderedInventory != null) {
+            event.isCancelled = true
+        }
+
+        player.renderActiveMenu()
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun preventNumberKey(event: InventoryClickEvent) {
+        val player = event.player
+
+        println(1)
+
+        if (event.click != ClickType.NUMBER_KEY) {
+            return
+        }
+
+        println(2)
+
+        if (event.clickedInventory !is PlayerInventory) {
+            return
+        }
+
+        println(3)
+
+        if (player.renderedInventory != null) {
+            println(4)
+
             event.isCancelled = true
         }
     }
