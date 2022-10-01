@@ -118,6 +118,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         val rendered = player.renderedInventory ?: return
 
         if (rendered.menu.allowsChangingHeldItem()) {
+            player.renderActiveMenu()
             return
         }
 
@@ -150,6 +151,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         val rendered = player.renderedInventory ?: return
 
         if (rendered.menu.allowsChangingHeldItem()) {
+            player.renderActiveMenu()
             return
         }
 
