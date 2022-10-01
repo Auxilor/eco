@@ -16,7 +16,9 @@ dependencies {
     implementation 'org.javassist:javassist:3.28.0-GA'
     implementation 'org.mongodb:mongodb-driver-sync:4.6.0'
     implementation 'org.litote.kmongo:kmongo-coroutine:4.6.0'
-    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
+    implementation('com.moandjiezana.toml:toml4j:0.7.2') {
+        exclude group: 'com.google.code.gson', module: 'gson'
+    }
 
     // Included in spigot jar
     compileOnly 'com.google.code.gson:gson:2.8.8'
