@@ -14,7 +14,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -114,17 +113,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
 
     @Override
     public U addLoreLine(@NotNull final String line) {
-        base.setItemMeta(meta);
-
-        FastItemStack fis = FastItemStack.wrap(base);
-
-        List<String> lore = fis.getLore();
-        lore.add(StringUtils.format(line));
-        fis.setLore(lore);
-
-        meta = (T) base.getItemMeta();
-
-        return (U) this;
+        return addLoreLines(List.of(line));
     }
 
     @Override

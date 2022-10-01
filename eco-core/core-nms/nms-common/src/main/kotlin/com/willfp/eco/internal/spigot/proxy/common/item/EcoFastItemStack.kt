@@ -115,6 +115,14 @@ class EcoFastItemStack(
         val jsonLore = mutableListOf<String>()
 
         for (i in loreTag.indices) {
+            val found = loreTag.getString(i)
+
+            // Not really sure where this error crops up, but it did somewhere...
+            @Suppress("SENSELESS_COMPARISON")
+            if (found == null || found == "null") {
+                continue
+            }
+
             jsonLore.add(loreTag.getString(i))
         }
 
