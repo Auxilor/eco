@@ -1,6 +1,7 @@
 package com.willfp.eco.core.gui.menu;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.gui.page.Page;
 import com.willfp.eco.core.gui.slot.Slot;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
@@ -180,6 +181,28 @@ public interface Menu {
     default void callEvent(@NotNull final Player player,
                            @NotNull final MenuEvent menuEvent) {
         // Override when needed.
+    }
+
+    /**
+     * Get the current page a player is on.
+     *
+     * @param player The player.
+     * @return The page.
+     */
+    default int getPage(@NotNull final Player player) {
+        Integer pageState = this.getState(player, Page.PAGE_KEY);
+        return Objects.requireNonNullElse(pageState, 1);
+    }
+
+    /**
+     * Get the max page for a player.
+     *
+     * @param player The player.
+     * @return The page.
+     */
+    default int getMaxPage(@NotNull final Player player) {
+        Integer pageState = this.getState(player, Page.MAX_PAGE_KEY);
+        return Objects.requireNonNullElse(pageState, Integer.MAX_VALUE);
     }
 
     /**

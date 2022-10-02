@@ -35,12 +35,12 @@ public final class PageChanger implements GUIComponent {
         slot = Slot.builder(itemStack)
                 .onLeftClick((event, slot, menu) -> {
                     Player player = (Player) event.getWhoClicked();
-                    int page = Page.getPage(player, menu);
+                    int page = menu.getPage(player);
                     int newPage = Math.max(
                             1,
                             Math.min(
                                     page + direction.getChange(),
-                                    Page.getMaxPage(player, menu)
+                                    menu.getMaxPage(player)
                             )
                     );
 
@@ -72,8 +72,8 @@ public final class PageChanger implements GUIComponent {
                                     final int column,
                                     @NotNull final Player player,
                                     @NotNull final Menu menu) {
-        int page = Page.getPage(player, menu);
-        int maxPage = Page.getMaxPage(player, menu);
+        int page = menu.getPage(player);
+        int maxPage = menu.getMaxPage(player);
 
         if (page <= 1 && this.direction == Direction.BACKWARDS) {
             return null;

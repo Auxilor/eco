@@ -77,7 +77,7 @@ public final class Page implements GUIComponent {
                                     final int column,
                                     @NotNull final Player player,
                                     @NotNull final Menu menu) {
-        if (getPage(player, menu) != pageNumber) {
+        if (menu.getPage(player) != pageNumber) {
             return null;
         }
 
@@ -103,32 +103,6 @@ public final class Page implements GUIComponent {
     @Override
     public int getColumns() {
         return columns;
-    }
-
-    /**
-     * Get the page.
-     *
-     * @param player The player.
-     * @param menu   The menu.
-     * @return The page.
-     */
-    public static int getPage(@NotNull final Player player,
-                              @NotNull final Menu menu) {
-        Integer pageState = menu.getState(player, Page.PAGE_KEY);
-        return Objects.requireNonNullElse(pageState, 1);
-    }
-
-    /**
-     * Get the page.
-     *
-     * @param player The player.
-     * @param menu   The menu.
-     * @return The page.
-     */
-    public static int getMaxPage(@NotNull final Player player,
-                                 @NotNull final Menu menu) {
-        Integer pageState = menu.getState(player, Page.MAX_PAGE_KEY);
-        return Objects.requireNonNullElse(pageState, Integer.MAX_VALUE);
     }
 
     /**
