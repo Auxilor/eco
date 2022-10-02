@@ -7,7 +7,7 @@ import com.willfp.eco.internal.spigot.recipes.GenericCraftEvent
 import com.willfp.eco.internal.spigot.recipes.RecipeListener
 import org.bukkit.entity.Player
 
-class ComplexInComplex : RecipeListener {
+object ComplexInComplex : RecipeListener {
     override fun handle(event: GenericCraftEvent) {
         val recipe = event.recipe
 

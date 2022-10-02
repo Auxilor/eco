@@ -3,7 +3,7 @@ package com.willfp.eco.internal.entities
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 
-class EntityArgParserSilent : EntityArgParser {
+object EntityArgParserSilent : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var silent = false
 

@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import java.util.function.Predicate
 
-class ArgParserColor : LookupArgParser {
+object ArgParserColor : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
         if (meta !is LeatherArmorMeta) {
             return null

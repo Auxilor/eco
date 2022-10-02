@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import com.willfp.eco.util.StringUtils
 
-class EntityArgParserName : EntityArgParser {
+object EntityArgParserName : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var name: String? = null
 

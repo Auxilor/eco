@@ -6,7 +6,7 @@ import com.willfp.eco.core.recipe.recipes.ShapelessCraftingRecipe
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeHandler
 import org.bukkit.inventory.ItemStack
 
-class ShapelessCraftingRecipeStackHandler :
+object ShapelessCraftingRecipeStackHandler :
     StackedRecipeHandler {
     override val recipeType = ShapelessCraftingRecipe::class.java
     override fun makeData(recipe: CraftingRecipe): Any {

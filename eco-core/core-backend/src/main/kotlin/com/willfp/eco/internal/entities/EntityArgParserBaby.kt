@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import org.bukkit.entity.Ageable
 
-class EntityArgParserBaby : EntityArgParser {
+object EntityArgParserBaby : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var baby = false
 

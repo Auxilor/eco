@@ -5,7 +5,7 @@ import com.willfp.eco.core.entities.args.EntityArgParser
 import org.bukkit.entity.Phantom
 import org.bukkit.entity.Slime
 
-class EntityArgParserSize : EntityArgParser {
+object EntityArgParserSize : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var size: Int? = null
 

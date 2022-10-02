@@ -100,6 +100,7 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
+import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHolograms
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicDisplays
@@ -117,7 +118,6 @@ import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
-import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -129,42 +129,42 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     protected abstract val profileHandler: EcoProfileHandler
 
     init {
-        Items.registerArgParser(ArgParserEnchantment())
-        Items.registerArgParser(ArgParserColor())
-        Items.registerArgParser(ArgParserTexture())
-        Items.registerArgParser(ArgParserCustomModelData())
-        Items.registerArgParser(ArgParserFlag())
-        Items.registerArgParser(ArgParserUnbreakable())
-        Items.registerArgParser(ArgParserName())
+        Items.registerArgParser(ArgParserEnchantment)
+        Items.registerArgParser(ArgParserColor)
+        Items.registerArgParser(ArgParserTexture)
+        Items.registerArgParser(ArgParserCustomModelData)
+        Items.registerArgParser(ArgParserFlag)
+        Items.registerArgParser(ArgParserUnbreakable)
+        Items.registerArgParser(ArgParserName)
 
-        Entities.registerArgParser(EntityArgParserName())
-        Entities.registerArgParser(EntityArgParserNoAI())
-        Entities.registerArgParser(EntityArgParserAttackDamage())
-        Entities.registerArgParser(EntityArgParserAttackSpeed())
-        Entities.registerArgParser(EntityArgParserFlySpeed())
-        Entities.registerArgParser(EntityArgParserFollowRange())
-        Entities.registerArgParser(EntityArgParserHealth())
-        Entities.registerArgParser(EntityArgParserJumpStrength())
-        Entities.registerArgParser(EntityArgParserKnockback())
-        Entities.registerArgParser(EntityArgParserKnockbackResistance())
-        Entities.registerArgParser(EntityArgParserSize())
-        Entities.registerArgParser(EntityArgParserSpawnReinforcements())
-        Entities.registerArgParser(EntityArgParserSpeed())
-        Entities.registerArgParser(EntityArgParserBaby())
-        Entities.registerArgParser(EntityArgParserAdult())
-        Entities.registerArgParser(EntityArgParserCharged())
-        Entities.registerArgParser(EntityArgParserExplosionRadius())
-        Entities.registerArgParser(EntityArgParserSilent())
-        Entities.registerArgParser(EntityArgParserEquipment())
+        Entities.registerArgParser(EntityArgParserName)
+        Entities.registerArgParser(EntityArgParserNoAI)
+        Entities.registerArgParser(EntityArgParserAttackDamage)
+        Entities.registerArgParser(EntityArgParserAttackSpeed)
+        Entities.registerArgParser(EntityArgParserFlySpeed)
+        Entities.registerArgParser(EntityArgParserFollowRange)
+        Entities.registerArgParser(EntityArgParserHealth)
+        Entities.registerArgParser(EntityArgParserJumpStrength)
+        Entities.registerArgParser(EntityArgParserKnockback)
+        Entities.registerArgParser(EntityArgParserKnockbackResistance)
+        Entities.registerArgParser(EntityArgParserSize)
+        Entities.registerArgParser(EntityArgParserSpawnReinforcements)
+        Entities.registerArgParser(EntityArgParserSpeed)
+        Entities.registerArgParser(EntityArgParserBaby)
+        Entities.registerArgParser(EntityArgParserAdult)
+        Entities.registerArgParser(EntityArgParserCharged)
+        Entities.registerArgParser(EntityArgParserExplosionRadius)
+        Entities.registerArgParser(EntityArgParserSilent)
+        Entities.registerArgParser(EntityArgParserEquipment)
 
-        CraftingRecipeListener.registerListener(ComplexInComplex())
-        CraftingRecipeListener.registerListener(ComplexInVanilla())
+        CraftingRecipeListener.registerListener(ComplexInComplex)
+        CraftingRecipeListener.registerListener(ComplexInVanilla)
 
-        StackedRecipeListener.registerHandler(ShapedCraftingRecipeStackHandler())
-        StackedRecipeListener.registerHandler(ShapelessCraftingRecipeStackHandler())
+        StackedRecipeListener.registerHandler(ShapedCraftingRecipeStackHandler)
+        StackedRecipeListener.registerHandler(ShapelessCraftingRecipeStackHandler)
 
-        SegmentParserGroup().register()
-        SegmentParserUseIfPresent().register()
+        SegmentParserGroup.register()
+        SegmentParserUseIfPresent.register()
 
         CustomItemsManager.registerProviders()
     }
@@ -317,7 +317,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 this.eventManager.registerListener(
                     MultiverseInventoriesIntegration(this)
                 )
-            }
+            },
+            IntegrationLoader("ModelEngine") { EntityLookupModelEngine.register() }
         )
     }
 

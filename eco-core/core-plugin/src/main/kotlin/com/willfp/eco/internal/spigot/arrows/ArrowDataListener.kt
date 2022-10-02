@@ -1,6 +1,8 @@
 package com.willfp.eco.internal.spigot.arrows
 
+import com.sun.tools.javac.jvm.ByteCodes.ret
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.items.isEmpty
 import org.bukkit.Material
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.LivingEntity
@@ -27,13 +29,9 @@ class ArrowDataListener(
 
         val entity = arrow.shooter as LivingEntity
 
-        if (entity.equipment == null) {
-            return
-        }
+        val item = entity.equipment?.itemInMainHand
 
-        val item = entity.equipment!!.itemInMainHand
-
-        if (item.type == Material.AIR || !item.hasItemMeta() || item.itemMeta == null) {
+        if (item.isEmpty || item == null) {
             return
         }
 

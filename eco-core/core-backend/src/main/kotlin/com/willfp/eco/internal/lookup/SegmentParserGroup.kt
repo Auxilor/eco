@@ -4,7 +4,7 @@ import com.willfp.eco.core.lookup.LookupHandler
 import com.willfp.eco.core.lookup.SegmentParser
 import com.willfp.eco.core.lookup.Testable
 
-class SegmentParserGroup : SegmentParser("||") {
+object SegmentParserGroup : SegmentParser("||") {
     override fun <T : Testable<*>> handleSegments(segments: Array<out String>, handler: LookupHandler<T>): T {
         val possibleOptions = mutableListOf<T>()
 

@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import java.util.function.Predicate
 
-class ArgParserUnbreakable : LookupArgParser {
+object ArgParserUnbreakable : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
         var unbreakable = false
 

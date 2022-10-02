@@ -6,7 +6,7 @@ import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
 import com.willfp.eco.internal.spigot.recipes.GenericCraftEvent
 import com.willfp.eco.internal.spigot.recipes.RecipeListener
 
-class ComplexInVanilla : RecipeListener {
+object ComplexInVanilla : RecipeListener {
     override fun handle(event: GenericCraftEvent) {
         if (EcoPlugin.getPluginNames().contains(event.recipe.key.namespace)) {
             return

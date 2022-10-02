@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import org.bukkit.entity.LivingEntity
 
-class EntityArgParserNoAI : EntityArgParser {
+object EntityArgParserNoAI : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var noAI = false
 

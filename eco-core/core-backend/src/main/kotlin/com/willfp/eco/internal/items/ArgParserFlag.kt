@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import java.util.function.Predicate
 
-class ArgParserFlag : LookupArgParser {
+object ArgParserFlag : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
         val flags = mutableSetOf<ItemFlag>()
 

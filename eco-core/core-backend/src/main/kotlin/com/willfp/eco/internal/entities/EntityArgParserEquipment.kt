@@ -7,7 +7,7 @@ import com.willfp.eco.core.items.TestableItem
 import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.EquipmentSlot
 
-class EntityArgParserEquipment : EntityArgParser {
+object EntityArgParserEquipment : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         val equipment = mutableMapOf<EquipmentSlot, TestableItem>()
 

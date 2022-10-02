@@ -6,7 +6,7 @@ import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeHandler
 import org.bukkit.inventory.ItemStack
 
-class ShapedCraftingRecipeStackHandler : StackedRecipeHandler {
+object ShapedCraftingRecipeStackHandler : StackedRecipeHandler {
     override val recipeType = ShapedCraftingRecipe::class.java
     override fun makeData(recipe: CraftingRecipe): Any? = null
 

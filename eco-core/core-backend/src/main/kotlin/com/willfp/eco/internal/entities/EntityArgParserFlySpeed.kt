@@ -5,7 +5,7 @@ import com.willfp.eco.core.entities.args.EntityArgParser
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
 
-class EntityArgParserFlySpeed : EntityArgParser {
+object EntityArgParserFlySpeed : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var attributeValue: Double? = null
 

@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import java.util.function.Predicate
 
-class ArgParserTexture : LookupArgParser {
+object ArgParserTexture : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
         if (meta !is SkullMeta) {
             return null

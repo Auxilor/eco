@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.inventory.meta.ItemMeta
 import java.util.function.Predicate
 
-class ArgParserEnchantment : LookupArgParser {
+object ArgParserEnchantment : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
         val enchants = mutableMapOf<Enchantment, Int>()
 
