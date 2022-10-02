@@ -1,9 +1,7 @@
 package com.willfp.eco.internal.spigot.arrows
 
-import com.sun.tools.javac.jvm.ByteCodes.ret
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.items.isEmpty
-import org.bukkit.Material
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
