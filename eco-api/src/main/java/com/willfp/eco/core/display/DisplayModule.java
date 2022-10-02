@@ -1,7 +1,6 @@
 package com.willfp.eco.core.display;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.PluginDependent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -10,11 +9,16 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Class for all plugin-specific client-side item display modules.
  */
-public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
+public abstract class DisplayModule {
     /**
      * The priority of the module.
      */
     private final int weight;
+
+    /**
+     * The plugin.
+     */
+    private final EcoPlugin plugin;
 
     /**
      * Create a new display module.
@@ -24,7 +28,7 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      */
     protected DisplayModule(@NotNull final EcoPlugin plugin,
                             @NotNull final DisplayPriority priority) {
-        super(plugin);
+        this.plugin = plugin;
         this.weight = priority.getWeight();
     }
 
@@ -131,5 +135,14 @@ public abstract class DisplayModule extends PluginDependent<EcoPlugin> {
      */
     public int getWeight() {
         return this.weight;
+    }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    public EcoPlugin getPlugin() {
+        return plugin;
     }
 }

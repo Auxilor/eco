@@ -13,7 +13,9 @@ import org.jetbrains.annotations.NotNull;
  * in the constructor.
  *
  * @param <T> The eco plugin type.
+ * @deprecated Leaky inheritance, shouldn't exist.
  */
+@Deprecated(since = "6.43.0", forRemoval = true)
 public abstract class PluginDependent<T extends EcoPlugin> {
     /**
      * The {@link EcoPlugin} that is stored.

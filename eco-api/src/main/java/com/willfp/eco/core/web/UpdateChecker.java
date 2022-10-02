@@ -1,7 +1,6 @@
 package com.willfp.eco.core.web;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.PluginDependent;
 import org.bukkit.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,14 +12,19 @@ import java.util.Scanner;
 /**
  * Class to check for updates of a plugin on spigot.
  */
-public class UpdateChecker extends PluginDependent<EcoPlugin> {
+public class UpdateChecker {
+    /**
+     * The plugin.
+     */
+    private final EcoPlugin plugin;
+
     /**
      * Create an update checker for the specified spigot resource id.
      *
      * @param plugin The plugin to check.
      */
     public UpdateChecker(@NotNull final EcoPlugin plugin) {
-        super(plugin);
+        this.plugin = plugin;
     }
 
     /**
@@ -43,5 +47,14 @@ public class UpdateChecker extends PluginDependent<EcoPlugin> {
                 this.getPlugin().getLogger().warning("Failed to check for updates: " + e.getMessage());
             }
         });
+    }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    public EcoPlugin getPlugin() {
+        return plugin;
     }
 }

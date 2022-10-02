@@ -2,7 +2,6 @@ package com.willfp.eco.core.recipe.recipes;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.PluginDependent;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
@@ -25,7 +24,12 @@ import java.util.List;
 /**
  * Shaped 3x3 crafting recipe.
  */
-public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> implements CraftingRecipe {
+public final class ShapedCraftingRecipe implements CraftingRecipe {
+    /**
+     * The plugin.
+     */
+    private final EcoPlugin plugin;
+
     /**
      * Recipe parts.
      */
@@ -56,8 +60,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
                                  @NotNull final List<TestableItem> parts,
                                  @NotNull final ItemStack output,
                                  @Nullable final String permission) {
-        super(plugin);
-
+        this.plugin = plugin;
         this.parts = parts;
         this.key = plugin.getNamespacedKeyFactory().create(key);
         this.displayedKey = plugin.getNamespacedKeyFactory().create(key + "_displayed");
@@ -143,6 +146,15 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
         }
 
         Bukkit.getServer().addRecipe(shapedRecipe);
+    }
+
+    /**
+     * Get the plugin.
+     *
+     * @return The plugin.
+     */
+    public EcoPlugin getPlugin() {
+        return plugin;
     }
 
     /**
