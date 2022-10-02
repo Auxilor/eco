@@ -31,6 +31,16 @@ class EcoProfileHandler(
         HandlerType.LEGACY_MYSQL -> LegacyMySQLDataHandler(plugin, this)
     }
 
+    init {
+        if (handler.type == HandlerType.LEGACY_MYSQL) {
+            plugin.logger.warning("You're using the legacy MySQL handler!")
+            plugin.logger.warning("Some features will not work and you may get unfixable errors.")
+            plugin.logger.warning("Support cannot be given to data issues related to legacy MySQL.")
+            plugin.logger.warning("Change your data handler to mysql, mongo, or yaml to fix this!")
+            plugin.logger.warning("This can be done in /plugins/eco/config.yml")
+        }
+    }
+
     fun loadGenericProfile(uuid: UUID): Profile {
         val found = loaded[uuid]
         if (found != null) {
