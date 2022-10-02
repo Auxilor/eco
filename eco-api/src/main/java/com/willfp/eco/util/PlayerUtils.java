@@ -42,7 +42,7 @@ public final class PlayerUtils {
      */
     @NotNull
     public static Audience getAudience(@NotNull final Player player) {
-        BukkitAudiences adventure = Eco.getHandler().getAdventure();
+        BukkitAudiences adventure = Eco.get().getAdventure();
 
         if (Prerequisite.HAS_PAPER.isMet()) {
             if (player instanceof Audience) {
@@ -67,7 +67,7 @@ public final class PlayerUtils {
      */
     @NotNull
     public static Audience getAudience(@NotNull final CommandSender sender) {
-        BukkitAudiences adventure = Eco.getHandler().getAdventure();
+        BukkitAudiences adventure = Eco.get().getAdventure();
 
         if (Prerequisite.HAS_PAPER.isMet()) {
             if (sender instanceof Audience) {

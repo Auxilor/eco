@@ -1,12 +1,12 @@
 package com.willfp.eco.internal.spigot.data.storage
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.EcoProfile
+import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 
 class ProfileSaver(
     plugin: EcoPlugin,
-    handler: ProfileHandler
+    handler: EcoProfileHandler
 ) {
     init {
         plugin.scheduler.runTimer(1, 1) {

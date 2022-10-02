@@ -16,6 +16,6 @@ public interface ServerProfile extends Profile {
      */
     @NotNull
     static ServerProfile load() {
-        return Eco.getHandler().getProfileHandler().loadServerProfile();
+        return Eco.get().getServerProfile();
     }
 }

@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
-import com.willfp.eco.core.gui.component.GUIComponent
+import com.willfp.eco.core.gui.GUIComponent
 import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuEvent

@@ -1,8 +1,8 @@
 package com.willfp.eco.internal.spigot.drops
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.internal.drops.impl.EcoDropQueue
-import com.willfp.eco.internal.drops.impl.EcoFastCollatedDropQueue
+import com.willfp.eco.internal.drops.EcoDropQueue
+import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
 
 class CollatedRunnable(plugin: EcoPlugin) {
     init {

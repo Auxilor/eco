@@ -59,7 +59,7 @@ public class Paste {
      * @param callback The consumer to accept the response token.
      */
     public void getHastebinToken(@NotNull final Consumer<String> callback) {
-        Eco.getHandler().getEcoPlugin().getScheduler().runAsync(() -> {
+        Eco.get().getEcoPlugin().getScheduler().runAsync(() -> {
             try {
                 byte[] postData = URLEncoder.encode(contents, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;

@@ -43,7 +43,7 @@ public final class PersistentDataKey<T> {
         this.defaultValue = defaultValue;
         this.type = type;
 
-        Eco.getHandler().getKeyRegistry().registerKey(this);
+        Eco.get().registerPersistentKey(this);
     }
 
     @Override
@@ -126,7 +126,7 @@ public final class PersistentDataKey<T> {
      * @return The keys.
      */
     public static Set<PersistentDataKey<?>> values() {
-        return Eco.getHandler().getKeyRegistry().getRegisteredKeys();
+        return Eco.get().getRegisteredPersistentDataKeys();
     }
 
     @Override

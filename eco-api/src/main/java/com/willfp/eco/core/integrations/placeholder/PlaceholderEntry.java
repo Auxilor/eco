@@ -158,13 +158,13 @@ public class PlaceholderEntry {
     Placeholder toModernPlaceholder() {
         if (this.requiresPlayer) {
             return new PlayerPlaceholder(
-                    Objects.requireNonNullElse(plugin, Eco.getHandler().getEcoPlugin()),
+                    Objects.requireNonNullElse(plugin, Eco.get().getEcoPlugin()),
                     identifier,
                     function
             );
         } else {
             return new PlayerlessPlaceholder(
-                    Objects.requireNonNullElse(plugin, Eco.getHandler().getEcoPlugin()),
+                    Objects.requireNonNullElse(plugin, Eco.get().getEcoPlugin()),
                     identifier,
                     () -> function.apply(null)
             );

@@ -4,7 +4,6 @@ import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
-import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.afk.AFKManager
@@ -17,8 +16,6 @@ import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.internal.display.EcoDisplayHandler
-import com.willfp.eco.internal.drops.DropManager
 import com.willfp.eco.internal.entities.EntityArgParserAdult
 import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
 import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
@@ -129,6 +126,7 @@ import org.bukkit.inventory.ItemStack
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
+    protected abstract val profileHandler: EcoProfileHandler
 
     init {
         Items.registerArgParser(ArgParserEnchantment())
@@ -169,12 +167,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         SegmentParserUseIfPresent().register()
 
         CustomItemsManager.registerProviders()
-
-        postInit()
-    }
-
-    private fun postInit() {
-        Display.setHandler(EcoDisplayHandler(this))
     }
 
     override fun handleEnable() {
@@ -201,36 +193,36 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         CustomItemsManager.registerProviders() // Do it again here
 
         // Register events for ShopSellEvent
-        ShopManager.registerEvents(this)
-
-        if (!Prerequisite.HAS_PAPER.isMet) {
-            (Eco.getHandler() as EcoHandler).setAdventure(BukkitAudiences.create(this))
+        for (integration in ShopManager.getRegisteredIntegrations()) {
+            val listener = integration.sellEventAdapter
+            if (listener != null) {
+                this.eventManager.registerListener(listener)
+            }
         }
 
         // Init FIS
         this.getProxy(FastItemStackFactoryProxy::class.java).create(ItemStack(Material.AIR)).unwrap()
 
         // Preload categorized persistent data keys
-        (Eco.getHandler().profileHandler as EcoProfileHandler).initialize()
+        profileHandler.initialize()
     }
 
     override fun handleDisable() {
         this.logger.info("Saving player data...")
         val start = System.currentTimeMillis()
-        Eco.getHandler().profileHandler.save()
+        profileHandler.save()
         this.logger.info("Saved player data! Took ${System.currentTimeMillis() - start}ms")
-        Eco.getHandler().adventure?.close()
+        Eco.get().adventure?.close()
     }
 
     override fun handleReload() {
         CollatedRunnable(this)
-        DropManager.update(this)
 
         this.scheduler.runLater(3) {
-            (Eco.getHandler().profileHandler as EcoProfileHandler).migrateIfNeeded()
+            profileHandler.migrateIfNeeded()
         }
 
-        ProfileSaver(this, Eco.getHandler().profileHandler)
+        ProfileSaver(this, profileHandler)
         this.scheduler.runTimer(
             { clearFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),

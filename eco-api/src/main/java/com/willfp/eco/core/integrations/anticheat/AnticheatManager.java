@@ -38,7 +38,7 @@ public final class AnticheatManager {
      */
     public static void register(@NotNull final AnticheatIntegration anticheat) {
         if (anticheat instanceof Listener) {
-            Eco.getHandler().getEcoPlugin().getEventManager().registerListener((Listener) anticheat);
+            Eco.get().getEcoPlugin().getEventManager().registerListener((Listener) anticheat);
         }
         ANTICHEATS.removeIf(it -> it.getPluginName().equalsIgnoreCase(anticheat.getPluginName()));
         ANTICHEATS.add(anticheat);

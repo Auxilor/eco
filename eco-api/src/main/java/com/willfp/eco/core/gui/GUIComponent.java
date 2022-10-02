@@ -1,4 +1,4 @@
-package com.willfp.eco.core.gui.component;
+package com.willfp.eco.core.gui;
 
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.Slot;

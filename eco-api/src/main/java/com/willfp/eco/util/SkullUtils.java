@@ -17,7 +17,7 @@ public final class SkullUtils {
      */
     public static void setSkullTexture(@NotNull final SkullMeta meta,
                                        @NotNull final String base64) {
-        Eco.getHandler().setSkullTexture(meta, base64);
+        Eco.get().setSkullTexture(meta, base64);
     }
 
     /**
@@ -28,7 +28,7 @@ public final class SkullUtils {
      */
     @Nullable
     public static String getSkullTexture(@NotNull final SkullMeta meta) {
-        return Eco.getHandler().getSkullTexture(meta);
+        return Eco.get().getSkullTexture(meta);
     }
 
     private SkullUtils() {

@@ -1,6 +1,6 @@
 package com.willfp.eco.core.gui.page;
 
-import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.Slot;
 import org.bukkit.entity.Player;

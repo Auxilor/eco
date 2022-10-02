@@ -72,6 +72,7 @@ public interface FastItemStack extends PersistentDataHolder {
      * @deprecated Poorly named method. Use getEnchantmentLevel instead.
      */
     @Deprecated(since = "6.34.0", forRemoval = true)
+    @SuppressWarnings("DeprecatedIsStillUsed")
     default int getLevelOnItem(@NotNull Enchantment enchantment,
                                boolean checkStored) {
         return getEnchantmentLevel(enchantment, checkStored);
@@ -271,6 +272,6 @@ public interface FastItemStack extends PersistentDataHolder {
      * @return The FastItemStack.
      */
     static FastItemStack wrap(@Nullable final ItemStack itemStack) {
-        return Eco.getHandler().createFastItemStack(Objects.requireNonNullElseGet(itemStack, () -> new ItemStack(Material.AIR)));
+        return Eco.get().createFastItemStack(Objects.requireNonNullElseGet(itemStack, () -> new ItemStack(Material.AIR)));
     }
 }

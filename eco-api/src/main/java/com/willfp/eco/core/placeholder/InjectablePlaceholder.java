@@ -9,6 +9,6 @@ import com.willfp.eco.core.EcoPlugin;
 public sealed interface InjectablePlaceholder extends Placeholder permits PlayerStaticPlaceholder, StaticPlaceholder {
     @Override
     default EcoPlugin getPlugin() {
-        return Eco.getHandler().getEcoPlugin();
+        return Eco.get().getEcoPlugin();
     }
 }

@@ -339,7 +339,7 @@ public final class StringUtils {
     }
 
     private static String translateMiniMessage(@NotNull final String message) {
-        return Eco.getHandler().formatMiniMessage(message);
+        return Eco.get().formatMiniMessage(message);
     }
 
     private static String translateHexColorCodes(@NotNull final String message) {

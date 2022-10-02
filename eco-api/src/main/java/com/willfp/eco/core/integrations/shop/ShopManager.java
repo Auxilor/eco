@@ -31,22 +31,6 @@ public final class ShopManager {
     }
 
     /**
-     * Register the events with eco.
-     *
-     * @param plugin Instance of eco.
-     */
-    @ApiStatus.Internal
-    public static void registerEvents(@NotNull final EcoPlugin plugin) {
-        for (ShopIntegration integration : REGISTERED) {
-            Listener listener = integration.getSellEventAdapter();
-
-            if (listener != null) {
-                plugin.getEventManager().registerListener(listener);
-            }
-        }
-    }
-
-    /**
      * Register eco item provider for shop plugins.
      */
     public static void registerEcoProvider() {
@@ -87,6 +71,15 @@ public final class ShopManager {
         }
 
         return 0.0;
+    }
+
+    /**
+     * Get all registered integrations.
+     *
+     * @return The integrations.
+     */
+    public static Set<ShopIntegration> getRegisteredIntegrations() {
+        return new HashSet<>(REGISTERED);
     }
 
     private ShopManager() {

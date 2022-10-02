@@ -1,7 +1,7 @@
 package com.willfp.eco.core.gui.page;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.slot.Slot;
@@ -82,7 +82,7 @@ public final class Page implements GUIComponent {
         }
 
         if (delegate == null) {
-            delegate = Eco.getHandler().getGUIFactory().blendMenuState(page, menu);
+            delegate = Eco.get().blendMenuState(page, menu);
         }
 
         return page.getSlot(row, column, player, delegate);

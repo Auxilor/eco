@@ -96,7 +96,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
             shapedRecipe.setIngredient(character, parts.get(i).getItem().getType());
         }
 
-        if (Eco.getHandler().getEcoPlugin().getConfigYml().getBool("displayed-recipes")) {
+        if (Eco.get().getEcoPlugin().getConfigYml().getBool("displayed-recipes")) {
             ShapedRecipe displayedRecipe = new ShapedRecipe(this.getDisplayedKey(), this.getOutput());
             displayedRecipe.shape("012", "345", "678");
             for (int i = 0; i < 9; i++) {
@@ -124,7 +124,7 @@ public final class ShapedCraftingRecipe extends PluginDependent<EcoPlugin> imple
                         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                         assert lore != null;
                         lore.add("");
-                        String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
+                        String add = Eco.get().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
                         add = add.replace("%amount%", String.valueOf(item.getAmount()));
                         lore.add(add);
                         meta.setLore(lore);

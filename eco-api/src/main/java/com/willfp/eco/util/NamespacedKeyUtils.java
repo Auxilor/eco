@@ -32,7 +32,7 @@ public final class NamespacedKeyUtils {
     @NotNull
     public static NamespacedKey create(@NotNull final String namespace,
                                        @NotNull final String key) {
-        return Eco.getHandler().createNamespacedKey(
+        return Eco.get().createNamespacedKey(
                 namespace,
                 key
         );

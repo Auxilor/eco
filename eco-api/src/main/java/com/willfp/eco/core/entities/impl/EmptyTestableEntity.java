@@ -28,6 +28,6 @@ public class EmptyTestableEntity implements TestableEntity {
     public Entity spawn(@NotNull final Location location) {
         Validate.notNull(location.getWorld());
 
-        return Eco.getHandler().createDummyEntity(location);
+        return Eco.get().createDummyEntity(location);
     }
 }

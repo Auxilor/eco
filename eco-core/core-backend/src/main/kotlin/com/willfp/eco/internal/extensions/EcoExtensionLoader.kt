@@ -33,7 +33,7 @@ class EcoExtensionLoader(
 
             runCatching { loadExtension(extensionJar) }.onFailure {
                 this.plugin.logger.warning(extensionJar.name + " caused an error!")
-                if (Eco.getHandler().ecoPlugin.configYml.getBool("log-full-extension-errors")) {
+                if (Eco.get().ecoPlugin.configYml.getBool("log-full-extension-errors")) {
                     it.printStackTrace()
                 }
             }

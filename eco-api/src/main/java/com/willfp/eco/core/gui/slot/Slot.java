@@ -1,7 +1,7 @@
 package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
@@ -97,7 +97,7 @@ public interface Slot extends GUIComponent {
      * @return The builder.
      */
     static SlotBuilder builder() {
-        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> new ItemStack(Material.AIR));
+        return Eco.get().createSlotBuilder((player, menu) -> new ItemStack(Material.AIR));
     }
 
     /**
@@ -107,7 +107,7 @@ public interface Slot extends GUIComponent {
      * @return The builder.
      */
     static SlotBuilder builder(@NotNull final ItemStack itemStack) {
-        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> itemStack);
+        return Eco.get().createSlotBuilder((player, menu) -> itemStack);
     }
 
     /**
@@ -117,7 +117,7 @@ public interface Slot extends GUIComponent {
      * @return The builder.
      */
     static SlotBuilder builder(@NotNull final TestableItem item) {
-        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> item.getItem());
+        return Eco.get().createSlotBuilder((player, menu) -> item.getItem());
     }
 
     /**
@@ -127,7 +127,7 @@ public interface Slot extends GUIComponent {
      * @return The builder.
      */
     static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {
-        return Eco.getHandler().getGUIFactory().createSlotBuilder((player, menu) -> provider.apply(player));
+        return Eco.get().createSlotBuilder((player, menu) -> provider.apply(player));
     }
 
     /**
@@ -137,7 +137,7 @@ public interface Slot extends GUIComponent {
      * @return The builder.
      */
     static SlotBuilder builder(@NotNull final SlotProvider provider) {
-        return Eco.getHandler().getGUIFactory().createSlotBuilder(provider);
+        return Eco.get().createSlotBuilder(provider);
     }
 
     /**

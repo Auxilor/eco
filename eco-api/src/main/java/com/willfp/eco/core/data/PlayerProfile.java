@@ -31,6 +31,6 @@ public interface PlayerProfile extends Profile {
      */
     @NotNull
     static PlayerProfile load(@NotNull final UUID uuid) {
-        return Eco.getHandler().getProfileHandler().load(uuid);
+        return Eco.get().loadPlayerProfile(uuid);
     }
 }

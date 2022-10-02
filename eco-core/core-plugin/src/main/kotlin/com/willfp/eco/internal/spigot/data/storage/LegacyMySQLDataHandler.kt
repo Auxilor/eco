@@ -48,7 +48,7 @@ the worst bodge I've shipped in production.
 
 @Suppress("UNCHECKED_CAST")
 class LegacyMySQLDataHandler(
-    private val plugin: EcoSpigotPlugin,
+    plugin: EcoSpigotPlugin,
     handler: EcoProfileHandler
 ) : DataHandler(HandlerType.LEGACY_MYSQL) {
     private val playerHandler: ImplementedMySQLHandler
@@ -197,7 +197,7 @@ private class ImplementedMySQLHandler(
 
         doRead.call()
 
-        return if (Eco.getHandler().ecoPlugin.configYml.getBool("mysql.async-reads")) {
+        return if (Eco.get().ecoPlugin.configYml.getBool("mysql.async-reads")) {
             executor.submit(doRead).get()
         } else {
             doRead.call()

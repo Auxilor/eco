@@ -192,7 +192,7 @@ public final class Items {
     @NotNull
     public static TestableItem lookup(@NotNull final String key) {
         if (key.startsWith("{")) {
-            return Eco.getHandler().getSNBTHandler().createTestable(key);
+            return Eco.get().testableItemFromSNBT(key);
         }
 
         return ITEMS_LOOKUP_HANDLER.parseKey(key);
@@ -538,7 +538,7 @@ public final class Items {
      */
     @NotNull
     public static String toSNBT(@NotNull final ItemStack itemStack) {
-        return Eco.getHandler().getSNBTHandler().toSNBT(itemStack);
+        return Eco.get().toSNBT(itemStack);
     }
 
     /**
@@ -549,7 +549,7 @@ public final class Items {
      */
     @Nullable
     public static ItemStack fromSNBT(@NotNull final String snbt) {
-        return Eco.getHandler().getSNBTHandler().fromSNBT(snbt);
+        return Eco.get().fromSNBT(snbt);
     }
 
     /**

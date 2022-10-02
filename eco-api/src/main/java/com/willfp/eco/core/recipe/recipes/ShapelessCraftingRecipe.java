@@ -101,7 +101,7 @@ public final class ShapelessCraftingRecipe extends PluginDependent<EcoPlugin> im
             shapelessRecipe.addIngredient(part.getItem().getType());
         }
 
-        if (Eco.getHandler().getEcoPlugin().getConfigYml().getBool("displayed-recipes")) {
+        if (Eco.get().getEcoPlugin().getConfigYml().getBool("displayed-recipes")) {
             ShapelessRecipe displayedRecipe = new ShapelessRecipe(this.getDisplayedKey(), this.getOutput());
             for (TestableItem part : parts) {
                 List<TestableItem> items = new ArrayList<>();
@@ -122,7 +122,7 @@ public final class ShapelessCraftingRecipe extends PluginDependent<EcoPlugin> im
                         List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                         assert lore != null;
                         lore.add("");
-                        String add = Eco.getHandler().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
+                        String add = Eco.get().getEcoPlugin().getLangYml().getFormattedString("multiple-in-craft");
                         add = add.replace("%amount%", String.valueOf(item.getAmount()));
                         lore.add(add);
                         meta.setLore(lore);

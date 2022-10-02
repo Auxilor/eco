@@ -40,7 +40,7 @@ public abstract class BaseConfig extends LoadableConfigWrapper {
                          final boolean removeUnused,
                          @NotNull final ConfigType type,
                          final boolean requiresChangeToSave) {
-        super(Eco.getHandler().getConfigFactory().createUpdatableConfig(
+        super(Eco.get().createUpdatableConfig(
                 configName,
                 plugin,
                 "",

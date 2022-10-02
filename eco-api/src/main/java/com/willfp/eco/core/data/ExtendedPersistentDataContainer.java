@@ -87,7 +87,7 @@ public interface ExtendedPersistentDataContainer {
      * @return The extended container.
      */
     static ExtendedPersistentDataContainer extend(@NotNull PersistentDataContainer base) {
-        return Eco.getHandler().adaptPdc(base);
+        return Eco.get().adaptPdc(base);
     }
 
     /**
@@ -96,6 +96,6 @@ public interface ExtendedPersistentDataContainer {
      * @return The extended container.
      */
     static ExtendedPersistentDataContainer create() {
-        return extend(Eco.getHandler().newPdc());
+        return extend(Eco.get().newPdc());
     }
 }

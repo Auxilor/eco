@@ -4,7 +4,6 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.isEmpty
 import com.willfp.eco.core.recipe.Recipes
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe

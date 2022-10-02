@@ -31,7 +31,7 @@ public abstract class ExtendableConfig extends LoadableConfigWrapper {
                                @NotNull final String subDirectoryPath,
                                @NotNull final ConfigType type,
                                @NotNull final String... updateBlacklist) {
-        super(Eco.getHandler().getConfigFactory().createUpdatableConfig(
+        super(Eco.get().createUpdatableConfig(
                 configName,
                 plugin,
                 subDirectoryPath,

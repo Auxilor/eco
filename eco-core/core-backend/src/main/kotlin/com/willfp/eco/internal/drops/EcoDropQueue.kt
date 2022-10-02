@@ -1,6 +1,6 @@
-package com.willfp.eco.internal.drops.impl
+package com.willfp.eco.internal.drops
 
-import com.willfp.eco.core.drops.InternalDropQueue
+import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.events.DropQueuePushEvent
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.util.TelekinesisUtils
@@ -13,33 +13,33 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
-open class EcoDropQueue(val player: Player) : InternalDropQueue {
+open class EcoDropQueue(val player: Player) : DropQueue() {
     val items = mutableListOf<ItemStack>()
     var xp: Int = 0
     var location: Location
     var hasTelekinesis = false
 
-    override fun addItem(item: ItemStack): InternalDropQueue {
+    override fun addItem(item: ItemStack): DropQueue {
         items.add(item)
         return this
     }
 
-    override fun addItems(itemStacks: Collection<ItemStack>): InternalDropQueue {
+    override fun addItems(itemStacks: Collection<ItemStack>): DropQueue {
         items.addAll(itemStacks)
         return this
     }
 
-    override fun addXP(amount: Int): InternalDropQueue {
+    override fun addXP(amount: Int): DropQueue {
         xp += amount
         return this
     }
 
-    override fun setLocation(location: Location): InternalDropQueue {
+    override fun setLocation(location: Location): DropQueue {
         this.location = location
         return this
     }
 
-    override fun forceTelekinesis(): InternalDropQueue {
+    override fun forceTelekinesis(): DropQueue {
         hasTelekinesis = true
         return this
     }

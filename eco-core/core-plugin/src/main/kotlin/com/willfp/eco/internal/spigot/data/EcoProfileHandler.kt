@@ -2,7 +2,6 @@ package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.Profile
-import com.willfp.eco.core.data.ProfileHandler
 import com.willfp.eco.core.data.ServerProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.profile
@@ -22,7 +21,7 @@ val serverProfileUUID = UUID(0, 0)
 class EcoProfileHandler(
     private val type: HandlerType,
     private val plugin: EcoSpigotPlugin
-) : ProfileHandler {
+) {
     private val loaded = mutableMapOf<UUID, Profile>()
 
     val handler: DataHandler = when (type) {
@@ -47,23 +46,23 @@ class EcoProfileHandler(
         return profile
     }
 
-    override fun load(uuid: UUID): PlayerProfile {
+    fun load(uuid: UUID): PlayerProfile {
         return loadGenericProfile(uuid) as PlayerProfile
     }
 
-    override fun loadServerProfile(): ServerProfile {
+    fun loadServerProfile(): ServerProfile {
         return loadGenericProfile(serverProfileUUID) as ServerProfile
     }
 
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+    fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         handler.saveKeysFor(uuid, keys)
     }
 
-    override fun unloadPlayer(uuid: UUID) {
+    fun unloadPlayer(uuid: UUID) {
         loaded.remove(uuid)
     }
 
-    override fun save() {
+    fun save() {
         handler.save()
     }
 

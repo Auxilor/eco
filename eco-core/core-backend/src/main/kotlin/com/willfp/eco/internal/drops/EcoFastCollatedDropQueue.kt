@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.drops.impl
+package com.willfp.eco.internal.drops
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -29,7 +29,6 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
         var xp: Int,
         var telekinetic: Boolean
     ) {
-
         fun addDrops(toAdd: List<ItemStack>): CollatedDrops {
             drops.addAll(toAdd)
             return this

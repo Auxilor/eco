@@ -20,7 +20,7 @@ class CustomItemsScyther : CustomItemsIntegration {
     }
 
     private class ScytherProvider : ItemProvider("scyther") {
-        override fun provideForKey(key: String): TestableItem? {
+        override fun provideForKey(key: String): TestableItem {
             val material = Material.matchMaterial(key.uppercase()) ?: Material.WOODEN_HOE
 
             val hoe = ScytherAPI.createHarvesterHoe(

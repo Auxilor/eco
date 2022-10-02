@@ -101,6 +101,6 @@ public interface EntityController<T extends Mob> {
      * @return The entity controller.
      */
     static <T extends Mob> EntityController<T> getFor(@NotNull final T entity) {
-        return Eco.getHandler().createEntityController(entity);
+        return Eco.get().createEntityController(entity);
     }
 }

@@ -323,7 +323,7 @@ public final class NumberUtils {
                                             @Nullable final Player player,
                                             @NotNull final PlaceholderInjectable context,
                                             @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
-        return Eco.getHandler().evaluate(expression, player, context, additionalPlayers);
+        return Eco.get().evaluate(expression, player, context, additionalPlayers);
     }
 
     private NumberUtils() {

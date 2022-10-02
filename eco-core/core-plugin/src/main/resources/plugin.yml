@@ -1,6 +1,6 @@
 name: eco
 version: ${projectVersion}
-main: com.willfp.eco.internal.spigot.EcoHandler
+main: com.willfp.eco.internal.spigot.EcoImpl
 api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com

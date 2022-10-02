@@ -260,28 +260,28 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      */
     protected EcoPlugin(@Nullable final PluginProps pluginProps) {
         /*
-        The handler must be initialized before any plugin's constructors
-        are called, as the constructors call Eco#getHandler().
+        Eco must be initialized before any plugin's constructors
+        are called, as the constructors call Eco#get().
 
         To fix this, EcoSpigotPlugin an abstract class and the 'actual'
-        plugin class is EcoHandler - that way I can create the handler
+        plugin class is EcoImpl - that way I can initialize eco
         before any plugins are loaded while still having a separation between
-        the plugin class and the handler class (for code clarity).
+        the plugin class and the implementation class (for code clarity).
 
-        I don't really like the fact that the handler class *is* the
+        I don't really like the fact that the implementation class *is* the
         spigot plugin, but it is what it is.
 
         There is probably a better way of doing it - maybe with
-        some sort of HandlerCreator interface in order to still have
-        a standalone handler class, but then there would be an interface
+        some sort of EcoCrater interface in order to still have
+        a standalone eco class, but then there would be an interface
         left in the API that doesn't really help anything.
 
-        The other alternative would be to use reflection to get a 'createHandler'
+        The other alternative would be to use reflection to get a 'createEco'
         method that only exists in EcoSpigotPlugin - but that feels filthy,
         and I'd rather only use reflection where necessary.
         */
 
-        if (Eco.getHandler() == null && this instanceof Handler) {
+        if (Eco.get() == null && this instanceof Eco) {
             /*
             This code is only ever called by EcoSpigotPlugin (EcoHandler)
             as it's the first plugin to load, and it is a handler.
@@ -290,12 +290,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             will have already been initialized.
              */
 
-            Eco.setHandler((Handler) this);
+            Eco.Instance.set((Eco) this);
         }
 
-        assert Eco.getHandler() != null;
+        assert Eco.get() != null;
 
-        PluginProps generatedProps = Eco.getHandler().getProps(pluginProps, this.getClass());
+        PluginProps generatedProps = Eco.get().getProps(pluginProps, this.getClass());
         generatedProps.validate();
         PluginProps props = this.mutateProps(generatedProps);
         props.validate();
@@ -306,23 +306,23 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.color = props.getColor();
         this.supportingExtensions = props.isSupportingExtensions();
 
-        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.getHandler().createProxyFactory(this);
-        this.logger = Eco.getHandler().createLogger(this);
+        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.get().createProxyFactory(this);
+        this.logger = Eco.get().createLogger(this);
 
         this.getLogger().info("Initializing " + this.getColor() + this.getName());
 
-        this.scheduler = Eco.getHandler().createScheduler(this);
-        this.eventManager = Eco.getHandler().createEventManager(this);
-        this.namespacedKeyFactory = Eco.getHandler().createNamespacedKeyFactory(this);
-        this.metadataValueFactory = Eco.getHandler().createMetadataValueFactory(this);
-        this.runnableFactory = Eco.getHandler().createRunnableFactory(this);
-        this.extensionLoader = Eco.getHandler().createExtensionLoader(this);
-        this.configHandler = Eco.getHandler().createConfigHandler(this);
+        this.scheduler = Eco.get().createScheduler(this);
+        this.eventManager = Eco.get().createEventManager(this);
+        this.namespacedKeyFactory = Eco.get().createNamespacedKeyFactory(this);
+        this.metadataValueFactory = Eco.get().createMetadataValueFactory(this);
+        this.runnableFactory = Eco.get().createRunnableFactory(this);
+        this.extensionLoader = Eco.get().createExtensionLoader(this);
+        this.configHandler = Eco.get().createConfigHandler(this);
 
         this.langYml = this.createLangYml();
         this.configYml = this.createConfigYml();
 
-        Eco.getHandler().addNewPlugin(this);
+        Eco.get().addNewPlugin(this);
 
         /*
         The minimum eco version check was moved here because it's very common
@@ -331,7 +331,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         they have an outdated version of eco installed.
          */
 
-        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.getHandler().getEcoPlugin().getDescription().getVersion());
+        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.get().getEcoPlugin().getDescription().getVersion());
         DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
@@ -352,7 +352,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getLogger().info("");
         this.getLogger().info("Loading " + this.getColor() + this.getName());
 
-        if (this.getResourceId() != 0 && !Eco.getHandler().getEcoPlugin().getConfigYml().getBool("no-update-checker")) {
+        if (this.getResourceId() != 0 && !Eco.get().getEcoPlugin().getConfigYml().getBool("no-update-checker")) {
             new UpdateChecker(this).getVersion(version -> {
                 DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
                 DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
@@ -366,7 +366,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         }
 
         if (this.getBStatsId() != 0) {
-            Eco.getHandler().registerBStats(this);
+            Eco.get().registerBStats(this);
         }
 
         Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
@@ -376,7 +376,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         if (enabledPlugins.contains("PlaceholderAPI".toLowerCase())) {
             this.loadedIntegrations.add("PlaceholderAPI");
-            PlaceholderManager.addIntegration(Eco.getHandler().createPAPIIntegration(this));
+            PlaceholderManager.addIntegration(Eco.get().createPAPIIntegration(this));
         }
 
         this.loadIntegrationLoaders().forEach(integrationLoader -> {
@@ -435,7 +435,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         }
 
         this.getLogger().info("Cleaning up...");
-        Eco.getHandler().getCleaner().clean(this);
+        Eco.get().getCleaner().clean(this);
     }
 
     /**
@@ -748,7 +748,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return The plugin.
      */
     public static EcoPlugin getPlugin(@NotNull final String pluginName) {
-        return Eco.getHandler().getPluginByName(pluginName);
+        return Eco.get().getPluginByName(pluginName);
     }
 
     /**
@@ -757,7 +757,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return The set of names.
      */
     public static Set<String> getPluginNames() {
-        return new HashSet<>(Eco.getHandler().getLoadedPlugins());
+        return new HashSet<>(Eco.get().getLoadedPlugins());
     }
 
     /**

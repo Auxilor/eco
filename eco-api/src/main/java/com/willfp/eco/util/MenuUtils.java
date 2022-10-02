@@ -70,7 +70,7 @@ public final class MenuUtils {
      */
     @Nullable
     public static Menu getOpenMenu(@NotNull final Player player) {
-        return Eco.getHandler().getOpenMenu(player);
+        return Eco.get().getOpenMenu(player);
     }
 
     private MenuUtils() {

@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.gui.page
+package com.willfp.eco.internal.gui
 
 import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.entity.Player

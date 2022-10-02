@@ -241,7 +241,7 @@ public interface Menu {
      * @return The builder.
      */
     static MenuBuilder builder(final int rows) {
-        return Eco.getHandler().getGUIFactory().createMenuBuilder(
+        return Eco.get().createMenuBuilder(
                 rows,
                 MenuType.NORMAL
         );
@@ -254,6 +254,6 @@ public interface Menu {
      * @return The builder.
      */
     static MenuBuilder builder(@NotNull final MenuType type) {
-        return Eco.getHandler().getGUIFactory().createMenuBuilder(type.getDefaultRows(), type);
+        return Eco.get().createMenuBuilder(type.getDefaultRows(), type);
     }
 }

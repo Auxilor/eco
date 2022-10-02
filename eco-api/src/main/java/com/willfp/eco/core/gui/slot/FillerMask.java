@@ -1,6 +1,6 @@
 package com.willfp.eco.core.gui.slot;
 
-import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;

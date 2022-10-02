@@ -53,7 +53,7 @@ public class CustomItem implements TestableItem {
         immediately after due to registration order; so eco waits until the item should be
         working in order to check.
          */
-        Eco.getHandler().getEcoPlugin().getScheduler().runLater(() -> {
+        Eco.get().getEcoPlugin().getScheduler().runLater(() -> {
             if (!matches(getItem())) {
                 Bukkit.getLogger().severe("Item with key " + key + " is invalid!");
             }

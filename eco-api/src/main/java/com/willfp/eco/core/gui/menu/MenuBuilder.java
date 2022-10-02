@@ -1,6 +1,6 @@
 package com.willfp.eco.core.gui.menu;
 
-import com.willfp.eco.core.gui.component.GUIComponent;
+import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.gui.page.Page;
 import com.willfp.eco.core.gui.page.PageBuilder;
 import com.willfp.eco.core.gui.slot.FillerMask;

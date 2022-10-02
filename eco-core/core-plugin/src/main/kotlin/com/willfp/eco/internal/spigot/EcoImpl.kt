@@ -1,21 +1,26 @@
 package com.willfp.eco.internal.spigot
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.Handler
+import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
-import com.willfp.eco.core.data.ExtendedPersistentDataContainer
-import com.willfp.eco.core.entities.ai.EntityController
-import com.willfp.eco.core.fast.FastItemStack
+import com.willfp.eco.core.Prerequisite
+import com.willfp.eco.core.config.ConfigType
+import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
-import com.willfp.eco.core.items.SNBTHandler
+import com.willfp.eco.core.gui.menu.MenuType
+import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.placeholder.AdditionalPlayer
 import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.EcoPropsParser
-import com.willfp.eco.internal.config.EcoConfigFactory
 import com.willfp.eco.internal.config.EcoConfigHandler
-import com.willfp.eco.internal.drops.EcoDropQueueFactory
+import com.willfp.eco.internal.config.EcoConfigSection
+import com.willfp.eco.internal.config.EcoLoadableConfig
+import com.willfp.eco.internal.config.EcoUpdatableConfig
+import com.willfp.eco.internal.config.toMap
+import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.events.EcoEventManager
 import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
@@ -24,15 +29,17 @@ import com.willfp.eco.internal.factory.EcoRunnableFactory
 import com.willfp.eco.internal.fast.FastInternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.InternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
-import com.willfp.eco.internal.gui.EcoGUIFactory
+import com.willfp.eco.internal.gui.MergedStateMenu
+import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
 import com.willfp.eco.internal.gui.menu.renderedInventory
+import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.DataYml
-import com.willfp.eco.internal.spigot.data.EcoKeyRegistry
 import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.items.EcoSNBTHandler
@@ -48,16 +55,17 @@ import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
-import java.util.logging.Logger
+import java.util.UUID
 
 @Suppress("UNUSED")
-class EcoHandler : EcoSpigotPlugin(), Handler {
+class EcoImpl : EcoSpigotPlugin(), Eco {
     private val loaded = mutableMapOf<String, EcoPlugin>()
 
     init {
@@ -68,11 +76,11 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
 
     private val cleaner = EcoCleaner()
 
-    private var adventure: BukkitAudiences? = null
+    private var adventure: BukkitAudiences? = if (!Prerequisite.HAS_PAPER.isMet) {
+        BukkitAudiences.create(this)
+    } else null
 
-    private val keyRegistry = EcoKeyRegistry()
-
-    private val playerProfileHandler = EcoProfileHandler(
+    override val profileHandler = EcoProfileHandler(
         HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()),
         this
     )
@@ -84,49 +92,112 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
-    override fun createScheduler(plugin: EcoPlugin): EcoScheduler =
+    override fun createScheduler(plugin: EcoPlugin) =
         EcoScheduler(plugin)
 
-    override fun createEventManager(plugin: EcoPlugin): EcoEventManager =
+    override fun createEventManager(plugin: EcoPlugin) =
         EcoEventManager(plugin)
 
-    override fun createNamespacedKeyFactory(plugin: EcoPlugin): EcoNamespacedKeyFactory =
+    override fun createNamespacedKeyFactory(plugin: EcoPlugin) =
         EcoNamespacedKeyFactory(plugin)
 
-    override fun createMetadataValueFactory(plugin: EcoPlugin): EcoMetadataValueFactory =
+    override fun createMetadataValueFactory(plugin: EcoPlugin) =
         EcoMetadataValueFactory(plugin)
 
-    override fun createRunnableFactory(plugin: EcoPlugin): EcoRunnableFactory =
+    override fun createRunnableFactory(plugin: EcoPlugin) =
         EcoRunnableFactory(plugin)
 
-    override fun createExtensionLoader(plugin: EcoPlugin): EcoExtensionLoader =
+    override fun createExtensionLoader(plugin: EcoPlugin) =
         EcoExtensionLoader(plugin)
 
-    override fun createConfigHandler(plugin: EcoPlugin): EcoConfigHandler =
+    override fun createConfigHandler(plugin: EcoPlugin) =
         EcoConfigHandler(plugin)
 
-    override fun createLogger(plugin: EcoPlugin): Logger =
+    override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
 
-    override fun createPAPIIntegration(plugin: EcoPlugin): PlaceholderIntegration =
+    override fun createPAPIIntegration(plugin: EcoPlugin) =
         PlaceholderIntegrationPAPI(plugin)
 
     override fun getEcoPlugin(): EcoPlugin =
         this
 
-    override fun getConfigFactory(): EcoConfigFactory =
-        EcoConfigFactory
+    override fun createConfig(contents: String, type: ConfigType) =
+        EcoConfigSection(type, type.toMap(contents))
 
-    override fun getDropQueueFactory(): EcoDropQueueFactory =
-        EcoDropQueueFactory
+    override fun createConfig(values: Map<String, Any>, type: ConfigType) =
+        EcoConfigSection(type, values)
 
-    override fun getGUIFactory(): EcoGUIFactory =
-        EcoGUIFactory
+    override fun createLoadableConfig(
+        configName: String,
+        plugin: PluginLike,
+        subDirectoryPath: String,
+        source: Class<*>,
+        type: ConfigType,
+        requiresChangesToSave: Boolean
+    ) = EcoLoadableConfig(
+        type,
+        configName,
+        plugin,
+        subDirectoryPath,
+        source,
+        requiresChangesToSave
+    )
+
+    override fun createUpdatableConfig(
+        configName: String,
+        plugin: PluginLike,
+        subDirectoryPath: String,
+        source: Class<*>,
+        removeUnused: Boolean,
+        type: ConfigType,
+        requiresChangesToSave: Boolean,
+        vararg updateBlacklist: String
+    ) = EcoUpdatableConfig(
+        type,
+        configName,
+        plugin,
+        subDirectoryPath,
+        source,
+        removeUnused,
+        requiresChangesToSave,
+        *updateBlacklist
+    )
+
+    override fun wrapConfigurationSection(bukkit: ConfigurationSection): Config {
+        val config = createConfig(emptyMap(), ConfigType.YAML)
+        for (key in bukkit.getKeys(true)) {
+            config.set(key, bukkit.get(key))
+        }
+
+        return config
+    }
+
+    override fun createDropQueue(player: Player) =
+        EcoDropQueue(player)
+
+    override fun getPersistentDataKeyFrom(namespacedKey: NamespacedKey) =
+        KeyRegistry.getKeyFrom(namespacedKey)
+
+    override fun getRegisteredPersistentDataKeys() =
+        KeyRegistry.getRegisteredKeys()
+
+    override fun registerPersistentKey(key: PersistentDataKey<*>) =
+        KeyRegistry.registerKey(key)
+
+    override fun createMenuBuilder(rows: Int, type: MenuType) =
+        EcoMenuBuilder(rows, type.columns)
+
+    override fun createSlotBuilder(provider: SlotProvider) =
+        EcoSlotBuilder(provider)
+
+    override fun blendMenuState(base: Menu, additional: Menu) =
+        MergedStateMenu(base, additional)
 
     override fun getCleaner(): EcoCleaner =
         cleaner
 
-    override fun createProxyFactory(plugin: EcoPlugin): EcoProxyFactory =
+    override fun createProxyFactory(plugin: EcoPlugin) =
         EcoProxyFactory(plugin)
 
     override fun addNewPlugin(plugin: EcoPlugin) {
@@ -139,49 +210,60 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     override fun getPluginByName(name: String): EcoPlugin? =
         loaded[name.lowercase()]
 
-    override fun createFastItemStack(itemStack: ItemStack): FastItemStack =
+    override fun createFastItemStack(itemStack: ItemStack) =
         getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
 
     override fun registerBStats(plugin: EcoPlugin) =
         MetricHandler.createMetrics(plugin)
 
-    override fun getAdventure(): BukkitAudiences? =
+    override fun getAdventure() =
         adventure
 
-    override fun getKeyRegistry(): EcoKeyRegistry =
-        keyRegistry
+    override fun getServerProfile() =
+        profileHandler.loadServerProfile()
 
-    override fun getProfileHandler(): EcoProfileHandler =
-        playerProfileHandler
+    override fun loadPlayerProfile(uuid: UUID) =
+        profileHandler.load(uuid)
 
-    fun setAdventure(adventure: BukkitAudiences) {
-        this.adventure = adventure
-    }
+    override fun saveAllProfiles() =
+        profileHandler.save()
+
+    override fun savePersistentDataKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) =
+        profileHandler.saveKeysFor(uuid, keys)
+
+    override fun unloadPlayerProfile(uuid: UUID) =
+        profileHandler.unloadPlayer(uuid)
 
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
 
     @Suppress("DEPRECATION")
-    override fun createNamespacedKey(namespace: String, key: String): NamespacedKey =
+    override fun createNamespacedKey(namespace: String, key: String) =
         keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
 
-    override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>): PluginProps =
+    override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>) =
         existing ?: EcoPropsParser.parseForPlugin(plugin)
 
-    override fun <T : Mob> createEntityController(mob: T): EntityController<T> =
+    override fun <T : Mob> createEntityController(mob: T) =
         getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
 
-    override fun formatMiniMessage(message: String): String =
+    override fun formatMiniMessage(message: String) =
         getProxy(MiniMessageTranslatorProxy::class.java).format(message)
 
-    override fun adaptPdc(container: PersistentDataContainer): ExtendedPersistentDataContainer =
+    override fun adaptPdc(container: PersistentDataContainer) =
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).adapt(container)
 
-    override fun newPdc(): PersistentDataContainer =
+    override fun newPdc() =
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).newPdc()
 
-    override fun getSNBTHandler(): SNBTHandler =
-        snbtHandler
+    override fun toSNBT(itemStack: ItemStack) =
+        snbtHandler.toSNBT(itemStack)
+
+    override fun fromSNBT(snbt: String) =
+        snbtHandler.fromSNBT(snbt)
+
+    override fun testableItemFromSNBT(snbt: String) =
+        snbtHandler.createTestable(snbt)
 
     override fun getSkullTexture(meta: SkullMeta): String? =
         getProxy(SkullProxy::class.java).getSkullTexture(meta)
@@ -189,7 +271,7 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
     override fun setSkullTexture(meta: SkullMeta, base64: String) =
         getProxy(SkullProxy::class.java).setSkullTexture(meta, base64)
 
-    override fun getTPS(): Double =
+    override fun getTPS() =
         getProxy(TPSProxy::class.java).getTPS()
 
     override fun evaluate(
@@ -197,8 +279,8 @@ class EcoHandler : EcoSpigotPlugin(), Handler {
         player: Player?,
         injectable: PlaceholderInjectable,
         additionalPlayers: MutableCollection<AdditionalPlayer>
-    ): Double = evaluateExpression(expression, player, injectable, additionalPlayers)
+    ) = evaluateExpression(expression, player, injectable, additionalPlayers)
 
-    override fun getOpenMenu(player: Player): Menu? =
+    override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
 }

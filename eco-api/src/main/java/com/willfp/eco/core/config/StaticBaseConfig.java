@@ -21,7 +21,7 @@ public abstract class StaticBaseConfig extends LoadableConfigWrapper {
     protected StaticBaseConfig(@NotNull final String configName,
                                @NotNull final PluginLike plugin,
                                @NotNull final ConfigType type) {
-        super(Eco.getHandler().getConfigFactory().createLoadableConfig(
+        super(Eco.get().createLoadableConfig(
                 configName,
                 plugin,
                 "",

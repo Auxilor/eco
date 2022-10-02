@@ -1,10 +1,21 @@
 package com.willfp.eco.core.display;
 
+import com.willfp.eco.core.fast.FastItemStack;
+import com.willfp.eco.util.NamespacedKeyUtils;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Utility class to manage client-side item display.
@@ -16,9 +27,14 @@ public final class Display {
     public static final String PREFIX = "§z";
 
     /**
-     * The display handler.
+     * All registered modules.
      */
-    private static DisplayHandler handler = null;
+    private static final Map<Integer, List<DisplayModule>> REGISTERED_MODULES = new TreeMap<>();
+
+    /**
+     * The finalize key.
+     */
+    private static final NamespacedKey FINALIZE_KEY = NamespacedKeyUtils.createEcoKey("finalized");
 
     /**
      * Display on ItemStacks.
@@ -39,7 +55,49 @@ public final class Display {
      */
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player) {
-        return handler.display(itemStack, player);
+        Map<String, Object[]> pluginVarArgs = new HashMap<>();
+
+        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
+            for (DisplayModule module : modules) {
+                pluginVarArgs.put(module.getPluginName(), module.generateVarArgs(itemStack));
+            }
+        }
+
+        Display.revert(itemStack);
+
+        if (!itemStack.hasItemMeta()) {
+            return itemStack;
+        }
+
+        ItemStack original = itemStack.clone();
+        Inventory inventory = player == null ? null : player.getOpenInventory().getTopInventory();
+        boolean inInventory = inventory != null && inventory.contains(original);
+        boolean inGui = inventory != null && inventory.getHolder() == null;
+
+        DisplayProperties properties = new DisplayProperties(
+                inInventory,
+                inGui,
+                original
+        );
+
+        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
+            for (DisplayModule module : modules) {
+                Object[] varargs = pluginVarArgs.get(module.getPluginName());
+
+                if (varargs == null) {
+                    continue;
+                }
+
+                module.display(itemStack, varargs);
+
+                if (player != null) {
+                    module.display(itemStack, player, varargs);
+                    module.display(itemStack, player, properties, varargs);
+                }
+            }
+        }
+
+        return itemStack;
     }
 
     /**
@@ -71,7 +129,25 @@ public final class Display {
      * @return The ItemStack.
      */
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
-        return handler.revert(itemStack);
+        if (Display.isFinalized(itemStack)) {
+            Display.unfinalize(itemStack);
+        }
+
+        FastItemStack fast = FastItemStack.wrap(itemStack);
+
+        List<String> lore = fast.getLore();
+
+        if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(Display.PREFIX))) {
+            fast.setLore(lore);
+        }
+
+        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
+            for (DisplayModule module : modules) {
+                module.revert(itemStack);
+            }
+        }
+
+        return itemStack;
     }
 
     /**
@@ -81,7 +157,15 @@ public final class Display {
      * @return The ItemStack.
      */
     public static ItemStack finalize(@NotNull final ItemStack itemStack) {
-        return handler.finalize(itemStack);
+        if (itemStack.getType().getMaxStackSize() > 1) {
+            return itemStack;
+        }
+
+        FastItemStack.wrap(itemStack)
+                .getPersistentDataContainer()
+                .set(FINALIZE_KEY, PersistentDataType.INTEGER, 1);
+
+        return itemStack;
     }
 
     /**
@@ -91,7 +175,11 @@ public final class Display {
      * @return The ItemStack.
      */
     public static ItemStack unfinalize(@NotNull final ItemStack itemStack) {
-        return handler.unfinalize(itemStack);
+        FastItemStack.wrap(itemStack)
+                .getPersistentDataContainer()
+                .remove(FINALIZE_KEY);
+
+        return itemStack;
     }
 
     /**
@@ -101,7 +189,9 @@ public final class Display {
      * @return If finalized.
      */
     public static boolean isFinalized(@NotNull final ItemStack itemStack) {
-        return handler.isFinalized(itemStack);
+        return FastItemStack.wrap(itemStack)
+                .getPersistentDataContainer()
+                .has(FINALIZE_KEY, PersistentDataType.INTEGER);
     }
 
     /**
@@ -110,23 +200,15 @@ public final class Display {
      * @param module The module.
      */
     public static void registerDisplayModule(@NotNull final DisplayModule module) {
-        handler.registerDisplayModule(module);
-    }
+        List<DisplayModule> modules = REGISTERED_MODULES.getOrDefault(
+                module.getWeight(),
+                new ArrayList<>()
+        );
 
-    /**
-     * Set the display handler.
-     * <p>
-     * Internal API component, you will cause bugs if you create your own handler.
-     *
-     * @param handler The handler.
-     */
-    @ApiStatus.Internal
-    public static void setHandler(@NotNull final DisplayHandler handler) {
-        if (Display.handler != null) {
-            throw new IllegalStateException("Display already initialized!");
-        }
+        modules.removeIf(it -> it.getPluginName().equalsIgnoreCase(module.getPluginName()));
+        modules.add(module);
 
-        Display.handler = handler;
+        REGISTERED_MODULES.put(module.getWeight(), modules);
     }
 
     private Display() {

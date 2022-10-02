@@ -21,13 +21,25 @@ public class DropQueue {
     /**
      * The internally used {@link DropQueue}.
      */
-    private final InternalDropQueue handle;
+    private final DropQueue delegate;
 
     /**
+     * Create a new DropQueue.
+     *
      * @param player The player.
      */
     public DropQueue(@NotNull final Player player) {
-        handle = Eco.getHandler().getDropQueueFactory().create(player);
+        this.delegate = Eco.get().createDropQueue(player);
+    }
+
+    /**
+     * Create a new DropQueue with no delegate.
+     * <p>
+     * Call this constructor if you're creating custom DropQueue
+     * implementations.
+     */
+    protected DropQueue() {
+        this.delegate = null;
     }
 
     /**
@@ -37,7 +49,11 @@ public class DropQueue {
      * @return The DropQueue.
      */
     public DropQueue addItem(@NotNull final ItemStack item) {
-        handle.addItem(item);
+        if (delegate == null) {
+            return this;
+        }
+
+        delegate.addItem(item);
         return this;
     }
 
@@ -48,7 +64,11 @@ public class DropQueue {
      * @return The DropQueue.
      */
     public DropQueue addItems(@NotNull final Collection<ItemStack> itemStacks) {
-        handle.addItems(itemStacks);
+        if (delegate == null) {
+            return this;
+        }
+
+        delegate.addItems(itemStacks);
         return this;
     }
 
@@ -59,7 +79,11 @@ public class DropQueue {
      * @return The DropQueue.
      */
     public DropQueue addXP(final int amount) {
-        handle.addXP(amount);
+        if (delegate == null) {
+            return this;
+        }
+
+        delegate.addXP(amount);
         return this;
     }
 
@@ -70,7 +94,11 @@ public class DropQueue {
      * @return The DropQueue.
      */
     public DropQueue setLocation(@NotNull final Location location) {
-        handle.setLocation(location);
+        if (delegate == null) {
+            return this;
+        }
+
+        delegate.setLocation(location);
         return this;
     }
 
@@ -80,7 +108,11 @@ public class DropQueue {
      * @return The DropQueue.
      */
     public DropQueue forceTelekinesis() {
-        handle.forceTelekinesis();
+        if (delegate == null) {
+            return this;
+        }
+
+        delegate.forceTelekinesis();
         return this;
     }
 
@@ -88,6 +120,10 @@ public class DropQueue {
      * Push the queue.
      */
     public void push() {
-        handle.push();
+        if (delegate == null) {
+            return;
+        }
+
+        delegate.push();
     }
 }
