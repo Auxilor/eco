@@ -126,6 +126,27 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     }
 
     @EventHandler(
+        priority = EventPriority.HIGHEST
+    )
+    fun preventMovingHeld(event: InventoryClickEvent) {
+        val player = event.player
+
+        val rendered = player.renderedInventory ?: return
+
+        if (rendered.menu.allowsChangingHeldItem()) {
+            return
+        }
+
+        if (event.clickedInventory !is PlayerInventory) {
+            return
+        }
+
+        if (event.slot == player.inventory.heldItemSlot) {
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler(
         priority = EventPriority.LOW
     )
     fun preventNumberKey2(event: PlayerItemHeldEvent) {
