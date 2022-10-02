@@ -82,6 +82,7 @@ class MySQLDataHandler(
             PersistentDataKeyType.STRING -> data.getStringOrNull(key.key.toString())
             PersistentDataKeyType.BOOLEAN -> data.getBoolOrNull(key.key.toString())
             PersistentDataKeyType.STRING_LIST -> data.getStringsOrNull(key.key.toString())
+            PersistentDataKeyType.CONFIG -> data.getSubsectionOrNull(key.key.toString())
             else -> null
         }
 

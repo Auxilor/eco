@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data
 
+import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import org.bukkit.NamespacedKey
@@ -39,6 +40,9 @@ object KeyRegistry {
             }
             PersistentDataKeyType.STRING_LIST -> if (default !is List<*> || default.firstOrNull() !is String?) {
                 throw IllegalArgumentException("Invalid Data Type! Should be String List")
+            }
+            PersistentDataKeyType.CONFIG -> if (default !is Config) {
+                throw IllegalArgumentException("Invalid Data Type! Should be Config")
             }
 
             else -> throw NullPointerException("Null value found!")

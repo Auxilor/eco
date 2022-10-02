@@ -26,6 +26,7 @@ class YamlDataHandler(
             PersistentDataKeyType.STRING -> dataYml.getStringOrNull("player.$uuid.${key.key}") as T?
             PersistentDataKeyType.BOOLEAN -> dataYml.getBoolOrNull("player.$uuid.${key.key}") as T?
             PersistentDataKeyType.STRING_LIST -> dataYml.getStringsOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.CONFIG -> dataYml.getSubsectionOrNull("player.$uuid.${key.key}") as T?
             else -> null
         }
 

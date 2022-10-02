@@ -1,5 +1,6 @@
 package com.willfp.eco.core.data.keys;
 
+import com.willfp.eco.core.config.interfaces.Config;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +43,11 @@ public final class PersistentDataKeyType<T> {
      * String List.
      */
     public static final PersistentDataKeyType<List<String>> STRING_LIST = new PersistentDataKeyType<>(null, "STRING_LIST");
+
+    /**
+     * Config.
+     */
+    public static final PersistentDataKeyType<Config> CONFIG = new PersistentDataKeyType<>(Config.class, "CONFIG");
 
     /**
      * The class of the type.
