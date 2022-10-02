@@ -11,9 +11,9 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
+import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.placeholder.AdditionalPlayer
 import com.willfp.eco.core.placeholder.PlaceholderInjectable
-import com.willfp.eco.internal.EcoCleaner
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.config.EcoConfigHandler
 import com.willfp.eco.internal.config.EcoConfigSection
@@ -21,6 +21,7 @@ import com.willfp.eco.internal.config.EcoLoadableConfig
 import com.willfp.eco.internal.config.EcoUpdatableConfig
 import com.willfp.eco.internal.config.toMap
 import com.willfp.eco.internal.drops.EcoDropQueue
+import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
 import com.willfp.eco.internal.events.EcoEventManager
 import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
@@ -42,7 +43,6 @@ import com.willfp.eco.internal.spigot.data.EcoProfileHandler
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.items.EcoSNBTHandler
 import com.willfp.eco.internal.spigot.math.evaluateExpression
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
@@ -50,6 +50,7 @@ import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -62,30 +63,27 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
+import java.net.URLClassLoader
 import java.util.UUID
 
 @Suppress("UNUSED")
 class EcoImpl : EcoSpigotPlugin(), Eco {
-    private val loaded = mutableMapOf<String, EcoPlugin>()
-
-    init {
-        getProxy(CommonsInitializerProxy::class.java).init()
-    }
-
     override val dataYml = DataYml(this)
-
-    private val cleaner = EcoCleaner()
-
-    private var adventure: BukkitAudiences? = if (!Prerequisite.HAS_PAPER.isMet) {
-        BukkitAudiences.create(this)
-    } else null
 
     override val profileHandler = EcoProfileHandler(
         HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()),
         this
     )
 
-    private val snbtHandler = EcoSNBTHandler(this)
+    private val loadedPlugins = mutableMapOf<String, EcoPlugin>()
+
+    init {
+        getProxy(CommonsInitializerProxy::class.java).init()
+    }
+
+    private var adventure: BukkitAudiences? = if (!Prerequisite.HAS_PAPER.isMet) {
+        BukkitAudiences.create(this)
+    } else null
 
     @Suppress("RedundantNullableReturnType")
     private val keyFactory: InternalNamespacedKeyFactory? =
@@ -173,8 +171,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         return config
     }
 
-    override fun createDropQueue(player: Player) =
-        EcoDropQueue(player)
+    override fun createDropQueue(player: Player) = if (this.configYml.getBool("use-fast-collated-drops"))
+        EcoFastCollatedDropQueue(player) else EcoDropQueue(player)
 
     override fun getPersistentDataKeyFrom(namespacedKey: NamespacedKey) =
         KeyRegistry.getKeyFrom(namespacedKey)
@@ -194,21 +192,41 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun blendMenuState(base: Menu, additional: Menu) =
         MergedStateMenu(base, additional)
 
-    override fun getCleaner(): EcoCleaner =
-        cleaner
+    override fun clean(plugin: EcoPlugin) {
+        if (plugin.proxyPackage.isNotEmpty()) {
+            val factory = plugin.proxyFactory as EcoProxyFactory
+            factory.clean()
+        }
+
+        loadedPlugins.remove(plugin.name.lowercase())
+
+        for (customItem in Items.getCustomItems()) {
+            if (customItem.key.namespace.equals(plugin.name.lowercase(), ignoreCase = true)) {
+                Items.removeCustomItem(customItem.key)
+            }
+        }
+
+        val classLoader = plugin::class.java.classLoader
+
+        if (classLoader is URLClassLoader) {
+            classLoader.close()
+        }
+
+        System.gc()
+    }
 
     override fun createProxyFactory(plugin: EcoPlugin) =
         EcoProxyFactory(plugin)
 
     override fun addNewPlugin(plugin: EcoPlugin) {
-        loaded[plugin.name.lowercase()] = plugin
+        loadedPlugins[plugin.name.lowercase()] = plugin
     }
 
     override fun getLoadedPlugins(): List<String> =
-        loaded.keys.toList()
+        loadedPlugins.keys.toList()
 
     override fun getPluginByName(name: String): EcoPlugin? =
-        loaded[name.lowercase()]
+        loadedPlugins[name.lowercase()]
 
     override fun createFastItemStack(itemStack: ItemStack) =
         getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)
@@ -257,13 +275,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).newPdc()
 
     override fun toSNBT(itemStack: ItemStack) =
-        snbtHandler.toSNBT(itemStack)
+        getProxy(SNBTConverterProxy::class.java).toSNBT(itemStack)
 
     override fun fromSNBT(snbt: String) =
-        snbtHandler.fromSNBT(snbt)
+        getProxy(SNBTConverterProxy::class.java).fromSNBT(snbt)
 
     override fun testableItemFromSNBT(snbt: String) =
-        snbtHandler.createTestable(snbt)
+        getProxy(SNBTConverterProxy::class.java).makeSNBTTestable(snbt)
 
     override fun getSkullTexture(meta: SkullMeta): String? =
         getProxy(SkullProxy::class.java).getSkullTexture(meta)

@@ -3,7 +3,7 @@ package com.willfp.eco.core.extensions;
 import java.util.Set;
 
 /**
- * Internal component to manage loading and unloading extensions.
+ * Manages the loading and unloading of extensions for a particular plugin.
  */
 public interface ExtensionLoader {
     /**

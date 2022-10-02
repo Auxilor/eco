@@ -81,12 +81,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     private final Set<String> loadedIntegrations = new HashSet<>();
 
     /**
-     * The internal plugin scheduler.
+     * The plugin scheduler.
      */
     private final Scheduler scheduler;
 
     /**
-     * The internal plugin Event Manager.
+     * The plugin Event Manager.
      */
     private final EventManager eventManager;
 
@@ -101,17 +101,17 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     private final LangYml langYml;
 
     /**
-     * The internal factory to produce {@link org.bukkit.NamespacedKey}s.
+     * The factory to produce {@link org.bukkit.NamespacedKey}s.
      */
     private final NamespacedKeyFactory namespacedKeyFactory;
 
     /**
-     * The internal factory to produce {@link org.bukkit.metadata.FixedMetadataValue}s.
+     * The factory to produce {@link org.bukkit.metadata.FixedMetadataValue}s.
      */
     private final MetadataValueFactory metadataValueFactory;
 
     /**
-     * The internal factory to produce {@link com.willfp.eco.core.scheduling.RunnableTask}s.
+     * The factory to produce {@link com.willfp.eco.core.scheduling.RunnableTask}s.
      */
     private final RunnableFactory runnableFactory;
 
@@ -283,11 +283,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         if (Eco.get() == null && this instanceof Eco) {
             /*
-            This code is only ever called by EcoSpigotPlugin (EcoHandler)
-            as it's the first plugin to load, and it is a handler.
+            This code is only ever called by EcoSpigotPlugin (EcoImpl)
+            as it's the first plugin to load, and it's an instance of eco.
 
-            Any other plugins will never call this code as the handler
-            will have already been initialized.
+            Any other plugins will never call this code as eco will have already
+            been initialized.
              */
 
             Eco.Instance.set((Eco) this);
@@ -435,7 +435,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         }
 
         this.getLogger().info("Cleaning up...");
-        Eco.get().getCleaner().clean(this);
+        Eco.get().clean(this);
     }
 
     /**

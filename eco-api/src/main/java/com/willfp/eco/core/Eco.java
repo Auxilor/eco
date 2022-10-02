@@ -25,7 +25,6 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.proxy.Cleaner;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -269,12 +268,11 @@ public interface Eco {
                         @NotNull Menu additional);
 
     /**
-     * Get cleaner.
+     * Clean up ClassLoader (etc.) to allow PlugMan support.
      *
-     * @return The cleaner.
+     * @param plugin The plugin to clean up.
      */
-    @NotNull
-    Cleaner getCleaner();
+    void clean(@NotNull EcoPlugin plugin);
 
     /**
      * Add new plugin.
