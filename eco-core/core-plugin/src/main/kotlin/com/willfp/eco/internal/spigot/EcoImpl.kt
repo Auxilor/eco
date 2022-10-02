@@ -66,6 +66,8 @@ import org.bukkit.persistence.PersistentDataContainer
 import java.net.URLClassLoader
 import java.util.UUID
 
+private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
+
 @Suppress("UNUSED")
 class EcoImpl : EcoSpigotPlugin(), Eco {
     override val dataYml = DataYml(this)
@@ -74,8 +76,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()),
         this
     )
-
-    private val loadedPlugins = mutableMapOf<String, EcoPlugin>()
 
     init {
         getProxy(CommonsInitializerProxy::class.java).init()
@@ -198,7 +198,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
             factory.clean()
         }
 
-        loadedPlugins.remove(plugin.name.lowercase())
+        loadedEcoPlugins.remove(plugin.name.lowercase())
 
         for (customItem in Items.getCustomItems()) {
             if (customItem.key.namespace.equals(plugin.name.lowercase(), ignoreCase = true)) {
@@ -219,14 +219,14 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         EcoProxyFactory(plugin)
 
     override fun addNewPlugin(plugin: EcoPlugin) {
-        loadedPlugins[plugin.name.lowercase()] = plugin
+        loadedEcoPlugins[plugin.name.lowercase()] = plugin
     }
 
     override fun getLoadedPlugins(): List<String> =
-        loadedPlugins.keys.toList()
+        loadedEcoPlugins.keys.toList()
 
     override fun getPluginByName(name: String): EcoPlugin? =
-        loadedPlugins[name.lowercase()]
+        loadedEcoPlugins[name.lowercase()]
 
     override fun createFastItemStack(itemStack: ItemStack) =
         getProxy(FastItemStackFactoryProxy::class.java).create(itemStack)

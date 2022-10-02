@@ -231,7 +231,8 @@ public interface Eco {
     /**
      * Create a Drop Queue.
      *
-     * @return The player..
+     * @param player The player.
+     * @return The drop queue.
      */
     @NotNull
     DropQueue createDropQueue(@NotNull Player player);
