@@ -28,8 +28,7 @@ public abstract class DisplayModule {
      */
     protected DisplayModule(@NotNull final EcoPlugin plugin,
                             @NotNull final DisplayPriority priority) {
-        this.plugin = plugin;
-        this.weight = priority.getWeight();
+        this(plugin, priority.getWeight());
     }
 
     /**
@@ -40,7 +39,7 @@ public abstract class DisplayModule {
      */
     protected DisplayModule(@NotNull final EcoPlugin plugin,
                             final int weight) {
-        super(plugin);
+        this.plugin = plugin;
         this.weight = weight;
     }
 
@@ -108,7 +107,7 @@ public abstract class DisplayModule {
      * @return The plugin name.
      */
     public final String getPluginName() {
-        return super.getPlugin().getName();
+        return this.getPlugin().getName();
     }
 
     /**
