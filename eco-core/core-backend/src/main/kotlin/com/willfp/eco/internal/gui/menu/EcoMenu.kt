@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack
 class EcoMenu(
     private val rows: Int,
     private val columns: Int,
-    private val componentsAtPoints: Map<GUIPosition, List<OffsetComponent>>,
+    private val components: LayeredComponents,
     private val title: String,
     private val onClose: List<CloseHandler>,
     private val onRender: List<(Player, Menu) -> Unit>,
@@ -28,38 +28,19 @@ class EcoMenu(
     private val menuEventHandlers: List<MenuEventHandler<*>>,
     private val allowsChangingHeldItem: Boolean
 ) : Menu {
-    private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?, menu: Menu?): Slot {
+    private fun getPossiblyReactiveSlot(row: Int, column: Int, player: Player?): Slot {
         if (row < 1 || row > this.rows || column < 1 || column > this.columns) {
             return emptyFillerSlot
         }
 
-        val guiPosition = GUIPosition(row, column)
-        val components = componentsAtPoints[guiPosition] ?: return emptyFillerSlot
-
-        for (component in components) {
-            val found = if (player != null && menu != null) component.component.getSlotAt(
-                component.rowOffset,
-                component.columnOffset,
-                player,
-                menu
-            ) else component.component.getSlotAt(
-                component.rowOffset,
-                component.columnOffset
-            )
-
-            if (found != null) {
-                return found
-            }
-        }
-
-        return emptyFillerSlot
+        return components.getSlotAt(row, column, player, this)
     }
 
     override fun getSlot(row: Int, column: Int): Slot =
-        getPossiblyReactiveSlot(row, column, null, null)
+        getPossiblyReactiveSlot(row, column, null)
 
     override fun getSlot(row: Int, column: Int, player: Player, menu: Menu): Slot =
-        getPossiblyReactiveSlot(row, column, player, menu)
+        getPossiblyReactiveSlot(row, column, player)
 
     override fun open(player: Player): Inventory {
         val inventory = if (columns == 9) {

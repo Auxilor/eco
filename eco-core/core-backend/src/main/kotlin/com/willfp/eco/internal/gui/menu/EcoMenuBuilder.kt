@@ -86,7 +86,7 @@ class EcoMenuBuilder(
     }
 
     override fun build(): Menu {
-        val layeredComponents = mutableMapOf<MenuLayer, MutableMap<GUIPosition, MutableList<OffsetComponent>>>()
+        val layeredComponents = LayeredComponents()
 
         // 5 nested for loops? Shut up. Silence. Quiet.
         for (layer in MenuLayer.values()) {
@@ -107,11 +107,14 @@ class EcoMenuBuilder(
 
                             val point = GUIPosition(row, column)
 
-                            layeredComponents.computeIfAbsent(layer) { mutableMapOf() }
-                                .computeIfAbsent(point) { mutableListOf() } += OffsetComponent(
-                                component,
-                                rowOffset,
-                                columnOffset
+                            layeredComponents.addOffsetComponent(
+                                layer,
+                                point,
+                                OffsetComponent(
+                                    component,
+                                    rowOffset,
+                                    columnOffset
+                                )
                             )
                         }
                     }
@@ -119,18 +122,10 @@ class EcoMenuBuilder(
             }
         }
 
-        val componentsAtPoints = mutableMapOf<GUIPosition, MutableList<OffsetComponent>>()
-
-        for (menuLayer in MenuLayer.values()) {
-            for ((anchor, offsetComponents) in layeredComponents[menuLayer] ?: emptyMap()) {
-                componentsAtPoints[anchor] = offsetComponents
-            }
-        }
-
         return EcoMenu(
             rows,
             columns,
-            componentsAtPoints,
+            layeredComponents,
             title,
             onClose,
             onRender,

@@ -107,7 +107,7 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     default MenuBuilder addPage(@NotNull final Page page) {
-        return this.addComponent(MenuLayer.TOP, 1, 1, page);
+        return this.addComponent(MenuLayer.UPPER, 1, 1, page);
     }
 
     /**

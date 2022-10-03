@@ -79,7 +79,7 @@ public final class PageChanger implements GUIComponent {
             return null;
         }
 
-        if (page >= maxPage - 1 && this.direction == Direction.FORWARDS) {
+        if (page >= maxPage && this.direction == Direction.FORWARDS) {
             return null;
         }
 
