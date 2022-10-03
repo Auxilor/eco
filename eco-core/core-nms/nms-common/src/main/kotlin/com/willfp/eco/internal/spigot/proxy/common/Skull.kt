@@ -29,7 +29,23 @@ var SkullMeta.texture: String?
             setProfile.isAccessible = true
         }
 
-        if (base64 == null) {
+        /* This length check below was lost in the conversion. For some reason the base64
+        * string is length 8 when this is called pretty frequently, causing an
+        * out of bounds exception.
+        *
+        * Could not pass event EntityPotionEffectEvent to Talismans v5.116.0
+        * java.lang.StringIndexOutOfBoundsException: begin -12, end 8, length 8
+        * at java.lang.String.checkBoundsBeginEnd(String.java:4604) ~[?:?]
+        * at java.lang.String.substring(String.java:2707) ~[?:?]
+        * at java.lang.String.substring(String.java:2680) ~[?:?]
+        * at com.willfp.eco.internal.spigot.proxy.v1_19_R1.common.SkullKt.setTexture(Skull.kt:36)
+        *
+        if (base64.length < 20) {
+            return
+        }
+        */
+
+        if (base64 == null || base64.length < 20) {
             setProfile.invoke(this, null)
         } else {
             val uuid = UUID(
