@@ -43,6 +43,10 @@ var SkullMeta.texture: String?
         if (base64.length < 20) {
             return
         }
+        *
+        * ^ Update to this comment: a length 8 string ("textures") was being sent
+        * because the get() method wasn't working right. This has been fixed, but the
+        * check needs to remain implemented.
         */
 
         if (base64 == null || base64.length < 20) {
