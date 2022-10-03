@@ -51,6 +51,14 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     }
 
     @EventHandler(
+        priority = EventPriority.HIGHEST
+    )
+    fun handleRender(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        player.renderActiveMenu()
+    }
+
+    @EventHandler(
         priority = EventPriority.HIGH
     )
     fun handleSlotClick(event: InventoryClickEvent) {
@@ -63,8 +71,6 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot, menu.columns)
 
         menu.getSlot(row, column, player, menu).handle(player, event, menu)
-
-        plugin.scheduler.run { rendered.render() }
     }
 
     @EventHandler(
@@ -172,7 +178,6 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         val rendered = player.renderedInventory ?: return
 
         if (rendered.menu.allowsChangingHeldItem()) {
-            player.renderActiveMenu()
             return
         }
 
