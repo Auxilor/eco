@@ -31,6 +31,8 @@ class RenderedInventory(
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
+        val previousCaptive = captiveItems.toMap()
+
         captiveItems.clear()
 
         for (row in (1..menu.rows)) {
@@ -61,15 +63,18 @@ class RenderedInventory(
 
         menu.runOnRender(player)
 
-        for (row in (1..menu.rows)) {
-            for (column in (1..menu.columns)) {
-                val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
+        // Run second render if captive items changed
+        if (captiveItems != previousCaptive) {
+            for (row in (1..menu.rows)) {
+                for (column in (1..menu.columns)) {
+                    val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
 
-                val slot = menu.getSlot(row, column, player, menu)
-                val renderedItem = slot.getItemStack(player)
+                    val slot = menu.getSlot(row, column, player, menu)
+                    val renderedItem = slot.getItemStack(player)
 
-                if (!slot.isCaptive(player, menu)) {
-                    inventory.setItem(bukkit, renderedItem)
+                    if (!slot.isCaptive(player, menu)) {
+                        inventory.setItem(bukkit, renderedItem)
+                    }
                 }
             }
         }
