@@ -81,6 +81,8 @@ class RenderedInventory(
     }
 
     fun renderDefaultCaptiveItems() {
+        menu.runOnRender(player)
+
         for (row in (1..menu.rows)) {
             for (column in (1..menu.columns)) {
                 val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
