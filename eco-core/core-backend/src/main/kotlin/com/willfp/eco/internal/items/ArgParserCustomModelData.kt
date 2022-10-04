@@ -27,6 +27,10 @@ object ArgParserCustomModelData : LookupArgParser {
         return Predicate {
             val testMeta = it.itemMeta ?: return@Predicate false
 
+            if (!testMeta.hasCustomModelData()) {
+                return@Predicate false
+            }
+
             testMeta.customModelData == modelData
         }
     }
