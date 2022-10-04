@@ -1,13 +1,11 @@
 package com.willfp.eco.internal.integrations
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 
-class PlaceholderIntegrationPAPI(private val plugin: EcoPlugin) : PlaceholderExpansion(), PlaceholderIntegration {
+class PAPIExpansion(private val plugin: EcoPlugin) : PlaceholderExpansion() {
     override fun persist(): Boolean {
         return true
     }
@@ -33,30 +31,5 @@ class PlaceholderIntegrationPAPI(private val plugin: EcoPlugin) : PlaceholderExp
         identifier: String
     ): String {
         return PlaceholderManager.getResult(player, identifier, plugin)
-    }
-
-    override fun registerIntegration() {
-        register()
-    }
-
-    override fun getPluginName(): String {
-        return "PlaceholderAPI"
-    }
-
-    override fun translate(
-        text: String,
-        player: Player?
-    ): String {
-        return PlaceholderAPI.setPlaceholders(player, text)
-    }
-
-    override fun findPlaceholdersIn(text: String): MutableList<String> {
-        val placeholders = mutableListOf<String>()
-        val matcher = PlaceholderAPI.getPlaceholderPattern().matcher(text)
-        while (matcher.find()) {
-            placeholders.add(matcher.group())
-        }
-
-        return placeholders
     }
 }

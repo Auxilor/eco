@@ -70,7 +70,7 @@ public final class PlaceholderManager {
     /**
      * The default PlaceholderAPI pattern; brought in for compatibility.
      */
-    private static final Pattern PATTERN = Pattern.compile("[%]([^%]+)[%]");
+    private static final Pattern PATTERN = Pattern.compile("[%]([^% ]+)[%]");
 
     /**
      * Register a new placeholder integration.

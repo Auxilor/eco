@@ -13,7 +13,6 @@ import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
@@ -375,8 +374,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                 .collect(Collectors.toSet());
 
         if (enabledPlugins.contains("PlaceholderAPI".toLowerCase())) {
-            this.loadedIntegrations.add("PlaceholderAPI");
-            PlaceholderManager.addIntegration(Eco.get().createPAPIIntegration(this));
+            Eco.get().createPAPIIntegration(this);
         }
 
         this.loadIntegrationLoaders().forEach(integrationLoader -> {
@@ -385,6 +383,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                 integrationLoader.load();
             }
         });
+
+        this.loadedIntegrations.removeIf(pl -> pl.equalsIgnoreCase(this.getName()));
 
         this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
 

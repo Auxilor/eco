@@ -14,6 +14,7 @@ import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
+import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -106,6 +107,7 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHologr
 import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicDisplays
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
+import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
@@ -310,6 +312,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     EconomyManager.register(EconomyVault(rsp.provider))
                 }
             },
+
+            // Placeholder
+            IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },

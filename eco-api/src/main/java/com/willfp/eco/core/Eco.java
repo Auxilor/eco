@@ -21,7 +21,6 @@ import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
-import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
@@ -138,10 +137,9 @@ public interface Eco {
      * Create a PAPI integration.
      *
      * @param plugin The plugin.
-     * @return The integration.
      */
     @NotNull
-    PlaceholderIntegration createPAPIIntegration(@NotNull EcoPlugin plugin);
+    void createPAPIIntegration(@NotNull EcoPlugin plugin);
 
     /**
      * Create a proxy factory.

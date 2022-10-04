@@ -34,7 +34,7 @@ import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
 import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
-import com.willfp.eco.internal.integrations.PlaceholderIntegrationPAPI
+import com.willfp.eco.internal.integrations.PAPIExpansion
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
@@ -114,8 +114,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
 
-    override fun createPAPIIntegration(plugin: EcoPlugin) =
-        PlaceholderIntegrationPAPI(plugin)
+    override fun createPAPIIntegration(plugin: EcoPlugin) {
+        PAPIExpansion(plugin)
+    }
 
     override fun getEcoPlugin(): EcoPlugin =
         this
