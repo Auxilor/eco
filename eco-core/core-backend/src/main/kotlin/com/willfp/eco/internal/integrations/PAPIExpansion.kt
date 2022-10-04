@@ -6,6 +6,10 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 
 class PAPIExpansion(private val plugin: EcoPlugin) : PlaceholderExpansion() {
+    init {
+        register()
+    }
+
     override fun persist(): Boolean {
         return true
     }
