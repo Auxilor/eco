@@ -8,7 +8,7 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
-import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.dao.id.UUIDTable
@@ -35,7 +35,7 @@ Whatever. At least it works.
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
     private val plugin: EcoSpigotPlugin,
-    private val handler: EcoProfileHandler
+    private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MYSQL) {
     private val table = UUIDTable("eco_data")
 

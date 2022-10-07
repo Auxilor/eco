@@ -3,7 +3,7 @@ package com.willfp.eco.internal.spigot.data.storage
 import com.willfp.eco.core.data.Profile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
-import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +20,7 @@ import java.util.UUID
 @Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
     plugin: EcoSpigotPlugin,
-    private val handler: EcoProfileHandler
+    private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MONGO) {
     private val client: CoroutineClient
     private val collection: CoroutineCollection<UUIDProfile>

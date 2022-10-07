@@ -18,7 +18,7 @@ import java.util.UUID
 
 val serverProfileUUID = UUID(0, 0)
 
-class EcoProfileHandler(
+class ProfileHandler(
     private val type: HandlerType,
     private val plugin: EcoSpigotPlugin
 ) {

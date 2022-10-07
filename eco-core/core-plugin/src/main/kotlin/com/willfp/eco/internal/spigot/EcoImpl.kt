@@ -4,7 +4,6 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
@@ -39,7 +38,7 @@ import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.DataYml
-import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
@@ -53,7 +52,6 @@ import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
-import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.ConfigurationSection
@@ -72,7 +70,7 @@ private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 class EcoImpl : EcoSpigotPlugin(), Eco {
     override val dataYml = DataYml(this)
 
-    override val profileHandler = EcoProfileHandler(
+    override val profileHandler = ProfileHandler(
         HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()),
         this
     )
@@ -80,10 +78,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     init {
         getProxy(CommonsInitializerProxy::class.java).init()
     }
-
-    private var adventure: BukkitAudiences? = if (!Prerequisite.HAS_PAPER.isMet) {
-        BukkitAudiences.create(this)
-    } else null
 
     @Suppress("RedundantNullableReturnType")
     private val keyFactory: InternalNamespacedKeyFactory? =
@@ -236,7 +230,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         MetricHandler.createMetrics(plugin)
 
     override fun getAdventure() =
-        adventure
+        bukkitAudiences
 
     override fun getServerProfile() =
         profileHandler.loadServerProfile()

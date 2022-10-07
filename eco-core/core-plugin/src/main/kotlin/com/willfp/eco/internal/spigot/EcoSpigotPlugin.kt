@@ -48,7 +48,7 @@ import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.DataYml
-import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.display.PacketAutoRecipe
@@ -120,6 +120,7 @@ import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -128,7 +129,8 @@ import org.bukkit.inventory.ItemStack
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
-    protected abstract val profileHandler: EcoProfileHandler
+    protected abstract val profileHandler: ProfileHandler
+    protected var bukkitAudiences: BukkitAudiences? = null
 
     init {
         Items.registerArgParser(ArgParserEnchantment)
@@ -207,6 +209,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         // Preload categorized persistent data keys
         profileHandler.initialize()
+
+        // Init adventure
+        if (!Prerequisite.HAS_PAPER.isMet) {
+            bukkitAudiences = BukkitAudiences.create(this)
+        }
     }
 
     override fun handleDisable() {

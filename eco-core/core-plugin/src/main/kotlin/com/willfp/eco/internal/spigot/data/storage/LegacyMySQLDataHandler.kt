@@ -7,7 +7,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
-import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.serverProfileUUID
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -49,7 +49,7 @@ the worst bodge I've shipped in production.
 @Suppress("UNCHECKED_CAST")
 class LegacyMySQLDataHandler(
     plugin: EcoSpigotPlugin,
-    handler: EcoProfileHandler
+    handler: ProfileHandler
 ) : DataHandler(HandlerType.LEGACY_MYSQL) {
     private val playerHandler: ImplementedMySQLHandler
     private val serverHandler: ImplementedMySQLHandler
@@ -114,7 +114,7 @@ class LegacyMySQLDataHandler(
 
 @Suppress("UNCHECKED_CAST")
 private class ImplementedMySQLHandler(
-    private val handler: EcoProfileHandler,
+    private val handler: ProfileHandler,
     private val table: UUIDTable,
     private val plugin: EcoPlugin
 ) {

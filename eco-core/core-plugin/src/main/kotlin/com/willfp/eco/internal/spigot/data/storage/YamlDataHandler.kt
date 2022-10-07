@@ -3,14 +3,14 @@ package com.willfp.eco.internal.spigot.data.storage
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
-import com.willfp.eco.internal.spigot.data.EcoProfileHandler
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import org.bukkit.NamespacedKey
 import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
 class YamlDataHandler(
     plugin: EcoSpigotPlugin,
-    private val handler: EcoProfileHandler
+    private val handler: ProfileHandler
 ) : DataHandler(HandlerType.YAML) {
     private val dataYml = plugin.dataYml
 
