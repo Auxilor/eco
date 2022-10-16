@@ -3,16 +3,28 @@ package com.willfp.eco.internal.spigot.proxy.v1_18_R1
 import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
 import net.minecraft.nbt.Tag
+import org.bukkit.Material
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataTypeRegistry
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
 class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFactoryProxy {
     @Suppress("UNCHECKED_CAST")
-    private val registry: CraftPersistentDataTypeRegistry =
-        CraftPersistentDataContainer::class.java.getDeclaredField("registry")
-            .apply { isAccessible = true }.get(null) as CraftPersistentDataTypeRegistry
+    private val registry: CraftPersistentDataTypeRegistry
+
+    init {
+        /*
+         Can't grab actual instance since it's in CraftMetaItem (which is package-private)
+         And getting it would mean more janky reflection
+         */
+        val item = CraftItemStack.asCraftCopy(ItemStack(Material.STONE))
+        val pdc = item.itemMeta!!.persistentDataContainer
+        this.registry = CraftPersistentDataContainer::class.java.getDeclaredField("registry")
+            .apply { isAccessible = true }.get(pdc) as CraftPersistentDataTypeRegistry
+    }
 
     override fun adapt(pdc: PersistentDataContainer): ExtendedPersistentDataContainer {
         return when (pdc) {
