@@ -48,7 +48,7 @@ public final class PageChanger implements GUIComponent {
                         return;
                     }
 
-                    menu.addState(player, Page.PAGE_KEY, newPage);
+                    menu.setState(player, Page.PAGE_KEY, newPage);
                     menu.callEvent(player, new PageChangeEvent(
                             newPage,
                             page

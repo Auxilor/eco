@@ -110,15 +110,32 @@ public interface Menu {
     }
 
     /**
-     * Add state for a player.
+     * Set state for a player.
      *
      * @param player The player.
      * @param key    The key.
      * @param value  The state.
      */
-    void addState(@NotNull Player player,
-                  @NotNull String key,
-                  @Nullable Object value);
+    default void setState(@NotNull Player player,
+                          @NotNull String key,
+                          @Nullable Object value) {
+        // Blank method for backwards compatibility.
+    }
+
+    /**
+     * Add state for a player.
+     *
+     * @param player The player.
+     * @param key    The key.
+     * @param value  The state.
+     * @deprecated Poorly named, use setState instead.
+     */
+    @Deprecated(since = "6.44.0", forRemoval = true)
+    default void addState(@NotNull Player player,
+                          @NotNull String key,
+                          @Nullable Object value) {
+        this.setState(player, key, value);
+    }
 
     /**
      * Remove state for a player.
@@ -221,7 +238,7 @@ public interface Menu {
                                   @NotNull final NamespacedKey key,
                                   @NotNull final PersistentDataType<T, Z> type,
                                   @NotNull final Z value) {
-        this.addState(player, key.toString(), value);
+        this.setState(player, key.toString(), value);
     }
 
     /**

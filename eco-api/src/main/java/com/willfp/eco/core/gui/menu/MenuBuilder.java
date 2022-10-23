@@ -139,7 +139,7 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     default MenuBuilder maxPages(@NotNull final Function<Player, Integer> pages) {
-        return onRender((player, menu) -> menu.addState(player, Page.MAX_PAGE_KEY, pages.apply(player)));
+        return onRender((player, menu) -> menu.setState(player, Page.MAX_PAGE_KEY, pages.apply(player)));
     }
 
     /**

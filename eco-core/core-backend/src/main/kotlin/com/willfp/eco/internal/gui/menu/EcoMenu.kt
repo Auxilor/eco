@@ -110,7 +110,7 @@ class EcoMenu(
         this.handle(player, this@EcoMenu, event as T)
     }
 
-    override fun addState(player: Player, key: String, value: Any?) {
+    override fun setState(player: Player, key: String, value: Any?) {
         val inventory = player.renderedInventory ?: return
         inventory.state[key] = value
     }

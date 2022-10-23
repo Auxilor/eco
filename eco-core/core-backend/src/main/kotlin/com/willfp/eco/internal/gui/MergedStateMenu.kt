@@ -11,8 +11,8 @@ class MergedStateMenu(
         return base.getState(player) + additional.getState(player)
     }
 
-    override fun addState(player: Player, key: String, value: Any?) {
-        base.addState(player, key, value)
+    override fun setState(player: Player, key: String, value: Any?) {
+        base.setState(player, key, value)
     }
 
     override fun clearState(player: Player) {
