@@ -4,9 +4,9 @@ package com.willfp.eco.core.gui
 
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
-import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.menu.MenuEvent
 import com.willfp.eco.core.gui.menu.MenuEventHandler
+import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.page.Page
 import com.willfp.eco.core.gui.page.PageBuilder
 import com.willfp.eco.core.gui.slot.Slot

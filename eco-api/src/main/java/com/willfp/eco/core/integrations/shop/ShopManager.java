@@ -1,10 +1,7 @@
 package com.willfp.eco.core.integrations.shop;
 
-import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -11,7 +11,11 @@ import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.apache.commons.lang.Validate
 import org.bukkit.Location
 import org.bukkit.block.Block
-import org.bukkit.entity.*
+import org.bukkit.entity.Animals
+import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Monster
+import org.bukkit.entity.Player
 
 class AntigriefWorldGuard : AntigriefIntegration {
     override fun canBreakBlock(

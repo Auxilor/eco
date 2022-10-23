@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.integrations.placeholder
 
-import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.entity.Player
