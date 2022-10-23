@@ -5,10 +5,14 @@ import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.price.impl.PriceEconomy;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
+import com.willfp.eco.core.price.impl.PriceWithDisplayText;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
+import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,7 +47,7 @@ public final class Prices {
      */
     @NotNull
     public static Price lookup(@NotNull final String key) {
-        String[] split = key.split(" ");
+        String[] split = StringUtils.parseTokens(key);
 
         if (split.length == 0) {
             return new PriceFree();
@@ -61,7 +65,23 @@ public final class Prices {
             return new PriceEconomy(value);
         }
 
-        String name = String.join(" ", Arrays.copyOfRange(split, 1, split.length));
+        /*
+        Janky 'arg parser' solution.
+         */
+        List<String> nameList = new ArrayList<>();
+        String displayText = null;
+
+        for (String arg : Arrays.copyOfRange(split, 1, split.length)) {
+            if (arg.startsWith("display:")) {
+                displayText = StringUtils.removePrefix(arg, "display:");
+            } else {
+                nameList.add(arg);
+            }
+        }
+
+        String name = String.join(" ", nameList);
+
+        Price price;
 
         PriceFactory factory = FACTORIES.get(name.toLowerCase());
 
@@ -72,10 +92,16 @@ public final class Prices {
                 return new PriceFree();
             }
 
-            return new PriceItem((int) Math.round(value), item);
+            price = new PriceItem((int) Math.round(value), item);
+        } else {
+            price = factory.create(value);
         }
 
-        return factory.create(value);
+        if (displayText == null) {
+            return price;
+        } else {
+            return new PriceWithDisplayText(price, displayText);
+        }
     }
 
     private Prices() {

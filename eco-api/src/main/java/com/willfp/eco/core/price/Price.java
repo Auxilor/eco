@@ -23,4 +23,13 @@ public interface Price {
      * @param player The player.
      */
     void pay(@NotNull Player player);
+
+    /**
+     * Get the text to be displayed for this price.
+     *
+     * @return The display text.
+     */
+    default String getDisplayText() {
+        return "Set display text with display:<text>";
+    }
 }
