@@ -153,6 +153,31 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     private final ProxyFactory proxyFactory;
 
     /**
+     * The tasks to run on enable.
+     */
+    private final List<Runnable> onEnable = new ArrayList<>();
+
+    /**
+     * The tasks to run on disable.
+     */
+    private final List<Runnable> onDisable = new ArrayList<>();
+
+    /**
+     * The tasks to run on reload.
+     */
+    private final List<Runnable> onReload = new ArrayList<>();
+
+    /**
+     * The tasks to run on load.
+     */
+    private final List<Runnable> onLoad = new ArrayList<>();
+
+    /**
+     * The tasks to run after load.
+     */
+    private final List<Runnable> afterLoad = new ArrayList<>();
+
+    /**
      * Create a new plugin.
      * <p>
      * Will read from eco.yml (like plugin.yml) to fetch values that would otherwise be passed
@@ -414,8 +439,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         }
 
         this.handleEnable();
+        this.onEnable.forEach(Runnable::run);
 
         this.getLogger().info("");
+    }
+
+    /**
+     * Add new task to run on enable.
+     *
+     * @param task The task.
+     */
+    public final void onEnable(@NotNull final Runnable task) {
+        this.onEnable.add(task);
     }
 
     /**
@@ -429,6 +464,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getScheduler().cancelAll();
 
         this.handleDisable();
+        this.onDisable.forEach(Runnable::run);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().unloadExtensions();
@@ -439,6 +475,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     }
 
     /**
+     * Add new task to run on disable.
+     *
+     * @param task The task.
+     */
+    public final void onDisable(@NotNull final Runnable task) {
+        this.onDisable.add(task);
+    }
+
+    /**
      * Default code to be executed on plugin load.
      */
     @Override
@@ -446,6 +491,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         super.onLoad();
 
         this.handleLoad();
+        this.onLoad.forEach(Runnable::run);
+    }
+
+    /**
+     * Add new task to run on load.
+     *
+     * @param task The task.
+     */
+    public final void onLoad(@NotNull final Runnable task) {
+        this.onLoad.add(task);
     }
 
     /**
@@ -478,6 +533,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         }
 
         this.handleAfterLoad();
+        this.afterLoad.forEach(Runnable::run);
 
         this.reload();
 
@@ -486,6 +542,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         }
 
         this.getLogger().info("Loaded " + this.color + this.getName());
+    }
+
+    /**
+     * Add new task to run after load.
+     *
+     * @param task The task.
+     */
+    public final void afterLoad(@NotNull final Runnable task) {
+        this.afterLoad.add(task);
     }
 
     /**
@@ -499,10 +564,20 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
         this.handleReload();
+        this.onReload.forEach(Runnable::run);
 
         for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
             extension.handleReload();
         }
+    }
+
+    /**
+     * Add new task to run on enable.
+     *
+     * @param task The task.
+     */
+    public final void onReload(@NotNull final Runnable task) {
+        this.onReload.add(task);
     }
 
     /**
