@@ -1,19 +1,17 @@
 package com.willfp.eco.core.config;
 
-import com.willfp.eco.core.config.interfaces.Config;
-import com.willfp.eco.core.config.wrapper.ConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Builder for configs to create them programmatically.
  */
-public class BuildableConfig extends ConfigWrapper<Config> {
+public class BuildableConfig extends GenericConfig {
     /**
      * Create a new empty config builder.
      */
     public BuildableConfig() {
-        super(Configs.empty());
+
     }
 
     /**

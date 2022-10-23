@@ -3,13 +3,12 @@
 package com.willfp.eco.core.config
 
 import com.willfp.eco.core.config.interfaces.Config
-import com.willfp.eco.core.config.wrapper.ConfigWrapper
 import org.bukkit.configuration.ConfigurationSection
 import java.io.File
 import java.io.InputStream
 
 /** Helper class to create configs with a kotlin DSL. */
-class DSLConfig internal constructor(type: ConfigType) : ConfigWrapper<Config>(Configs.empty(type)) {
+class DSLConfig internal constructor(type: ConfigType) : GenericConfig(type) {
     /**
      * Map a key to a value.
      *
