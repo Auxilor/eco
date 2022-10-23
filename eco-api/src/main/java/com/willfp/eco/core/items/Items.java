@@ -576,9 +576,19 @@ public final class Items {
         for (Material material : Material.values()) {
             FRIENDLY_MATERIAL_NAMES.put(material.name().toLowerCase(), material);
 
-            String alt = material.name().toLowerCase().replace("_", "");
-            if (!FRIENDLY_MATERIAL_NAMES.containsKey(alt)) {
-                FRIENDLY_MATERIAL_NAMES.put(alt, material);
+            String oneWord = material.name().toLowerCase().replace("_", "");
+            if (!FRIENDLY_MATERIAL_NAMES.containsKey(oneWord)) {
+                FRIENDLY_MATERIAL_NAMES.put(oneWord, material);
+            }
+
+            String plural = material.name().toLowerCase() + "s";
+            if (!FRIENDLY_MATERIAL_NAMES.containsKey(plural)) {
+                FRIENDLY_MATERIAL_NAMES.put(plural, material);
+            }
+
+            String oneWordPlural = oneWord + "s";
+            if (!FRIENDLY_MATERIAL_NAMES.containsKey(oneWordPlural)) {
+                FRIENDLY_MATERIAL_NAMES.put(oneWordPlural, material);
             }
         }
     }
