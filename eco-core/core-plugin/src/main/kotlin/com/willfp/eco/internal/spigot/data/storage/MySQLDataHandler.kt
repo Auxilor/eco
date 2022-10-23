@@ -3,8 +3,8 @@ package com.willfp.eco.internal.spigot.data.storage
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.google.common.util.concurrent.ThreadFactoryBuilder
 import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.TransientConfig
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.config.readConfig
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
@@ -130,8 +130,7 @@ class MySQLDataHandler(
             row.getOrNull(dataColumn) ?: "{}"
         }
 
-
-        return TransientConfig(plaintext, ConfigType.JSON)
+        return readConfig(plaintext, ConfigType.JSON)
     }
 
     private fun setData(uuid: UUID, config: Config) {

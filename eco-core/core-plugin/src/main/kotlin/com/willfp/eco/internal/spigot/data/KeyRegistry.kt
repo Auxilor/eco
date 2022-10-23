@@ -48,8 +48,4 @@ object KeyRegistry {
             else -> throw NullPointerException("Null value found!")
         }
     }
-
-    fun getKeyFrom(namespacedKey: NamespacedKey): PersistentDataKey<*>? {
-        return registry[namespacedKey]
-    }
 }

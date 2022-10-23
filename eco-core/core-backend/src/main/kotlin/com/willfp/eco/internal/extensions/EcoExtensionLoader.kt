@@ -3,7 +3,7 @@ package com.willfp.eco.internal.extensions
 import com.google.common.collect.ImmutableSet
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.config.TransientConfig
+import com.willfp.eco.core.config.toConfig
 import com.willfp.eco.core.extensions.Extension
 import com.willfp.eco.core.extensions.ExtensionLoader
 import com.willfp.eco.core.extensions.ExtensionMetadata
@@ -48,7 +48,7 @@ class EcoExtensionLoader(
         val ymlIn = classLoader.getResourceAsStream("extension.yml")
             ?: throw MalformedExtensionException("No extension.yml found in " + extensionJar.name)
 
-        val extensionYml = TransientConfig(YamlConfiguration.loadConfiguration(InputStreamReader(ymlIn)))
+        val extensionYml = YamlConfiguration.loadConfiguration(InputStreamReader(ymlIn)).toConfig()
 
         val mainClass = extensionYml.getStringOrNull("main")
         var name = extensionYml.getStringOrNull("name")

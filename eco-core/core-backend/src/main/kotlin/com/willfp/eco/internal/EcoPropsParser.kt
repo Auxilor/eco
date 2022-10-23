@@ -2,8 +2,8 @@ package com.willfp.eco.internal
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginProps
-import com.willfp.eco.core.config.TransientConfig
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.config.readConfig
 
 object EcoPropsParser : PluginProps.PropsParser<Config> {
     override fun parseFrom(config: Config): PluginProps {
@@ -28,7 +28,7 @@ object EcoPropsParser : PluginProps.PropsParser<Config> {
         }
 
         return PluginProps.parse(
-            TransientConfig(plugin.getResourceAsStream("/eco.yml")),
+            plugin.getResourceAsStream("/eco.yml").readConfig(),
             Config::class.java
         )
     }

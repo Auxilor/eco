@@ -20,7 +20,10 @@ import java.util.Map;
  * Config that exists purely in the code, not linked to any file.
  * <p>
  * Use for inline configs to move data around or to add subsections to other configs.
+ *
+ * @deprecated Poorly named class, makes the config system seem needlessly complicated.
  */
+@Deprecated(since = "6.44.0", forRemoval = true)
 public class TransientConfig extends ConfigWrapper<Config> {
     /**
      * @param config The ConfigurationSection handle.

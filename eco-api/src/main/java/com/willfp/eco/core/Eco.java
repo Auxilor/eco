@@ -336,15 +336,6 @@ public interface Eco {
     Set<PersistentDataKey<?>> getRegisteredPersistentDataKeys();
 
     /**
-     * Get persistent data key from namespaced key.
-     *
-     * @param namespacedKey The key.
-     * @return The key, or null if not found.
-     */
-    @Nullable
-    PersistentDataKey<?> getPersistentDataKeyFrom(@NotNull NamespacedKey namespacedKey);
-
-    /**
      * Load a player profile.
      *
      * @param uuid The UUID.
@@ -367,24 +358,6 @@ public interface Eco {
      * @param uuid The uuid.
      */
     void unloadPlayerProfile(@NotNull UUID uuid);
-
-    /**
-     * Save keys for a player.
-     * <p>
-     * Can run async if using MySQL.
-     *
-     * @param uuid The uuid.
-     * @param keys The keys.
-     */
-    void savePersistentDataKeysFor(@NotNull UUID uuid,
-                                   @NotNull Set<PersistentDataKey<?>> keys);
-
-    /**
-     * Commit all changes to the file.
-     * <p>
-     * Does nothing if using MySQL.
-     */
-    void saveAllProfiles();
 
     /**
      * Create dummy entity - never spawned, exists purely in code.

@@ -38,8 +38,8 @@ import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.DataYml
-import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.KeyRegistry
+import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.evaluateExpression
@@ -169,9 +169,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createDropQueue(player: Player) = if (this.configYml.getBool("use-fast-collated-drops"))
         EcoFastCollatedDropQueue(player) else EcoDropQueue(player)
 
-    override fun getPersistentDataKeyFrom(namespacedKey: NamespacedKey) =
-        KeyRegistry.getKeyFrom(namespacedKey)
-
     override fun getRegisteredPersistentDataKeys() =
         KeyRegistry.getRegisteredKeys()
 
@@ -237,12 +234,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.load(uuid)
-
-    override fun saveAllProfiles() =
-        profileHandler.save()
-
-    override fun savePersistentDataKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) =
-        profileHandler.saveKeysFor(uuid, keys)
 
     override fun unloadPlayerProfile(uuid: UUID) =
         profileHandler.unloadPlayer(uuid)

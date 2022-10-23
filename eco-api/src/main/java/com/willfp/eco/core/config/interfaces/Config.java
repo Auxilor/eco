@@ -2,7 +2,7 @@ package com.willfp.eco.core.config.interfaces;
 
 import com.willfp.eco.core.config.BuildableConfig;
 import com.willfp.eco.core.config.ConfigType;
-import com.willfp.eco.core.config.TransientConfig;
+import com.willfp.eco.core.config.Configs;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
@@ -103,7 +103,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      */
     @NotNull
     default Config getSubsection(@NotNull String path) {
-        return Objects.requireNonNullElse(getSubsectionOrNull(path), new TransientConfig());
+        return Objects.requireNonNullElse(getSubsectionOrNull(path), Configs.empty());
     }
 
     /**
