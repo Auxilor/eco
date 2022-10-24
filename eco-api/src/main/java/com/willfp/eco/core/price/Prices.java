@@ -8,11 +8,9 @@ import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.util.NumberUtils;
-import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,62 +31,6 @@ public final class Prices {
     public static void registerPriceFactory(@NotNull final PriceFactory factory) {
         for (String name : factory.getNames()) {
             FACTORIES.put(name.toLowerCase(), factory);
-        }
-    }
-
-    /**
-     * Lookup a price from a string.
-     * <p>
-     * A price string should look like {@code 5000}, {@code 2000 levels},
-     * {@code 200 * %level% souls}, {@code 200 crystals}, etc.
-     * <p>
-     * This does not support items as price names.
-     *
-     * @param key The key.
-     * @return The price, or {@link PriceFree} if invalid.
-     */
-    @NotNull
-    public static Price lookup(@NotNull final String key) {
-        return lookup(key, MathContext.EMPTY);
-    }
-
-    /**
-     * Lookup a price from a string.
-     * <p>
-     * A price string should look like {@code 5000}, {@code 2000 levels},
-     * {@code 200 souls}, {@code 200 crystals}, etc.
-     * <p>
-     * This does not support items as price names.
-     *
-     * @param key     The key.
-     * @param context The context to do math in.
-     * @return The price, or {@link PriceFree} if invalid.
-     */
-    @NotNull
-    public static Price lookup(@NotNull final String key,
-                               @NotNull final MathContext context) {
-        String[] args = StringUtils.parseTokens(key);
-
-        if (args.length == 0) {
-            return new PriceFree();
-        }
-
-        if (args.length == 1) {
-            return create(args[0], null, context);
-        }
-
-        String exprWithName = String.join(" ", Arrays.copyOfRange(args, 0, args.length - 1));
-        String priceName = args[args.length - 1];
-
-        String exprWithoutName = String.join(" ", args);
-
-        Price withName = create(exprWithName, priceName, context);
-        Price withoutName = create(exprWithoutName, null, context);
-
-        if (withoutName instanceof PriceFree) {
-            return withName;
-        } else {
-            return withoutName;
         }
     }
 
