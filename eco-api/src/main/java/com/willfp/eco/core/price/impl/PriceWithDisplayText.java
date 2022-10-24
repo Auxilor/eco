@@ -19,7 +19,10 @@ public final class PriceWithDisplayText implements Price {
     private final String displayText;
 
     /**
-     * Create a new free price.
+     * Create a new displayed price.
+     *
+     * @param delegate    The delegate price.
+     * @param displayText The display text to show.
      */
     public PriceWithDisplayText(@NotNull final Price delegate,
                                 @NotNull final String displayText) {

@@ -76,6 +76,7 @@ public final class Configs {
      * Load a config from a file.
      *
      * @param file The file.
+     * @param type The type.
      * @return The config.
      */
     @NotNull

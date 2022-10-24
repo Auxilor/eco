@@ -25,6 +25,7 @@ public final class PriceItem implements Price {
      * Create a new economy-based price.
      *
      * @param amount The amount.
+     * @param item   The item.
      */
     public PriceItem(final int amount,
                      @NotNull final TestableItem item) {
