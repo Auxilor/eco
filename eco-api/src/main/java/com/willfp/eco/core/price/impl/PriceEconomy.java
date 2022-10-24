@@ -12,7 +12,7 @@ public final class PriceEconomy implements Price {
     /**
      * The value of the price.
      */
-    private final double value;
+    private double value;
 
     /**
      * Create a new economy-based price.
@@ -31,5 +31,15 @@ public final class PriceEconomy implements Price {
     @Override
     public void pay(@NotNull Player player) {
         EconomyManager.removeMoney(player, value);
+    }
+
+    @Override
+    public double getValue() {
+        return value;
+    }
+
+    @Override
+    public void setValue(final double value) {
+        this.value = value;
     }
 }

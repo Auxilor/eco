@@ -22,8 +22,7 @@ import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
-import com.willfp.eco.core.placeholder.AdditionalPlayer;
-import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import com.willfp.eco.core.placeholder.MathContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -41,7 +40,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -484,16 +482,12 @@ public interface Eco {
     /**
      * Evaluate an expression.
      *
-     * @param expression        The expression.
-     * @param player            The player.
-     * @param injectable        The injectable placeholders.
-     * @param additionalPlayers The additional players.
+     * @param expression The expression.
+     * @param context    The context.
      * @return The value of the expression, or zero if invalid.
      */
     double evaluate(@NotNull String expression,
-                    @Nullable Player player,
-                    @NotNull PlaceholderInjectable injectable,
-                    @NotNull Collection<AdditionalPlayer> additionalPlayers);
+                    @NotNull MathContext context);
 
     /**
      * Get the menu a player currently has open.

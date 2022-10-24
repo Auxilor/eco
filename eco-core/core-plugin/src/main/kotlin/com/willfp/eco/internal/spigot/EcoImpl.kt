@@ -11,8 +11,7 @@ import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.placeholder.AdditionalPlayer
-import com.willfp.eco.core.placeholder.PlaceholderInjectable
+import com.willfp.eco.core.placeholder.MathContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.config.EcoConfigHandler
 import com.willfp.eco.internal.config.EcoConfigSection
@@ -278,12 +277,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getTPS() =
         getProxy(TPSProxy::class.java).getTPS()
 
-    override fun evaluate(
-        expression: String,
-        player: Player?,
-        injectable: PlaceholderInjectable,
-        additionalPlayers: MutableCollection<AdditionalPlayer>
-    ) = evaluateExpression(expression, player, injectable, additionalPlayers)
+    override fun evaluate(expression: String, context: MathContext) =
+        evaluateExpression(expression, context)
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu

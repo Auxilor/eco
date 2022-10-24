@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.AdditionalPlayer
+import com.willfp.eco.core.placeholder.MathContext
 import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import org.bukkit.entity.Player
 import redempt.crunch.CompiledExpression
@@ -25,7 +26,15 @@ private val max = Function("max", 2) {
     max(it[0], it[1])
 }
 
-fun evaluateExpression(expression: String, player: Player?, context: PlaceholderInjectable, additional: Collection<AdditionalPlayer>): Double {
+fun evaluateExpression(expression: String, context: MathContext) =
+    evaluateExpression(expression, context.player, context.injectableContext, context.additionalPlayers)
+
+private fun evaluateExpression(
+    expression: String,
+    player: Player?,
+    context: PlaceholderInjectable,
+    additional: Collection<AdditionalPlayer>
+): Double {
     val placeholderValues = PlaceholderManager.findPlaceholdersIn(expression)
         .map { PlaceholderManager.translatePlaceholders(it, player, context, additional) }
         .map { runCatching { FastNumberParsing.parseDouble(it) }.getOrDefault(0.0) }

@@ -44,4 +44,14 @@ public final class PriceWithDisplayText implements Price {
     public String getDisplayText() {
         return displayText;
     }
+
+    @Override
+    public double getValue() {
+        return delegate.getValue();
+    }
+
+    @Override
+    public void setValue(final double value) {
+        delegate.setValue(value);
+    }
 }

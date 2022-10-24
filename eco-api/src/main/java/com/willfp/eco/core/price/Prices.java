@@ -2,11 +2,13 @@ package com.willfp.eco.core.price;
 
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.core.placeholder.MathContext;
 import com.willfp.eco.core.price.impl.PriceEconomy;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
 import com.willfp.eco.core.price.impl.PriceWithDisplayText;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
+import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +49,22 @@ public final class Prices {
      */
     @NotNull
     public static Price lookup(@NotNull final String key) {
+        return lookup(key, MathContext.EMPTY);
+    }
+
+    /**
+     * Lookup a price from a string.
+     * <p>
+     * A price string should look like {@code 5000}, {@code 2000 levels},
+     * {@code 200 g_souls}, {@code 200 gold}, etc.
+     *
+     * @param key     The key.
+     * @param context The context to do math in.
+     * @return The price, or {@link PriceFree} if invalid.
+     */
+    @NotNull
+    public static Price lookup(@NotNull final String key,
+                               @NotNull final MathContext context) {
         String[] args = StringUtils.parseTokens(key.toLowerCase());
 
         if (args.length == 0) {
@@ -56,7 +74,10 @@ public final class Prices {
         double value;
 
         try {
-            value = Double.parseDouble(args[0]);
+            value = NumberUtils.evaluateExpression(
+                    args[0],
+                    context
+            );
         } catch (NumberFormatException e) {
             value = 0.0;
         }

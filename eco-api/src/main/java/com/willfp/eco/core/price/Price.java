@@ -32,4 +32,22 @@ public interface Price {
     default String getDisplayText() {
         return "Set display text with display:<text>";
     }
+
+    /**
+     * If the price is backed by a value, get it here.
+     *
+     * @return The value.
+     */
+    default double getValue() {
+        return 0;
+    }
+
+    /**
+     * If the price is backed by a value, set it here.
+     *
+     * @param value The value.
+     */
+    default void setValue(final double value) {
+        // Override when needed.
+    }
 }

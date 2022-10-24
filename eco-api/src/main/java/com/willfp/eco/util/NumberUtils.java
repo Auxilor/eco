@@ -1,8 +1,10 @@
 package com.willfp.eco.util;
 
 import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
+import com.willfp.eco.core.placeholder.MathContext;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.bukkit.entity.Player;
@@ -12,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -240,7 +241,7 @@ public final class NumberUtils {
      * @return The value of the expression, or zero if invalid.
      */
     public static double evaluateExpression(@NotNull final String expression) {
-        return evaluateExpression(expression, null);
+        return evaluateExpression(expression, MathContext.EMPTY);
     }
 
     /**
@@ -252,18 +253,7 @@ public final class NumberUtils {
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player) {
-        return evaluateExpression(expression, player, new PlaceholderInjectable() {
-            @Override
-            public void clearInjectedPlaceholders() {
-                // Nothing.
-            }
-
-            @Override
-            public @NotNull
-            List<InjectablePlaceholder> getPlaceholderInjections() {
-                return Collections.emptyList();
-            }
-        });
+        return evaluateExpression(expression, player, PlaceholderManager.EMPTY_INJECTABLE);
     }
 
     /**
@@ -323,7 +313,23 @@ public final class NumberUtils {
                                             @Nullable final Player player,
                                             @NotNull final PlaceholderInjectable context,
                                             @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
-        return Eco.get().evaluate(expression, player, context, additionalPlayers);
+        return Eco.get().evaluate(expression, new MathContext(
+                context,
+                player,
+                additionalPlayers
+        ));
+    }
+
+    /**
+     * Evaluate an expression with respect to a player (for placeholders).
+     *
+     * @param expression The expression.
+     * @param context    The math context.
+     * @return The value of the expression, or zero if invalid.
+     */
+    public static double evaluateExpression(@NotNull final String expression,
+                                            @NotNull final MathContext context) {
+        return Eco.get().evaluate(expression, context);
     }
 
     private NumberUtils() {

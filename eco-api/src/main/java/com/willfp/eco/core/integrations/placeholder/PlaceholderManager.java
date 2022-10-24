@@ -52,9 +52,14 @@ public final class PlaceholderManager {
             .build(key -> key.entry.getValue(key.player));
 
     /**
+     * The default PlaceholderAPI pattern; brought in for compatibility.
+     */
+    private static final Pattern PATTERN = Pattern.compile("[%]([^% ]+)[%]");
+
+    /**
      * Empty injectable object.
      */
-    private static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
+    public static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
         @Override
         public void clearInjectedPlaceholders() {
             // Do nothing.
@@ -66,11 +71,6 @@ public final class PlaceholderManager {
             return Collections.emptyList();
         }
     };
-
-    /**
-     * The default PlaceholderAPI pattern; brought in for compatibility.
-     */
-    private static final Pattern PATTERN = Pattern.compile("[%]([^% ]+)[%]");
 
     /**
      * Register a new placeholder integration.
