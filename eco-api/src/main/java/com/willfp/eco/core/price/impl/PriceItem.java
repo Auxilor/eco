@@ -33,6 +33,15 @@ public final class PriceItem implements Price {
         this.item = item;
     }
 
+    /**
+     * Get the item.
+     *
+     * @return The item.
+     */
+    public TestableItem getItem() {
+        return item;
+    }
+
     @Override
     public boolean canAfford(@NotNull Player player) {
         if (amountToRemove == 0) {

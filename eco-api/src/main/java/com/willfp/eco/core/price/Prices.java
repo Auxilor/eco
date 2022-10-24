@@ -8,9 +8,11 @@ import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.util.NumberUtils;
+import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,7 +40,9 @@ public final class Prices {
      * Lookup a price from a string.
      * <p>
      * A price string should look like {@code 5000}, {@code 2000 levels},
-     * {@code 200 g_souls}, {@code 200 pots of gold}, etc.
+     * {@code 200 * %level% souls}, {@code 200 crystals}, etc.
+     * <p>
+     * This does not support items as price names.
      *
      * @param key The key.
      * @return The price, or {@link PriceFree} if invalid.
@@ -52,7 +56,9 @@ public final class Prices {
      * Lookup a price from a string.
      * <p>
      * A price string should look like {@code 5000}, {@code 2000 levels},
-     * {@code 200 g_souls}, {@code 200 gold}, etc.
+     * {@code 200 souls}, {@code 200 crystals}, etc.
+     * <p>
+     * This does not support items as price names.
      *
      * @param key     The key.
      * @param context The context to do math in.
@@ -61,56 +67,90 @@ public final class Prices {
     @NotNull
     public static Price lookup(@NotNull final String key,
                                @NotNull final MathContext context) {
-        List<String> args = List.of(key.split(" "));
+        String[] args = StringUtils.parseTokens(key);
 
-        if (args.isEmpty()) {
+        if (args.length == 0) {
             return new PriceFree();
         }
 
-        // Step through arguments parsing the whole thing as an expression until it hits zero, and we've reached the point name.
-        Double value = null;
-        String priceName = null;
-
-        for (int i = 0; i < args.size(); i++) {
-            double valueUpTo = NumberUtils.evaluateExpression(
-                    String.join(" ", args.subList(0, i)),
-                    context
-            );
-
-            if (valueUpTo <= 0) {
-                break;
-            }
-
-            value = valueUpTo;
-            if (i == args.size() - 1) {
-                priceName = args.get(args.size() - 1);
-            }
+        if (args.length == 1) {
+            return create(args[0], null, context);
         }
 
-        // Value is null if there was no valid value
-        if (value == null) {
+        String exprWithName = String.join(" ", Arrays.copyOfRange(args, 0, args.length - 1));
+        String priceName = args[args.length - 1];
+
+        String exprWithoutName = String.join(" ", args);
+
+        Price withName = create(exprWithName, priceName, context);
+        Price withoutName = create(exprWithoutName, null, context);
+
+        if (withoutName instanceof PriceFree) {
+            return withName;
+        } else {
+            return withoutName;
+        }
+    }
+
+    /**
+     * Create price from an expression (representing the value),
+     * and a price name.
+     * <p>
+     * Supports items as price names.
+     *
+     * @param expression The expression for the value.
+     * @param priceName  The price name.
+     * @return The price, or free if invalid.
+     */
+    @NotNull
+    public static Price create(@NotNull final String expression,
+                               @Nullable final String priceName) {
+        return create(expression, priceName, MathContext.EMPTY);
+    }
+
+    /**
+     * Create price from an expression (representing the value),
+     * and a price name. Uses a context to parse the expression.
+     * <p>
+     * Supports items as price names.
+     *
+     * @param expression The expression for the value.
+     * @param priceName  The price name.
+     * @param context    The math context to parse the expression.
+     * @return The price, or free if invalid.
+     */
+    @NotNull
+    public static Price create(@NotNull final String expression,
+                               @Nullable final String priceName,
+                               @NotNull final MathContext context) {
+        double value = NumberUtils.evaluateExpression(
+                expression,
+                context
+        );
+
+        if (value <= 0) {
             return new PriceFree();
         }
 
-        // If price wasn't specified, default to economy
+        // Default to economy
         if (priceName == null) {
             return new PriceEconomy(value);
-        } else {
-            // Find price factory
-            PriceFactory factory = FACTORIES.get(priceName);
+        }
 
-            // If no price factory, default to item price
-            if (factory == null) {
-                TestableItem item = Items.lookup(priceName);
+        // Find price factory
+        PriceFactory factory = FACTORIES.get(priceName);
 
-                if (item instanceof EmptyTestableItem) {
-                    return new PriceFree();
-                }
+        // If no price factory, default to item price
+        if (factory == null) {
+            TestableItem item = Items.lookup(priceName);
 
-                return new PriceItem((int) Math.round(value), item);
-            } else {
-                return factory.create(value);
+            if (item instanceof EmptyTestableItem) {
+                return new PriceFree();
             }
+
+            return new PriceItem((int) Math.round(value), item);
+        } else {
+            return factory.create(value);
         }
     }
 
