@@ -2,6 +2,7 @@ package com.willfp.eco.core.price.impl;
 
 import com.willfp.eco.core.integrations.economy.EconomyManager;
 import com.willfp.eco.core.price.Price;
+import com.willfp.eco.util.NumberUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +32,11 @@ public final class PriceEconomy implements Price {
     @Override
     public void pay(@NotNull Player player) {
         EconomyManager.removeMoney(player, value);
+    }
+
+    @Override
+    public String getDisplayText() {
+        return NumberUtils.format(value);
     }
 
     @Override
