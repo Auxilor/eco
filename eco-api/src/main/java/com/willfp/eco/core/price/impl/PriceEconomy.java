@@ -36,7 +36,7 @@ public final class PriceEconomy implements Price {
 
     @Override
     public String getDisplayText() {
-        return NumberUtils.format(value);
+        return "$" + NumberUtils.format(value);
     }
 
     @Override
