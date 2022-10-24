@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.AdditionalPlayer
-import com.willfp.eco.core.placeholder.MathContext
+import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import org.bukkit.entity.Player
 import redempt.crunch.CompiledExpression

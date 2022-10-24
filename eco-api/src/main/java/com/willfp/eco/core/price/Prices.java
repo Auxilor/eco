@@ -2,7 +2,7 @@ package com.willfp.eco.core.price;
 
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
-import com.willfp.eco.core.placeholder.MathContext;
+import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.price.impl.PriceEconomy;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;

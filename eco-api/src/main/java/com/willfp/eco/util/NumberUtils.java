@@ -4,7 +4,7 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
-import com.willfp.eco.core.placeholder.MathContext;
+import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.bukkit.entity.Player;

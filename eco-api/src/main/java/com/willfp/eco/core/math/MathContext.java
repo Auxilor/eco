@@ -1,6 +1,8 @@
-package com.willfp.eco.core.placeholder;
+package com.willfp.eco.core.math;
 
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.placeholder.AdditionalPlayer;
+import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

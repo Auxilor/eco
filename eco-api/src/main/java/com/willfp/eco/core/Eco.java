@@ -22,7 +22,7 @@ import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
-import com.willfp.eco.core.placeholder.MathContext;
+import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;

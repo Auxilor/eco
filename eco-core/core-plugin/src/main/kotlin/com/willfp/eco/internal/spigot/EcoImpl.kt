@@ -11,7 +11,7 @@ import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.placeholder.MathContext
+import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.config.EcoConfigHandler
 import com.willfp.eco.internal.config.EcoConfigSection
