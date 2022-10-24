@@ -17,6 +17,7 @@ import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
 import com.willfp.eco.internal.entities.EntityArgParserAdult
 import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
@@ -46,6 +47,7 @@ import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
+import com.willfp.eco.internal.particle.ParticleFactoryRGB
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
@@ -168,6 +170,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Prices.registerPriceFactory(PriceFactoryEconomy)
         Prices.registerPriceFactory(PriceFactoryXPLevels)
         Prices.registerPriceFactory(PriceFactoryXP)
+
+        Particles.registerParticleFactory(ParticleFactoryRGB)
 
         CraftingRecipeListener.registerListener(ComplexInComplex)
         CraftingRecipeListener.registerListener(ComplexInVanilla)

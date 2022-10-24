@@ -47,21 +47,21 @@ public final class Prices {
      */
     @NotNull
     public static Price lookup(@NotNull final String key) {
-        String[] split = StringUtils.parseTokens(key);
+        String[] args = StringUtils.parseTokens(key.toLowerCase());
 
-        if (split.length == 0) {
+        if (args.length == 0) {
             return new PriceFree();
         }
 
         double value;
 
         try {
-            value = Double.parseDouble(split[0]);
+            value = Double.parseDouble(args[0]);
         } catch (NumberFormatException e) {
             value = 0.0;
         }
 
-        if (split.length == 1) {
+        if (args.length == 1) {
             return new PriceEconomy(value);
         }
 
@@ -71,7 +71,7 @@ public final class Prices {
         List<String> nameList = new ArrayList<>();
         String displayText = null;
 
-        for (String arg : Arrays.copyOfRange(split, 1, split.length)) {
+        for (String arg : Arrays.copyOfRange(args, 1, args.length)) {
             if (arg.startsWith("display:")) {
                 displayText = StringUtils.removePrefix(arg, "display:");
             } else {
@@ -83,10 +83,10 @@ public final class Prices {
 
         Price price;
 
-        PriceFactory factory = FACTORIES.get(name.toLowerCase());
+        PriceFactory factory = FACTORIES.get(name);
 
         if (factory == null) {
-            TestableItem item = Items.lookup(name.toLowerCase());
+            TestableItem item = Items.lookup(name);
 
             if (item instanceof EmptyTestableItem) {
                 return new PriceFree();
