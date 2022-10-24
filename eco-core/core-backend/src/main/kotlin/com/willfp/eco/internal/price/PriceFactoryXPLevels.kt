@@ -7,12 +7,10 @@ import kotlin.math.roundToInt
 
 object PriceFactoryXPLevels : PriceFactory {
     override fun getNames() = listOf(
-        "levels",
-        "xp levels",
-        "exp levels",
         "l",
-        "xpl",
-        "expl"
+        "levels",
+        "xplevels",
+        "explevels",
     )
 
     override fun create(value: Double): Price = PriceXPLevel(value.roundToInt())
