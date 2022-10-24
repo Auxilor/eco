@@ -24,9 +24,4 @@ public final class PriceFree implements Price {
     public void pay(@NotNull Player player) {
         // Do nothing.
     }
-
-    @Override
-    public String getDisplayText() {
-        return "Free";
-    }
 }

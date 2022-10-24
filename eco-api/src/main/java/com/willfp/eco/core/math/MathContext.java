@@ -30,4 +30,18 @@ public record MathContext(
             null,
             Collections.emptyList()
     );
+
+    /**
+     * Create MathContext of a PlaceholderInjectable context.
+     *
+     * @param injectableContext The PlaceholderInjectable context.
+     * @return The MathContext.
+     */
+    public static MathContext of(@NotNull final PlaceholderInjectable injectableContext) {
+        return new MathContext(
+                injectableContext,
+                null,
+                Collections.emptyList()
+        );
+    }
 }

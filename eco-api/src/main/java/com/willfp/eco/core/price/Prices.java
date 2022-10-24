@@ -6,14 +6,10 @@ import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.price.impl.PriceEconomy;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
-import com.willfp.eco.core.price.impl.PriceWithDisplayText;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.util.NumberUtils;
-import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,63 +61,56 @@ public final class Prices {
     @NotNull
     public static Price lookup(@NotNull final String key,
                                @NotNull final MathContext context) {
-        String[] args = StringUtils.parseTokens(key.toLowerCase());
+        List<String> args = List.of(key.split(" "));
 
-        if (args.length == 0) {
+        if (args.isEmpty()) {
             return new PriceFree();
         }
 
-        double value;
+        // Step through arguments parsing the whole thing as an expression until it hits zero, and we've reached the point name.
+        Double value = null;
+        String priceName = null;
 
-        try {
-            value = NumberUtils.evaluateExpression(
-                    args[0],
+        for (int i = 0; i < args.size(); i++) {
+            double valueUpTo = NumberUtils.evaluateExpression(
+                    String.join(" ", args.subList(0, i)),
                     context
             );
-        } catch (NumberFormatException e) {
-            value = 0.0;
+
+            if (valueUpTo <= 0) {
+                break;
+            }
+
+            value = valueUpTo;
+            if (i == args.size() - 1) {
+                priceName = args.get(args.size() - 1);
+            }
         }
 
-        if (args.length == 1) {
+        // Value is null if there was no valid value
+        if (value == null) {
+            return new PriceFree();
+        }
+
+        // If price wasn't specified, default to economy
+        if (priceName == null) {
             return new PriceEconomy(value);
-        }
+        } else {
+            // Find price factory
+            PriceFactory factory = FACTORIES.get(priceName);
 
-        /*
-        Janky 'arg parser' solution.
-         */
-        List<String> nameList = new ArrayList<>();
-        String displayText = null;
+            // If no price factory, default to item price
+            if (factory == null) {
+                TestableItem item = Items.lookup(priceName);
 
-        for (String arg : Arrays.copyOfRange(args, 1, args.length)) {
-            if (arg.startsWith("display:")) {
-                displayText = StringUtils.removePrefix(arg, "display:");
+                if (item instanceof EmptyTestableItem) {
+                    return new PriceFree();
+                }
+
+                return new PriceItem((int) Math.round(value), item);
             } else {
-                nameList.add(arg);
+                return factory.create(value);
             }
-        }
-
-        String name = String.join(" ", nameList);
-
-        Price price;
-
-        PriceFactory factory = FACTORIES.get(name);
-
-        if (factory == null) {
-            TestableItem item = Items.lookup(name);
-
-            if (item instanceof EmptyTestableItem) {
-                return new PriceFree();
-            }
-
-            price = new PriceItem((int) Math.round(value), item);
-        } else {
-            price = factory.create(value);
-        }
-
-        if (displayText == null) {
-            return price;
-        } else {
-            return new PriceWithDisplayText(price, displayText);
         }
     }
 
