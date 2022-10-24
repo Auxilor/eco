@@ -20,6 +20,9 @@ public record MathContext(
         @Nullable Player player,
         @NotNull Collection<AdditionalPlayer> additionalPlayers
 ) {
+    /**
+     * Empty math context.
+     */
     public static final MathContext EMPTY = new MathContext(
             PlaceholderManager.EMPTY_INJECTABLE,
             null,
