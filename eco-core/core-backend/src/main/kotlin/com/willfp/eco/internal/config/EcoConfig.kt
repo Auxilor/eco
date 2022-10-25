@@ -108,7 +108,7 @@ open class EcoConfig(
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
-        return (get(path) as? Iterable<Config>)
+        return getList<Config>(path)
             ?.map { it.apply { this.addInjectablePlaceholder(injections) } }
             ?.toList()
     }
@@ -122,7 +122,7 @@ open class EcoConfig(
     }
 
     override fun getIntsOrNull(path: String): List<Int>? {
-        return (get(path) as? Iterable<Number>)?.map { it.toInt() }
+        return getList<Number>(path)?.map { it.toInt() }
     }
 
     override fun getBoolOrNull(path: String): Boolean? {
@@ -130,7 +130,7 @@ open class EcoConfig(
     }
 
     override fun getBoolsOrNull(path: String): List<Boolean>? {
-        return (get(path) as? Iterable<Boolean>)?.toList()
+        return getList<Boolean>(path)?.toList()
     }
 
     override fun getStringOrNull(
@@ -154,7 +154,7 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): List<String>? {
-        val strings = (get(path) as? Iterable<*>)
+        val strings = getList<Any?>(path)
             ?.map { it?.toString() ?: "" }
             ?.toMutableList() ?: return null
         if (placeholderInjections.isNotEmpty() && format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
@@ -176,7 +176,7 @@ open class EcoConfig(
     }
 
     override fun getDoublesOrNull(path: String): List<Double>? {
-        return (get(path) as? Iterable<Number>)?.map { it.toDouble() }
+        return getList<Number>(path)?.map { it.toDouble() }
     }
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
@@ -214,5 +214,16 @@ open class EcoConfig(
 
     override fun toString(): String {
         return this.toPlaintext()
+    }
+
+    private inline fun <reified T> getList(path: String): List<T>? {
+        val asIterable = get(path) as? Iterable<*> ?: return null
+        val asList = asIterable.toList()
+
+        if (asList.firstOrNull() !is T?) {
+            return emptyList()
+        }
+
+        return asList as List<T>
     }
 }
