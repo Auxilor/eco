@@ -93,6 +93,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPreve
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefKingdoms
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefPvPManager
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
@@ -284,6 +285,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     AntigriefManager.register(AntigriefCombatLogXV11())
                 }
             },
+            IntegrationLoader("PvPManager") { AntigriefManager.register(AntigriefPvPManager()) },
 
             // Anticheat
             IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
