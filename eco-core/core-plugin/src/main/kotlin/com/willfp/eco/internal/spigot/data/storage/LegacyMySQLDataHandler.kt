@@ -51,6 +51,7 @@ class LegacyMySQLDataHandler(
     plugin: EcoSpigotPlugin,
     handler: ProfileHandler
 ) : DataHandler(HandlerType.LEGACY_MYSQL) {
+    private val database: Database
     private val playerHandler: ImplementedMySQLHandler
     private val serverHandler: ImplementedMySQLHandler
 
@@ -65,7 +66,7 @@ class LegacyMySQLDataHandler(
                 plugin.configYml.getString("mysql.database")
         config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
 
-        Database.connect(HikariDataSource(config))
+        database = Database.connect(HikariDataSource(config))
 
         playerHandler = ImplementedMySQLHandler(
             handler,
@@ -110,180 +111,180 @@ class LegacyMySQLDataHandler(
         playerHandler.initialize()
         serverHandler.initialize()
     }
-}
 
-@Suppress("UNCHECKED_CAST")
-private class ImplementedMySQLHandler(
-    private val handler: ProfileHandler,
-    private val table: UUIDTable,
-    private val plugin: EcoPlugin
-) {
-    private val rows = Caffeine.newBuilder()
-        .expireAfterWrite(3, TimeUnit.SECONDS)
-        .build<UUID, ResultRow>()
+    @Suppress("UNCHECKED_CAST")
+    private inner class ImplementedMySQLHandler(
+        private val handler: ProfileHandler,
+        private val table: UUIDTable,
+        private val plugin: EcoPlugin
+    ) {
+        private val rows = Caffeine.newBuilder()
+            .expireAfterWrite(3, TimeUnit.SECONDS)
+            .build<UUID, ResultRow>()
 
-    private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
-    private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
-    val registeredKeys = mutableSetOf<PersistentDataKey<*>>()
+        private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
+        private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
+        val registeredKeys = mutableSetOf<PersistentDataKey<*>>()
 
-    init {
-        transaction {
-            SchemaUtils.create(table)
+        init {
+            transaction(database) {
+                SchemaUtils.create(table)
+            }
         }
-    }
 
-    fun initialize() {
-        transaction {
-            SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+        fun initialize() {
+            transaction(database) {
+                SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+            }
         }
-    }
 
-    fun ensureKeyRegistration(key: PersistentDataKey<*>) {
-        if (table.columns.any { it.name == key.key.toString() }) {
+        fun ensureKeyRegistration(key: PersistentDataKey<*>) {
+            if (table.columns.any { it.name == key.key.toString() }) {
+                registeredKeys.add(key)
+                return
+            }
+
+            registerColumn(key)
             registeredKeys.add(key)
-            return
         }
 
-        registerColumn(key)
-        registeredKeys.add(key)
-    }
-
-    fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
-        getRow(uuid)
-        doWrite(uuid, key, key.type.constrainSQLTypes(value))
-    }
-
-    private fun doWrite(uuid: UUID, key: PersistentDataKey<*>, constrainedValue: Any) {
-        val column: Column<Any> = getColumn(key) as Column<Any>
-
-        executor.submit {
-            transaction {
-                table.update({ table.id eq uuid }) {
-                    it[column] = constrainedValue
-                }
-            }
-        }
-    }
-
-    fun saveKeysForRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        saveRow(uuid, keys)
-    }
-
-    private fun saveRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
-        executor.submit {
-            transaction {
-                getRow(uuid)
-
-                for (key in keys) {
-                    doWrite(uuid, key, key.type.constrainSQLTypes(profile.read(key)))
-                }
-            }
-        }
-    }
-
-    fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
-        val doRead = Callable<T?> {
-            transaction {
-                val row = getRow(uuid)
-                val column = getColumn(key)
-                val raw = row[column]
-                key.type.fromConstrained(raw)
-            }
+        fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+            getRow(uuid)
+            doWrite(uuid, key, key.type.constrainSQLTypes(value))
         }
 
-        ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
+        private fun doWrite(uuid: UUID, key: PersistentDataKey<*>, constrainedValue: Any) {
+            val column: Column<Any> = getColumn(key) as Column<Any>
 
-        doRead.call()
-
-        return if (Eco.get().ecoPlugin.configYml.getBool("mysql.async-reads")) {
-            executor.submit(doRead).get()
-        } else {
-            doRead.call()
-        }
-    }
-
-    private fun <T> registerColumn(key: PersistentDataKey<T>) {
-        try {
-            transaction {
-                try {
-                    table.apply {
-                        if (table.columns.any { it.name == key.key.toString() }) {
-                            return@apply
-                        }
-
-                        when (key.type) {
-                            PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
-                                .default(key.defaultValue as Int)
-
-                            PersistentDataKeyType.DOUBLE -> registerColumn<Double>(
-                                key.key.toString(),
-                                DoubleColumnType()
-                            ).default(key.defaultValue as Double)
-
-                            PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(
-                                key.key.toString(),
-                                BooleanColumnType()
-                            ).default(key.defaultValue as Boolean)
-
-                            PersistentDataKeyType.STRING -> registerColumn<String>(
-                                key.key.toString(),
-                                VarCharColumnType(512)
-                            ).default(key.defaultValue as String)
-
-                            PersistentDataKeyType.STRING_LIST -> registerColumn<String>(
-                                key.key.toString(),
-                                VarCharColumnType(8192)
-                            ).default(PersistentDataKeyType.STRING_LIST.constrainSQLTypes(key.defaultValue as List<String>) as String)
-
-                            PersistentDataKeyType.CONFIG -> throw IllegalArgumentException(
-                                "Config Persistent Data Keys are not supported by the legacy MySQL handler!"
-                            )
-
-                            else -> throw NullPointerException("Null value found!")
-                        }
+            executor.submit {
+                transaction(database) {
+                    table.update({ table.id eq uuid }) {
+                        it[column] = constrainedValue
                     }
-
-                    SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
-                } catch (e: Exception) {
-                    plugin.logger.info("MySQL Error 1!")
-                    e.printStackTrace()
-                    // What's that? Two enormous exception catches? That's right! This code sucks.
                 }
             }
-        } catch (e: Exception) {
-            plugin.logger.info("MySQL Error 2!")
-            e.printStackTrace()
-            // It might fail. Who cares? This is legacy.
         }
-    }
 
-    private fun getColumn(key: PersistentDataKey<*>): Column<*> {
-        ensureKeyRegistration(key)
+        fun saveKeysForRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+            saveRow(uuid, keys)
+        }
 
-        val name = key.key.toString()
+        private fun saveRow(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
+            val profile = handler.loadGenericProfile(uuid)
 
-        return table.columns.first { it.name == name }
-    }
+            executor.submit {
+                transaction(database) {
+                    getRow(uuid)
 
-    private fun getRow(uuid: UUID): ResultRow {
-        fun select(uuid: UUID): ResultRow? {
-            return transaction {
-                table.select { table.id eq uuid }.limit(1).singleOrNull()
+                    for (key in keys) {
+                        doWrite(uuid, key, key.type.constrainSQLTypes(profile.read(key)))
+                    }
+                }
             }
         }
 
-        return rows.get(uuid) {
-            val row = select(uuid)
+        fun <T> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+            val doRead = Callable<T?> {
+                transaction(database) {
+                    val row = getRow(uuid)
+                    val column = getColumn(key)
+                    val raw = row[column]
+                    key.type.fromConstrained(raw)
+                }
+            }
 
-            return@get if (row != null) {
-                row
+            ensureKeyRegistration(key) // DON'T DELETE THIS LINE! I know it's covered in getColumn, but I need to do it here as well.
+
+            doRead.call()
+
+            return if (Eco.get().ecoPlugin.configYml.getBool("mysql.async-reads")) {
+                executor.submit(doRead).get()
             } else {
-                transaction {
-                    table.insert { it[id] = uuid }
+                doRead.call()
+            }
+        }
+
+        private fun <T> registerColumn(key: PersistentDataKey<T>) {
+            try {
+                transaction(database) {
+                    try {
+                        table.apply {
+                            if (table.columns.any { it.name == key.key.toString() }) {
+                                return@apply
+                            }
+
+                            when (key.type) {
+                                PersistentDataKeyType.INT -> registerColumn<Int>(key.key.toString(), IntegerColumnType())
+                                    .default(key.defaultValue as Int)
+
+                                PersistentDataKeyType.DOUBLE -> registerColumn<Double>(
+                                    key.key.toString(),
+                                    DoubleColumnType()
+                                ).default(key.defaultValue as Double)
+
+                                PersistentDataKeyType.BOOLEAN -> registerColumn<Boolean>(
+                                    key.key.toString(),
+                                    BooleanColumnType()
+                                ).default(key.defaultValue as Boolean)
+
+                                PersistentDataKeyType.STRING -> registerColumn<String>(
+                                    key.key.toString(),
+                                    VarCharColumnType(512)
+                                ).default(key.defaultValue as String)
+
+                                PersistentDataKeyType.STRING_LIST -> registerColumn<String>(
+                                    key.key.toString(),
+                                    VarCharColumnType(8192)
+                                ).default(PersistentDataKeyType.STRING_LIST.constrainSQLTypes(key.defaultValue as List<String>) as String)
+
+                                PersistentDataKeyType.CONFIG -> throw IllegalArgumentException(
+                                    "Config Persistent Data Keys are not supported by the legacy MySQL handler!"
+                                )
+
+                                else -> throw NullPointerException("Null value found!")
+                            }
+                        }
+
+                        SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
+                    } catch (e: Exception) {
+                        plugin.logger.info("MySQL Error 1!")
+                        e.printStackTrace()
+                        // What's that? Two enormous exception catches? That's right! This code sucks.
+                    }
                 }
-                select(uuid)
+            } catch (e: Exception) {
+                plugin.logger.info("MySQL Error 2!")
+                e.printStackTrace()
+                // It might fail. Who cares? This is legacy.
+            }
+        }
+
+        private fun getColumn(key: PersistentDataKey<*>): Column<*> {
+            ensureKeyRegistration(key)
+
+            val name = key.key.toString()
+
+            return table.columns.first { it.name == name }
+        }
+
+        private fun getRow(uuid: UUID): ResultRow {
+            fun select(uuid: UUID): ResultRow? {
+                return transaction(database) {
+                    table.select { table.id eq uuid }.limit(1).singleOrNull()
+                }
+            }
+
+            return rows.get(uuid) {
+                val row = select(uuid)
+
+                return@get if (row != null) {
+                    row
+                } else {
+                    transaction(database) {
+                        table.insert { it[id] = uuid }
+                    }
+                    select(uuid)
+                }
             }
         }
     }

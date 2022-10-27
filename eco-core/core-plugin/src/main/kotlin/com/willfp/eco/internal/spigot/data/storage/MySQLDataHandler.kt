@@ -37,6 +37,7 @@ class MySQLDataHandler(
     private val plugin: EcoSpigotPlugin,
     private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MYSQL) {
+    private val database: Database
     private val table = UUIDTable("eco_data")
 
     private val rows = Caffeine.newBuilder()
@@ -60,9 +61,9 @@ class MySQLDataHandler(
                 plugin.configYml.getString("mysql.database")
         config.maximumPoolSize = plugin.configYml.getInt("mysql.connections")
 
-        Database.connect(HikariDataSource(config))
+        database = Database.connect(HikariDataSource(config))
 
-        transaction {
+        transaction(database) {
             SchemaUtils.create(table)
 
             table.apply {
@@ -110,14 +111,14 @@ class MySQLDataHandler(
     }
 
     private fun getData(uuid: UUID): Config {
-        val plaintext = transaction {
+        val plaintext = transaction(database) {
             val row = rows.get(uuid) {
                 val row = table.select { table.id eq uuid }.limit(1).singleOrNull()
 
                 if (row != null) {
                     row
                 } else {
-                    transaction {
+                    transaction(database) {
                         table.insert {
                             it[id] = uuid
                             it[dataColumn] = "{}"
@@ -135,7 +136,7 @@ class MySQLDataHandler(
 
     private fun setData(uuid: UUID, config: Config) {
         executor.submit {
-            transaction {
+            transaction(database) {
                 table.update({ table.id eq uuid }) {
                     it[dataColumn] = config.toPlaintext()
                 }
@@ -144,7 +145,7 @@ class MySQLDataHandler(
     }
 
     override fun initialize() {
-        transaction {
+        transaction(database) {
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
     }
