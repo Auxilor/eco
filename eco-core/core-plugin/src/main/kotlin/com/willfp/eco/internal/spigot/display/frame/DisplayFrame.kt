@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.display.frame
 
+import com.comphenix.protocol.injector.temporary.TemporaryPlayer
 import com.willfp.eco.core.items.HashedItem
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -32,9 +33,19 @@ private val frames = ConcurrentHashMap<UUID, DisplayFrame>()
 
 var Player.lastDisplayFrame: DisplayFrame
     get() {
+        // ProtocolLib fix
+        if (this is TemporaryPlayer) {
+            return DisplayFrame.EMPTY
+        }
+
         return frames[this.uniqueId] ?: DisplayFrame.EMPTY
     }
     set(value) {
+        // ProtocolLib fix
+        if (this is TemporaryPlayer) {
+            return
+        }
+
         frames[this.uniqueId] = value
     }
 
