@@ -30,7 +30,7 @@ object ParticleFactoryRGB : ParticleFactory {
         override fun spawn(location: Location, amount: Int) {
             val world = location.world ?: return
 
-            world.spawnParticle(Particle.REDSTONE, location, amount, 0.0, 0.0, 0.0, options)
+            world.spawnParticle(Particle.REDSTONE, location, amount, 0.0, 0.0, 0.0, 0.0, options)
         }
     }
 }

@@ -33,6 +33,6 @@ public final class SimpleParticle implements SpawnableParticle {
             return;
         }
 
-        world.spawnParticle(particle, location, amount, 0, 0, 0, null);
+        world.spawnParticle(particle, location, amount, 0, 0, 0, 0, null);
     }
 }
