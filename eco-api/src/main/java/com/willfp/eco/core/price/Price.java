@@ -26,9 +26,11 @@ public interface Price {
 
     /**
      * Give the value of the price to the player.
+     * <p>
+     * You should override this method, it's only marked as default for
+     * backwards compatibility purposes.
      *
      * @param player The player.
-     * @apiNote You should override this method, it's only marked as default for backwards compatibility purposes.
      */
     default void giveTo(@NotNull Player player) {
         // Override when needed.

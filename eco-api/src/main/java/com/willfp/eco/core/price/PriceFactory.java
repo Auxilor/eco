@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 
 /**
  * Create prices.
- *
- * @apiNote You must override one of the create methods to prevent infinite loops.
+ * <p>
+ * You must override one of the create methods.
  */
 public interface PriceFactory {
     /**
