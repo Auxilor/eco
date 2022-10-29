@@ -21,14 +21,26 @@ object PriceFactoryXPLevels : PriceFactory {
     private class PriceXPLevel(
         private val levels: () -> Int
     ) : Price {
-        override fun canAfford(player: Player) = player.level >= levels()
+        private var multiplier: Double = 1.0
+
+        override fun canAfford(player: Player) = player.level >= value
 
         override fun pay(player: Player) {
-            player.level -= levels()
+            player.level -= value.roundToInt()
         }
 
         override fun giveTo(player: Player) {
-            player.level += levels()
+            player.level += value.roundToInt()
+        }
+
+        override fun getValue(): Double {
+            return levels() * multiplier
+        }
+
+        override fun getMultiplier() = multiplier
+
+        override fun setMultiplier(multiplier: Double) {
+            this.multiplier = multiplier
         }
     }
 }

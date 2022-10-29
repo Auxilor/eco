@@ -55,4 +55,22 @@ public interface Price {
     default void setValue(final double value) {
         // Override when needed.
     }
+
+    /**
+     * Get the price multiplier.
+     *
+     * @return The value.
+     */
+    default double getMultiplier() {
+        return 1;
+    }
+
+    /**
+     * Set the price multiplier.
+     *
+     * @param multiplier The multiplier.
+     */
+    default void setMultiplier(final double multiplier) {
+        // Override when needed.
+    }
 }

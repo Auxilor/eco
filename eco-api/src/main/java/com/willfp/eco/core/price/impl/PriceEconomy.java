@@ -16,6 +16,8 @@ public final class PriceEconomy implements Price {
      */
     private final Supplier<Double> function;
 
+    private double multiplier;
+
     /**
      * Create a new economy-based price.
      *
@@ -51,6 +53,16 @@ public final class PriceEconomy implements Price {
 
     @Override
     public double getValue() {
-        return function.get();
+        return function.get() * multiplier;
+    }
+
+    @Override
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    @Override
+    public void setMultiplier(final double multiplier) {
+        this.multiplier = multiplier;
     }
 }

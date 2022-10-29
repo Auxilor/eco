@@ -20,14 +20,26 @@ object PriceFactoryXP : PriceFactory {
     private class PriceXP(
         private val xp: () -> Int
     ) : Price {
-        override fun canAfford(player: Player) = player.totalExperience >= xp()
+        private var multiplier = 1.0
+
+        override fun canAfford(player: Player) = player.totalExperience >= value
 
         override fun pay(player: Player) {
-            player.totalExperience -= xp()
+            player.totalExperience -= value.roundToInt()
         }
 
         override fun giveTo(player: Player) {
-            player.totalExperience += xp()
+            player.totalExperience += value.roundToInt()
+        }
+
+        override fun getValue(): Double {
+            return xp() * multiplier
+        }
+
+        override fun getMultiplier() = multiplier
+
+        override fun setMultiplier(multiplier: Double) {
+            this.multiplier = multiplier
         }
     }
 }
