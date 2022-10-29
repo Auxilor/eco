@@ -3,9 +3,12 @@ package com.willfp.eco.core.price;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Create prices.
+ *
+ * @apiNote You must override one of the create methods to prevent infinite loops.
  */
 public interface PriceFactory {
     /**
@@ -23,5 +26,17 @@ public interface PriceFactory {
      * @param value The value.
      * @return The price.
      */
-    @NotNull Price create(double value);
+    default @NotNull Price create(double value) {
+        return create(() -> value);
+    }
+
+    /**
+     * Create the price.
+     *
+     * @param function The value function.
+     * @return The price.
+     */
+    default @NotNull Price create(@NotNull Supplier<@NotNull Double> function) {
+        return create(function.get());
+    }
 }

@@ -25,6 +25,16 @@ public interface Price {
     void pay(@NotNull Player player);
 
     /**
+     * Give the value of the price to the player.
+     *
+     * @param player The player.
+     * @apiNote You should override this method, it's only marked as default for backwards compatibility purposes.
+     */
+    default void giveTo(@NotNull Player player) {
+        // Override when needed.
+    }
+
+    /**
      * If the price is backed by a value, get it here.
      *
      * @return The value.
@@ -37,7 +47,9 @@ public interface Price {
      * If the price is backed by a value, set it here.
      *
      * @param value The value.
+     * @deprecated Values shouldn't be fixed.
      */
+    @Deprecated(since = "6.45.0", forRemoval = true)
     default void setValue(final double value) {
         // Override when needed.
     }

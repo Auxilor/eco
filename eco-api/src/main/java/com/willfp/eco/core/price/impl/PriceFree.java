@@ -16,12 +16,12 @@ public final class PriceFree implements Price {
     }
 
     @Override
-    public boolean canAfford(@NotNull Player player) {
+    public boolean canAfford(@NotNull final Player player) {
         return true;
     }
 
     @Override
-    public void pay(@NotNull Player player) {
+    public void pay(@NotNull final Player player) {
         // Do nothing.
     }
 }

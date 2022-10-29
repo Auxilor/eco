@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * Class to manage prices.
@@ -65,12 +66,12 @@ public final class Prices {
     public static Price create(@NotNull final String expression,
                                @Nullable final String priceName,
                                @NotNull final MathContext context) {
-        double value = NumberUtils.evaluateExpression(
+        Supplier<Double> value = () -> NumberUtils.evaluateExpression(
                 expression,
                 context
         );
 
-        if (value <= 0) {
+        if (value.get() <= 0) {
             return new PriceFree();
         }
 
@@ -90,7 +91,7 @@ public final class Prices {
                 return new PriceFree();
             }
 
-            return new PriceItem((int) Math.round(value), item);
+            return new PriceItem(() -> Math.toIntExact(Math.round(value.get())), item);
         } else {
             return factory.create(value);
         }

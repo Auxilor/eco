@@ -1,11 +1,14 @@
 package com.willfp.eco.core.price.impl;
 
+import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.price.Price;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 /**
  * Item-based price.
@@ -14,7 +17,7 @@ public final class PriceItem implements Price {
     /**
      * The amount of items.
      */
-    private final int amountToRemove;
+    private final Supplier<Integer> amountToRemove;
 
     /**
      * The item.
@@ -29,7 +32,18 @@ public final class PriceItem implements Price {
      */
     public PriceItem(final int amount,
                      @NotNull final TestableItem item) {
-        this.amountToRemove = Math.max(0, amount);
+        this(() -> amount, item);
+    }
+
+    /**
+     * Create a new economy-based price.
+     *
+     * @param amount The amount.
+     * @param item   The item.
+     */
+    public PriceItem(@NotNull final Supplier<@NotNull Integer> amount,
+                     @NotNull final TestableItem item) {
+        this.amountToRemove = amount;
         this.item = item;
     }
 
@@ -43,8 +57,9 @@ public final class PriceItem implements Price {
     }
 
     @Override
-    public boolean canAfford(@NotNull Player player) {
-        if (amountToRemove == 0) {
+    public boolean canAfford(@NotNull final Player player) {
+        int toRemove = amountToRemove.get();
+        if (toRemove <= 0) {
             return true;
         }
 
@@ -56,26 +71,27 @@ public final class PriceItem implements Price {
             }
         }
 
-        return count >= amountToRemove;
+        return count >= toRemove;
     }
 
     @Override
-    public void pay(@NotNull Player player) {
+    public void pay(@NotNull final Player player) {
+        int toRemove = amountToRemove.get();
         int count = 0;
 
         for (ItemStack itemStack : player.getInventory().getContents()) {
-            if (count >= amountToRemove) {
+            if (count >= toRemove) {
                 break;
             }
 
             if (item.matches(itemStack)) {
                 int itemAmount = itemStack.getAmount();
 
-                if (itemAmount > amountToRemove) {
-                    itemStack.setAmount(itemAmount - amountToRemove);
+                if (itemAmount > toRemove) {
+                    itemStack.setAmount(itemAmount - toRemove);
                 }
 
-                if (itemAmount <= amountToRemove) {
+                if (itemAmount <= toRemove) {
                     itemStack.setAmount(0);
                     itemStack.setType(Material.AIR);
                 }
@@ -83,5 +99,13 @@ public final class PriceItem implements Price {
                 count += itemAmount;
             }
         }
+    }
+
+    @Override
+    public void giveTo(@NotNull final Player player) {
+        new DropQueue(player)
+                .addItem(item.getItem())
+                .forceTelekinesis()
+                .push();
     }
 }

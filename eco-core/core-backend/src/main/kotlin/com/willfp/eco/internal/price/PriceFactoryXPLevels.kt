@@ -3,6 +3,7 @@ package com.willfp.eco.internal.price
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import org.bukkit.entity.Player
+import java.util.function.Supplier
 import kotlin.math.roundToInt
 
 object PriceFactoryXPLevels : PriceFactory {
@@ -13,15 +14,21 @@ object PriceFactoryXPLevels : PriceFactory {
         "explevels",
     )
 
-    override fun create(value: Double): Price = PriceXPLevel(value.roundToInt())
+    override fun create(function: Supplier<Double>): Price {
+        return PriceXPLevel { function.get().roundToInt() }
+    }
 
     private class PriceXPLevel(
-        private val levels: Int
+        private val levels: () -> Int
     ) : Price {
-        override fun canAfford(player: Player) = player.level >= levels
+        override fun canAfford(player: Player) = player.level >= levels()
 
         override fun pay(player: Player) {
-            player.level -= levels
+            player.level -= levels()
+        }
+
+        override fun giveTo(player: Player) {
+            player.level += levels()
         }
     }
 }

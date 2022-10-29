@@ -5,6 +5,8 @@ import com.willfp.eco.core.price.Price;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 /**
  * Economy-based price (for Vault, Treasury, etc.)
  */
@@ -12,7 +14,7 @@ public final class PriceEconomy implements Price {
     /**
      * The value of the price.
      */
-    private double value;
+    private final Supplier<Double> function;
 
     /**
      * Create a new economy-based price.
@@ -20,26 +22,35 @@ public final class PriceEconomy implements Price {
      * @param value The value.
      */
     public PriceEconomy(final double value) {
-        this.value = value;
+        this.function = () -> value;
+    }
+
+    /**
+     * Create a new economy-based price.
+     *
+     * @param function The function.
+     */
+    public PriceEconomy(@NotNull final Supplier<@NotNull Double> function) {
+        this.function = function;
     }
 
     @Override
-    public boolean canAfford(@NotNull Player player) {
-        return EconomyManager.getBalance(player) >= value;
+    public boolean canAfford(@NotNull final Player player) {
+        return EconomyManager.getBalance(player) >= getValue();
     }
 
     @Override
-    public void pay(@NotNull Player player) {
-        EconomyManager.removeMoney(player, value);
+    public void pay(@NotNull final Player player) {
+        EconomyManager.removeMoney(player, getValue());
+    }
+
+    @Override
+    public void giveTo(@NotNull final Player player) {
+        EconomyManager.giveMoney(player, getValue());
     }
 
     @Override
     public double getValue() {
-        return value;
-    }
-
-    @Override
-    public void setValue(final double value) {
-        this.value = value;
+        return function.get();
     }
 }
