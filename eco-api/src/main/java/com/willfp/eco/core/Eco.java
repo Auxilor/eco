@@ -499,6 +499,11 @@ public interface Eco {
     Menu getOpenMenu(@NotNull Player player);
 
     /**
+     * Sync commands.
+     */
+    void syncCommands();
+
+    /**
      * Get the instance of eco; the bridge between the api frontend
      * and the implementation backend.
      *

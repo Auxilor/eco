@@ -50,6 +50,7 @@ import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
+import com.willfp.eco.internal.spigot.proxy.SyncCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -282,4 +283,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
+
+    override fun syncCommands() =
+        this.getProxy(SyncCommandsProxy::class.java).syncCommands()
 }

@@ -1,14 +1,17 @@
 package com.willfp.eco.core.command.impl;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -43,9 +46,21 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
      */
     public final void register() {
         org.bukkit.command.PluginCommand command = Bukkit.getPluginCommand(this.getName());
-        assert command != null;
-        command.setExecutor(this);
-        command.setTabCompleter(this);
+        if (command != null) {
+            command.setExecutor(this);
+            command.setTabCompleter(this);
+        } else {
+            CommandMap commandMap = getCommandMap();
+
+            Command bukkit = commandMap.getCommand(this.getName());
+            if (bukkit != null) {
+                bukkit.unregister(commandMap);
+            }
+
+            commandMap.register(this.getName(), new DelegatedBukkitCommand(this));
+
+            Eco.get().syncCommands();
+        }
     }
 
     /**
@@ -92,5 +107,20 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
         }
 
         return this.handleTabCompletion(sender, args);
+    }
+
+    /**
+     * Get the internal server CommandMap.
+     *
+     * @return The CommandMap.
+     */
+    public static CommandMap getCommandMap() {
+        try {
+            Field field = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            field.setAccessible(true);
+            return (CommandMap) field.get(Bukkit.getServer());
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new NullPointerException("Command map wasn't found!");
+        }
     }
 }
