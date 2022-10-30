@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +48,14 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
         if (command != null) {
             command.setExecutor(this);
             command.setTabCompleter(this);
+
+            if (this.getDescription() != null) {
+                command.setDescription(this.getDescription());
+            }
+
+            List<String> aliases = new ArrayList<>(command.getAliases());
+            aliases.addAll(this.getAliases());
+            command.setAliases(aliases);
         } else {
             this.unregister();
 
@@ -68,6 +77,26 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
         if (found != null) {
             found.unregister(commandMap);
         }
+    }
+
+    /**
+     * Get aliases. Leave null if this command is from plugin.yml.
+     *
+     * @return The aliases.
+     */
+    @NotNull
+    public List<String> getAliases() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Get description.
+     *
+     * @return The description.
+     */
+    @Nullable
+    public String getDescription() {
+        return null;
     }
 
     /**

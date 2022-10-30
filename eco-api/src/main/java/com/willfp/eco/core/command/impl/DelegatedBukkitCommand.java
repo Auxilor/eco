@@ -56,4 +56,16 @@ public final class DelegatedBukkitCommand extends Command implements TabComplete
     public String getPermission() {
         return this.delegate.getPermission();
     }
+
+    @NotNull
+    @Override
+    public String getDescription() {
+        return this.delegate.getDescription() == null ? "" : this.delegate.getDescription();
+    }
+
+    @NotNull
+    @Override
+    public List<String> getAliases() {
+        return this.delegate.getAliases();
+    }
 }
