@@ -136,7 +136,6 @@ public interface Eco {
      *
      * @param plugin The plugin.
      */
-    @NotNull
     void createPAPIIntegration(@NotNull EcoPlugin plugin);
 
     /**
@@ -169,6 +168,7 @@ public interface Eco {
      * @param requiresChangesToSave If the config must be changed in order to save the config.
      * @return The config implementation.
      */
+    @NotNull
     LoadableConfig createUpdatableConfig(@NotNull String configName,
                                          @NotNull PluginLike plugin,
                                          @NotNull String subDirectoryPath,
@@ -189,6 +189,7 @@ public interface Eco {
      * @param requiresChangesToSave If the config must be changed in order to save the config.
      * @return The config implementation.
      */
+    @NotNull
     LoadableConfig createLoadableConfig(@NotNull String configName,
                                         @NotNull PluginLike plugin,
                                         @NotNull String subDirectoryPath,
@@ -202,6 +203,7 @@ public interface Eco {
      * @param config The handle.
      * @return The config implementation.
      */
+    @NotNull
     Config wrapConfigurationSection(@NotNull ConfigurationSection config);
 
     /**
@@ -211,6 +213,7 @@ public interface Eco {
      * @param type   The config type.
      * @return The config implementation.
      */
+    @NotNull
     Config createConfig(@NotNull Map<String, Object> values,
                         @NotNull ConfigType type);
 
@@ -221,6 +224,7 @@ public interface Eco {
      * @param type     The type.
      * @return The config implementation.
      */
+    @NotNull
     Config createConfig(@NotNull String contents,
                         @NotNull ConfigType type);
 
@@ -331,6 +335,7 @@ public interface Eco {
      *
      * @return The keys.
      */
+    @NotNull
     Set<PersistentDataKey<?>> getRegisteredPersistentDataKeys();
 
     /**
@@ -339,6 +344,7 @@ public interface Eco {
      * @param uuid The UUID.
      * @return The profile.
      */
+    @NotNull
     PlayerProfile loadPlayerProfile(@NotNull UUID uuid);
 
     /**
@@ -346,6 +352,7 @@ public interface Eco {
      *
      * @return The profile.
      */
+    @NotNull
     ServerProfile getServerProfile();
 
     /**
