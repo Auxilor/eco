@@ -26,7 +26,7 @@ public interface PriceFactory {
      * @param value The value.
      * @return The price.
      */
-    default @NotNull Price create(double value) {
+    default @NotNull Price create(final double value) {
         return create(() -> value);
     }
 
@@ -36,7 +36,7 @@ public interface PriceFactory {
      * @param function The value function.
      * @return The price.
      */
-    default @NotNull Price create(@NotNull Supplier<@NotNull Double> function) {
+    default @NotNull Price create(@NotNull final Supplier<@NotNull Double> function) {
         return create(function.get());
     }
 }
