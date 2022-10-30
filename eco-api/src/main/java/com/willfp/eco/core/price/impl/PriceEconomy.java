@@ -16,6 +16,9 @@ public final class PriceEconomy implements Price {
      */
     private final Supplier<Double> function;
 
+    /**
+     * The multiplier.
+     */
     private double multiplier;
 
     /**
