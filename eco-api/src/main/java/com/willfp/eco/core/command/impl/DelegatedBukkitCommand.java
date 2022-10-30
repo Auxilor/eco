@@ -6,6 +6,7 @@ import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -48,5 +49,11 @@ public final class DelegatedBukkitCommand extends Command implements TabComplete
     @Override
     public Plugin getPlugin() {
         return this.delegate.getPlugin();
+    }
+
+    @Nullable
+    @Override
+    public String getPermission() {
+        return this.delegate.getPermission();
     }
 }

@@ -145,6 +145,9 @@ abstract class HandledCommand implements CommandBase {
             this.getHandler().onExecute(sender, Arrays.asList(args));
         } else {
             this.onExecute(sender, Arrays.asList(args));
+            if (sender instanceof Player player) {
+                this.onExecute(player, Arrays.asList(args));
+            }
         }
     }
 
@@ -202,7 +205,11 @@ abstract class HandledCommand implements CommandBase {
         if (this.getTabCompleter() != null) {
             return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
         } else {
-            return this.tabComplete(sender, Arrays.asList(args));
+            List<String> completions = this.tabComplete(sender, Arrays.asList(args));
+            if (sender instanceof Player player) {
+                completions.addAll(this.tabComplete(player, Arrays.asList(args)));
+            }
+            return completions;
         }
     }
 

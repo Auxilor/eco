@@ -1,7 +1,9 @@
 package com.willfp.eco.core.command;
 
+import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,8 +45,6 @@ public interface CommandBase {
 
     /**
      * Handle command execution.
-     * <p>
-     * Marked as default void with no implementation for backwards compatibility.
      *
      * @param sender The sender.
      * @param args   The args.
@@ -55,15 +55,38 @@ public interface CommandBase {
     }
 
     /**
+     * Handle command execution from players.
+     *
+     * @param sender The sender.
+     * @param args   The args.
+     */
+    default void onExecute(@NotNull Player sender,
+                           @NotNull List<String> args) {
+        // Do nothing.
+    }
+
+    /**
      * Handle tab completion.
-     * <p>
-     * Marked as default void with no implementation for backwards compatibility.
      *
      * @param sender The sender.
      * @param args   The args.
      * @return The results.
      */
+    @NotNull
     default List<String> tabComplete(@NotNull CommandSender sender,
+                                     @NotNull List<String> args) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Handle tab completion.
+     *
+     * @param sender The sender.
+     * @param args   The args.
+     * @return The results.
+     */
+    @NotNull
+    default List<String> tabComplete(@NotNull Player sender,
                                      @NotNull List<String> args) {
         return new ArrayList<>();
     }
@@ -83,7 +106,11 @@ public interface CommandBase {
      * @deprecated Use {@link CommandBase#onExecute(CommandSender, List)} instead.
      */
     @Deprecated(forRemoval = true)
-    CommandHandler getHandler();
+    default CommandHandler getHandler() {
+        return (a, b) -> {
+
+        };
+    }
 
     /**
      * Set the handler.
@@ -93,7 +120,9 @@ public interface CommandBase {
      * @deprecated Handlers have been deprecated.
      */
     @Deprecated(forRemoval = true)
-    void setHandler(@NotNull CommandHandler handler);
+    default void setHandler(@NotNull final CommandHandler handler) {
+        // Do nothing.
+    }
 
     /**
      * Get the tab completer.
@@ -103,7 +132,9 @@ public interface CommandBase {
      * @deprecated Use {@link CommandBase#tabComplete(CommandSender, List)} instead.
      */
     @Deprecated(forRemoval = true)
-    TabCompleteHandler getTabCompleter();
+    default TabCompleteHandler getTabCompleter() {
+        return (a, b) -> ImmutableList.of();
+    }
 
     /**
      * Set the tab completer.
@@ -113,5 +144,7 @@ public interface CommandBase {
      * @deprecated Handlers have been deprecated.
      */
     @Deprecated(forRemoval = true)
-    void setTabCompleter(@NotNull TabCompleteHandler handler);
+    default void setTabCompleter(@NotNull final TabCompleteHandler handler) {
+        // Do nothing.
+    }
 }
