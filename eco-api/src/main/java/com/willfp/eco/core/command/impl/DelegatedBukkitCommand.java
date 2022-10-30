@@ -2,7 +2,9 @@ package com.willfp.eco.core.command.impl;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 /**
  * Delegates a bukkit command to an eco command (for registrations).
  */
-public final class DelegatedBukkitCommand extends Command implements TabCompleter {
+public final class DelegatedBukkitCommand extends Command implements TabCompleter, PluginIdentifiableCommand {
     /**
      * The delegate command.
      */
@@ -40,5 +42,11 @@ public final class DelegatedBukkitCommand extends Command implements TabComplete
                                       @NotNull final String label,
                                       @NotNull final String[] args) {
         return delegate.onTabComplete(commandSender, command, label, args);
+    }
+
+    @NotNull
+    @Override
+    public Plugin getPlugin() {
+        return this.delegate.getPlugin();
     }
 }
