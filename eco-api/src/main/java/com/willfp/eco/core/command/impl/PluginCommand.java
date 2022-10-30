@@ -41,8 +41,6 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
 
     /**
      * Registers the command with the server,
-     * <p>
-     * Requires the command name to exist, defined in plugin.yml.
      */
     public final void register() {
         org.bukkit.command.PluginCommand command = Bukkit.getPluginCommand(this.getName());
@@ -50,16 +48,25 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
             command.setExecutor(this);
             command.setTabCompleter(this);
         } else {
-            CommandMap commandMap = getCommandMap();
+            this.unregister();
 
-            Command bukkit = commandMap.getCommand(this.getName());
-            if (bukkit != null) {
-                bukkit.unregister(commandMap);
-            }
+            CommandMap commandMap = getCommandMap();
 
             commandMap.register(this.getName(), new DelegatedBukkitCommand(this));
 
             Eco.get().syncCommands();
+        }
+    }
+
+    /**
+     * Unregisters the command from the server.
+     */
+    public final void unregister() {
+        CommandMap commandMap = getCommandMap();
+
+        Command found = commandMap.getCommand(this.getName());
+        if (found != null) {
+            found.unregister(commandMap);
         }
     }
 

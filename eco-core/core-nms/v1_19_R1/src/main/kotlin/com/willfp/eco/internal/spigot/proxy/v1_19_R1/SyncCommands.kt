@@ -7,8 +7,5 @@ import org.bukkit.craftbukkit.v1_19_R1.CraftServer
 class SyncCommands : SyncCommandsProxy {
     override fun syncCommands() {
         (Bukkit.getServer() as CraftServer).syncCommands()
-        for (player in Bukkit.getOnlinePlayers()) {
-            player.updateCommands()
-        }
     }
 }
