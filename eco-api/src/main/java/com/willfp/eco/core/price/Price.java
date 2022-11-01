@@ -50,7 +50,7 @@ public interface Price {
      * If the price is backed by a value, get it here.
      *
      * @return The value.
-     * @deprecated Use {@link this#getValue(Player)} instead.
+     * @deprecated Use getValue(Player) instead.
      */
     @Deprecated(since = "6.45.0", forRemoval = true)
     default double getValue() {

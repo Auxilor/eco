@@ -42,7 +42,8 @@ public final class PriceEconomy implements Price {
     /**
      * Create a new economy-based price.
      *
-     * @param function The function.
+     * @param baseContext The base context.
+     * @param function    The function.
      */
     public PriceEconomy(@NotNull final MathContext baseContext,
                         @NotNull final Function<MathContext, Double> function) {
