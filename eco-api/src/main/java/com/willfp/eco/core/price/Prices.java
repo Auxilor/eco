@@ -91,7 +91,7 @@ public final class Prices {
                 return new PriceFree();
             }
 
-            return new PriceItem(() -> Math.toIntExact(Math.round(function.apply(context))), item);
+            return new PriceItem(context, function, item);
         } else {
             return factory.create(context, function);
         }
