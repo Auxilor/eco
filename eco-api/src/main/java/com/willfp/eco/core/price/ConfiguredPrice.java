@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * A price that can be shown to a player.
  */
-public final class ConfiguredPrice {
+public final class ConfiguredPrice implements Price {
     /**
      * The deserializer.
      */
@@ -51,8 +51,39 @@ public final class ConfiguredPrice {
         this.formatString = formatString;
     }
 
+    @Override
+    public boolean canAfford(@NotNull final Player player) {
+        return this.price.canAfford(player);
+    }
+
+    @Override
+    public void pay(@NotNull final Player player) {
+        this.price.pay(player);
+    }
+
+    @Override
+    public void giveTo(@NotNull final Player player) {
+        this.price.giveTo(player);
+    }
+
+    @Override
+    public double getValue(@NotNull final Player player) {
+        return this.price.getValue(player);
+    }
+
+    @Override
+    public double getMultiplier(@NotNull final Player player) {
+        return this.price.getMultiplier(player);
+    }
+
+    @Override
+    public void setMultiplier(@NotNull final Player player,
+                              final double multiplier) {
+        this.price.setMultiplier(player, multiplier);
+    }
+
     /**
-     * Get the price.
+     * Get the price that this delegates to.
      *
      * @return The price.
      */
