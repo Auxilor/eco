@@ -39,8 +39,20 @@ public interface Price {
     /**
      * If the price is backed by a value, get it here.
      *
+     * @param player The player.
      * @return The value.
      */
+    default double getValue(@NotNull final Player player) {
+        return 0;
+    }
+
+    /**
+     * If the price is backed by a value, get it here.
+     *
+     * @return The value.
+     * @deprecated Use {@link this#getValue(Player)} instead.
+     */
+    @Deprecated(since = "6.45.0", forRemoval = true)
     default double getValue() {
         return 0;
     }
@@ -57,20 +69,23 @@ public interface Price {
     }
 
     /**
-     * Get the price multiplier.
+     * Get the price multiplier for a player.
      *
+     * @param player The player.
      * @return The value.
      */
-    default double getMultiplier() {
+    default double getMultiplier(@NotNull final Player player) {
         return 1;
     }
 
     /**
-     * Set the price multiplier.
+     * Set the price multiplier for a player.
      *
+     * @param player     The        player.
      * @param multiplier The multiplier.
      */
-    default void setMultiplier(final double multiplier) {
+    default void setMultiplier(@NotNull final Player player,
+                               final double multiplier) {
         // Override when needed.
     }
 }

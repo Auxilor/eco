@@ -44,4 +44,20 @@ public record MathContext(
                 Collections.emptyList()
         );
     }
+
+    /**
+     * Copy a MathContext with a player.
+     *
+     * @param context The context.
+     * @param player  The player.
+     * @return The new MathContext.
+     */
+    public static MathContext copyWithPlayer(@NotNull final MathContext context,
+                                             @Nullable final Player player) {
+        return new MathContext(
+                context.injectableContext(),
+                player,
+                context.additionalPlayers()
+        );
+    }
 }
