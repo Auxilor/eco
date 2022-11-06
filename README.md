@@ -39,7 +39,7 @@ and many more.
 # For developers
 
 ## Javadoc
-The 6.38.2 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.38.2/javadoc/)
+The 6.45.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.45.0/javadoc/)
 
 ## Plugin Information
 
@@ -68,7 +68,7 @@ dependencies {
 }
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.27.2`.
+Replace `Tag` with a release tag for eco, eg `6.45.0`.
 
 Maven:
 
@@ -88,7 +88,7 @@ Maven:
 </dependency>
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.27.2`.
+Replace `Tag` with a release tag for eco, eg `6.45.0`.
 
 ## Build locally:
 
