@@ -61,7 +61,7 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
 
             CommandMap commandMap = getCommandMap();
 
-            commandMap.register(this.getName(), new DelegatedBukkitCommand(this));
+            commandMap.register(this.getPlugin().getName().toLowerCase(), new DelegatedBukkitCommand(this));
 
             Eco.get().syncCommands();
         }
