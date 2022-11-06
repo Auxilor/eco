@@ -31,7 +31,7 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public ItemStack getItemStack(@NotNull final Player player) {
+    public @NotNull ItemStack getItemStack(@NotNull final Player player) {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }

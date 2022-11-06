@@ -31,9 +31,7 @@ class RenderedInventory(
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
-        val previousCaptive = captiveItems.toMap()
-
-        captiveItems.clear()
+        val newCaptive = mutableMapOf<GUIPosition, ItemStack>()
 
         for (row in (1..menu.rows)) {
             for (column in (1..menu.columns)) {
@@ -48,11 +46,11 @@ class RenderedInventory(
 
                     if (slot.isCaptiveFromEmpty) {
                         if (!actualItem.isEmpty) {
-                            captiveItems[position] = actualItem
+                            newCaptive[position] = actualItem
                         }
                     } else {
                         if (actualItem != renderedItem && !EmptyTestableItem().matches(actualItem)) {
-                            captiveItems[position] = actualItem
+                            newCaptive[position] = actualItem
                         }
                     }
                 } else {
@@ -60,6 +58,10 @@ class RenderedInventory(
                 }
             }
         }
+
+        val previousCaptive = captiveItems.toMap()
+        captiveItems.clear()
+        captiveItems.putAll(newCaptive)
 
         menu.runOnRender(player)
 

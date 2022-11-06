@@ -29,7 +29,7 @@ public abstract class ReactiveSlot implements Slot {
                                  @NotNull final Menu menu);
 
     @Override
-    public ItemStack getItemStack(@NotNull final Player player) {
+    public @NotNull ItemStack getItemStack(@NotNull final Player player) {
         return new ItemStack(Material.STONE);
     }
 

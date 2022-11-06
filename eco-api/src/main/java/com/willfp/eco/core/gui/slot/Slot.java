@@ -30,6 +30,7 @@ public interface Slot extends GUIComponent {
      * @param player The player.
      * @return The ItemStack.
      */
+    @NotNull
     ItemStack getItemStack(@NotNull Player player);
 
     /**
@@ -60,6 +61,7 @@ public interface Slot extends GUIComponent {
      * @param menu   The menu.
      * @return The slot.
      */
+    @NotNull
     default Slot getActionableSlot(@NotNull final Player player,
                                    @NotNull final Menu menu) {
         return this;
@@ -125,7 +127,9 @@ public interface Slot extends GUIComponent {
      *
      * @param provider The provider.
      * @return The builder.
+     * @deprecated This method was written incorrectly, should have been a Player + Menu function.
      */
+    @Deprecated(since = "6.45.0", forRemoval = true)
     static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {
         return Eco.get().createSlotBuilder((player, menu) -> provider.apply(player));
     }
