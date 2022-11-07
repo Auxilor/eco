@@ -22,6 +22,7 @@ class EcoMenuBuilder(
     private val onOpen = mutableListOf<OpenHandler>()
     private val onRender = mutableListOf<(Player, Menu) -> Unit>()
     private val menuEventHandlers = mutableListOf<MenuEventHandler<*>>()
+    private val onBuild = mutableListOf<(Menu) -> Unit>()
     private var allowsChangingHeldItem = false
 
     override fun getRows() = rows
@@ -80,6 +81,11 @@ class EcoMenuBuilder(
         return this
     }
 
+    override fun onBuild(action: Consumer<Menu>): MenuBuilder {
+        onBuild += { action.accept(it) }
+        return this
+    }
+
     override fun allowChangingHeldItem(): MenuBuilder {
         allowsChangingHeldItem = true
         return this
@@ -122,7 +128,7 @@ class EcoMenuBuilder(
             }
         }
 
-        return EcoMenu(
+        val menu = EcoMenu(
             rows,
             columns,
             layeredComponents,
@@ -133,5 +139,9 @@ class EcoMenuBuilder(
             menuEventHandlers,
             allowsChangingHeldItem
         )
+
+        onBuild.forEach { it(menu) } // Run on build functions.
+
+        return menu
     }
 }

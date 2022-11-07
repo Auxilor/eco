@@ -196,6 +196,16 @@ public interface MenuBuilder extends PageBuilder {
     }
 
     /**
+     * Add an action to run on build.
+     *
+     * @param action The action.
+     * @return The builder.
+     */
+    default MenuBuilder onBuild(@NotNull Consumer<Menu> action) {
+        return this;
+    }
+
+    /**
      * Build the menu.
      *
      * @return The menu.
