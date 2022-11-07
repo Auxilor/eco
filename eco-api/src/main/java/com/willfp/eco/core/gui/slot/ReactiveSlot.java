@@ -30,7 +30,7 @@ public abstract class ReactiveSlot implements Slot {
 
     @Override
     public @NotNull ItemStack getItemStack(@NotNull final Player player) {
-        return new ItemStack(Material.STONE);
+        return new ItemStack(Material.AIR);
     }
 
     @Override
@@ -40,8 +40,8 @@ public abstract class ReactiveSlot implements Slot {
     }
 
     @Override
-    public final Slot getActionableSlot(@NotNull final Player player,
-                                        @NotNull final Menu menu) {
+    public final @NotNull Slot getActionableSlot(@NotNull final Player player,
+                                                 @NotNull final Menu menu) {
         return getSlot(player, menu);
     }
 
