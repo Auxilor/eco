@@ -38,13 +38,7 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
-import com.willfp.eco.internal.items.ArgParserColor
-import com.willfp.eco.internal.items.ArgParserCustomModelData
-import com.willfp.eco.internal.items.ArgParserEnchantment
-import com.willfp.eco.internal.items.ArgParserFlag
-import com.willfp.eco.internal.items.ArgParserName
-import com.willfp.eco.internal.items.ArgParserTexture
-import com.willfp.eco.internal.items.ArgParserUnbreakable
+import com.willfp.eco.internal.items.*
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
@@ -87,7 +81,6 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogX
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCrashClaim
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
@@ -123,6 +116,7 @@ import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
+import com.willfp.eco.internal.spigot.recipes.listeners.Undyeable
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -145,6 +139,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserFlag)
         Items.registerArgParser(ArgParserUnbreakable)
         Items.registerArgParser(ArgParserName)
+        Items.registerArgParser(ArgParserUndyeable)
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
@@ -174,6 +169,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         CraftingRecipeListener.registerListener(ComplexInComplex)
         CraftingRecipeListener.registerListener(ComplexInVanilla)
+        CraftingRecipeListener.registerListener(Undyeable)
 
         StackedRecipeListener.registerHandler(ShapedCraftingRecipeStackHandler)
         StackedRecipeListener.registerHandler(ShapelessCraftingRecipeStackHandler)
@@ -262,7 +258,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("IridiumSkyblock") { AntigriefManager.register(AntigriefIridiumSkyblock()) },
             IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
-            IntegrationLoader("FabledSkyBlock") { AntigriefManager.register(AntigriefFabledSkyBlock()) },
+//            IntegrationLoader("FabledSkyBlock") { AntigriefManager.register(AntigriefFabledSkyBlock()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
