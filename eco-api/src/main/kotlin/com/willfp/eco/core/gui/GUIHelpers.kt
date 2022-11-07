@@ -184,6 +184,10 @@ inline fun <reified T : MenuEvent> MenuBuilder.onEvent(crossinline handler: (Pla
     })
 }
 
+/** @see MenuBuilder.onBuild */
+fun MenuBuilder.onBuild(action: (Menu) -> Unit): MenuBuilder =
+    this.onBuild { action(it) }
+
 /** Kotlin builder for menus. */
 fun menu(
     rows: Int,
