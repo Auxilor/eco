@@ -30,6 +30,12 @@ mysql:
   user: username
   password: passy
 
+# How many ticks to wait between committing data to a database. This doesn't
+# affect yaml storage, only MySQL and MongoDB. By default, data is committed
+# every tick, but you can increase this to be every x ticks, for example 20
+# would be committing once a second.
+save-interval: 1
+
 # Options to manage the conflict finder
 conflicts:
   whitelist: # Plugins that should never be marked as conflicts

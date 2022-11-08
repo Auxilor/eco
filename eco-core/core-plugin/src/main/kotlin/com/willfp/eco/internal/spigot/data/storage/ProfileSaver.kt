@@ -9,7 +9,9 @@ class ProfileSaver(
     handler: ProfileHandler
 ) {
     init {
-        plugin.scheduler.runTimer(1, 1) {
+        val interval = plugin.configYml.getInt("save-interval").toLong()
+
+        plugin.scheduler.runTimer(20, interval) {
             for ((uuid, set) in EcoProfile.CHANGE_MAP) {
                 handler.saveKeysFor(uuid, set)
             }
