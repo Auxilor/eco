@@ -122,7 +122,7 @@ class LegacyMySQLDataHandler(
             .expireAfterWrite(3, TimeUnit.SECONDS)
             .build<UUID, ResultRow>()
 
-        private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-mysql-thread-%d").build()
+        private val threadFactory = ThreadFactoryBuilder().setNameFormat("eco-legacy-mysql-thread-%d").build()
         private val executor = Executors.newFixedThreadPool(plugin.configYml.getInt("mysql.threads"), threadFactory)
         val registeredKeys = mutableSetOf<PersistentDataKey<*>>()
 
