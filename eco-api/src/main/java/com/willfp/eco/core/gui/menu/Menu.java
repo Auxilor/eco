@@ -63,11 +63,29 @@ public interface Menu {
      * @param player The player
      * @param menu   The menu.
      * @return The slot.
+     * @deprecated Menu shouldn't be a parameter.
      */
-    default Slot getSlot(int row,
-                         int column,
-                         @NotNull Player player,
-                         @NotNull Menu menu) {
+    @Deprecated(since = "6.46.0", forRemoval = true)
+    default Slot getSlot(final int row,
+                         final int column,
+                         @NotNull final Player player,
+                         @NotNull final Menu menu) {
+        return this.getSlot(row, column, player);
+    }
+
+    /**
+     * Get a slot at a given row and column.
+     * <p>
+     * Defaults to static slot if no reactive slot exists.
+     *
+     * @param row    The row.
+     * @param column The column.
+     * @param player The player
+     * @return The slot.
+     */
+    default Slot getSlot(final int row,
+                         final int column,
+                         @NotNull final Player player) {
         return this.getSlot(row, column);
     }
 

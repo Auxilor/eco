@@ -70,7 +70,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(event.slot, menu.columns)
 
-        menu.getSlot(row, column, player, menu).handle(player, event, menu)
+        menu.getSlot(row, column, player).handle(player, event, menu)
     }
 
     @EventHandler(
@@ -93,7 +93,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty(), menu.columns)
 
-        val slot = menu.getSlot(row, column, player, menu)
+        val slot = menu.getSlot(row, column, player)
 
         if (!slot.isCaptive(player, menu)) {
             event.isCancelled = true

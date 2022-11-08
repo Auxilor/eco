@@ -39,7 +39,7 @@ class RenderedInventory(
                 val position = GUIPosition(row, column)
                 val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
 
-                val slot = menu.getSlot(row, column, player, menu)
+                val slot = menu.getSlot(row, column, player)
                 val renderedItem = slot.getItemStack(player)
 
                 if (slot.isCaptive(player, menu)) {
@@ -86,7 +86,7 @@ class RenderedInventory(
                 for (column in (1..menu.columns)) {
                     val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
 
-                    val slot = menu.getSlot(row, column, player, menu)
+                    val slot = menu.getSlot(row, column, player)
                     val renderedItem = slot.getItemStack(player)
 
                     if (!slot.isCaptive(player, menu)) {
@@ -104,7 +104,7 @@ class RenderedInventory(
             for (column in (1..menu.columns)) {
                 val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
 
-                val slot = menu.getSlot(row, column, player, menu)
+                val slot = menu.getSlot(row, column, player)
 
                 if (slot.isCaptive(player, menu)) {
                     inventory.setItem(bukkit, slot.getItemStack(player))

@@ -83,7 +83,7 @@ public final class Page implements GUIComponent {
             delegate = Eco.get().blendMenuState(page, menu);
         }
 
-        return page.getSlot(row, column, player, delegate);
+        return page.getSlot(row, column, player);
     }
 
     @Override

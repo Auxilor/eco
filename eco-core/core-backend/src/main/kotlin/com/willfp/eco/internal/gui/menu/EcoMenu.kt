@@ -39,7 +39,7 @@ class EcoMenu(
     override fun getSlot(row: Int, column: Int): Slot =
         getPossiblyReactiveSlot(row, column, null)
 
-    override fun getSlot(row: Int, column: Int, player: Player, menu: Menu): Slot =
+    override fun getSlot(row: Int, column: Int, player: Player): Slot =
         getPossiblyReactiveSlot(row, column, player)
 
     override fun open(player: Player): Inventory {
