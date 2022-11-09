@@ -205,7 +205,7 @@ abstract class HandledCommand implements CommandBase {
         if (this.getTabCompleter() != null) {
             return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
         } else {
-            List<String> completions = this.tabComplete(sender, Arrays.asList(args));
+            List<String> completions = new ArrayList<>(this.tabComplete(sender, Arrays.asList(args)));
             if (sender instanceof Player player) {
                 completions.addAll(this.tabComplete(player, Arrays.asList(args)));
             }
