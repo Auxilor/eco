@@ -6,9 +6,12 @@ import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
@@ -143,7 +146,15 @@ public interface SlotBuilder {
      * @param predicate The predicate. Returns true when the slot should not be captive.
      * @return The builder.
      */
-    SlotBuilder notCaptiveFor(@NotNull Predicate<Player> predicate);
+    SlotBuilder notCaptiveFor(Predicate<Player> predicate);
+
+    /**
+     * Prevent captive for players that match a predicate.
+     *
+     * @param predicate The predicate. Returns true when the slot should not be captive.
+     * @return The builder.
+     */
+    SlotBuilder notCaptiveForItem(BiPredicate<Player, @Nullable ItemStack> predicate);
 
     /**
      * Set the ItemStack updater.

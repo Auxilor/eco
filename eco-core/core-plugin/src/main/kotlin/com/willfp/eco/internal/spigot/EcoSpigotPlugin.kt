@@ -87,7 +87,6 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogX
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCrashClaim
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
@@ -263,7 +262,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("IridiumSkyblock") { AntigriefManager.register(AntigriefIridiumSkyblock()) },
             IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
-            IntegrationLoader("FabledSkyBlock") { AntigriefManager.register(AntigriefFabledSkyBlock()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },

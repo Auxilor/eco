@@ -95,7 +95,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val slot = menu.getSlot(row, column, player)
 
-        if (!slot.isCaptive(player, menu)) {
+        if (!slot.isCaptive(player, menu) || !slot.isCaptiveForItem(player, menu, event.currentItem)) {
             event.isCancelled = true
         }
     }

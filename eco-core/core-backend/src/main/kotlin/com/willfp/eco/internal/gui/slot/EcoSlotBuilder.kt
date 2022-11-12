@@ -7,6 +7,8 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.inventory.ItemStack
+import java.util.function.BiPredicate
 import java.util.function.Predicate
 
 class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
@@ -17,6 +19,7 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private val handlers = mutableMapOf<ClickType, MutableList<SlotHandler>>()
 
     private var notCaptiveFor: (Player) -> Boolean = { false }
+    private var notCaptiveForItem: (Player, ItemStack?) -> Boolean = { _, _ -> false}
 
     override fun onClick(type: ClickType, action: SlotHandler): SlotBuilder {
         handlers.computeIfAbsent(type) { mutableListOf() } += action
@@ -25,6 +28,17 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
 
     override fun notCaptiveFor(predicate: Predicate<Player>): SlotBuilder {
         notCaptiveFor = { predicate.test(it) }
+        return this
+    }
+
+    /**
+     * Prevent captive for players that match a predicate.
+     *
+     * @param predicate The predicate. Returns true when the slot should not be captive.
+     * @return The builder.
+     */
+    override fun notCaptiveForItem(predicate: BiPredicate<Player, ItemStack?>): SlotBuilder {
+        notCaptiveForItem = { player, item -> predicate.test(player, item) }
         return this
     }
 
@@ -44,7 +58,8 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
             EcoCaptiveSlot(
                 provider,
                 captiveFromEmpty,
-                notCaptiveFor
+                notCaptiveFor,
+                notCaptiveForItem
             )
         } else {
             EcoSlot(

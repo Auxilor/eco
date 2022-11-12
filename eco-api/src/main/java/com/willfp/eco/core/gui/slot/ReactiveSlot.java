@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for custom slot implementations.
@@ -37,6 +38,13 @@ public abstract class ReactiveSlot implements Slot {
     public boolean isCaptive(@NotNull final Player player,
                              @NotNull final Menu menu) {
         return getSlot(player, menu).isCaptive(player, menu);
+    }
+
+    @Override
+    public boolean isCaptiveForItem(@NotNull final Player player,
+                             @NotNull final Menu menu,
+                             @Nullable final ItemStack item) {
+        return getSlot(player, menu).isCaptiveForItem(player, menu, item);
     }
 
     @Override

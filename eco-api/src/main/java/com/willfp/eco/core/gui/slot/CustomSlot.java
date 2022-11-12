@@ -4,6 +4,7 @@ import com.willfp.eco.core.gui.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for custom slot implementations.
@@ -47,6 +48,17 @@ public abstract class CustomSlot implements Slot {
         }
 
         return delegate.isCaptive(player, menu);
+    }
+
+    @Override
+    public boolean isCaptiveForItem(@NotNull final Player player,
+                             @NotNull final Menu menu,
+                             @Nullable final ItemStack item) {
+        if (delegate == null) {
+            throw new IllegalStateException("Custom Slot was not initialized!");
+        }
+
+        return delegate.isCaptiveForItem(player, menu, item);
     }
 
     @Override
