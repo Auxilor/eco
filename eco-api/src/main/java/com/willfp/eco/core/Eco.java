@@ -71,7 +71,7 @@ public interface Eco {
     /**
      * Create an event manager.
      *
-     * @param plugin The plugin.
+     * @param plugin The plugin.F
      * @return The event manager.
      */
     @NotNull
