@@ -47,17 +47,18 @@ public interface Slot extends GUIComponent {
     }
 
     /**
-     * If the slot is captive for this item. (Can this item be placed in it).
+     * If the slot is captive for a given item (can this item be placed in it).
      *
-     * @param player The player.
-     * @param menu   The menu.
+     * @param player    The player.
+     * @param menu      The menu.
      * @param itemStack The item.
      * @return If captive.
      */
-    default boolean isCaptiveForItem(@NotNull final Player player,
+    default boolean isCaptive(@NotNull final Player player,
                               @NotNull final Menu menu,
                               @Nullable final ItemStack itemStack) {
-        return false;
+        // Delegate to no-item version for backwards compatibility.
+        return this.isCaptive(player, menu);
     }
 
     /**

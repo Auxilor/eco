@@ -146,15 +146,19 @@ public interface SlotBuilder {
      * @param predicate The predicate. Returns true when the slot should not be captive.
      * @return The builder.
      */
-    SlotBuilder notCaptiveFor(Predicate<Player> predicate);
+    default SlotBuilder notCaptiveFor(@NotNull final Predicate<Player> predicate) {
+        return this.notCaptiveFor((player, itemStack) -> predicate.test(player));
+    }
 
     /**
-     * Prevent captive for players that match a predicate.
+     * Prevent captive for players and items that match a predicate.
      *
      * @param predicate The predicate. Returns true when the slot should not be captive.
      * @return The builder.
      */
-    SlotBuilder notCaptiveForItem(BiPredicate<Player, @Nullable ItemStack> predicate);
+    default SlotBuilder notCaptiveFor(@NotNull BiPredicate<Player, @Nullable ItemStack> predicate) {
+        return this;
+    }
 
     /**
      * Set the ItemStack updater.
