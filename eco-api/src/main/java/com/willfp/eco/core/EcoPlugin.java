@@ -701,10 +701,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     protected LangYml createLangYml() {
         try {
             return new LangYml(this);
-        } catch (final NullPointerException e) {
-            this.getLogger().severe("Failed to load lang.yml");
-            this.getLogger().severe("Please make sure you have a lang.yml in the resources folder");
-            this.getLogger().severe("in your plugin jar");
+        } catch (NullPointerException e) {
+            this.getLogger().severe("Failed to load lang.yml!");
+            this.getLogger().severe("For the developer of this plugin: make sure you have a lang.yml");
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
             return null;
@@ -721,10 +720,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     protected ConfigYml createConfigYml() {
         try {
             return new ConfigYml(this);
-        } catch (final NullPointerException e) {
-            this.getLogger().severe("Failed to load config.yml");
-            this.getLogger().severe("Please make sure you have a config.yml in the resources folder");
-            this.getLogger().severe("in your plugin jar");
+        } catch (NullPointerException e) {
+            this.getLogger().severe("Failed to load config.yml!");
+            this.getLogger().severe("For the developer of this plugin: make sure you have a config.yml");
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
             return null;
