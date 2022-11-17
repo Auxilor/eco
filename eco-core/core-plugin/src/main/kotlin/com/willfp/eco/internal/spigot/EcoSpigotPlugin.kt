@@ -15,7 +15,6 @@ import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.integrations.price.PriceManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.particle.Particles
@@ -115,7 +114,7 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicD
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
-import com.willfp.eco.internal.spigot.integrations.price.PriceUltraEconomy
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
@@ -336,8 +335,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Price
             IntegrationLoader("UltraEconomy") {
-                UltraEconomy.getAPI().currencies.forEach {
-                    PriceManager.register(PriceUltraEconomy(it))
+                for (currency in UltraEconomy.getAPI().currencies) {
+                    Prices.registerPriceFactory(PriceFactoryUltraEconomy(currency))
                 }
             },
 
