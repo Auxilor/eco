@@ -51,14 +51,13 @@ public interface Slot extends GUIComponent {
      *
      * @param player    The player.
      * @param menu      The menu.
-     * @param itemStack The item.
+     * @param itemStack The item; use null if the item is unknown.
      * @return If captive.
      */
-    default boolean isCaptive(@NotNull final Player player,
-                              @NotNull final Menu menu,
-                              @Nullable final ItemStack itemStack) {
-        // Delegate to no-item version for backwards compatibility.
-        return this.isCaptive(player, menu);
+    default boolean canCaptivateItem(@NotNull final Player player,
+                                     @NotNull final Menu menu,
+                                     @Nullable final ItemStack itemStack) {
+        return true;
     }
 
     /**

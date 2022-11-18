@@ -1,17 +1,15 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.gui.slot.functional.CaptiveCondition;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
@@ -146,17 +144,15 @@ public interface SlotBuilder {
      * @param predicate The predicate. Returns true when the slot should not be captive.
      * @return The builder.
      */
-    default SlotBuilder notCaptiveFor(@NotNull final Predicate<Player> predicate) {
-        return this.notCaptiveFor((player, itemStack) -> predicate.test(player));
-    }
+    SlotBuilder notCaptiveFor(@NotNull final Predicate<Player> predicate);
 
     /**
-     * Prevent captive for players and items that match a predicate.
+     * Set a whitelist for allowed captive items.
      *
-     * @param predicate The predicate. Returns true when the slot should not be captive.
+     * @param condition The condition. Returns true when the slot should be captive.
      * @return The builder.
      */
-    default SlotBuilder notCaptiveFor(@NotNull BiPredicate<Player, @Nullable ItemStack> predicate) {
+    default SlotBuilder setCaptiveCondition(@NotNull final CaptiveCondition condition) {
         return this;
     }
 

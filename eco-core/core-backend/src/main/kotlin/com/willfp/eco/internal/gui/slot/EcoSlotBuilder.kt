@@ -2,13 +2,13 @@ package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
+import com.willfp.eco.core.gui.slot.functional.CaptiveCondition
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.bukkit.inventory.ItemStack
-import java.util.function.BiPredicate
+import java.util.function.Predicate
 
 class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captive = false
@@ -17,15 +17,21 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
 
     private val handlers = mutableMapOf<ClickType, MutableList<SlotHandler>>()
 
-    private var notCaptiveFor: (Player, ItemStack?) -> Boolean = { _, _ -> false}
+    private var captiveCondition = CaptiveCondition { _, _, _ -> true }
+    private var notCaptiveFor: (Player) -> Boolean = { _ -> false}
 
     override fun onClick(type: ClickType, action: SlotHandler): SlotBuilder {
         handlers.computeIfAbsent(type) { mutableListOf() } += action
         return this
     }
 
-    override fun notCaptiveFor(predicate: BiPredicate<Player, ItemStack?>): SlotBuilder {
-        notCaptiveFor = { player, item -> predicate.test(player, item) }
+    override fun notCaptiveFor(predicate: Predicate<Player>): SlotBuilder {
+        notCaptiveFor = { player -> predicate.test(player) }
+        return this
+    }
+
+    override fun setCaptiveCondition(condition: CaptiveCondition): SlotBuilder {
+        captiveCondition = condition
         return this
     }
 
@@ -45,7 +51,8 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
             EcoCaptiveSlot(
                 provider,
                 captiveFromEmpty,
-                notCaptiveFor
+                notCaptiveFor,
+                captiveCondition
             )
         } else {
             EcoSlot(

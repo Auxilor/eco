@@ -72,11 +72,11 @@ fun SlotBuilder.onClick(clickType: ClickType, action: (Player, InventoryClickEve
 
 /** @see SlotBuilder.notCaptiveFor */
 fun SlotBuilder.notCaptiveFor(test: (Player) -> Boolean): SlotBuilder =
-    this.notCaptiveFor { t, _ -> test(t) }
+    this.notCaptiveFor { test(it) }
 
-/** @see SlotBuilder.notCaptiveFor */
-fun SlotBuilder.notCaptiveFor(test: (Player, ItemStack?) -> Boolean): SlotBuilder =
-    this.notCaptiveFor { player, item -> test(player, item) }
+/** @see SlotBuilder.setCaptiveCondition */
+fun SlotBuilder.setCaptiveCondition(test: (Player, Menu, ItemStack?) -> Boolean): SlotBuilder =
+    this.setCaptiveCondition { a, b, c -> test(a, b, c) }
 
 /**
  * @see SlotBuilder.setModifier

@@ -32,7 +32,7 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public @NotNull ItemStack getItemStack(@NotNull final Player player) {
+    public final @NotNull ItemStack getItemStack(@NotNull final Player player) {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
@@ -41,18 +41,28 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public boolean isCaptive(@NotNull final Player player,
-                             @NotNull final Menu menu,
-                             @Nullable final ItemStack item) {
+    public final boolean isCaptive(@NotNull final Player player,
+                                   @NotNull final Menu menu) {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
 
-        return delegate.isCaptive(player, menu, item);
+        return delegate.isCaptive(player, menu);
     }
 
     @Override
-    public boolean isCaptiveFromEmpty() {
+    public final boolean canCaptivateItem(@NotNull final Player player,
+                                          @NotNull final Menu menu,
+                                          @Nullable final ItemStack itemStack) {
+        if (delegate == null) {
+            throw new IllegalStateException("Custom Slot was not initialized!");
+        }
+
+        return delegate.canCaptivateItem(player, menu, itemStack);
+    }
+
+    @Override
+    public final boolean isCaptiveFromEmpty() {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
