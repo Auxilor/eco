@@ -84,9 +84,12 @@ public final class PriceEconomy implements Price {
 
     @Override
     public @NotNull PriceEconomy withMultiplier(double multiplier) {
-        return new PriceEconomy(
+        PriceEconomy copy = new PriceEconomy(
                 baseContext,
                 ctx -> function.apply(ctx) * multiplier
         );
+
+        copy.multipliers.putAll(this.multipliers);
+        return copy;
     }
 }

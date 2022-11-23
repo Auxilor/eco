@@ -56,12 +56,15 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
         }
 
         override fun withMultiplier(multiplier: Double): Price {
-            return PriceUltraEconomy(
+            val copy = PriceUltraEconomy(
                 currency,
                 baseContext
             ) {
                 function(it) * multiplier
             }
+
+            copy.multipliers.putAll(this.multipliers)
+            return copy
         }
     }
 }

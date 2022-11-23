@@ -149,10 +149,13 @@ public final class PriceItem implements Price {
 
     @Override
     public @NotNull PriceItem withMultiplier(double multiplier) {
-        return new PriceItem(
+        PriceItem copy = new PriceItem(
                 baseContext,
                 ctx -> function.apply(ctx) * multiplier,
                 item
         );
+
+        copy.multipliers.putAll(this.multipliers);
+        return copy;
     }
 }
