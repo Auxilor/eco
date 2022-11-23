@@ -41,10 +41,10 @@ public abstract class ReactiveSlot implements Slot {
     }
 
     @Override
-    public final boolean canCaptivateItem(@NotNull final Player player,
-                                    @NotNull final Menu menu,
-                                    @Nullable final ItemStack itemStack) {
-        return getSlot(player, menu).canCaptivateItem(player, menu, itemStack);
+    public final boolean isAllowedCaptive(@NotNull final Player player,
+                                          @NotNull final Menu menu,
+                                          @Nullable final ItemStack itemStack) {
+        return getSlot(player, menu).isAllowedCaptive(player, menu, itemStack);
     }
 
     @Override

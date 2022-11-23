@@ -1,6 +1,6 @@
 package com.willfp.eco.core.gui.slot;
 
-import com.willfp.eco.core.gui.slot.functional.CaptiveCondition;
+import com.willfp.eco.core.gui.slot.functional.CaptiveFilter;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
@@ -149,10 +149,10 @@ public interface SlotBuilder {
     /**
      * Set a whitelist for allowed captive items.
      *
-     * @param condition The condition. Returns true when the slot should be captive.
+     * @param filter The filter.
      * @return The builder.
      */
-    default SlotBuilder setCaptiveCondition(@NotNull final CaptiveCondition condition) {
+    default SlotBuilder setCaptiveFilter(@NotNull final CaptiveFilter filter) {
         return this;
     }
 

@@ -2,7 +2,7 @@ package com.willfp.eco.internal.gui.slot
 
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
-import com.willfp.eco.core.gui.slot.functional.CaptiveCondition
+import com.willfp.eco.core.gui.slot.functional.CaptiveFilter
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
@@ -17,7 +17,8 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
 
     private val handlers = mutableMapOf<ClickType, MutableList<SlotHandler>>()
 
-    private var captiveCondition = CaptiveCondition { _, _, _ -> true }
+    private var captiveFilter =
+        CaptiveFilter { _, _, _ -> true }
     private var notCaptiveFor: (Player) -> Boolean = { _ -> false}
 
     override fun onClick(type: ClickType, action: SlotHandler): SlotBuilder {
@@ -30,8 +31,8 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
         return this
     }
 
-    override fun setCaptiveCondition(condition: CaptiveCondition): SlotBuilder {
-        captiveCondition = condition
+    override fun setCaptiveFilter(filter: CaptiveFilter): SlotBuilder {
+        captiveFilter = filter
         return this
     }
 
@@ -52,7 +53,7 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
                 provider,
                 captiveFromEmpty,
                 notCaptiveFor,
-                captiveCondition
+                captiveFilter
             )
         } else {
             EcoSlot(

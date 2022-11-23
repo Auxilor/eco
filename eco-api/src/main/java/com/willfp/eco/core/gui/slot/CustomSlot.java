@@ -51,14 +51,14 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public final boolean canCaptivateItem(@NotNull final Player player,
+    public final boolean isAllowedCaptive(@NotNull final Player player,
                                           @NotNull final Menu menu,
                                           @Nullable final ItemStack itemStack) {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
 
-        return delegate.canCaptivateItem(player, menu, itemStack);
+        return delegate.isAllowedCaptive(player, menu, itemStack);
     }
 
     @Override
