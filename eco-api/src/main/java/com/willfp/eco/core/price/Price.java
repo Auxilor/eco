@@ -93,6 +93,7 @@ public interface Price {
      * Copy this price with a given base multiplier.
      *
      * @param multiplier The multiplier.
+     * @return The price with the multiplier applied.
      */
     @NotNull
     default Price withMultiplier(final double multiplier) {
