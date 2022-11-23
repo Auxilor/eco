@@ -81,4 +81,12 @@ public final class PriceEconomy implements Price {
                               final double multiplier) {
         this.multipliers.put(player.getUniqueId(), multiplier);
     }
+
+    @Override
+    public @NotNull PriceEconomy withMultiplier(double multiplier) {
+        return new PriceEconomy(
+                baseContext,
+                ctx -> function.apply(ctx) * multiplier
+        );
+    }
 }

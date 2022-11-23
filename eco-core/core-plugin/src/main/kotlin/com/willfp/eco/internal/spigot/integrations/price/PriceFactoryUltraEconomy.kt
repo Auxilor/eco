@@ -54,5 +54,14 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
         override fun setMultiplier(player: Player, multiplier: Double) {
             multipliers[player.uniqueId] = multiplier
         }
+
+        override fun withMultiplier(multiplier: Double): Price {
+            return PriceUltraEconomy(
+                currency,
+                baseContext
+            ) {
+                function(it) * multiplier
+            }
+        }
     }
 }

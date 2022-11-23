@@ -88,4 +88,14 @@ public interface Price {
                                final double multiplier) {
         // Override when needed.
     }
+
+    /**
+     * Copy this price with a given base multiplier.
+     *
+     * @param multiplier The multiplier.
+     */
+    @NotNull
+    default Price withMultiplier(final double multiplier) {
+        return this;
+    }
 }

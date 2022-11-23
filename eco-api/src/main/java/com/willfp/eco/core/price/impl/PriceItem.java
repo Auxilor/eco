@@ -146,4 +146,13 @@ public final class PriceItem implements Price {
                               final double multiplier) {
         this.multipliers.put(player.getUniqueId(), multiplier);
     }
+
+    @Override
+    public @NotNull PriceItem withMultiplier(double multiplier) {
+        return new PriceItem(
+                baseContext,
+                ctx -> function.apply(ctx) * multiplier,
+                item
+        );
+    }
 }
