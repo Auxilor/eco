@@ -34,9 +34,9 @@ class ShopEconomyShopGUI : ShopIntegration {
                 return
             }
 
-            val ecoEvent = ShopSellEvent(event.player, event.price, event.itemStack)
+            val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.price), event.itemStack)
             Bukkit.getPluginManager().callEvent(ecoEvent)
-            event.price = ecoEvent.price
+            event.price = ecoEvent.value.getValue(event.player)
         }
     }
 

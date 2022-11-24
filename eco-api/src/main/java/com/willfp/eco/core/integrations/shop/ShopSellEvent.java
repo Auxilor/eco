@@ -1,5 +1,7 @@
 package com.willfp.eco.core.integrations.shop;
 
+import com.willfp.eco.core.price.Price;
+import com.willfp.eco.core.price.impl.PriceEconomy;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -19,7 +21,7 @@ public class ShopSellEvent extends PlayerEvent {
     /**
      * The sell price.
      */
-    private double price;
+    private Price price;
 
     /**
      * The item to be sold.
@@ -33,9 +35,24 @@ public class ShopSellEvent extends PlayerEvent {
      * @param who   The player.
      * @param price The price.
      * @param item  The item.
+     * @deprecated Use the price system instead.
      */
+    @Deprecated(since = "6.47.0", forRemoval = true)
     public ShopSellEvent(@NotNull final Player who,
                          final double price,
+                         @Nullable final ItemStack item) {
+        this(who, new PriceEconomy(price), item);
+    }
+
+    /**
+     * Create new shop sell event.
+     *
+     * @param who   The player.
+     * @param price The price.
+     * @param item  The item.
+     */
+    public ShopSellEvent(@NotNull final Player who,
+                         @NotNull final Price price,
                          @Nullable final ItemStack item) {
         super(who);
 
@@ -44,21 +61,53 @@ public class ShopSellEvent extends PlayerEvent {
     }
 
     /**
+     * Get the value.
+     *
+     * @return The value.
+     */
+    @NotNull
+    public Price getValue() {
+        return this.price;
+    }
+
+    /**
+     * Set the value.
+     *
+     * @param price The value.
+     */
+    public void setValue(@NotNull final Price price) {
+        this.price = price;
+    }
+
+    /**
+     * Multiply the value by a certain amount.
+     *
+     * @param multiplier The multiplier.
+     */
+    public void multiplyValueBy(final double multiplier) {
+        this.price = this.price.withMultiplier(multiplier);
+    }
+
+    /**
      * Get the price.
      *
      * @return The price.
+     * @deprecated Use the price system instead.
      */
+    @Deprecated(since = "6.47.0", forRemoval = true)
     public double getPrice() {
-        return this.price;
+        return this.getValue().getValue(player);
     }
 
     /**
      * Set the price.
      *
      * @param price The price.
+     * @deprecated Use the price system instead.
      */
+    @Deprecated(since = "6.47.0", forRemoval = true)
     public void setPrice(final double price) {
-        this.price = price;
+        this.setValue(new PriceEconomy(price));
     }
 
     /**
