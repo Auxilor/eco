@@ -1,5 +1,7 @@
 package com.willfp.eco.core.integrations.shop;
 
+import com.willfp.eco.core.price.Price;
+import com.willfp.eco.core.price.impl.PriceFree;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +13,7 @@ import java.util.Set;
 /**
  * Class to handle shop integrations.
  */
+@SuppressWarnings("removal")
 public final class ShopManager {
     /**
      * A set of all registered integrations.
@@ -37,11 +40,53 @@ public final class ShopManager {
     }
 
     /**
+     * Get if an item is sellable for a player.
+     *
+     * @param itemStack The item.
+     * @param player    The player.
+     */
+    public static boolean isSellable(@Nullable final ItemStack itemStack,
+                                     @NotNull final Player player) {
+        if (itemStack == null) {
+            return false;
+        }
+
+        for (ShopIntegration integration : REGISTERED) {
+            return integration.isSellable(itemStack, player);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the value of an item for a player.
+     *
+     * @param itemStack The item.
+     * @param player    The player.
+     * @return The price.
+     */
+    @NotNull
+    public static Price getValue(@Nullable final ItemStack itemStack,
+                                 @NotNull final Player player) {
+        if (itemStack == null) {
+            return new PriceFree();
+        }
+
+        for (ShopIntegration integration : REGISTERED) {
+            return integration.getValue(itemStack, player);
+        }
+
+        return new PriceFree();
+    }
+
+    /**
      * Get the price of an item.
      *
      * @param itemStack The item.
      * @return The price.
+     * @deprecated Use getValue instead.
      */
+    @Deprecated(since = "6.47.0", forRemoval = true)
     public static double getItemPrice(@Nullable final ItemStack itemStack) {
         return getItemPrice(itemStack, null);
     }
@@ -52,7 +97,9 @@ public final class ShopManager {
      * @param itemStack The item.
      * @param player    The player.
      * @return The price.
+     * @deprecated Use getValue instead.
      */
+    @Deprecated(since = "6.47.0", forRemoval = true)
     public static double getItemPrice(@Nullable final ItemStack itemStack,
                                       @Nullable final Player player) {
         if (itemStack == null) {
