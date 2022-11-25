@@ -4,6 +4,7 @@ import com.willfp.eco.core.gui.menu.events.CaptiveItemChangeEvent
 import com.willfp.eco.core.items.isEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.MenuUtils
+import com.willfp.eco.util.openMenu
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -32,6 +33,14 @@ class RenderedInventory(
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
+        // This can happen when opening menus from other menus,
+        // fixing a bug where multiple paginated menus on top of
+        // each other caused bugs with page changer display.
+        if (this.menu != player.openMenu) {
+            MenuHandler.unregisterInventory(this.inventory)
+            return
+        }
+
         val newCaptive = mutableMapOf<GUIPosition, ItemStack>()
 
         for (row in (1..menu.rows)) {
