@@ -36,6 +36,7 @@ public interface ShopIntegration extends Integration {
      *
      * @param itemStack The item.
      * @param player    The player.
+     * @return If sellable.
      */
     default boolean isSellable(@NotNull final ItemStack itemStack,
                                @NotNull final Player player) {

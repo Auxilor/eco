@@ -44,6 +44,7 @@ public final class ShopManager {
      *
      * @param itemStack The item.
      * @param player    The player.
+     * @return If sellable.
      */
     public static boolean isSellable(@Nullable final ItemStack itemStack,
                                      @NotNull final Player player) {
