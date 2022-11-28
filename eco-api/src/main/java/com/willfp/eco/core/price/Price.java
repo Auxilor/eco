@@ -111,10 +111,22 @@ public interface Price {
         throw new NotImplementedException("Override getValue(Player, double) in your Price implementation!");
     }
 
+    /**
+     * Get the value multiplier for the player.
+     *
+     * @param player The player.
+     * @return The multiplier.
+     */
     default double getMultiplier(@NotNull final Player player) {
         return 1;
     }
 
+    /**
+     * Set the value multiplier for the player.
+     *
+     * @param player     The player.
+     * @param multiplier The multiplier.
+     */
     default void setMultiplier(@NotNull final Player player,
                                final double multiplier) {
         throw new NotImplementedException("Override setMultiplier(Player, double) in your Price implementation!");
