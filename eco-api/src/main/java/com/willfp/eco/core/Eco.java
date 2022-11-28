@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
@@ -29,6 +30,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
@@ -509,6 +511,20 @@ public interface Eco {
      * Sync commands.
      */
     void syncCommands();
+
+    /**
+     * Get the command map.
+     *
+     * @return The command map.
+     */
+    @NotNull CommandMap getCommandMap();
+
+    /**
+     * Unregister a command.
+     *
+     * @param command The command.
+     */
+    void unregisterCommand(@NotNull final PluginCommand command);
 
     /**
      * Get the instance of eco; the bridge between the api frontend

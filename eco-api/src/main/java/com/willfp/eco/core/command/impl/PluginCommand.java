@@ -73,10 +73,7 @@ public abstract class PluginCommand extends HandledCommand implements CommandExe
     public final void unregister() {
         CommandMap commandMap = getCommandMap();
 
-        Command found = commandMap.getCommand(this.getName());
-        if (found != null) {
-            found.unregister(commandMap);
-        }
+        Eco.get().unregisterCommand(this);
 
         Eco.get().syncCommands();
     }
