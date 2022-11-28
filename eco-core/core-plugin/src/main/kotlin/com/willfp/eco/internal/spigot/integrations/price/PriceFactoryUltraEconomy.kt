@@ -31,20 +31,20 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
         private val Player.account: Account?
             get() = api.accounts.uuid(this.uniqueId).orElse(null)
 
-        override fun canAfford(player: Player): Boolean {
-            return (player.account?.getBalance(currency)?.onHand ?: 0f) >= getValue(player)
+        override fun canAfford(player: Player, multiplier: Double): Boolean {
+            return (player.account?.getBalance(currency)?.onHand ?: 0f) >= getValue(player, multiplier)
         }
 
-        override fun pay(player: Player) {
-            player.account?.getBalance(currency)?.removeHand(getValue(player).toFloat())
+        override fun pay(player: Player, multiplier: Double) {
+            player.account?.getBalance(currency)?.removeHand(getValue(player, multiplier).toFloat())
         }
 
-        override fun giveTo(player: Player) {
-            player.account?.getBalance(currency)?.addHand(getValue(player).toFloat())
+        override fun giveTo(player: Player, multiplier: Double) {
+            player.account?.getBalance(currency)?.addHand(getValue(player, multiplier).toFloat())
         }
 
-        override fun getValue(player: Player): Double {
-            return function(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player)
+        override fun getValue(player: Player, multiplier: Double): Double {
+            return function(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player) * multiplier
         }
 
         override fun getMultiplier(player: Player): Double {
@@ -53,18 +53,6 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
 
         override fun setMultiplier(player: Player, multiplier: Double) {
             multipliers[player.uniqueId] = multiplier
-        }
-
-        override fun withMultiplier(multiplier: Double): Price {
-            val copy = PriceUltraEconomy(
-                currency,
-                baseContext
-            ) {
-                function(it) * multiplier
-            }
-
-            copy.multipliers.putAll(this.multipliers)
-            return copy
         }
     }
 }

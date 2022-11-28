@@ -22,7 +22,7 @@ class ShopDeluxeSellwands : ShopIntegration {
 
             val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.money), null)
             Bukkit.getPluginManager().callEvent(ecoEvent)
-            event.money = ecoEvent.value.getValue(event.player)
+            event.money = ecoEvent.value.getValue(event.player) * ecoEvent.multiplier
         }
     }
 

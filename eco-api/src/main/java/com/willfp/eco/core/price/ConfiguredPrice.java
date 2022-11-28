@@ -24,7 +24,7 @@ public final class ConfiguredPrice implements Price {
     /**
      * Free.
      */
-    private static final ConfiguredPrice FREE = new ConfiguredPrice(
+    public static final ConfiguredPrice FREE = new ConfiguredPrice(
             new PriceFree(),
             "Free"
     );
@@ -52,23 +52,27 @@ public final class ConfiguredPrice implements Price {
     }
 
     @Override
-    public boolean canAfford(@NotNull final Player player) {
-        return this.price.canAfford(player);
+    public boolean canAfford(@NotNull final Player player,
+                             final double multiplier) {
+        return this.price.canAfford(player, multiplier);
     }
 
     @Override
-    public void pay(@NotNull final Player player) {
-        this.price.pay(player);
+    public void pay(@NotNull final Player player,
+                    final double multiplier) {
+        this.price.pay(player, multiplier);
     }
 
     @Override
-    public void giveTo(@NotNull final Player player) {
-        this.price.giveTo(player);
+    public void giveTo(@NotNull final Player player,
+                       final double multiplier) {
+        this.price.giveTo(player, multiplier);
     }
 
     @Override
-    public double getValue(@NotNull final Player player) {
-        return this.price.getValue(player);
+    public double getValue(@NotNull final Player player,
+                           final double multiplier) {
+        return this.price.getValue(player, multiplier);
     }
 
     @Override
@@ -80,14 +84,6 @@ public final class ConfiguredPrice implements Price {
     public void setMultiplier(@NotNull final Player player,
                               final double multiplier) {
         this.price.setMultiplier(player, multiplier);
-    }
-
-    @Override
-    public @NotNull ConfiguredPrice withMultiplier(final double multiplier) {
-        return new ConfiguredPrice(
-                this.price.withMultiplier(multiplier),
-                formatString
-        );
     }
 
     /**
@@ -106,8 +102,20 @@ public final class ConfiguredPrice implements Price {
      * @return The display string.
      */
     public String getDisplay(@NotNull final Player player) {
+        return this.getDisplay(player, 1.0);
+    }
+
+    /**
+     * Get the display string for a player.
+     *
+     * @param player     The player.
+     * @param multiplier The multiplier.
+     * @return The display string.
+     */
+    public String getDisplay(@NotNull final Player player,
+                             final double multiplier) {
         return StringUtils.format(
-                formatString.replace("%value%", NumberUtils.format(this.getPrice().getValue(player))),
+                formatString.replace("%value%", NumberUtils.format(this.getPrice().getValue(player, multiplier))),
                 player,
                 StringUtils.FormatOption.WITH_PLACEHOLDERS
         );
