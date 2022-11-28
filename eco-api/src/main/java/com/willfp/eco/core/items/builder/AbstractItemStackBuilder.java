@@ -70,7 +70,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
 
     @Override
     public U setAmount(final int amount) {
-        Validate.isTrue(amount >= 1 && amount <= base.getMaxStackSize());
+        Validate.isTrue(amount >= 1);
         base.setAmount(amount);
         return (U) this;
     }
