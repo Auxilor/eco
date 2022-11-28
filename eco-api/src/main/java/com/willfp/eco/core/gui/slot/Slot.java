@@ -57,7 +57,7 @@ public interface Slot extends GUIComponent {
     default boolean isAllowedCaptive(@NotNull final Player player,
                                      @NotNull final Menu menu,
                                      @Nullable final ItemStack itemStack) {
-        return true;
+        return this.isCaptive(player, menu);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.willfp.eco.core.gui.slot.functional.CaptiveFilter
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.util.toSingletonList
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
@@ -35,13 +36,15 @@ class EcoCaptiveSlot(
 }
 
 private fun captiveWithTest(
-    playerTest: (Player) -> Boolean,
+    notCaptiveFor: (Player) -> Boolean,
     filter: CaptiveFilter
 ): SlotHandler = SlotHandler { event, _, menu ->
     val player = event.whoClicked as Player
 
-    val allowedForPlayer = !playerTest(player)
-    val allowedForCondition = filter.isAllowed(player, menu, event.currentItem)
+    val item = event.currentItem.nullIfAir() ?: event.cursor.nullIfAir()
 
-    event.isCancelled = !(allowedForCondition && allowedForPlayer)
+    event.isCancelled = !filter.isAllowed(player, menu, item) || notCaptiveFor(player)
 }
+
+private fun ItemStack?.nullIfAir(): ItemStack? =
+    if (this?.type == Material.AIR) null else this
