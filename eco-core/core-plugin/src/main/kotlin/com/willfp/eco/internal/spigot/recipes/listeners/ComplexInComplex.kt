@@ -15,6 +15,11 @@ object ComplexInComplex : RecipeListener {
             return
         }
 
+        if (event.inventory.size == 5) {
+            event.deny()
+            return
+        }
+
         val player = event.inventory.viewers.getOrNull(0) as? Player ?: return
 
         val matrix = event.inventory.matrix
