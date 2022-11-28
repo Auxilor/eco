@@ -21,11 +21,11 @@ val ItemStack.price: Double
     ReplaceWith("this.getValue(player)"),
 )
 fun ItemStack.getPrice(player: Player): Double =
-    this.getValue(player).getValue(player)
+    this.getUnitValue(player).getValue(player, this.amount.toDouble())
 
-/** @see ShopManager.getValue */
-fun ItemStack.getValue(player: Player): Price =
-    ShopManager.getValue(this, player)
+/** @see ShopManager.getUnitValue */
+fun ItemStack.getUnitValue(player: Player): Price =
+    ShopManager.getUnitValue(this, player)
 
 /** @see ShopManager.isSellable */
 fun ItemStack?.isSellable(player: Player): Boolean =

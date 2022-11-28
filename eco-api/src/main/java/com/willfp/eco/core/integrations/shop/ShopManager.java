@@ -13,7 +13,6 @@ import java.util.Set;
 /**
  * Class to handle shop integrations.
  */
-@SuppressWarnings("removal")
 public final class ShopManager {
     /**
      * A set of all registered integrations.
@@ -60,21 +59,23 @@ public final class ShopManager {
     }
 
     /**
-     * Get the value of an item for a player.
+     * Get the value of one of an item for a player.
+     * <p>
+     * For example, if you pass in a stack, it will only return the value of <b>one</b> item, not the full stack.
      *
      * @param itemStack The item.
      * @param player    The player.
      * @return The price.
      */
     @NotNull
-    public static Price getValue(@Nullable final ItemStack itemStack,
-                                 @NotNull final Player player) {
+    public static Price getUnitValue(@Nullable final ItemStack itemStack,
+                                     @NotNull final Player player) {
         if (itemStack == null) {
             return new PriceFree();
         }
 
         for (ShopIntegration integration : REGISTERED) {
-            return integration.getValue(itemStack, player);
+            return integration.getUnitValue(itemStack, player);
         }
 
         return new PriceFree();
@@ -85,7 +86,7 @@ public final class ShopManager {
      *
      * @param itemStack The item.
      * @return The price.
-     * @deprecated Use getValue instead.
+     * @deprecated Use getValue instead. This will always return 0 as prices depend on players.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public static double getItemPrice(@Nullable final ItemStack itemStack) {
@@ -98,21 +99,17 @@ public final class ShopManager {
      * @param itemStack The item.
      * @param player    The player.
      * @return The price.
-     * @deprecated Use getValue instead.
+     * @deprecated Use getValue instead. Null players / null items will always return 0.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public static double getItemPrice(@Nullable final ItemStack itemStack,
                                       @Nullable final Player player) {
-        if (itemStack == null) {
+        if (itemStack == null || player == null) {
             return 0.0;
         }
 
         for (ShopIntegration shopIntegration : REGISTERED) {
-            if (player == null) {
-                return shopIntegration.getPrice(itemStack);
-            } else {
-                return shopIntegration.getPrice(itemStack, player);
-            }
+            return shopIntegration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount());
         }
 
         return 0.0;

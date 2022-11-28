@@ -44,15 +44,17 @@ public interface ShopIntegration extends Integration {
     }
 
     /**
-     * Get the value of an item for a player.
+     * Get the value of one of an item for a player.
+     * <p>
+     * For example, if you pass in a stack, it will only return the value of <b>one</b> item, not the full stack.
      *
      * @param itemStack The item.
      * @param player    The player.
      * @return The price.
      */
     @NotNull
-    default Price getValue(@NotNull final ItemStack itemStack,
-                           @NotNull final Player player) {
+    default Price getUnitValue(@NotNull final ItemStack itemStack,
+                               @NotNull final Player player) {
         return new PriceFree();
     }
 
@@ -80,6 +82,6 @@ public interface ShopIntegration extends Integration {
     @Deprecated(since = "6.47.0", forRemoval = true)
     default double getPrice(@NotNull final ItemStack itemStack,
                             @NotNull final Player player) {
-        return getValue(itemStack, player).getValue(player);
+        return getUnitValue(itemStack, player).getValue(player);
     }
 }
