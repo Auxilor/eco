@@ -25,9 +25,11 @@ class ShopShopGuiPlus : ShopIntegration {
         return ShopGuiPlusSellEventListeners
     }
 
-    override fun getValue(itemStack: ItemStack, player: Player): Price {
+    override fun getUnitValue(itemStack: ItemStack, player: Player): Price {
         return PriceEconomy(
-            ShopGuiPlusApi.getItemStackPriceSell(player, itemStack)
+            ShopGuiPlusApi.getItemStackPriceSell(player, itemStack.clone().apply {
+                amount = 1
+            })
         )
     }
 
