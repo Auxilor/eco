@@ -13,7 +13,7 @@ import java.util.function.Function
 
 class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
     override fun getNames(): List<String> {
-        return "ultraeconomy:${currency.name.lowercase()}".toSingletonList()
+        return currency.name.lowercase().toSingletonList()
     }
 
     override fun create(baseContext: MathContext, function: Function<MathContext, Double>): Price {
