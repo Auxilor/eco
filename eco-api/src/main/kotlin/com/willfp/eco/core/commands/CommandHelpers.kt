@@ -140,3 +140,4 @@ fun CommandBase.addSubcommand(
     init(command)
     return command
 }
+

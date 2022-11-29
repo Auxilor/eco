@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
@@ -13,11 +14,8 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.internal.EcoPropsParser
-import com.willfp.eco.internal.config.EcoConfigHandler
-import com.willfp.eco.internal.config.EcoConfigSection
-import com.willfp.eco.internal.config.EcoLoadableConfig
-import com.willfp.eco.internal.config.EcoUpdatableConfig
-import com.willfp.eco.internal.config.toMap
+import com.willfp.eco.internal.command.EcoPluginCommand
+import com.willfp.eco.internal.config.*
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
 import com.willfp.eco.internal.events.EcoEventManager
@@ -42,16 +40,7 @@ import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.evaluateExpression
-import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
-import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
-import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
-import com.willfp.eco.internal.spigot.proxy.SkullProxy
-import com.willfp.eco.internal.spigot.proxy.SyncCommandsProxy
-import com.willfp.eco.internal.spigot.proxy.TPSProxy
+import com.willfp.eco.internal.spigot.proxy.*
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.ConfigurationSection
@@ -62,7 +51,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.net.URLClassLoader
-import java.util.UUID
+import java.util.*
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 
@@ -166,8 +155,30 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         return config
     }
 
-    override fun createDropQueue(player: Player) = if (this.configYml.getBool("use-fast-collated-drops"))
-        EcoFastCollatedDropQueue(player) else EcoDropQueue(player)
+    override fun createPluginCommand(
+        plugin: EcoPlugin,
+        name: String,
+        permission: String,
+        playersOnly: Boolean
+    ) = EcoPluginCommand(
+        plugin,
+        name,
+        permission,
+        playersOnly
+    )
+
+    override fun createSubCommand(
+        plugin: EcoPlugin,
+        name: String,
+        permission: String,
+        playersOnly: Boolean
+    ): CommandBase {
+        TODO("Not yet implemented")
+    }
+
+    override fun createDropQueue(player: Player) =
+        if (this.configYml.getBool("use-fast-collated-drops"))
+            EcoFastCollatedDropQueue(player) else EcoDropQueue(player)
 
     override fun getRegisteredPersistentDataKeys() =
         KeyRegistry.getRegisteredKeys()

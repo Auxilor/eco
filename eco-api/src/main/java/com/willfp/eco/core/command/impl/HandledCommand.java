@@ -1,28 +1,31 @@
 package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.command.ArgumentAssertionException;
 import com.willfp.eco.core.command.CommandBase;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 /**
  * Abstract class for commands that can be handled.
  * <p>
- * Handled commands have a method to pass in raw input from bukkit commands
- * in order to execute the command-specific code. It's essentially an internal
- * layer, hence why it's a package-private class.
+ * Handled commands have a method to pass in raw input from bukkit commands in order to execute the
+ * command-specific code. It's essentially an internal layer, hence why it's a package-private
+ * class.
  */
-@SuppressWarnings({"DeprecatedIsStillUsed", "removal"})
+@Deprecated(forRemoval = true)
+@SuppressWarnings({"removal"})
 abstract class HandledCommand implements CommandBase {
+
     /**
      * The plugin.
      */
@@ -66,6 +69,8 @@ abstract class HandledCommand implements CommandBase {
      */
     private final List<CommandBase> subcommands;
 
+    private final AtomicReference<CommandSender> commandSenderReference = new AtomicReference<>();
+
     /**
      * Create a new command.
      * <p>
@@ -77,9 +82,9 @@ abstract class HandledCommand implements CommandBase {
      * @param playersOnly If only players should be able to execute this command.
      */
     HandledCommand(@NotNull final EcoPlugin plugin,
-                   @NotNull final String name,
-                   @NotNull final String permission,
-                   final boolean playersOnly) {
+        @NotNull final String name,
+        @NotNull final String permission,
+        final boolean playersOnly) {
         this.plugin = plugin;
         this.name = name;
         this.permission = permission;
@@ -117,7 +122,7 @@ abstract class HandledCommand implements CommandBase {
      * @param args   The arguments.
      */
     protected final void handle(@NotNull final CommandSender sender,
-                                @NotNull final String[] args) {
+        @NotNull final String[] args) {
         if (!canExecute(sender, this, this.getPlugin())) {
             return;
         }
@@ -129,7 +134,8 @@ abstract class HandledCommand implements CommandBase {
                         return;
                     }
 
-                    ((HandledCommand) subcommand).handle(sender, Arrays.copyOfRange(args, 1, args.length));
+                    ((HandledCommand) subcommand).handle(sender,
+                        Arrays.copyOfRange(args, 1, args.length));
 
                     return;
                 }
@@ -141,13 +147,17 @@ abstract class HandledCommand implements CommandBase {
             return;
         }
 
-        if (this.getHandler() != null) {
-            this.getHandler().onExecute(sender, Arrays.asList(args));
-        } else {
-            this.onExecute(sender, Arrays.asList(args));
-            if (sender instanceof Player player) {
-                this.onExecute(player, Arrays.asList(args));
+        try {
+            if (this.getHandler() != null) {
+                this.getHandler().onExecute(sender, Arrays.asList(args));
+            } else {
+                this.onExecute(sender, Arrays.asList(args));
+                if (sender instanceof Player player) {
+                    this.onExecute(player, Arrays.asList(args));
+                }
             }
+        } catch (ArgumentAssertionException e) {
+
         }
     }
 
@@ -159,7 +169,7 @@ abstract class HandledCommand implements CommandBase {
      * @return The tab completion results.
      */
     protected final List<String> handleTabCompletion(@NotNull final CommandSender sender,
-                                                     @NotNull final String[] args) {
+        @NotNull final String[] args) {
 
         if (!sender.hasPermission(this.getPermission())) {
             return null;
@@ -169,12 +179,12 @@ abstract class HandledCommand implements CommandBase {
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(
-                    args[0],
-                    this.getSubcommands().stream()
-                            .filter(subCommand -> sender.hasPermission(subCommand.getPermission()))
-                            .map(CommandBase::getName)
-                            .collect(Collectors.toList()),
-                    completions
+                args[0],
+                this.getSubcommands().stream()
+                    .filter(subCommand -> sender.hasPermission(subCommand.getPermission()))
+                    .map(CommandBase::getName)
+                    .collect(Collectors.toList()),
+                completions
             );
 
             Collections.sort(completions);
@@ -198,14 +208,16 @@ abstract class HandledCommand implements CommandBase {
             }
 
             if (command != null) {
-                return command.handleTabCompletion(sender, Arrays.copyOfRange(args, 1, args.length));
+                return command.handleTabCompletion(sender,
+                    Arrays.copyOfRange(args, 1, args.length));
             }
         }
 
         if (this.getTabCompleter() != null) {
             return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
         } else {
-            List<String> completions = new ArrayList<>(this.tabComplete(sender, Arrays.asList(args)));
+            List<String> completions = new ArrayList<>(
+                this.tabComplete(sender, Arrays.asList(args)));
             if (sender instanceof Player player) {
                 completions.addAll(this.tabComplete(player, Arrays.asList(args)));
             }
@@ -222,8 +234,8 @@ abstract class HandledCommand implements CommandBase {
      * @return If the sender can execute.
      */
     public static boolean canExecute(@NotNull final CommandSender sender,
-                                     @NotNull final CommandBase command,
-                                     @NotNull final EcoPlugin plugin) {
+        @NotNull final CommandBase command,
+        @NotNull final EcoPlugin plugin) {
         if (!sender.hasPermission(command.getPermission()) && sender instanceof Player) {
             sender.sendMessage(plugin.getLangYml().getNoPermission());
             return false;
@@ -288,7 +300,8 @@ abstract class HandledCommand implements CommandBase {
 
     @Deprecated(forRemoval = true)
     @Override
-    public void setTabCompleter(@Nullable final com.willfp.eco.core.command.TabCompleteHandler tabCompleter) {
+    public void setTabCompleter(
+        @Nullable final com.willfp.eco.core.command.TabCompleteHandler tabCompleter) {
         this.tabCompleter = tabCompleter;
     }
 }

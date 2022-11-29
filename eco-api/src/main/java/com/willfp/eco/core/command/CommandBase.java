@@ -2,18 +2,41 @@ package com.willfp.eco.core.command;
 
 import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.EcoPlugin;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for all command implementations.
  */
 @SuppressWarnings("removal")
 public interface CommandBase {
+
+    /**
+     * Get aliases. Leave null if this command is from plugin.yml.
+     *
+     * @return The aliases.
+     */
+    @NotNull
+    default List<String> getAliases() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Get description.
+     *
+     * @return The description.
+     */
+    @Nullable
+    default public String getDescription() {
+        return null;
+    }
+
     /**
      * Get command name.
      *
@@ -50,7 +73,7 @@ public interface CommandBase {
      * @param args   The args.
      */
     default void onExecute(@NotNull CommandSender sender,
-                           @NotNull List<String> args) {
+        @NotNull List<String> args) throws ArgumentAssertionException {
         // Do nothing.
     }
 
@@ -61,7 +84,7 @@ public interface CommandBase {
      * @param args   The args.
      */
     default void onExecute(@NotNull Player sender,
-                           @NotNull List<String> args) {
+        @NotNull List<String> args) throws ArgumentAssertionException {
         // Do nothing.
     }
 
@@ -74,7 +97,7 @@ public interface CommandBase {
      */
     @NotNull
     default List<String> tabComplete(@NotNull CommandSender sender,
-                                     @NotNull List<String> args) {
+        @NotNull List<String> args) {
         return new ArrayList<>();
     }
 
@@ -87,9 +110,70 @@ public interface CommandBase {
      */
     @NotNull
     default List<String> tabComplete(@NotNull Player sender,
-                                     @NotNull List<String> args) {
+        @NotNull List<String> args) {
         return new ArrayList<>();
     }
+
+    void register();
+
+    void unregister();
+
+    /**
+     * Throws an exception and sends a lang message if obj null
+     *
+     * @param obj        the object
+     * @param langTarget value in the langYml
+     * @param <T>        the generic type of object
+     * @return Returns the object given or throws an exception
+     * @throws ArgumentAssertionException exception thrown when null
+     */
+    default @NotNull <T> Optional<T> assertNonNull(@Nullable T obj, @NotNull String langTarget)
+        throws ArgumentAssertionException {
+        return Optional.empty();
+    }
+
+    /**
+     * Throws an exception if predicate tests false
+     *
+     * @param obj        Object to test with predicate
+     * @param predicate  predicate to test
+     * @param langTarget value in the langYml
+     * @param <T>        the generic type of object
+     * @return Returns the object given or throws an exception
+     * @throws ArgumentAssertionException
+     */
+    default @NotNull <T> Optional<T> assertPredicate(@Nullable T obj,
+        @NotNull Predicate<T> predicate, @NotNull String langTarget)
+        throws ArgumentAssertionException {
+        return Optional.empty();
+    }
+
+    /**
+     * Throws an exception and sends a lang message if Bukkit.getPlayer(player) is null
+     *
+     * @param player     the player name
+     * @param langTarget value in the langYml
+     * @return Returns the player
+     * @throws ArgumentAssertionException exception thrown when invalid player
+     */
+    default @NotNull Optional<Player> assertPlayer(@NotNull String player,
+        @NotNull String langTarget)
+        throws ArgumentAssertionException {
+        return Optional.empty();
+    }
+
+
+    /**
+     * @param condition  the condition, throws exception if false
+     * @param langTarget value in the langYml
+     * @return Returns the condition given or throws an exception
+     * @throws ArgumentAssertionException exception thrown when false
+     */
+    default boolean assertCondition(boolean condition, @NotNull String langTarget)
+        throws ArgumentAssertionException {
+        return true;
+    }
+
 
     /**
      * Get the plugin.
