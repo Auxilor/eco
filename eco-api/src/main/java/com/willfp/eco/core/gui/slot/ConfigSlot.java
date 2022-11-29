@@ -1,12 +1,14 @@
 package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -37,7 +39,25 @@ public class ConfigSlot extends CustomSlot {
     public ConfigSlot(@NotNull final Config config) {
         this.config = config;
 
-        SlotBuilder builder = Slot.builder(Items.lookup(config.getString("item")));
+        ItemStack item = Items.lookup(config.getString("item")).getItem();
+
+        SlotBuilder builder = Slot.builder((player, menu) -> {
+            if (config.has("lore")) {
+                return item;
+            } else {
+                FastItemStack fast = FastItemStack.wrap(item.clone());
+                List<String> newLore = new ArrayList<>(fast.getLore());
+                newLore.addAll(
+                        StringUtils.formatList(
+                                config.getStrings("lore"),
+                                player,
+                                StringUtils.FormatOption.WITH_PLACEHOLDERS
+                        )
+                );
+                fast.setLore(newLore);
+                return fast.unwrap();
+            }
+        });
 
         for (ClickType clickType : ClickType.values()) {
             builder.onClick(
