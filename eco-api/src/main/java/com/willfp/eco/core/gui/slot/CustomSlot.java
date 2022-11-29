@@ -4,6 +4,7 @@ import com.willfp.eco.core.gui.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for custom slot implementations.
@@ -31,7 +32,7 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public @NotNull ItemStack getItemStack(@NotNull final Player player) {
+    public final @NotNull ItemStack getItemStack(@NotNull final Player player) {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
@@ -40,8 +41,8 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public boolean isCaptive(@NotNull final Player player,
-                             @NotNull final Menu menu) {
+    public final boolean isCaptive(@NotNull final Player player,
+                                   @NotNull final Menu menu) {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
@@ -50,7 +51,18 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public boolean isCaptiveFromEmpty() {
+    public final boolean isAllowedCaptive(@NotNull final Player player,
+                                          @NotNull final Menu menu,
+                                          @Nullable final ItemStack itemStack) {
+        if (delegate == null) {
+            throw new IllegalStateException("Custom Slot was not initialized!");
+        }
+
+        return delegate.isAllowedCaptive(player, menu, itemStack);
+    }
+
+    @Override
+    public final boolean isCaptiveFromEmpty() {
         if (delegate == null) {
             throw new IllegalStateException("Custom Slot was not initialized!");
         }
@@ -59,8 +71,8 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
-    public final Slot getActionableSlot(@NotNull final Player player,
-                                        @NotNull final Menu menu) {
+    public final @NotNull Slot getActionableSlot(@NotNull final Player player,
+                                                 @NotNull final Menu menu) {
         return delegate;
     }
 

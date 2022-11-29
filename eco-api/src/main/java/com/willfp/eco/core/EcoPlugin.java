@@ -699,7 +699,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return lang.yml.
      */
     protected LangYml createLangYml() {
-        return new LangYml(this);
+        try {
+            return new LangYml(this);
+        } catch (NullPointerException e) {
+            this.getLogger().severe("Failed to load lang.yml!");
+            this.getLogger().severe("For the developer of this plugin: make sure you have a lang.yml");
+            e.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+            return null;
+        }
     }
 
     /**
@@ -710,7 +718,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return config.yml.
      */
     protected ConfigYml createConfigYml() {
-        return new ConfigYml(this);
+        try {
+            return new ConfigYml(this);
+        } catch (NullPointerException e) {
+            this.getLogger().severe("Failed to load config.yml!");
+            this.getLogger().severe("For the developer of this plugin: make sure you have a config.yml");
+            e.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+            return null;
+        }
     }
 
     /**

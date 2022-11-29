@@ -17,6 +17,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.PlayerInventory
 
@@ -76,6 +77,33 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     @EventHandler(
         priority = EventPriority.HIGH
     )
+    fun handleSlotClick(event: InventoryDragEvent) {
+        val rendered = event.view.topInventory.asRenderedInventory() ?: return
+
+        val player = event.whoClicked as? Player ?: return
+
+        val menu = rendered.menu
+
+        val slots = event.inventorySlots
+
+        for (slotID in slots) {
+            val (row, column) = MenuUtils.convertSlotToRowColumn(slotID, menu.columns)
+
+            val slot = menu.getSlot(row, column, player)
+
+            if (slot.isCaptive(player, menu)) {
+                if (!slot.isAllowedCaptive(player, menu, event.oldCursor)) {
+                    event.isCancelled = true
+                }
+            } else {
+                event.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler(
+        priority = EventPriority.HIGH
+    )
     fun handleShiftClick(event: InventoryClickEvent) {
         if (!event.isShiftClick) {
             return
@@ -95,7 +123,11 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val slot = menu.getSlot(row, column, player)
 
-        if (!slot.isCaptive(player, menu)) {
+        if (slot.isCaptive(player, menu)) {
+            if (!slot.isAllowedCaptive(player, menu, event.currentItem)) {
+                event.isCancelled = true
+            }
+        } else {
             event.isCancelled = true
         }
     }
@@ -111,6 +143,12 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
     @EventHandler
     fun forceRender(event: InventoryClickEvent) {
+        val player = event.whoClicked as? Player ?: return
+        player.renderActiveMenu()
+    }
+
+    @EventHandler
+    fun forceRender(event: InventoryDragEvent) {
         val player = event.whoClicked as? Player ?: return
         player.renderActiveMenu()
     }

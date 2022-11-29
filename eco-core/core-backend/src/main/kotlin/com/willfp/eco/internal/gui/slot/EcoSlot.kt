@@ -33,9 +33,5 @@ open class EcoSlot(
         return updater.update(player, menu, base) ?: return ItemStack(Material.AIR)
     }
 
-    override fun isCaptive(player: Player, menu: Menu): Boolean {
-        return false
-    }
-
     override fun getActionableSlot(player: Player, menu: Menu): EcoSlot = this
 }

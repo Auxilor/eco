@@ -74,6 +74,10 @@ fun SlotBuilder.onClick(clickType: ClickType, action: (Player, InventoryClickEve
 fun SlotBuilder.notCaptiveFor(test: (Player) -> Boolean): SlotBuilder =
     this.notCaptiveFor { test(it) }
 
+/** @see SlotBuilder.setCaptiveFilter */
+fun SlotBuilder.setCaptiveFilter(test: (Player, Menu, ItemStack?) -> Boolean): SlotBuilder =
+    this.setCaptiveFilter { a, b, c -> test(a, b, c) }
+
 /**
  * @see SlotBuilder.setModifier
  * @deprecated Use SlotUpdater instead.

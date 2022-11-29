@@ -74,8 +74,9 @@ public final class PriceItem implements Price {
     }
 
     @Override
-    public boolean canAfford(@NotNull final Player player) {
-        int toRemove = (int) getValue(player);
+    public boolean canAfford(@NotNull final Player player,
+                             final double multiplier) {
+        int toRemove = (int) getValue(player, multiplier);
         if (toRemove <= 0) {
             return true;
         }
@@ -92,8 +93,9 @@ public final class PriceItem implements Price {
     }
 
     @Override
-    public void pay(@NotNull final Player player) {
-        int toRemove = (int) getValue(player);
+    public void pay(@NotNull final Player player,
+                    final double multiplier) {
+        int toRemove = (int) getValue(player, multiplier);
         int count = 0;
 
         for (ItemStack itemStack : player.getInventory().getContents()) {
@@ -119,9 +121,10 @@ public final class PriceItem implements Price {
     }
 
     @Override
-    public void giveTo(@NotNull final Player player) {
+    public void giveTo(@NotNull final Player player,
+                       final double multiplier) {
         ItemStack itemStack = item.getItem().clone();
-        itemStack.setAmount((int) getValue(player));
+        itemStack.setAmount((int) getValue(player, multiplier));
 
         new DropQueue(player)
                 .addItem(itemStack)
@@ -130,9 +133,11 @@ public final class PriceItem implements Price {
     }
 
     @Override
-    public double getValue(@NotNull final Player player) {
+    public double getValue(@NotNull final Player player,
+                           final double multiplier) {
         return Math.toIntExact(Math.round(
-                this.function.apply(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player)
+                this.function.apply(MathContext.copyWithPlayer(baseContext, player))
+                        * getMultiplier(player) * multiplier
         ));
     }
 

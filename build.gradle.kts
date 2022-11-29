@@ -77,6 +77,8 @@ allprojects {
 
         // LibsDisguises
         maven("https://repo.md-5.net/content/groups/public/")
+
+        maven("https://repo.techscode.com/repository/maven-releases/")
     }
 
     dependencies {

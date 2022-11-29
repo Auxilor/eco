@@ -1,5 +1,6 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.gui.slot.functional.CaptiveFilter;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
@@ -143,7 +144,17 @@ public interface SlotBuilder {
      * @param predicate The predicate. Returns true when the slot should not be captive.
      * @return The builder.
      */
-    SlotBuilder notCaptiveFor(@NotNull Predicate<Player> predicate);
+    SlotBuilder notCaptiveFor(@NotNull final Predicate<Player> predicate);
+
+    /**
+     * Set a whitelist for allowed captive items.
+     *
+     * @param filter The filter.
+     * @return The builder.
+     */
+    default SlotBuilder setCaptiveFilter(@NotNull final CaptiveFilter filter) {
+        return this;
+    }
 
     /**
      * Set the ItemStack updater.

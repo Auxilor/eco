@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.integrations.shop
 
 import com.willfp.eco.core.integrations.shop.ShopIntegration
 import com.willfp.eco.core.integrations.shop.ShopSellEvent
+import com.willfp.eco.core.price.impl.PriceEconomy
 import fr.maxlego08.shop.api.events.ZShopSellEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -19,9 +20,9 @@ class ShopZShop : ShopIntegration {
                 return
             }
 
-            val ecoEvent = ShopSellEvent(event.player, event.price, event.button.itemStack)
+            val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.price), event.button.itemStack)
             Bukkit.getPluginManager().callEvent(ecoEvent)
-            event.price = ecoEvent.price
+            event.price = ecoEvent.value.getValue(event.player) * ecoEvent.multiplier
         }
     }
 

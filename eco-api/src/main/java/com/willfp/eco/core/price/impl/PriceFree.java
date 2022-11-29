@@ -16,12 +16,37 @@ public final class PriceFree implements Price {
     }
 
     @Override
-    public boolean canAfford(@NotNull final Player player) {
+    public boolean canAfford(@NotNull final Player player,
+                             final double multiplier) {
         return true;
     }
 
     @Override
-    public void pay(@NotNull final Player player) {
-        // Do nothing.
+    public void pay(@NotNull final Player player,
+                    final double multiplier) {
+        // Nothing.
+    }
+
+    @Override
+    public void giveTo(@NotNull final Player player,
+                       final double multiplier) {
+        // Nothing.
+    }
+
+    @Override
+    public double getMultiplier(@NotNull final Player player) {
+        return 1.0;
+    }
+
+    @Override
+    public void setMultiplier(@NotNull final Player player,
+                              final double multiplier) {
+        // Nothing.
+    }
+
+    @Override
+    public double getValue(@NotNull final Player player,
+                           final double multiplier) {
+        return 0;
     }
 }

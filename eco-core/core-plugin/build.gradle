@@ -50,6 +50,7 @@ dependencies {
     compileOnly 'com.github.Gypopo:EconomyShopGUI-API:1.1.0'
     compileOnly 'com.github.N0RSKA:ScytherAPI:55a'
     compileOnly 'com.ticxo.modelengine:api:R3.0.1'
+    compileOnly 'me.TechsCode:UltraEconomyAPI:1.0.0'
 
     // MythicMobs
     compileOnly 'io.lumine:Mythic:5.0.1'

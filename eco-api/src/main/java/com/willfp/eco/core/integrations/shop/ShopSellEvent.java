@@ -1,5 +1,7 @@
 package com.willfp.eco.core.integrations.shop;
 
+import com.willfp.eco.core.price.Price;
+import com.willfp.eco.core.price.impl.PriceEconomy;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -19,7 +21,12 @@ public class ShopSellEvent extends PlayerEvent {
     /**
      * The sell price.
      */
-    private double price;
+    private Price price;
+
+    /**
+     * The price multiplier.
+     */
+    private double multiplier;
 
     /**
      * The item to be sold.
@@ -33,31 +40,64 @@ public class ShopSellEvent extends PlayerEvent {
      * @param who   The player.
      * @param price The price.
      * @param item  The item.
+     * @deprecated Use the price system instead.
      */
+    @Deprecated(since = "6.47.0", forRemoval = true)
     public ShopSellEvent(@NotNull final Player who,
                          final double price,
                          @Nullable final ItemStack item) {
+        this(who, new PriceEconomy(price), item);
+    }
+
+    /**
+     * Create new shop sell event.
+     *
+     * @param who   The player.
+     * @param price The price.
+     * @param item  The item.
+     */
+    public ShopSellEvent(@NotNull final Player who,
+                         @NotNull final Price price,
+                         @Nullable final ItemStack item) {
+        this(who, price, item, 1.0);
+    }
+
+    /**
+     * Create new shop sell event.
+     *
+     * @param who        The player.
+     * @param price      The price.
+     * @param item       The item.
+     * @param multiplier The multiplier.
+     */
+    public ShopSellEvent(@NotNull final Player who,
+                         @NotNull final Price price,
+                         @Nullable final ItemStack item,
+                         final double multiplier) {
         super(who);
 
         this.price = price;
         this.item = item;
+
+        this.multiplier = multiplier;
     }
 
     /**
-     * Get the price.
+     * Get the value.
      *
-     * @return The price.
+     * @return The value.
      */
-    public double getPrice() {
+    @NotNull
+    public Price getValue() {
         return this.price;
     }
 
     /**
-     * Set the price.
+     * Set the value.
      *
-     * @param price The price.
+     * @param price The value.
      */
-    public void setPrice(final double price) {
+    public void setValue(@NotNull final Price price) {
         this.price = price;
     }
 
@@ -79,6 +119,46 @@ public class ShopSellEvent extends PlayerEvent {
      */
     public boolean hasKnownItem() {
         return item != null;
+    }
+
+    /**
+     * Get the price multiplier.
+     *
+     * @return The multiplier.
+     */
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    /**
+     * Set the price multiplier.
+     *
+     * @param multiplier The multiplier.
+     */
+    public void setMultiplier(final double multiplier) {
+        this.multiplier = multiplier;
+    }
+
+    /**
+     * Get the price.
+     *
+     * @return The price.
+     * @deprecated Use the price system instead.
+     */
+    @Deprecated(since = "6.47.0", forRemoval = true)
+    public double getPrice() {
+        return this.getValue().getValue(player);
+    }
+
+    /**
+     * Set the price.
+     *
+     * @param price The price.
+     * @deprecated Use the price system instead.
+     */
+    @Deprecated(since = "6.47.0", forRemoval = true)
+    public void setPrice(final double price) {
+        this.setValue(new PriceEconomy(price));
     }
 
     /**

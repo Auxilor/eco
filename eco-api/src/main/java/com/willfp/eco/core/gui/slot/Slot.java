@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -43,6 +44,20 @@ public interface Slot extends GUIComponent {
     default boolean isCaptive(@NotNull final Player player,
                               @NotNull final Menu menu) {
         return false;
+    }
+
+    /**
+     * If the slot allows a certain item to be placed in it.
+     *
+     * @param player    The player.
+     * @param menu      The menu.
+     * @param itemStack The item; use null if the item is unknown.
+     * @return If captive.
+     */
+    default boolean isAllowedCaptive(@NotNull final Player player,
+                                     @NotNull final Menu menu,
+                                     @Nullable final ItemStack itemStack) {
+        return this.isCaptive(player, menu);
     }
 
     /**

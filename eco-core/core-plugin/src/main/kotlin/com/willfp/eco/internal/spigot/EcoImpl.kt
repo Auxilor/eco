@@ -40,9 +40,20 @@ import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.evaluateExpression
-import com.willfp.eco.internal.spigot.proxy.*
+import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxy.SkullProxy
+import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
+import org.bukkit.command.Command
+import org.bukkit.command.CommandMap
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
@@ -296,5 +307,11 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         player.renderedInventory?.menu
 
     override fun syncCommands() =
-        this.getProxy(SyncCommandsProxy::class.java).syncCommands()
+        this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+
+    override fun getCommandMap(): CommandMap =
+        this.getProxy(BukkitCommandsProxy::class.java).getCommandMap()
+
+    override fun unregisterCommand(command: PluginCommand) =
+        this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)
 }

@@ -52,23 +52,27 @@ public final class PriceEconomy implements Price {
     }
 
     @Override
-    public boolean canAfford(@NotNull final Player player) {
-        return EconomyManager.getBalance(player) >= getValue(player);
+    public boolean canAfford(@NotNull final Player player,
+                             final double multiplier) {
+        return EconomyManager.getBalance(player) >= getValue(player, multiplier);
     }
 
     @Override
-    public void pay(@NotNull final Player player) {
-        EconomyManager.removeMoney(player, getValue(player));
+    public void pay(@NotNull final Player player,
+                    final double multiplier) {
+        EconomyManager.removeMoney(player, getValue(player, multiplier));
     }
 
     @Override
-    public void giveTo(@NotNull final Player player) {
-        EconomyManager.giveMoney(player, getValue(player));
+    public void giveTo(@NotNull final Player player,
+                       final double multiplier) {
+        EconomyManager.giveMoney(player, getValue(player, multiplier));
     }
 
     @Override
-    public double getValue(@NotNull final Player player) {
-        return this.function.apply(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player);
+    public double getValue(@NotNull final Player player,
+                           final double multiplier) {
+        return this.function.apply(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player) * multiplier;
     }
 
     @Override

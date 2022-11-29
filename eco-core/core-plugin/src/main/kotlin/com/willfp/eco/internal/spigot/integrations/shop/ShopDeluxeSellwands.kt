@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.integrations.shop
 
 import com.willfp.eco.core.integrations.shop.ShopIntegration
 import com.willfp.eco.core.integrations.shop.ShopSellEvent
+import com.willfp.eco.core.price.impl.PriceEconomy
 import dev.norska.dsw.api.DeluxeSellwandSellEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -19,9 +20,9 @@ class ShopDeluxeSellwands : ShopIntegration {
                 return
             }
 
-            val ecoEvent = ShopSellEvent(event.player, event.money, null)
+            val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.money), null)
             Bukkit.getPluginManager().callEvent(ecoEvent)
-            event.money = ecoEvent.price
+            event.money = ecoEvent.value.getValue(event.player) * ecoEvent.multiplier
         }
     }
 
