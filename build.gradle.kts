@@ -96,7 +96,7 @@ allprojects {
 
         // Adventure
         implementation("net.kyori:adventure-api:4.10.1")
-        implementation("net.kyori:adventure-text-serializer-gson:4.10.1") {
+        implementation("net.kyori:adventure-text-serializer-gson:4.12.0") {
             exclude("com.google.code.gson", "gson") // Prevent shading into the jar
         }
         implementation("net.kyori:adventure-text-serializer-legacy:4.10.1")
