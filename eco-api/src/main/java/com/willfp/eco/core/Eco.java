@@ -27,11 +27,6 @@ import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -48,6 +43,12 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
+
 /**
  * Holds the instance of eco for bridging between the frontend and backend.
  * <p>
@@ -60,6 +61,16 @@ import org.jetbrains.annotations.Nullable;
  */
 @ApiStatus.Internal
 public interface Eco {
+
+    /**
+     * Get the instance of eco; the bridge between the api frontend and the implementation backend.
+     *
+     * @return The instance of eco.
+     */
+    @ApiStatus.Internal
+    static Eco get() {
+        return Instance.get();
+    }
 
     /**
      * Create a scheduler.
@@ -159,16 +170,16 @@ public interface Eco {
 
     @NotNull
     CommandBase createPluginCommand(@NotNull EcoPlugin plugin,
-        @NotNull String name,
-        @NotNull String permission,
-        boolean playersOnly
+                                    @NotNull String name,
+                                    @NotNull String permission,
+                                    boolean playersOnly
     );
 
     @NotNull
     CommandBase createSubCommand(@NotNull EcoPlugin plugin,
-        @NotNull String name,
-        @NotNull String permission,
-        boolean playersOnly
+                                 @NotNull String name,
+                                 @NotNull String permission,
+                                 boolean playersOnly
     );
 
     /**
@@ -187,13 +198,13 @@ public interface Eco {
      */
     @NotNull
     LoadableConfig createUpdatableConfig(@NotNull String configName,
-        @NotNull PluginLike plugin,
-        @NotNull String subDirectoryPath,
-        @NotNull Class<?> source,
-        boolean removeUnused,
-        @NotNull ConfigType type,
-        boolean requiresChangesToSave,
-        @NotNull String... updateBlacklist);
+                                         @NotNull PluginLike plugin,
+                                         @NotNull String subDirectoryPath,
+                                         @NotNull Class<?> source,
+                                         boolean removeUnused,
+                                         @NotNull ConfigType type,
+                                         boolean requiresChangesToSave,
+                                         @NotNull String... updateBlacklist);
 
     /**
      * Loadable config.
@@ -208,11 +219,11 @@ public interface Eco {
      */
     @NotNull
     LoadableConfig createLoadableConfig(@NotNull String configName,
-        @NotNull PluginLike plugin,
-        @NotNull String subDirectoryPath,
-        @NotNull Class<?> source,
-        @NotNull ConfigType type,
-        boolean requiresChangesToSave);
+                                        @NotNull PluginLike plugin,
+                                        @NotNull String subDirectoryPath,
+                                        @NotNull Class<?> source,
+                                        @NotNull ConfigType type,
+                                        boolean requiresChangesToSave);
 
     /**
      * Create config.
@@ -232,7 +243,7 @@ public interface Eco {
      */
     @NotNull
     Config createConfig(@NotNull Map<String, Object> values,
-        @NotNull ConfigType type);
+                        @NotNull ConfigType type);
 
     /**
      * Create config.
@@ -243,7 +254,7 @@ public interface Eco {
      */
     @NotNull
     Config createConfig(@NotNull String contents,
-        @NotNull ConfigType type);
+                        @NotNull ConfigType type);
 
     /**
      * Create a Drop Queue.
@@ -272,7 +283,7 @@ public interface Eco {
      */
     @NotNull
     MenuBuilder createMenuBuilder(int rows,
-        @NotNull MenuType type);
+                                  @NotNull MenuType type);
 
     /**
      * Combine the state of two menus together.
@@ -283,7 +294,7 @@ public interface Eco {
      */
     @NotNull
     Menu blendMenuState(@NotNull Menu base,
-        @NotNull Menu additional);
+                        @NotNull Menu additional);
 
     /**
      * Clean up ClassLoader (etc.) to allow PlugMan support.
@@ -402,7 +413,7 @@ public interface Eco {
      */
     @NotNull
     NamespacedKey createNamespacedKey(@NotNull String namespace,
-        @NotNull String key);
+                                      @NotNull String key);
 
     /**
      * Return or get props for a plugin.
@@ -413,7 +424,7 @@ public interface Eco {
      */
     @NotNull
     PluginProps getProps(@Nullable PluginProps existing,
-        @NotNull Class<? extends EcoPlugin> plugin);
+                         @NotNull Class<? extends EcoPlugin> plugin);
 
     /**
      * Format a string with MiniMessage.
@@ -493,7 +504,7 @@ public interface Eco {
      * @param base64 The texture.
      */
     void setSkullTexture(@NotNull SkullMeta meta,
-        @NotNull String base64);
+                         @NotNull String base64);
 
     /**
      * Get the current server TPS.
@@ -510,7 +521,7 @@ public interface Eco {
      * @return The value of the expression, or zero if invalid.
      */
     double evaluate(@NotNull String expression,
-        @NotNull MathContext context);
+                    @NotNull MathContext context);
 
     /**
      * Get the menu a player currently has open.
@@ -541,16 +552,6 @@ public interface Eco {
     void unregisterCommand(@NotNull final PluginCommand command);
 
     /**
-     * Get the instance of eco; the bridge between the api frontend and the implementation backend.
-     *
-     * @return The instance of eco.
-     */
-    @ApiStatus.Internal
-    static Eco get() {
-        return Instance.get();
-    }
-
-    /**
      * Manages the internal frontend -> backend communication.
      */
     @ApiStatus.Internal
@@ -561,6 +562,11 @@ public interface Eco {
          */
         @ApiStatus.Internal
         private static Eco eco;
+
+        private Instance() {
+            throw new UnsupportedOperationException(
+                    "This is a utility class and cannot be instantiated");
+        }
 
         /**
          * Initialize eco.
@@ -581,11 +587,6 @@ public interface Eco {
          */
         static Eco get() {
             return eco;
-        }
-
-        private Instance() {
-            throw new UnsupportedOperationException(
-                "This is a utility class and cannot be instantiated");
         }
     }
 }
