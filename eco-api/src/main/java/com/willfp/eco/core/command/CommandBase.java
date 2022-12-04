@@ -2,6 +2,7 @@ package com.willfp.eco.core.command;
 
 import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.EcoPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -18,26 +18,6 @@ import java.util.function.Predicate;
  */
 @SuppressWarnings("removal")
 public interface CommandBase {
-
-    /**
-     * Get aliases. Leave null if this command is from plugin.yml.
-     *
-     * @return The aliases.
-     */
-    @NotNull
-    default List<String> getAliases() {
-        return new ArrayList<>();
-    }
-
-    /**
-     * Get description.
-     *
-     * @return The description.
-     */
-    @Nullable
-    default String getDescription() {
-        return null;
-    }
 
     /**
      * Get command name.
@@ -147,24 +127,34 @@ public interface CommandBase {
      * @return Returns the object given or throws an exception
      * @throws NotificationException
      */
-    default @NotNull <T> T notifyFalse(@Nullable T obj,
+    default @NotNull <T> T notifyFalse(@NotNull T obj,
                                        @NotNull Predicate<T> predicate, @NotNull String key)
             throws NotificationException {
+        if(!predicate.test(obj)) {
+            throw new NotificationException(key);
+        }
         return obj;
     }
 
     /**
-     * Throws an exception and sends a lang message if Bukkit.getPlayer(player) is null
+     * Throws an exception and sends a lang message if Bukkit.getPlayer(playerName) is null
      *
-     * @param player the player name
+     * @param playerName the player name
      * @param key    value in the langYml
      * @return Returns the player
-     * @throws NotificationException exception thrown when invalid player
+     * @throws NotificationException exception thrown when invalid playerName
      */
-    default @NotNull Optional<Player> notifyPlayerRequired(@NotNull String player,
+    default @Nullable Player notifyPlayerRequired(@NotNull String playerName,
                                                            @NotNull String key)
             throws NotificationException {
-        return Optional.empty();
+
+        final Player player = Bukkit.getPlayer(playerName);
+
+        if(Objects.isNull(player)) {
+            throw new NotificationException(key);
+        }
+
+        return player;
     }
 
 
@@ -176,6 +166,9 @@ public interface CommandBase {
      */
     default boolean notifyFalse(boolean condition, @NotNull String key)
             throws NotificationException {
+        if(!condition) {
+            throw new NotificationException(key);
+        }
         return true;
     }
 
