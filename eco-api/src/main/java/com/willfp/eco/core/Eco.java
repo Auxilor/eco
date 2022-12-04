@@ -180,8 +180,7 @@ public interface Eco {
      * @param plugin                The plugin.
      * @param subDirectoryPath      The subdirectory path.
      * @param source                The class that owns the resource.
-     * @param removeUnused          Whether keys not present in the default config should be removed
-     *                              on update.
+     * @param removeUnused          Whether keys not present in the default config should be removed on update.
      * @param type                  The config type.
      * @param updateBlacklist       Substring of keys to not add/remove keys for.
      * @param requiresChangesToSave If the config must be changed in order to save the config.
