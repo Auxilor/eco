@@ -2,24 +2,31 @@ package com.willfp.eco.internal.command
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.command.ArgumentAssertionException
 import com.willfp.eco.core.command.CommandBase
+import com.willfp.eco.core.command.NotificationException
+import com.willfp.eco.core.command.RegistrableCommandBase
 import org.bukkit.Bukkit
-import org.bukkit.command.*
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandMap
+import org.bukkit.command.CommandSender
+import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
+import org.bukkit.util.StringUtil
 
 class EcoPluginCommand(
     _plugin: EcoPlugin,
     _name: String,
     _permission: String,
     _playersOnly: Boolean
-) : CommandBase, CommandExecutor, TabCompleter {
+) : RegistrableCommandBase, CommandExecutor, TabCompleter {
 
 
     val ecoPlugin: EcoPlugin
     val commandName: String
     val commandPermission: String
     val playersOnly: Boolean
+    val subCommands = mutableListOf<CommandBase>()
 
     init {
         ecoPlugin = _plugin
@@ -27,8 +34,6 @@ class EcoPluginCommand(
         commandPermission = _permission
         playersOnly = _playersOnly
     }
-
-    val subcommands = mutableListOf<CommandBase>()
 
     override fun register() {
         val command = Bukkit.getPluginCommand(name)
@@ -102,6 +107,8 @@ class EcoPluginCommand(
         TODO("Not yet implemented")
     }
 
+    override fun getSubcommands() = subCommands
+
     fun CommandBase.handleExecution(sender: CommandSender, args: List<String>) {
         if (!canExecute(sender, this, plugin)) {
             return
@@ -124,7 +131,7 @@ class EcoPluginCommand(
         }
 
         try {
-            assertCondition(isPlayersOnly && sender !is Player, "not-player")
+            notifyFalse(isPlayersOnly && sender !is Player, "not-player")
 
             if (sender is Player) {
                 onExecute(sender, args)
@@ -132,14 +139,82 @@ class EcoPluginCommand(
                 onExecute(sender, args)
             }
 
-        } catch (e: ArgumentAssertionException) {
-            sender.sendMessage(plugin.langYml.getMessage(e.langTarget))
+        } catch (e: NotificationException) {
+            sender.sendMessage(plugin.langYml.getMessage(e.key))
             return
         }
     }
 
+    /*
+        protected final List<String> handleTabCompletion(@NotNull final CommandSender sender,
+                                                     @NotNull final String[] args) {
+
+        if (!sender.hasPermission(this.getPermission())) {
+            return null;
+        }
+
+        if (args.length == 1) {
+            List<String> completions = new ArrayList<>();
+
+            StringUtil.copyPartialMatches(
+                    args[0],
+                    this.getSubcommands().stream()
+                            .filter(subCommand -> sender.hasPermission(subCommand.getPermission()))
+                            .map(CommandBase::getName)
+                            .collect(Collectors.toList()),
+                    completions
+            );
+
+            Collections.sort(completions);
+
+            if (!completions.isEmpty()) {
+                return completions;
+            }
+        }
+
+        if (args.length >= 2) {
+            HandledCommand command = null;
+
+            for (CommandBase subcommand : this.getSubcommands()) {
+                if (!sender.hasPermission(subcommand.getPermission())) {
+                    continue;
+                }
+
+                if (args[0].equalsIgnoreCase(subcommand.getName())) {
+                    command = (HandledCommand) subcommand;
+                }
+            }
+
+            if (command != null) {
+                return command.handleTabCompletion(sender, Arrays.copyOfRange(args, 1, args.length));
+            }
+        }
+
+        if (this.getTabCompleter() != null) {
+            return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
+        } else {
+            List<String> completions = new ArrayList<>(this.tabComplete(sender, Arrays.asList(args)));
+            if (sender instanceof Player player) {
+                completions.addAll(this.tabComplete(player, Arrays.asList(args)));
+            }
+            return completions;
+        }
+    }
+     */
     fun CommandBase.handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
-        TODO("Havent done this yet")
+        if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
+
+        val completions = subCommands.filter { sender.hasPermission(it.permission) }.map { it.name }.sorted()
+
+        return when (args.size) {
+            1 -> {
+                val list = mutableListOf<String>()
+                StringUtil.copyPartialMatches(args[0], completions, list)
+                list
+            }
+
+            else -> completions
+        }
     }
 
     companion object {

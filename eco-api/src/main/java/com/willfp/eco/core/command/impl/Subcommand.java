@@ -2,11 +2,12 @@ package com.willfp.eco.core.command.impl;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.command.ArgumentAssertionException;
 import com.willfp.eco.core.command.CommandBase;
-import java.util.Optional;
+import com.willfp.eco.core.command.NotificationException;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * Subcommands can be added to PluginCommands or to other Subcommands.
@@ -24,9 +25,9 @@ public abstract class Subcommand implements CommandBase {
      * @param playersOnly If the subcommand only works on players.
      */
     protected Subcommand(@NotNull final EcoPlugin plugin,
-        @NotNull final String name,
-        @NotNull final String permission,
-        final boolean playersOnly) {
+                         @NotNull final String name,
+                         @NotNull final String permission,
+                         final boolean playersOnly) {
         this.delegate = Eco.get().createSubCommand(plugin, name, permission, playersOnly);
     }
 
@@ -38,8 +39,8 @@ public abstract class Subcommand implements CommandBase {
      * @param parent The parent command.
      */
     protected Subcommand(@NotNull final EcoPlugin plugin,
-        @NotNull final String name,
-        @NotNull final CommandBase parent) {
+                         @NotNull final String name,
+                         @NotNull final CommandBase parent) {
         this(plugin, name, parent.getPermission(), parent.isPlayersOnly());
     }
 
@@ -64,26 +65,16 @@ public abstract class Subcommand implements CommandBase {
     }
 
     @Override
-    public final void register() {
-
+    public @NotNull Optional<Player> notifyPlayerRequired(@NotNull String player,
+                                                          @NotNull String langTarget)
+            throws NotificationException {
+        return delegate.notifyPlayerRequired(player, langTarget);
     }
 
     @Override
-    public final void unregister() {
-
-    }
-
-    @Override
-    public @NotNull Optional<Player> assertPlayer(@NotNull String player,
-        @NotNull String langTarget)
-        throws ArgumentAssertionException {
-        return delegate.assertPlayer(player, langTarget);
-    }
-
-    @Override
-    public boolean assertCondition(boolean condition, @NotNull String langTarget)
-        throws ArgumentAssertionException {
-        return delegate.assertCondition(condition, langTarget);
+    public boolean notifyFalse(boolean condition, @NotNull String langTarget)
+            throws NotificationException {
+        return delegate.notifyFalse(condition, langTarget);
     }
 
     @Override

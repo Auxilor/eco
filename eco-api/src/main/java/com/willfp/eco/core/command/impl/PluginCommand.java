@@ -3,10 +3,10 @@ package com.willfp.eco.core.command.impl;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
+import com.willfp.eco.core.command.RegistrableCommandBase;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * TODO REWRITE DOC ONCE COMMAND EXECUTOR REMOVED
  * PluginCommands are the class to be used instead of CommandExecutor, they function as the base
  * command, e.g. {@code /ecoenchants} would be a base command, with each subsequent argument
  * functioning as subcommands.
@@ -15,12 +15,9 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * The name cannot be the same as an existing command as this will conflict.
  */
-/*
-TODO: Do CommandExecutor Logic internally, delegate to a different class
- */
-public abstract class PluginCommand implements CommandBase {
+public abstract class PluginCommand implements RegistrableCommandBase {
 
-    private final CommandBase delegate;
+    private final RegistrableCommandBase delegate;
 
 
     /**
@@ -32,9 +29,9 @@ public abstract class PluginCommand implements CommandBase {
      * @param playersOnly If only players should be able to execute this command.
      */
     protected PluginCommand(@NotNull final EcoPlugin plugin,
-        @NotNull final String name,
-        @NotNull final String permission,
-        final boolean playersOnly) {
+                            @NotNull final String name,
+                            @NotNull final String permission,
+                            final boolean playersOnly) {
         this.delegate = Eco.get().createPluginCommand(plugin, name, permission, playersOnly);
     }
 

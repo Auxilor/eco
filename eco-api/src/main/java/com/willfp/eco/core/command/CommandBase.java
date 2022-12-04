@@ -2,14 +2,16 @@ package com.willfp.eco.core.command;
 
 import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.EcoPlugin;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Interface for all command implementations.
@@ -33,7 +35,7 @@ public interface CommandBase {
      * @return The description.
      */
     @Nullable
-    default public String getDescription() {
+    default String getDescription() {
         return null;
     }
 
@@ -64,7 +66,9 @@ public interface CommandBase {
      * @param command The subcommand.
      * @return The parent command.
      */
-    CommandBase addSubcommand(@NotNull CommandBase command);
+    @NotNull CommandBase addSubcommand(@NotNull CommandBase command);
+
+    @NotNull List<CommandBase> getSubcommands();
 
     /**
      * Handle command execution.
@@ -73,7 +77,7 @@ public interface CommandBase {
      * @param args   The args.
      */
     default void onExecute(@NotNull CommandSender sender,
-        @NotNull List<String> args) throws ArgumentAssertionException {
+                           @NotNull List<String> args) throws NotificationException {
         // Do nothing.
     }
 
@@ -84,7 +88,7 @@ public interface CommandBase {
      * @param args   The args.
      */
     default void onExecute(@NotNull Player sender,
-        @NotNull List<String> args) throws ArgumentAssertionException {
+                           @NotNull List<String> args) throws NotificationException {
         // Do nothing.
     }
 
@@ -97,7 +101,7 @@ public interface CommandBase {
      */
     @NotNull
     default List<String> tabComplete(@NotNull CommandSender sender,
-        @NotNull List<String> args) {
+                                     @NotNull List<String> args) {
         return new ArrayList<>();
     }
 
@@ -110,67 +114,68 @@ public interface CommandBase {
      */
     @NotNull
     default List<String> tabComplete(@NotNull Player sender,
-        @NotNull List<String> args) {
+                                     @NotNull List<String> args) {
         return new ArrayList<>();
     }
 
-    void register();
-
-    void unregister();
 
     /**
-     * Throws an exception and sends a lang message if obj null
+     * Throws an exception and sends a lang message if obj null.
      *
-     * @param obj        the object
-     * @param langTarget value in the langYml
-     * @param <T>        the generic type of object
+     * @param obj the object
+     * @param key key of notification message in langYml
+     * @param <T> the generic type of object
      * @return Returns the object given or throws an exception
-     * @throws ArgumentAssertionException exception thrown when null
+     * @throws NotificationException exception thrown when null
      */
-    default @NotNull <T> Optional<T> assertNonNull(@Nullable T obj, @NotNull String langTarget)
-        throws ArgumentAssertionException {
-        return Optional.empty();
+    default @Nullable <T> T notifyNull(@Nullable T obj, @NotNull String key)
+            throws NotificationException {
+        if (Objects.isNull(obj)) {
+            throw new NotificationException(key);
+        }
+
+        return obj;
     }
 
     /**
      * Throws an exception if predicate tests false
      *
-     * @param obj        Object to test with predicate
-     * @param predicate  predicate to test
-     * @param langTarget value in the langYml
-     * @param <T>        the generic type of object
+     * @param obj       Object to test with predicate
+     * @param predicate predicate to test
+     * @param key       key of notification message in langYml
+     * @param <T>       the generic type of object
      * @return Returns the object given or throws an exception
-     * @throws ArgumentAssertionException
+     * @throws NotificationException
      */
-    default @NotNull <T> Optional<T> assertPredicate(@Nullable T obj,
-        @NotNull Predicate<T> predicate, @NotNull String langTarget)
-        throws ArgumentAssertionException {
-        return Optional.empty();
+    default @NotNull <T> T notifyFalse(@Nullable T obj,
+                                       @NotNull Predicate<T> predicate, @NotNull String key)
+            throws NotificationException {
+        return obj;
     }
 
     /**
      * Throws an exception and sends a lang message if Bukkit.getPlayer(player) is null
      *
-     * @param player     the player name
-     * @param langTarget value in the langYml
+     * @param player the player name
+     * @param key    value in the langYml
      * @return Returns the player
-     * @throws ArgumentAssertionException exception thrown when invalid player
+     * @throws NotificationException exception thrown when invalid player
      */
-    default @NotNull Optional<Player> assertPlayer(@NotNull String player,
-        @NotNull String langTarget)
-        throws ArgumentAssertionException {
+    default @NotNull Optional<Player> notifyPlayerRequired(@NotNull String player,
+                                                           @NotNull String key)
+            throws NotificationException {
         return Optional.empty();
     }
 
 
     /**
-     * @param condition  the condition, throws exception if false
-     * @param langTarget value in the langYml
+     * @param condition the condition, throws exception if false
+     * @param key       value in the langYml
      * @return Returns the condition given or throws an exception
-     * @throws ArgumentAssertionException exception thrown when false
+     * @throws NotificationException exception thrown when false
      */
-    default boolean assertCondition(boolean condition, @NotNull String langTarget)
-        throws ArgumentAssertionException {
+    default boolean notifyFalse(boolean condition, @NotNull String key)
+            throws NotificationException {
         return true;
     }
 
