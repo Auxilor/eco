@@ -64,16 +64,6 @@ import java.util.logging.Logger;
 public interface Eco {
 
     /**
-     * Get the instance of eco; the bridge between the api frontend and the implementation backend.
-     *
-     * @return The instance of eco.
-     */
-    @ApiStatus.Internal
-    static Eco get() {
-        return Instance.get();
-    }
-
-    /**
      * Create a scheduler.
      *
      * @param plugin The plugin.
@@ -551,6 +541,16 @@ public interface Eco {
      * @param command The command.
      */
     void unregisterCommand(@NotNull final PluginCommand command);
+
+    /**
+     * Get the instance of eco; the bridge between the api frontend and the implementation backend.
+     *
+     * @return The instance of eco.
+     */
+    @ApiStatus.Internal
+    static Eco get() {
+        return Instance.get();
+    }
 
     /**
      * Manages the internal frontend -> backend communication.
