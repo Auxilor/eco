@@ -564,11 +564,6 @@ public interface Eco {
         @ApiStatus.Internal
         private static Eco eco;
 
-        private Instance() {
-            throw new UnsupportedOperationException(
-                    "This is a utility class and cannot be instantiated");
-        }
-
         /**
          * Initialize eco.
          *
@@ -588,6 +583,10 @@ public interface Eco {
          */
         static Eco get() {
             return eco;
+        }
+
+        private Instance() {
+            throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
         }
     }
 }
