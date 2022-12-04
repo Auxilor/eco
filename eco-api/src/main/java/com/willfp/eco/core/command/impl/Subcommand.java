@@ -3,11 +3,9 @@ package com.willfp.eco.core.command.impl;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
-import com.willfp.eco.core.command.NotificationException;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * Subcommands can be added to PluginCommands or to other Subcommands.
@@ -65,20 +63,14 @@ public abstract class Subcommand implements CommandBase {
     }
 
     @Override
-    public @NotNull Optional<Player> notifyPlayerRequired(@NotNull String player,
-                                                          @NotNull String langTarget)
-            throws NotificationException {
-        return delegate.notifyPlayerRequired(player, langTarget);
-    }
-
-    @Override
-    public boolean notifyFalse(boolean condition, @NotNull String langTarget)
-            throws NotificationException {
-        return delegate.notifyFalse(condition, langTarget);
+    public @NotNull List<CommandBase> getSubcommands() {
+        return delegate.getSubcommands();
     }
 
     @Override
     public EcoPlugin getPlugin() {
         return delegate.getPlugin();
     }
+
+
 }

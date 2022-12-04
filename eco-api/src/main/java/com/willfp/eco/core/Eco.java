@@ -1,7 +1,7 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.command.CommandBase;
-import com.willfp.eco.core.command.RegistrableCommandBase;
+import com.willfp.eco.core.command.PluginCommandBase;
 import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
@@ -160,10 +160,10 @@ public interface Eco {
     EcoPlugin getEcoPlugin();
 
     @NotNull
-    RegistrableCommandBase createPluginCommand(@NotNull EcoPlugin plugin,
-                                               @NotNull String name,
-                                               @NotNull String permission,
-                                               boolean playersOnly
+    PluginCommandBase createPluginCommand(@NotNull EcoPlugin plugin,
+                                          @NotNull String name,
+                                          @NotNull String permission,
+                                          boolean playersOnly
     );
 
     @NotNull

@@ -3,8 +3,10 @@ package com.willfp.eco.core.command.impl;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
-import com.willfp.eco.core.command.RegistrableCommandBase;
+import com.willfp.eco.core.command.PluginCommandBase;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * PluginCommands are the class to be used instead of CommandExecutor, they function as the base
@@ -15,9 +17,12 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * The name cannot be the same as an existing command as this will conflict.
  */
-public abstract class PluginCommand implements RegistrableCommandBase {
+public abstract class PluginCommand implements PluginCommandBase {
 
-    private final RegistrableCommandBase delegate;
+    /**
+     * The delegate command.
+     */
+    private final PluginCommandBase delegate;
 
 
     /**
@@ -53,6 +58,11 @@ public abstract class PluginCommand implements RegistrableCommandBase {
     @Override
     public CommandBase addSubcommand(@NotNull CommandBase command) {
         return delegate.addSubcommand(command);
+    }
+
+    @Override
+    public @NotNull List<CommandBase> getSubcommands() {
+        return delegate.getSubcommands();
     }
 
     @Override

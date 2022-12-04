@@ -4,7 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
-import com.willfp.eco.core.command.CommandBase
+import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
@@ -15,6 +15,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
+import com.willfp.eco.internal.command.EcoSubCommand
 import com.willfp.eco.internal.config.*
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
@@ -40,6 +41,7 @@ import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.evaluateExpression
+import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
@@ -48,11 +50,9 @@ import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
-import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
-import org.bukkit.command.Command
 import org.bukkit.command.CommandMap
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
@@ -183,9 +183,12 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         name: String,
         permission: String,
         playersOnly: Boolean
-    ): CommandBase {
-        TODO("Not yet implemented")
-    }
+    ) = EcoSubCommand(
+        plugin,
+        name,
+        permission,
+        playersOnly
+    )
 
     override fun createDropQueue(player: Player) =
         if (this.configYml.getBool("use-fast-collated-drops"))
