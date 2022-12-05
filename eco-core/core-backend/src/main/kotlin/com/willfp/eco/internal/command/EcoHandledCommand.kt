@@ -99,62 +99,6 @@ abstract class EcoHandledCommand(
         }
     }
 
-    /*
-        protected final List<String> handleTabCompletion(@NotNull final CommandSender sender,
-                                                     @NotNull final String[] args) {
-
-        if (!sender.hasPermission(this.getPermission())) {
-            return null;
-        }
-
-        if (args.length == 1) {
-            List<String> completions = new ArrayList<>();
-
-            StringUtil.copyPartialMatches(
-                    args[0],
-                    this.getSubcommands().stream()
-                            .filter(subCommand -> sender.hasPermission(subCommand.getPermission()))
-                            .map(CommandBase::getName)
-                            .collect(Collectors.toList()),
-                    completions
-            );
-
-            Collections.sort(completions);
-
-            if (!completions.isEmpty()) {
-                return completions;
-            }
-        }
-
-        if (args.length >= 2) {
-            HandledCommand command = null;
-
-            for (CommandBase subcommand : this.getSubcommands()) {
-                if (!sender.hasPermission(subcommand.getPermission())) {
-                    continue;
-                }
-
-                if (args[0].equalsIgnoreCase(subcommand.getName())) {
-                    command = (HandledCommand) subcommand;
-                }
-            }
-
-            if (command != null) {
-                return command.handleTabCompletion(sender, Arrays.copyOfRange(args, 1, args.length));
-            }
-        }
-
-        if (this.getTabCompleter() != null) {
-            return this.getTabCompleter().tabComplete(sender, Arrays.asList(args));
-        } else {
-            List<String> completions = new ArrayList<>(this.tabComplete(sender, Arrays.asList(args)));
-            if (sender instanceof Player player) {
-                completions.addAll(this.tabComplete(player, Arrays.asList(args)));
-            }
-            return completions;
-        }
-    }
-     */
     fun CommandBase.handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
         if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
 
@@ -167,7 +111,13 @@ abstract class EcoHandledCommand(
                 list
             }
 
-            else -> completions
+            else -> {
+                val matchingCommand = subCommands.firstOrNull {
+                    sender.hasPermission(it.permission) && it.name.equals(args[0], true)
+                }
+
+                matchingCommand?.handleTabComplete(sender, args.subList(1, args.size)) ?: listOf()
+            }
         }
     }
 
