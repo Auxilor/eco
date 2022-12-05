@@ -133,6 +133,21 @@ public interface Price {
     }
 
     /**
+     * Get the identifier of this price (as type/instance checks break with delegation,
+     * this is used for combining prices, etc.)
+     * <p>
+     * By default, this uses the class name, but it's good practice to override this.
+     * <p>
+     * It's also good practice to prefix your identifiers with some kind of namespace or
+     * internal ID, in order to prevent conflicts.
+     *
+     * @return The identifier.
+     */
+    default String getIdentifier() {
+        return this.getClass().getName();
+    }
+
+    /**
      * If the price is backed by a value, get it here.
      *
      * @return The value.
