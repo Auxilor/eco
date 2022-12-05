@@ -130,10 +130,22 @@ public interface CommandBase {
     default @NotNull <T> T notifyFalse(@NotNull T obj,
                                        @NotNull Predicate<T> predicate, @NotNull String key)
             throws NotificationException {
-        if(!predicate.test(obj)) {
+        notifyFalse(predicate.test(obj), key);
+        return obj;
+    }
+
+    /**
+     * @param condition the condition, throws exception if false
+     * @param key       value in the langYml
+     * @return Returns the condition given or throws an exception
+     * @throws NotificationException exception thrown when false
+     */
+    default boolean notifyFalse(boolean condition, @NotNull String key)
+            throws NotificationException {
+        if(!condition) {
             throw new NotificationException(key);
         }
-        return obj;
+        return true;
     }
 
     /**
@@ -155,21 +167,6 @@ public interface CommandBase {
         }
 
         return player;
-    }
-
-
-    /**
-     * @param condition the condition, throws exception if false
-     * @param key       value in the langYml
-     * @return Returns the condition given or throws an exception
-     * @throws NotificationException exception thrown when false
-     */
-    default boolean notifyFalse(boolean condition, @NotNull String key)
-            throws NotificationException {
-        if(!condition) {
-            throw new NotificationException(key);
-        }
-        return true;
     }
 
 
