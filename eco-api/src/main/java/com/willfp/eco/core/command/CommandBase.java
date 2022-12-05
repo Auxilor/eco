@@ -125,7 +125,6 @@ public interface CommandBase {
      * @param key       key of notification message in langYml
      * @param <T>       the generic type of object
      * @return Returns the object given or throws an exception
-     * @throws NotificationException
      */
     default @NotNull <T> T notifyFalse(@NotNull T obj,
                                        @NotNull Predicate<T> predicate, @NotNull String key)
@@ -135,6 +134,7 @@ public interface CommandBase {
     }
 
     /**
+     * Throws an exception if condition is false.
      * @param condition the condition, throws exception if false
      * @param key       value in the langYml
      * @return Returns the condition given or throws an exception
