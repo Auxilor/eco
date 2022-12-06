@@ -48,7 +48,7 @@ public abstract class Subcommand implements CommandBase {
     }
 
     @Override
-    public String getPermission() {
+    public @NotNull String getPermission() {
         return delegate.getPermission();
     }
 

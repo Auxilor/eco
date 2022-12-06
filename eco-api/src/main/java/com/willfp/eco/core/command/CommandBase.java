@@ -31,7 +31,7 @@ public interface CommandBase {
      *
      * @return The permission.
      */
-    @Nullable String getPermission();
+    @NotNull String getPermission();
 
     /**
      * If only players can execute the command.
@@ -97,7 +97,6 @@ public interface CommandBase {
                                      @NotNull List<String> args) {
         return new ArrayList<>();
     }
-
 
     /**
      * Throws an exception and sends a lang message if obj null.

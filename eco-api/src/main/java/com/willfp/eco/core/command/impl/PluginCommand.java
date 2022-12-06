@@ -46,7 +46,7 @@ public abstract class PluginCommand implements PluginCommandBase {
     }
 
     @Override
-    public String getPermission() {
+    public @NotNull String getPermission() {
         return delegate.getPermission();
     }
 
