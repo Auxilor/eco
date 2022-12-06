@@ -107,7 +107,7 @@ public interface CommandBase {
      * @return Returns the object given or throws an exception
      * @throws NotificationException exception thrown when null
      */
-    default @Nullable <T> T notifyNull(@Nullable T obj, @NotNull String key)
+    default @NotNull <T> T notifyNull(@Nullable T obj, @NotNull String key)
             throws NotificationException {
         if (Objects.isNull(obj)) {
             throw new NotificationException(key);
@@ -155,7 +155,7 @@ public interface CommandBase {
      * @return Returns the player
      * @throws NotificationException exception thrown when invalid playerName
      */
-    default @Nullable Player notifyPlayerRequired(@NotNull String playerName,
+    default @NotNull Player notifyPlayerRequired(@NotNull String playerName,
                                                            @NotNull String key)
             throws NotificationException {
 
