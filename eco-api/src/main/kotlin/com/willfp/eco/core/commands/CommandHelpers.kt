@@ -153,10 +153,7 @@ fun CommandBase.addSubcommand(
  * @throws NotificationException
  */
 fun <T> T.notifyNull(key: String): T {
-    if(this == null) {
-        throw NotificationException(key)
-    }
-    return this
+    return this ?: throw NotificationException(key)
 }
 
 /**
