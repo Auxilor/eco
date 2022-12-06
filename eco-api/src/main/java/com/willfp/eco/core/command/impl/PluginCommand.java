@@ -41,7 +41,7 @@ public abstract class PluginCommand implements PluginCommandBase {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return delegate.getName();
     }
 
@@ -56,7 +56,7 @@ public abstract class PluginCommand implements PluginCommandBase {
     }
 
     @Override
-    public CommandBase addSubcommand(@NotNull CommandBase command) {
+    public @NotNull CommandBase addSubcommand(@NotNull CommandBase command) {
         return delegate.addSubcommand(command);
     }
 

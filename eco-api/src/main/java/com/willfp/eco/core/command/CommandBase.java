@@ -24,14 +24,14 @@ public interface CommandBase {
      *
      * @return The name.
      */
-    String getName();
+    @NotNull String getName();
 
     /**
      * Get command permission.
      *
      * @return The permission.
      */
-    String getPermission();
+    @Nullable String getPermission();
 
     /**
      * If only players can execute the command.

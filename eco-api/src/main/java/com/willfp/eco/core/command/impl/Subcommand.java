@@ -43,7 +43,7 @@ public abstract class Subcommand implements CommandBase {
     }
 
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return delegate.getName();
     }
 
@@ -58,7 +58,7 @@ public abstract class Subcommand implements CommandBase {
     }
 
     @Override
-    public CommandBase addSubcommand(@NotNull CommandBase command) {
+    public @NotNull CommandBase addSubcommand(@NotNull CommandBase command) {
         return delegate.addSubcommand(command);
     }
 
