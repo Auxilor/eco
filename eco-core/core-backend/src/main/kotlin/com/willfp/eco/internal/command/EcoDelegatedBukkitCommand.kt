@@ -18,7 +18,7 @@ class EcoDelegatedBukkitCommand(private val delegate: EcoPluginCommand) : Comman
         command: Command,
         label: String,
         args: Array<out String>?
-    ): MutableList<String>? {
+    ): MutableList<String> {
         return mutableListOf()
     }
 
