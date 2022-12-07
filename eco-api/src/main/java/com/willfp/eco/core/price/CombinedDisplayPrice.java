@@ -40,6 +40,7 @@ public final class CombinedDisplayPrice {
      *
      * @return The display strings.
      */
+    @NotNull
     public String[] getDisplayStrings() {
         List<String> displayStrings = new ArrayList<>();
 
@@ -53,7 +54,7 @@ public final class CombinedDisplayPrice {
     /**
      * The builder.
      */
-    static class Builder {
+    public static class Builder {
         /**
          * All multiplied prices.
          */
@@ -64,6 +65,11 @@ public final class CombinedDisplayPrice {
          */
         private final Player player;
 
+        /**
+         * Create a new builder.
+         *
+         * @param player The player.
+         */
         Builder(@NotNull final Player player) {
             this.player = player;
         }
@@ -75,10 +81,23 @@ public final class CombinedDisplayPrice {
          * @param multiplier The multiplier.
          * @return The builder.
          */
+        @NotNull
         public Builder add(@NotNull final ConfiguredPrice price,
                            final double multiplier) {
             prices.add(new MultipliedPrice(price, multiplier));
             return this;
+        }
+
+
+        /**
+         * Add a new price.
+         *
+         * @param price The price.
+         * @return The builder.
+         */
+        @NotNull
+        public Builder add(@NotNull final ConfiguredPrice price) {
+            return this.add(price, 1D);
         }
 
         /**
@@ -130,6 +149,7 @@ public final class CombinedDisplayPrice {
      * @param player The player.
      * @return The builder.
      */
+    @NotNull
     public static Builder builder(@NotNull final Player player) {
         return new Builder(player);
     }
