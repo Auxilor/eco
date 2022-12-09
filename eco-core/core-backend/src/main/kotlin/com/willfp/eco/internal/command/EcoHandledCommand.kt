@@ -61,7 +61,6 @@ abstract class EcoHandledCommand(
         TODO("Not yet implemented")
     }
 
-
     private fun handleExecution(sender: CommandSender, args: List<String>) {
         if (!canExecute(sender, this, plugin)) {
             return

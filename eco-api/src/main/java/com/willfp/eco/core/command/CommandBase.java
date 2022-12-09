@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 /**
  * Interface for all command implementations.
  */
-@SuppressWarnings("removal")
+@SuppressWarnings({"removal", "null"})
 public interface CommandBase {
 
     /**
@@ -99,7 +99,7 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception and sends a lang message if obj null.
+     * Throws an exception containing a langYml key if obj null.
      *
      * @param obj the object
      * @param key key of notification message in langYml
@@ -117,7 +117,7 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception if predicate tests false
+     * Throws an exception containing a langYml key if predicate tests false
      *
      * @param obj       Object to test with predicate
      * @param predicate predicate to test
@@ -133,7 +133,8 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception if condition is false.
+     * Throws an exception containing a langYml key if condition is false.
+     *
      * @param condition the condition, throws exception if false
      * @param key       value in the langYml
      * @return Returns the condition given or throws an exception
@@ -141,33 +142,43 @@ public interface CommandBase {
      */
     default boolean notifyFalse(boolean condition, @NotNull String key)
             throws NotificationException {
-        if(!condition) {
+        if (!condition) {
             throw new NotificationException(key);
         }
         return true;
     }
 
     /**
-     * Throws an exception and sends a lang message if Bukkit.getPlayer(playerName) is null
+     * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null
      *
      * @param playerName the player name
-     * @param key    value in the langYml
+     * @param key        value in the langYml
      * @return Returns the player
      * @throws NotificationException exception thrown when invalid playerName
      */
     default @NotNull Player notifyPlayerRequired(@NotNull String playerName,
-                                                           @NotNull String key)
+                                                 @NotNull String key)
             throws NotificationException {
 
         final Player player = Bukkit.getPlayer(playerName);
 
-        if(Objects.isNull(player)) {
-            throw new NotificationException(key);
-        }
+        notifyNull(player, key);
 
-        return player;
+        return Objects.requireNonNull(player);
     }
 
+    /**
+     * Throws an exception containing a langYml key if player doesn't have permission
+     *
+     * @param player     the player
+     * @param permission the permission
+     * @param key        value in the langYml
+     * @return Returns the player
+     * @throws NotificationException exception thrown when player doesn't have permission
+     */
+    default @NotNull Player notifyPermissionRequired(@NotNull Player player, @NotNull String permission, @NotNull String key) throws NotificationException {
+        return notifyFalse(player, (p -> p.hasPermission(permission)), key);
+    }
 
     /**
      * Get the plugin.
