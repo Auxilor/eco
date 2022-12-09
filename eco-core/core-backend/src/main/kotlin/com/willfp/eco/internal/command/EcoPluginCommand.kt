@@ -6,7 +6,7 @@ import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.Bukkit
 
 /**
- * TODO
+ * EcoPluginCommand contains the internal logic of PluginCommand.
  */
 class EcoPluginCommand(
     plugin: EcoPlugin, name: String,
