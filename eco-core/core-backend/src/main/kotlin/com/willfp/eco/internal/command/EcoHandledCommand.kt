@@ -19,7 +19,6 @@ abstract class EcoHandledCommand(
     private val playersOnly: Boolean
 ) : CommandBase, CommandExecutor, TabCompleter {
 
-
     val subCommands = mutableListOf<CommandBase>()
 
     override fun onCommand(
@@ -28,7 +27,6 @@ abstract class EcoHandledCommand(
         label: String,
         args: Array<out String>?
     ): Boolean {
-
         if (!command.name.equals(name, true)) {
             return false
         }
@@ -46,7 +44,7 @@ abstract class EcoHandledCommand(
         label: String,
         args: Array<out String>?
     ): MutableList<String>? {
-       return handleTabComplete(sender, args?.toList() ?: listOf()).toMutableList()
+        return handleTabComplete(sender, args?.toList() ?: listOf()).toMutableList()
     }
 
     override fun getPlugin() = this.plugin
@@ -63,13 +61,16 @@ abstract class EcoHandledCommand(
         TODO("Not yet implemented")
     }
 
-    fun CommandBase.handleExecution(sender: CommandSender, args: List<String>) {
+
+    private fun handleExecution(sender: CommandSender, args: List<String>) {
         if (!canExecute(sender, this, plugin)) {
             return
         }
 
+        val subHandledCommands = subCommands.filterIsInstance<EcoHandledCommand>()
+
         if (args.isNotEmpty()) {
-            for (subCommand in subcommands) {
+            for (subCommand in subHandledCommands) {
                 if (subCommand.name.equals(args[0], true) && !canExecute(
                         sender,
                         subCommand,
@@ -87,19 +88,18 @@ abstract class EcoHandledCommand(
         try {
             notifyFalse(isPlayersOnly && sender !is Player, "not-player")
 
+            onExecute(sender, args)
+
             if (sender is Player) {
                 onExecute(sender, args)
-            } else {
-                onExecute(sender, args)
             }
-
         } catch (e: NotificationException) {
             sender.sendMessage(plugin.langYml.getMessage(e.key))
             return
         }
     }
 
-    fun CommandBase.handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
+    private fun handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
         if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
 
         val completions = subCommands.filter { sender.hasPermission(it.permission) }.map { it.name }.sorted()
@@ -112,7 +112,8 @@ abstract class EcoHandledCommand(
             }
 
             else -> {
-                val matchingCommand = subCommands.firstOrNull {
+                val subHandledCommands = subCommands.filterIsInstance<EcoHandledCommand>()
+                val matchingCommand = subHandledCommands.firstOrNull {
                     sender.hasPermission(it.permission) && it.name.equals(args[0], true)
                 }
 
