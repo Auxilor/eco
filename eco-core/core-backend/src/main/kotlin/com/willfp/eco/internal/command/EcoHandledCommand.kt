@@ -13,7 +13,10 @@ import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
 /**
- * TODO
+ * Abstract class for commands that can be handled.
+ * <p>
+ * Handled commands have a method to pass in raw input from bukkit commands
+ * in order to execute the command-specific code.
  */
 abstract class EcoHandledCommand(
     private val plugin: EcoPlugin,
@@ -22,6 +25,9 @@ abstract class EcoHandledCommand(
     private val playersOnly: Boolean
 ) : CommandBase, CommandExecutor, TabCompleter {
 
+    /**
+     * All subcommands for the command.
+     */
     val subCommands = mutableListOf<CommandBase>()
 
     override fun onCommand(
@@ -65,7 +71,10 @@ abstract class EcoHandledCommand(
     }
 
     /**
-     * TODO
+     * Handle the command.
+     *
+     * @param sender The sender.
+     * @param args   The arguments.
      */
     private fun handleExecution(sender: CommandSender, args: List<String>) {
         if (!canExecute(sender, this, plugin)) {
@@ -105,7 +114,11 @@ abstract class EcoHandledCommand(
     }
 
     /**
-     * TODO
+     * Handle the tab completion.
+     *
+     * @param sender The sender.
+     * @param args   The arguments.
+     * @return The tab completion results.
      */
     private fun handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
         if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
@@ -132,7 +145,9 @@ abstract class EcoHandledCommand(
 
     companion object {
         /**
-         * TODO
+         * Get the internal server CommandMap.
+         *
+         * @return The CommandMap.
          */
         fun getCommandMap(): CommandMap {
             try {
@@ -145,7 +160,12 @@ abstract class EcoHandledCommand(
         }
 
         /**
-         * TODO
+         * If a sender can execute the command.
+         *
+         * @param sender  The sender.
+         * @param command The command.
+         * @param plugin  The plugin.
+         * @return If the sender can execute.
          */
         fun canExecute(sender: CommandSender, command: CommandBase, plugin: EcoPlugin): Boolean {
             if (!sender.hasPermission(command.permission) && sender is Player) {
