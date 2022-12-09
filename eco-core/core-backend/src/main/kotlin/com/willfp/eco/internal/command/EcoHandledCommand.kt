@@ -12,6 +12,9 @@ import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 
+/**
+ * TODO
+ */
 abstract class EcoHandledCommand(
     private val plugin: EcoPlugin,
     private val name: String,
@@ -61,6 +64,9 @@ abstract class EcoHandledCommand(
         TODO("Not yet implemented")
     }
 
+    /**
+     * TODO
+     */
     private fun handleExecution(sender: CommandSender, args: List<String>) {
         if (!canExecute(sender, this, plugin)) {
             return
@@ -98,6 +104,9 @@ abstract class EcoHandledCommand(
         }
     }
 
+    /**
+     * TODO
+     */
     private fun handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
         if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
 
@@ -122,6 +131,9 @@ abstract class EcoHandledCommand(
     }
 
     companion object {
+        /**
+         * TODO
+         */
         fun getCommandMap(): CommandMap {
             try {
                 val field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
@@ -132,6 +144,9 @@ abstract class EcoHandledCommand(
             }
         }
 
+        /**
+         * TODO
+         */
         fun canExecute(sender: CommandSender, command: CommandBase, plugin: EcoPlugin): Boolean {
             if (!sender.hasPermission(command.permission) && sender is Player) {
                 sender.sendMessage(plugin.langYml.noPermission)

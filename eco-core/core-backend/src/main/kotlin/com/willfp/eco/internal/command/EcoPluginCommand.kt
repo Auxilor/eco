@@ -5,6 +5,9 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.Bukkit
 
+/**
+ * TODO
+ */
 class EcoPluginCommand(
     plugin: EcoPlugin, name: String,
     permission: String,

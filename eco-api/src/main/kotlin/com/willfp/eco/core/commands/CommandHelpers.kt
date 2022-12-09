@@ -146,23 +146,40 @@ fun CommandBase.addSubcommand(
 }
 
 /**
- * Notify the player if an object is null.
+ * Throws an exception containing a langYml key if obj is null.
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * automatically handles sending the message to the sender.</p>
+ * <br>
+ * Works with any CommandBase derivative:
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
  *
- * @param key The key of the message to send to the player if obj is null
- * @return The object provided originally, for more null behavior
- * @throws NotificationException
+ * @param key key of notification message in langYml
+ * @param <T> the generic type of object
+ * @return Returns the object given or throws an exception
+ * @throws NotificationException exception thrown when null
  */
 fun <T> T.notifyNull(key: String): T {
     return this ?: throw NotificationException(key)
 }
 
 /**
- * Throws an exception if predicate tests false.
+ * Throws an exception containing a langYml key if predicate tests false
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * automatically handles sending the message to the sender.</p>
+ * <br>
+ * Works with any CommandBase derivative:
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
  *
  * @param predicate predicate to test
  * @param key       key of notification message in langYml
+ * @param <T>       the generic type of object
  * @return Returns the object given or throws an exception
- * @throws NotificationException
  */
 fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
     predicate.test(this).notifyFalse(key)
@@ -170,19 +187,36 @@ fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
 }
 
 /**
- * Throws an exception if boolean is false.
+ * Throws an exception containing a langYml key if condition is false.
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * automatically handles sending the message to the sender.</p>
+ * <br>
+ * Works with any CommandBase derivative:
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ *
  * @param key       value in the langYml
  * @return Returns the condition given or throws an exception
  * @throws NotificationException exception thrown when false
  */
 fun Boolean.notifyFalse(key: String): Boolean {
-    return if(this) true else throw NotificationException(key)
+    return if (this) true else throw NotificationException(key)
 }
 
 /**
- * Throws an exception and sends a lang message if Bukkit.getPlayer(receiver) is null
+ * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * automatically handles sending the message to the sender.</p>
+ * <br>
+ * Works with any CommandBase derivative:
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
  *
- * @param key    value in the langYml
+ * @param key        value in the langYml
  * @return Returns the player
  * @throws NotificationException exception thrown when invalid playerName
  */
@@ -190,4 +224,23 @@ fun String.notifyPlayerRequired(key: String): Player {
     return Bukkit.getPlayer(this) ?: throw NotificationException(key)
 }
 
+/**
+ * Throws an exception containing a langYml key if player doesn't have permission.
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * automatically handles sending the message to the sender.</p>
+ * <br>
+ * Works with any CommandBase derivative:
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+ * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+ *
+ * @param permission the permission
+ * @param key        value in the langYml
+ * @return Returns the player
+ * @throws NotificationException exception thrown when player doesn't have permission
+ */
+fun Player.notifyPermissionRequired(permission: String, key: String): Player {
+    return this.notifyFalse({ this.hasPermission(permission) }, key)
+}
 

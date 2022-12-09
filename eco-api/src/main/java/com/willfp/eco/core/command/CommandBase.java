@@ -99,7 +99,15 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if obj null.
+     * Throws an exception containing a langYml key if obj is null.
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * automatically handles sending the message to the sender.</p>
+     * <br>
+     * Works with any CommandBase derivative:
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
      *
      * @param obj the object
      * @param key key of notification message in langYml
@@ -118,6 +126,14 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if predicate tests false
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * automatically handles sending the message to the sender.</p>
+     * <br>
+     * Works with any CommandBase derivative:
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
      *
      * @param obj       Object to test with predicate
      * @param predicate predicate to test
@@ -134,6 +150,14 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if condition is false.
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * automatically handles sending the message to the sender.</p>
+     * <br>
+     * Works with any CommandBase derivative:
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
      *
      * @param condition the condition, throws exception if false
      * @param key       value in the langYml
@@ -149,7 +173,15 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null
+     * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * automatically handles sending the message to the sender.</p>
+     * <br>
+     * Works with any CommandBase derivative:
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
      *
      * @param playerName the player name
      * @param key        value in the langYml
@@ -168,7 +200,15 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if player doesn't have permission
+     * Throws an exception containing a langYml key if player doesn't have permission.
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * automatically handles sending the message to the sender.</p>
+     * <br>
+     * Works with any CommandBase derivative:
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
      *
      * @param player     the player
      * @param permission the permission
