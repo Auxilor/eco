@@ -72,7 +72,7 @@ public abstract class PluginCommand implements PluginCommandBase {
 
     @Override
     public void unregister() {
-        delegate.register();
+        delegate.unregister();
     }
 
     @Override
