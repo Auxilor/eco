@@ -161,7 +161,7 @@ fun CommandBase.addSubcommand(
  * @return Returns the object given or throws an exception
  * @throws NotificationException exception thrown when null
  */
-fun <T> T.notifyNull(key: String): T {
+fun <T> T?.notifyNull(key: String): T {
     return this ?: throw NotificationException(key)
 }
 
@@ -220,8 +220,8 @@ fun Boolean.notifyFalse(key: String): Boolean {
  * @return Returns the player
  * @throws NotificationException exception thrown when invalid playerName
  */
-fun String.notifyPlayerRequired(key: String): Player {
-    return Bukkit.getPlayer(this) ?: throw NotificationException(key)
+fun String?.notifyPlayerRequired(key: String): Player {
+    return Bukkit.getPlayer(this ?: "") ?: throw NotificationException(key)
 }
 
 /**
