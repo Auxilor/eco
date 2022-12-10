@@ -61,7 +61,6 @@ public interface CommandBase {
     default void onExecute(@NotNull CommandSender sender,
                            @NotNull List<String> args) throws NotificationException {
         // Do nothing.
-        Bukkit.getLogger().info("Did this happen?");
     }
 
     /**

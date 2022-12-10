@@ -74,21 +74,15 @@ abstract class EcoHandledCommand(
         return this
     }
 
-    override fun onExecute(sender: CommandSender, args: MutableList<String>) {
-        parentDelegate.onExecute(sender, args)
-    }
+    override fun onExecute(sender: CommandSender, args: MutableList<String>) = parentDelegate.onExecute(sender, args)
 
-    override fun onExecute(sender: Player, args: MutableList<String>) {
-        parentDelegate.onExecute(sender, args)
-    }
+    override fun onExecute(sender: Player, args: MutableList<String>) = parentDelegate.onExecute(sender, args)
 
-    override fun tabComplete(sender: CommandSender, args: MutableList<String>): MutableList<String> {
-        return parentDelegate.tabComplete(sender, args)
-    }
+    override fun tabComplete(sender: CommandSender, args: MutableList<String>): List<String> =
+        parentDelegate.tabComplete(sender, args)
 
-    override fun tabComplete(sender: Player, args: MutableList<String>): MutableList<String> {
-        return parentDelegate.tabComplete(sender, args)
-    }
+    override fun tabComplete(sender: Player, args: MutableList<String>): List<String> =
+        parentDelegate.tabComplete(sender, args)
 
     /**
      * Handle the command.
@@ -116,7 +110,7 @@ abstract class EcoHandledCommand(
 
         try {
             notifyFalse(!isPlayersOnly || sender is Player, "not-player")
-            
+
             onExecute(sender, args)
 
             if (sender is Player) {
@@ -136,26 +130,38 @@ abstract class EcoHandledCommand(
      * @return The tab completion results.
      */
     private fun CommandBase.handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
-        if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
+        if (!sender.hasPermission(permission)) return emptyList()
 
-        val completions = subcommands.filter { sender.hasPermission(it.permission) }.map { it.name }.sorted()
-
-        return when (args.size) {
-            1 -> {
-                val list = mutableListOf<String>()
-                StringUtil.copyPartialMatches(args[0], completions, list)
-                list
-            }
-
-            else -> {
-                val matchingCommand =
-                    subcommands.firstOrNull {
-                        sender.hasPermission(it.permission) && it.name.equals(args[0], true)
-                    }
-
-                matchingCommand?.handleTabComplete(sender, args.subList(1, args.size)) ?: listOf()
+        if (args.size == 1) {
+            val completions = subcommands.filter { sender.hasPermission(it.permission) }.map { it.name }
+            val list = mutableListOf<String>()
+            StringUtil.copyPartialMatches(args[0], completions, list)
+            if (completions.isNotEmpty()) {
+                return completions
             }
         }
+
+        if (args.size >= 2) {
+            val matchingCommand =
+                subcommands.firstOrNull {
+                    sender.hasPermission(it.permission) && it.name.equals(args[0], true)
+                }
+            if (matchingCommand != null) {
+                val completions =
+                    matchingCommand.handleTabComplete(sender, args.subList(1, args.size)).toMutableList()
+                if (sender is Player) {
+                    completions.addAll(matchingCommand.handleTabComplete(sender, args.subList(1, args.size)))
+                }
+
+                return completions
+            }
+        }
+
+        val completions = tabComplete(sender, args).toMutableList()
+        if (sender is Player) {
+            completions.addAll(tabComplete(sender, args))
+        }
+        return completions.sorted()
     }
 
     companion object {
