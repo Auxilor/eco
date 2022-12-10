@@ -160,18 +160,18 @@ public interface Eco {
     EcoPlugin getEcoPlugin();
 
     @NotNull
-    PluginCommandBase createPluginCommand(@NotNull EcoPlugin plugin,
+    PluginCommandBase createPluginCommand(@NotNull CommandBase parentDelegate,
+                                          @NotNull EcoPlugin plugin,
                                           @NotNull String name,
                                           @NotNull String permission,
-                                          boolean playersOnly
-    );
+                                          boolean playersOnly);
 
     @NotNull
-    CommandBase createSubCommand(@NotNull EcoPlugin plugin,
+    CommandBase createSubCommand(@NotNull CommandBase parentDelegate,
+                                 @NotNull EcoPlugin plugin,
                                  @NotNull String name,
                                  @NotNull String permission,
-                                 boolean playersOnly
-    );
+                                 boolean playersOnly);
 
     /**
      * Updatable config.

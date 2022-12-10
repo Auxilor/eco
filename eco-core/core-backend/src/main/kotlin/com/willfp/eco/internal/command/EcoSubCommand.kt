@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.command
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.command.CommandBase
 
 /**
  * EcoSubCommand is just an instantiated handled command.<br>
@@ -8,9 +9,11 @@ import com.willfp.eco.core.EcoPlugin
  * of subcommands because they are called and added from their parent.
  */
 class EcoSubCommand(
-    plugin: EcoPlugin, name: String,
+    parentDelegate: CommandBase,
+    plugin: EcoPlugin,
+    name: String,
     permission: String,
     playersOnly: Boolean
-) : EcoHandledCommand(plugin, name, permission, playersOnly) {
+) : EcoHandledCommand(parentDelegate, plugin, name, permission, playersOnly) {
 
 }

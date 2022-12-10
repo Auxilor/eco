@@ -19,6 +19,7 @@ import org.bukkit.util.StringUtil
  * in order to execute the command-specific code.
  */
 abstract class EcoHandledCommand(
+    private val parentDelegate: CommandBase,
     private val plugin: EcoPlugin,
     private val name: String,
     private val permission: String,
@@ -66,8 +67,27 @@ abstract class EcoHandledCommand(
 
     override fun getSubcommands() = this.subCommands
 
+    override fun getWrapped() = this.parentDelegate
+
     override fun addSubcommand(command: CommandBase): CommandBase {
-        TODO("Not yet implemented")
+        subCommands.add(command)
+        return this
+    }
+
+    override fun onExecute(sender: CommandSender, args: MutableList<String>) {
+        parentDelegate.onExecute(sender, args)
+    }
+
+    override fun onExecute(sender: Player, args: MutableList<String>) {
+        parentDelegate.onExecute(sender, args)
+    }
+
+    override fun tabComplete(sender: CommandSender, args: MutableList<String>): MutableList<String> {
+        return parentDelegate.tabComplete(sender, args)
+    }
+
+    override fun tabComplete(sender: Player, args: MutableList<String>): MutableList<String> {
+        return parentDelegate.tabComplete(sender, args)
     }
 
     /**
@@ -76,31 +96,28 @@ abstract class EcoHandledCommand(
      * @param sender The sender.
      * @param args   The arguments.
      */
-    private fun handleExecution(sender: CommandSender, args: List<String>) {
+    private fun CommandBase.handleExecution(sender: CommandSender, args: List<String>) {
         if (!canExecute(sender, this, plugin)) {
             return
         }
-
-        val subHandledCommands = subCommands.filterIsInstance<EcoHandledCommand>()
-
+        
         if (args.isNotEmpty()) {
-            for (subCommand in subHandledCommands) {
-                if (subCommand.name.equals(args[0], true) && !canExecute(
-                        sender,
-                        subCommand,
-                        plugin
-                    )
-                ) {
+            for (subCommand in subcommands) {
+                if (subCommand.name.equals(args[0], true)) {
+                    if (!canExecute(sender, subCommand, plugin)) {
+                        return
+                    }
+
+                    subCommand.handleExecution(sender, args.subList(1, args.size))
                     return
                 }
-
-                subCommand.handleExecution(sender, args.subList(1, args.size))
-                return
             }
         }
 
         try {
-            notifyFalse(isPlayersOnly && sender !is Player, "not-player")
+            notifyFalse(!isPlayersOnly || sender is Player, "not-player")
+
+            Bukkit.getLogger().info(name)
 
             onExecute(sender, args)
 
@@ -120,10 +137,10 @@ abstract class EcoHandledCommand(
      * @param args   The arguments.
      * @return The tab completion results.
      */
-    private fun handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
+    private fun CommandBase.handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
         if (!sender.hasPermission(permission) || args.isEmpty()) return emptyList()
 
-        val completions = subCommands.filter { sender.hasPermission(it.permission) }.map { it.name }.sorted()
+        val completions = subcommands.filter { sender.hasPermission(it.permission) }.map { it.name }.sorted()
 
         return when (args.size) {
             1 -> {
@@ -133,10 +150,10 @@ abstract class EcoHandledCommand(
             }
 
             else -> {
-                val subHandledCommands = subCommands.filterIsInstance<EcoHandledCommand>()
-                val matchingCommand = subHandledCommands.firstOrNull {
-                    sender.hasPermission(it.permission) && it.name.equals(args[0], true)
-                }
+                val matchingCommand =
+                    subcommands.firstOrNull {
+                        sender.hasPermission(it.permission) && it.name.equals(args[0], true)
+                    }
 
                 matchingCommand?.handleTabComplete(sender, args.subList(1, args.size)) ?: listOf()
             }

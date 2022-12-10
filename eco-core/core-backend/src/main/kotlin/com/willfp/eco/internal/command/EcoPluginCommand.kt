@@ -2,6 +2,7 @@ package com.willfp.eco.internal.command
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.Bukkit
 
@@ -9,10 +10,12 @@ import org.bukkit.Bukkit
  * EcoPluginCommand contains the internal logic of PluginCommand.
  */
 class EcoPluginCommand(
-    plugin: EcoPlugin, name: String,
+    parentDelegate: CommandBase,
+    plugin: EcoPlugin,
+    name: String,
     permission: String,
     playersOnly: Boolean
-) : EcoHandledCommand(plugin, name, permission, playersOnly),
+) : EcoHandledCommand(parentDelegate, plugin, name, permission, playersOnly),
     PluginCommandBase {
     override fun register() {
         val command = Bukkit.getPluginCommand(name)

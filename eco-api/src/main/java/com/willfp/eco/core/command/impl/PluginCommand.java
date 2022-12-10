@@ -37,7 +37,7 @@ public abstract class PluginCommand implements PluginCommandBase {
                             @NotNull final String name,
                             @NotNull final String permission,
                             final boolean playersOnly) {
-        this.delegate = Eco.get().createPluginCommand(plugin, name, permission, playersOnly);
+        this.delegate = Eco.get().createPluginCommand(this, plugin, name, permission, playersOnly);
     }
 
     @Override
@@ -63,6 +63,11 @@ public abstract class PluginCommand implements PluginCommandBase {
     @Override
     public @NotNull List<CommandBase> getSubcommands() {
         return delegate.getSubcommands();
+    }
+
+    @Override
+    public @NotNull CommandBase getWrapped() {
+        return this;
     }
 
     @Override

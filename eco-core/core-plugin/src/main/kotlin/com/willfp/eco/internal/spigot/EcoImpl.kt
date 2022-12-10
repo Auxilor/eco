@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
@@ -167,11 +168,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     }
 
     override fun createPluginCommand(
+        parentDelegate: CommandBase,
         plugin: EcoPlugin,
         name: String,
         permission: String,
         playersOnly: Boolean
     ) = EcoPluginCommand(
+        parentDelegate,
         plugin,
         name,
         permission,
@@ -179,11 +182,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     )
 
     override fun createSubCommand(
+        parentDelegate: CommandBase,
         plugin: EcoPlugin,
         name: String,
         permission: String,
         playersOnly: Boolean
     ) = EcoSubCommand(
+        parentDelegate,
         plugin,
         name,
         permission,
