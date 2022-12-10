@@ -100,7 +100,7 @@ abstract class EcoHandledCommand(
         if (!canExecute(sender, this, plugin)) {
             return
         }
-        
+
         if (args.isNotEmpty()) {
             for (subCommand in subcommands) {
                 if (subCommand.name.equals(args[0], true)) {
@@ -116,9 +116,7 @@ abstract class EcoHandledCommand(
 
         try {
             notifyFalse(!isPlayersOnly || sender is Player, "not-player")
-
-            Bukkit.getLogger().info(name)
-
+            
             onExecute(sender, args)
 
             if (sender is Player) {
