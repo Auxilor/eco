@@ -55,6 +55,12 @@ public interface CommandBase {
      */
     @NotNull List<CommandBase> getSubcommands();
 
+    /**
+     * Intended for returning the enclosing CommandBase,
+     * when this instance is serving as the delegate command base.
+     *
+     * @return the wrapping object of this delegate.
+     */
     @NotNull CommandBase getWrapped();
 
     /**

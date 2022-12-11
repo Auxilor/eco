@@ -1,6 +1,5 @@
 package com.willfp.eco.core.command.impl;
 
-import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
@@ -9,12 +8,14 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@Deprecated(forRemoval = true)
+import java.util.List;
+
 /**
  * Delegates a bukkit command to an eco command (for registrations).
  */
+@Deprecated(forRemoval = true)
 public final class DelegatedBukkitCommand extends Command implements TabCompleter,
-    PluginIdentifiableCommand {
+        PluginIdentifiableCommand {
 
     /**
      * The delegate command.
@@ -34,16 +35,16 @@ public final class DelegatedBukkitCommand extends Command implements TabComplete
 
     @Override
     public boolean execute(@NotNull final CommandSender commandSender,
-        @NotNull final String label,
-        @NotNull final String[] args) {
+                           @NotNull final String label,
+                           @NotNull final String[] args) {
         return false;
     }
 
     @Override
     public List<String> onTabComplete(@NotNull final CommandSender commandSender,
-        @NotNull final Command command,
-        @NotNull final String label,
-        @NotNull final String[] args) {
+                                      @NotNull final Command command,
+                                      @NotNull final String label,
+                                      @NotNull final String[] args) {
         return List.of();
     }
 
