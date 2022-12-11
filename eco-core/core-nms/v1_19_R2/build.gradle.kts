@@ -7,7 +7,7 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":eco-core:core-nms:nms-common"))
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
+    paperDevBundle("1.19.3-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-text-minimessage:4.11.0") {
         version {
