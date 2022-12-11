@@ -6,6 +6,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface used for discriminating between Plugin-level
+ * commands and sub commands.
+ */
 public interface PluginCommandBase extends CommandBase {
     /**
      * Register the PluginCommandBase to the bukkit commandMap.

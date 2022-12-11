@@ -159,6 +159,16 @@ public interface Eco {
     @NotNull
     EcoPlugin getEcoPlugin();
 
+    /**
+     * Create PluginCommandBase implementation of {@link PluginCommand}.
+     *
+     * @param parentDelegate the enclosing class of this implementation.
+     * @param plugin         the plugin.
+     * @param name           the name of the command.
+     * @param permission     the permission of the command.
+     * @param playersOnly    if the command is players only.
+     * @return The PluginCommandBase implementation
+     */
     @NotNull
     PluginCommandBase createPluginCommand(@NotNull CommandBase parentDelegate,
                                           @NotNull EcoPlugin plugin,
@@ -166,6 +176,16 @@ public interface Eco {
                                           @NotNull String permission,
                                           boolean playersOnly);
 
+    /**
+     * Create CommandBase implementation of {@link com.willfp.eco.core.command.impl.Subcommand Subcommand}.
+     *
+     * @param parentDelegate the enclosing class of this implementation.
+     * @param plugin         the plugin.
+     * @param name           the name of the command.
+     * @param permission     the permission of the command.
+     * @param playersOnly    if the command is players only.
+     * @return The CommandBase implementation
+     */
     @NotNull
     CommandBase createSubCommand(@NotNull CommandBase parentDelegate,
                                  @NotNull EcoPlugin plugin,

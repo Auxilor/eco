@@ -48,6 +48,11 @@ public interface CommandBase {
      */
     @NotNull CommandBase addSubcommand(@NotNull CommandBase command);
 
+    /**
+     * Get the subcommands of the command.
+     *
+     * @return The subcommands.
+     */
     @NotNull List<CommandBase> getSubcommands();
 
     @NotNull CommandBase getWrapped();
@@ -57,6 +62,7 @@ public interface CommandBase {
      *
      * @param sender The sender.
      * @param args   The args.
+     * @throws NotificationException The notification exception.
      */
     default void onExecute(@NotNull CommandSender sender,
                            @NotNull List<String> args) throws NotificationException {
@@ -68,6 +74,7 @@ public interface CommandBase {
      *
      * @param sender The sender.
      * @param args   The args.
+     * @throws NotificationException The notification exception.
      */
     default void onExecute(@NotNull Player sender,
                            @NotNull List<String> args) throws NotificationException {
@@ -142,6 +149,7 @@ public interface CommandBase {
      * @param key       key of notification message in langYml
      * @param <T>       the generic type of object
      * @return Returns the object given or throws an exception
+     * @throws NotificationException the notification exception
      */
     default @NotNull <T> T notifyFalse(@NotNull T obj,
                                        @NotNull Predicate<T> predicate, @NotNull String key)
