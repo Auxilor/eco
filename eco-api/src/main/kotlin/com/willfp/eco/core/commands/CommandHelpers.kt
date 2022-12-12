@@ -150,14 +150,7 @@ fun CommandBase.addSubcommand(
  * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
  * automatically handles sending the message to the sender.</p>
  * <br>
- * Works with any CommandBase derivative:
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
- *
  * @param key key of notification message in langYml
- * @param <T> the generic type of object
  * @return Returns the object given or throws an exception
  * @throws NotificationException exception thrown when null
  */
@@ -170,12 +163,6 @@ fun <T> T?.notifyNull(key: String): T {
  * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
  * automatically handles sending the message to the sender.</p>
  * <br>
- * Works with any CommandBase derivative:
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
- *
  * @param predicate predicate to test
  * @param key       key of notification message in langYml
  * @param <T>       the generic type of object
@@ -191,12 +178,6 @@ fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
  * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
  * automatically handles sending the message to the sender.</p>
  * <br>
- * Works with any CommandBase derivative:
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
- *
  * @param key       value in the langYml
  * @return Returns the condition given or throws an exception
  * @throws NotificationException exception thrown when false
@@ -210,12 +191,6 @@ fun Boolean.notifyFalse(key: String): Boolean {
  * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
  * automatically handles sending the message to the sender.</p>
  * <br>
- * Works with any CommandBase derivative:
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
- *
  * @param key        value in the langYml
  * @return Returns the player
  * @throws NotificationException exception thrown when invalid playerName
@@ -229,12 +204,6 @@ fun String?.notifyPlayerRequired(key: String): Player {
  * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
  * automatically handles sending the message to the sender.</p>
  * <br>
- * Works with any CommandBase derivative:
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
- * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
- *
  * @param permission the permission
  * @param key        value in the langYml
  * @return Returns the player

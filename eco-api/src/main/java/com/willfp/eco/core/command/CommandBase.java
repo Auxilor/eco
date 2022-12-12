@@ -114,6 +114,25 @@ public interface CommandBase {
     }
 
     /**
+     * Throws an exception containing a langYml key.
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * automatically handles sending the message to the sender.</p>
+     * <br>
+     * Works with any CommandBase derivative:
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
+     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * ]
+     *
+     * @param key key of notification message in langYml
+     * @throws NotificationException exception thrown
+     */
+    default void notify(@NotNull String key) throws NotificationException {
+        throw new NotificationException(key);
+    }
+
+    /**
      * Throws an exception containing a langYml key if obj is null.
      * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
      * automatically handles sending the message to the sender.</p>
@@ -133,10 +152,10 @@ public interface CommandBase {
     default @NotNull <T> T notifyNull(@Nullable T obj, @NotNull String key)
             throws NotificationException {
         if (Objects.isNull(obj)) {
-            throw new NotificationException(key);
+            notify(key);
         }
 
-        return obj;
+        return Objects.requireNonNull(obj);
     }
 
     /**
@@ -183,7 +202,7 @@ public interface CommandBase {
     default boolean notifyFalse(boolean condition, @NotNull String key)
             throws NotificationException {
         if (!condition) {
-            throw new NotificationException(key);
+            notify(key);
         }
         return true;
     }
