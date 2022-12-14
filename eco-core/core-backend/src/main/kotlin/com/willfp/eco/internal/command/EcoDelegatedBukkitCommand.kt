@@ -27,13 +27,19 @@ class EcoDelegatedBukkitCommand(private val delegate: EcoPluginCommand) : Comman
         args: Array<out String>?
     ): MutableList<String> {
         val argsAsList = args?.toMutableList() ?: mutableListOf()
-        return when (sender) {
+        val playerComplete = when (sender) {
             is Player -> {
                 delegate.tabComplete(sender, argsAsList)
             }
 
-            else -> delegate.tabComplete(sender, argsAsList)
+            else -> emptyList()
         }.toMutableList()
+
+        //Combine lists and remove duplicates
+        val tabComplete = delegate.tabComplete(sender, argsAsList).toMutableList()
+        tabComplete.removeAll(playerComplete)
+        tabComplete.addAll(playerComplete)
+        return tabComplete
     }
 
     override fun getPlugin() = delegate.plugin
