@@ -4,7 +4,6 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.PluginIdentifiableCommand
 import org.bukkit.command.TabCompleter
-import org.bukkit.entity.Player
 
 /**
  * Delegates a bukkit command to an eco command (for registrations).
@@ -12,11 +11,7 @@ import org.bukkit.entity.Player
 class EcoDelegatedBukkitCommand(private val delegate: EcoPluginCommand) : Command(delegate.name), TabCompleter,
     PluginIdentifiableCommand {
     override fun execute(sender: CommandSender, label: String, args: Array<out String>?): Boolean {
-        val argsAsList = args?.toMutableList() ?: mutableListOf()
-        delegate.onExecute(sender, argsAsList)
-        if (sender is Player) {
-            delegate.onExecute(sender, argsAsList)
-        }
+        delegate.handleExecutionBridge(sender, args?.toList() ?: emptyList())
         return false
     }
 
@@ -26,20 +21,7 @@ class EcoDelegatedBukkitCommand(private val delegate: EcoPluginCommand) : Comman
         label: String,
         args: Array<out String>?
     ): MutableList<String> {
-        val argsAsList = args?.toMutableList() ?: mutableListOf()
-        val playerComplete = when (sender) {
-            is Player -> {
-                delegate.tabComplete(sender, argsAsList)
-            }
-
-            else -> emptyList()
-        }.toMutableList()
-
-        //Combine lists and remove duplicates
-        val tabComplete = delegate.tabComplete(sender, argsAsList).toMutableList()
-        tabComplete.removeAll(playerComplete)
-        tabComplete.addAll(playerComplete)
-        return tabComplete
+        return delegate.handleTabCompleteBridge(sender, args?.toList() ?: emptyList()).toMutableList()
     }
 
     override fun getPlugin() = delegate.plugin

@@ -84,6 +84,10 @@ abstract class EcoHandledCommand(
     override fun tabComplete(sender: Player, args: MutableList<String>): List<String> =
         parentDelegate.tabComplete(sender, args)
 
+    fun handleExecutionBridge(sender: CommandSender, args: List<String>) {
+        this.handleExecution(sender, args)
+    }
+
     /**
      * Handle the command.
      *
@@ -120,6 +124,10 @@ abstract class EcoHandledCommand(
             sender.sendMessage(plugin.langYml.getMessage(e.key))
             return
         }
+    }
+
+    fun handleTabCompleteBridge(sender: CommandSender, args: List<String>): List<String> {
+        return this.handleTabComplete(sender, args)
     }
 
     /**
