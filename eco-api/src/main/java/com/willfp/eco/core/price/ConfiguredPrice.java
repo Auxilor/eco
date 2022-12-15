@@ -86,6 +86,11 @@ public final class ConfiguredPrice implements Price {
         this.price.setMultiplier(player, multiplier);
     }
 
+    @Override
+    public String getIdentifier() {
+        return this.price.getIdentifier();
+    }
+
     /**
      * Get the price that this delegates to.
      *

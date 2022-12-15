@@ -49,4 +49,9 @@ public final class PriceFree implements Price {
                            final double multiplier) {
         return 0;
     }
+
+    @Override
+    public String getIdentifier() {
+        return "eco:free";
+    }
 }

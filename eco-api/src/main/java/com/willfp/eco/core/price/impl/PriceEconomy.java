@@ -85,4 +85,9 @@ public final class PriceEconomy implements Price {
                               final double multiplier) {
         this.multipliers.put(player.getUniqueId(), multiplier);
     }
+
+    @Override
+    public String getIdentifier() {
+        return "eco:economy";
+    }
 }
