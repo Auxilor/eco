@@ -4,7 +4,6 @@ import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
-import net.minecraft.core.Registry
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.LivingEntity
@@ -48,17 +47,14 @@ private val MATERIAL_TO_ITEM = mutableMapOf<Material, Item>()
 
 fun Material.toItem(): Item =
     MATERIAL_TO_ITEM.getOrPut(this) {
-        Registry.ITEM.getOptional(this.key.toResourceLocation())
-            .orElseThrow { IllegalArgumentException("Material is not item!") }
+        impl.materialToItem(this)
     }
 
 private val ITEM_TO_MATERIAL = mutableMapOf<Item, Material>()
 
 fun Item.toMaterial(): Material =
     ITEM_TO_MATERIAL.getOrPut(this) {
-        val material = Material.getMaterial(Registry.ITEM.getKey(this).path.uppercase())
-            ?: throw IllegalArgumentException("Invalid material!")
-        material
+        impl.itemToMaterial(this)
     }
 
 fun CompoundTag.makePdc(base: Boolean = false): PersistentDataContainer =
@@ -93,6 +89,10 @@ interface CommonsProvider {
     fun <T : TargetGoal<*>> getVersionSpecificTargetGoalFactory(goal: T): TargetGoalFactory<T>? {
         return null
     }
+
+    fun materialToItem(material: Material): Item
+
+    fun itemToMaterial(item: Item): Material
 
     companion object {
         fun setIfNeeded(provider: CommonsProvider) {
