@@ -12,7 +12,7 @@ import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 
 class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
-    private val landsIntegration = LandsIntegration.of(this.plugin);
+    private val landsIntegration = LandsIntegration.of(this.plugin)
     override fun canBreakBlock(
         player: Player,
         block: Block
