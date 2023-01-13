@@ -61,7 +61,9 @@ public interface CommandBase {
      *
      * @return the wrapping object of this delegate.
      */
-    @NotNull CommandBase getWrapped();
+    default @NotNull CommandBase getWrapped() {
+        return this;
+    }
 
     /**
      * Handle command execution.
