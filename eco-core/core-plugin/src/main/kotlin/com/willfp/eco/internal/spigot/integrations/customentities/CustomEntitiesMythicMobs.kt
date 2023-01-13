@@ -17,7 +17,7 @@ class CustomEntitiesMythicMobs : CustomEntitiesIntegration {
             CustomEntity(
                 key,
                 {
-                    val entityId = api.getMythicMobInstance(it)?.type?.entityType ?: return@CustomEntity false
+                    val entityId = api.getMythicMobInstance(it)?.type?.entityType?.name ?: return@CustomEntity false
                     entityId.equals(id, ignoreCase = true)
                 },
                 {
