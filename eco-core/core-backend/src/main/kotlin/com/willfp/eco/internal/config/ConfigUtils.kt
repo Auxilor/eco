@@ -77,7 +77,7 @@ private abstract class ConfigTypeHandler(
     val type: ConfigType
 ) {
     fun toMap(input: String?): Map<String, Any?> {
-        if (input == null || input.isBlank()) {
+        if (input.isNullOrBlank()) {
             return emptyMap()
         }
 

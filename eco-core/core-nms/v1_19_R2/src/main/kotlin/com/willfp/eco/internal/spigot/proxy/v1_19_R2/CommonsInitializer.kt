@@ -4,7 +4,6 @@ import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
@@ -126,7 +125,7 @@ class CommonsInitializer : CommonsInitializerProxy {
 
                     tag.merge(container.toTag())
                 } else {
-                    item.setTag(null)
+                    item.tag = null
                 }
             } else {
                 if (container != null && !container.isEmpty) {

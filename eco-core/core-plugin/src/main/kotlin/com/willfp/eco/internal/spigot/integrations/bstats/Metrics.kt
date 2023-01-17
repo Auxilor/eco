@@ -19,7 +19,6 @@ import java.util.logging.Level
 import java.util.zip.GZIPOutputStream
 import javax.net.ssl.HttpsURLConnection
 
-@Suppress("UNCHECKED_CAST")
 class Metrics(private val plugin: EcoPlugin) {
     private val metricsBase: MetricsBase
 

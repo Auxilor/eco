@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Utilities / API methods for item durability.
  */
+// Have to suppress casts to ItemMeta because the methods don't exist for some older versions that eco supports.
+@SuppressWarnings("RedundantCast")
 public final class DurabilityUtils {
     /**
      * Damage an item in a player's inventory.

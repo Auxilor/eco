@@ -6,7 +6,6 @@ import me.gholo.api.GHoloAPI
 import org.bukkit.Location
 import java.util.UUID
 
-@Suppress("DEPRECATION")
 class HologramGHolo : HologramIntegration {
     companion object {
         private val api = GHoloAPI()

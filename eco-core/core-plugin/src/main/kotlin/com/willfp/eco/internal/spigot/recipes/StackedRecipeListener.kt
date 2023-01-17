@@ -42,7 +42,6 @@ class StackedRecipeListener(
         val recipe = Recipes.getMatch(matrix) ?: return
 
         // Get the handler for the type of recipe
-        @Suppress("UNCHECKED_CAST")
         val handler = handlers.firstOrNull { recipe::class.java.isAssignableFrom(it.recipeType) } ?: return
 
         var isStackedRecipe = false

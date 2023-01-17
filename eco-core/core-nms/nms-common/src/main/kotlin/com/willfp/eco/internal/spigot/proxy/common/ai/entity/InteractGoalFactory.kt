@@ -39,7 +39,6 @@ private class EnhancedInteractGoal(
         return if (mob.random.nextFloat() >= probability) {
             false
         } else {
-            @Suppress("SENSELESS_COMPARISON")
             if (mob.target != null) {
                 lookAt = mob.target
             }

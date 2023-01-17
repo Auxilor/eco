@@ -41,11 +41,7 @@ object EntityLookupModelEngine : Integration {
 
             return EntityArgParseResult(
                 {
-                    val modelled = ModelEngineAPI.getModeledEntity(it.uniqueId)
-
-                    if (modelled == null) {
-                        return@EntityArgParseResult false
-                    }
+                    val modelled = ModelEngineAPI.getModeledEntity(it.uniqueId) ?: return@EntityArgParseResult false
 
                     modelled.models.containsKey(id)
                 },

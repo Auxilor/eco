@@ -6,7 +6,6 @@ import eu.decentsoftware.holograms.api.DHAPI
 import org.bukkit.Location
 import java.util.UUID
 
-@Suppress("DEPRECATION")
 class HologramDecentHolograms : HologramIntegration {
     override fun createHologram(location: Location, contents: MutableList<String>): Hologram {
         val id = UUID.randomUUID().toString()

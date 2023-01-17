@@ -579,7 +579,7 @@ public final class StringUtils {
      *
      * @param lookup The lookup string.
      * @return An array of tokens to be processed.
-     * @author Shawn (https://stackoverflow.com/questions/70606170/split-a-list-on-spaces-and-group-quoted-characters/70606653#70606653)
+     * @author Shawn (<a href="https://stackoverflow.com/questions/70606170/split-a-list-on-spaces-and-group-quoted-characters/70606653#70606653">...</a>)
      */
     @NotNull
     public static String[] parseTokens(@NotNull final String lookup) {

@@ -221,7 +221,7 @@ public final class PluginProps {
 
     /**
      * Create new props from known values.
-     *
+     * <p>
      * Marked as internal as this method will break whenever the properties themselves
      * are updated (e.g. if a new property is added) - so to prevent any potential
      * backwards-compatibility bugs, this method cannot be invoked outside eco itself.

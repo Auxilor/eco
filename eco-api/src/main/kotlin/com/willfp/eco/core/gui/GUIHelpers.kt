@@ -83,7 +83,6 @@ fun SlotBuilder.setCaptiveFilter(test: (Player, Menu, ItemStack?) -> Boolean): S
  * @deprecated Use SlotUpdater instead.
  */
 @Deprecated("Use SlotUpdater instead")
-@Suppress("DEPRECATION")
 fun SlotBuilder.setModifier(action: (Player, Menu, item: ItemStack) -> Unit): SlotBuilder =
     this.setUpdater { a, b, c -> c.apply { action(a, b, c) } }
 

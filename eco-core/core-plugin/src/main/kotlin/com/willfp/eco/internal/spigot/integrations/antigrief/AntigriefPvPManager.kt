@@ -1,11 +1,11 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
+import me.NoChance.PvPManager.PvPlayer
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import me.NoChance.PvPManager.PvPlayer
 
 class AntigriefPvPManager: AntigriefIntegration {
     override fun getPluginName(): String {
@@ -27,7 +27,7 @@ class AntigriefPvPManager: AntigriefIntegration {
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
         return when(victim) {
             is Player -> {
-                (PvPlayer.get(victim).isInCombat())}
+                (PvPlayer.get(victim).isInCombat)}
             else -> true
         }
     }

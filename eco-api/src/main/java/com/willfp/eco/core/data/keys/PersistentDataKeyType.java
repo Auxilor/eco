@@ -99,7 +99,7 @@ public final class PersistentDataKeyType<T> {
         if (this == that) {
             return true;
         }
-        if (!(that instanceof PersistentDataKeyType type)) {
+        if (!(that instanceof PersistentDataKeyType<?> type)) {
             return false;
         }
         return Objects.equals(this.name, type.name);

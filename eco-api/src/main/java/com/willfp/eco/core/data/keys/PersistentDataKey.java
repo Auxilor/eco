@@ -134,7 +134,7 @@ public final class PersistentDataKey<T> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PersistentDataKey that)) {
+        if (!(o instanceof PersistentDataKey<?> that)) {
             return false;
         }
         return Objects.equals(this.getKey(), that.getKey());

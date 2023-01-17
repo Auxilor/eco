@@ -192,7 +192,7 @@ class EcoFastItemStack(
         apply()
     }
 
-    @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
+    @Suppress("RedundantSuppression", "UNNECESSARY_NOT_NULL_ASSERTION")
     private var flagBits: Byte
         get() =
             if (handle.hasTag() && handle.getTag()!!.contains(
@@ -255,7 +255,7 @@ class EcoFastItemStack(
     }
 
     override fun hashCode(): Int {
-        @Suppress("UNNECESSARY_SAFE_CALL")
+        @Suppress("RedundantSuppression", "UNNECESSARY_SAFE_CALL")
         return handle.getTag()?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.getItem()))
     }
 

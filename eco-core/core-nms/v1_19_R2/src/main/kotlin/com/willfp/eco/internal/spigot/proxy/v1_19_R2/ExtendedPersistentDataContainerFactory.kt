@@ -12,7 +12,6 @@ import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
 class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFactoryProxy {
-    @Suppress("UNCHECKED_CAST")
     private val registry: CraftPersistentDataTypeRegistry
 
     init {
@@ -38,7 +37,7 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
     }
 
     inner class EcoPersistentDataContainer(
-        val handle: CraftPersistentDataContainer
+        private val handle: CraftPersistentDataContainer
     ) : ExtendedPersistentDataContainer {
         @Suppress("UNCHECKED_CAST")
         private val customDataTags: MutableMap<String, Tag> =

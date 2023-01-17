@@ -9,7 +9,6 @@ import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
 
 class AntigriefFabledSkyBlock : AntigriefIntegration {
-
     override fun getPluginName(): String {
         return "FabledSkyBlock"
     }
