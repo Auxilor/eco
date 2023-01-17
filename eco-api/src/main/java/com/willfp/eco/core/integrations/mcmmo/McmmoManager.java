@@ -33,10 +33,15 @@ public final class McmmoManager {
      * @return The bonus drop count.
      */
     public static int getBonusDropCount(@NotNull final Block block) {
+        int finalValue = 0;
         for (McmmoIntegration mcmmoIntegration : REGISTERED) {
-            return mcmmoIntegration.getBonusDropCount(block);
+            finalValue += mcmmoIntegration.getBonusDropCount(block);
+            
+
+
+            
         }
-        return 0;
+        return finalValue;
     }
 
     /**
@@ -47,7 +52,10 @@ public final class McmmoManager {
      */
     public static boolean isFake(@NotNull final Event event) {
         for (McmmoIntegration mcmmoIntegration : REGISTERED) {
-            return mcmmoIntegration.isFake(event);
+            if (mcmmoIntegration.isFake(event)) {
+                return true;
+            }
+
         }
         return false;
     }
