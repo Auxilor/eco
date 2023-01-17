@@ -85,8 +85,8 @@ public record PlayableSound(@NotNull Sound sound,
             try {
                 Sound sound = Sound.valueOf(config.getString("sound").toUpperCase());
 
-                double pitch = Objects.requireNonNullElse(config.getDouble("pitch"), 1.0);
-                double volume = Objects.requireNonNullElse(config.getDouble("volume"), 1.0);
+                double pitch = Objects.requireNonNullElse(config.getDoubleOrNull("pitch"), 1.0);
+                double volume = Objects.requireNonNullElse(config.getDoubleOrNull("volume"), 1.0);
 
                 return new PlayableSound(
                         sound,

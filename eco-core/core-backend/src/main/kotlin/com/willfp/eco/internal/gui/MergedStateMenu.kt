@@ -3,6 +3,7 @@ package com.willfp.eco.internal.gui
 import com.willfp.eco.core.gui.menu.Menu
 import org.bukkit.entity.Player
 
+// To check in the future, I'm not sure if this is necessary functionality at all.
 class MergedStateMenu(
     private val base: Menu,
     private val additional: Menu
