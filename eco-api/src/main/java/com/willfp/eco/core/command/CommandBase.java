@@ -111,7 +111,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:
@@ -130,7 +130,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if obj is null.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:
@@ -155,7 +155,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if predicate tests false
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:
@@ -179,7 +179,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if condition is false.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:
@@ -203,7 +203,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:
@@ -227,7 +227,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:
@@ -253,7 +253,7 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if player doesn't have permission.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
      * automatically handles sending the message to the sender.</p>
      * <br>
      * Works with any CommandBase implementation:

@@ -187,7 +187,7 @@ public interface Eco {
      * @return The CommandBase implementation
      */
     @NotNull
-    CommandBase createSubCommand(@NotNull CommandBase parentDelegate,
+    CommandBase createSubcommand(@NotNull CommandBase parentDelegate,
                                  @NotNull EcoPlugin plugin,
                                  @NotNull String name,
                                  @NotNull String permission,

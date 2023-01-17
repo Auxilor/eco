@@ -18,7 +18,7 @@ import org.bukkit.util.StringUtil
  * Handled commands have a method to pass in raw input from bukkit commands
  * in order to execute the command-specific code.
  */
-abstract class EcoHandledCommand(
+abstract class HandledCommand(
     private val parentDelegate: CommandBase,
     private val plugin: EcoPlugin,
     private val name: String,
@@ -92,13 +92,13 @@ abstract class EcoHandledCommand(
         }
 
         if (args.isNotEmpty()) {
-            for (subCommand in subcommands) {
-                if (subCommand.name.equals(args[0], true)) {
-                    if (!canExecute(sender, subCommand, plugin)) {
+            for (subcommand in subcommands) {
+                if (subcommand.name.equals(args[0], true)) {
+                    if (!canExecute(sender, subcommand, plugin)) {
                         return
                     }
 
-                    subCommand.handleExecution(sender, args.subList(1, args.size))
+                    subcommand.handleExecution(sender, args.subList(1, args.size))
                     return
                 }
             }

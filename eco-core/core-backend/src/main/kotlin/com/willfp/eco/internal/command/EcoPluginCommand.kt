@@ -12,7 +12,7 @@ class EcoPluginCommand(
     name: String,
     permission: String,
     playersOnly: Boolean
-) : EcoHandledCommand(parentDelegate, plugin, name, permission, playersOnly),
+) : HandledCommand(parentDelegate, plugin, name, permission, playersOnly),
     PluginCommandBase {
     override fun register() {
         val command = Bukkit.getPluginCommand(name)
@@ -46,10 +46,10 @@ class EcoPluginCommand(
     }
 }
 
-class EcoSubCommand(
+class EcoSubcommand(
     parentDelegate: CommandBase,
     plugin: EcoPlugin,
     name: String,
     permission: String,
     playersOnly: Boolean
-) : EcoHandledCommand(parentDelegate, plugin, name, permission, playersOnly)
+) : HandledCommand(parentDelegate, plugin, name, permission, playersOnly)

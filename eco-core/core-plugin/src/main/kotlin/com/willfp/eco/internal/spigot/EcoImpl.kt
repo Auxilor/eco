@@ -16,7 +16,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
-import com.willfp.eco.internal.command.EcoSubCommand
+import com.willfp.eco.internal.command.EcoSubcommand
 import com.willfp.eco.internal.config.*
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
@@ -181,13 +181,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         playersOnly
     )
 
-    override fun createSubCommand(
+    override fun createSubcommand(
         parentDelegate: CommandBase,
         plugin: EcoPlugin,
         name: String,
         permission: String,
         playersOnly: Boolean
-    ) = EcoSubCommand(
+    ) = EcoSubcommand(
         parentDelegate,
         plugin,
         name,

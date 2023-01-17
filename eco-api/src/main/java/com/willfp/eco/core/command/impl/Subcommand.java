@@ -28,7 +28,7 @@ public abstract class Subcommand implements CommandBase {
                          @NotNull final String name,
                          @NotNull final String permission,
                          final boolean playersOnly) {
-        this.delegate = Eco.get().createSubCommand(this, plugin, name, permission, playersOnly);
+        this.delegate = Eco.get().createSubcommand(this, plugin, name, permission, playersOnly);
     }
 
     /**

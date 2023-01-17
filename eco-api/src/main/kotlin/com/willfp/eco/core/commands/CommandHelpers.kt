@@ -148,7 +148,7 @@ fun CommandBase.addSubcommand(
 
 /**
  * Throws an exception containing a langYml key if obj is null.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
  * automatically handles sending the message to the sender.</p>
  * <br>
  * @param key key of notification message in langYml
@@ -161,7 +161,7 @@ fun <T> T?.notifyNull(key: String): T {
 
 /**
  * Throws an exception containing a langYml key if predicate tests false
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
  * automatically handles sending the message to the sender.</p>
  * <br>
  * @param predicate predicate to test
@@ -176,7 +176,7 @@ fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
 
 /**
  * Throws an exception containing a langYml key if condition is false.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
  * automatically handles sending the message to the sender.</p>
  * <br>
  * @param key       value in the langYml
@@ -189,7 +189,7 @@ fun Boolean.notifyFalse(key: String): Boolean {
 
 /**
  * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
  * automatically handles sending the message to the sender.</p>
  * <br>
  * @param key        value in the langYml
@@ -202,7 +202,7 @@ fun String?.notifyPlayerRequired(key: String): Player {
 
 /**
  * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
  * automatically handles sending the message to the sender.</p>
  * <br>
  * @param key        value in the langYml
@@ -222,7 +222,7 @@ fun String?.notifyOfflinePlayerRequired(key: String): OfflinePlayer {
 
 /**
  * Throws an exception containing a langYml key if player doesn't have permission.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
  * automatically handles sending the message to the sender.</p>
  * <br>
  * @param permission the permission
