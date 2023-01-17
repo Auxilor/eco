@@ -11,8 +11,10 @@ import java.util.List;
 
 /**
  * Delegates a bukkit command to an eco command (for registrations).
+ *
+ * @deprecated Internal command implementations have been removed from the API.
  */
-@Deprecated(forRemoval = true)
+@Deprecated(forRemoval = true, since = "6.49.0")
 public final class DelegatedBukkitCommand extends Command implements TabCompleter, PluginIdentifiableCommand {
     /**
      * The delegate command.

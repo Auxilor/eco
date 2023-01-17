@@ -1,20 +1,19 @@
 package com.willfp.eco.core.command;
 
 /**
- * An Exception class used for notifying a sender
- * with a langYml message
+ * A notification exception is thrown when {@link org.bukkit.command.CommandSender}s don't
+ * specify valid arguments in commands.
  */
 public class NotificationException extends Exception {
-
     /**
-     * The langYml key of the notification string.
+     * The key for the lang.yml message to be sent.
      */
     private final String key;
 
     /**
      * Creates a notification exception.
      *
-     * @param key the lang key of the notification.
+     * @param key The lang key of the notification.
      */
     public NotificationException(String key) {
         super(key);
@@ -24,7 +23,7 @@ public class NotificationException extends Exception {
     /**
      * Get the lang key.
      *
-     * @return the lang key
+     * @return The lang key.
      */
     public String getKey() {
         return key;
