@@ -3,6 +3,9 @@ package com.willfp.eco.core.command;
 /**
  * A notification exception is thrown when {@link org.bukkit.command.CommandSender}s don't
  * specify valid arguments in commands.
+ * <p>
+ * Methods in eco that throw this will contain automatic handling and thus
+ * should not be surrounded by try / catch blocks.
  */
 public class NotificationException extends Exception {
     /**
