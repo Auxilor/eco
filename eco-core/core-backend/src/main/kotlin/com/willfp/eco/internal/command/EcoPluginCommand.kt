@@ -6,9 +6,6 @@ import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.Bukkit
 
-/**
- * EcoPluginCommand contains the internal logic of PluginCommand.
- */
 class EcoPluginCommand(
     parentDelegate: CommandBase,
     plugin: EcoPlugin,
@@ -48,3 +45,11 @@ class EcoPluginCommand(
         Eco.get().syncCommands()
     }
 }
+
+class EcoSubCommand(
+    parentDelegate: CommandBase,
+    plugin: EcoPlugin,
+    name: String,
+    permission: String,
+    playersOnly: Boolean
+) : EcoHandledCommand(parentDelegate, plugin, name, permission, playersOnly)

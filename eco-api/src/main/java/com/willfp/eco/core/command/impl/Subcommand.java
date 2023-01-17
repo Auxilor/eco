@@ -8,10 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Subcommands can be added to PluginCommands or to other Subcommands.
+ * A command implementation that must exist as a subcommand (i.e. cannot be registered directly).
  */
 public abstract class Subcommand implements CommandBase {
-
+    /**
+     * The delegate command.
+     */
     private final CommandBase delegate;
 
     /**
@@ -76,6 +78,4 @@ public abstract class Subcommand implements CommandBase {
     public EcoPlugin getPlugin() {
         return delegate.getPlugin();
     }
-
-
 }

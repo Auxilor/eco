@@ -5,10 +5,9 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.PluginIdentifiableCommand
 import org.bukkit.command.TabCompleter
 
-/**
- * Delegates a bukkit command to an eco command (for registrations).
- */
-class EcoDelegatedBukkitCommand(private val delegate: EcoPluginCommand) : Command(delegate.name), TabCompleter, PluginIdentifiableCommand {
+class EcoDelegatedBukkitCommand(
+    private val delegate: EcoPluginCommand
+) : Command(delegate.name), TabCompleter, PluginIdentifiableCommand {
     override fun execute(sender: CommandSender, label: String, args: Array<out String>?): Boolean {
         return false
     }
@@ -18,13 +17,12 @@ class EcoDelegatedBukkitCommand(private val delegate: EcoPluginCommand) : Comman
         command: Command,
         label: String,
         args: Array<out String>?
-    ): MutableList<String> {
-        return mutableListOf()
+    ): List<String> {
+        return mutableListOf() // Mutable in case bukkit requires this (I haven't checked.)
     }
 
     override fun getPlugin() = delegate.plugin
     override fun getPermission() = delegate.permission
     override fun getDescription() = delegate.description ?: ""
-    override fun getAliases(): MutableList<String> = delegate.aliases
-
+    override fun getAliases(): List<String> = delegate.aliases
 }

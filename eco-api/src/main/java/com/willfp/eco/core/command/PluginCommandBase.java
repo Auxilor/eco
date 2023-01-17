@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Interface used for discriminating between Plugin-level
- * commands and sub commands.
+ * Plugin command bases can be registered directly with the server,
+ * this essentially functions as the interface that is implemented generically
+ * via {@link com.willfp.eco.core.command.impl.PluginCommand}.
  */
 public interface PluginCommandBase extends CommandBase {
     /**

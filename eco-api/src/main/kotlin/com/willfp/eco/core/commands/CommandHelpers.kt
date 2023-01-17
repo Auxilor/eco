@@ -8,6 +8,7 @@ import com.willfp.eco.core.command.NotificationException
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.command.impl.Subcommand
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.function.Predicate
@@ -200,6 +201,26 @@ fun String?.notifyPlayerRequired(key: String): Player {
 }
 
 /**
+ * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
+ * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
+ * automatically handles sending the message to the sender.</p>
+ * <br>
+ * @param key        value in the langYml
+ * @return Returns the player
+ * @throws NotificationException exception thrown when invalid playerName
+ */
+fun String?.notifyOfflinePlayerRequired(key: String): OfflinePlayer {
+    @Suppress("DEPRECATION")
+    val player = Bukkit.getOfflinePlayer(this ?: "")
+
+    if (!player.hasPlayedBefore() && !player.isOnline) {
+        throw NotificationException(key)
+    }
+
+    return player
+}
+
+/**
  * Throws an exception containing a langYml key if player doesn't have permission.
  * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and SubCommand
  * automatically handles sending the message to the sender.</p>
@@ -212,4 +233,3 @@ fun String?.notifyPlayerRequired(key: String): Player {
 fun Player.notifyPermissionRequired(permission: String, key: String): Player {
     return this.notifyFalse({ this.hasPermission(permission) }, key)
 }
-

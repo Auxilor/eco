@@ -25,11 +25,7 @@ abstract class EcoHandledCommand(
     private val permission: String,
     private val playersOnly: Boolean
 ) : CommandBase, CommandExecutor, TabCompleter {
-
-    /**
-     * All subcommands for the command.
-     */
-    val subCommands = mutableListOf<CommandBase>()
+    private val subcommands = mutableListOf<CommandBase>()
 
     override fun onCommand(
         sender: CommandSender,
@@ -65,23 +61,23 @@ abstract class EcoHandledCommand(
 
     override fun isPlayersOnly() = this.playersOnly
 
-    override fun getSubcommands() = this.subCommands
+    override fun getSubcommands() = this.subcommands
 
     override fun getWrapped() = this.parentDelegate
 
     override fun addSubcommand(command: CommandBase): CommandBase {
-        subCommands.add(command)
+        subcommands.add(command)
         return this
     }
 
-    override fun onExecute(sender: CommandSender, args: MutableList<String>) = parentDelegate.onExecute(sender, args)
+    override fun onExecute(sender: CommandSender, args: List<String>) = parentDelegate.onExecute(sender, args)
 
-    override fun onExecute(sender: Player, args: MutableList<String>) = parentDelegate.onExecute(sender, args)
+    override fun onExecute(sender: Player, args: List<String>) = parentDelegate.onExecute(sender, args)
 
-    override fun tabComplete(sender: CommandSender, args: MutableList<String>): List<String> =
+    override fun tabComplete(sender: CommandSender, args: List<String>): List<String> =
         parentDelegate.tabComplete(sender, args)
 
-    override fun tabComplete(sender: Player, args: MutableList<String>): List<String> =
+    override fun tabComplete(sender: Player, args: List<String>): List<String> =
         parentDelegate.tabComplete(sender, args)
 
     /**
@@ -165,11 +161,6 @@ abstract class EcoHandledCommand(
     }
 
     companion object {
-        /**
-         * Get the internal server CommandMap.
-         *
-         * @return The CommandMap.
-         */
         fun getCommandMap(): CommandMap {
             try {
                 val field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
@@ -180,14 +171,6 @@ abstract class EcoHandledCommand(
             }
         }
 
-        /**
-         * If a sender can execute the command.
-         *
-         * @param sender  The sender.
-         * @param command The command.
-         * @param plugin  The plugin.
-         * @return If the sender can execute.
-         */
         fun canExecute(sender: CommandSender, command: CommandBase, plugin: EcoPlugin): Boolean {
             if (!sender.hasPermission(command.permission) && sender is Player) {
                 sender.sendMessage(plugin.langYml.noPermission)

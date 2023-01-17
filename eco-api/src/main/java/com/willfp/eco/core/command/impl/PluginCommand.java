@@ -18,12 +18,10 @@ import java.util.List;
  * The name cannot be the same as an existing command as this will conflict.
  */
 public abstract class PluginCommand implements PluginCommandBase {
-
     /**
      * The delegate command.
      */
     private final PluginCommandBase delegate;
-
 
     /**
      * Create a new command.
