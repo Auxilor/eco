@@ -70,7 +70,10 @@ public class Prerequisite {
 
     /**
      * Requires the server to be running an implementation of BungeeCord.
+     *
+     * @deprecated This will never return true.
      */
+    @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_BUNGEECORD = new Prerequisite(
             () -> ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent"),
             "Requires server to be running BungeeCord (or a fork)"
@@ -78,7 +81,10 @@ public class Prerequisite {
 
     /**
      * Requires the server to be running an implementation of Velocity.
+     *
+     * @deprecated This will never return true.
      */
+    @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_VELOCITY = new Prerequisite(
             () -> ClassUtils.exists("com.velocitypowered.api.event.player.ServerConnectedEvent"),
             "Requires server to be running Velocity (or a fork)"
