@@ -1,9 +1,10 @@
-package com.willfp.eco.internal.spigot.proxy.v1_18_R1
+package com.willfp.eco.internal.spigot.proxy.v1_19_R2
 
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
@@ -12,14 +13,14 @@ import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.craftbukkit.v1_18_R1.CraftServer
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftMob
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer
-import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataTypeRegistry
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftNamespacedKey
+import org.bukkit.craftbukkit.v1_19_R2.CraftServer
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftEntity
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftMob
+import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_19_R2.persistence.CraftPersistentDataContainer
+import org.bukkit.craftbukkit.v1_19_R2.persistence.CraftPersistentDataTypeRegistry
+import org.bukkit.craftbukkit.v1_19_R2.util.CraftMagicNumbers
+import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.inventory.ItemStack
@@ -36,7 +37,7 @@ class CommonsInitializer : CommonsInitializerProxy {
             isAccessible = true
         }
 
-        private val pdcRegsitry = Class.forName("org.bukkit.craftbukkit.v1_18_R1.inventory.CraftMetaItem")
+        private val pdcRegsitry = Class.forName("org.bukkit.craftbukkit.v1_19_R2.inventory.CraftMetaItem")
             .getDeclaredField("DATA_TYPE_REGISTRY")
             .apply { isAccessible = true }
             .get(null) as CraftPersistentDataTypeRegistry
@@ -137,11 +138,11 @@ class CommonsInitializer : CommonsInitializerProxy {
         }
 
         override fun materialToItem(material: Material): Item =
-            Registry.ITEM.getOptional(material.key.toResourceLocation())
+            BuiltInRegistries.ITEM.getOptional(material.key.toResourceLocation())
                 .orElseThrow { IllegalArgumentException("Material is not item!") }
 
         override fun itemToMaterial(item: Item) =
-            Material.getMaterial(Registry.ITEM.getKey(item).path.uppercase())
+            Material.getMaterial(BuiltInRegistries.ITEM.getKey(item).path.uppercase())
                 ?: throw IllegalArgumentException("Invalid material!")
     }
 }

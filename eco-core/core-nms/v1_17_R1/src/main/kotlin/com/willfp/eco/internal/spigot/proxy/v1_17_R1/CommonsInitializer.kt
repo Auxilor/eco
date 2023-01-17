@@ -2,11 +2,15 @@ package com.willfp.eco.internal.spigot.proxy.v1_17_R1
 
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
+import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
+import net.minecraft.core.Registry
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.entity.PathfinderMob
+import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity
@@ -131,5 +135,13 @@ class CommonsInitializer : CommonsInitializerProxy {
                 }
             }
         }
+
+        override fun materialToItem(material: Material): Item =
+            Registry.ITEM.getOptional(material.key.toResourceLocation())
+                .orElseThrow { IllegalArgumentException("Material is not item!") }
+
+        override fun itemToMaterial(item: Item) =
+            Material.getMaterial(Registry.ITEM.getKey(item).path.uppercase())
+                ?: throw IllegalArgumentException("Invalid material!")
     }
 }

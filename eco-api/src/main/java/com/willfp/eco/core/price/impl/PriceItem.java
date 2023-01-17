@@ -1,6 +1,7 @@
 package com.willfp.eco.core.price.impl;
 
 import com.willfp.eco.core.drops.DropQueue;
+import com.willfp.eco.core.items.HashedItem;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.price.Price;
@@ -150,5 +151,10 @@ public final class PriceItem implements Price {
     public void setMultiplier(@NotNull final Player player,
                               final double multiplier) {
         this.multipliers.put(player.getUniqueId(), multiplier);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "eco:item-" + HashedItem.of(this.item.getItem()).getHash();
     }
 }

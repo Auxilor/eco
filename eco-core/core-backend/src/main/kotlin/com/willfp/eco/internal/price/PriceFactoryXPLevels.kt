@@ -47,5 +47,9 @@ object PriceFactoryXPLevels : PriceFactory {
         override fun setMultiplier(player: Player, multiplier: Double) {
             multipliers[player.uniqueId] = multiplier.roundToInt().toDouble()
         }
+
+        override fun getIdentifier(): String {
+            return "eco:xp-levels"
+        }
     }
 }
