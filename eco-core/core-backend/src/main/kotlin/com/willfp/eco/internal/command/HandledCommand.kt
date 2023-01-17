@@ -3,6 +3,7 @@ package com.willfp.eco.internal.command
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.NotificationException
+import com.willfp.eco.core.config.base.LangYml
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -87,14 +88,14 @@ abstract class HandledCommand(
      * @param args   The arguments.
      */
     private fun CommandBase.handleExecution(sender: CommandSender, args: List<String>) {
-        if (!canExecute(sender, this, plugin)) {
+        if (!sender.canExecute(this, plugin)) {
             return
         }
 
         if (args.isNotEmpty()) {
             for (subcommand in subcommands) {
                 if (subcommand.name.equals(args[0], true)) {
-                    if (!canExecute(sender, subcommand, plugin)) {
+                    if (!sender.canExecute(subcommand, plugin)) {
                         return
                     }
 
@@ -105,7 +106,7 @@ abstract class HandledCommand(
         }
 
         try {
-            notifyFalse(!isPlayersOnly || sender is Player, "not-player")
+            notifyFalse(!isPlayersOnly || sender is Player, LangYml.KEY_NOT_PLAYER)
 
             onExecute(sender, args)
 
@@ -130,7 +131,9 @@ abstract class HandledCommand(
 
         if (args.size == 1) {
             val completions = subcommands.filter { sender.hasPermission(it.permission) }.map { it.name }
+
             val list = mutableListOf<String>()
+
             StringUtil.copyPartialMatches(args[0], completions, list)
             if (completions.isNotEmpty()) {
                 return completions
@@ -143,8 +146,8 @@ abstract class HandledCommand(
                     sender.hasPermission(it.permission) && it.name.equals(args[0], true)
                 }
             if (matchingCommand != null) {
-                val completions =
-                    matchingCommand.handleTabComplete(sender, args.subList(1, args.size)).toMutableList()
+                val completions = matchingCommand.handleTabComplete(sender, args.subList(1, args.size)).toMutableList()
+
                 if (sender is Player) {
                     completions.addAll(matchingCommand.handleTabComplete(sender, args.subList(1, args.size)))
                 }
@@ -159,25 +162,22 @@ abstract class HandledCommand(
         }
         return completions.sorted()
     }
+}
 
-    companion object {
-        fun getCommandMap(): CommandMap {
-            try {
-                val field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
-                field.trySetAccessible()
-                return field.get(Bukkit.getServer()) as CommandMap
-            } catch (e: Exception) {
-                throw NullPointerException("Command map wasn't found!")
-            }
-        }
-
-        fun canExecute(sender: CommandSender, command: CommandBase, plugin: EcoPlugin): Boolean {
-            if (!sender.hasPermission(command.permission) && sender is Player) {
-                sender.sendMessage(plugin.langYml.noPermission)
-                return false
-            }
-
-            return true
-        }
+val commandMap: CommandMap
+    get() = try {
+        val fCommandMap = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
+        fCommandMap.trySetAccessible()
+        fCommandMap.get(Bukkit.getServer()) as CommandMap
+    } catch (e: Exception) {
+        throw NullPointerException("Command map wasn't found!")
     }
+
+fun CommandSender.canExecute(command: CommandBase, plugin: EcoPlugin): Boolean {
+    if (!this.hasPermission(command.permission) && this is Player) {
+        this.sendMessage(plugin.langYml.noPermission)
+        return false
+    }
+
+    return true
 }

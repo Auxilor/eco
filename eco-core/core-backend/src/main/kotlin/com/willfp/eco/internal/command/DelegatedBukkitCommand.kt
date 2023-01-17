@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.PluginIdentifiableCommand
 import org.bukkit.command.TabCompleter
 
-class EcoDelegatedBukkitCommand(
+class DelegatedBukkitCommand(
     private val delegate: EcoPluginCommand
 ) : Command(delegate.name), TabCompleter, PluginIdentifiableCommand {
     override fun execute(sender: CommandSender, label: String, args: Array<out String>?): Boolean {

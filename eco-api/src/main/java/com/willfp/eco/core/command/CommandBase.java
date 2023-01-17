@@ -67,26 +67,34 @@ public interface CommandBase {
 
     /**
      * Handle command execution.
+     * <p>
+     * This will always be called on command execution.
      *
      * @param sender The sender.
      * @param args   The args.
+     * @throws NotificationException naturally, this is handled as a part of the command system.
      */
-    default void onExecute(@NotNull final CommandSender sender, @NotNull final List<String> args) {
+    default void onExecute(@NotNull final CommandSender sender, @NotNull final List<String> args) throws NotificationException {
         // Do nothing.
     }
 
     /**
      * Handle command execution from players.
+     * <p>
+     * This will only be called if the sender is a player.
      *
      * @param sender The sender.
      * @param args   The args.
+     * @throws NotificationException naturally, this is handled as a part of the command system.
      */
-    default void onExecute(@NotNull final Player sender, @NotNull final List<String> args) {
+    default void onExecute(@NotNull final Player sender, @NotNull final List<String> args) throws NotificationException {
         // Do nothing.
     }
 
     /**
      * Handle tab completion.
+     * <p>
+     * This will always be called on tab completion.
      *
      * @param sender The sender.
      * @param args   The args.
@@ -99,6 +107,8 @@ public interface CommandBase {
 
     /**
      * Handle tab completion.
+     * <p>
+     * This will only be called if the sender is a player.
      *
      * @param sender The sender.
      * @param args   The args.
@@ -110,16 +120,10 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * ]
+     * Throws an {@link NotificationException} relating to a specific lang.yml key.
+     * <p>
+     * This is automatically handled with eco, and should not be surrounded by a
+     * try/catch block.
      *
      * @param key The lang.yml key for the message to be sent.
      * @throws NotificationException always.
@@ -129,23 +133,20 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if obj is null.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * Throws an {@link NotificationException} relating to a specific lang.yml key
+     * if the passed object is null.
+     * <p>
+     * This is automatically handled with eco, and should not be surrounded by a
+     * try/catch block.
      *
      * @param obj The object to test.
      * @param key The lang.yml key for the message to be sent.
-     * @param <T> The object type.
-     * @return Returns a definitely not-null object or throws an exception.
-     * @throws NotificationException If the passed object is null.
+     * @return Returns the object, definitely not-null.
+     * @throws NotificationException If the object is null.
      */
-    default @NotNull <T> T notifyNull(@Nullable final T obj, @NotNull final String key) throws NotificationException {
+    @NotNull
+    default <T> T notifyNull(@Nullable final T obj,
+                             @NotNull final String key) throws NotificationException {
         if (Objects.isNull(obj)) {
             notify(key);
         }
@@ -154,46 +155,43 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if predicate tests false
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * Throws an {@link NotificationException} relating to a specific lang.yml key
+     * if the passed object doesn't match the predicate.
+     * <p>
+     * This is automatically handled with eco, and should not be surrounded by a
+     * try/catch block.
      *
      * @param obj       The object to test.
-     * @param predicate The predicate on the object.
      * @param key       The lang.yml key for the message to be sent.
-     * @param <T>       The object type.
-     * @return Returns the object given or throws an exception.
-     * @throws NotificationException If the predicate is false.
+     * @param predicate The predicate to test the object against.
+     * @param <T>       The type of the object.
+     * @return Returns the object, definitely not-null.
+     * @throws NotificationException If the object doesn't satisfy the predicate.
      */
-    default @NotNull <T> T notifyFalse(@NotNull final T obj, @NotNull final String key, @NotNull final Predicate<T> predicate) throws NotificationException {
+    @NotNull
+    default <T> T notifyFalse(@NotNull final T obj,
+                              @NotNull final String key,
+                              @NotNull final Predicate<T> predicate) throws NotificationException {
         notifyFalse(predicate.test(obj), key);
 
         return obj;
     }
 
+
     /**
-     * Throws an exception containing a langYml key if condition is false.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * Throws an {@link NotificationException} relating to a specific lang.yml key
+     * if a condition is false.
+     * <p>
+     * This is automatically handled with eco, and should not be surrounded by a
+     * try/catch block.
      *
-     * @param condition The condition to be met.
+     * @param condition The condition to test.
      * @param key       The lang.yml key for the message to be sent.
-     * @return Returns the condition given or throws an exception.
+     * @return True.
      * @throws NotificationException If the condition is false.
      */
-    default boolean notifyFalse(final boolean condition, @NotNull final String key) throws NotificationException {
+    default boolean notifyFalse(final boolean condition,
+                                @NotNull final String key) throws NotificationException {
         if (!condition) {
             notify(key);
         }
@@ -202,22 +200,25 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * Throws an {@link NotificationException} relating to a specific lang.yml key
+     * if the passed string doesn't relate to a currently online player.
+     * <p>
+     * This is automatically handled with eco, and should not be surrounded by a
+     * try/catch block.
      *
      * @param playerName The player name.
      * @param key        The lang.yml key for the message to be sent.
-     * @return Returns the player.
-     * @throws NotificationException If given an invalid player name.
+     * @return Returns the player, definitely not-null.
+     * @throws NotificationException If the player name is invalid.
      */
-    default @NotNull Player notifyPlayerRequired(@NotNull final String playerName, @NotNull final String key) throws NotificationException {
+    @NotNull
+    default Player notifyPlayerRequired(@Nullable final String playerName, @NotNull final String key) throws NotificationException {
+        if (playerName == null) {
+            notify(key);
+        }
+
+        assert playerName != null;
+
         final Player player = Bukkit.getPlayer(playerName);
 
         notifyNull(player, key);
@@ -226,22 +227,26 @@ public interface CommandBase {
     }
 
     /**
-     * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
+     * Throws an {@link NotificationException} relating to a specific lang.yml key
+     * if the passed string doesn't relate to a player on the server.
+     * <p>
+     * This is automatically handled with eco, and should not be surrounded by a
+     * try/catch block.
      *
      * @param playerName The player name.
      * @param key        The lang.yml key for the message to be sent.
-     * @return Returns the player.
-     * @throws NotificationException If given an invalid player name.
+     * @return Returns the offline player, definitely not-null.
+     * @throws NotificationException If the player name is invalid.
      */
-    default @NotNull OfflinePlayer notifyOfflinePlayerRequired(@NotNull final String playerName, @NotNull final String key) throws NotificationException {
+    @NotNull
+    default OfflinePlayer notifyOfflinePlayerRequired(@Nullable final String playerName,
+                                                      @NotNull final String key) throws NotificationException {
+        if (playerName == null) {
+            notify(key);
+        }
+
+        assert playerName != null;
+
         @SuppressWarnings("deprecation") final OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
 
         boolean hasPlayedBefore = player.hasPlayedBefore() || player.isOnline();
@@ -253,14 +258,6 @@ public interface CommandBase {
 
     /**
      * Throws an exception containing a langYml key if player doesn't have permission.
-     * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
-     * automatically handles sending the message to the sender.</p>
-     * <br>
-     * Works with any CommandBase implementation:
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>PluginCommand#{@link com.willfp.eco.core.command.impl.PluginCommand#onExecute(Player, List) onExecute(Player, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(CommandSender, List) onExecute(CommandSender, List)}</p>
-     * <p>Subcommand#{@link com.willfp.eco.core.command.impl.Subcommand#onExecute(Player, List) onExecute(Player, List)}</p>
      *
      * @param player     The player.
      * @param permission The permission.
@@ -268,7 +265,10 @@ public interface CommandBase {
      * @return The player.
      * @throws NotificationException If the player doesn't have the required permission.
      */
-    default @NotNull Player notifyPermissionRequired(@NotNull final Player player, @NotNull final String permission, @NotNull final String key) throws NotificationException {
+    @NotNull
+    default Player notifyPermissionRequired(@NotNull final Player player,
+                                            @NotNull final String permission,
+                                            @NotNull final String key) throws NotificationException {
         return notifyFalse(player, key, p -> p.hasPermission(permission));
     }
 

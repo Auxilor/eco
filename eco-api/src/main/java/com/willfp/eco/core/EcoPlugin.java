@@ -344,6 +344,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.configHandler = Eco.get().createConfigHandler(this);
 
         this.langYml = this.createLangYml();
+
+        if (!this.langYml.isValid()) {
+            this.getLogger().warning("Notify plugin authors " + String.join(", ", this.getDescription().getAuthors()) + " that");
+            this.getLogger().warning("they are missing crucial lang.yml keys! They can be found");
+            this.getLogger().warning("in the LangYml class.");
+        }
+
         this.configYml = this.createConfigYml();
 
         Eco.get().addNewPlugin(this);

@@ -155,7 +155,7 @@ fun CommandBase.addSubcommand(
  * @return Returns the object given or throws an exception
  * @throws NotificationException exception thrown when null
  */
-fun <T> T?.notifyNull(key: String): T {
+fun <T> T.notifyNull(key: String): T {
     return this ?: throw NotificationException(key)
 }
 
@@ -183,8 +183,8 @@ fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
  * @return Returns the condition given or throws an exception
  * @throws NotificationException exception thrown when false
  */
-fun Boolean.notifyFalse(key: String): Boolean {
-    return if (this) true else throw NotificationException(key)
+fun Boolean?.notifyFalse(key: String): Boolean {
+    return if (this == true) true else throw NotificationException(key)
 }
 
 /**
@@ -230,6 +230,7 @@ fun String?.notifyOfflinePlayerRequired(key: String): OfflinePlayer {
  * @return Returns the player
  * @throws NotificationException exception thrown when player doesn't have permission
  */
-fun Player.notifyPermissionRequired(permission: String, key: String): Player {
+fun Player?.notifyPermissionRequired(permission: String, key: String): Player {
+    this ?: throw NotificationException(key)
     return this.notifyFalse({ this.hasPermission(permission) }, key)
 }
