@@ -23,7 +23,7 @@ and many more.
         <img src="https://img.shields.io/discord/452518336627081236?label=discord&color=informational"/>
     </a>
     <a href="https://github.com/Auxilor/eco/actions/workflows/java-ci.yml" alt="Latest Dev Build">
-        <img src="https://img.shields.io/github/workflow/status/Auxilor/eco/Java%20CI/develop?color=informational"/>
+        <img src="https://img.shields.io/github/actions/workflow/status/Auxilor/eco/java-ci.yml?branch=develop&color=informational"/>
     </a>
 </p>
 
