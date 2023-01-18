@@ -25,18 +25,19 @@ object PriceFactoryXP : PriceFactory {
     ) : Price {
         private val multipliers = mutableMapOf<UUID, Double>()
 
-        override fun canAfford(player: Player) = player.totalExperience >= getValue(player)
+        override fun canAfford(player: Player, multiplier: Double): Boolean =
+            player.totalExperience >= getValue(player, multiplier)
 
-        override fun pay(player: Player) {
-            player.totalExperience -= getValue(player).roundToInt()
+        override fun pay(player: Player, multiplier: Double) {
+            player.totalExperience -= getValue(player, multiplier).roundToInt()
         }
 
-        override fun giveTo(player: Player) {
-            player.totalExperience += getValue(player).roundToInt()
+        override fun giveTo(player: Player, multiplier: Double) {
+            player.totalExperience += getValue(player, multiplier).roundToInt()
         }
 
-        override fun getValue(player: Player): Double {
-            return xp(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player)
+        override fun getValue(player: Player, multiplier: Double): Double {
+            return xp(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player) * multiplier
         }
 
         override fun getMultiplier(player: Player): Double {
