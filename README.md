@@ -16,9 +16,6 @@ and many more.
     <a href="https://bstats.org/plugin/bukkit/EcoEnchants" alt="bstats players">
         <img src="https://img.shields.io/bstats/players/7666?color=informational"/>
     </a>
-    <a href="https://plugins.auxilor.io/" alt="Docs (gitbook)">
-        <img src="https://img.shields.io/badge/docs-gitbook-informational"/>
-    </a>
     <a href="https://discord.gg/ZcwpSsE/" alt="Discord">
         <img src="https://img.shields.io/discord/452518336627081236?label=discord&color=informational"/>
     </a>
