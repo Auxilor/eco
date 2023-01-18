@@ -1,5 +1,5 @@
 # eco
-eco is a powerful Spigot development library that simplifies the process of plugin creation and supercharges
+eco is a powerful Spigot plugin framework that simplifies the process of plugin creation and supercharges
 your plugins.
 It's the engine behind [EcoEnchants](https://polymart.org/resource/490), [Reforges](https://polymart.org/resource/1330),
 [EcoItems](https://polymart.org/resource/1247), [EcoSkills](https://polymart.org/resource/1351),
@@ -27,19 +27,46 @@ and many more.
     </a>
 </p>
 
+eco comes packed with all the tools you need in your plugins:
+
+- Modern command API
+- Native color parsing with full hex/RGB/MiniMessage support
+- Yaml/JSON/TOML config system
+- Persistent data storage API with Yaml/MySQL/MongoDB support
+- Packet item display system
+- Entity AI API with near-1:1 NMS mappings
+- More events
+- Extension API, essentially plugins for plugins
+- Fluent dependency injection for NamespacedKey, Metadata values, etc.
+- Ultra-fast ItemStack reimplementation bypassing ItemMeta
+- Complete GUI API with pre-made components available from [ecomponent](https://github.com/Auxilor/ecomponent)
+- Over 30 native integrations for other plugins
+- First-class custom item support with lookup strings
+- Math expression parsing via [Crunch](https://github.com/Redempt/Crunch)
+- Particle lookups
+- Complete Placeholder API
+- Price system, supporting economy plugins, XP, Items, etc.
+- NMS/Version-specific tooling
+- Custom crafting recipe API with support for stacks and custom items
+- Native plugin update checking
+- Native bStats support
+- Full Kotlin support and native extensions
+- Tooling to make meta-frameworks, like [libreforge](https://github.com/Auxilor/libreforge)
+- And much more
+
 # For server owners
 - Requires ProtocolLib to be installed: get the latest version [here](https://www.spigotmc.org/resources/protocollib.1997/)
 - Supports 1.17+
 
 ## Downloads
 
-- Stable (Recommended): [GitHub](https://github.com/Auxilor/eco/releases), [Polymart](https://polymart.org/resource/eco.773)
-- Dev (Not Recommended): [GitHub](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml) (Open latest run and download)
+- Stable: [GitHub](https://github.com/Auxilor/eco/releases), [Polymart](https://polymart.org/resource/eco.773)
+- Dev: [GitHub](https://github.com/Auxilor/eco/actions/workflows/java-ci.yml) (Open latest run and download)
 
 # For developers
 
 ## Javadoc
-The 6.45.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.45.0/javadoc/)
+The 6.49.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.49.0/javadoc/)
 
 ## Plugin Information
 
@@ -68,7 +95,7 @@ dependencies {
 }
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.45.0`.
+Replace `Tag` with a release tag for eco, eg `6.49.0`.
 
 Maven:
 
@@ -88,7 +115,7 @@ Maven:
 </dependency>
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.45.0`.
+Replace `Tag` with a release tag for eco, eg `6.49.0`.
 
 ## Build locally:
 
@@ -103,7 +130,7 @@ cd eco
 
 ## License
 
-*Click here to read [the entire license](https://github.com/Auxilor/eco/blob/master/LICENSE.md).*
+eco is licensed under GNU GPL3. *Click here to read [the entire license](https://github.com/Auxilor/eco/blob/master/LICENSE.md).*
 
 <h1 align="center">
   Check out our partners!
