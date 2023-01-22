@@ -264,6 +264,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("IridiumSkyblock") { AntigriefManager.register(AntigriefIridiumSkyblock()) },
             IntegrationLoader("DeluxeCombat") { AntigriefManager.register(AntigriefDeluxeCombat()) },
             IntegrationLoader("SuperiorSkyblock2") { AntigriefManager.register(AntigriefSuperiorSkyblock2()) },
+            IntegrationLoader("FabledSkyBlock") { AntigriefManager.register(AntigriefFabledSkyBlock()) },
             IntegrationLoader("BentoBox") { AntigriefManager.register(AntigriefBentoBox()) },
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
