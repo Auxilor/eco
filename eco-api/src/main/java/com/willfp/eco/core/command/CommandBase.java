@@ -141,6 +141,7 @@ public interface CommandBase {
      *
      * @param obj The object to test.
      * @param key The lang.yml key for the message to be sent.
+     * @param <T> The object type.
      * @return Returns the object, definitely not-null.
      * @throws NotificationException If the object is null.
      */
