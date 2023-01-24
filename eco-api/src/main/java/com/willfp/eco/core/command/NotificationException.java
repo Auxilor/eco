@@ -1,5 +1,7 @@
 package com.willfp.eco.core.command;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A notification exception is thrown when {@link org.bukkit.command.CommandSender}s don't
  * specify valid arguments in commands.
@@ -18,7 +20,7 @@ public class NotificationException extends Exception {
      *
      * @param key The lang key of the notification.
      */
-    public NotificationException(String key) {
+    public NotificationException(@NotNull final String key) {
         super(key);
         this.key = key;
     }
