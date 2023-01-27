@@ -7,15 +7,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 /**
  * A placeholder that does not require a player.
  */
 public final class PlayerlessPlaceholder implements Placeholder {
     /**
-     * The name of the placeholder.
+     * The placeholder identifier.
      */
     private final String identifier;
+
+    /**
+     * The placeholder pattern.
+     */
+    private final Pattern pattern;
 
     /**
      * The function to retrieve the output of the placeholder.
@@ -39,6 +45,7 @@ public final class PlayerlessPlaceholder implements Placeholder {
                                  @NotNull final Supplier<String> function) {
         this.plugin = plugin;
         this.identifier = identifier;
+        this.pattern = Pattern.compile(identifier);
         this.function = function;
     }
 
@@ -62,13 +69,19 @@ public final class PlayerlessPlaceholder implements Placeholder {
     }
 
     @Override
-    public EcoPlugin getPlugin() {
+    public @NotNull EcoPlugin getPlugin() {
         return this.plugin;
     }
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return this.identifier;
+    }
+
+    @NotNull
+    @Override
+    public Pattern getPattern() {
+        return this.pattern;
     }
 
     @Override

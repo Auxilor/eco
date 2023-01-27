@@ -71,10 +71,6 @@ public final class Prices {
                 ctx
         );
 
-        if (function.apply(context) <= 0) {
-            return new PriceFree();
-        }
-
         // Default to economy
         if (priceName == null) {
             return new PriceEconomy(context, function);

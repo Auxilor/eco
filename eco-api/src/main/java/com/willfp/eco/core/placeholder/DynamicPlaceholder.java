@@ -2,7 +2,6 @@ package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,23 +10,18 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
- * A placeholder that requires a player.
+ * A placeholder that does not require a player and supports dynamic styles.
  */
-public final class PlayerPlaceholder implements Placeholder {
-    /**
-     * The name of the placeholder.
-     */
-    private final String identifier;
-
+public final class DynamicPlaceholder implements Placeholder {
     /**
      * The placeholder pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the placeholder given a player.
+     * The function to retrieve the output of the placeholder.
      */
-    private final Function<Player, String> function;
+    private final Function<String, String> function;
 
     /**
      * The plugin for the placeholder.
@@ -35,30 +29,29 @@ public final class PlayerPlaceholder implements Placeholder {
     private final EcoPlugin plugin;
 
     /**
-     * Create a new player placeholder.
+     * Create a new dynamic placeholder.
      *
-     * @param plugin     The plugin.
-     * @param identifier The identifier.
-     * @param function   The function to retrieve the value.
+     * @param plugin   The plugin.
+     * @param pattern  The pattern.
+     * @param function The function to retrieve the value.
      */
-    public PlayerPlaceholder(@NotNull final EcoPlugin plugin,
-                             @NotNull final String identifier,
-                             @NotNull final Function<Player, String> function) {
+    public DynamicPlaceholder(@NotNull final EcoPlugin plugin,
+                              @NotNull final Pattern pattern,
+                              @NotNull final Function<String, String> function) {
         this.plugin = plugin;
-        this.identifier = identifier;
-        this.pattern = Pattern.compile(identifier);
+        this.pattern = pattern;
         this.function = function;
     }
 
     /**
-     * Get the value of the placeholder for a given player.
+     * Get the value of the placeholder.
      *
-     * @param player The player.
+     * @param args The args.
      * @return The value.
      */
     @NotNull
-    public String getValue(@NotNull final Player player) {
-        return function.apply(player);
+    public String getValue(@NotNull final String args) {
+        return function.apply(args);
     }
 
     /**
@@ -66,7 +59,7 @@ public final class PlayerPlaceholder implements Placeholder {
      *
      * @return The placeholder.
      */
-    public PlayerPlaceholder register() {
+    public DynamicPlaceholder register() {
         PlaceholderManager.registerPlaceholder(this);
         return this;
     }
@@ -77,8 +70,9 @@ public final class PlayerPlaceholder implements Placeholder {
     }
 
     @Override
+    @Deprecated
     public @NotNull String getIdentifier() {
-        return this.identifier;
+        return "dynamic";
     }
 
     @NotNull
@@ -92,10 +86,12 @@ public final class PlayerPlaceholder implements Placeholder {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PlayerPlaceholder that)) {
+
+        if (!(o instanceof DynamicPlaceholder that)) {
             return false;
         }
-        return Objects.equals(this.getIdentifier(), that.getIdentifier())
+
+        return Objects.equals(this.getPattern(), that.getPattern())
                 && Objects.equals(this.getPlugin(), that.getPlugin());
     }
 
