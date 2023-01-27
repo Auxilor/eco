@@ -303,6 +303,7 @@ public final class PlaceholderManager {
 
         for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
             // Do I know this is a bad way of doing this? Yes.
+            // I know it's deprecated, but it's fast.
             if (injection instanceof StaticPlaceholder placeholder) {
                 processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
             } else if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {

@@ -23,9 +23,7 @@ public sealed interface Placeholder permits PlayerPlaceholder, PlayerlessPlaceho
      * Get the identifier for the placeholder.
      *
      * @return The identifier.
-     * @deprecated Placeholders can have dynamic patterns now.
      */
-    @Deprecated(since = "6.50.0")
     @NotNull
     String getIdentifier();
 
