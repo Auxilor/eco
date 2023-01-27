@@ -3,11 +3,9 @@ package com.willfp.eco.internal.spigot.integrations.antigrief
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import me.angeschossen.lands.api.LandsIntegration
-import me.angeschossen.lands.api.flags.Flags
 import me.angeschossen.lands.api.flags.enums.FlagTarget
 import me.angeschossen.lands.api.flags.enums.RoleFlagCategory
 import me.angeschossen.lands.api.flags.type.RoleFlag
-import me.angeschossen.lands.api.land.Area
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
