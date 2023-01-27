@@ -5,9 +5,11 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
+import com.willfp.eco.core.placeholder.DynamicPlaceholder;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import com.willfp.eco.core.placeholder.PlayerDynamicPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerStaticPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder;
@@ -37,7 +39,7 @@ public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final Map<EcoPlugin, Map<String, Placeholder>> REGISTERED_PLACEHOLDERS = new HashMap<>();
+    private static final Map<EcoPlugin, Map<Pattern, Placeholder>> REGISTERED_PLACEHOLDERS = new HashMap<>();
 
     /**
      * All registered placeholder integrations.
@@ -52,9 +54,16 @@ public final class PlaceholderManager {
             .build(key -> key.entry.getValue(key.player));
 
     /**
+     * Dynamic Placeholder Cache.
+     */
+    private static final LoadingCache<DynamicEntryWithPlayer, String> DYNAMIC_PLACEHOLDER_CACHE = Caffeine.newBuilder()
+            .expireAfterWrite(50, TimeUnit.MILLISECONDS)
+            .build(key -> key.entry.getValue(key.args, key.player));
+
+    /**
      * The default PlaceholderAPI pattern; brought in for compatibility.
      */
-    private static final Pattern PATTERN = Pattern.compile("[%]([^% ]+)[%]");
+    private static final Pattern PATTERN = Pattern.compile("%([^% ]+)%");
 
     /**
      * Empty injectable object.
@@ -88,14 +97,17 @@ public final class PlaceholderManager {
      * @param placeholder The placeholder to register.
      */
     public static void registerPlaceholder(@NotNull final Placeholder placeholder) {
-        if (placeholder instanceof StaticPlaceholder) {
+        if (placeholder instanceof StaticPlaceholder || placeholder instanceof PlayerStaticPlaceholder) {
             throw new IllegalArgumentException("Static placeholders cannot be registered!");
         }
 
         EcoPlugin plugin = placeholder.getPlugin() == null ? Eco.get().getEcoPlugin() : placeholder.getPlugin();
-        Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS
+
+        Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS
                 .getOrDefault(plugin, new HashMap<>());
-        pluginPlaceholders.put(placeholder.getIdentifier(), placeholder);
+
+        pluginPlaceholders.put(placeholder.getPattern(), placeholder);
+
         REGISTERED_PLACEHOLDERS.put(plugin, pluginPlaceholders);
     }
 
@@ -137,11 +149,27 @@ public final class PlaceholderManager {
                                    @NotNull final String identifier,
                                    @Nullable final EcoPlugin plugin) {
         EcoPlugin owner = plugin == null ? Eco.get().getEcoPlugin() : plugin;
-        Placeholder placeholder = REGISTERED_PLACEHOLDERS.getOrDefault(owner, new HashMap<>()).get(identifier.toLowerCase());
+
+        // I hate the streams API.
+        Placeholder placeholder = REGISTERED_PLACEHOLDERS
+                .getOrDefault(owner, new HashMap<>())
+                .entrySet()
+                .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
 
         if (placeholder == null && plugin != null) {
-            Placeholder alternate = REGISTERED_PLACEHOLDERS.getOrDefault(Eco.get().getEcoPlugin(), new HashMap<>())
-                    .get(identifier.toLowerCase());
+            // Here we go again! Something about legacy support? I don't remember.
+            // I won't touch it though, I'm scared of the placeholder system.
+            Placeholder alternate = REGISTERED_PLACEHOLDERS
+                    .getOrDefault(Eco.get().getEcoPlugin(), new HashMap<>())
+                    .entrySet()
+                    .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .orElse(null);
+
             if (alternate != null) {
                 placeholder = alternate;
             }
@@ -151,6 +179,13 @@ public final class PlaceholderManager {
             return "";
         }
 
+        /*
+        This code here is *really* not very good. It's mega externalized logic hacked
+        together and made worse by the addition of dynamic placeholders. But it works,
+        and it means I don't have to rewrite the whole placeholder system. So it's
+        good enough for me.
+         */
+
         if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
             if (player == null) {
                 return "";
@@ -159,6 +194,14 @@ public final class PlaceholderManager {
             }
         } else if (placeholder instanceof PlayerlessPlaceholder playerlessPlaceholder) {
             return playerlessPlaceholder.getValue();
+        } else if (placeholder instanceof PlayerDynamicPlaceholder playerDynamicPlaceholder) {
+            if (player == null) {
+                return "";
+            } else {
+                return DYNAMIC_PLACEHOLDER_CACHE.get(new DynamicEntryWithPlayer(playerDynamicPlaceholder, identifier, player));
+            }
+        } else if (placeholder instanceof DynamicPlaceholder dynamicPlaceholder) {
+            return dynamicPlaceholder.getValue(identifier);
         } else {
             return "";
         }
@@ -245,6 +288,7 @@ public final class PlaceholderManager {
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
             processed = integration.translate(processed, player);
         }
+
         for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
             // Do I know this is a bad way of doing this? Yes.
             if (injection instanceof StaticPlaceholder placeholder) {
@@ -282,6 +326,12 @@ public final class PlaceholderManager {
 
     private record EntryWithPlayer(@NotNull PlayerPlaceholder entry,
                                    @NotNull Player player) {
+
+    }
+
+    private record DynamicEntryWithPlayer(@NotNull PlayerDynamicPlaceholder entry,
+                                          @NotNull String args,
+                                          @NotNull Player player) {
 
     }
 

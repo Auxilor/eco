@@ -1,22 +1,41 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.regex.Pattern;
 
 /**
  * A placeholder represents a string that can hold a value.
  */
-public sealed interface Placeholder permits PlayerPlaceholder, PlayerlessPlaceholder, InjectablePlaceholder {
+public sealed interface Placeholder permits PlayerPlaceholder, PlayerlessPlaceholder,
+        DynamicPlaceholder, PlayerDynamicPlaceholder, InjectablePlaceholder {
     /**
      * Get the plugin that holds the placeholder.
      *
      * @return The plugin.
      */
+    @Nullable
     EcoPlugin getPlugin();
 
     /**
      * Get the identifier for the placeholder.
      *
      * @return The identifier.
+     * @deprecated Placeholders can have dynamic patterns now.
      */
+    @Deprecated(since = "6.50.0")
+    @NotNull
     String getIdentifier();
+
+    /**
+     * Get the pattern for the placeholder.
+     *
+     * @return The pattern.
+     */
+    @NotNull
+    default Pattern getPattern() {
+        return Pattern.compile(this.getIdentifier());
+    }
 }
