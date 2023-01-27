@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.placeholder;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.Eco;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -45,6 +47,13 @@ public final class PlaceholderManager {
      * All registered placeholder integrations.
      */
     private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = new HashSet<>();
+
+    /**
+     * Placeholder Lookup Cache.
+     */
+    private static final Cache<PlaceholderLookup, Optional<Placeholder>> PLACEHOLDER_LOOKUP_CACHE = Caffeine.newBuilder()
+            .expireAfterWrite(1, TimeUnit.SECONDS)
+            .build();
 
     /**
      * Placeholder Cache.
@@ -148,32 +157,35 @@ public final class PlaceholderManager {
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier,
                                    @Nullable final EcoPlugin plugin) {
-        EcoPlugin owner = plugin == null ? Eco.get().getEcoPlugin() : plugin;
+        // This is really janky, and it sucks, but it works so?
+        // Compensating for regex being slow so that's why we get it.
+        Placeholder placeholder = PLACEHOLDER_LOOKUP_CACHE.get(
+                new PlaceholderLookup(identifier, plugin),
+                (it) -> {
+                    EcoPlugin owner = plugin == null ? Eco.get().getEcoPlugin() : plugin;
 
-        // I hate the streams API.
-        Placeholder placeholder = REGISTERED_PLACEHOLDERS
-                .getOrDefault(owner, new HashMap<>())
-                .entrySet()
-                .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
-                .map(Map.Entry::getValue)
-                .findFirst()
-                .orElse(null);
+                    // I hate the streams API.
+                    Optional<Placeholder> found = REGISTERED_PLACEHOLDERS
+                            .getOrDefault(owner, new HashMap<>())
+                            .entrySet()
+                            .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
+                            .map(Map.Entry::getValue)
+                            .findFirst();
 
-        if (placeholder == null && plugin != null) {
-            // Here we go again! Something about legacy support? I don't remember.
-            // I won't touch it though, I'm scared of the placeholder system.
-            Placeholder alternate = REGISTERED_PLACEHOLDERS
-                    .getOrDefault(Eco.get().getEcoPlugin(), new HashMap<>())
-                    .entrySet()
-                    .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
-                    .map(Map.Entry::getValue)
-                    .findFirst()
-                    .orElse(null);
+                    if (found.isEmpty() && plugin != null) {
+                        // Here we go again! Something about legacy support? I don't remember.
+                        // I won't touch it though, I'm scared of the placeholder system.
+                        found = REGISTERED_PLACEHOLDERS
+                                .getOrDefault(Eco.get().getEcoPlugin(), new HashMap<>())
+                                .entrySet()
+                                .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
+                                .map(Map.Entry::getValue)
+                                .findFirst();
+                    }
 
-            if (alternate != null) {
-                placeholder = alternate;
-            }
-        }
+                    return found;
+                }
+        ).orElse(null);
 
         if (placeholder == null) {
             return "";
@@ -322,6 +334,11 @@ public final class PlaceholderManager {
         }
 
         return new ArrayList<>(found);
+    }
+
+    private record PlaceholderLookup(@NotNull String identifier,
+                                     @Nullable EcoPlugin plugin) {
+
     }
 
     private record EntryWithPlayer(@NotNull PlayerPlaceholder entry,
