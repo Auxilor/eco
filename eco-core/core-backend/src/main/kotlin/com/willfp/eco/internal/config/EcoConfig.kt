@@ -180,7 +180,7 @@ open class EcoConfig(
     }
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
-        injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
+        injections.removeIf { placeholders.any { placeholder -> it.pattern == placeholder.pattern } }
         injections.addAll(placeholders)
     }
 

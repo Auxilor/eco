@@ -47,7 +47,8 @@ public final class PlayerDynamicPlaceholder implements Placeholder {
     /**
      * Get the value of the placeholder.
      *
-     * @param args The args.
+     * @param args   The args.
+     * @param player The player.
      * @return The value.
      */
     @NotNull
