@@ -4,8 +4,10 @@ import com.willfp.eco.core.integrations.shop.ShopIntegration
 import com.willfp.eco.core.integrations.shop.ShopSellEvent
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.impl.PriceEconomy
+import com.willfp.eco.core.price.impl.PriceFree
 import me.gypopo.economyshopgui.api.EconomyShopGUIHook
 import me.gypopo.economyshopgui.api.events.PreTransactionEvent
+import me.gypopo.economyshopgui.util.Transaction
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -18,27 +20,63 @@ class ShopEconomyShopGUI : ShopIntegration {
     }
 
     override fun getUnitValue(itemStack: ItemStack, player: Player): Price {
+        val shopItem = EconomyShopGUIHook.getShopItem(itemStack) ?: return PriceFree()
+
         return PriceEconomy(
-            EconomyShopGUIHook.getItemSellPrice(player, itemStack.clone().apply {
+            EconomyShopGUIHook.getItemSellPrice(shopItem, itemStack.clone().apply {
                 amount = 1
-            })
+            }, player)
         )
     }
 
     override fun isSellable(itemStack: ItemStack, player: Player): Boolean {
-        return EconomyShopGUIHook.getItemSellPrice(player, itemStack) > 0
+        val shopItem = EconomyShopGUIHook.getShopItem(itemStack) ?: return false
+        return EconomyShopGUIHook.getItemSellPrice(shopItem, itemStack, player) > 0
     }
 
     object EconomyShopGUISellEventListeners : Listener {
+        private val sellTypes = listOf(
+            Transaction.Type.SELL_GUI_SCREEN,
+            Transaction.Type.SELL_SCREEN,
+            Transaction.Type.SELL_ALL_SCREEN,
+            Transaction.Type.SELL_ALL_COMMAND,
+            Transaction.Type.QUICK_SELL,
+            Transaction.Type.AUTO_SELL_CHEST,
+        )
+
+        private val sellAllTypes = listOf(
+            Transaction.Type.SELL_GUI_SCREEN,
+            Transaction.Type.SELL_ALL_COMMAND,
+        )
+
         @EventHandler
         fun shopEventToEcoEvent(event: PreTransactionEvent) {
+            if (event.transactionType !in sellTypes) {
+                return
+            }
+
             if (event.isCancelled) {
                 return
             }
 
-            val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.price), event.itemStack)
-            Bukkit.getPluginManager().callEvent(ecoEvent)
-            event.price = ecoEvent.value.getValue(event.player) * ecoEvent.multiplier
+            val prices = if (event.transactionType in sellAllTypes) {
+                event.items!!
+            } else {
+                mapOf(event.shopItem to event.amount)
+            }
+
+            var total = 0.0
+
+            for ((shopItem, amount) in prices) {
+                val price = EconomyShopGUIHook.getItemSellPrice(shopItem, shopItem.itemToGive
+                    .apply { this.amount = amount }, event.player)
+                val ecoEvent = ShopSellEvent(event.player, PriceEconomy(price), shopItem.itemToGive
+                    .apply { this.amount = amount })
+                Bukkit.getPluginManager().callEvent(ecoEvent)
+                total += ecoEvent.value.getValue(event.player) * ecoEvent.multiplier
+            }
+
+            event.price = total
         }
     }
 

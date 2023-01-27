@@ -31,7 +31,7 @@ dependencies {
     compileOnly('com.github.TownyAdvanced:Towny:0.97.2.6') {
         exclude group: 'com.zaxxer', module: 'HikariCP'
     }
-    compileOnly 'com.github.angeschossen:LandsAPI:6.26.7'
+    compileOnly 'com.github.angeschossen:LandsAPI:6.26.18'
     compileOnly 'com.github.angeschossen:PluginFrameworkAPI:1.0.0'
     compileOnly 'fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT'
     compileOnly 'com.github.jiangdashao:matrix-api-repo:317d4635fd'
@@ -48,7 +48,7 @@ dependencies {
     compileOnly 'com.github.WhipDevelopment:CrashClaim:f9cd7d92eb'
     compileOnly 'com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0'
     compileOnly 'com.github.decentsoftware-eu:decentholograms:2.1.2'
-    compileOnly 'com.github.Gypopo:EconomyShopGUI-API:1.1.0'
+    compileOnly 'com.github.Gypopo:EconomyShopGUI-API:1.4.6'
     compileOnly 'com.github.N0RSKA:ScytherAPI:55a'
     compileOnly 'com.ticxo.modelengine:api:R3.0.1'
     compileOnly 'me.TechsCode:UltraEconomyAPI:1.0.0'
