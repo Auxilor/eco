@@ -36,22 +36,22 @@ class ShopEconomyShopGUI : ShopIntegration {
 
     object EconomyShopGUISellEventListeners : Listener {
         private val sellTypes = listOf(
-            Transaction.Type.SELL_GUI_SCREEN,
-            Transaction.Type.SELL_SCREEN,
-            Transaction.Type.SELL_ALL_SCREEN,
-            Transaction.Type.SELL_ALL_COMMAND,
-            Transaction.Type.QUICK_SELL,
-            Transaction.Type.AUTO_SELL_CHEST,
+            "SELL_GUI_SCREEN",
+            "SELL_SCREEN",
+            "SELL_ALL_SCREEN",
+            "SELL_ALL_COMMAND",
+            "QUICK_SELL",
+            "AUTO_SELL_CHEST",
         )
 
         private val sellAllTypes = listOf(
-            Transaction.Type.SELL_GUI_SCREEN,
-            Transaction.Type.SELL_ALL_COMMAND,
+            "SELL_GUI_SCREEN",
+            "SELL_ALL_COMMAND",
         )
 
         @EventHandler
         fun shopEventToEcoEvent(event: PreTransactionEvent) {
-            if (event.transactionType !in sellTypes) {
+            if (event.transactionType.name.uppercase() !in sellTypes) {
                 return
             }
 
@@ -59,7 +59,7 @@ class ShopEconomyShopGUI : ShopIntegration {
                 return
             }
 
-            val prices = if (event.transactionType in sellAllTypes) {
+            val prices = if (event.transactionType.name.uppercase() in sellAllTypes) {
                 event.items!!
             } else {
                 mapOf(event.shopItem to event.amount)
