@@ -316,6 +316,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("zShop") { ShopManager.register(ShopZShop()) },
             IntegrationLoader("DeluxeSellwands") { ShopManager.register(ShopDeluxeSellwands()) },
             IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI()) },
+            IntegrationLoader("EconomyShopGUI-Premium") { ShopManager.register(ShopEconomyShopGUI()) },
 
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
