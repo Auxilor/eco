@@ -45,6 +45,7 @@ softdepend:
   - ExecutableItems
   - RPGHorses
   - EconomyShopGUI
+  - EconomyShopGUI-Premium
   - zShop
   - DeluxeSellwands
   - Scyther
