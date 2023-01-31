@@ -9,7 +9,7 @@ class DelegatedBukkitCommand(
     private val delegate: EcoPluginCommand
 ) : Command(delegate.name), TabCompleter, PluginIdentifiableCommand {
     override fun execute(sender: CommandSender, label: String, args: Array<out String>?): Boolean {
-        return false
+        return delegate.onCommand(sender, this, label, args)
     }
 
     override fun onTabComplete(
@@ -18,7 +18,7 @@ class DelegatedBukkitCommand(
         label: String,
         args: Array<out String>?
     ): List<String> {
-        return mutableListOf() // Mutable in case bukkit requires this (I haven't checked.)
+        return delegate.onTabComplete(sender, this, label, args) ?: emptyList()
     }
 
     override fun getPlugin() = delegate.plugin

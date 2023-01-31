@@ -50,8 +50,8 @@ abstract class HandledCommand(
         command: Command,
         label: String,
         args: Array<out String>?
-    ): MutableList<String>? {
-        return handleTabComplete(sender, args?.toList() ?: listOf()).toMutableList()
+    ): List<String>? {
+        return handleTabComplete(sender, args?.toList() ?: listOf())
     }
 
     override fun getPlugin() = this.plugin

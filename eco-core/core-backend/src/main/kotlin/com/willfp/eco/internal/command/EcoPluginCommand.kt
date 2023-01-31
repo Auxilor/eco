@@ -33,6 +33,8 @@ class EcoPluginCommand(
                 command.aliases = aliases
             }
         }
+
+        Eco.get().syncCommands()
     }
 
     override fun unregister() {
