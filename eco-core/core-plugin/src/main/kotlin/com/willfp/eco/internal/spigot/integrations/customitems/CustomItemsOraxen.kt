@@ -6,7 +6,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
-import io.th0rgal.oraxen.items.OraxenItems
+import io.th0rgal.oraxen.api.OraxenItems
 
 class CustomItemsOraxen : CustomItemsIntegration {
     override fun registerProvider() {
