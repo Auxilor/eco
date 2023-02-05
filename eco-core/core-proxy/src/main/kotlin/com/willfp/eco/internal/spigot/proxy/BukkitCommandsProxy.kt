@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy
 
-import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.command.CommandMap
 
 interface BukkitCommandsProxy {
@@ -8,5 +8,5 @@ interface BukkitCommandsProxy {
 
     fun syncCommands()
 
-    fun unregisterCommand(command: PluginCommand)
+    fun unregisterCommand(command: PluginCommandBase)
 }

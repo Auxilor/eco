@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_19_R2
 
-import com.willfp.eco.core.command.impl.PluginCommand
+import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -28,7 +28,7 @@ class BukkitCommands : BukkitCommandsProxy {
         (Bukkit.getServer() as CraftServer).syncCommands()
     }
 
-    override fun unregisterCommand(command: PluginCommand) {
+    override fun unregisterCommand(command: PluginCommandBase) {
         knownCommands.remove(command.name)
         knownCommands.remove("${command.plugin.name.lowercase()}:${command.name}")
     }

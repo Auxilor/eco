@@ -17,29 +17,25 @@ class EcoPluginCommand(
     override fun register() {
         val command = Bukkit.getPluginCommand(name)
 
+        val knownDescription = command?.description ?: description ?: ""
+        val knownAliases = command?.aliases ?: aliases
+
         if (command == null) {
             unregister()
-
             commandMap.register(plugin.name.lowercase(), DelegatedBukkitCommand(this))
         } else {
             command.setExecutor(this)
-
-
-            description?.let {
-                command.setDescription(it)
-            }
-
-            if (aliases.isNotEmpty()) {
-                command.aliases = aliases
-            }
+            command.tabCompleter = this
+            command.description = knownDescription
+            command.aliases = knownAliases
         }
 
         Eco.get().syncCommands()
     }
 
     override fun unregister() {
-        val found = commandMap.getCommand(name)
-        found?.unregister(commandMap)
+        commandMap.getCommand(name)?.unregister(commandMap)
+        Eco.get().unregisterCommand(this)
 
         Eco.get().syncCommands()
     }

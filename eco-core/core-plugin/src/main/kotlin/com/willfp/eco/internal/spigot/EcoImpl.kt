@@ -5,6 +5,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.command.CommandBase
+import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
@@ -317,9 +318,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun syncCommands() =
         this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
 
-    override fun getCommandMap(): CommandMap =
-        this.getProxy(BukkitCommandsProxy::class.java).getCommandMap()
-
-    override fun unregisterCommand(command: PluginCommand) =
+    override fun unregisterCommand(command: PluginCommandBase) =
         this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)
 }
