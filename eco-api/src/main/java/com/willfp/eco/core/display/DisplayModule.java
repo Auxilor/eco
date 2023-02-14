@@ -8,6 +8,8 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Class for all plugin-specific client-side item display modules.
+ * <p>
+ * Display modules are called in the netty thread, so make sure they are thread-safe.
  */
 public abstract class DisplayModule {
     /**

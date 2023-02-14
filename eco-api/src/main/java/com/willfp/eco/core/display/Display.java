@@ -19,6 +19,9 @@ import java.util.TreeMap;
 
 /**
  * Utility class to manage client-side item display.
+ * <p>
+ * Packet display is not done on the main thread, so make sure
+ * all your modules are thread-safe.
  */
 public final class Display {
     /**
