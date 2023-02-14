@@ -13,7 +13,7 @@ object PacketInjectorListener : Listener {
 
         val channel = player.toNMS().connection.connection.channel
 
-        channel.pipeline().addBefore("packet_handler", "packet_listener_player", EcoChannelDuplexHandler(player.uniqueId))
+        channel.pipeline().addBefore("packet_handler", "eco_packets", EcoChannelDuplexHandler(player.uniqueId))
     }
 
     @EventHandler
@@ -23,8 +23,8 @@ object PacketInjectorListener : Listener {
         val channel = player.toNMS().connection.connection.channel
 
         channel.eventLoop().submit {
-            if (channel.pipeline().get("packet_listener_player") != null) {
-                channel.pipeline().remove("packet_listener_player")
+            if (channel.pipeline().get("eco_packets") != null) {
+                channel.pipeline().remove("eco_packets")
             }
         }
     }
