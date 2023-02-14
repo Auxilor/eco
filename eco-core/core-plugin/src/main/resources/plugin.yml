@@ -51,3 +51,4 @@ softdepend:
   - Scyther
   - ModelEngine
   - PvPManager
+  - DeluxeMenus
