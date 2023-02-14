@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The polymart resource ID of the plugin.
