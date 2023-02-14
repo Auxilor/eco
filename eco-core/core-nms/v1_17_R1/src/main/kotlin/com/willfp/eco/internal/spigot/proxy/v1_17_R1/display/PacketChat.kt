@@ -1,7 +1,8 @@
-package com.willfp.eco.internal.spigot.proxy.v1_18_R1
+package com.willfp.eco.internal.spigot.proxy.v1_17_R1.display
 
 import com.willfp.eco.core.display.Display
-import com.willfp.eco.internal.spigot.proxy.ChatComponentProxy
+import com.willfp.eco.core.packet.PacketEvent
+import com.willfp.eco.core.packet.PacketListener
 import net.kyori.adventure.nbt.api.BinaryTagHolder
 import net.kyori.adventure.text.BuildableComponent
 import net.kyori.adventure.text.Component
@@ -9,20 +10,28 @@ import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.TagParser
+import net.minecraft.network.protocol.game.ClientboundChatPacket
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-@Suppress("UNCHECKED_CAST")
-class ChatComponent : ChatComponentProxy {
+object PacketChat : PacketListener {
     private val gsonComponentSerializer = GsonComponentSerializer.gson()
 
-    override fun modifyComponent(obj: Any, player: Player): Any {
-        if (obj !is net.minecraft.network.chat.Component) {
-            return obj
-        }
+    private val field = ClientboundChatPacket::class.java.declaredFields
+        .first { it.type == net.minecraft.network.chat.Component::class.java }
+        .apply { isAccessible = true }
 
+    override fun onSend(event: PacketEvent) {
+        val packet = event.packet.handle as? ClientboundChatPacket ?: return
+
+        val newMessage = modifyComponent(packet.message, event.player)
+
+        field.set(packet, newMessage)
+    }
+
+    private fun modifyComponent(obj: net.minecraft.network.chat.Component, player: Player): Any {
         val component = gsonComponentSerializer.deserialize(
             net.minecraft.network.chat.Component.Serializer.toJson(
                 obj
@@ -53,6 +62,7 @@ class ChatComponent : ChatComponentProxy {
         }
         component = component.children(children)
 
+        @Suppress("UNCHECKED_CAST")
         val hoverEvent: HoverEvent<Any> = component.style().hoverEvent() as HoverEvent<Any>? ?: return component
 
         val showItem = hoverEvent.value()

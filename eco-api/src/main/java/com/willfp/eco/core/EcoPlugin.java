@@ -13,6 +13,7 @@ import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
+import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
@@ -52,7 +53,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The polymart resource ID of the plugin.
@@ -422,13 +423,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         Prerequisite.update();
 
-        this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
-            if (!abstractPacketAdapter.isPostLoad()) {
-                abstractPacketAdapter.register();
-            }
-        });
+        if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
+            this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
+                if (!abstractPacketAdapter.isPostLoad()) {
+                    abstractPacketAdapter.register();
+                }
+            });
+        }
 
         this.loadListeners().forEach(listener -> this.getEventManager().registerListener(listener));
+        this.loadPacketListeners().forEach(listener -> this.getEventManager().registerPacketListener(listener));
 
         this.loadPluginCommands().forEach(PluginCommand::register);
 
@@ -683,13 +687,24 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     }
 
     /**
-     * ProtocolLib packet adapters to be registered.
+     * ProtocolLib handle adapters to be registered.
      * <p>
      * If the plugin does not require ProtocolLib this can be left empty.
      *
-     * @return A list of packet adapters.
+     * @return A list of handle adapters.
+     * @deprecated Use {@link #loadPacketListeners()} instead.
      */
+    @Deprecated(since = "6.51.0")
     protected List<AbstractPacketAdapter> loadPacketAdapters() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Packet Listeners to be registered.
+     *
+     * @return A list of handle listeners.
+     */
+    protected List<PacketListener> loadPacketListeners() {
         return new ArrayList<>();
     }
 

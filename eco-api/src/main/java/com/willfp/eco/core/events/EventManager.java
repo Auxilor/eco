@@ -1,5 +1,6 @@
 package com.willfp.eco.core.events;
 
+import com.willfp.eco.core.packet.PacketListener;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,4 +26,11 @@ public interface EventManager {
      * Unregister all listeners associated with the plugin.
      */
     void unregisterAllListeners();
+
+    /**
+     * Register a packet listener.
+     *
+     * @param listener The listener.
+     */
+    void registerPacketListener(@NotNull PacketListener listener);
 }

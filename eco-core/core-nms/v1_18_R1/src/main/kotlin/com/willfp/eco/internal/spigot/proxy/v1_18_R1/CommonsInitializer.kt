@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_18_R1
 
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
@@ -27,7 +28,7 @@ import org.bukkit.persistence.PersistentDataContainer
 import java.lang.reflect.Field
 
 class CommonsInitializer : CommonsInitializerProxy {
-    override fun init() {
+    override fun init(plugin: EcoPlugin) {
         CommonsProvider.setIfNeeded(CommonsProviderImpl)
     }
 
@@ -60,7 +61,7 @@ class CommonsInitializer : CommonsInitializerProxy {
         }
 
         override fun asBukkitStack(itemStack: net.minecraft.world.item.ItemStack): ItemStack {
-            return CraftItemStack.asBukkitCopy(itemStack)
+            return CraftItemStack.asCraftMirror(itemStack)
         }
 
         override fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack) {

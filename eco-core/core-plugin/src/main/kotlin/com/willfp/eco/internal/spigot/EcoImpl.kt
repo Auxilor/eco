@@ -6,7 +6,6 @@ import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
-import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
@@ -55,7 +54,6 @@ import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
-import org.bukkit.command.CommandMap
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
@@ -78,7 +76,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     )
 
     init {
-        getProxy(CommonsInitializerProxy::class.java).init()
+        getProxy(CommonsInitializerProxy::class.java).init(this)
     }
 
     @Suppress("RedundantNullableReturnType")

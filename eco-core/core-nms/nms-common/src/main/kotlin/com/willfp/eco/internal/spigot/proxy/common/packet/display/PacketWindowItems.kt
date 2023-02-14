@@ -1,39 +1,37 @@
-package com.willfp.eco.internal.spigot.display
+package com.willfp.eco.internal.spigot.proxy.common.packet.display
 
-import com.comphenix.protocol.PacketType
-import com.comphenix.protocol.events.PacketContainer
-import com.comphenix.protocol.events.PacketEvent
-import com.willfp.eco.core.AbstractPacketAdapter
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.items.HashedItem
-import com.willfp.eco.internal.spigot.display.frame.DisplayFrame
-import com.willfp.eco.internal.spigot.display.frame.lastDisplayFrame
+import com.willfp.eco.core.packet.PacketEvent
+import com.willfp.eco.core.packet.PacketListener
+import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
+import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, PacketType.Play.Server.WINDOW_ITEMS, false) {
-    private val lastKnownWindowIDs = ConcurrentHashMap<String, Int>()
+class PacketWindowItems(
+    private val plugin: EcoPlugin
+) : PacketListener {
+    private val lastKnownWindowIDs = ConcurrentHashMap<UUID, Int>()
 
-    override fun onSend(
-        packet: PacketContainer,
-        player: Player,
-        event: PacketEvent
-    ) {
-        packet.itemModifier.modify(0) {
-            Display.display(
-                it, player
-            )
-        }
+    private val field = ClientboundContainerSetContentPacket::class.java.getDeclaredField("c")
+        .apply { isAccessible = true }
 
-        val windowId = packet.integers.read(0)
+    override fun onSend(event: PacketEvent) {
+        val packet = event.packet.handle as? ClientboundContainerSetContentPacket ?: return
+        val player = event.player
 
-        // Using name because UUID is unreliable with ProtocolLib players.
-        val name = player.name
+        Display.display(packet.carriedItem.asBukkitStack(), player)
 
-        val lastKnownID = lastKnownWindowIDs[name]
-        lastKnownWindowIDs[name] = windowId
+        val windowId = packet.containerId
+
+        val lastKnownID = lastKnownWindowIDs[player.uniqueId]
+        lastKnownWindowIDs[player.uniqueId] = windowId
 
         // If there is any change in window ID at any point,
         // Remove the last display frame to prevent any potential conflicts.
@@ -43,17 +41,20 @@ class PacketWindowItems(plugin: EcoPlugin) : AbstractPacketAdapter(plugin, Packe
             player.lastDisplayFrame = DisplayFrame.EMPTY
         }
 
-        val itemStacks = packet.itemListModifier.read(0) ?: return
+        val itemStacks = packet.items.map { it.asBukkitStack() }
 
-        packet.itemListModifier.write(0, modifyWindowItems(itemStacks, windowId, player))
+        val newItems = modifyWindowItems(itemStacks.toMutableList(), windowId, player)
+
+        field.set(packet, newItems)
     }
+
 
     private fun modifyWindowItems(
         itemStacks: MutableList<ItemStack>,
         windowId: Int,
         player: Player
     ): MutableList<ItemStack> {
-        if (this.getPlugin().configYml.getBool("use-display-frame") && windowId == 0) {
+        if (plugin.configYml.getBool("use-display-frame") && windowId == 0) {
             val frameMap = mutableMapOf<Byte, HashedItem>()
 
             for (index in itemStacks.indices) {
