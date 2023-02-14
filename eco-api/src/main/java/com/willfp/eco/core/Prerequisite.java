@@ -31,6 +31,14 @@ public class Prerequisite {
     );
 
     /**
+     * Requires the server to be running an implementation of paper.
+     */
+    public static final Prerequisite HAS_PROTOCOLLIB = new Prerequisite(
+            () -> ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter"),
+            "Requires server to have ProtocolLib"
+    );
+
+    /**
      * Requires the server to have vault installed.
      *
      * @deprecated Use {@link EconomyManager#hasRegistrations()} instead.

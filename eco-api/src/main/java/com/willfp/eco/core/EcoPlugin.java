@@ -520,11 +520,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             Display.registerDisplayModule(this.getDisplayModule());
         }
 
-        this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
-            if (abstractPacketAdapter.isPostLoad()) {
-                abstractPacketAdapter.register();
-            }
-        });
+        if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
+            this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
+                if (abstractPacketAdapter.isPostLoad()) {
+                    abstractPacketAdapter.register();
+                }
+            });
+        }
 
         if (!Prerequisite.HAS_PAPER.isMet()) {
             this.getLogger().severe("");
