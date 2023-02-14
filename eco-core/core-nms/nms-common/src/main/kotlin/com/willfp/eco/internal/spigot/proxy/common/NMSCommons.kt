@@ -6,12 +6,14 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Mob
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 
@@ -63,6 +65,9 @@ fun CompoundTag.makePdc(base: Boolean = false): PersistentDataContainer =
 fun CompoundTag.setPdc(pdc: PersistentDataContainer?, item: net.minecraft.world.item.ItemStack? = null) =
     impl.setPdc(this, pdc, item)
 
+fun Player.toNMS(): ServerPlayer =
+    impl.toNMS(this)
+
 interface CommonsProvider {
     val nbtTagString: Int
 
@@ -93,6 +98,8 @@ interface CommonsProvider {
     fun materialToItem(material: Material): Item
 
     fun itemToMaterial(item: Item): Material
+
+    fun toNMS(player: Player): ServerPlayer
 
     companion object {
         fun setIfNeeded(provider: CommonsProvider) {

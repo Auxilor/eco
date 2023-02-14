@@ -26,6 +26,7 @@ import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.math.MathContext;
+import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -551,7 +552,16 @@ public interface Eco {
      *
      * @param command The command.
      */
-    void unregisterCommand(@NotNull final PluginCommandBase command);
+    void unregisterCommand(@NotNull PluginCommandBase command);
+
+    /**
+     * Send a packet.
+     *
+     * @param player The player.
+     * @param packet The packet.
+     */
+    void sendPacket(@NotNull Player player,
+                    @NotNull Packet packet);
 
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.

@@ -3,7 +3,6 @@ package com.willfp.eco.internal.spigot.proxy.v1_19_R2
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
-import com.willfp.eco.internal.spigot.proxy.common.packet.EcoChannelDuplexHandler
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketAutoRecipe
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketOpenWindowMerchant
@@ -16,37 +15,18 @@ import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer
 import org.bukkit.entity.Player
 
 class PacketHandler : PacketHandlerProxy {
-    override fun addPlayer(player: Player) {
+    override fun sendPacket(player: Player, packet: com.willfp.eco.core.packet.Packet) {
         if (player !is CraftPlayer) {
             return
         }
 
-        player.handle.connection.connection.channel.pipeline()
-            .addBefore("eco_packet_handler", player.name, EcoChannelDuplexHandler(player.uniqueId))
-    }
+        val handle = packet.handle
 
-    override fun removePlayer(player: Player) {
-        if (player !is CraftPlayer) {
+        if (handle !is Packet<*>) {
             return
         }
 
-        val channel = player.handle.connection.connection.channel
-
-        channel.eventLoop().submit {
-            channel.pipeline().remove(player.name)
-        }
-    }
-
-    override fun sendPacket(player: Player, packet: Any) {
-        if (player !is CraftPlayer) {
-            return
-        }
-
-        if (packet !is Packet<*>) {
-            return
-        }
-
-        player.handle.connection.send(packet)
+        player.handle.connection.send(handle)
     }
 
     override fun clearDisplayFrames() {

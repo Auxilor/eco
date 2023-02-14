@@ -3,11 +3,13 @@ package com.willfp.eco.internal.spigot.proxy.v1_18_R1
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
+import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
 import net.minecraft.core.Registry
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
@@ -16,6 +18,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_18_R1.CraftServer
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftMob
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer
 import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataTypeRegistry
@@ -23,6 +26,7 @@ import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers
 import org.bukkit.craftbukkit.v1_18_R1.util.CraftNamespacedKey
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import java.lang.reflect.Field
@@ -30,6 +34,9 @@ import java.lang.reflect.Field
 class CommonsInitializer : CommonsInitializerProxy {
     override fun init(plugin: EcoPlugin) {
         CommonsProvider.setIfNeeded(CommonsProviderImpl)
+        plugin.onEnable {
+            plugin.eventManager.registerListener(PacketInjectorListener)
+        }
     }
 
     object CommonsProviderImpl : CommonsProvider {
@@ -144,5 +151,9 @@ class CommonsInitializer : CommonsInitializerProxy {
         override fun itemToMaterial(item: Item) =
             Material.getMaterial(Registry.ITEM.getKey(item).path.uppercase())
                 ?: throw IllegalArgumentException("Invalid material!")
+
+        override fun toNMS(player: Player): ServerPlayer {
+            return (player as CraftPlayer).handle
+        }
     }
 }

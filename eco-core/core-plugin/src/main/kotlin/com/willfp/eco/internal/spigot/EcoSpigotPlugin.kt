@@ -112,7 +112,6 @@ import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
-import com.willfp.eco.internal.spigot.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
@@ -362,7 +361,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ArmorChangeEventListeners(this),
             DataListener(this),
             PlayerBlockListener(this),
-            PacketInjectorListener(this),
             ServerLocking
         )
 

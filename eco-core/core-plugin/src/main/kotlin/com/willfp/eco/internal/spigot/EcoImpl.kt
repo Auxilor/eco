@@ -14,6 +14,7 @@ import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.math.MathContext
+import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand
@@ -49,6 +50,7 @@ import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
@@ -318,4 +320,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun unregisterCommand(command: PluginCommandBase) =
         this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)
+
+    override fun sendPacket(player: Player, packet: Packet) =
+        this.getProxy(PacketHandlerProxy::class.java).sendPacket(player, packet)
 }
