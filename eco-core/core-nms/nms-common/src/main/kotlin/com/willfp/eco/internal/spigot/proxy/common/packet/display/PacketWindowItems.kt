@@ -6,6 +6,7 @@ import com.willfp.eco.core.items.HashedItem
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
+import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
@@ -45,7 +46,7 @@ class PacketWindowItems(
 
         val newItems = modifyWindowItems(itemStacks.toMutableList(), windowId, player)
 
-        field.set(packet, newItems)
+        field.set(packet, newItems.map { it.asNMSStack() })
     }
 
 
