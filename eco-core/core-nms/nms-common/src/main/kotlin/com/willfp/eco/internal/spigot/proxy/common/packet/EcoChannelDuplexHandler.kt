@@ -39,7 +39,7 @@ class EcoChannelDuplexHandler(
             event.handleSend()
 
             if (!event.isCancelled) {
-                super.channelRead(ctx, msg)
+                super.write(ctx, msg, promise)
             }
         } else {
             super.write(ctx, msg, promise)
