@@ -20,7 +20,9 @@ class PacketWindowItems(
 ) : PacketListener {
     private val lastKnownWindowIDs = ConcurrentHashMap<UUID, Int>()
 
-    private val field = ClientboundContainerSetContentPacket::class.java.getDeclaredField("c")
+    private val field = ClientboundContainerSetContentPacket::class.java
+        .declaredFields
+        .first { it.type == List::class.java }
         .apply { isAccessible = true }
 
     override fun onSend(event: PacketEvent) {

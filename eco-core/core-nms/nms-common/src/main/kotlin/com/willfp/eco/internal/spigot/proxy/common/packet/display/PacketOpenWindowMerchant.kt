@@ -9,14 +9,18 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.trading.MerchantOffer
+import net.minecraft.world.item.trading.MerchantOffers
 
 object PacketOpenWindowMerchant : PacketListener {
-    private val field = ClientboundMerchantOffersPacket::class.java.getDeclaredField("b").apply { isAccessible = true }
+    private val field = ClientboundMerchantOffersPacket::class.java
+        .declaredFields
+        .first { it.type == MerchantOffers::class.java }
+        .apply { isAccessible = true }
 
     override fun onSend(event: PacketEvent) {
         val packet = event.packet.handle as? ClientboundMerchantOffersPacket ?: return
 
-        val offers = mutableListOf<MerchantOffer>()
+        val offers = MerchantOffers()
 
         for (offer in packet.offers) {
             val nbt = offer.createTag()
