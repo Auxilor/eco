@@ -5,7 +5,6 @@ api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
 load: STARTUP
-depend: []
 softdepend:
   - ProtocolLib
   - WorldGuard
