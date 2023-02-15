@@ -5,11 +5,11 @@ import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a handle being sent or received.
+ * Represents a packet being sent or received.
  */
 public class PacketEvent implements Cancellable {
     /**
-     * The handle.
+     * The packet.
      */
     private final Packet packet;
 
@@ -24,9 +24,9 @@ public class PacketEvent implements Cancellable {
     private boolean cancelled = false;
 
     /**
-     * Create a new handle event.
+     * Create a new packet event.
      *
-     * @param packet The handle.
+     * @param packet The packet.
      * @param player The player.
      */
     public PacketEvent(@NotNull final Packet packet,
@@ -36,9 +36,9 @@ public class PacketEvent implements Cancellable {
     }
 
     /**
-     * Get the NMS handle.
+     * Get the packet.
      *
-     * @return The handle.
+     * @return The packet.
      */
     @NotNull
     public Packet getPacket() {
