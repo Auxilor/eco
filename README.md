@@ -31,6 +31,7 @@ eco comes packed with all the tools you need in your plugins:
 - Yaml/JSON/TOML config system
 - Persistent data storage API with Yaml/MySQL/MongoDB support
 - Packet item display system
+- Lightweight event loop based packet API
 - Entity AI API with near-1:1 NMS mappings
 - More events
 - Extension API, essentially plugins for plugins
