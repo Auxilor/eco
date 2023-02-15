@@ -43,21 +43,12 @@ public record EntityGoalMoveThroughVillage(
                 return null;
             }
 
-            try {
-                return new EntityGoalMoveThroughVillage(
-                        config.getDouble("speed"),
-                        config.getBool("onlyAtNight"),
-                        config.getInt("distance"),
-                        config.getBool("canPassThroughDoors")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalMoveThroughVillage(
+                    config.getDouble("speed"),
+                    config.getBool("onlyAtNight"),
+                    config.getInt("distance"),
+                    config.getBool("canPassThroughDoors")
+            );
         }
 
         @NotNull

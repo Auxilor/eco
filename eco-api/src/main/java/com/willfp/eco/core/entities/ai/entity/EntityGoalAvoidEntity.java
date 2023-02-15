@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Avoid entities.
  *
- * @param entity       The entity type to avoid.
- * @param distance The distance to flee to.
- * @param slowSpeed    The slow movement speed.
- * @param fastSpeed    The fast movement speed.
+ * @param entity    The entity type to avoid.
+ * @param distance  The distance to flee to.
+ * @param slowSpeed The slow movement speed.
+ * @param fastSpeed The fast movement speed.
  */
 public record EntityGoalAvoidEntity(
         @NotNull TestableEntity entity,
@@ -45,23 +45,14 @@ public record EntityGoalAvoidEntity(
                 return null;
             }
 
-            try {
-                TestableEntity entity = Entities.lookup(config.getString("entity"));
+            TestableEntity entity = Entities.lookup(config.getString("entity"));
 
-                return new EntityGoalAvoidEntity(
-                        entity,
-                        config.getDouble("distance"),
-                        config.getDouble("slowSpeed"),
-                        config.getDouble("fastSpeed")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalAvoidEntity(
+                    entity,
+                    config.getDouble("distance"),
+                    config.getDouble("slowSpeed"),
+                    config.getDouble("fastSpeed")
+            );
         }
 
         @NotNull

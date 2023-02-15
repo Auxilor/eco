@@ -48,22 +48,13 @@ public record EntityGoalUseItem(
                 return null;
             }
 
-            try {
-                TestableEntity filter = Entities.lookup(config.getString("condition"));
+            TestableEntity filter = Entities.lookup(config.getString("condition"));
 
-                return new EntityGoalUseItem(
-                        Items.lookup(config.getString("item")).getItem(),
-                        Sound.valueOf(config.getString("sound").toUpperCase()),
-                        filter::matches
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalUseItem(
+                    Items.lookup(config.getString("item")).getItem(),
+                    Sound.valueOf(config.getString("sound").toUpperCase()),
+                    filter::matches
+            );
         }
 
         @NotNull

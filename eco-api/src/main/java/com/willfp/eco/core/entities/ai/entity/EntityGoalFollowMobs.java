@@ -40,20 +40,11 @@ public record EntityGoalFollowMobs(
                 return null;
             }
 
-            try {
-                return new EntityGoalFollowMobs(
-                        config.getDouble("speed"),
-                        config.getDouble("minDistance"),
-                        config.getDouble("maxDistance")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalFollowMobs(
+                    config.getDouble("speed"),
+                    config.getDouble("minDistance"),
+                    config.getDouble("maxDistance")
+            );
         }
 
         @NotNull

@@ -40,20 +40,11 @@ public record EntityGoalRandomStroll(
                 return null;
             }
 
-            try {
-                return new EntityGoalRandomStroll(
-                        config.getDouble("speed"),
-                        config.getInt("interval"),
-                        config.getBool("canDespawn")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalRandomStroll(
+                    config.getDouble("speed"),
+                    config.getInt("interval"),
+                    config.getBool("canDespawn")
+            );
         }
 
         @NotNull

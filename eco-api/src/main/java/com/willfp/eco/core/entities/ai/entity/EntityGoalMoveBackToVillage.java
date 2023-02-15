@@ -37,19 +37,10 @@ public record EntityGoalMoveBackToVillage(
                 return null;
             }
 
-            try {
-                return new EntityGoalMoveBackToVillage(
-                        config.getDouble("speed"),
-                        config.getBool("canDespawn")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalMoveBackToVillage(
+                    config.getDouble("speed"),
+                    config.getBool("canDespawn")
+            );
         }
 
         @NotNull

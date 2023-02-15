@@ -37,19 +37,10 @@ public record EntityGoalRandomSwimming(
                 return null;
             }
 
-            try {
-                return new EntityGoalRandomSwimming(
-                        config.getDouble("speed"),
-                        config.getInt("interval")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalRandomSwimming(
+                    config.getDouble("speed"),
+                    config.getInt("interval")
+            );
         }
 
         @NotNull

@@ -37,19 +37,10 @@ public record EntityGoalMeleeAttack(
                 return null;
             }
 
-            try {
-                return new EntityGoalMeleeAttack(
-                        config.getDouble("speed"),
-                        config.getBool("pauseWhenMobIdle")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalMeleeAttack(
+                    config.getDouble("speed"),
+                    config.getBool("pauseWhenMobIdle")
+            );
         }
 
         @NotNull

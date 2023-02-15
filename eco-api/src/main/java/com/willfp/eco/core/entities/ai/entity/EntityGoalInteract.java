@@ -42,20 +42,11 @@ public record EntityGoalInteract(
                 return null;
             }
 
-            try {
-                return new EntityGoalInteract(
-                        Entities.lookup(config.getString("target")),
-                        config.getDouble("range"),
-                        config.getDouble("chance")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalInteract(
+                    Entities.lookup(config.getString("target")),
+                    config.getDouble("range"),
+                    config.getDouble("chance")
+            );
         }
 
         @NotNull

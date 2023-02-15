@@ -45,21 +45,12 @@ public record EntityGoalRangedAttack(
                 return null;
             }
 
-            try {
-                return new EntityGoalRangedAttack(
-                        config.getDouble("speed"),
-                        config.getInt("minInterval"),
-                        config.getInt("maxInterval"),
-                        config.getDouble("range")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalRangedAttack(
+                    config.getDouble("speed"),
+                    config.getInt("minInterval"),
+                    config.getInt("maxInterval"),
+                    config.getDouble("range")
+            );
         }
 
         @NotNull

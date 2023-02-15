@@ -34,18 +34,9 @@ public record EntityGoalOpenDoors(
                 return null;
             }
 
-            try {
-                return new EntityGoalOpenDoors(
-                        config.getBool("delayClosing")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalOpenDoors(
+                    config.getBool("delayClosing")
+            );
         }
 
         @NotNull

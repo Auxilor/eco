@@ -53,28 +53,19 @@ public record TargetGoalNearestHealableRaider(
                 return null;
             }
 
-            try {
-                if (config.has("targetFilter")) {
-                    TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
+            if (config.has("targetFilter")) {
+                TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
-                    return new TargetGoalNearestHealableRaider(
-                            Entities.lookup(config.getString("target")),
-                            config.getBool("checkVisibility"),
-                            filter::matches
-                    );
-                } else {
-                    return new TargetGoalNearestHealableRaider(
-                            Entities.lookup(config.getString("target")),
-                            config.getBool("checkVisibility")
-                    );
-                }
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
+                return new TargetGoalNearestHealableRaider(
+                        Entities.lookup(config.getString("target")),
+                        config.getBool("checkVisibility"),
+                        filter::matches
+                );
+            } else {
+                return new TargetGoalNearestHealableRaider(
+                        Entities.lookup(config.getString("target")),
+                        config.getBool("checkVisibility")
+                );
             }
         }
 

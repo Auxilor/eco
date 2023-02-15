@@ -58,25 +58,16 @@ public record EntityGoalTempt(
                 return null;
             }
 
-            try {
-                Collection<TestableItem> items = config.getStrings("items").stream()
-                        .map(Items::lookup)
-                        .filter(it -> !(it instanceof EmptyTestableItem))
-                        .collect(Collectors.toList());
+            Collection<TestableItem> items = config.getStrings("items").stream()
+                    .map(Items::lookup)
+                    .filter(it -> !(it instanceof EmptyTestableItem))
+                    .collect(Collectors.toList());
 
-                return new EntityGoalTempt(
-                        config.getDouble("speed"),
-                        items,
-                        config.getBool("canBeScared")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalTempt(
+                    config.getDouble("speed"),
+                    items,
+                    config.getBool("canBeScared")
+            );
         }
 
         @NotNull

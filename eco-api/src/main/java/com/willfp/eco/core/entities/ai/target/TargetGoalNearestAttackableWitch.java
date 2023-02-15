@@ -63,32 +63,23 @@ public record TargetGoalNearestAttackableWitch(
                 return null;
             }
 
-            try {
-                if (config.has("targetFilter")) {
-                    TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
+            if (config.has("targetFilter")) {
+                TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
-                    return new TargetGoalNearestAttackableWitch(
-                            Entities.lookup(config.getString("target")),
-                            config.getBool("checkVisibility"),
-                            config.getBool("checkCanNavigate"),
-                            config.getInt("reciprocalChance"),
-                            filter::matches
-                    );
-                } else {
-                    return new TargetGoalNearestAttackableWitch(
-                            Entities.lookup(config.getString("target")),
-                            config.getBool("checkVisibility"),
-                            config.getBool("checkCanNavigate"),
-                            config.getInt("reciprocalChance")
-                    );
-                }
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
+                return new TargetGoalNearestAttackableWitch(
+                        Entities.lookup(config.getString("target")),
+                        config.getBool("checkVisibility"),
+                        config.getBool("checkCanNavigate"),
+                        config.getInt("reciprocalChance"),
+                        filter::matches
+                );
+            } else {
+                return new TargetGoalNearestAttackableWitch(
+                        Entities.lookup(config.getString("target")),
+                        config.getBool("checkVisibility"),
+                        config.getBool("checkCanNavigate"),
+                        config.getInt("reciprocalChance")
+                );
             }
         }
 

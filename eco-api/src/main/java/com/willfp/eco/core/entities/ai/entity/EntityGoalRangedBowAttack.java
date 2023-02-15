@@ -13,9 +13,9 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * Only supports monsters that have bow attacks.
  *
- * @param speed          The speed.
+ * @param speed    The speed.
  * @param interval The interval between attacks (in ticks).
- * @param range          The max range at which to attack.
+ * @param range    The max range at which to attack.
  */
 public record EntityGoalRangedBowAttack(
         double speed,
@@ -42,20 +42,11 @@ public record EntityGoalRangedBowAttack(
                 return null;
             }
 
-            try {
-                return new EntityGoalRangedBowAttack(
-                        config.getDouble("speed"),
-                        config.getInt("interval"),
-                        config.getDouble("range")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalRangedBowAttack(
+                    config.getDouble("speed"),
+                    config.getInt("interval"),
+                    config.getDouble("range")
+            );
         }
 
         @NotNull

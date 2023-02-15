@@ -39,19 +39,10 @@ public record EntityGoalRangedCrossbowAttack(
                 return null;
             }
 
-            try {
-                return new EntityGoalRangedCrossbowAttack(
-                        config.getDouble("speed"),
-                        config.getDouble("range")
-                );
-            } catch (Exception e) {
-                /*
-                Exceptions could be caused by configs having values of a wrong type,
-                invalid enum parameters, etc. Serializers shouldn't throw exceptions,
-                so we encapsulate them as null.
-                 */
-                return null;
-            }
+            return new EntityGoalRangedCrossbowAttack(
+                    config.getDouble("speed"),
+                    config.getDouble("range")
+            );
         }
 
         @NotNull
