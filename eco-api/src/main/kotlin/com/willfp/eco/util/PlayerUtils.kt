@@ -12,6 +12,10 @@ import org.bukkit.entity.Player
 val OfflinePlayer.savedDisplayName: String
     get() = PlayerUtils.getSavedDisplayName(this)
 
+/** @see PlayerUtils.getLocalID */
+val OfflinePlayer.localID: Int
+    get() = PlayerUtils.getLocalID(this)
+
 /** @see PlayerUtils.getAudience */
 fun Player.asAudience(): Audience =
     PlayerUtils.getAudience(this)

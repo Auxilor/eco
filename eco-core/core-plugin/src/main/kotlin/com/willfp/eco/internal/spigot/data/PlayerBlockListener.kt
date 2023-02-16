@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.BlockUtils
+import com.willfp.eco.util.PlayerUtils
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
@@ -21,15 +22,17 @@ class PlayerBlockListener(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlace(event: BlockPlaceEvent) {
         val block = event.blockPlaced
+        val player = event.player
 
-        writeKey(block)
+        writeKey(block, PlayerUtils.getLocalID(player))
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onPlace(event: BlockMultiPlaceEvent) {
         val block = event.blockPlaced
+        val player = event.player
 
-        writeKey(block)
+        writeKey(block, PlayerUtils.getLocalID(player))
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -53,11 +56,14 @@ class PlayerBlockListener(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onExtend(event: BlockPistonExtendEvent) {
         val locs = mutableListOf<Location>()
+        val placers = mutableListOf<Int>()
         val toRemove = mutableListOf<Location>()
 
         for (block in event.blocks) {
-            if (BlockUtils.isPlayerPlaced(block)) {
+            val placedBy = BlockUtils.placedByID(block)
+            if (placedBy != 0) {
                 locs.add(block.getRelative(event.direction).location)
+                placers.add(placedBy)
                 toRemove.add(block.location)
             }
         }
@@ -67,8 +73,8 @@ class PlayerBlockListener(
                 removeKey(loc)
             }
 
-            for (loc in locs) {
-                writeKey(loc)
+            for (idx in locs.indices) {
+                writeKey(locs[idx], placers[idx])
             }
         }
     }
@@ -76,11 +82,14 @@ class PlayerBlockListener(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onRetract(event: BlockPistonRetractEvent) {
         val locs = mutableListOf<Location>()
+        val placers = mutableListOf<Int>()
         val toRemove = mutableListOf<Location>()
 
         for (block in event.blocks) {
-            if (BlockUtils.isPlayerPlaced(block)) {
+            val placedBy = BlockUtils.placedByID(block)
+            if (placedBy != 0) {
                 locs.add(block.getRelative(event.direction).location)
+                placers.add(placedBy)
                 toRemove.add(block.location)
             }
         }
@@ -90,22 +99,22 @@ class PlayerBlockListener(
                 removeKey(loc)
             }
 
-            for (loc in locs) {
-                writeKey(loc)
+            for (idx in locs.indices) {
+                writeKey(locs[idx], placers[idx])
             }
         }
     }
 
-    private fun writeKey(block: Block) {
-        writeKey(block.location)
+    private fun writeKey(block: Block, placerID: Int) {
+        writeKey(block.location, placerID)
     }
 
-    private fun writeKey(location: Location) {
+    private fun writeKey(location: Location, placerID: Int) {
         val loc = location.hashCode().toString(16)
         location.chunk.persistentDataContainer.set(
             plugin.createNamespacedKey(loc.lowercase()),
             PersistentDataType.INTEGER,
-            1
+            placerID
         )
     }
 

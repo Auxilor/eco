@@ -3,6 +3,7 @@ package com.willfp.eco.util;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -96,6 +97,34 @@ public final class BlockUtils {
                 NamespacedKeyUtils.createEcoKey(Integer.toString(block.getLocation().hashCode(), 16)),
                 PersistentDataType.INTEGER
         );
+    }
+    /**
+     * Get who placed the block (as an internal ID).
+     *
+     * @param block The block.
+     * @return Internal ID of placing player, or 0 if not placed by a player.
+     */
+    public static int placedByID(@NotNull final Block block) {
+        Chunk chunk = block.getChunk();
+
+        return chunk.getPersistentDataContainer().getOrDefault(
+            NamespacedKeyUtils.createEcoKey(Integer.toString(block.getLocation().hashCode(), 16)),
+            PersistentDataType.INTEGER,
+            0
+        );
+    }
+
+    /**
+     * Get whether a specific player placed the block.
+     *
+     * @param block The block.
+     * @param player The player to check.
+     * @return If placed by that specific player.
+     */
+    public static boolean isPlacedBy(@NotNull final Block block, @NotNull final OfflinePlayer player) {
+        int placed_by = placedByID(block);
+        int local_id = PlayerUtils.getLocalID(player);
+        return placed_by == local_id;        
     }
 
     private BlockUtils() {

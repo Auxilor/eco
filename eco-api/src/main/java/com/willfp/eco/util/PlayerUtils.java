@@ -33,6 +33,16 @@ public final class PlayerUtils {
             PersistentDataKeyType.STRING,
             "Unknown Player"
     );
+    /**
+     * The data key for saved player local IDs.
+     * The default value of 1 means no local ID has been assigned; this is to allow the
+     * gradual migration of BlockUtils isPlayerPlaced values.
+     */
+    private static final PersistentDataKey<Integer> PLAYER_LOCAL_ID = new PersistentDataKey<>(
+            NamespacedKeyUtils.createEcoKey("player_local_id"),
+            PersistentDataKeyType.INT,
+            1
+    );
 
     /**
      * Get the audience from a player.
@@ -104,6 +114,29 @@ public final class PlayerUtils {
         }
 
         return saved;
+    }
+
+    /**
+     * Get local ID for a player.  
+     * Local IDs are more compact than UUIDs, but are local to our storage backing. 
+     * They're useful in scenarios where we want to store a player identifier per-block,
+     * like in BlockUtils.isPlacedBy
+     * 
+     * @param player The player.
+     * @return The player local ID.
+     */
+    public static Integer getLocalID(@NotNull final OfflinePlayer player) {
+        PlayerProfile profile = PlayerProfile.load(player);
+        Integer local_id = profile.read(PLAYER_LOCAL_ID);
+
+        // If we haven't gotten a player local ID, generate one here.
+        if (local_id.equals(PLAYER_LOCAL_ID.getDefaultValue())) {
+            Integer generatedID = ServerUtils.generateLocalID();
+            profile.write(PLAYER_LOCAL_ID, generatedID);
+            return generatedID;
+        }
+
+        return local_id;
     }
 
     /**
