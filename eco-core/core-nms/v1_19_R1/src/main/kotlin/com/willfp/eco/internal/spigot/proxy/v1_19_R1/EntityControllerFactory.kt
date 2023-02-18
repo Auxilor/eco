@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_19_R1
 
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.common.ai.EcoEntityController
+import com.willfp.eco.internal.spigot.proxy.v1_19_R1.entity.EcoEntityController
 import org.bukkit.entity.Mob
 
 class EntityControllerFactory : EntityControllerFactoryProxy {
