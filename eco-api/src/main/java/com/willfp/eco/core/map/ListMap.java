@@ -1,5 +1,7 @@
 package com.willfp.eco.core.map;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,4 +18,16 @@ public class ListMap<K, V> extends DefaultMap<K, List<V>> {
     public ListMap() {
         super(new ArrayList<>());
     }
+
+    /**
+     * Append a value to a key.
+     *
+     * @param key   The key.
+     * @param value The value.
+     */
+    void append(@NotNull final K key,
+                @NotNull final V value) {
+        this.get(key).add(value);
+    }
 }
+
