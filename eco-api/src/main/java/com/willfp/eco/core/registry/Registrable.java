@@ -18,6 +18,8 @@ public interface Registrable {
 
     /**
      * Called when the element is registered.
+     * <p>
+     * This is called after registration.
      */
     default void onRegister() {
         // Do nothing by default.
@@ -25,6 +27,8 @@ public interface Registrable {
 
     /**
      * Called when the element is removed.
+     * <p>
+     * This is called before removal.
      */
     default void onRemove() {
         // Do nothing by default.

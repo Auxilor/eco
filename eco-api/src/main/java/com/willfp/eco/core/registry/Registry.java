@@ -3,9 +3,9 @@ package com.willfp.eco.core.registry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A registry for {@link Registrable}s.
@@ -16,7 +16,7 @@ public abstract class Registry<T extends Registrable> {
     /**
      * The registry.
      */
-    private final Map<String, T> registry = new ConcurrentHashMap<>();
+    private final Map<String, T> registry = new HashMap<>();
 
     /**
      * Instantiate a new registry.

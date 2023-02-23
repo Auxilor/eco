@@ -41,8 +41,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
      * @param map          The map.
      * @param defaultValue The default value.
      */
-    public DefaultMap(@NotNull final Map<K, V> map,
-                      @NotNull final V defaultValue) {
+    public DefaultMap(@NotNull final Map<K, V> map, @NotNull final V defaultValue) {
         this.map = map;
         this.defaultValue = defaultValue;
     }
@@ -118,5 +117,31 @@ public class DefaultMap<K, V> implements Map<K, V> {
     @Override
     public Set<Entry<K, V>> entrySet() {
         return map.entrySet();
+    }
+
+    /**
+     * Create a new nested map.
+     *
+     * @param <K>  The key type.
+     * @param <K1> The nested key type.
+     * @param <V>  The value type.
+     * @return The nested map.
+     */
+    @NotNull
+    public static <K, K1, V> DefaultMap<K, Map<K1, V>> createNestedMap() {
+        return new DefaultMap<>(new HashMap<>());
+    }
+
+    /**
+     * Create a new nested list map.
+     *
+     * @param <K>  The key type.
+     * @param <K1> The nested key type.
+     * @param <V>  The value type.
+     * @return The nested list map.
+     */
+    @NotNull
+    public static <K, K1, V> DefaultMap<K, ListMap<K1, V>> createNestedListMap() {
+        return new DefaultMap<>(new ListMap<>());
     }
 }
