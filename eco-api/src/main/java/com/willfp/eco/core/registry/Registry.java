@@ -1,11 +1,13 @@
 package com.willfp.eco.core.registry;
 
+import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * A registry for {@link Registrable}s.
@@ -13,6 +15,11 @@ import java.util.Set;
  * @param <T> The type of {@link Registrable}.
  */
 public abstract class Registry<T extends Registrable> {
+    /**
+     * The ID pattern.
+     */
+    private static final Pattern ID_PATTERN = Pattern.compile("[a-z0-9_]{1,100}");
+
     /**
      * The registry.
      */
@@ -33,6 +40,8 @@ public abstract class Registry<T extends Registrable> {
      */
     @NotNull
     public T register(@NotNull final T element) {
+        Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern());
+
         registry.put(element.getID(), element);
 
         element.onRegister();
