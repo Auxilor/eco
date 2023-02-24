@@ -276,6 +276,35 @@ public final class PlaceholderManager {
                                                @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
         String processed = text;
 
+        /*
+
+        Why am I doing statics at the start, but player statics at the end?
+
+        Additional players let you use something like victim as a player to parse in relation to,
+        for example doing %victim_player_health%, which would parse the health of the victim.
+
+        However, something like libreforge will also inject %victim_max_health%, which is unrelated
+        to additional players, and instead holds a constant value. So, eco saw this, smartly thought
+        "ah, it's an additional player, let's parse it", and then tried to parse %max_health% with
+        relation to the victim, which resolved to zero. So, we have to parse statics and player statics
+        that might include a prefix first, then additional players, then player statics with the support
+        of additional players.
+
+        This was a massive headache and took so many reports before I clocked what was going on.
+
+        Oh well, at least it's fixed now.
+
+         */
+
+
+        for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
+            if (injection instanceof StaticPlaceholder placeholder) {
+                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
+            } else if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {
+                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue(player));
+            }
+        }
+
         // Prevent running 2 scans if there are no additional players.
         if (!additionalPlayers.isEmpty()) {
             List<String> found = findPlaceholdersIn(text);
@@ -301,15 +330,14 @@ public final class PlaceholderManager {
             processed = integration.translate(processed, player);
         }
 
+        // DON'T REMOVE THIS, IT'S NOT DUPLICATE CODE.
         for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
             // Do I know this is a bad way of doing this? Yes.
-            // I know it's deprecated, but it's fast.
-            if (injection instanceof StaticPlaceholder placeholder) {
-                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
-            } else if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {
+            if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {
                 processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue(player));
             }
         }
+
         return processed;
     }
 
