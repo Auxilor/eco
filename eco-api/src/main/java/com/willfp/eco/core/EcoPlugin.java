@@ -713,7 +713,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @return A list of all listeners.
      */
-    protected abstract List<Listener> loadListeners();
+    protected List<Listener> loadListeners() {
+        return new ArrayList<>();
+    }
 
     /**
      * Useful for custom LangYml implementations.
