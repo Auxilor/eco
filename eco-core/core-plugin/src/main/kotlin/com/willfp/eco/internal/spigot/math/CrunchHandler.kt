@@ -3,8 +3,8 @@ package com.willfp.eco.internal.spigot.math
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.placeholder.AdditionalPlayer
 import com.willfp.eco.core.math.MathContext
+import com.willfp.eco.core.placeholder.AdditionalPlayer
 import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import org.bukkit.entity.Player
 import redempt.crunch.CompiledExpression
@@ -28,6 +28,7 @@ private val max = Function("max", 2) {
 
 fun evaluateExpression(expression: String, context: MathContext) =
     evaluateExpression(expression, context.player, context.injectableContext, context.additionalPlayers)
+        .let { if (!it.isFinite()) 0.0 else it } // Fixes NaN bug.
 
 private fun evaluateExpression(
     expression: String,
