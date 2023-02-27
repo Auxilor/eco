@@ -3,6 +3,27 @@
 package com.willfp.eco.core.map
 
 /**
+ * Required to avoid type ambiguity.
+ *
+ * @see ListMap
+ */
+@Suppress("RedundantOverride")
+class MutableListMap<K : Any, V : Any> : ListMap<K, V>() {
+    /**
+     * Override with enforced MutableList type.
+     */
+    override fun get(key: K?): MutableList<V> =
+        super.get(key)
+
+    /**
+     * Override with enforced MutableList type.
+     */
+    override fun getOrDefault(key: K, defaultValue: MutableList<V>?): MutableList<V> {
+        return super.getOrDefault(key, defaultValue)
+    }
+}
+
+/**
  * @see DefaultMap
  */
 fun <K : Any, V : Any> defaultMap(defaultValue: V) =
@@ -12,7 +33,7 @@ fun <K : Any, V : Any> defaultMap(defaultValue: V) =
  * @see ListMap
  */
 fun <K : Any, V : Any> listMap() =
-    ListMap<K, V>()
+    MutableListMap<K, V>()
 
 /**
  * @see DefaultMap.createNestedMap
@@ -24,4 +45,4 @@ fun <K : Any, K1 : Any, V : Any> nestedMap() =
  * @see DefaultMap.createNestedListMap
  */
 fun <K : Any, K1 : Any, V : Any> nestedListMap() =
-    DefaultMap.createNestedListMap<K, K1, V>()
+    DefaultMap<K, MutableListMap<K1, V>>(MutableListMap())
