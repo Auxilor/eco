@@ -27,7 +27,7 @@ public class Prerequisite {
      */
     public static final Prerequisite HAS_PAPER = new Prerequisite(
             () -> ClassUtils.exists("com.destroystokyo.paper.event.block.BeaconEffectEvent"),
-            "Requires server to be running paper (or a fork)"
+            "Requires server to be running paper"
     );
 
     /**
@@ -84,7 +84,7 @@ public class Prerequisite {
     @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_BUNGEECORD = new Prerequisite(
             () -> ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent"),
-            "Requires server to be running BungeeCord (or a fork)"
+            "Requires server to be running BungeeCord"
     );
 
     /**
@@ -95,7 +95,15 @@ public class Prerequisite {
     @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_VELOCITY = new Prerequisite(
             () -> ClassUtils.exists("com.velocitypowered.api.event.player.ServerConnectedEvent"),
-            "Requires server to be running Velocity (or a fork)"
+            "Requires server to be running Velocity"
+    );
+
+    /**
+     * Requires the server to be running an implementation of Folia.
+     */
+    public static final Prerequisite HAS_FOLIA = new Prerequisite(
+            () -> ClassUtils.exists("io.papermc.paper.threadedregions.scheduler.RegionisedScheduler"),
+            "Requires server to be running Folia!"
     );
 
     /**
