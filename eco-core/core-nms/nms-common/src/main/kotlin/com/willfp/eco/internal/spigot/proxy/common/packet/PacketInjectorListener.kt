@@ -6,6 +6,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
+const val baseName = "packet_handler"
+
 object PacketInjectorListener : Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
@@ -13,7 +15,11 @@ object PacketInjectorListener : Listener {
 
         val channel = player.toNMS().connection.connection.channel
 
-        channel.pipeline().addBefore("packet_handler", "eco_packets", EcoChannelDuplexHandler(player.uniqueId))
+        if (baseName !in channel.pipeline().names()) {
+            return
+        }
+
+        channel.pipeline().addBefore(baseName, "eco_packets", EcoChannelDuplexHandler(player.uniqueId))
     }
 
     @EventHandler
