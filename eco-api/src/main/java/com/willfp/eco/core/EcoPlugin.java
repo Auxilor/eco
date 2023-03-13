@@ -13,6 +13,7 @@ import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
+import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -53,7 +55,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression"})
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression", "MismatchedQueryAndUpdateOfCollection"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The polymart resource ID of the plugin.
@@ -156,27 +158,27 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The tasks to run on enable.
      */
-    private final List<Runnable> onEnable = new ArrayList<>();
+    private final Map<LifecyclePosition, List<Runnable>> onEnable = new ListMap<>();
 
     /**
      * The tasks to run on disable.
      */
-    private final List<Runnable> onDisable = new ArrayList<>();
+    private final Map<LifecyclePosition, List<Runnable>> onDisable = new ListMap<>();
 
     /**
      * The tasks to run on reload.
      */
-    private final List<Runnable> onReload = new ArrayList<>();
+    private final Map<LifecyclePosition, List<Runnable>> onReload = new ListMap<>();
 
     /**
      * The tasks to run on load.
      */
-    private final List<Runnable> onLoad = new ArrayList<>();
+    private final Map<LifecyclePosition, List<Runnable>> onLoad = new ListMap<>();
 
     /**
      * The tasks to run after load.
      */
-    private final List<Runnable> afterLoad = new ArrayList<>();
+    private final Map<LifecyclePosition, List<Runnable>> afterLoad = new ListMap<>();
 
     /**
      * Create a new plugin.
@@ -267,15 +269,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
                         @NotNull final String proxyPackage,
                         @NotNull final String color,
                         final boolean supportingExtensions) {
-        this(
-                PluginProps.createSimple(
-                        resourceId,
-                        bStatsId,
-                        proxyPackage,
-                        color,
-                        supportingExtensions
-                )
-        );
+        this(PluginProps.createSimple(resourceId, bStatsId, proxyPackage, color, supportingExtensions));
     }
 
     /**
@@ -401,10 +395,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             Eco.get().registerBStats(this);
         }
 
-        Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                .map(Plugin::getName)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
+        Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).map(String::toLowerCase).collect(Collectors.toSet());
 
         if (enabledPlugins.contains("PlaceholderAPI".toLowerCase())) {
             Eco.get().createPAPIIntegration(this);
@@ -449,8 +440,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             }
         }
 
+        this.onEnable.get(LifecyclePosition.START).forEach(Runnable::run);
         this.handleEnable();
-        this.onEnable.forEach(Runnable::run);
+        this.onEnable.get(LifecyclePosition.END).forEach(Runnable::run);
 
         this.getLogger().info("");
     }
@@ -461,7 +453,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void onEnable(@NotNull final Runnable task) {
-        this.onEnable.add(task);
+        this.onEnable(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on enable.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onEnable(@NotNull final LifecyclePosition position,
+                               @NotNull final Runnable task) {
+        this.onEnable.get(position).add(task);
     }
 
     /**
@@ -474,8 +477,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getEventManager().unregisterAllListeners();
         this.getScheduler().cancelAll();
 
+        this.onDisable.get(LifecyclePosition.START).forEach(Runnable::run);
         this.handleDisable();
-        this.onDisable.forEach(Runnable::run);
+        this.onDisable.get(LifecyclePosition.END).forEach(Runnable::run);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().unloadExtensions();
@@ -491,7 +495,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void onDisable(@NotNull final Runnable task) {
-        this.onDisable.add(task);
+        this.onDisable(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on disable.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onDisable(@NotNull final LifecyclePosition position,
+                                @NotNull final Runnable task) {
+        this.onDisable.get(position).add(task);
     }
 
     /**
@@ -501,8 +516,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     public final void onLoad() {
         super.onLoad();
 
+        this.onLoad.get(LifecyclePosition.START).forEach(Runnable::run);
         this.handleLoad();
-        this.onLoad.forEach(Runnable::run);
+        this.onLoad.get(LifecyclePosition.END).forEach(Runnable::run);
     }
 
     /**
@@ -511,7 +527,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void onLoad(@NotNull final Runnable task) {
-        this.onLoad.add(task);
+        this.onLoad(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on load.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onLoad(@NotNull final LifecyclePosition position,
+                             @NotNull final Runnable task) {
+        this.onLoad.get(position).add(task);
     }
 
     /**
@@ -545,8 +572,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             this.getLogger().severe("");
         }
 
+        this.afterLoad.get(LifecyclePosition.START).forEach(Runnable::run);
         this.handleAfterLoad();
-        this.afterLoad.forEach(Runnable::run);
+        this.afterLoad.get(LifecyclePosition.END).forEach(Runnable::run);
 
         this.reload();
 
@@ -563,7 +591,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void afterLoad(@NotNull final Runnable task) {
-        this.afterLoad.add(task);
+        this.afterLoad(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run after load.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void afterLoad(@NotNull final LifecyclePosition position,
+                                @NotNull final Runnable task) {
+        this.afterLoad.get(position).add(task);
     }
 
     /**
@@ -576,8 +615,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
+        this.onReload.get(LifecyclePosition.START).forEach(Runnable::run);
         this.handleReload();
-        this.onReload.forEach(Runnable::run);
+        this.onReload.get(LifecyclePosition.END).forEach(Runnable::run);
 
         for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
             extension.handleReload();
@@ -585,12 +625,23 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     }
 
     /**
-     * Add new task to run on enable.
+     * Add new task to run on reload.
      *
      * @param task The task.
      */
     public final void onReload(@NotNull final Runnable task) {
-        this.onReload.add(task);
+        this.afterLoad(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on reload.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onReload(@NotNull final LifecyclePosition position,
+                               @NotNull final Runnable task) {
+        this.onReload.get(position).add(task);
     }
 
     /**
@@ -762,10 +813,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      */
     @Nullable
     protected DisplayModule createDisplayModule() {
-        Validate.isTrue(
-                this.getDisplayModule() == null,
-                "Display module exists!"
-        );
+        Validate.isTrue(this.getDisplayModule() == null, "Display module exists!");
 
         return null;
     }
