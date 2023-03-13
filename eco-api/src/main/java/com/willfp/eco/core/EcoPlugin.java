@@ -16,6 +16,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
+import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
@@ -56,7 +57,7 @@ import java.util.stream.Collectors;
  * be cancelled.</b>
  */
 @SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression", "MismatchedQueryAndUpdateOfCollection"})
-public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
+public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Registrable {
     /**
      * The polymart resource ID of the plugin.
      */
@@ -1111,5 +1112,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     @NotNull
     public FixedMetadataValue createMetadataValue(@NotNull final Object value) {
         return this.getMetadataValueFactory().create(value);
+    }
+
+    @Override
+    public final String getID() {
+        return this.getName().toLowerCase();
     }
 }
