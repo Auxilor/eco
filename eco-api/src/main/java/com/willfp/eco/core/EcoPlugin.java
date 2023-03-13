@@ -1115,6 +1115,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     }
 
     @Override
+    @NotNull
     public final String getID() {
         return this.getName().toLowerCase();
     }
