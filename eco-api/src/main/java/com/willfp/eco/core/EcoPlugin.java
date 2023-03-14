@@ -59,24 +59,9 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression", "MismatchedQueryAndUpdateOfCollection"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Registrable {
     /**
-     * The polymart resource ID of the plugin.
+     * The properties (eco.yml).
      */
-    private final int resourceId;
-
-    /**
-     * The bStats resource ID of the plugin.
-     */
-    private final int bStatsId;
-
-    /**
-     * The package where proxy implementations are.
-     */
-    private final String proxyPackage;
-
-    /**
-     * The color of the plugin, used in messages.
-     */
-    private final String color;
+    private final PluginProps props;
 
     /**
      * Loaded integrations.
@@ -146,11 +131,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     private boolean outdated = false;
 
     /**
-     * If the plugin supports extensions.
-     */
-    private final boolean supportingExtensions;
-
-    /**
      * The proxy factory.
      */
     @Nullable
@@ -196,7 +176,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Create a new plugin without proxy support, polymart, or bStats.
      *
      * @param color The color.
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(@NotNull final String color) {
         this("", color);
     }
@@ -207,7 +189,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      *
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, using standard formatting)
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(@NotNull final String proxyPackage,
                         @NotNull final String color) {
         this(0, 0, proxyPackage, color);
@@ -219,7 +203,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @param resourceId The polymart resource ID for the plugin.
      * @param bStatsId   The bStats resource ID for the plugin.
      * @param color      The color of the plugin (used in messages, using standard formatting)
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String color) {
@@ -233,7 +219,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @param bStatsId             The bStats resource ID for the plugin.
      * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String color,
@@ -248,7 +236,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, using standard formatting)
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String proxyPackage,
@@ -264,7 +254,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @param proxyPackage         The package where proxy implementations are stored.
      * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String proxyPackage,
@@ -320,13 +312,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         PluginProps props = this.mutateProps(generatedProps);
         props.validate();
 
-        this.resourceId = props.getResourceId();
-        this.bStatsId = props.getBStatsId();
-        this.proxyPackage = props.getProxyPackage();
-        this.color = props.getColor();
-        this.supportingExtensions = props.isSupportingExtensions();
+        this.props = props;
 
-        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.get().createProxyFactory(this);
+        this.proxyFactory = this.props.getProxyPackage().equalsIgnoreCase("") ? null : Eco.get().createProxyFactory(this);
         this.logger = Eco.get().createLogger(this);
 
         this.getLogger().info("Initializing " + this.getColor() + this.getName());
@@ -583,7 +571,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             extension.handleAfterLoad();
         }
 
-        this.getLogger().info("Loaded " + this.color + this.getName());
+        this.getLogger().info("Loaded " + this.props.getColor() + this.getName());
     }
 
     /**
@@ -929,12 +917,22 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     }
 
     /**
+     * Get the plugin props. (eco.yml).
+     *
+     * @return The props.
+     */
+    @NotNull
+    public PluginProps getProps() {
+        return this.props;
+    }
+
+    /**
      * Get the polymart resource ID.
      *
      * @return The resource ID.
      */
     public int getResourceId() {
-        return this.resourceId;
+        return this.getProps().getResourceId();
     }
 
     /**
@@ -943,7 +941,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The ID.
      */
     public int getBStatsId() {
-        return this.bStatsId;
+        return this.getProps().getBStatsId();
     }
 
     /**
@@ -952,7 +950,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The package where proxies are contained.
      */
     public String getProxyPackage() {
-        return this.proxyPackage;
+        return this.getProps().getProxyPackage();
     }
 
     /**
@@ -961,7 +959,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The color.
      */
     public String getColor() {
-        return this.color;
+        return this.getProps().getColor();
     }
 
     /**
@@ -1079,7 +1077,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return If extensions are supported.
      */
     public boolean isSupportingExtensions() {
-        return this.supportingExtensions;
+        return this.getProps().isSupportingExtensions();
     }
 
     /**
