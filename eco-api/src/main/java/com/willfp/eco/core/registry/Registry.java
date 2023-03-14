@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @param <T> The type of {@link Registrable}.
  */
-public abstract class Registry<T extends Registrable> {
+public class Registry<T extends Registrable> {
     /**
      * The ID pattern.
      */
@@ -28,7 +28,7 @@ public abstract class Registry<T extends Registrable> {
     /**
      * Instantiate a new registry.
      */
-    protected Registry() {
+    public Registry() {
 
     }
 
