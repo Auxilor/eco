@@ -17,8 +17,8 @@ object EcoPropsParser : PluginProps.PropsParser<Config> {
 
         return props.apply {
             for (envConfig in config.getSubsections("environment")) {
-                val name = config.getStringOrNull("name") ?: continue
-                val value = config.getStringOrNull("value") ?: continue
+                val name = envConfig.getStringOrNull("name") ?: continue
+                val value = envConfig.getStringOrNull("value") ?: continue
 
                 this.setEnvironmentVariable(name, value)
             }
