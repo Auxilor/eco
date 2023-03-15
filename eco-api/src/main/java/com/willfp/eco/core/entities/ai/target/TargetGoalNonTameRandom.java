@@ -26,6 +26,8 @@ public record TargetGoalNonTameRandom(
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Tameable> {
     /**
+     * Create a new target goal.
+     *
      * @param target          The types of entities to heal.
      * @param checkVisibility If visibility should be checked.
      */

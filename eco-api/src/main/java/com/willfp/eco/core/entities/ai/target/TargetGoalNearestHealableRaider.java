@@ -26,6 +26,8 @@ public record TargetGoalNearestHealableRaider(
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Raider> {
     /**
+     * Create a new target goal.
+     *
      * @param target          The target.
      * @param checkVisibility If visibility should be checked.
      */

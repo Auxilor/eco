@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.6"
+    id("io.papermc.paperweight.userdev")
 }
 
 group = "com.willfp"
@@ -7,7 +7,7 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":eco-core:core-nms:nms-common"))
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.19-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-text-minimessage:4.11.0") {
         version {

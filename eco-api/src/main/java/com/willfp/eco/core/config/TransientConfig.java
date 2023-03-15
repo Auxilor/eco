@@ -26,6 +26,8 @@ import java.util.Map;
 @Deprecated(since = "6.44.0", forRemoval = true)
 public class TransientConfig extends ConfigWrapper<Config> {
     /**
+     * Create new transient config from bukkit config.
+     *
      * @param config The ConfigurationSection handle.
      */
     public TransientConfig(@NotNull final ConfigurationSection config) {
@@ -42,6 +44,8 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * Create a transient config from an input stream.
+     *
      * @param stream The InputStream.
      */
     public TransientConfig(@Nullable final InputStream stream) {
@@ -51,6 +55,8 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * Load a file to a config.
+     *
      * @param file The File.
      * @deprecated Specify the config type to prevent bugs.
      */
@@ -60,6 +66,8 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * Load a file to a config.
+     *
      * @param file The file.
      * @param type The config type to try read from.
      */
@@ -97,6 +105,8 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
+     * Load a config from a string.
+     *
      * @param contents The contents of the config.
      * @param type     The config type.
      */
