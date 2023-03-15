@@ -1,31 +1,29 @@
-package com.willfp.eco.internal.spigot.proxy.v1_19_R2
+package com.willfp.eco.internal.spigot.proxy.v1_19_R3
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
-import io.netty.channel.Channel
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
-import net.minecraft.server.network.ServerGamePacketListenerImpl
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.craftbukkit.v1_19_R2.CraftServer
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftEntity
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftMob
-import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_19_R2.persistence.CraftPersistentDataContainer
-import org.bukkit.craftbukkit.v1_19_R2.persistence.CraftPersistentDataTypeRegistry
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftMagicNumbers
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey
+import org.bukkit.craftbukkit.v1_19_R3.CraftServer
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftEntity
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftMob
+import org.bukkit.craftbukkit.v1_19_R3.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_19_R3.persistence.CraftPersistentDataContainer
+import org.bukkit.craftbukkit.v1_19_R3.persistence.CraftPersistentDataTypeRegistry
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftMagicNumbers
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftNamespacedKey
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
@@ -46,7 +44,7 @@ class CommonsInitializer : CommonsInitializerProxy {
             isAccessible = true
         }
 
-        private val pdcRegsitry = Class.forName("org.bukkit.craftbukkit.v1_19_R2.inventory.CraftMetaItem")
+        private val pdcRegsitry = Class.forName("org.bukkit.craftbukkit.v1_19_R3.inventory.CraftMetaItem")
             .getDeclaredField("DATA_TYPE_REGISTRY")
             .apply { isAccessible = true }
             .get(null) as CraftPersistentDataTypeRegistry

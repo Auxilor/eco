@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ExtendableConfig extends LoadableConfigWrapper {
     /**
+     * Create a new extendable config.
+     *
      * @param configName       The name of the config
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param plugin           The plugin.
