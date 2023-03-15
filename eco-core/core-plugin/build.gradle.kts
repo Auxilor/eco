@@ -22,7 +22,7 @@ dependencies {
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.8")
-    compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")

@@ -2,6 +2,7 @@ name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoImpl
 api-version: 1.19
+load: STARTUP
 
 dependencies:
   - name: ProtocolLib

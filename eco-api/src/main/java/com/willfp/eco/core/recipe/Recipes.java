@@ -53,7 +53,11 @@ public final class Recipes {
      * @return The match, or null if not found.
      */
     @Nullable
-    public static CraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
+    public static CraftingRecipe getMatch(@Nullable final ItemStack[] matrix) {
+        if (matrix == null) {
+            return null;
+        }
+
         return RECIPES_FROM_MATRIX.get(matrix).orElse(null);
     }
 

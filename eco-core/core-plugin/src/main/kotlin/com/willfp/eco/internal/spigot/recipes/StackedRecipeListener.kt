@@ -118,7 +118,7 @@ class StackedRecipeListener(
                 // Just to be safe, modify the instance (safe check) Using ?. causes a warning.
                 @Suppress("SENSELESS_COMPARISON") // I hate compiler warnings
                 if (inventory.matrix[i] != null) {
-                    inventory.matrix[i].amount = amount
+                    inventory.matrix[i]?.amount = amount
                 }
             }
         }
