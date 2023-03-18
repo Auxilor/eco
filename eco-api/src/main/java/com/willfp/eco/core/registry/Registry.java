@@ -40,7 +40,7 @@ public class Registry<T extends Registrable> {
      */
     @NotNull
     public T register(@NotNull final T element) {
-        Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern());
+        Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern() + " (was " + element.getID() + ")");
 
         registry.put(element.getID(), element);
 
