@@ -95,7 +95,7 @@ public class Registry<T extends Registrable> {
      * Clear the registry.
      */
     public void clear() {
-        for (T value : registry.values()) {
+        for (T value : Set.copyOf(registry.values())) {
             remove(value);
         }
     }
