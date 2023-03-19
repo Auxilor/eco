@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -139,27 +138,27 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * The tasks to run on enable.
      */
-    private final Map<LifecyclePosition, List<Runnable>> onEnable = new ListMap<>();
+    private final ListMap<LifecyclePosition, Runnable> onEnable = new ListMap<>();
 
     /**
      * The tasks to run on disable.
      */
-    private final Map<LifecyclePosition, List<Runnable>> onDisable = new ListMap<>();
+    private final ListMap<LifecyclePosition, Runnable> onDisable = new ListMap<>();
 
     /**
      * The tasks to run on reload.
      */
-    private final Map<LifecyclePosition, List<Runnable>> onReload = new ListMap<>();
+    private final ListMap<LifecyclePosition, Runnable> onReload = new ListMap<>();
 
     /**
      * The tasks to run on load.
      */
-    private final Map<LifecyclePosition, List<Runnable>> onLoad = new ListMap<>();
+    private final ListMap<LifecyclePosition, Runnable> onLoad = new ListMap<>();
 
     /**
      * The tasks to run after load.
      */
-    private final Map<LifecyclePosition, List<Runnable>> afterLoad = new ListMap<>();
+    private final ListMap<LifecyclePosition, Runnable> afterLoad = new ListMap<>();
 
     /**
      * Create a new plugin.
@@ -453,7 +452,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public final void onEnable(@NotNull final LifecyclePosition position,
                                @NotNull final Runnable task) {
-        this.onEnable.get(position).add(task);
+        this.onEnable.append(position, task);
     }
 
     /**
@@ -495,7 +494,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public final void onDisable(@NotNull final LifecyclePosition position,
                                 @NotNull final Runnable task) {
-        this.onDisable.get(position).add(task);
+        this.onDisable.append(position, task);
     }
 
     /**
@@ -527,7 +526,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public final void onLoad(@NotNull final LifecyclePosition position,
                              @NotNull final Runnable task) {
-        this.onLoad.get(position).add(task);
+        this.onLoad.append(position, task);
     }
 
     /**
@@ -591,7 +590,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public final void afterLoad(@NotNull final LifecyclePosition position,
                                 @NotNull final Runnable task) {
-        this.afterLoad.get(position).add(task);
+        this.afterLoad.append(position, task);
     }
 
     /**
@@ -619,7 +618,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @param task The task.
      */
     public final void onReload(@NotNull final Runnable task) {
-        this.afterLoad(LifecyclePosition.END, task);
+        this.onReload(LifecyclePosition.END, task);
     }
 
     /**
@@ -630,7 +629,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public final void onReload(@NotNull final LifecyclePosition position,
                                @NotNull final Runnable task) {
-        this.onReload.get(position).add(task);
+        this.onReload.append(position, task);
     }
 
     /**

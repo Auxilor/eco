@@ -6,7 +6,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
-const val baseName = "packet_handler"
+private const val BASE_NAME = "packet_handler"
+private const val ECO_NAME = "eco_packets"
 
 object PacketInjectorListener : Listener {
     @EventHandler
@@ -15,11 +16,15 @@ object PacketInjectorListener : Listener {
 
         val channel = player.toNMS().connection.connection.channel
 
-        if (baseName !in channel.pipeline().names()) {
+        if (BASE_NAME !in channel.pipeline().names()) {
             return
         }
 
-        channel.pipeline().addBefore(baseName, "eco_packets", EcoChannelDuplexHandler(player.uniqueId))
+        if (ECO_NAME in channel.pipeline().names()) {
+            return
+        }
+
+        channel.pipeline().addBefore(BASE_NAME, ECO_NAME, EcoChannelDuplexHandler(player.uniqueId))
     }
 
     @EventHandler
@@ -29,8 +34,8 @@ object PacketInjectorListener : Listener {
         val channel = player.toNMS().connection.connection.channel
 
         channel.eventLoop().submit {
-            if (channel.pipeline().get("eco_packets") != null) {
-                channel.pipeline().remove("eco_packets")
+            if (channel.pipeline().get(ECO_NAME) != null) {
+                channel.pipeline().remove(ECO_NAME)
             }
         }
     }

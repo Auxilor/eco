@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A map with a default value.
@@ -23,7 +24,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
     /**
      * The default value.
      */
-    private final V defaultValue;
+    private final Supplier<V> defaultValue;
 
     /**
      * Create a new default map.
@@ -31,8 +32,16 @@ public class DefaultMap<K, V> implements Map<K, V> {
      * @param defaultValue The default value.
      */
     public DefaultMap(@NotNull final V defaultValue) {
-        this.map = new HashMap<>();
-        this.defaultValue = defaultValue;
+        this(() -> defaultValue);
+    }
+
+    /**
+     * Create a new default map.
+     *
+     * @param defaultValue The default value.
+     */
+    public DefaultMap(@NotNull final Supplier<V> defaultValue) {
+        this(new HashMap<>(), defaultValue);
     }
 
     /**
@@ -41,7 +50,19 @@ public class DefaultMap<K, V> implements Map<K, V> {
      * @param map          The map.
      * @param defaultValue The default value.
      */
-    public DefaultMap(@NotNull final Map<K, V> map, @NotNull final V defaultValue) {
+    public DefaultMap(@NotNull final Map<K, V> map,
+                      @NotNull final V defaultValue) {
+        this(map, () -> defaultValue);
+    }
+
+    /**
+     * Create a new default map.
+     *
+     * @param map          The map.
+     * @param defaultValue The default value.
+     */
+    public DefaultMap(@NotNull final Map<K, V> map,
+                      @NotNull final Supplier<V> defaultValue) {
         this.map = map;
         this.defaultValue = defaultValue;
     }
@@ -51,11 +72,11 @@ public class DefaultMap<K, V> implements Map<K, V> {
     @SuppressWarnings("unchecked")
     public V get(@Nullable final Object key) {
         if (key == null) {
-            return defaultValue;
+            return defaultValue.get();
         }
 
         if (map.get(key) == null) {
-            map.put((K) key, defaultValue);
+            map.put((K) key, defaultValue.get());
         }
 
         return map.get(key);

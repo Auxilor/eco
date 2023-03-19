@@ -16,7 +16,7 @@ public class ListMap<K, V> extends DefaultMap<K, List<V>> {
      * Create a new list map.
      */
     public ListMap() {
-        super(new ArrayList<>());
+        super(ArrayList::new);
     }
 
     /**
@@ -25,9 +25,8 @@ public class ListMap<K, V> extends DefaultMap<K, List<V>> {
      * @param key   The key.
      * @param value The value.
      */
-    void append(@NotNull final K key,
-                @NotNull final V value) {
+    public void append(@NotNull final K key,
+                       @NotNull final V value) {
         this.get(key).add(value);
     }
 }
-
