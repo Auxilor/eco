@@ -16,3 +16,19 @@ fun writeExternalData(
 inline fun <reified T> readExternalData(
     key: String
 ): T? = ExternalDataStore.get(key, T::class.java)
+
+/**
+ * @see ExternalDataStore.get
+ */
+inline fun <reified T> readExternalData(
+    key: String,
+    default: T
+): T = ExternalDataStore.get(key, T::class.java) ?: default
+
+/**
+ * @see ExternalDataStore.get
+ */
+inline fun <reified T> readExternalData(
+    key: String,
+    default: () -> T
+): T = readExternalData(key, default())

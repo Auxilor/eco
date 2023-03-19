@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 /**
  * A simple store key-value store for data to be stored outside of plugins.
@@ -43,6 +44,39 @@ public final class ExternalDataStore {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Get data from the store.
+     *
+     * @param key          The key.
+     * @param clazz        The class.
+     * @param defaultValue The default value.
+     * @param <T>          The type.
+     * @return The value.
+     */
+    @NotNull
+    public static <T> T get(@NotNull final String key,
+                            @NotNull final Class<T> clazz,
+                            @NotNull final T defaultValue) {
+        T value = get(key, clazz);
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Get data from the store.
+     *
+     * @param key          The key.
+     * @param clazz        The class.
+     * @param defaultValue The default value.
+     * @param <T>          The type.
+     * @return The value.
+     */
+    @NotNull
+    public static <T> T get(@NotNull final String key,
+                            @NotNull final Class<T> clazz,
+                            @NotNull final Supplier<T> defaultValue) {
+        return get(key, clazz, defaultValue.get());
     }
 
     private ExternalDataStore() {
