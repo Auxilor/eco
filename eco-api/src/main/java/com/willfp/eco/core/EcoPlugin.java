@@ -17,6 +17,7 @@ import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.registry.Registrable;
+import com.willfp.eco.core.registry.Registry;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
@@ -1114,8 +1115,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     @Override
     @NotNull
     public final String getID() {
-        return this.getName().toLowerCase()
-                .replace(" ", "_")
-                .replace("-", "_");
+        return Registry.tryFitPattern(this.getName());
     }
 }
