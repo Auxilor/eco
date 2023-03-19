@@ -108,4 +108,18 @@ public class Registry<T extends Registrable> {
     public Set<T> values() {
         return Set.copyOf(registry.values());
     }
+
+    /**
+     * Try to fit a string to the ID pattern.
+     *
+     * @param string The string.
+     * @return The string in lowercase, but with all spaces, dots, and dashes replaced with underscores.
+     */
+    @NotNull
+    public static String tryFitPattern(@NotNull final String string) {
+        return string.replace(" ", "_")
+                .replace(".", "_")
+                .replace("-", "_")
+                .toLowerCase();
+    }
 }
