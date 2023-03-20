@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
 /**
  * Class to handle placeholder integrations.
  */
-@SuppressWarnings("removal")
 public final class PlaceholderManager {
     /**
      * All registered placeholders.
@@ -79,6 +78,11 @@ public final class PlaceholderManager {
      */
     public static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
         @Override
+        public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
+            // Do nothing.
+        }
+
+        @Override
         public void clearInjectedPlaceholders() {
             // Do nothing.
         }
@@ -119,17 +123,6 @@ public final class PlaceholderManager {
     }
 
     /**
-     * Register a placeholder.
-     *
-     * @param placeholder The placeholder to register.
-     * @deprecated Uses old placeholder system.
-     */
-    @Deprecated(since = "6.28.0", forRemoval = true)
-    public static void registerPlaceholder(@NotNull final PlaceholderEntry placeholder) {
-        registerPlaceholder(placeholder.toModernPlaceholder());
-    }
-
-    /**
      * Get the result of a placeholder with respect to a player.
      *
      * @param player     The player to get the result from.
@@ -137,7 +130,7 @@ public final class PlaceholderManager {
      * @return The value of the placeholder.
      * @deprecated Specify a plugin to get the result from.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(since = "6.52.2", forRemoval = true)
     @SuppressWarnings("unused")
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier) {
@@ -214,22 +207,6 @@ public final class PlaceholderManager {
      */
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
-        return translatePlaceholders(text, player, EMPTY_INJECTABLE);
-    }
-
-    /**
-     * Translate all placeholders with respect to a player.
-     *
-     * @param text    The text that may contain placeholders to translate.
-     * @param player  The player to translate the placeholders with respect to.
-     * @param statics Extra static placeholders.
-     * @return The text, translated.
-     * @deprecated Use new static system.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    public static String translatePlaceholders(@NotNull final String text,
-                                               @Nullable final Player player,
-                                               @NotNull final List<StaticPlaceholder> statics) {
         return translatePlaceholders(text, player, EMPTY_INJECTABLE);
     }
 

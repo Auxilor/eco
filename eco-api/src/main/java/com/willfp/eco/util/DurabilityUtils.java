@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -19,25 +18,6 @@ import org.jetbrains.annotations.NotNull;
 // Have to suppress casts to ItemMeta because the methods don't exist for some older versions that eco supports.
 @SuppressWarnings("RedundantCast")
 public final class DurabilityUtils {
-    /**
-     * Damage an item in a player's inventory.
-     * The slot of a held item can be obtained with {@link PlayerInventory#getHeldItemSlot()}.
-     * Armor slots are 39 (helmet), 38 (chestplate), 37 (leggings), 36 (boots).
-     *
-     * @param player The player.
-     * @param item   The item to damage.
-     * @param damage The amount of damage to deal.
-     * @param slot   The slot in the inventory of the item.
-     * @deprecated The slot is not required.
-     */
-    @Deprecated(since = "6.24.0", forRemoval = true)
-    public static void damageItem(@NotNull final Player player,
-                                  @NotNull final ItemStack item,
-                                  final int damage,
-                                  final int slot) {
-        damageItem(player, item, damage);
-    }
-
     /**
      * Damage an item in a player's inventory.
      *

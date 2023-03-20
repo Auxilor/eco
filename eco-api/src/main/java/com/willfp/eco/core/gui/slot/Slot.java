@@ -158,27 +158,4 @@ public interface Slot extends GUIComponent {
     static SlotBuilder builder(@NotNull final SlotProvider provider) {
         return Eco.get().createSlotBuilder(provider);
     }
-
-    /**
-     * If the slot is not captive for a player.
-     *
-     * @param player The player.
-     * @return If not captive for the player.
-     * @deprecated Captivity is now reactive, this method can produce incorrect results.
-     */
-    @Deprecated(since = "6.43.0", forRemoval = true)
-    default boolean isNotCaptiveFor(@NotNull Player player) {
-        return false;
-    }
-
-    /**
-     * If the slot is captive. (Can items be placed in it).
-     *
-     * @return If captive.
-     * @deprecated Captivity is now reactive, this method can produce incorrect results.
-     */
-    @Deprecated(since = "6.43.0", forRemoval = true)
-    default boolean isCaptive() {
-        return false;
-    }
 }

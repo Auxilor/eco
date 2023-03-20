@@ -22,54 +22,37 @@ public final class PersistentDataKeyType<T> {
     /**
      * String.
      */
-    public static final PersistentDataKeyType<String> STRING = new PersistentDataKeyType<>(String.class, "STRING");
+    public static final PersistentDataKeyType<String> STRING = new PersistentDataKeyType<>("STRING");
 
     /**
      * Boolean.
      */
-    public static final PersistentDataKeyType<Boolean> BOOLEAN = new PersistentDataKeyType<>(Boolean.class, "BOOLEAN");
+    public static final PersistentDataKeyType<Boolean> BOOLEAN = new PersistentDataKeyType<>("BOOLEAN");
 
     /**
      * Int.
      */
-    public static final PersistentDataKeyType<Integer> INT = new PersistentDataKeyType<>(Integer.class, "INT");
+    public static final PersistentDataKeyType<Integer> INT = new PersistentDataKeyType<>("INT");
 
     /**
      * Double.
      */
-    public static final PersistentDataKeyType<Double> DOUBLE = new PersistentDataKeyType<>(Double.class, "DOUBLE");
+    public static final PersistentDataKeyType<Double> DOUBLE = new PersistentDataKeyType<>("DOUBLE");
 
     /**
      * String List.
      */
-    public static final PersistentDataKeyType<List<String>> STRING_LIST = new PersistentDataKeyType<>(null, "STRING_LIST");
+    public static final PersistentDataKeyType<List<String>> STRING_LIST = new PersistentDataKeyType<>("STRING_LIST");
 
     /**
      * Config.
      */
-    public static final PersistentDataKeyType<Config> CONFIG = new PersistentDataKeyType<>(Config.class, "CONFIG");
-
-    /**
-     * The class of the type.
-     */
-    private final Class<T> typeClass;
+    public static final PersistentDataKeyType<Config> CONFIG = new PersistentDataKeyType<>("CONFIG");
 
     /**
      * The name of the key type.
      */
     private final String name;
-
-    /**
-     * Get the class of the type.
-     *
-     * @return The class.
-     * @deprecated String list type will return null.
-     */
-    @Deprecated(since = "6.36.0", forRemoval = true)
-    @Nullable
-    public Class<T> getTypeClass() {
-        return typeClass;
-    }
 
     /**
      * Get the name of the key type.
@@ -83,14 +66,11 @@ public final class PersistentDataKeyType<T> {
     /**
      * Create new PersistentDataKeyType.
      *
-     * @param typeClass The type class.
      * @param name      The name.
      */
-    private PersistentDataKeyType(@Nullable final Class<T> typeClass,
-                                  @NotNull final String name) {
+    private PersistentDataKeyType(@NotNull final String name) {
         VALUES.add(this);
 
-        this.typeClass = typeClass;
         this.name = name;
     }
 

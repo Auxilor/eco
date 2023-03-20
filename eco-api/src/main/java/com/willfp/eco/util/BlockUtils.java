@@ -1,12 +1,9 @@
 package com.willfp.eco.util;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,27 +57,6 @@ public final class BlockUtils {
                                      @NotNull final List<Material> allowedMaterials,
                                      final int limit) {
         return getNearbyBlocks(start, allowedMaterials, new HashSet<>(), limit);
-    }
-
-    /**
-     * Break the block as if the player had done it manually.
-     *
-     * @param player The player to break the block as.
-     * @param block  The block to break.
-     * @deprecated Added into spigot API in 1.17.1
-     */
-    @Deprecated(since = "6.26.2", forRemoval = true)
-    public static void breakBlock(@NotNull final Player player,
-                                  @NotNull final Block block) {
-        Location location = block.getLocation();
-        World world = location.getWorld();
-        assert world != null;
-
-        if (location.getY() < world.getMinHeight() || location.getY() > world.getMaxHeight()) {
-            return;
-        }
-
-        player.breakBlock(block);
     }
 
     /**

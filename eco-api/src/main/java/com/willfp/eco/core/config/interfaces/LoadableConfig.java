@@ -2,7 +2,6 @@ package com.willfp.eco.core.config.interfaces;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,21 +42,6 @@ public interface LoadableConfig extends Config {
      * @return The name.
      */
     String getName();
-
-    /**
-     * Get bukkit {@link YamlConfiguration}.
-     * <p>
-     * This used to represent the underlying config, but since 6.30.0 configs use
-     * their own implementations internally, without relying on bukkit.
-     *
-     * @return The config, or null if config is not yaml-based.
-     * @deprecated Use toBukkit() instead.
-     */
-    @Nullable
-    @Deprecated(since = "6.30.0", forRemoval = true)
-    default YamlConfiguration getBukkitHandle() {
-        return this.toBukkit();
-    }
 
     /**
      * Convert the config to a bukkit {@link YamlConfiguration}.

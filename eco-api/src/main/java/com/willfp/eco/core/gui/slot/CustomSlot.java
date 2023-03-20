@@ -90,17 +90,4 @@ public abstract class CustomSlot implements Slot {
     public final Slot getSlotAt(int row, int column) {
         return Slot.super.getSlotAt(row, column);
     }
-
-    /**
-     * Get the delegate slot.
-     * <p>
-     * This is not required to add the slot to a menu, but is instead used internally.
-     *
-     * @return The slot.
-     * @deprecated Replaced with {@link Slot#getActionableSlot(Player, Menu)}
-     */
-    @Deprecated(since = "6.43.0", forRemoval = true)
-    public Slot getDelegate() {
-        return this.delegate;
-    }
 }

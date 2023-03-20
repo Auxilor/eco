@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @deprecated Internal command implementations have been removed from the API.
  */
-@Deprecated(forRemoval = true, since = "6.49.0")
+@Deprecated(since = "6.49.0", forRemoval = true)
 public final class DelegatedBukkitCommand extends Command implements TabCompleter, PluginIdentifiableCommand {
     /**
      * The delegate command.
