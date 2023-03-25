@@ -270,6 +270,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("CombatLogX") {
                 val pluginManager = Bukkit.getPluginManager()
                 val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
+                @Suppress("DEPRECATION")
                 val pluginVersion = combatLogXPlugin.description.version
                 if (pluginVersion.startsWith("10")) {
                     AntigriefManager.register(AntigriefCombatLogXV10())

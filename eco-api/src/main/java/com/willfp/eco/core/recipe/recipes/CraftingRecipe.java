@@ -20,7 +20,7 @@ public interface CraftingRecipe {
      * @param matrix The matrix to check.
      * @return If the recipe matches.
      */
-    boolean test(@NotNull ItemStack[] matrix);
+    boolean test(@Nullable ItemStack[] matrix);
 
     /**
      * Register the recipe.

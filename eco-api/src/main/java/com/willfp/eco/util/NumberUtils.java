@@ -2,11 +2,9 @@ package com.willfp.eco.util;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.core.placeholder.AdditionalPlayer;
-import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.math.MathContext;
+import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -87,34 +84,6 @@ public final class NumberUtils {
         double k = Math.pow(1 - bias, 3);
 
         return (input * k) / (input * k - input + 1);
-    }
-
-    /**
-     * If value is above maximum, set it to maximum.
-     *
-     * @param toChange The value to test.
-     * @param limit    The maximum.
-     * @return The new value.
-     * @deprecated Pointless method.
-     */
-    @Deprecated(since = "6.19.0")
-    public static int equalIfOver(final int toChange,
-                                  final int limit) {
-        return Math.min(toChange, limit);
-    }
-
-    /**
-     * If value is above maximum, set it to maximum.
-     *
-     * @param toChange The value to test.
-     * @param limit    The maximum.
-     * @return The new value.
-     * @deprecated Pointless method.
-     */
-    @Deprecated(since = "6.19.0", forRemoval = true)
-    public static double equalIfOver(final double toChange,
-                                     final double limit) {
-        return Math.min(toChange, limit);
     }
 
     /**
@@ -254,36 +223,6 @@ public final class NumberUtils {
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player) {
         return evaluateExpression(expression, player, PlaceholderManager.EMPTY_INJECTABLE);
-    }
-
-    /**
-     * Evaluate an expression with respect to a player (for placeholders).
-     *
-     * @param expression The expression.
-     * @param player     The player.
-     * @param statics    The static placeholders.
-     * @return The value of the expression, or zero if invalid.
-     * @deprecated Use new statics system.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    public static double evaluateExpression(@NotNull final String expression,
-                                            @Nullable final Player player,
-                                            @NotNull final Iterable<StaticPlaceholder> statics) {
-        return evaluateExpression(expression, player, new PlaceholderInjectable() {
-            @Override
-            public void clearInjectedPlaceholders() {
-                // Do nothing.
-            }
-
-            @Override
-            public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
-                List<InjectablePlaceholder> injections = new ArrayList<>();
-                for (StaticPlaceholder placeholder : statics) {
-                    injections.add(placeholder);
-                }
-                return injections;
-            }
-        });
     }
 
     /**

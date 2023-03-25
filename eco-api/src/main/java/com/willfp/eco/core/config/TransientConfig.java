@@ -57,17 +57,6 @@ public class TransientConfig extends ConfigWrapper<Config> {
     /**
      * Load a file to a config.
      *
-     * @param file The File.
-     * @deprecated Specify the config type to prevent bugs.
-     */
-    @Deprecated(since = "6.30.0", forRemoval = true)
-    public TransientConfig(@Nullable final File file) {
-        this(file, ConfigType.YAML);
-    }
-
-    /**
-     * Load a file to a config.
-     *
      * @param file The file.
      * @param type The config type to try read from.
      */

@@ -4,24 +4,16 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * Utilities / API methods for teams.
  */
 public final class TeamUtils {
-    /**
-     * Ore ChatColors.
-     */
-    private static final Map<Material, ChatColor> MATERIAL_COLORS = new HashMap<>();
-
     /**
      * All chat color teams.
      */
@@ -60,44 +52,10 @@ public final class TeamUtils {
         return team;
     }
 
-    /**
-     * Get team from material.
-     * <p>
-     * For {@link org.bukkit.potion.PotionEffectType#GLOWING}.
-     *
-     * @param material The material to find the team from.
-     * @return The team.
-     * @deprecated Stupid method.
-     */
-    @NotNull
-    @Deprecated(since = "6.24.0", forRemoval = true)
-    public static Team getMaterialColorTeam(@NotNull final Material material) {
-        return fromChatColor(MATERIAL_COLORS.getOrDefault(material, ChatColor.WHITE));
-    }
-
     static {
         for (ChatColor value : ChatColor.values()) {
             fromChatColor(value);
         }
-
-        MATERIAL_COLORS.put(Material.COAL_ORE, ChatColor.BLACK);
-        MATERIAL_COLORS.put(Material.IRON_ORE, ChatColor.GRAY);
-        MATERIAL_COLORS.put(Material.GOLD_ORE, ChatColor.YELLOW);
-        MATERIAL_COLORS.put(Material.LAPIS_ORE, ChatColor.BLUE);
-        MATERIAL_COLORS.put(Material.REDSTONE_ORE, ChatColor.RED);
-        MATERIAL_COLORS.put(Material.DIAMOND_ORE, ChatColor.AQUA);
-        MATERIAL_COLORS.put(Material.EMERALD_ORE, ChatColor.GREEN);
-        MATERIAL_COLORS.put(Material.ANCIENT_DEBRIS, ChatColor.DARK_RED);
-
-        MATERIAL_COLORS.put(Material.COPPER_ORE, ChatColor.GOLD);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_COPPER_ORE, ChatColor.GOLD);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_COAL_ORE, ChatColor.BLACK);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_IRON_ORE, ChatColor.GRAY);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_GOLD_ORE, ChatColor.YELLOW);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_LAPIS_ORE, ChatColor.BLUE);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_REDSTONE_ORE, ChatColor.RED);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_DIAMOND_ORE, ChatColor.AQUA);
-        MATERIAL_COLORS.put(Material.DEEPSLATE_EMERALD_ORE, ChatColor.GREEN);
     }
 
     private TeamUtils() {

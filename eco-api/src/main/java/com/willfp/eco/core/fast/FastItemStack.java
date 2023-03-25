@@ -22,18 +22,6 @@ import java.util.Set;
 public interface FastItemStack extends PersistentDataHolder {
     /**
      * Get all enchantments on an item.
-     *
-     * @param checkStored If stored NBT should also be checked.
-     * @return A map of all enchantments.
-     * @deprecated Poorly named method. Use getEnchants instead.
-     */
-    @Deprecated(since = "6.24.0", forRemoval = true)
-    default Map<Enchantment, Integer> getEnchantmentsOnItem(boolean checkStored) {
-        return getEnchants(checkStored);
-    }
-
-    /**
-     * Get all enchantments on an item.
      * Does not account for stored enchants.
      *
      * @return A map of all enchantments.
@@ -52,40 +40,13 @@ public interface FastItemStack extends PersistentDataHolder {
     Map<Enchantment, Integer> getEnchants(boolean checkStored);
 
     /**
-     * Get the level of an enchantment on an item.
-     *
-     * @param enchantment The enchantment.
-     * @return The enchantment level, or 0 if not found.
-     * @deprecated Poorly named method. Use getEnchantmentLevel instead.
-     */
-    @Deprecated(since = "6.34.0", forRemoval = true)
-    default int getLevelOnItem(@NotNull Enchantment enchantment) {
-        return getEnchantmentLevel(enchantment, false);
-    }
-
-    /**
-     * Get the level of an enchantment on an item.
-     *
-     * @param enchantment The enchantment.
-     * @param checkStored If the stored NBT should also be checked.
-     * @return The enchantment level, or 0 if not found.
-     * @deprecated Poorly named method. Use getEnchantmentLevel instead.
-     */
-    @Deprecated(since = "6.34.0", forRemoval = true)
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    default int getLevelOnItem(@NotNull Enchantment enchantment,
-                               boolean checkStored) {
-        return getEnchantmentLevel(enchantment, checkStored);
-    }
-
-    /**
      * Get the level of an enchantment.
      *
      * @param enchantment The enchantment.
      * @return The enchantment level, or 0 if not found.
      */
     default int getEnchantmentLevel(@NotNull Enchantment enchantment) {
-        return getLevelOnItem(enchantment, false);
+        return getEnchantmentLevel(enchantment, false);
     }
 
     /**

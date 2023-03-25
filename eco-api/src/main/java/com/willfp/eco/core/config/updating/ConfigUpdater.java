@@ -38,6 +38,9 @@ import java.lang.annotation.Target;
  * <p>
  * By having a plugin as a parameter, you shouldn't really need getInstance()
  * calls in your code.
+ *
+ * While flexible, this can lead to long initialization times, so this feature
+ * can be disabled in eco.yml with the uses-reflective-reload option.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

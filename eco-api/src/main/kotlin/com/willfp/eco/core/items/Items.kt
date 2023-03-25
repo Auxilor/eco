@@ -39,3 +39,11 @@ fun ItemStack.toSNBT() =
 /** @see Items.isEmpty */
 val ItemStack?.isEmpty: Boolean
     get() = Items.isEmpty(this)
+
+/** @see Items.matchesAny */
+fun Collection<TestableItem>.matches(item: ItemStack): Boolean =
+    Items.matchesAny(item, this)
+
+/** @see Items.matchesAny */
+fun Collection<TestableItem>.matches(items: Collection<ItemStack>): Boolean =
+    Items.matchesAny(items, this)

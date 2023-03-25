@@ -80,7 +80,11 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
     }
 
     @Override
-    public boolean test(@NotNull final ItemStack[] matrix) {
+    public boolean test(@Nullable final ItemStack[] matrix) {
+        if (matrix == null) {
+            return false;
+        }
+
         RecipeTest test = newTest();
 
         for (ItemStack stack : matrix) {

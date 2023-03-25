@@ -1,7 +1,6 @@
 package com.willfp.eco.core.integrations.anticheat;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -17,19 +16,6 @@ public final class AnticheatManager {
      * A set of all registered anticheats.
      */
     private static final Set<AnticheatIntegration> ANTICHEATS = new HashSet<>();
-
-    /**
-     * Register a new anticheat.
-     *
-     * @param plugin    The plugin.
-     * @param anticheat The anticheat to register.
-     * @deprecated Don't pass instance of eco.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    public static void register(@NotNull final EcoPlugin plugin,
-                                @NotNull final AnticheatIntegration anticheat) {
-        register(anticheat);
-    }
 
     /**
      * Register a new anticheat.

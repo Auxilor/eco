@@ -2,7 +2,6 @@ package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -16,7 +15,7 @@ public sealed interface Placeholder permits PlayerPlaceholder, PlayerlessPlaceho
      *
      * @return The plugin.
      */
-    @Nullable
+    @NotNull
     EcoPlugin getPlugin();
 
     /**

@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  *
  * @param <T> The type of {@link Registrable}.
  */
-public abstract class Registry<T extends Registrable> {
+public class Registry<T extends Registrable> {
     /**
      * The ID pattern.
      */
@@ -28,7 +28,7 @@ public abstract class Registry<T extends Registrable> {
     /**
      * Instantiate a new registry.
      */
-    protected Registry() {
+    public Registry() {
 
     }
 
@@ -40,7 +40,7 @@ public abstract class Registry<T extends Registrable> {
      */
     @NotNull
     public T register(@NotNull final T element) {
-        Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern());
+        Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern() + " (was " + element.getID() + ")");
 
         registry.put(element.getID(), element);
 
@@ -95,7 +95,7 @@ public abstract class Registry<T extends Registrable> {
      * Clear the registry.
      */
     public void clear() {
-        for (T value : registry.values()) {
+        for (T value : Set.copyOf(registry.values())) {
             remove(value);
         }
     }
@@ -107,5 +107,19 @@ public abstract class Registry<T extends Registrable> {
      */
     public Set<T> values() {
         return Set.copyOf(registry.values());
+    }
+
+    /**
+     * Try to fit a string to the ID pattern.
+     *
+     * @param string The string.
+     * @return The string in lowercase, but with all spaces, dots, and dashes replaced with underscores.
+     */
+    @NotNull
+    public static String tryFitPattern(@NotNull final String string) {
+        return string.replace(" ", "_")
+                .replace(".", "_")
+                .replace("-", "_")
+                .toLowerCase();
     }
 }

@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityDeathEvent
 class EntityDeathByEntityListeners(
     private val plugin: EcoPlugin
 ) : Listener {
-    private val events = HashSet<EntityDeathByEntityBuilder>()
+    private val events = mutableSetOf<EntityDeathByEntityBuilder>()
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDamage(event: EntityDamageByEntityEvent) {
@@ -28,8 +28,10 @@ class EntityDeathByEntityListeners(
         val builtEvent = EntityDeathByEntityBuilder()
         builtEvent.victim = victim
         builtEvent.damager = event.damager
-        events.add(builtEvent)
-        this.plugin.scheduler.run {
+
+        events += builtEvent
+
+        this.plugin.scheduler.runLater(5) { // Fixes conflicts with WildStacker
             events.remove(builtEvent)
         }
     }

@@ -3,20 +3,15 @@ package com.willfp.eco.core.gui.menu;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.page.Page;
 import com.willfp.eco.core.gui.slot.Slot;
-import com.willfp.eco.util.NamespacedKeyUtils;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * GUI version of {@link Inventory}.
@@ -238,58 +233,6 @@ public interface Menu {
     default int getMaxPage(@NotNull final Player player) {
         Integer pageState = this.getState(player, Page.MAX_PAGE_KEY);
         return Objects.requireNonNullElse(pageState, Integer.MAX_VALUE);
-    }
-
-    /**
-     * Write data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     * @param type   The type.
-     * @param value  The value.
-     * @param <T>    The type.
-     * @param <Z>    The type.
-     * @deprecated Use addState instead.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    default <T, Z> void writeData(@NotNull final Player player,
-                                  @NotNull final NamespacedKey key,
-                                  @NotNull final PersistentDataType<T, Z> type,
-                                  @NotNull final Z value) {
-        this.setState(player, key.toString(), value);
-    }
-
-    /**
-     * Read data.
-     *
-     * @param player The player.
-     * @param key    The key.
-     * @param type   The type.
-     * @param <T>    The type.
-     * @param <Z>    The type.
-     * @return The data.
-     * @deprecated Use getState instead.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    default @Nullable <T, Z> T readData(@NotNull final Player player,
-                                        @NotNull final NamespacedKey key,
-                                        @NotNull final PersistentDataType<T, Z> type) {
-        return this.getState(player, key.toString());
-    }
-
-    /**
-     * Get all data keys for a player.
-     *
-     * @param player The player.
-     * @return The keys.
-     * @deprecated Use getState instead.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    default Set<NamespacedKey> getKeys(@NotNull final Player player) {
-        return this.getState(player).keySet().stream()
-                .map(NamespacedKeyUtils::fromStringOrNull)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
     }
 
     /**

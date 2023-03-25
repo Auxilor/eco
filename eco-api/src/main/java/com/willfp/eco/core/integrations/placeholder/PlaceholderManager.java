@@ -3,7 +3,6 @@ package com.willfp.eco.core.integrations.placeholder;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.DynamicPlaceholder;
@@ -16,6 +15,7 @@ import com.willfp.eco.core.placeholder.PlayerStaticPlaceholder;
 import com.willfp.eco.core.placeholder.PlayerlessPlaceholder;
 import com.willfp.eco.core.placeholder.StaticPlaceholder;
 import com.willfp.eco.util.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
 /**
  * Class to handle placeholder integrations.
  */
-@SuppressWarnings("removal")
 public final class PlaceholderManager {
     /**
      * All registered placeholders.
@@ -79,6 +78,11 @@ public final class PlaceholderManager {
      */
     public static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
         @Override
+        public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
+            // Do nothing.
+        }
+
+        @Override
         public void clearInjectedPlaceholders() {
             // Do nothing.
         }
@@ -110,25 +114,12 @@ public final class PlaceholderManager {
             throw new IllegalArgumentException("Static placeholders cannot be registered!");
         }
 
-        EcoPlugin plugin = placeholder.getPlugin() == null ? Eco.get().getEcoPlugin() : placeholder.getPlugin();
-
         Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS
-                .getOrDefault(plugin, new HashMap<>());
+                .getOrDefault(placeholder.getPlugin(), new HashMap<>());
 
         pluginPlaceholders.put(placeholder.getPattern(), placeholder);
 
-        REGISTERED_PLACEHOLDERS.put(plugin, pluginPlaceholders);
-    }
-
-    /**
-     * Register a placeholder.
-     *
-     * @param placeholder The placeholder to register.
-     * @deprecated Uses old placeholder system.
-     */
-    @Deprecated(since = "6.28.0", forRemoval = true)
-    public static void registerPlaceholder(@NotNull final PlaceholderEntry placeholder) {
-        registerPlaceholder(placeholder.toModernPlaceholder());
+        REGISTERED_PLACEHOLDERS.put(placeholder.getPlugin(), pluginPlaceholders);
     }
 
     /**
@@ -139,10 +130,11 @@ public final class PlaceholderManager {
      * @return The value of the placeholder.
      * @deprecated Specify a plugin to get the result from.
      */
-    @Deprecated
+    @Deprecated(since = "6.52.2", forRemoval = true)
+    @SuppressWarnings("unused")
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier) {
-        return getResult(player, identifier, null);
+        throw new UnsupportedOperationException("Please specify a plugin to get the result from!");
     }
 
     /**
@@ -156,34 +148,21 @@ public final class PlaceholderManager {
     @NotNull
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier,
-                                   @Nullable final EcoPlugin plugin) {
+                                   @NotNull final EcoPlugin plugin) {
+        Validate.notNull(plugin, "Plugin cannot be null!");
+
         // This is really janky, and it sucks, but it works so?
         // Compensating for regex being slow so that's why we get it.
         Placeholder placeholder = PLACEHOLDER_LOOKUP_CACHE.get(
                 new PlaceholderLookup(identifier, plugin),
                 (it) -> {
-                    EcoPlugin owner = plugin == null ? Eco.get().getEcoPlugin() : plugin;
-
                     // I hate the streams API.
-                    Optional<Placeholder> found = REGISTERED_PLACEHOLDERS
-                            .getOrDefault(owner, new HashMap<>())
+                    return REGISTERED_PLACEHOLDERS
+                            .getOrDefault(plugin, new HashMap<>())
                             .entrySet()
                             .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
                             .map(Map.Entry::getValue)
                             .findFirst();
-
-                    if (found.isEmpty() && plugin != null) {
-                        // Here we go again! Something about legacy support? I don't remember.
-                        // I won't touch it though, I'm scared of the placeholder system.
-                        found = REGISTERED_PLACEHOLDERS
-                                .getOrDefault(Eco.get().getEcoPlugin(), new HashMap<>())
-                                .entrySet()
-                                .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
-                                .map(Map.Entry::getValue)
-                                .findFirst();
-                    }
-
-                    return found;
                 }
         ).orElse(null);
 
@@ -228,22 +207,6 @@ public final class PlaceholderManager {
      */
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
-        return translatePlaceholders(text, player, EMPTY_INJECTABLE);
-    }
-
-    /**
-     * Translate all placeholders with respect to a player.
-     *
-     * @param text    The text that may contain placeholders to translate.
-     * @param player  The player to translate the placeholders with respect to.
-     * @param statics Extra static placeholders.
-     * @return The text, translated.
-     * @deprecated Use new static system.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    public static String translatePlaceholders(@NotNull final String text,
-                                               @Nullable final Player player,
-                                               @NotNull final List<StaticPlaceholder> statics) {
         return translatePlaceholders(text, player, EMPTY_INJECTABLE);
     }
 
@@ -326,6 +289,11 @@ public final class PlaceholderManager {
             }
         }
 
+        // Only run jank code if there are no integrations.
+        if (REGISTERED_INTEGRATIONS.isEmpty()) {
+            processed = setWithoutIntegration(processed, player);
+        }
+
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
             processed = integration.translate(processed, player);
         }
@@ -350,12 +318,9 @@ public final class PlaceholderManager {
     public static List<String> findPlaceholdersIn(@NotNull final String text) {
         Set<String> found = new HashSet<>();
 
-        // Mock PAPI for those without it installed
-        if (REGISTERED_INTEGRATIONS.isEmpty()) {
-            Matcher matcher = PATTERN.matcher(text);
-            while (matcher.find()) {
-                found.add(matcher.group());
-            }
+        Matcher matcher = PATTERN.matcher(text);
+        while (matcher.find()) {
+            found.add(matcher.group());
         }
 
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
@@ -363,6 +328,95 @@ public final class PlaceholderManager {
         }
 
         return new ArrayList<>(found);
+    }
+
+    /**
+     * Set placeholders without any integrations.
+     * <p>
+     * This is fallback if for some reason you don't have PAPI installed.
+     * It's a cut-down version of the actual PAPI code, and I don't
+     * really know how it works.
+     * <p>
+     * Original source
+     * <a href="https://github.com/PlaceholderAPI/PlaceholderAPI/blob/master/src/main/java/me/clip/placeholderapi/replacer/CharsReplacer.java">here</a>.
+     *
+     * @param text   The text.
+     * @param player The player.
+     * @return The text.
+     */
+    private static String setWithoutIntegration(@NotNull final String text,
+                                                @Nullable final Player player) {
+        char[] chars = text.toCharArray();
+        StringBuilder builder = new StringBuilder(text.length());
+        StringBuilder identifier = new StringBuilder();
+        StringBuilder parameters = new StringBuilder();
+
+        for (int i = 0; i < chars.length; i++) {
+            char currentChar = chars[i];
+            if (currentChar == '%' && i + 1 < chars.length) {
+                boolean identified = false;
+                boolean badPlaceholder = true;
+                boolean hadSpace = false;
+
+                while (true) {
+                    i++;
+                    if (i >= chars.length) {
+                        break;
+                    }
+
+                    char p = chars[i];
+                    if (p == ' ' && !identified) {
+                        hadSpace = true;
+                        break;
+                    }
+
+                    if (p == '%') {
+                        badPlaceholder = false;
+                        break;
+                    }
+
+                    if (p == '_' && !identified) {
+                        identified = true;
+                    } else if (identified) {
+                        parameters.append(p);
+                    } else {
+                        identifier.append(p);
+                    }
+                }
+
+                String pluginName = identifier.toString().toLowerCase();
+                EcoPlugin plugin = EcoPlugin.getPlugin(pluginName);
+                String placeholderIdentifier = parameters.toString();
+                identifier.setLength(0);
+                parameters.setLength(0);
+                if (badPlaceholder) {
+                    builder.append('%').append(pluginName);
+                    if (identified) {
+                        builder.append('_').append(placeholderIdentifier);
+                    }
+
+                    if (hadSpace) {
+                        builder.append(' ');
+                    }
+                } else {
+                    if (plugin == null) {
+                        builder.append('%').append(pluginName);
+
+                        if (identified) {
+                            builder.append('_');
+                        }
+
+                        builder.append(placeholderIdentifier).append('%');
+                    } else {
+                        builder.append(getResult(player, placeholderIdentifier, plugin));
+                    }
+                }
+            } else {
+                builder.append(currentChar);
+            }
+        }
+
+        return builder.toString();
     }
 
     private record PlaceholderLookup(@NotNull String identifier,

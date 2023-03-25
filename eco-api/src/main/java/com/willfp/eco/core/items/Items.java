@@ -568,6 +568,42 @@ public final class Items {
         return EMPTY_TESTABLE_ITEM.matches(itemStack);
     }
 
+    /**
+     * Get if an item matches any items.
+     *
+     * @param itemStack The item.
+     * @param items     The items.
+     * @return If matches any.
+     */
+    public static boolean matchesAny(@Nullable final ItemStack itemStack,
+                                     @NotNull final Collection<TestableItem> items) {
+        for (TestableItem item : items) {
+            if (item.matches(itemStack)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get if any item matches any item.
+     *
+     * @param itemStacks The items.
+     * @param items      The items.
+     * @return If matches any.
+     */
+    public static boolean matchesAny(@NotNull final Collection<ItemStack> itemStacks,
+                                     @NotNull final Collection<TestableItem> items) {
+        for (ItemStack itemStack : itemStacks) {
+            if (matchesAny(itemStack, items)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private Items() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
