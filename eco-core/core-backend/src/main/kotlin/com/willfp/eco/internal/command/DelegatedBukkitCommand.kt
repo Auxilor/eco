@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.command
 
+import org.bukkit.Location
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.PluginIdentifiableCommand
@@ -21,7 +22,16 @@ class DelegatedBukkitCommand(
         label: String,
         args: Array<out String>?
     ): List<String> {
-        return delegate.onTabComplete(sender, this, label, args) ?: emptyList()
+        return delegate.onTabComplete(sender, this, label, args)
+    }
+
+    override fun tabComplete(
+        sender: CommandSender,
+        alias: String,
+        args: Array<out String>?,
+        location: Location?
+    ): List<String> {
+        return delegate.onTabComplete(sender, this, alias, args)
     }
 
     override fun getPlugin() = delegate.plugin
