@@ -289,8 +289,4 @@ private class ContinuallyAppliedPersistentDataContainer(
         handle.remove(key)
         fis.apply()
     }
-
-    override fun <T : Any, Z : Any> has(p0: NamespacedKey, p1: PersistentDataType<T, Z>): Boolean {
-        return handle.has(p0, p1)
-    }
 }
