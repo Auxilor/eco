@@ -6,6 +6,7 @@ import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.kingdoms.constants.group.Kingdom
+import org.kingdoms.constants.group.model.relationships.RelationAttribute
 import org.kingdoms.constants.group.model.relationships.StandardRelationAttribute
 import org.kingdoms.constants.land.Land
 import org.kingdoms.constants.player.KingdomPlayer
@@ -29,7 +30,7 @@ class AntigriefKingdoms : AntigriefIntegration {
 
         return if (!kp.hasPermission(permission)) {
             false
-        } else kingdom.hasAttribute(land.kingdom, StandardRelationAttribute.BUILD)
+        } else kingdom.hasAttribute(land.kingdom, StandardRelationAttribute.BUILD as RelationAttribute)
     }
 
     override fun canCreateExplosion(
