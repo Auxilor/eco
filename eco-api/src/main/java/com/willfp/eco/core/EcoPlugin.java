@@ -650,6 +650,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
                 task.run();
             } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Error while running lifecycle task ", e);
+                this.getLogger().log(Level.SEVERE, "The plugin may not function properly!");
                 e.printStackTrace();
             }
         }
@@ -658,6 +659,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             handler.run();
         } catch (final Exception e) {
             this.getLogger().log(Level.SEVERE, "Error while running lifecycle handler ", e);
+            this.getLogger().log(Level.SEVERE, "The plugin may not function properly!");
             e.printStackTrace();
         }
 
@@ -666,6 +668,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
                 task.run();
             } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Error while running lifecycle task ", e);
+                this.getLogger().log(Level.SEVERE, "The plugin may not function properly!");
                 e.printStackTrace();
             }
         }
