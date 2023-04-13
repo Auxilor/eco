@@ -38,6 +38,14 @@ public class Prerequisite {
     );
 
     /**
+     * Requires the server to be running 1.19.4.
+     */
+    public static final Prerequisite HAS_1_19_4 = new Prerequisite(
+            () -> ProxyConstants.NMS_VERSION.contains("19_R3"),
+            "Requires server to be running 1.19.4+"
+    );
+
+    /**
      * Requires the server to be running 1.19.
      */
     public static final Prerequisite HAS_1_19 = new Prerequisite(
