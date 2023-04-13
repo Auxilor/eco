@@ -393,8 +393,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         this.loadIntegrationLoaders().forEach(integrationLoader -> {
             if (enabledPlugins.contains(integrationLoader.getPluginName().toLowerCase())) {
-                this.loadedIntegrations.add(integrationLoader.getPluginName());
-                integrationLoader.load();
+                try {
+                    integrationLoader.load();
+                    this.loadedIntegrations.add(integrationLoader.getPluginName());
+                } catch (Exception e) {
+                    this.getLogger().warning("Failed to load integration for " + integrationLoader.getPluginName());
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -649,8 +654,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             try {
                 task.run();
             } catch (final Exception e) {
-                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task ", e);
-                this.getLogger().log(Level.SEVERE, "The plugin may not function properly!");
+                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+                this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
                 e.printStackTrace();
             }
         }
@@ -658,8 +663,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         try {
             handler.run();
         } catch (final Exception e) {
-            this.getLogger().log(Level.SEVERE, "Error while running lifecycle handler ", e);
-            this.getLogger().log(Level.SEVERE, "The plugin may not function properly!");
+            this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+            this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
             e.printStackTrace();
         }
 
@@ -667,8 +672,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             try {
                 task.run();
             } catch (final Exception e) {
-                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task ", e);
-                this.getLogger().log(Level.SEVERE, "The plugin may not function properly!");
+                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+                this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
                 e.printStackTrace();
             }
         }
