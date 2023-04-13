@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -429,9 +430,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             }
         }
 
-        this.onEnable.get(LifecyclePosition.START).forEach(Runnable::run);
-        this.handleEnable();
-        this.onEnable.get(LifecyclePosition.END).forEach(Runnable::run);
+        this.handleLifecycle(this.onEnable, this::handleEnable);
 
         this.getLogger().info("");
     }
@@ -466,9 +465,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.getEventManager().unregisterAllListeners();
         this.getScheduler().cancelAll();
 
-        this.onDisable.get(LifecyclePosition.START).forEach(Runnable::run);
-        this.handleDisable();
-        this.onDisable.get(LifecyclePosition.END).forEach(Runnable::run);
+        this.handleLifecycle(this.onDisable, this::handleDisable);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().unloadExtensions();
@@ -505,9 +502,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     public final void onLoad() {
         super.onLoad();
 
-        this.onLoad.get(LifecyclePosition.START).forEach(Runnable::run);
-        this.handleLoad();
-        this.onLoad.get(LifecyclePosition.END).forEach(Runnable::run);
+        this.handleLifecycle(this.onLoad, this::handleLoad);
     }
 
     /**
@@ -561,9 +556,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.getLogger().severe("");
         }
 
-        this.afterLoad.get(LifecyclePosition.START).forEach(Runnable::run);
-        this.handleAfterLoad();
-        this.afterLoad.get(LifecyclePosition.END).forEach(Runnable::run);
+        this.handleLifecycle(this.afterLoad, this::handleAfterLoad);
 
         this.reload();
 
@@ -604,9 +597,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
-        this.onReload.get(LifecyclePosition.START).forEach(Runnable::run);
-        this.handleReload();
-        this.onReload.get(LifecyclePosition.END).forEach(Runnable::run);
+        this.handleLifecycle(this.onReload, this::handleReload);
 
         for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
             extension.handleReload();
@@ -644,6 +635,40 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.reload();
 
         return System.currentTimeMillis() - startTime;
+    }
+
+    /**
+     * Handle lifecycle.
+     *
+     * @param tasks   The tasks.
+     * @param handler The handler.
+     */
+    private void handleLifecycle(@NotNull final ListMap<LifecyclePosition, Runnable> tasks,
+                                 @NotNull final Runnable handler) {
+        for (Runnable task : tasks.get(LifecyclePosition.START)) {
+            try {
+                task.run();
+            } catch (final Exception e) {
+                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task ", e);
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            handler.run();
+        } catch (final Exception e) {
+            this.getLogger().log(Level.SEVERE, "Error while running lifecycle handler ", e);
+            e.printStackTrace();
+        }
+
+        for (Runnable task : tasks.get(LifecyclePosition.END)) {
+            try {
+                task.run();
+            } catch (final Exception e) {
+                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task ", e);
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
