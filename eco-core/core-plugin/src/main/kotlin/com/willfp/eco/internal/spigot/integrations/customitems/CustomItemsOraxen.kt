@@ -12,9 +12,11 @@ import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
-class CustomItemsOraxen : CustomItemsIntegration, Listener {
+class CustomItemsOraxen(
+    private val plugin: EcoPlugin
+) : CustomItemsIntegration, Listener {
     override fun registerProvider() {
-        Eco.get().ecoPlugin.server.pluginManager.registerEvents(this, Eco.get().ecoPlugin)
+        plugin.eventManager.registerListener(this)
     }
 
     override fun getPluginName(): String {

@@ -294,7 +294,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
-            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
+            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen(this)) },
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
