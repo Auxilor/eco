@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_19_R1
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxy.common.toMaterial
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.SnbtPrinterTagVisitor
 import net.minecraft.nbt.TagParser
@@ -44,7 +45,7 @@ class SNBTConverter : SNBTConverterProxy {
             val nms = CraftItemStack.asNMSCopy(itemStack)
             val nmsTag = nms.save(CompoundTag())
             nmsTag.remove("Count")
-            return tag.copy().merge(nmsTag) == nmsTag
+            return tag.copy().merge(nmsTag) == nmsTag && itemStack.type == item.type
         }
 
         override fun getItem(): ItemStack = item

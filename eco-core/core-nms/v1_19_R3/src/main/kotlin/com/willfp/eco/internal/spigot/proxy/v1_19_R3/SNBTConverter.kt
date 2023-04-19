@@ -44,7 +44,7 @@ class SNBTConverter : SNBTConverterProxy {
             val nms = CraftItemStack.asNMSCopy(itemStack)
             val nmsTag = nms.save(CompoundTag())
             nmsTag.remove("Count")
-            return tag.copy().merge(nmsTag) == nmsTag
+            return tag.copy().merge(nmsTag) == nmsTag && itemStack.type == item.type
         }
 
         override fun getItem(): ItemStack = item
