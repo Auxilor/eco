@@ -19,6 +19,7 @@ import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.registry.Registry;
 import com.willfp.eco.core.scheduling.Scheduler;
+import com.willfp.eco.core.version.OutdatedEcoVersionError;
 import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
@@ -355,7 +356,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
             this.getLogger().severe("Download the newest version here:");
             this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
-            Bukkit.getPluginManager().disablePlugin(this);
+            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + this.getMinimumEcoVersion() + " to run.");
         }
     }
 
