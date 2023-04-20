@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -199,6 +200,6 @@ public class Registry<T extends Registrable> implements Iterable<T> {
         return string.replace(" ", "_")
                 .replace(".", "_")
                 .replace("-", "_")
-                .toLowerCase();
+                .toLowerCase(Locale.ENGLISH);
     }
 }
