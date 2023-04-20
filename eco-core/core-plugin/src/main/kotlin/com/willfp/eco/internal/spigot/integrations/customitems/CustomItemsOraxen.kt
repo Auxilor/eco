@@ -24,6 +24,7 @@ class CustomItemsOraxen(
     }
 
     @EventHandler
+    @Suppress("UNUSED_PARAMETER")
     fun onItemRegister(event: OraxenItemsLoadedEvent) {
         Items.registerItemProvider(OraxenProvider())
     }
