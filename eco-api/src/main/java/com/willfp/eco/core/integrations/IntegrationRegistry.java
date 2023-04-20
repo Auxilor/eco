@@ -15,6 +15,19 @@ import java.util.function.Predicate;
  * @param <T> The type of integration.
  */
 public class IntegrationRegistry<T extends Integration> extends Registry<T> {
+    @Override
+    public @NotNull T register(@NotNull final T element) {
+        try {
+            return super.register(element);
+        }  catch (final Exception e) {
+            Eco.get().getEcoPlugin().getLogger().warning("Integration for " + element.getPluginName() + " threw an exception!");
+            Eco.get().getEcoPlugin().getLogger().warning("The integration will be not be registered.");
+            e.printStackTrace();
+        }
+
+        return element;
+    }
+
     /**
      * Iterate over all integrations, safely.
      *
