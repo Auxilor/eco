@@ -30,7 +30,7 @@ public final class EconomyManager {
      * @return If any economy.
      */
     public static boolean hasRegistrations() {
-        return !REGISTRY.values().isEmpty();
+        return REGISTRY.isNotEmpty();
     }
 
     /**
