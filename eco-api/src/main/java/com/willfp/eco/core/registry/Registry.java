@@ -32,6 +32,12 @@ public class Registry<T extends Registrable> implements Iterable<T> {
     private boolean isLocked = false;
 
     /**
+     * The locker, used to 'secure' registries and prevent random unlocking.
+     */
+    @Nullable
+    private Object locker = null;
+
+    /**
      * Instantiate a new registry.
      */
     public Registry() {
@@ -138,15 +144,23 @@ public class Registry<T extends Registrable> implements Iterable<T> {
 
     /**
      * Lock the registry.
+     *
+     * @param locker The locker.
      */
-    public void lock() {
+    public void lock(@Nullable final Object locker) {
+        this.locker = locker;
         isLocked = true;
     }
 
     /**
      * Unlock the registry.
+     *
+     * @param locker The locker.
      */
-    public void unlock() {
+    public void unlock(@Nullable final Object locker) {
+        if (this.locker != locker) {
+            throw new IllegalArgumentException("Cannot unlock registry!");
+        }
         isLocked = false;
     }
 
