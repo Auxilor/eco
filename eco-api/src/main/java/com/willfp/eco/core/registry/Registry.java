@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
  *
  * @param <T> The type of {@link Registrable}.
  */
-public class Registry<T extends Registrable> {
+public class Registry<T extends Registrable> implements Iterable<T> {
     /**
      * The ID pattern.
      */
@@ -24,6 +25,11 @@ public class Registry<T extends Registrable> {
      * The registry.
      */
     private final Map<String, T> registry = new HashMap<>();
+
+    /**
+     * If the registry is locked.
+     */
+    private boolean isLocked = false;
 
     /**
      * Instantiate a new registry.
@@ -40,6 +46,10 @@ public class Registry<T extends Registrable> {
      */
     @NotNull
     public T register(@NotNull final T element) {
+        if (this.isLocked) {
+            throw new IllegalStateException("Cannot add to locked registry! (ID: " + element.getID() + ")");
+        }
+
         Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern() + " (was " + element.getID() + ")");
 
         registry.put(element.getID(), element);
@@ -56,6 +66,10 @@ public class Registry<T extends Registrable> {
      * @return The element.
      */
     public T remove(@NotNull final T element) {
+        if (this.isLocked) {
+            throw new IllegalStateException("Cannot remove from locked registry! (ID: " + element.getID() + ")");
+        }
+
         element.onRemove();
 
         registry.remove(element.getID());
@@ -71,6 +85,10 @@ public class Registry<T extends Registrable> {
      */
     @Nullable
     public T remove(@NotNull final String id) {
+        if (this.isLocked) {
+            throw new IllegalStateException("Cannot remove from locked registry! (ID: " + id + ")");
+        }
+
         T element = registry.get(id);
 
         if (element != null) {
@@ -107,6 +125,35 @@ public class Registry<T extends Registrable> {
      */
     public Set<T> values() {
         return Set.copyOf(registry.values());
+    }
+
+    /**
+     * Get if the registry is locked.
+     *
+     * @return If the registry is locked.
+     */
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    /**
+     * Lock the registry.
+     */
+    public void lock() {
+        isLocked = true;
+    }
+
+    /**
+     * Unlock the registry.
+     */
+    public void unlock() {
+        isLocked = false;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<T> iterator() {
+        return values().iterator();
     }
 
     /**
