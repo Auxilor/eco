@@ -69,7 +69,10 @@ public final class ShopManager {
             return new PriceFree();
         }
 
-        return REGISTRY.firstSafely(new PriceFree(), integration -> integration.getUnitValue(itemStack, player));
+        return REGISTRY.firstSafely(
+                integration -> integration.getUnitValue(itemStack, player),
+                new PriceFree()
+        );
     }
 
     /**
@@ -100,8 +103,8 @@ public final class ShopManager {
         }
 
         return REGISTRY.firstSafely(
-                0.0,
-                integration -> integration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount())
+                integration -> integration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount()),
+                0.0
         );
     }
 

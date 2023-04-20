@@ -34,8 +34,8 @@ public final class HologramManager {
     public static Hologram createHologram(@NotNull final Location location,
                                           @NotNull final List<String> contents) {
         return REGISTRY.firstSafely(
-                new DummyHologram(),
-                integration -> integration.createHologram(location, contents)
+                integration -> integration.createHologram(location, contents),
+                new DummyHologram()
         );
     }
 

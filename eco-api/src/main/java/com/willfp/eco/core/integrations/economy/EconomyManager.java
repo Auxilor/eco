@@ -55,8 +55,8 @@ public final class EconomyManager {
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
                                     final BigDecimal amount) {
         return REGISTRY.firstSafely(
-                false,
-                integration -> integration.hasAmount(player, amount)
+                integration -> integration.hasAmount(player, amount),
+                false
         );
     }
 
@@ -82,8 +82,8 @@ public final class EconomyManager {
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
                                     @NotNull final BigDecimal amount) {
         return REGISTRY.firstSafely(
-                false,
-                integration -> integration.giveMoney(player, amount)
+                integration -> integration.giveMoney(player, amount),
+                false
         );
     }
 
@@ -109,8 +109,8 @@ public final class EconomyManager {
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
                                       @NotNull final BigDecimal amount) {
         return REGISTRY.firstSafely(
-                false,
-                integration -> integration.removeMoney(player, amount)
+                integration -> integration.removeMoney(player, amount),
+                false
         );
     }
 
@@ -132,8 +132,8 @@ public final class EconomyManager {
      */
     public static BigDecimal getExactBalance(@NotNull final OfflinePlayer player) {
         return REGISTRY.firstSafely(
-                BigDecimal.ZERO,
-                integration -> integration.getExactBalance(player)
+                integration -> integration.getExactBalance(player),
+                BigDecimal.ZERO
         );
     }
 

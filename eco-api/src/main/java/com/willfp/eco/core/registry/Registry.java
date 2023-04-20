@@ -150,6 +150,24 @@ public class Registry<T extends Registrable> implements Iterable<T> {
         isLocked = false;
     }
 
+    /**
+     * Get if the registry is empty.
+     *
+     * @return If the registry is empty.
+     */
+    public boolean isEmpty() {
+        return registry.isEmpty();
+    }
+
+    /**
+     * Get if the registry is not empty.
+     *
+     * @return If the registry is not empty.
+     */
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
     @NotNull
     @Override
     public Iterator<T> iterator() {
