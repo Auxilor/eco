@@ -37,6 +37,7 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
      * If any integrations return true, safely.
      *
      * @param predicate The predicate to test.
+     * @return If any integrations return true.
      */
     public boolean anySafely(@NotNull final Predicate<T> predicate) {
         for (T integration : new HashSet<>(this.values())) {
@@ -122,6 +123,7 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
      * If all integrations return true, safely.
      *
      * @param predicate The predicate to test.
+     * @return If all integrations return true.
      */
     public boolean allSafely(@NotNull final Predicate<T> predicate) {
         return !this.anySafely(predicate.negate());
