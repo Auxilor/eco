@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.shop;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import com.willfp.eco.core.price.Price;
 import com.willfp.eco.core.price.impl.PriceFree;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public final class ShopManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<ShopIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<ShopIntegration> REGISTRY = new IntegrationRegistry<>();
 
     /**
      * Register a new integration.
@@ -25,17 +26,14 @@ public final class ShopManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final ShopIntegration integration) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
-        REGISTERED.add(integration);
+        REGISTRY.register(integration);
     }
 
     /**
      * Register eco item provider for shop plugins.
      */
     public static void registerEcoProvider() {
-        for (ShopIntegration shopIntegration : REGISTERED) {
-            shopIntegration.registerEcoProvider();
-        }
+        REGISTRY.forEachSafely(ShopIntegration::registerEcoProvider);
     }
 
     /**
@@ -51,11 +49,7 @@ public final class ShopManager {
             return false;
         }
 
-        for (ShopIntegration integration : REGISTERED) {
-            return integration.isSellable(itemStack, player);
-        }
-
-        return false;
+        return REGISTRY.anySafely(integration -> integration.isSellable(itemStack, player));
     }
 
     /**
@@ -74,7 +68,7 @@ public final class ShopManager {
             return new PriceFree();
         }
 
-        for (ShopIntegration integration : REGISTERED) {
+        for (ShopIntegration integration : REGISTRY) {
             return integration.getUnitValue(itemStack, player);
         }
 
@@ -108,7 +102,7 @@ public final class ShopManager {
             return 0.0;
         }
 
-        for (ShopIntegration shopIntegration : REGISTERED) {
+        for (ShopIntegration shopIntegration : REGISTRY) {
             return shopIntegration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount());
         }
 
@@ -121,7 +115,7 @@ public final class ShopManager {
      * @return The integrations.
      */
     public static Set<ShopIntegration> getRegisteredIntegrations() {
-        return new HashSet<>(REGISTERED);
+        return new HashSet<>(REGISTRY.values());
     }
 
     private ShopManager() {
