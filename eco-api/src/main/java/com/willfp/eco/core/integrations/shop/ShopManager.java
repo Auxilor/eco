@@ -14,6 +14,7 @@ import java.util.Set;
 /**
  * Class to handle shop integrations.
  */
+@SuppressWarnings("DeprecatedIsStillUsed")
 public final class ShopManager {
     /**
      * A set of all registered integrations.
@@ -68,11 +69,7 @@ public final class ShopManager {
             return new PriceFree();
         }
 
-        for (ShopIntegration integration : REGISTRY) {
-            return integration.getUnitValue(itemStack, player);
-        }
-
-        return new PriceFree();
+        return REGISTRY.firstSafely(new PriceFree(), integration -> integration.getUnitValue(itemStack, player));
     }
 
     /**
@@ -102,11 +99,10 @@ public final class ShopManager {
             return 0.0;
         }
 
-        for (ShopIntegration shopIntegration : REGISTRY) {
-            return shopIntegration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount());
-        }
-
-        return 0.0;
+        return REGISTRY.firstSafely(
+                0.0,
+                integration -> integration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount())
+        );
     }
 
     /**

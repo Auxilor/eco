@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -52,6 +53,34 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
         }
 
         return false;
+    }
+
+    /**
+     * Get the first integration that returns a value, safely.
+     *
+     * @param function     The function to apply.
+     * @param defaultValue The default value.
+     * @param <R>          The type of value.
+     * @return The first value that returns a value.
+     */
+    public <R> R firstSafely(@NotNull final R defaultValue,
+                             @NotNull final Function<T, R> function) {
+        if (this.values().isEmpty()) {
+            return defaultValue;
+        }
+
+        T integration = this.iterator().next();
+
+        try {
+            return function.apply(integration);
+        } catch (final Exception e) {
+            Eco.get().getEcoPlugin().getLogger().warning("Integration for " + integration.getPluginName() + " threw an exception!");
+            Eco.get().getEcoPlugin().getLogger().warning("The integration will be disabled.");
+            e.printStackTrace();
+            this.remove(integration);
+        }
+
+        return defaultValue;
     }
 
     /**

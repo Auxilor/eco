@@ -54,11 +54,10 @@ public final class EconomyManager {
      */
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
                                     final BigDecimal amount) {
-        for (EconomyIntegration integration : REGISTRY) {
-            return integration.hasAmount(player, amount);
-        }
-
-        return false;
+        return REGISTRY.firstSafely(
+                false,
+                integration -> integration.hasAmount(player, amount)
+        );
     }
 
     /**
@@ -82,11 +81,10 @@ public final class EconomyManager {
      */
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
                                     @NotNull final BigDecimal amount) {
-        for (EconomyIntegration integration : REGISTRY) {
-            return integration.giveMoney(player, amount);
-        }
-
-        return false;
+        return REGISTRY.firstSafely(
+                false,
+                integration -> integration.giveMoney(player, amount)
+        );
     }
 
     /**
@@ -110,11 +108,10 @@ public final class EconomyManager {
      */
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
                                       @NotNull final BigDecimal amount) {
-        for (EconomyIntegration integration : REGISTRY) {
-            return integration.removeMoney(player, amount);
-        }
-
-        return false;
+        return REGISTRY.firstSafely(
+                false,
+                integration -> integration.removeMoney(player, amount)
+        );
     }
 
     /**
@@ -134,11 +131,10 @@ public final class EconomyManager {
      * @return The balance.
      */
     public static BigDecimal getExactBalance(@NotNull final OfflinePlayer player) {
-        for (EconomyIntegration integration : REGISTRY) {
-            return integration.getExactBalance(player);
-        }
-
-        return BigDecimal.ZERO;
+        return REGISTRY.firstSafely(
+                BigDecimal.ZERO,
+                integration -> integration.getExactBalance(player)
+        );
     }
 
     private EconomyManager() {
