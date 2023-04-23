@@ -22,7 +22,7 @@ class ProfileHandler(
     private val type: HandlerType,
     private val plugin: EcoSpigotPlugin
 ) {
-    private val loaded = mutableMapOf<UUID, Profile>()
+    val loaded = mutableMapOf<UUID, Profile>()
 
     val handler: DataHandler = when (type) {
         HandlerType.YAML -> YamlDataHandler(plugin, this)
