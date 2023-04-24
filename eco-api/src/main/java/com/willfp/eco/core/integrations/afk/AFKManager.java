@@ -1,10 +1,8 @@
 package com.willfp.eco.core.integrations.afk;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Class to handle afk integrations.
@@ -13,7 +11,7 @@ public final class AFKManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<AFKIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<AFKIntegration> REGISTRY = new IntegrationRegistry<>();
 
     /**
      * Register a new integration.
@@ -21,8 +19,7 @@ public final class AFKManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final AFKIntegration integration) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
-        REGISTERED.add(integration);
+        REGISTRY.register(integration);
     }
 
     /**
@@ -32,13 +29,7 @@ public final class AFKManager {
      * @return If afk.
      */
     public static boolean isAfk(@NotNull final Player player) {
-        for (AFKIntegration integration : REGISTERED) {
-            if (integration.isAfk(player)) {
-                return true;
-            }
-        }
-
-        return false;
+        return REGISTRY.anySafely(integration -> integration.isAfk(player));
     }
 
     private AFKManager() {

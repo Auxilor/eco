@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.antigrief;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
@@ -16,7 +17,7 @@ public final class AntigriefManager {
     /**
      * Registered antigriefs.
      */
-    private static final Set<AntigriefIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<AntigriefIntegration> REGISTRY = new IntegrationRegistry<>();
 
     /**
      * Register a new AntiGrief/Land Management integration.
@@ -24,8 +25,7 @@ public final class AntigriefManager {
      * @param antigrief The integration to register.
      */
     public static void register(@NotNull final AntigriefIntegration antigrief) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
-        REGISTERED.add(antigrief);
+        REGISTRY.register(antigrief);
     }
 
     /**
@@ -34,8 +34,7 @@ public final class AntigriefManager {
      * @param antigrief The integration to unregister.
      */
     public static void unregister(@NotNull final AntigriefIntegration antigrief) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(antigrief.getPluginName()));
-        REGISTERED.remove(antigrief);
+        REGISTRY.remove(antigrief);
     }
 
     /**
@@ -47,7 +46,7 @@ public final class AntigriefManager {
      */
     public static boolean canPickupItem(@NotNull final Player player,
                                         @NotNull final Location location) {
-        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canPickupItem(player, location));
+        return REGISTRY.allSafely(integration -> integration.canPickupItem(player, location));
     }
 
     /**
@@ -59,7 +58,7 @@ public final class AntigriefManager {
      */
     public static boolean canBreakBlock(@NotNull final Player player,
                                         @NotNull final Block block) {
-        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canBreakBlock(player, block));
+        return REGISTRY.allSafely(integration -> integration.canBreakBlock(player, block));
     }
 
     /**
@@ -71,7 +70,7 @@ public final class AntigriefManager {
      */
     public static boolean canCreateExplosion(@NotNull final Player player,
                                              @NotNull final Location location) {
-        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canCreateExplosion(player, location));
+        return REGISTRY.allSafely(integration -> integration.canCreateExplosion(player, location));
     }
 
     /**
@@ -83,7 +82,7 @@ public final class AntigriefManager {
      */
     public static boolean canPlaceBlock(@NotNull final Player player,
                                         @NotNull final Block block) {
-        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canPlaceBlock(player, block));
+        return REGISTRY.allSafely(integration -> integration.canPlaceBlock(player, block));
     }
 
     /**
@@ -95,7 +94,7 @@ public final class AntigriefManager {
      */
     public static boolean canInjure(@NotNull final Player player,
                                     @NotNull final LivingEntity victim) {
-        return REGISTERED.stream().allMatch(antigriefIntegration -> antigriefIntegration.canInjure(player, victim));
+        return REGISTRY.allSafely(integration -> integration.canInjure(player, victim));
     }
 
     private AntigriefManager() {

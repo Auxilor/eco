@@ -19,9 +19,10 @@ import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.registry.Registry;
 import com.willfp.eco.core.scheduling.Scheduler;
+import com.willfp.eco.core.version.OutdatedEcoVersionError;
+import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -347,14 +348,14 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         they have an outdated version of eco installed.
          */
 
-        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.get().getEcoPlugin().getDescription().getVersion());
-        DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
+        Version runningVersion = new Version(Eco.get().getEcoPlugin().getDescription().getVersion());
+        Version requiredVersion = new Version(this.getMinimumEcoVersion());
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
             this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
             this.getLogger().severe("Download the newest version here:");
             this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
-            Bukkit.getPluginManager().disablePlugin(this);
+            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + this.getMinimumEcoVersion() + " to run.");
         }
     }
 
@@ -370,8 +371,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         if (this.getResourceId() != 0 && !Eco.get().getEcoPlugin().getConfigYml().getBool("no-update-checker")) {
             new UpdateChecker(this).getVersion(version -> {
-                DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
-                DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
+                Version currentVersion = new Version(this.getDescription().getVersion());
+                Version mostRecentVersion = new Version(version);
                 if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
                     this.outdated = true;
                     this.getLogger().warning(this.getName() + " is out of date! (Version " + this.getDescription().getVersion() + ")");

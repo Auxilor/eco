@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -14,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * @param <T> The type of {@link Registrable}.
  */
-public class Registry<T extends Registrable> {
+public class Registry<T extends Registrable> implements Iterable<T> {
     /**
      * The ID pattern.
      */
@@ -24,6 +26,17 @@ public class Registry<T extends Registrable> {
      * The registry.
      */
     private final Map<String, T> registry = new HashMap<>();
+
+    /**
+     * If the registry is locked.
+     */
+    private boolean isLocked = false;
+
+    /**
+     * The locker, used to 'secure' registries and prevent random unlocking.
+     */
+    @Nullable
+    private Object locker = null;
 
     /**
      * Instantiate a new registry.
@@ -40,6 +53,10 @@ public class Registry<T extends Registrable> {
      */
     @NotNull
     public T register(@NotNull final T element) {
+        if (this.isLocked) {
+            throw new IllegalStateException("Cannot add to locked registry! (ID: " + element.getID() + ")");
+        }
+
         Validate.isTrue(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern() + " (was " + element.getID() + ")");
 
         registry.put(element.getID(), element);
@@ -56,6 +73,10 @@ public class Registry<T extends Registrable> {
      * @return The element.
      */
     public T remove(@NotNull final T element) {
+        if (this.isLocked) {
+            throw new IllegalStateException("Cannot remove from locked registry! (ID: " + element.getID() + ")");
+        }
+
         element.onRemove();
 
         registry.remove(element.getID());
@@ -71,6 +92,10 @@ public class Registry<T extends Registrable> {
      */
     @Nullable
     public T remove(@NotNull final String id) {
+        if (this.isLocked) {
+            throw new IllegalStateException("Cannot remove from locked registry! (ID: " + id + ")");
+        }
+
         T element = registry.get(id);
 
         if (element != null) {
@@ -110,6 +135,61 @@ public class Registry<T extends Registrable> {
     }
 
     /**
+     * Get if the registry is locked.
+     *
+     * @return If the registry is locked.
+     */
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    /**
+     * Lock the registry.
+     *
+     * @param locker The locker.
+     */
+    public void lock(@Nullable final Object locker) {
+        this.locker = locker;
+        isLocked = true;
+    }
+
+    /**
+     * Unlock the registry.
+     *
+     * @param locker The locker.
+     */
+    public void unlock(@Nullable final Object locker) {
+        if (this.locker != locker) {
+            throw new IllegalArgumentException("Cannot unlock registry!");
+        }
+        isLocked = false;
+    }
+
+    /**
+     * Get if the registry is empty.
+     *
+     * @return If the registry is empty.
+     */
+    public boolean isEmpty() {
+        return registry.isEmpty();
+    }
+
+    /**
+     * Get if the registry is not empty.
+     *
+     * @return If the registry is not empty.
+     */
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<T> iterator() {
+        return values().iterator();
+    }
+
+    /**
      * Try to fit a string to the ID pattern.
      *
      * @param string The string.
@@ -120,6 +200,6 @@ public class Registry<T extends Registrable> {
         return string.replace(" ", "_")
                 .replace(".", "_")
                 .replace("-", "_")
-                .toLowerCase();
+                .toLowerCase(Locale.ENGLISH);
     }
 }
