@@ -15,7 +15,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = mutableListOf<InjectablePlaceholder>()
+    var injections = ConcurrentHashMap<String, InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -104,12 +104,12 @@ open class EcoConfig(
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
-        return (get(path) as? Config)?.apply { this.addInjectablePlaceholder(injections) }
+        return (get(path) as? Config)?.apply { this.addInjectablePlaceholder(injections.values) }
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
         return getList<Config>(path)
-            ?.map { it.apply { this.addInjectablePlaceholder(injections) } }
+            ?.map { it.apply { this.addInjectablePlaceholder(injections.values) } }
             ?.toList()
     }
 
@@ -180,12 +180,13 @@ open class EcoConfig(
     }
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
-        injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
-        injections.addAll(placeholders)
+        for (placeholder in placeholders) {
+            injections[placeholder.identifier] = placeholder
+        }
     }
 
     override fun getPlaceholderInjections(): List<InjectablePlaceholder> {
-        return injections.toList()
+        return injections.values.toList()
     }
 
     override fun clearInjectedPlaceholders() {
