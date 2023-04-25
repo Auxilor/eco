@@ -3,10 +3,7 @@ package com.willfp.eco.internal.spigot.math
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.math.MathContext
-import com.willfp.eco.core.placeholder.AdditionalPlayer
-import com.willfp.eco.core.placeholder.PlaceholderInjectable
-import org.bukkit.entity.Player
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext
 import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
 import redempt.crunch.data.FastNumberParsing
@@ -26,18 +23,18 @@ private val max = Function("max", 2) {
     max(it[0], it[1])
 }
 
-fun evaluateExpression(expression: String, context: MathContext) =
-    evaluateExpression(expression, context.player, context.injectableContext, context.additionalPlayers)
-        .let { if (!it.isFinite()) 0.0 else it } // Fixes NaN bug.
+fun evaluateExpression(expression: String, context: PlaceholderContext) =
+    doEvaluateExpression(
+        expression,
+        context
+    ).let { if (!it.isFinite()) 0.0 else it } // Fixes NaN bug.
 
-private fun evaluateExpression(
+private fun doEvaluateExpression(
     expression: String,
-    player: Player?,
-    context: PlaceholderInjectable,
-    additional: Collection<AdditionalPlayer>
+    context: PlaceholderContext
 ): Double {
     val placeholderValues = PlaceholderManager.findPlaceholdersIn(expression)
-        .map { PlaceholderManager.translatePlaceholders(it, player, context, additional) }
+        .map { PlaceholderManager.translatePlaceholders(it, context) }
         .map { runCatching { FastNumberParsing.parseDouble(it) }.getOrDefault(0.0) }
         .toDoubleArray()
 

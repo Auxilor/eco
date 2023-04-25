@@ -1,7 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,31 +10,26 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
- * A placeholder that does not require a player.
+ * A arguments that does not require a player.
  */
-public final class PlayerlessPlaceholder implements Placeholder {
+public final class PlayerlessPlaceholder implements RegistrablePlaceholder {
     /**
-     * The placeholder identifier.
-     */
-    private final String identifier;
-
-    /**
-     * The placeholder pattern.
+     * The arguments pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the placeholder.
+     * The function to retrieve the output of the arguments.
      */
-    private final Supplier<String> function;
+    private final Supplier<@Nullable String> function;
 
     /**
-     * The plugin for the placeholder.
+     * The plugin for the arguments.
      */
     private final EcoPlugin plugin;
 
     /**
-     * Create a new player placeholder.
+     * Create a new player arguments.
      *
      * @param plugin     The plugin.
      * @param identifier The identifier.
@@ -42,30 +37,31 @@ public final class PlayerlessPlaceholder implements Placeholder {
      */
     public PlayerlessPlaceholder(@NotNull final EcoPlugin plugin,
                                  @NotNull final String identifier,
-                                 @NotNull final Supplier<String> function) {
+                                 @NotNull final Supplier<@Nullable String> function) {
         this.plugin = plugin;
-        this.identifier = identifier;
         this.pattern = Pattern.compile(identifier);
         this.function = function;
     }
 
-    /**
-     * Get the value of the placeholder.
-     *
-     * @return The value.
-     */
-    public String getValue() {
+    @Override
+    public @Nullable String getValue(@NotNull final String args,
+                                     @NotNull final PlaceholderContext context) {
         return function.get();
     }
 
     /**
-     * Register the placeholder.
+     * Get the value of the arguments.
      *
-     * @return The placeholder.
+     * @return The value.
+     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
-    public PlayerlessPlaceholder register() {
-        PlaceholderManager.registerPlaceholder(this);
-        return this;
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
+    public String getValue() {
+        return Objects.requireNonNullElse(
+                this.function.get(),
+                ""
+        );
     }
 
     @Override
@@ -73,15 +69,15 @@ public final class PlayerlessPlaceholder implements Placeholder {
         return this.plugin;
     }
 
-    @Override
-    public @NotNull String getIdentifier() {
-        return this.identifier;
-    }
-
     @NotNull
     @Override
     public Pattern getPattern() {
         return this.pattern;
+    }
+
+    @Override
+    public @NotNull PlayerlessPlaceholder register() {
+        return (PlayerlessPlaceholder) RegistrablePlaceholder.super.register();
     }
 
     @Override
@@ -92,12 +88,12 @@ public final class PlayerlessPlaceholder implements Placeholder {
         if (!(o instanceof PlayerlessPlaceholder that)) {
             return false;
         }
-        return Objects.equals(this.getIdentifier(), that.getIdentifier())
+        return Objects.equals(this.getPattern(), that.getPattern())
                 && Objects.equals(this.getPlugin(), that.getPlugin());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getIdentifier(), this.getPlugin());
+        return Objects.hash(this.getPattern(), this.getPlugin());
     }
 }

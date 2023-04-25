@@ -1,5 +1,6 @@
 package com.willfp.eco.core.placeholder;
 
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,50 +9,62 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
- * A placeholder that cannot be registered, and exists purely in injection.
+ * A arguments that cannot be registered, and exists purely in injection.
  */
 public final class StaticPlaceholder implements InjectablePlaceholder {
     /**
-     * The name of the placeholder.
+     * The name of the arguments.
      */
     private final String identifier;
 
     /**
-     * The placeholder pattern.
+     * The arguments pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the placeholder.
+     * The function to retrieve the output of the arguments.
      */
-    private final Supplier<String> function;
+    private final Supplier<@Nullable String> function;
 
     /**
-     * Create a new player placeholder.
+     * Create a new player arguments.
      *
      * @param identifier The identifier.
      * @param function   The function to retrieve the value.
      */
     public StaticPlaceholder(@NotNull final String identifier,
-                             @NotNull final Supplier<String> function) {
+                             @NotNull final Supplier<@Nullable String> function) {
         this.identifier = identifier;
         this.pattern = Pattern.compile(identifier);
         this.function = function;
     }
 
-    /**
-     * Get the value of the placeholder.
-     *
-     * @return The value.
-     */
-    @NotNull
-    public String getValue() {
+    @Override
+    public @Nullable String getValue(@NotNull final String args,
+                                     @NotNull final PlaceholderContext context) {
         return function.get();
     }
 
+    /**
+     * Get the value of the arguments.
+     *
+     * @return The value.
+     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
+     */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
+    public String getValue() {
+        return Objects.requireNonNullElse(
+                function.get(),
+                ""
+        );
+    }
+
     @Override
-    public @NotNull String getIdentifier() {
-        return this.identifier;
+    public String tryTranslateQuickly(@NotNull final String text,
+                                      @NotNull final PlaceholderContext context) {
+        return text.replace("%" + this.identifier + "%", this.getValue(this.identifier, context));
     }
 
     @NotNull
@@ -68,11 +81,11 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
         if (!(o instanceof StaticPlaceholder that)) {
             return false;
         }
-        return Objects.equals(this.getIdentifier(), that.getIdentifier());
+        return Objects.equals(this.getPattern(), that.getPattern());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getIdentifier());
+        return Objects.hash(this.getPattern());
     }
 }

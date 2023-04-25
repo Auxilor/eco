@@ -25,8 +25,8 @@ import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
-import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.packet.Packet;
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -531,7 +531,7 @@ public interface Eco {
      * @return The value of the expression, or zero if invalid.
      */
     double evaluate(@NotNull String expression,
-                    @NotNull MathContext context);
+                    @NotNull PlaceholderContext context);
 
     /**
      * Get the menu a player currently has open.

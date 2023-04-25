@@ -2,20 +2,14 @@ package com.willfp.eco.core.integrations.placeholder;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
-import com.willfp.eco.core.placeholder.DynamicPlaceholder;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.placeholder.PlayerDynamicPlaceholder;
-import com.willfp.eco.core.placeholder.PlayerPlaceholder;
-import com.willfp.eco.core.placeholder.PlayerStaticPlaceholder;
-import com.willfp.eco.core.placeholder.PlayerlessPlaceholder;
-import com.willfp.eco.core.placeholder.StaticPlaceholder;
+import com.willfp.eco.core.placeholder.RegistrablePlaceholder;
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
 import com.willfp.eco.util.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class to handle placeholder integrations.
+ * Class to handle arguments integrations.
  */
 public final class PlaceholderManager {
     /**
@@ -43,7 +38,7 @@ public final class PlaceholderManager {
     private static final Map<EcoPlugin, Map<Pattern, Placeholder>> REGISTERED_PLACEHOLDERS = new HashMap<>();
 
     /**
-     * All registered placeholder integrations.
+     * All registered arguments integrations.
      */
     private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = new HashSet<>();
 
@@ -55,26 +50,12 @@ public final class PlaceholderManager {
             .build();
 
     /**
-     * Placeholder Cache.
-     */
-    private static final LoadingCache<EntryWithPlayer, String> PLACEHOLDER_CACHE = Caffeine.newBuilder()
-            .expireAfterWrite(50, TimeUnit.MILLISECONDS)
-            .build(key -> key.entry.getValue(key.player));
-
-    /**
-     * Dynamic Placeholder Cache.
-     */
-    private static final LoadingCache<DynamicEntryWithPlayer, String> DYNAMIC_PLACEHOLDER_CACHE = Caffeine.newBuilder()
-            .expireAfterWrite(50, TimeUnit.MILLISECONDS)
-            .build(key -> key.entry.getValue(key.args, key.player));
-
-    /**
      * The default PlaceholderAPI pattern; brought in for compatibility.
      */
     private static final Pattern PATTERN = Pattern.compile("%([^% ]+)%");
 
     /**
-     * Empty injectable object.
+     * Empty injectableContext object.
      */
     public static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
         @Override
@@ -105,15 +86,26 @@ public final class PlaceholderManager {
     }
 
     /**
-     * Register a placeholder.
+     * Register a arguments.
      *
-     * @param placeholder The placeholder to register.
+     * @param placeholder The arguments to register.
+     * @deprecated Use {@link #registerPlaceholder(RegistrablePlaceholder)} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
     public static void registerPlaceholder(@NotNull final Placeholder placeholder) {
-        if (placeholder instanceof StaticPlaceholder || placeholder instanceof PlayerStaticPlaceholder) {
-            throw new IllegalArgumentException("Static placeholders cannot be registered!");
+        if (!(placeholder instanceof RegistrablePlaceholder)) {
+            throw new IllegalArgumentException("Placeholder must be RegistrablePlaceholder!");
         }
 
+        registerPlaceholder((RegistrablePlaceholder) placeholder);
+    }
+
+    /**
+     * Register a arguments.
+     *
+     * @param placeholder The arguments to register.
+     */
+    public static void registerPlaceholder(@NotNull final RegistrablePlaceholder placeholder) {
         Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS
                 .getOrDefault(placeholder.getPlugin(), new HashMap<>());
 
@@ -127,75 +119,59 @@ public final class PlaceholderManager {
      *
      * @param player     The player to get the result from.
      * @param identifier The placeholder identifier.
-     * @return The value of the placeholder.
-     * @deprecated Specify a plugin to get the result from.
-     */
-    @Deprecated(since = "6.52.2", forRemoval = true)
-    @SuppressWarnings("unused")
-    public static String getResult(@Nullable final Player player,
-                                   @NotNull final String identifier) {
-        throw new UnsupportedOperationException("Please specify a plugin to get the result from!");
-    }
-
-    /**
-     * Get the result of a placeholder with respect to a player.
-     *
-     * @param player     The player to get the result from.
-     * @param identifier The placeholder identifier.
-     * @param plugin     The plugin for the placeholder.
-     * @return The value of the placeholder.
+     * @param plugin     The plugin for the arguments.
+     * @return The value of the arguments.
      */
     @NotNull
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier,
                                    @NotNull final EcoPlugin plugin) {
-        Validate.notNull(plugin, "Plugin cannot be null!");
+        return Objects.requireNonNullElse(
+                getResult(
+                        plugin,
+                        identifier,
+                        new PlaceholderContext(
+                                player,
+                                null,
+                                EMPTY_INJECTABLE,
+                                Collections.emptyList()
+                        )
+                ),
+                ""
+        );
+    }
 
+    /**
+     * Get the result of a placeholder given a plugin and arguments.
+     *
+     * @param plugin The plugin for the placeholder.
+     * @param args   The arguments.
+     * @return The value of the arguments.
+     */
+    @Nullable
+    public static String getResult(@NotNull final EcoPlugin plugin,
+                                   @NotNull final String args,
+                                   @NotNull final PlaceholderContext context) {
         // This is really janky, and it sucks, but it works so?
         // Compensating for regex being slow so that's why we get it.
         Placeholder placeholder = PLACEHOLDER_LOOKUP_CACHE.get(
-                new PlaceholderLookup(identifier, plugin),
+                new PlaceholderLookup(args, plugin),
                 (it) -> {
                     // I hate the streams API.
                     return REGISTERED_PLACEHOLDERS
                             .getOrDefault(plugin, new HashMap<>())
                             .entrySet()
-                            .stream().filter(entry -> entry.getKey().matcher(identifier).matches())
+                            .stream().filter(entry -> entry.getKey().matcher(args).matches())
                             .map(Map.Entry::getValue)
                             .findFirst();
                 }
         ).orElse(null);
 
         if (placeholder == null) {
-            return "";
+            return null;
         }
 
-        /*
-        This code here is *really* not very good. It's mega externalized logic hacked
-        together and made worse by the addition of dynamic placeholders. But it works,
-        and it means I don't have to rewrite the whole placeholder system. So it's
-        good enough for me.
-         */
-
-        if (placeholder instanceof PlayerPlaceholder playerPlaceholder) {
-            if (player == null) {
-                return "";
-            } else {
-                return PLACEHOLDER_CACHE.get(new EntryWithPlayer(playerPlaceholder, player));
-            }
-        } else if (placeholder instanceof PlayerlessPlaceholder playerlessPlaceholder) {
-            return playerlessPlaceholder.getValue();
-        } else if (placeholder instanceof PlayerDynamicPlaceholder playerDynamicPlaceholder) {
-            if (player == null) {
-                return "";
-            } else {
-                return DYNAMIC_PLACEHOLDER_CACHE.get(new DynamicEntryWithPlayer(playerDynamicPlaceholder, identifier, player));
-            }
-        } else if (placeholder instanceof DynamicPlaceholder dynamicPlaceholder) {
-            return dynamicPlaceholder.getValue(identifier);
-        } else {
-            return "";
-        }
+        return placeholder.getValue(args, context);
     }
 
     /**
@@ -204,7 +180,10 @@ public final class PlaceholderManager {
      * @param text   The text that may contain placeholders to translate.
      * @param player The player to translate the placeholders with respect to.
      * @return The text, translated.
+     * @deprecated Use {@link #translatePlaceholders(String, PlaceholderContext)} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
         return translatePlaceholders(text, player, EMPTY_INJECTABLE);
@@ -215,9 +194,12 @@ public final class PlaceholderManager {
      *
      * @param text    The text that may contain placeholders to translate.
      * @param player  The player to translate the placeholders with respect to.
-     * @param context The injectable context.
+     * @param context The injectableContext parseContext.
      * @return The text, translated.
+     * @deprecated Use {@link #translatePlaceholders(String, PlaceholderContext)} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context) {
@@ -229,14 +211,38 @@ public final class PlaceholderManager {
      *
      * @param text              The text that may contain placeholders to translate.
      * @param player            The player to translate the placeholders with respect to.
-     * @param context           The injectable context.
+     * @param context           The injectableContext parseContext.
      * @param additionalPlayers Additional players to translate placeholders for.
      * @return The text, translated.
+     * @deprecated Use {@link #translatePlaceholders(String, PlaceholderContext)} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context,
                                                @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
+        return translatePlaceholders(
+                text,
+                new PlaceholderContext(
+                        player,
+                        null,
+                        context,
+                        additionalPlayers
+                )
+        );
+    }
+
+    /**
+     * Translate all placeholders in a translation context.
+     *
+     * @param text    The text that may contain placeholders to translate.
+     * @param context The translation context.
+     * @return The text, translated.
+     */
+    @NotNull
+    public static String translatePlaceholders(@NotNull final String text,
+                                               @NotNull final PlaceholderContext context) {
         String processed = text;
 
         /*
@@ -260,19 +266,15 @@ public final class PlaceholderManager {
          */
 
 
-        for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
-            if (injection instanceof StaticPlaceholder placeholder) {
-                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue());
-            } else if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {
-                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue(player));
-            }
+        for (InjectablePlaceholder injection : context.injectableContext().getPlaceholderInjections()) {
+            processed = injection.tryTranslateQuickly(processed, context);
         }
 
         // Prevent running 2 scans if there are no additional players.
-        if (!additionalPlayers.isEmpty()) {
+        if (!context.additionalPlayers().isEmpty()) {
             List<String> found = findPlaceholdersIn(text);
 
-            for (AdditionalPlayer additionalPlayer : additionalPlayers) {
+            for (AdditionalPlayer additionalPlayer : context.additionalPlayers()) {
                 for (String placeholder : found) {
                     String prefix = "%" + additionalPlayer.getIdentifier() + "_";
 
@@ -281,7 +283,7 @@ public final class PlaceholderManager {
                                 placeholder,
                                 translatePlaceholders(
                                         "%" + StringUtils.removePrefix(prefix, placeholder),
-                                        additionalPlayer.getPlayer()
+                                        context.copyWithPlayer(additionalPlayer.getPlayer())
                                 )
                         );
                     }
@@ -291,19 +293,16 @@ public final class PlaceholderManager {
 
         // Only run jank code if there are no integrations.
         if (REGISTERED_INTEGRATIONS.isEmpty()) {
-            processed = setWithoutIntegration(processed, player);
+            processed = setWithoutIntegration(processed, context.player());
         }
 
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
-            processed = integration.translate(processed, player);
+            processed = integration.translate(processed, context.player());
         }
 
         // DON'T REMOVE THIS, IT'S NOT DUPLICATE CODE.
-        for (InjectablePlaceholder injection : context.getPlaceholderInjections()) {
-            // Do I know this is a bad way of doing this? Yes.
-            if (injection instanceof PlayerStaticPlaceholder placeholder && player != null) {
-                processed = processed.replace("%" + placeholder.getIdentifier() + "%", placeholder.getValue(player));
-            }
+        for (InjectablePlaceholder injection : context.injectableContext().getPlaceholderInjections()) {
+            processed = injection.tryTranslateQuickly(processed, context);
         }
 
         return processed;
@@ -421,17 +420,6 @@ public final class PlaceholderManager {
 
     private record PlaceholderLookup(@NotNull String identifier,
                                      @Nullable EcoPlugin plugin) {
-
-    }
-
-    private record EntryWithPlayer(@NotNull PlayerPlaceholder entry,
-                                   @NotNull Player player) {
-
-    }
-
-    private record DynamicEntryWithPlayer(@NotNull PlayerDynamicPlaceholder entry,
-                                          @NotNull String args,
-                                          @NotNull Player player) {
 
     }
 

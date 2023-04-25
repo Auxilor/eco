@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wrapper class for placeholder integrations.
+ * Wrapper class for arguments integrations.
  */
 public interface PlaceholderIntegration extends Integration {
     /**

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Placeholders that can be injected into {@link PlaceholderInjectable} objects.
  */
-public sealed interface InjectablePlaceholder extends Placeholder permits PlayerStaticPlaceholder, StaticPlaceholder {
+public interface InjectablePlaceholder extends Placeholder {
     @Override
     default @NotNull EcoPlugin getPlugin() {
         return Eco.get().getEcoPlugin();

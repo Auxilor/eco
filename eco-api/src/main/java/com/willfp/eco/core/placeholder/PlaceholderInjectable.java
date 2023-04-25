@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface PlaceholderInjectable {
     /**
-     * Inject placeholder.
+     * Inject arguments.
      *
      * @param placeholders The placeholders.
      */
@@ -18,7 +18,7 @@ public interface PlaceholderInjectable {
     }
 
     /**
-     * Inject placeholder.
+     * Inject arguments.
      *
      * @param placeholders The placeholders.
      */

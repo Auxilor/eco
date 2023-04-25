@@ -3,6 +3,7 @@ package com.willfp.eco.core.math;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,9 +12,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Represents a context to do math in.
+ * Represents a parseContext to do math in.
  *
- * @param injectableContext The PlaceholderInjectable context.
+ * @param injectableContext The PlaceholderInjectable parseContext.
  * @param player            The player.
  * @param additionalPlayers The additional players.
  */
@@ -23,7 +24,7 @@ public record MathContext(
         @NotNull Collection<AdditionalPlayer> additionalPlayers
 ) {
     /**
-     * Empty math context.
+     * Empty math parseContext.
      */
     public static final MathContext EMPTY = new MathContext(
             PlaceholderManager.EMPTY_INJECTABLE,
@@ -32,9 +33,9 @@ public record MathContext(
     );
 
     /**
-     * Create MathContext of a PlaceholderInjectable context.
+     * Create MathContext of a PlaceholderInjectable parseContext.
      *
-     * @param injectableContext The PlaceholderInjectable context.
+     * @param injectableContext The PlaceholderInjectable parseContext.
      * @return The MathContext.
      */
     public static MathContext of(@NotNull final PlaceholderInjectable injectableContext) {
@@ -48,7 +49,7 @@ public record MathContext(
     /**
      * Copy a MathContext with a player.
      *
-     * @param context The context.
+     * @param context The parseContext.
      * @param player  The player.
      * @return The new MathContext.
      */
@@ -58,6 +59,20 @@ public record MathContext(
                 context.injectableContext(),
                 player,
                 context.additionalPlayers()
+        );
+    }
+
+    /**
+     * Convert to PlaceholderContext.
+     *
+     * @return The PlaceholderContext.
+     */
+    public PlaceholderContext toPlaceholderContext() {
+        return new PlaceholderContext(
+                this.player,
+                null,
+                this.injectableContext,
+                this.additionalPlayers
         );
     }
 }

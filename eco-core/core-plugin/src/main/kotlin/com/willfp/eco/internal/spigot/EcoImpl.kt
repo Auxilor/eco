@@ -13,8 +13,8 @@ import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.core.packet.Packet
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand
@@ -312,7 +312,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getTPS() =
         getProxy(TPSProxy::class.java).getTPS()
 
-    override fun evaluate(expression: String, context: MathContext) =
+    override fun evaluate(expression: String, context: PlaceholderContext) =
         evaluateExpression(expression, context)
 
     override fun getOpenMenu(player: Player) =
