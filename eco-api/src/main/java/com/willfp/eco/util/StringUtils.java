@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -201,6 +203,26 @@ public final class StringUtils {
     }
 
     /**
+     * Format a list of strings.
+     * <p>
+     * Coverts color codes and placeholders.
+     *
+     * @param list    The messages to format.
+     * @param context The context.
+     * @return The message, format.
+     */
+    @NotNull
+    public static List<String> formatList(@NotNull final List<String> list,
+                                          @NotNull PlaceholderContext context) {
+        List<String> translated = new ArrayList<>();
+        for (String string : list) {
+            translated.add(format(string, context));
+        }
+
+        return translated;
+    }
+
+    /**
      * Format a string.
      * <p>
      * Converts color codes and placeholders.
@@ -242,7 +264,7 @@ public final class StringUtils {
     @NotNull
     public static String format(@NotNull final String message,
                                 @NotNull final FormatOption option) {
-        return format(message, null, option);
+        return format(message, (Player) null, option);
     }
 
     /**
@@ -287,7 +309,7 @@ public final class StringUtils {
     @NotNull
     public static Component formatToComponent(@NotNull final String message,
                                               @NotNull final FormatOption option) {
-        return formatToComponent(message, null, option);
+        return formatToComponent(message, (Player) null, option);
     }
 
     /**
@@ -321,10 +343,54 @@ public final class StringUtils {
     public static String format(@NotNull final String message,
                                 @Nullable final Player player,
                                 @NotNull final FormatOption option) {
-        String processedMessage = message;
         if (option == FormatOption.WITH_PLACEHOLDERS) {
-            processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
+            return format(
+                    message,
+                    new PlaceholderContext(
+                            player,
+                            null,
+                            PlaceholderManager.EMPTY_INJECTABLE,
+                            Collections.emptyList()
+                    )
+            );
         }
+
+        return STRING_FORMAT_CACHE.get(message);
+    }
+
+    /**
+     * Format a string to a component.
+     * <p>
+     * Converts color codes and placeholders if specified.
+     *
+     * @param message The message to translate.
+     * @param context The placeholder context.
+     * @return The message, formatted, as a component.
+     * @see StringUtils#format(String, Player)
+     */
+    @NotNull
+    public static Component formatToComponent(@NotNull final String message,
+                                              @NotNull final PlaceholderContext context) {
+        return toComponent(format(message, context));
+    }
+
+    /**
+     * Format a string.
+     * <p>
+     * Coverts color codes and placeholders if specified.
+     *
+     * @param message The message to format.
+     * @param context The context to translate placeholders with respect to.
+     * @return The message, formatted.
+     */
+    @NotNull
+    public static String format(@NotNull final String message,
+                                @NotNull final PlaceholderContext context) {
+        String processedMessage = message;
+        processedMessage = PlaceholderManager.translatePlaceholders(
+                processedMessage,
+                context
+        );
         return STRING_FORMAT_CACHE.get(processedMessage);
     }
 
