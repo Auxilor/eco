@@ -3,7 +3,7 @@ package com.willfp.eco.core.math;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +12,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
+/**
+ * Represents a context to parse math in.
+ *
+ * @deprecated Use {@link PlaceholderContext} instead.
+ */
+@SuppressWarnings("DeprecatedIsStillUsed")
+@Deprecated(since = "6.56.0", forRemoval = true)
 public class MathContext {
     /**
      * Returns an empty math parseContext.
@@ -61,8 +68,9 @@ public class MathContext {
      * Duplicate method because MathContext used to be a record.
      *
      * @return The injectable context.
+     * @deprecated Use {@link #getInjectableContext()} instead.
      */
-    @NotNull
+    @Deprecated(since = "6.56.0", forRemoval = true)
     public PlaceholderInjectable injectableContext() {
         return injectableContext;
     }
@@ -83,7 +91,9 @@ public class MathContext {
      * Duplicate method because MathContext used to be a record.
      *
      * @return The player.
+     * @deprecated Use {@link #getPlayer()} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
     @Nullable
     public Player player() {
         return player;
@@ -105,7 +115,9 @@ public class MathContext {
      * Duplicate method because MathContext used to be a record.
      *
      * @return The additional players.
+     * @deprecated Use {@link #getAdditionalPlayers()} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
     public Collection<AdditionalPlayer> additionalPlayers() {
         return additionalPlayers;
@@ -151,10 +163,9 @@ public class MathContext {
             return true;
         }
 
-        if (!(o instanceof MathContext)) {
+        if (!(o instanceof MathContext that)) {
             return false;
         }
-        MathContext that = (MathContext) o;
 
         return injectableContext.equals(that.injectableContext) &&
                 Objects.equals(player, that.player) &&

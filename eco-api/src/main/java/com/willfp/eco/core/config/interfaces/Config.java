@@ -6,6 +6,7 @@ import com.willfp.eco.core.config.Configs;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -134,7 +135,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * @return The computed value, or 0 if not found or invalid.
      */
     default int getIntFromExpression(@NotNull String path) {
-        return getIntFromExpression(path, null);
+        return getIntFromExpression(path, PlaceholderContext.of(this));
     }
 
     /**
@@ -161,6 +162,18 @@ public interface Config extends Cloneable, PlaceholderInjectable {
                                      @Nullable Player player,
                                      @NotNull Collection<AdditionalPlayer> additionalPlayers) {
         return Double.valueOf(getDoubleFromExpression(path, player, additionalPlayers)).intValue();
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path    The key to fetch the value from.
+     * @param context The placeholder context.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default int getIntFromExpression(@NotNull String path,
+                                     @NotNull PlaceholderContext context) {
+        return Double.valueOf(getDoubleFromExpression(path, context)).intValue();
     }
 
 
@@ -257,6 +270,19 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     }
 
     /**
+     * Get a formatted string from config.
+     *
+     * @param path    The key to fetch the value from.
+     * @param context The placeholder context.
+     * @return The found value, or an empty string if not found.
+     */
+    @NotNull
+    default String getFormattedString(@NotNull String path,
+                                      @NotNull PlaceholderContext context) {
+        return StringUtils.format(getString(path), context.withInjectableContext(this));
+    }
+
+    /**
      * Get a string from config.
      * <p>
      * Not formatted.
@@ -288,7 +314,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * Get a formatted string from config.
      *
      * @param path The key to fetch the value from.
-     * @return The found value, or an empty string if not found.
+     * @return The found value, or null if not found.
      */
     @Nullable
     default String getFormattedStringOrNull(@NotNull String path) {
@@ -300,12 +326,31 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      *
      * @param path   The key to fetch the value from.
      * @param option The format option.
-     * @return The found value, or an empty string if not found.
+     * @return The found value, or null if not found.
      */
     @Nullable
     default String getFormattedStringOrNull(@NotNull String path,
                                             @NotNull StringUtils.FormatOption option) {
         return getStringOrNull(path, true, option);
+    }
+
+    /**
+     * Get a formatted string from config.
+     *
+     * @param path    The key to fetch the value from.
+     * @param context The placeholder context.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    default String getFormattedStringOrNull(@NotNull String path,
+                                            @NotNull PlaceholderContext context) {
+        String nullable = getStringOrNull(path);
+
+        if (nullable == null) {
+            return null;
+        }
+
+        return StringUtils.format(nullable, context.withInjectableContext(this));
     }
 
     /**
@@ -360,6 +405,24 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     default List<String> getFormattedStrings(@NotNull String path,
                                              @NotNull StringUtils.FormatOption option) {
         return getStrings(path, true, option);
+    }
+
+    /**
+     * Get a list of strings from config.
+     * <p>
+     * Formatted.
+     *
+     * @param path    The key to fetch the value from.
+     * @param context The placeholder context.
+     * @return The found value, or a blank {@link java.util.ArrayList} if not found.
+     */
+    @NotNull
+    default List<String> getFormattedStrings(@NotNull String path,
+                                             @NotNull PlaceholderContext context) {
+        return StringUtils.formatList(
+                getStrings(path),
+                context.withInjectableContext(this)
+        );
     }
 
     /**
@@ -421,6 +484,30 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     /**
      * Get a list of strings from config.
      * <p>
+     * Formatted.
+     *
+     * @param path    The key to fetch the value from.
+     * @param context The placeholder context.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    default List<String> getFormattedStringsOrNull(@NotNull String path,
+                                                   @NotNull PlaceholderContext context) {
+        List<String> nullable = getStringsOrNull(path);
+
+        if (nullable == null) {
+            return null;
+        }
+
+        return StringUtils.formatList(
+                nullable,
+                context.withInjectableContext(this)
+        );
+    }
+
+    /**
+     * Get a list of strings from config.
+     * <p>
      * Not formatted.
      * <p>
      * This will be changed in newer versions to <b>not</b> format by default.
@@ -463,7 +550,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * @return The computed value, or 0 if not found or invalid.
      */
     default double getDoubleFromExpression(@NotNull String path) {
-        return getDoubleFromExpression(path, null);
+        return getDoubleFromExpression(path, PlaceholderContext.of(this));
     }
 
     /**
@@ -481,8 +568,8 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     /**
      * Get a decimal value via a mathematical expression.
      *
-     * @param path   The key to fetch the value from.
-     * @param player The player to evaluate placeholders with respect to.
+     * @param path              The key to fetch the value from.
+     * @param player            The player to evaluate placeholders with respect to.
      * @param additionalPlayers The additional players to evaluate placeholders with respect to.
      * @return The computed value, or 0 if not found or invalid.
      */
@@ -490,6 +577,18 @@ public interface Config extends Cloneable, PlaceholderInjectable {
                                            @Nullable Player player,
                                            @NotNull Collection<AdditionalPlayer> additionalPlayers) {
         return NumberUtils.evaluateExpression(this.getString(path), player, this, additionalPlayers);
+    }
+
+    /**
+     * Get a decimal value via a mathematical expression.
+     *
+     * @param path    The key to fetch the value from.
+     * @param context The placeholder context.
+     * @return The computed value, or 0 if not found or invalid.
+     */
+    default double getDoubleFromExpression(@NotNull String path,
+                                           @NotNull PlaceholderContext context) {
+        return NumberUtils.evaluateExpression(this.getString(path), context.withInjectableContext(this));
     }
 
     /**

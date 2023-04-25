@@ -1,6 +1,6 @@
 package com.willfp.eco.core.placeholder;
 
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -14,7 +14,7 @@ import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.Packet
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand

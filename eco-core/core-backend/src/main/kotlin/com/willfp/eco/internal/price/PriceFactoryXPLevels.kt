@@ -1,11 +1,11 @@
 package com.willfp.eco.internal.price
 
-import com.willfp.eco.core.math.MathContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import org.bukkit.entity.Player
 import java.util.UUID
-import java.util.function.Function
 import kotlin.math.roundToInt
 
 object PriceFactoryXPLevels : PriceFactory {
@@ -16,13 +16,13 @@ object PriceFactoryXPLevels : PriceFactory {
         "explevels",
     )
 
-    override fun create(baseContext: MathContext, function: Function<MathContext, Double>): Price {
-        return PriceXPLevel(baseContext) { function.apply(it).roundToInt() }
+    override fun create(baseContext: PlaceholderContext, function: PlaceholderContextSupplier<Double>): Price {
+        return PriceXPLevel(baseContext) { function.get(it).roundToInt() }
     }
 
     private class PriceXPLevel(
-        private val baseContext: MathContext,
-        private val level: (MathContext) -> Int
+        private val baseContext: PlaceholderContext,
+        private val level: (PlaceholderContext) -> Int
     ) : Price {
         private val multipliers = mutableMapOf<UUID, Double>()
 
@@ -37,7 +37,7 @@ object PriceFactoryXPLevels : PriceFactory {
         }
 
         override fun getValue(player: Player, multiplier: Double): Double {
-            return level(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player) * multiplier
+            return level(baseContext.copyWithPlayer(player)) * getMultiplier(player) * multiplier
         }
 
         override fun getMultiplier(player: Player): Double {

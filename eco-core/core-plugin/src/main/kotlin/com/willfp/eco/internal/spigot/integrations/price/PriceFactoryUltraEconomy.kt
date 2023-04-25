@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.price
 
-import com.willfp.eco.core.math.MathContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
@@ -9,21 +10,20 @@ import me.TechsCode.UltraEconomy.objects.Account
 import me.TechsCode.UltraEconomy.objects.Currency
 import org.bukkit.entity.Player
 import java.util.UUID
-import java.util.function.Function
 
 class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
     override fun getNames(): List<String> {
         return currency.name.lowercase().toSingletonList()
     }
 
-    override fun create(baseContext: MathContext, function: Function<MathContext, Double>): Price {
-        return PriceUltraEconomy(currency, baseContext) { function.apply(it) }
+    override fun create(baseContext: PlaceholderContext, function: PlaceholderContextSupplier<Double>): Price {
+        return PriceUltraEconomy(currency, baseContext) { function.get(it) }
     }
 
     private class PriceUltraEconomy(
         private val currency: Currency,
-        private val baseContext: MathContext,
-        private val function: (MathContext) -> Double
+        private val baseContext: PlaceholderContext,
+        private val function: (PlaceholderContext) -> Double
     ) : Price {
         private val multipliers = mutableMapOf<UUID, Double>()
         private val api = UltraEconomy.getAPI()
@@ -44,7 +44,7 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
         }
 
         override fun getValue(player: Player, multiplier: Double): Double {
-            return function(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player) * multiplier
+            return function(baseContext.copyWithPlayer(player)) * getMultiplier(player) * multiplier
         }
 
         override fun getMultiplier(player: Player): Double {

@@ -2,7 +2,7 @@
 
 package com.willfp.eco.util
 
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 

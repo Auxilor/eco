@@ -2,10 +2,9 @@ package com.willfp.eco.util;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -267,9 +266,12 @@ public final class NumberUtils {
      * @param expression The expression.
      * @param context    The context.
      * @return The value of the expression, or zero if invalid.
+     * @deprecated Use {@link #evaluateExpression(String, PlaceholderContext)} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @SuppressWarnings("removal")
     public static double evaluateExpression(@NotNull final String expression,
-                                            @NotNull final MathContext context) {
+                                            @NotNull final com.willfp.eco.core.math.MathContext context) {
         return evaluateExpression(expression, context.toPlaceholderContext());
     }
 

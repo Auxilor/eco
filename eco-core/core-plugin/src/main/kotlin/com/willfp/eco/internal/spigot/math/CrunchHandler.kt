@@ -3,7 +3,7 @@ package com.willfp.eco.internal.spigot.math
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
 import redempt.crunch.data.FastNumberParsing

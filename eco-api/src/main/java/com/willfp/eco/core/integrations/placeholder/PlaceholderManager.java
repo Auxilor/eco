@@ -3,12 +3,13 @@ package com.willfp.eco.core.integrations.placeholder;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.map.DefaultMap;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.RegistrablePlaceholder;
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,7 @@ public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final Map<EcoPlugin, Map<Pattern, Placeholder>> REGISTERED_PLACEHOLDERS = new HashMap<>();
+    private static final DefaultMap<EcoPlugin, Map<Pattern, Placeholder>> REGISTERED_PLACEHOLDERS = DefaultMap.createNestedMap();
 
     /**
      * All registered arguments integrations.
@@ -144,27 +145,18 @@ public final class PlaceholderManager {
     /**
      * Get the result of a placeholder given a plugin and arguments.
      *
-     * @param plugin The plugin for the placeholder.
-     * @param args   The arguments.
+     * @param plugin  The plugin for the placeholder.
+     * @param args    The arguments.
+     * @param context The context.
      * @return The value of the arguments.
      */
     @Nullable
     public static String getResult(@NotNull final EcoPlugin plugin,
                                    @NotNull final String args,
                                    @NotNull final PlaceholderContext context) {
-        // This is really janky, and it sucks, but it works so?
-        // Compensating for regex being slow so that's why we get it.
         Placeholder placeholder = PLACEHOLDER_LOOKUP_CACHE.get(
                 new PlaceholderLookup(args, plugin),
-                (it) -> {
-                    // I hate the streams API.
-                    return REGISTERED_PLACEHOLDERS
-                            .getOrDefault(plugin, new HashMap<>())
-                            .entrySet()
-                            .stream().filter(entry -> entry.getKey().matcher(args).matches())
-                            .map(Map.Entry::getValue)
-                            .findFirst();
-                }
+                (it) -> findMatchingPlaceholder(plugin, args)
         ).orElse(null);
 
         if (placeholder == null) {
@@ -172,6 +164,27 @@ public final class PlaceholderManager {
         }
 
         return placeholder.getValue(args, context);
+    }
+
+    /**
+     * Find matching placeholder.
+     *
+     * @param plugin The plugin.
+     * @param args   The args.
+     * @return The placeholder.
+     */
+    @NotNull
+    private static Optional<Placeholder> findMatchingPlaceholder(@NotNull final EcoPlugin plugin,
+                                                                 @NotNull final String args) {
+        Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(plugin);
+
+        for (Map.Entry<Pattern, Placeholder> entry : pluginPlaceholders.entrySet()) {
+            if (entry.getKey().matcher(args).matches()) {
+                return Optional.of(entry.getValue());
+            }
+        }
+
+        return Optional.empty();
     }
 
     /**
@@ -266,15 +279,15 @@ public final class PlaceholderManager {
          */
 
 
-        for (InjectablePlaceholder injection : context.injectableContext().getPlaceholderInjections()) {
+        for (InjectablePlaceholder injection : context.getInjectableContext().getPlaceholderInjections()) {
             processed = injection.tryTranslateQuickly(processed, context);
         }
 
         // Prevent running 2 scans if there are no additional players.
-        if (!context.additionalPlayers().isEmpty()) {
+        if (!context.getAdditionalPlayers().isEmpty()) {
             List<String> found = findPlaceholdersIn(text);
 
-            for (AdditionalPlayer additionalPlayer : context.additionalPlayers()) {
+            for (AdditionalPlayer additionalPlayer : context.getAdditionalPlayers()) {
                 for (String placeholder : found) {
                     String prefix = "%" + additionalPlayer.getIdentifier() + "_";
 
@@ -291,17 +304,14 @@ public final class PlaceholderManager {
             }
         }
 
-        // Only run jank code if there are no integrations.
-        if (REGISTERED_INTEGRATIONS.isEmpty()) {
-            processed = setWithoutIntegration(processed, context.player());
-        }
+        processed = translateEcoPlaceholdersIn(processed, context);
 
         for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
-            processed = integration.translate(processed, context.player());
+            processed = integration.translate(processed, context.getPlayer());
         }
 
         // DON'T REMOVE THIS, IT'S NOT DUPLICATE CODE.
-        for (InjectablePlaceholder injection : context.injectableContext().getPlaceholderInjections()) {
+        for (InjectablePlaceholder injection : context.getInjectableContext().getPlaceholderInjections()) {
             processed = injection.tryTranslateQuickly(processed, context);
         }
 
@@ -330,92 +340,39 @@ public final class PlaceholderManager {
     }
 
     /**
-     * Set placeholders without any integrations.
-     * <p>
-     * This is fallback if for some reason you don't have PAPI installed.
-     * It's a cut-down version of the actual PAPI code, and I don't
-     * really know how it works.
-     * <p>
-     * Original source
-     * <a href="https://github.com/PlaceholderAPI/PlaceholderAPI/blob/master/src/main/java/me/clip/placeholderapi/replacer/CharsReplacer.java">here</a>.
+     * Translate all eco placeholders in a given text.
      *
-     * @param text   The text.
-     * @param player The player.
+     * @param text    The text.
+     * @param context The context.
      * @return The text.
      */
-    private static String setWithoutIntegration(@NotNull final String text,
-                                                @Nullable final Player player) {
-        char[] chars = text.toCharArray();
-        StringBuilder builder = new StringBuilder(text.length());
-        StringBuilder identifier = new StringBuilder();
-        StringBuilder parameters = new StringBuilder();
+    private static String translateEcoPlaceholdersIn(@NotNull final String text,
+                                                     @NotNull final PlaceholderContext context) {
+        StringBuilder output = new StringBuilder();
+        Matcher matcher = PATTERN.matcher(text);
 
-        for (int i = 0; i < chars.length; i++) {
-            char currentChar = chars[i];
-            if (currentChar == '%' && i + 1 < chars.length) {
-                boolean identified = false;
-                boolean badPlaceholder = true;
-                boolean hadSpace = false;
+        while (matcher.find()) {
+            String placeholder = matcher.group(1);
+            String[] parts = placeholder.split("_", 2);
 
-                while (true) {
-                    i++;
-                    if (i >= chars.length) {
-                        break;
-                    }
+            if (parts.length == 2) {
+                EcoPlugin plugin = EcoPlugin.getPlugin(parts[0]);
 
-                    char p = chars[i];
-                    if (p == ' ' && !identified) {
-                        hadSpace = true;
-                        break;
-                    }
+                if (plugin != null) {
+                    String result = getResult(plugin, parts[1], context);
 
-                    if (p == '%') {
-                        badPlaceholder = false;
-                        break;
-                    }
-
-                    if (p == '_' && !identified) {
-                        identified = true;
-                    } else if (identified) {
-                        parameters.append(p);
-                    } else {
-                        identifier.append(p);
+                    if (result != null) {
+                        matcher.appendReplacement(output, Matcher.quoteReplacement(result));
+                        continue;
                     }
                 }
-
-                String pluginName = identifier.toString().toLowerCase();
-                EcoPlugin plugin = EcoPlugin.getPlugin(pluginName);
-                String placeholderIdentifier = parameters.toString();
-                identifier.setLength(0);
-                parameters.setLength(0);
-                if (badPlaceholder) {
-                    builder.append('%').append(pluginName);
-                    if (identified) {
-                        builder.append('_').append(placeholderIdentifier);
-                    }
-
-                    if (hadSpace) {
-                        builder.append(' ');
-                    }
-                } else {
-                    if (plugin == null) {
-                        builder.append('%').append(pluginName);
-
-                        if (identified) {
-                            builder.append('_');
-                        }
-
-                        builder.append(placeholderIdentifier).append('%');
-                    } else {
-                        builder.append(getResult(player, placeholderIdentifier, plugin));
-                    }
-                }
-            } else {
-                builder.append(currentChar);
             }
+
+            matcher.appendReplacement(output, Matcher.quoteReplacement(matcher.group(0)));
         }
 
-        return builder.toString();
+        matcher.appendTail(output);
+        return output.toString();
     }
 
     private record PlaceholderLookup(@NotNull String identifier,

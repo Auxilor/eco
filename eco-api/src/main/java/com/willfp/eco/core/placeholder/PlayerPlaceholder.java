@@ -1,7 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +53,7 @@ public final class PlayerPlaceholder implements RegistrablePlaceholder {
     @Override
     public @Nullable String getValue(@NotNull final String args,
                                      @NotNull final PlaceholderContext context) {
-        Player player = context.player();
+        Player player = context.getPlayer();
 
         if (player == null) {
             return null;

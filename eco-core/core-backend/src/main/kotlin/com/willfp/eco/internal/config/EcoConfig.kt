@@ -3,10 +3,11 @@ package com.willfp.eco.internal.config
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
-import com.willfp.eco.core.placeholder.StaticPlaceholder
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.concurrent.ConcurrentHashMap
+import java.util.regex.Pattern
 
 @Suppress("UNCHECKED_CAST")
 open class EcoConfig(
@@ -15,7 +16,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = ConcurrentHashMap<String, InjectablePlaceholder>()
+    var injections = ConcurrentHashMap<Pattern, InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -141,9 +142,7 @@ open class EcoConfig(
         var string = get(path)?.toString() ?: return null
         if (format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
             for (injection in placeholderInjections) {
-                if (injection is StaticPlaceholder) {
-                    string = string.replace("%${injection.identifier}%", injection.value)
-                }
+                string = injection.tryTranslateQuickly(string, PlaceholderContext.EMPTY)
             }
         }
         return if (format) StringUtils.format(string, option) else string
@@ -161,9 +160,7 @@ open class EcoConfig(
             strings.replaceAll {
                 var string = it
                 for (injection in placeholderInjections) {
-                    if (injection is StaticPlaceholder) {
-                        string = string.replace("%${injection.identifier}%", injection.value)
-                    }
+                    string = injection.tryTranslateQuickly(string, PlaceholderContext.EMPTY)
                 }
                 string
             }
@@ -181,7 +178,7 @@ open class EcoConfig(
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
         for (placeholder in placeholders) {
-            injections[placeholder.identifier] = placeholder
+            injections[placeholder.pattern] = placeholder
         }
     }
 

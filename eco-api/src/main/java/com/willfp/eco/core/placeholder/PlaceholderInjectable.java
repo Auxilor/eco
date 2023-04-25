@@ -29,7 +29,7 @@ public interface PlaceholderInjectable {
     /**
      * Inject placeholders.
      * <p>
-     * When implementing a PlaceholderInjectable object, override this method.
+     * If a placeholder already has the same pattern, it should be replaced.
      *
      * @param placeholders The placeholders.
      */
@@ -43,7 +43,7 @@ public interface PlaceholderInjectable {
     /**
      * Get injected placeholders.
      * <p>
-     * Override this method in implementations.
+     * This method should always return an immutable list.
      *
      * @return Injected placeholders.
      */

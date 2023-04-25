@@ -1,0 +1,66 @@
+package com.willfp.eco.core.placeholder.context;
+
+import com.willfp.eco.core.placeholder.InjectablePlaceholder;
+import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+/**
+ * A merged injectable context.
+ */
+public class MergedInjectableContext implements PlaceholderInjectable {
+    /**
+     * The base context.
+     */
+    private final PlaceholderInjectable baseContext;
+
+    /**
+     * The additional context.
+     */
+    private final PlaceholderInjectable additionalContext;
+
+    /**
+     * Extra injections.
+     */
+    private final Set<InjectablePlaceholder> extraInjections = new HashSet<>();
+
+    /**
+     * Create a new merged injectable context.
+     *
+     * @param baseContext       The base context.
+     * @param additionalContext The additional context.
+     */
+    public MergedInjectableContext(@NotNull final PlaceholderInjectable baseContext,
+                                   @NotNull final PlaceholderInjectable additionalContext) {
+        this.baseContext = baseContext;
+        this.additionalContext = additionalContext;
+    }
+
+    @Override
+    public void addInjectablePlaceholder(@NotNull final Iterable<InjectablePlaceholder> placeholders) {
+        for (InjectablePlaceholder placeholder : placeholders) {
+            extraInjections.add(placeholder);
+        }
+    }
+
+    @Override
+    public void clearInjectedPlaceholders() {
+        baseContext.clearInjectedPlaceholders();
+        additionalContext.clearInjectedPlaceholders();
+        extraInjections.clear();
+    }
+
+    @Override
+    public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+        List<InjectablePlaceholder> base = baseContext.getPlaceholderInjections();
+        List<InjectablePlaceholder> additional = additionalContext.getPlaceholderInjections();
+
+        base.addAll(additional);
+        base.addAll(extraInjections);
+
+        return base;
+    }
+}

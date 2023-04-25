@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
-import com.willfp.eco.core.placeholder.parsing.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;

@@ -1,7 +1,7 @@
 package com.willfp.eco.core.price;
 
 import com.willfp.eco.core.config.interfaces.Config;
-import com.willfp.eco.core.math.MathContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
 import com.willfp.eco.util.NumberUtils;
@@ -168,7 +168,7 @@ public final class ConfiguredPrice implements Price {
             Price price = Prices.create(
                     config.getString("value"),
                     config.getString("type"),
-                    MathContext.of(config)
+                    PlaceholderContext.of(config)
             );
 
             return new ConfiguredPrice(price, formatString);

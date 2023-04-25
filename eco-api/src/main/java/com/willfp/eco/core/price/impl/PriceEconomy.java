@@ -1,7 +1,8 @@
 package com.willfp.eco.core.price.impl;
 
 import com.willfp.eco.core.integrations.economy.EconomyManager;
-import com.willfp.eco.core.math.MathContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
 import com.willfp.eco.core.price.Price;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,12 +19,12 @@ public final class PriceEconomy implements Price {
     /**
      * The value of the price.
      */
-    private final Function<MathContext, Double> function;
+    private final PlaceholderContextSupplier<Double> function;
 
     /**
-     * The base math context.
+     * The base placeholder context.
      */
-    private final MathContext baseContext;
+    private final PlaceholderContext baseContext;
 
     /**
      * The multipliers.
@@ -36,7 +37,21 @@ public final class PriceEconomy implements Price {
      * @param value The value.
      */
     public PriceEconomy(final double value) {
-        this(MathContext.EMPTY, ctx -> value);
+        this(PlaceholderContext.EMPTY, (PlaceholderContext ctx) -> value);
+    }
+
+    /**
+     * Create a new economy-based price.
+     *
+     * @param baseContext The base context.
+     * @param function    The function.
+     * @deprecated Use {@link #PriceEconomy(PlaceholderContext, PlaceholderContextSupplier)} instead.
+     */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @SuppressWarnings("removal")
+    public PriceEconomy(@NotNull final com.willfp.eco.core.math.MathContext baseContext,
+                        @NotNull final Function<com.willfp.eco.core.math.MathContext, Double> function) {
+        this(baseContext.toPlaceholderContext(), (PlaceholderContext ctx) -> function.apply(ctx.toMathContext()));
     }
 
     /**
@@ -45,8 +60,8 @@ public final class PriceEconomy implements Price {
      * @param baseContext The base context.
      * @param function    The function.
      */
-    public PriceEconomy(@NotNull final MathContext baseContext,
-                        @NotNull final Function<MathContext, Double> function) {
+    public PriceEconomy(@NotNull final PlaceholderContext baseContext,
+                        @NotNull final PlaceholderContextSupplier<Double> function) {
         this.baseContext = baseContext;
         this.function = function;
     }
@@ -72,7 +87,7 @@ public final class PriceEconomy implements Price {
     @Override
     public double getValue(@NotNull final Player player,
                            final double multiplier) {
-        return this.function.apply(MathContext.copyWithPlayer(baseContext, player)) * getMultiplier(player) * multiplier;
+        return this.function.get(baseContext.copyWithPlayer(player)) * getMultiplier(player) * multiplier;
     }
 
     @Override
