@@ -1,6 +1,7 @@
 package com.willfp.eco.core.placeholder.parsing;
 
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.math.MathContext;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import org.bukkit.entity.Player;
@@ -13,18 +14,8 @@ import java.util.Collections;
 
 /**
  * Represents a context to translate placeholders in.
- *
- * @param player            The player.
- * @param itemStack         The ItemStack.
- * @param injectableContext The injectable context.
- * @param additionalPlayers The additional players.
  */
-public record PlaceholderContext(
-        @Nullable Player player,
-        @Nullable ItemStack itemStack,
-        @NotNull PlaceholderInjectable injectableContext,
-        @NotNull Collection<AdditionalPlayer> additionalPlayers
-) {
+public class PlaceholderContext extends MathContext {
     /**
      * An empty context.
      */
@@ -34,6 +25,39 @@ public record PlaceholderContext(
             PlaceholderManager.EMPTY_INJECTABLE,
             Collections.emptyList()
     );
+
+    /**
+     * The ItemStack.
+     */
+    @Nullable
+    private final ItemStack itemStack;
+
+    /**
+     * Constructs a new PlaceholderContext with the given parameters.
+     *
+     * @param player            The player.
+     * @param itemStack         The ItemStack.
+     * @param injectableContext The PlaceholderInjectable parseContext.
+     * @param additionalPlayers The additional players.
+     */
+    public PlaceholderContext(@Nullable final Player player,
+                              @Nullable final ItemStack itemStack,
+                              @NotNull final PlaceholderInjectable injectableContext,
+                              @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
+        super(injectableContext, player, additionalPlayers);
+
+        this.itemStack = itemStack;
+    }
+
+    /**
+     * Get the ItemStack.
+     *
+     * @return The ItemStack.
+     */
+    @Nullable
+    public ItemStack getItemStack() {
+        return itemStack;
+    }
 
     /**
      * Create MathContext of a PlaceholderInjectable parseContext.
@@ -59,9 +83,9 @@ public record PlaceholderContext(
     public PlaceholderContext copyWithPlayer(@Nullable final Player player) {
         return new PlaceholderContext(
                 player,
-                this.itemStack(),
-                this.injectableContext(),
-                this.additionalPlayers()
+                this.getItemStack(),
+                this.getInjectableContext(),
+                this.getAdditionalPlayers()
         );
     }
 }
