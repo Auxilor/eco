@@ -114,7 +114,7 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
             Eco.get().getEcoPlugin().getLogger().warning("Integration for " + integration.getPluginName() + " threw an exception!");
             Eco.get().getEcoPlugin().getLogger().warning("The integration will be disabled.");
             e.printStackTrace();
-            this.remove(integration.getPluginName());
+            this.remove(integration);
             return defaultValue;
         }
     }
