@@ -279,7 +279,10 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     @NotNull
     default String getFormattedString(@NotNull String path,
                                       @NotNull PlaceholderContext context) {
-        return StringUtils.format(getString(path), context.withInjectableContext(this));
+        return Objects.requireNonNullElse(
+                getFormattedStringOrNull(path, context),
+                ""
+        );
     }
 
     /**
@@ -419,9 +422,9 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     @NotNull
     default List<String> getFormattedStrings(@NotNull String path,
                                              @NotNull PlaceholderContext context) {
-        return StringUtils.formatList(
-                getStrings(path),
-                context.withInjectableContext(this)
+        return Objects.requireNonNullElse(
+                getFormattedStringsOrNull(path, context),
+                new ArrayList<>()
         );
     }
 
