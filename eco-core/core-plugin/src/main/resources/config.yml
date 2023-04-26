@@ -83,3 +83,11 @@ displayed-recipes: true
 # as there can be urgent hotfixes that you are then not notified about. If you're confident
 # that you can manage updates on your own, turn this on.
 no-update-checker: false
+
+# Math expressions are parsed using Crunch, which allows for variables to be used in expressions.
+# If this is false, variables will be used to represent placeholders, which leads to fewer
+# expression compilations at the expense of slower evaluation times. If this is true, variables
+# will instead be translated before compilation to reduce evaluation times at the expense of
+# longer compilation times. If your expressions usually contain many variables, then you
+# should enable this option as it may improve performance. If you're unsure, leave it disabled.
+use-immediate-placeholder-translation-for-math: false
