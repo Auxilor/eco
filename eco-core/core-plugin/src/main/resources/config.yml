@@ -91,3 +91,8 @@ no-update-checker: false
 # longer compilation times. If your expressions usually contain many variables, then you
 # should enable this option as it may improve performance. If you're unsure, leave it disabled.
 use-immediate-placeholder-translation-for-math: false
+
+# The time (in milliseconds) for math expressions to be cached for. Higher values will lead to
+# faster evaluation times (less CPU usage) at the expense of slightly more memory usage and
+# less reactive values.
+math-cache-ttl: 200

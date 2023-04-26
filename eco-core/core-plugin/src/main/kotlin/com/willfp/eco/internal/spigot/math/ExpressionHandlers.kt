@@ -23,11 +23,11 @@ private val max = Function("max", 2) {
     max(it[0], it[1])
 }
 
-interface CrunchHandler {
+interface ExpressionHandler {
     fun evaluate(expression: String, context: PlaceholderContext): Double
 }
 
-class ImmediatePlaceholderTranslationCrunchHandler : CrunchHandler {
+class ImmediatePlaceholderTranslationExpressionHandler : ExpressionHandler {
     private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder()
         .expireAfterAccess(500, TimeUnit.MILLISECONDS)
         .build()
@@ -48,7 +48,7 @@ class ImmediatePlaceholderTranslationCrunchHandler : CrunchHandler {
     }
 }
 
-class LazyPlaceholderTranslationCrunchHandler : CrunchHandler {
+class LazyPlaceholderTranslationExpressionHandler : ExpressionHandler {
     private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder()
         .build()
 

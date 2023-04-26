@@ -2,17 +2,19 @@ package com.willfp.eco.internal.spigot.math
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 
-private val evaluationCache: Cache<Int, Double> = Caffeine.newBuilder()
-    .expireAfterWrite(100, TimeUnit.MILLISECONDS)
-    .build()
+class DelegatedExpressionHandler(
+    plugin: EcoPlugin,
+    private val handler: ExpressionHandler
+): ExpressionHandler {
+    private val evaluationCache: Cache<Int, Double> = Caffeine.newBuilder()
+        .expireAfterWrite(plugin.configYml.getInt("math-cache-ttl").toLong(), TimeUnit.MILLISECONDS)
+        .build()
 
-class DelegatedCrunchHandler(
-    private val handler: CrunchHandler
-): CrunchHandler {
     override fun evaluate(expression: String, context: PlaceholderContext): Double {
         val hash = Objects.hash(
             expression,

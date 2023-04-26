@@ -44,9 +44,9 @@ import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.math.DelegatedCrunchHandler
-import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationCrunchHandler
-import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationCrunchHandler
+import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
+import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
+import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
@@ -90,9 +90,10 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
-    private val crunchHandler = DelegatedCrunchHandler(
+    private val crunchHandler = DelegatedExpressionHandler(
+        this,
         if (this.configYml.getBool("use-immediate-placeholder-translation-for-math"))
-            ImmediatePlaceholderTranslationCrunchHandler() else LazyPlaceholderTranslationCrunchHandler()
+            ImmediatePlaceholderTranslationExpressionHandler() else LazyPlaceholderTranslationExpressionHandler()
     )
 
     override fun createScheduler(plugin: EcoPlugin) =
