@@ -565,7 +565,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      */
     default double getDoubleFromExpression(@NotNull String path,
                                            @Nullable Player player) {
-        return NumberUtils.evaluateExpression(this.getString(path), player, this);
+        return getDoubleFromExpression(path, player, Collections.emptyList());
     }
 
     /**
@@ -579,7 +579,12 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     default double getDoubleFromExpression(@NotNull String path,
                                            @Nullable Player player,
                                            @NotNull Collection<AdditionalPlayer> additionalPlayers) {
-        return NumberUtils.evaluateExpression(this.getString(path), player, this, additionalPlayers);
+        return getDoubleFromExpression(path, new PlaceholderContext(
+                player,
+                null,
+                this,
+                additionalPlayers
+        ));
     }
 
     /**
