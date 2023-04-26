@@ -64,7 +64,10 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     @Override
     public String tryTranslateQuickly(@NotNull final String text,
                                       @NotNull final PlaceholderContext context) {
-        return text.replace("%" + this.identifier + "%", this.getValue(this.identifier, context));
+        return text.replace(
+                "%" + this.identifier + "%",
+                Objects.requireNonNullElse(this.getValue(this.identifier, context), "")
+        );
     }
 
     @NotNull
