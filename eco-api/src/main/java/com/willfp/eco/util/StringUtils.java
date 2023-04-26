@@ -747,13 +747,7 @@ public final class StringUtils {
     public static String replaceQuickly(@NotNull final String input,
                                         @NotNull final String target,
                                         @NotNull final String replacement) {
-        if (input.isEmpty()) {
-            return input;
-        }
-
         int targetLength = target.length();
-        int replacementLength = replacement.length();
-        int inputLength = input.length();
 
         // Count the number of original occurrences
         int count = 0;
@@ -768,6 +762,9 @@ public final class StringUtils {
         if (count == 0) {
             return input;
         }
+
+        int replacementLength = replacement.length();
+        int inputLength = input.length();
 
         // Pre-calculate the final size of the StringBuilder
         int newSize = inputLength + (replacementLength - targetLength) * count;
