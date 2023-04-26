@@ -51,6 +51,13 @@ public class PlaceholderContext {
     private final Collection<AdditionalPlayer> additionalPlayers;
 
     /**
+     * Create an empty PlaceholderContext.
+     */
+    public PlaceholderContext() {
+        this(null, null, PlaceholderManager.EMPTY_INJECTABLE, Collections.emptyList());
+    }
+
+    /**
      * Constructs a new PlaceholderContext with the given parameters.
      *
      * @param player            The player.
@@ -130,6 +137,21 @@ public class PlaceholderContext {
         return new PlaceholderContext(
                 player,
                 this.getItemStack(),
+                this.getInjectableContext(),
+                this.getAdditionalPlayers()
+        );
+    }
+
+    /**
+     * Copy with an item.
+     *
+     * @param itemStack The ItemStack.
+     * @return The new context.
+     */
+    public PlaceholderContext copyWithItem(@Nullable final ItemStack itemStack) {
+        return new PlaceholderContext(
+                this.getPlayer(),
+                itemStack,
                 this.getInjectableContext(),
                 this.getAdditionalPlayers()
         );

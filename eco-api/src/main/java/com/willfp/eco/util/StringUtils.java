@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -346,12 +345,8 @@ public final class StringUtils {
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             return format(
                     message,
-                    new PlaceholderContext(
-                            player,
-                            null,
-                            PlaceholderManager.EMPTY_INJECTABLE,
-                            Collections.emptyList()
-                    )
+                    new PlaceholderContext()
+                            .copyWithPlayer(player)
             );
         }
 

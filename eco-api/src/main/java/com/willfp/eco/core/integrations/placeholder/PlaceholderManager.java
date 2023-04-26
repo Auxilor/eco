@@ -131,12 +131,8 @@ public final class PlaceholderManager {
                 getResult(
                         plugin,
                         identifier,
-                        new PlaceholderContext(
-                                player,
-                                null,
-                                EMPTY_INJECTABLE,
-                                Collections.emptyList()
-                        )
+                        new PlaceholderContext()
+                                .copyWithPlayer(player)
                 ),
                 ""
         );
