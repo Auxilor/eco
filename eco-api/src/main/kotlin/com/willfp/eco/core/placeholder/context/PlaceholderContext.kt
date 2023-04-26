@@ -8,22 +8,6 @@ import com.willfp.eco.core.placeholder.PlaceholderInjectable
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-/**
- * Kotlin version of [PlaceholderContext].
- */
-data class KPlaceholderContext internal constructor(
-    val player: Player?,
-    val item: ItemStack?,
-    val injectableContext: PlaceholderInjectable,
-    val additionalPlayers: Collection<AdditionalPlayer>
-) : PlaceholderContext(player, item, injectableContext, additionalPlayers) {
-    override fun withInjectableContext(injectableContext: PlaceholderInjectable): KPlaceholderContext {
-        return this.copy(
-            injectableContext = MergedInjectableContext(this.injectableContext, injectableContext),
-        )
-    }
-}
-
 /** @see PlaceholderContext */
 @JvmOverloads
 fun placeholderContext(
@@ -31,4 +15,4 @@ fun placeholderContext(
     item: ItemStack? = null,
     injectable: PlaceholderInjectable = PlaceholderManager.EMPTY_INJECTABLE,
     additionalPlayers: Collection<AdditionalPlayer> = emptyList()
-): KPlaceholderContext = KPlaceholderContext(player, item, injectable, additionalPlayers)
+): PlaceholderContext = PlaceholderContext(player, item, injectable, additionalPlayers)
