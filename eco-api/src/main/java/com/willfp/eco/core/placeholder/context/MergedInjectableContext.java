@@ -4,6 +4,7 @@ import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,9 +59,12 @@ public class MergedInjectableContext implements PlaceholderInjectable {
         List<InjectablePlaceholder> base = baseContext.getPlaceholderInjections();
         List<InjectablePlaceholder> additional = additionalContext.getPlaceholderInjections();
 
-        base.addAll(additional);
-        base.addAll(extraInjections);
+        List<InjectablePlaceholder> injections = new ArrayList<>(base.size() + additional.size() + extraInjections.size());
 
-        return base;
+        injections.addAll(base);
+        injections.addAll(additional);
+        injections.addAll(extraInjections);
+
+        return injections;
     }
 }
