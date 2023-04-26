@@ -1,6 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,7 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
      */
     public PlayerStaticPlaceholder(@NotNull final String identifier,
                                    @NotNull final Function<@NotNull Player, @Nullable String> function) {
-        this.identifier = identifier;
+        this.identifier = "%" + identifier + "%";
         this.pattern = Pattern.compile(identifier);
         this.function = function;
     }
@@ -72,8 +73,9 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     @Override
     public String tryTranslateQuickly(@NotNull final String text,
                                       @NotNull final PlaceholderContext context) {
-        return text.replace(
-                "%" + this.identifier + "%",
+        return StringUtils.replaceQuickly(
+                text,
+                this.identifier,
                 Objects.requireNonNullElse(
                         this.getValue(identifier, context),
                         ""

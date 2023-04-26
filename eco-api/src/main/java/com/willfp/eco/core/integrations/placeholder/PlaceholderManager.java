@@ -283,8 +283,9 @@ public final class PlaceholderManager {
 
          */
 
+        List<InjectablePlaceholder> injections = context.getInjectableContext().getPlaceholderInjections();
 
-        for (InjectablePlaceholder injection : context.getInjectableContext().getPlaceholderInjections()) {
+        for (InjectablePlaceholder injection : injections) {
             processed = injection.tryTranslateQuickly(processed, context);
         }
 
@@ -316,7 +317,7 @@ public final class PlaceholderManager {
         }
 
         // DON'T REMOVE THIS, IT'S NOT DUPLICATE CODE.
-        for (InjectablePlaceholder injection : context.getInjectableContext().getPlaceholderInjections()) {
+        for (InjectablePlaceholder injection : injections) {
             processed = injection.tryTranslateQuickly(processed, context);
         }
 

@@ -1,6 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +36,7 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
      */
     public StaticPlaceholder(@NotNull final String identifier,
                              @NotNull final Supplier<@Nullable String> function) {
-        this.identifier = identifier;
+        this.identifier = "%" + identifier + "%";
         this.pattern = Pattern.compile(identifier);
         this.function = function;
     }
@@ -64,8 +65,9 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     @Override
     public String tryTranslateQuickly(@NotNull final String text,
                                       @NotNull final PlaceholderContext context) {
-        return text.replace(
-                "%" + this.identifier + "%",
+        return StringUtils.replaceQuickly(
+                text,
+                this.identifier,
                 Objects.requireNonNullElse(this.getValue(this.identifier, context), "")
         );
     }

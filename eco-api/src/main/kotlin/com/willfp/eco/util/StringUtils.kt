@@ -65,3 +65,7 @@ fun String.splitAround(separator: String): Array<String> =
 /** @see StringUtils.toNiceString */
 fun Any?.toNiceString(): String =
     StringUtils.toNiceString(this)
+
+/** @see StringUtils.replaceQuickly */
+fun String.replaceQuickly(target: String, replacement: String): String =
+    StringUtils.replaceQuickly(this, target, replacement)

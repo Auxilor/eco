@@ -9,10 +9,17 @@ import redempt.crunch.Crunch
 import redempt.crunch.data.FastNumberParsing
 import redempt.crunch.functional.EvaluationEnvironment
 import redempt.crunch.functional.Function
+import java.util.Objects
+import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
 
 private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder().build()
+
+private val evaluationCache: Cache<Int, Double> = Caffeine.newBuilder()
+    .expireAfterWrite(100, TimeUnit.MILLISECONDS)
+    .build()
+
 private val goToZero = Crunch.compileExpression("0")
 
 private val min = Function("min", 2) {
@@ -23,11 +30,20 @@ private val max = Function("max", 2) {
     max(it[0], it[1])
 }
 
-fun evaluateExpression(expression: String, context: PlaceholderContext) =
-    doEvaluateExpression(
+fun evaluateExpression(expression: String, context: PlaceholderContext): Double {
+    val hash = Objects.hash(
         expression,
-        context
-    ).let { if (!it.isFinite()) 0.0 else it } // Fixes NaN bug.
+        context.player?.uniqueId,
+        context.injectableContext
+    )
+
+    return evaluationCache.get(hash) {
+        doEvaluateExpression(
+            expression,
+            context
+        ).let { if (!it.isFinite()) 0.0 else it } // Fixes NaN bug.
+    }
+}
 
 private fun doEvaluateExpression(
     expression: String,

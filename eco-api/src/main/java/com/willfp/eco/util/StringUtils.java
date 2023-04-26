@@ -736,6 +736,59 @@ public final class StringUtils {
     }
 
     /**
+     * Fast implementation of {@link String#replace(CharSequence, CharSequence)}
+     *
+     * @param input       The input string.
+     * @param target      The target string.
+     * @param replacement The replacement string.
+     * @return The replaced string.
+     */
+    @NotNull
+    public static String replaceQuickly(@NotNull final String input,
+                                        @NotNull final String target,
+                                        @NotNull final String replacement) {
+        if (input.isEmpty()) {
+            return input;
+        }
+
+        int targetLength = target.length();
+        int replacementLength = replacement.length();
+        int inputLength = input.length();
+
+        // Count the number of original occurrences
+        int count = 0;
+        for (
+                int index = input.indexOf(target);
+                index != -1;
+                index = input.indexOf(target, index + targetLength)
+        ) {
+            count++;
+        }
+
+        if (count == 0) {
+            return input;
+        }
+
+        // Pre-calculate the final size of the StringBuilder
+        int newSize = inputLength + (replacementLength - targetLength) * count;
+        StringBuilder result = new StringBuilder(newSize);
+
+        int start = 0;
+        for (
+                int index = input.indexOf(target);
+                index != -1;
+                index = input.indexOf(target, start)
+        ) {
+            result.append(input, start, index);
+            result.append(replacement);
+            start = index + targetLength;
+        }
+
+        result.append(input, start, inputLength);
+        return result.toString();
+    }
+
+    /**
      * Options for formatting.
      */
     public enum FormatOption {

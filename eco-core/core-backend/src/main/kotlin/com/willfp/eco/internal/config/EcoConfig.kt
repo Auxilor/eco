@@ -1,13 +1,15 @@
 package com.willfp.eco.internal.config
 
+import com.google.common.collect.ImmutableList
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
+import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
-import java.util.regex.Pattern
+import java.util.concurrent.CopyOnWriteArrayList
 
 @Suppress("UNCHECKED_CAST")
 open class EcoConfig(
@@ -16,7 +18,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = ConcurrentHashMap<Pattern, InjectablePlaceholder>()
+    var injections = CopyOnWriteArrayList<InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -105,12 +107,12 @@ open class EcoConfig(
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
-        return (get(path) as? Config)?.apply { this.addInjectablePlaceholder(injections.values) }
+        return (get(path) as? Config)?.apply { this.addInjectablePlaceholder(injections) }
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
         return getList<Config>(path)
-            ?.map { it.apply { this.addInjectablePlaceholder(injections.values) } }
+            ?.map { it.apply { this.addInjectablePlaceholder(injections) } }
             ?.toList()
     }
 
@@ -178,12 +180,12 @@ open class EcoConfig(
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
         for (placeholder in placeholders) {
-            injections[placeholder.pattern] = placeholder
+            injections += placeholder
         }
     }
 
     override fun getPlaceholderInjections(): List<InjectablePlaceholder> {
-        return injections.values.toList()
+        return ImmutableList.copyOf(injections) // Faster than toList()
     }
 
     override fun clearInjectedPlaceholders() {
@@ -206,14 +208,6 @@ open class EcoConfig(
         return bukkit
     }
 
-    override fun clone(): Config {
-        return EcoConfigSection(type, this.values.toMutableMap(), injections)
-    }
-
-    override fun toString(): String {
-        return this.toPlaintext()
-    }
-
     private inline fun <reified T> getList(path: String): List<T>? {
         val asIterable = get(path) as? Iterable<*> ?: return null
         val asList = asIterable.toList()
@@ -223,5 +217,41 @@ open class EcoConfig(
         }
 
         return asList as List<T>
+    }
+
+    override fun clone(): Config {
+        return EcoConfigSection(type, this.values.toMutableMap(), injections)
+    }
+
+    override fun toString(): String {
+        return this.toPlaintext()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        if (other !is EcoConfig) {
+            return false
+        }
+
+        if (configType != other.configType) {
+            return false
+        }
+
+        if (values != other.values) {
+            return false
+        }
+
+        if (injections != other.injections) {
+            return false
+        }
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(values, configType, injections)
     }
 }
