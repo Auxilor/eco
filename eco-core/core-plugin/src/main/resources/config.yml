@@ -46,11 +46,6 @@ conflicts:
 # Disable it if it changes drop mechanics too much for you.
 use-fast-collated-drops: true
 
-# Some plugins use their own item display systems (eg Triton)
-# And must be run after eco. Don't enable this unless you run a conflicting plugin
-# and have been told to enable it.
-use-lower-protocollib-priority: false
-
 # Display frames massively optimize PacketWindowItems, however some users have
 # reported display bugs by using it. If you have any problems with it, then you
 # should disable this option.
