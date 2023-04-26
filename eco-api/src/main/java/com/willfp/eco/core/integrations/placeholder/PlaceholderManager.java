@@ -126,7 +126,7 @@ public final class PlaceholderManager {
     @NotNull
     public static String getResult(@Nullable final Player player,
                                    @NotNull final String identifier,
-                                   @NotNull final EcoPlugin plugin) {
+                                   @Nullable final EcoPlugin plugin) {
         return Objects.requireNonNullElse(
                 getResult(
                         plugin,
@@ -151,12 +151,12 @@ public final class PlaceholderManager {
      * @return The value of the arguments.
      */
     @Nullable
-    public static String getResult(@NotNull final EcoPlugin plugin,
+    public static String getResult(@Nullable final EcoPlugin plugin,
                                    @NotNull final String args,
                                    @NotNull final PlaceholderContext context) {
         Placeholder placeholder = PLACEHOLDER_LOOKUP_CACHE.get(
-                new PlaceholderLookup(args, plugin),
-                (it) -> findMatchingPlaceholder(plugin, args)
+                new PlaceholderLookup(args, plugin, context),
+                (it) -> findMatchingPlaceholder(plugin, args, context)
         ).orElse(null);
 
         if (placeholder == null) {
@@ -174,13 +174,22 @@ public final class PlaceholderManager {
      * @return The placeholder.
      */
     @NotNull
-    private static Optional<Placeholder> findMatchingPlaceholder(@NotNull final EcoPlugin plugin,
-                                                                 @NotNull final String args) {
-        Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(plugin);
+    private static Optional<Placeholder> findMatchingPlaceholder(@Nullable final EcoPlugin plugin,
+                                                                 @NotNull final String args,
+                                                                 @NotNull final PlaceholderContext context) {
+        if (plugin != null) {
+            Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(plugin);
 
-        for (Map.Entry<Pattern, Placeholder> entry : pluginPlaceholders.entrySet()) {
-            if (entry.getKey().matcher(args).matches()) {
-                return Optional.of(entry.getValue());
+            for (Map.Entry<Pattern, Placeholder> entry : pluginPlaceholders.entrySet()) {
+                if (entry.getKey().matcher(args).matches()) {
+                    return Optional.of(entry.getValue());
+                }
+            }
+        }
+
+        for (InjectablePlaceholder placeholder : context.getInjectableContext().getPlaceholderInjections()) {
+            if (placeholder.getPattern().matcher(args).matches()) {
+                return Optional.of(placeholder);
             }
         }
 
@@ -260,7 +269,7 @@ public final class PlaceholderManager {
 
         /*
 
-        Why am I doing statics at the start, but player statics at the end?
+        Why am I doing injections at the start, and again at the end?
 
         Additional players let you use something like victim as a player to parse in relation to,
         for example doing %victim_player_health%, which would parse the health of the victim.
@@ -353,6 +362,13 @@ public final class PlaceholderManager {
 
         while (matcher.find()) {
             String placeholder = matcher.group(1);
+            String injectableResult = getResult(null, placeholder, context);
+
+            if (injectableResult != null) {
+                matcher.appendReplacement(output, Matcher.quoteReplacement(injectableResult));
+                continue;
+            }
+
             String[] parts = placeholder.split("_", 2);
 
             if (parts.length == 2) {
@@ -376,7 +392,8 @@ public final class PlaceholderManager {
     }
 
     private record PlaceholderLookup(@NotNull String identifier,
-                                     @Nullable EcoPlugin plugin) {
+                                     @Nullable EcoPlugin plugin,
+                                     @NotNull PlaceholderContext context) {
 
     }
 
