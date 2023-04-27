@@ -21,8 +21,6 @@ class PlaceholderLookup(
             }
         }
 
-        val injections = injections
-
         if (injections != null) {
             for (placeholder in injections) {
                 if (placeholder.matches(this)) {

@@ -7,12 +7,12 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
-import redempt.crunch.data.FastNumberParsing
 import redempt.crunch.functional.EvaluationEnvironment
 import redempt.crunch.functional.Function
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 
 private val goToZero = Crunch.compileExpression("0")
 
@@ -27,6 +27,45 @@ private val max = Function("max", 2) {
 interface ExpressionHandler {
     fun evaluate(expression: String, context: PlaceholderContext): Double
 }
+private fun String.fastToDoubleOrNull(): Double? {
+    if (isEmpty()) {
+        return null
+    }
+
+    var idx = 0
+    val isNegative = this[0] == '-'
+    if (isNegative) idx++
+
+    var integerPart = 0.0
+    var decimalPart = 0.0
+    var decimalIdx = -1
+
+    while (idx < length) {
+
+        when (val char = this[idx]) {
+            '.' -> {
+                if (decimalIdx != -1) return null
+                decimalIdx = idx
+            }
+            in '0'..'9' -> {
+                val number = (char.code - '0'.code).toDouble()
+                if (decimalIdx != -1) {
+                    decimalPart = decimalPart * 10 + number
+                } else {
+                    integerPart = integerPart * 10 + number
+                }
+            }
+            else -> return null
+        }
+
+        idx++
+    }
+
+    decimalPart /= 10.0.pow((length - decimalIdx - 1).toDouble())
+
+    return if (isNegative) -(integerPart + decimalPart) else integerPart + decimalPart
+}
+
 
 class ImmediatePlaceholderTranslationExpressionHandler(
     private val placeholderParser: PlaceholderParser
@@ -61,7 +100,7 @@ class LazyPlaceholderTranslationExpressionHandler(
         val placeholders = PlaceholderManager.findPlaceholdersIn(expression)
 
         val placeholderValues = placeholderParser.parseIndividualPlaceholders(placeholders, context)
-            .map { runCatching { FastNumberParsing.parseDouble(it) }.getOrDefault(0.0) }
+            .map { it.fastToDoubleOrNull() ?: 0.0 }
             .toDoubleArray()
 
         val compiled = cache.get(expression) {
