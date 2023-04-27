@@ -39,7 +39,7 @@ public final class PlayerlessPlaceholder implements RegistrablePlaceholder {
                                  @NotNull final String identifier,
                                  @NotNull final Supplier<@Nullable String> function) {
         this.plugin = plugin;
-        this.pattern = Pattern.compile(identifier);
+        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
         this.function = function;
     }
 

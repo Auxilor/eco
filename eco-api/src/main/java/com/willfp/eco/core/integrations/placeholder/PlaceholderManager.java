@@ -1,7 +1,7 @@
 package com.willfp.eco.core.integrations.placeholder;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.collect.ImmutableSet;
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.map.DefaultMap;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
@@ -10,7 +10,6 @@ import com.willfp.eco.core.placeholder.Placeholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.RegistrablePlaceholder;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
-import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,14 +17,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,19 +31,12 @@ public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final DefaultMap<EcoPlugin, Map<Pattern, Placeholder>> REGISTERED_PLACEHOLDERS = DefaultMap.createNestedMap();
+    private static final DefaultMap<EcoPlugin, Set<Placeholder>> REGISTERED_PLACEHOLDERS = new DefaultMap<>(HashSet::new);
 
     /**
      * All registered arguments integrations.
      */
     private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = new HashSet<>();
-
-    /**
-     * Placeholder Lookup Cache.
-     */
-    private static final Cache<PlaceholderLookup, Optional<Placeholder>> PLACEHOLDER_LOOKUP_CACHE = Caffeine.newBuilder()
-            .expireAfterWrite(1, TimeUnit.SECONDS)
-            .build();
 
     /**
      * The default PlaceholderAPI pattern; brought in for compatibility.
@@ -107,19 +95,18 @@ public final class PlaceholderManager {
      * @param placeholder The arguments to register.
      */
     public static void registerPlaceholder(@NotNull final RegistrablePlaceholder placeholder) {
-        Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS
-                .getOrDefault(placeholder.getPlugin(), new HashMap<>());
-
-        pluginPlaceholders.put(placeholder.getPattern(), placeholder);
-
-        REGISTERED_PLACEHOLDERS.put(placeholder.getPlugin(), pluginPlaceholders);
+        // Storing as immutable set leads to slower times to register placeholders, but much
+        // faster times to access registrations.
+        Set<Placeholder> pluginPlaceholders = new HashSet<>(REGISTERED_PLACEHOLDERS.get(placeholder.getPlugin()));
+        pluginPlaceholders.add(placeholder);
+        REGISTERED_PLACEHOLDERS.put(placeholder.getPlugin(), ImmutableSet.copyOf(pluginPlaceholders));
     }
 
     /**
      * Get the result of a placeholder with respect to a player.
      *
      * @param player     The player to get the result from.
-     * @param identifier The placeholder identifier.
+     * @param identifier The placeholder args.
      * @param plugin     The plugin for the arguments.
      * @return The value of the arguments.
      */
@@ -150,46 +137,7 @@ public final class PlaceholderManager {
     public static String getResult(@Nullable final EcoPlugin plugin,
                                    @NotNull final String args,
                                    @NotNull final PlaceholderContext context) {
-        Placeholder placeholder = PLACEHOLDER_LOOKUP_CACHE.get(
-                new PlaceholderLookup(args, plugin, context),
-                (it) -> findMatchingPlaceholder(plugin, args, context)
-        ).orElse(null);
-
-        if (placeholder == null) {
-            return null;
-        }
-
-        return placeholder.getValue(args, context);
-    }
-
-    /**
-     * Find matching placeholder.
-     *
-     * @param plugin The plugin.
-     * @param args   The args.
-     * @return The placeholder.
-     */
-    @NotNull
-    private static Optional<Placeholder> findMatchingPlaceholder(@Nullable final EcoPlugin plugin,
-                                                                 @NotNull final String args,
-                                                                 @NotNull final PlaceholderContext context) {
-        if (plugin != null) {
-            Map<Pattern, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(plugin);
-
-            for (Map.Entry<Pattern, Placeholder> entry : pluginPlaceholders.entrySet()) {
-                if (entry.getKey().matcher(args).matches()) {
-                    return Optional.of(entry.getValue());
-                }
-            }
-        }
-
-        for (InjectablePlaceholder placeholder : context.getInjectableContext().getPlaceholderInjections()) {
-            if (placeholder.getPattern().matcher(args).matches()) {
-                return Optional.of(placeholder);
-            }
-        }
-
-        return Optional.empty();
+        return Eco.get().getPlaceholderValue(plugin, args, context);
     }
 
     /**
@@ -261,67 +209,7 @@ public final class PlaceholderManager {
     @NotNull
     public static String translatePlaceholders(@NotNull final String text,
                                                @NotNull final PlaceholderContext context) {
-        String processed = text;
-
-        /*
-
-        Why am I doing injections at the start, and again at the end?
-
-        Additional players let you use something like victim as a player to parse in relation to,
-        for example doing %victim_player_health%, which would parse the health of the victim.
-
-        However, something like libreforge will also inject %victim_max_health%, which is unrelated
-        to additional players, and instead holds a constant value. So, eco saw this, smartly thought
-        "ah, it's an additional player, let's parse it", and then tried to parse %max_health% with
-        relation to the victim, which resolved to zero. So, we have to parse statics and player statics
-        that might include a prefix first, then additional players, then player statics with the support
-        of additional players.
-
-        This was a massive headache and took so many reports before I clocked what was going on.
-
-        Oh well, at least it's fixed now.
-
-         */
-
-        List<InjectablePlaceholder> injections = context.getInjectableContext().getPlaceholderInjections();
-
-        for (InjectablePlaceholder injection : injections) {
-            processed = injection.tryTranslateQuickly(processed, context);
-        }
-
-        // Prevent running 2 scans if there are no additional players.
-        if (!context.getAdditionalPlayers().isEmpty()) {
-            List<String> found = findPlaceholdersIn(text);
-
-            for (AdditionalPlayer additionalPlayer : context.getAdditionalPlayers()) {
-                for (String placeholder : found) {
-                    String prefix = "%" + additionalPlayer.getIdentifier() + "_";
-
-                    if (placeholder.startsWith(prefix)) {
-                        processed = processed.replace(
-                                placeholder,
-                                translatePlaceholders(
-                                        "%" + StringUtils.removePrefix(prefix, placeholder),
-                                        context.copyWithPlayer(additionalPlayer.getPlayer())
-                                )
-                        );
-                    }
-                }
-            }
-        }
-
-        processed = translateEcoPlaceholdersIn(processed, context);
-
-        for (PlaceholderIntegration integration : REGISTERED_INTEGRATIONS) {
-            processed = integration.translate(processed, context.getPlayer());
-        }
-
-        // DON'T REMOVE THIS, IT'S NOT DUPLICATE CODE.
-        for (InjectablePlaceholder injection : injections) {
-            processed = injection.tryTranslateQuickly(processed, context);
-        }
-
-        return processed;
+        return Eco.get().translatePlaceholders(text, context);
     }
 
     /**
@@ -346,52 +234,22 @@ public final class PlaceholderManager {
     }
 
     /**
-     * Translate all eco placeholders in a given text.
+     * Get all registered placeholder integrations.
      *
-     * @param text    The text.
-     * @param context The context.
-     * @return The text.
+     * @return The integrations.
      */
-    private static String translateEcoPlaceholdersIn(@NotNull final String text,
-                                                     @NotNull final PlaceholderContext context) {
-        StringBuilder output = new StringBuilder();
-        Matcher matcher = PATTERN.matcher(text);
-
-        while (matcher.find()) {
-            String placeholder = matcher.group(1);
-            String injectableResult = getResult(null, placeholder, context);
-
-            if (injectableResult != null) {
-                matcher.appendReplacement(output, Matcher.quoteReplacement(injectableResult));
-                continue;
-            }
-
-            String[] parts = placeholder.split("_", 2);
-
-            if (parts.length == 2) {
-                EcoPlugin plugin = EcoPlugin.getPlugin(parts[0]);
-
-                if (plugin != null) {
-                    String result = getResult(plugin, parts[1], context);
-
-                    if (result != null) {
-                        matcher.appendReplacement(output, Matcher.quoteReplacement(result));
-                        continue;
-                    }
-                }
-            }
-
-            matcher.appendReplacement(output, Matcher.quoteReplacement(matcher.group(0)));
-        }
-
-        matcher.appendTail(output);
-        return output.toString();
+    public static Set<PlaceholderIntegration> getRegisteredIntegrations() {
+        return Set.copyOf(REGISTERED_INTEGRATIONS);
     }
 
-    private record PlaceholderLookup(@NotNull String identifier,
-                                     @Nullable EcoPlugin plugin,
-                                     @NotNull PlaceholderContext context) {
-
+    /**
+     * Get all registered placeholders for a plugin.
+     *
+     * @param plugin The plugin.
+     * @return The placeholders.
+     */
+    public static Set<Placeholder> getRegisteredPlaceholders(@NotNull final EcoPlugin plugin) {
+        return REGISTERED_PLACEHOLDERS.get(plugin);
     }
 
     private PlaceholderManager() {

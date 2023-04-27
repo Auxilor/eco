@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.internal.placeholder.PlaceholderParser
 import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
 import redempt.crunch.data.FastNumberParsing
@@ -27,7 +28,9 @@ interface ExpressionHandler {
     fun evaluate(expression: String, context: PlaceholderContext): Double
 }
 
-class ImmediatePlaceholderTranslationExpressionHandler : ExpressionHandler {
+class ImmediatePlaceholderTranslationExpressionHandler(
+    private val placeholderParser: PlaceholderParser
+) : ExpressionHandler {
     private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder()
         .expireAfterAccess(500, TimeUnit.MILLISECONDS)
         .build()
@@ -37,7 +40,7 @@ class ImmediatePlaceholderTranslationExpressionHandler : ExpressionHandler {
     }
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double {
-        val translatedExpression = PlaceholderManager.translatePlaceholders(expression, context)
+        val translatedExpression = placeholderParser.translatePlacholders(expression, context)
 
         val compiled = cache.get(translatedExpression) {
             runCatching { Crunch.compileExpression(translatedExpression, env) }
@@ -48,15 +51,16 @@ class ImmediatePlaceholderTranslationExpressionHandler : ExpressionHandler {
     }
 }
 
-class LazyPlaceholderTranslationExpressionHandler : ExpressionHandler {
+class LazyPlaceholderTranslationExpressionHandler(
+    private val placeholderParser: PlaceholderParser
+) : ExpressionHandler {
     private val cache: Cache<String, CompiledExpression> = Caffeine.newBuilder()
         .build()
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double {
         val placeholders = PlaceholderManager.findPlaceholdersIn(expression)
 
-        val placeholderValues = placeholders
-            .map { PlaceholderManager.translatePlaceholders(it, context) }
+        val placeholderValues = placeholderParser.parseIndividualPlaceholders(placeholders, context)
             .map { runCatching { FastNumberParsing.parseDouble(it) }.getOrDefault(0.0) }
             .toDoubleArray()
 

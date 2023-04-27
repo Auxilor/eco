@@ -37,7 +37,7 @@ public abstract class SimplePlaceholder implements RegistrablePlaceholder {
                                 @NotNull final String identifier) {
         this.plugin = plugin;
         this.identifier = identifier;
-        this.pattern = Pattern.compile(identifier);
+        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
     }
 
     @Override

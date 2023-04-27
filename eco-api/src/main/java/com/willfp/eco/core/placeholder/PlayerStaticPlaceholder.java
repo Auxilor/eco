@@ -38,7 +38,7 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     public PlayerStaticPlaceholder(@NotNull final String identifier,
                                    @NotNull final Function<@NotNull Player, @Nullable String> function) {
         this.identifier = "%" + identifier + "%";
-        this.pattern = Pattern.compile(identifier);
+        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
         this.function = function;
     }
 

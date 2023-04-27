@@ -16,7 +16,7 @@ public interface Placeholder {
      *
      * @return The plugin.
      */
-    @NotNull
+    @Nullable
     EcoPlugin getPlugin();
 
     /**

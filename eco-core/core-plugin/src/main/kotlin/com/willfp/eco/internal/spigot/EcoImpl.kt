@@ -37,6 +37,7 @@ import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 import com.willfp.eco.internal.integrations.PAPIExpansion
 import com.willfp.eco.internal.logging.EcoLogger
+import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.DataYml
@@ -90,10 +91,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
+    private val placeholderParser = PlaceholderParser()
+
     private val crunchHandler = DelegatedExpressionHandler(
         this,
         if (this.configYml.getBool("use-immediate-placeholder-translation-for-math"))
-            ImmediatePlaceholderTranslationExpressionHandler() else LazyPlaceholderTranslationExpressionHandler()
+            ImmediatePlaceholderTranslationExpressionHandler(placeholderParser)
+        else LazyPlaceholderTranslationExpressionHandler(placeholderParser),
     )
 
     override fun createScheduler(plugin: EcoPlugin) =
@@ -334,4 +338,10 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun sendPacket(player: Player, packet: Packet) =
         this.getProxy(PacketHandlerProxy::class.java).sendPacket(player, packet)
+
+    override fun translatePlaceholders(text: String, context: PlaceholderContext) =
+        placeholderParser.translatePlacholders(text, context)
+
+    override fun getPlaceholderValue(plugin: EcoPlugin?, args: String, context: PlaceholderContext) =
+        placeholderParser.getPlaceholderResult(plugin, args, context)
 }

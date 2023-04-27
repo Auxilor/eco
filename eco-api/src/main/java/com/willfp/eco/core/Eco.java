@@ -564,6 +564,30 @@ public interface Eco {
                     @NotNull Packet packet);
 
     /**
+     * Translate placeholders in a string.
+     *
+     * @param text    The text.
+     * @param context The context.
+     * @return The translated text.
+     */
+    @NotNull
+    String translatePlaceholders(@NotNull String text,
+                                 @NotNull PlaceholderContext context);
+
+    /**
+     * Get the value of a placeholder.
+     *
+     * @param plugin  The plugin that owns the placeholder.
+     * @param args    The placeholder arguments.
+     * @param context The context.
+     * @return The value, or null if invalid.
+     */
+    @Nullable
+    String getPlaceholderValue(@Nullable EcoPlugin plugin,
+                               @NotNull String args,
+                               @NotNull PlaceholderContext context);
+
+    /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
      *
      * @return The instance of eco.

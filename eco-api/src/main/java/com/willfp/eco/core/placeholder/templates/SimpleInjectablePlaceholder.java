@@ -28,7 +28,7 @@ public abstract class SimpleInjectablePlaceholder implements InjectablePlacehold
      */
     protected SimpleInjectablePlaceholder(@NotNull final String identifier) {
         this.identifier = identifier;
-        this.pattern = Pattern.compile(identifier);
+        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
     }
 
     @Override
