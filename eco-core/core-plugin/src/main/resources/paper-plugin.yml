@@ -185,4 +185,6 @@ dependencies:
     required: false
     bootstrap: false
 
-
+  - name: UltraEconomy
+    required: false
+    bootstrap: false
