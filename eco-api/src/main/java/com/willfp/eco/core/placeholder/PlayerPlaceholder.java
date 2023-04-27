@@ -15,11 +15,6 @@ import java.util.regex.Pattern;
  */
 public final class PlayerPlaceholder implements RegistrablePlaceholder {
     /**
-     * The name of the arguments.
-     */
-    private final String identifier;
-
-    /**
      * The arguments pattern.
      */
     private final Pattern pattern;
@@ -45,7 +40,6 @@ public final class PlayerPlaceholder implements RegistrablePlaceholder {
                              @NotNull final String identifier,
                              @NotNull final Function<@NotNull Player, @Nullable String> function) {
         this.plugin = plugin;
-        this.identifier = identifier;
         this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
         this.function = function;
     }

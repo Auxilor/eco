@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
- * A arguments that does not require a player and supports dynamic styles.
+ * A placeholder that does not require a player and supports dynamic styles.
  */
 public final class DynamicPlaceholder implements RegistrablePlaceholder {
     /**
