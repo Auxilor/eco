@@ -18,7 +18,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = ConcurrentHashMap<Pattern, InjectablePlaceholder>()
+    var injections = mutableMapOf<Pattern, InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
