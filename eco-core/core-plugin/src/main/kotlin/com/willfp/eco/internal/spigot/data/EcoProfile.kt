@@ -16,9 +16,7 @@ abstract class EcoProfile(
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         this.data[key] = value
 
-        val changedKeys = CHANGE_MAP[uuid] ?: mutableSetOf()
-        changedKeys.add(key)
-        CHANGE_MAP[uuid] = changedKeys
+        CHANGE_MAP.add(uuid)
     }
 
     override fun <T : Any> read(key: PersistentDataKey<T>): T {
@@ -44,7 +42,7 @@ abstract class EcoProfile(
     }
 
     companion object {
-        val CHANGE_MAP: MutableMap<UUID, MutableSet<PersistentDataKey<*>>> = ConcurrentHashMap()
+        val CHANGE_MAP: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
     }
 }
 
