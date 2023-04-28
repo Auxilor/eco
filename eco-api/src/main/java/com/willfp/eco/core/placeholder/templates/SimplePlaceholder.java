@@ -74,7 +74,7 @@ public abstract class SimplePlaceholder implements RegistrablePlaceholder {
             return true;
         }
 
-        if (!(o instanceof SimpleInjectablePlaceholder that)) {
+        if (!(o instanceof SimplePlaceholder that)) {
             return false;
         }
 
