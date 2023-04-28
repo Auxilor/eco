@@ -1,6 +1,5 @@
 package com.willfp.eco.core.placeholder.templates;
 
-import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,12 +47,11 @@ public abstract class DynamicInjectablePlaceholder implements InjectablePlacehol
             return false;
         }
 
-        return Objects.equals(pattern, that.getPattern())
-                && Objects.equals(plugin, that.getPlugin());
+        return Objects.equals(pattern, that.getPattern());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pattern, plugin);
+        return Objects.hash(pattern);
     }
 }
