@@ -366,7 +366,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     public final void onEnable() {
         super.onEnable();
 
-        this.getLogger().info("");
         this.getLogger().info("Loading " + this.getColor() + this.getName());
 
         if (this.getResourceId() != 0 && !Eco.get().getEcoPlugin().getConfigYml().getBool("no-update-checker")) {
@@ -406,7 +405,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         this.loadedIntegrations.removeIf(pl -> pl.equalsIgnoreCase(this.getName()));
 
-        this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+        if (!this.getLoadedIntegrations().isEmpty()) {
+            this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+        }
 
         Prerequisite.update();
 
@@ -428,17 +429,19 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();
 
-            if (this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
-                this.getLogger().info("&cNo extensions found");
-            } else {
-                this.getLogger().info("Extensions Loaded:");
-                this.getExtensionLoader().getLoadedExtensions().forEach(extension -> this.getLogger().info("- " + extension.getName() + " v" + extension.getVersion()));
+            if (!this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
+                List<String> loadedExtensions = this.getExtensionLoader().getLoadedExtensions().stream().map(
+                        extension -> extension.getName() + " v" + extension.getVersion()
+                ).toList();
+
+                this.getLogger().info(
+                        "Loaded extensions: " +
+                                String.join(", ", loadedExtensions)
+                );
             }
         }
 
         this.handleLifecycle(this.onEnable, this::handleEnable);
-
-        this.getLogger().info("");
     }
 
     /**
