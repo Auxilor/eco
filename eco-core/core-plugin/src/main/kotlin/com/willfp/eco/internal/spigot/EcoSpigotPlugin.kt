@@ -94,7 +94,14 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSk
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
-import com.willfp.eco.internal.spigot.integrations.customitems.*
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsDenizen
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
