@@ -13,7 +13,8 @@ import java.util.concurrent.TimeUnit
 /*
 
 A lot of methods here are centered around minimising calls to getPlaceholderInjections,
-which tends to be slow for things like configs.
+which tends to be slow for things like configs. This was optimised with ListViewOfCollection,
+but it's still best to minimise the memory overhead.
 
  */
 
