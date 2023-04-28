@@ -188,3 +188,7 @@ dependencies:
   - name: UltraEconomy
     required: false
     bootstrap: false
+
+  - name: Denizen
+    required: false
+    bootstrap: false

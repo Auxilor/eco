@@ -82,6 +82,9 @@ allprojects {
 
         // UltraEconomy
         maven("https://repo.techscode.com/repository/maven-releases/")
+
+        // Denizen
+        maven("https://maven.citizensnpcs.co/repo")
     }
 
     dependencies {
