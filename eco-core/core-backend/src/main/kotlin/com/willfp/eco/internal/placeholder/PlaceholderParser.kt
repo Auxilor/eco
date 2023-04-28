@@ -67,9 +67,10 @@ class PlaceholderParser {
                 processed = found.fold(processed) { acc, placeholder ->
                     if (placeholder.startsWith(prefix)) {
                         val newPlaceholder = "%${StringUtils.removePrefix(prefix, placeholder)}"
-                        val translation = PlaceholderManager.translatePlaceholders(
+                        val translation = translatePlacholders(
                             newPlaceholder,
-                            context.copyWithPlayer(additionalPlayer.player)
+                            context.copyWithPlayer(additionalPlayer.player),
+                            injections
                         )
                         acc.replace(placeholder, translation)
                     } else {
