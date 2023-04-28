@@ -1,10 +1,10 @@
 package com.willfp.eco.internal.config
 
-import com.google.common.collect.ImmutableList
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.internal.fast.listView
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.Objects
@@ -185,7 +185,7 @@ open class EcoConfig(
     }
 
     override fun getPlaceholderInjections(): List<InjectablePlaceholder> {
-        return ImmutableList.copyOf(injections.values) // Faster than toList()
+        return injections.values.listView() // Faster than .toList()
     }
 
     override fun clearInjectedPlaceholders() {
