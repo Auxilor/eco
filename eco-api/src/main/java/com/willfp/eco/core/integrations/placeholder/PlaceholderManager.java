@@ -199,6 +199,17 @@ public final class PlaceholderManager {
     }
 
     /**
+     * Translate all placeholders without a placeholder context.
+     *
+     * @param text The text that may contain placeholders to translate.
+     * @return The text, translated.
+     */
+    @NotNull
+    public static String translatePlaceholders(@NotNull final String text) {
+        return Eco.get().translatePlaceholders(text, PlaceholderContext.EMPTY);
+    }
+
+    /**
      * Translate all placeholders in a translation context.
      *
      * @param text    The text that may contain placeholders to translate.
