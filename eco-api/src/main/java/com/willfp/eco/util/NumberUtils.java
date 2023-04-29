@@ -1,7 +1,6 @@
 package com.willfp.eco.util;
 
 import com.willfp.eco.core.Eco;
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
@@ -222,7 +221,7 @@ public final class NumberUtils {
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player) {
-        return evaluateExpression(expression, player, PlaceholderManager.EMPTY_INJECTABLE);
+        return evaluateExpression(expression, player, null);
     }
 
     /**
@@ -235,7 +234,7 @@ public final class NumberUtils {
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player,
-                                            @NotNull final PlaceholderInjectable context) {
+                                            @Nullable final PlaceholderInjectable context) {
         return evaluateExpression(expression, player, context, new ArrayList<>());
     }
 
@@ -250,7 +249,7 @@ public final class NumberUtils {
      */
     public static double evaluateExpression(@NotNull final String expression,
                                             @Nullable final Player player,
-                                            @NotNull final PlaceholderInjectable context,
+                                            @Nullable final PlaceholderInjectable context,
                                             @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
         return Eco.get().evaluate(expression, new PlaceholderContext(
                 player,

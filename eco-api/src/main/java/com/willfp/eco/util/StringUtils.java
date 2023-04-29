@@ -345,8 +345,7 @@ public final class StringUtils {
         if (option == FormatOption.WITH_PLACEHOLDERS) {
             return format(
                     message,
-                    new PlaceholderContext()
-                            .copyWithPlayer(player)
+                    new PlaceholderContext(player)
             );
         }
 

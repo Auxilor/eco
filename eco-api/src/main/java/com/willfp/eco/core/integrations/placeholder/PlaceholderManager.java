@@ -118,8 +118,7 @@ public final class PlaceholderManager {
                 getResult(
                         plugin,
                         identifier,
-                        new PlaceholderContext()
-                                .copyWithPlayer(player)
+                        new PlaceholderContext(player)
                 ),
                 ""
         );

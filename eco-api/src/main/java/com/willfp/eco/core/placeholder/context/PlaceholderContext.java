@@ -1,7 +1,7 @@
 package com.willfp.eco.core.placeholder.context;
 
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
+import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -17,12 +18,32 @@ import java.util.Objects;
  */
 public class PlaceholderContext {
     /**
+     * An empty injectable.
+     */
+    private static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
+        @Override
+        public void addInjectablePlaceholder(@NotNull final Iterable<InjectablePlaceholder> placeholders) {
+            // Do nothing.
+        }
+
+        @Override
+        public void clearInjectedPlaceholders() {
+            // Do nothing.
+        }
+
+        @Override
+        public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+            return Collections.emptyList();
+        }
+    };
+
+    /**
      * An empty context.
      */
     public static final PlaceholderContext EMPTY = new PlaceholderContext(
             null,
             null,
-            PlaceholderManager.EMPTY_INJECTABLE,
+            null,
             Collections.emptyList()
     );
 
@@ -54,7 +75,16 @@ public class PlaceholderContext {
      * Create an empty PlaceholderContext.
      */
     public PlaceholderContext() {
-        this(null, null, PlaceholderManager.EMPTY_INJECTABLE, Collections.emptyList());
+        this(null, null, null, Collections.emptyList());
+    }
+
+    /**
+     * Create a PlaceholderContext for a player.
+     *
+     * @param player The player.
+     */
+    public PlaceholderContext(@Nullable final Player player) {
+        this(player, null, null, Collections.emptyList());
     }
 
     /**
@@ -67,11 +97,11 @@ public class PlaceholderContext {
      */
     public PlaceholderContext(@Nullable final Player player,
                               @Nullable final ItemStack itemStack,
-                              @NotNull final PlaceholderInjectable injectableContext,
+                              @Nullable final PlaceholderInjectable injectableContext,
                               @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
         this.player = player;
         this.itemStack = itemStack;
-        this.injectableContext = injectableContext;
+        this.injectableContext = Objects.requireNonNullElse(injectableContext, EMPTY_INJECTABLE);
         this.additionalPlayers = additionalPlayers;
     }
 
