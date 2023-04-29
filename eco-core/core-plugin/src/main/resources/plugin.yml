@@ -52,4 +52,5 @@ softdepend:
   - PvPManager
   - DeluxeMenus
   - UltraEconomy
+  - PlayerPoints
   - Denizen
