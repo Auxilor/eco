@@ -15,3 +15,11 @@ fun placeholderContext(
     injectable: PlaceholderInjectable? = null,
     additionalPlayers: Collection<AdditionalPlayer> = emptyList()
 ): PlaceholderContext = PlaceholderContext(player, item, injectable, additionalPlayers)
+
+/** @see PlaceholderContext */
+fun PlaceholderContext.copy(
+    player: Player? = this.player,
+    item: ItemStack? = this.itemStack,
+    injectable: PlaceholderInjectable? = this.injectableContext,
+    additionalPlayers: Collection<AdditionalPlayer> = this.additionalPlayers
+): PlaceholderContext = PlaceholderContext(player, item, injectable, additionalPlayers)
