@@ -111,6 +111,7 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicD
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
@@ -356,6 +357,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 for (currency in UltraEconomy.getAPI().currencies) {
                     Prices.registerPriceFactory(PriceFactoryUltraEconomy(currency))
                 }
+            },
+            IntegrationLoader("PlayerPoints") {
+                Prices.registerPriceFactory(PriceFactoryPlayerPoints())
             },
 
             // Placeholder

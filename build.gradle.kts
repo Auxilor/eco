@@ -83,6 +83,9 @@ allprojects {
         // UltraEconomy
         maven("https://repo.techscode.com/repository/maven-releases/")
 
+        // PlayerPoints
+        maven("https://repo.rosewooddev.io/repository/public/")
+
         // Denizen
         maven("https://maven.citizensnpcs.co/repo")
     }

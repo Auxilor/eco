@@ -189,6 +189,10 @@ dependencies:
     required: false
     bootstrap: false
 
+  - name: PlayerPoints
+    required: false
+    bootstrap: false
+
   - name: Denizen
     required: false
     bootstrap: false
