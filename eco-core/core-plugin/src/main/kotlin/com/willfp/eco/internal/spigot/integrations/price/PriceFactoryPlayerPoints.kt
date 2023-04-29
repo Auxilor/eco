@@ -6,7 +6,7 @@ import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import org.black_ixx.playerpoints.PlayerPoints
 import org.bukkit.entity.Player
-import java.util.*
+import java.util.UUID
 import kotlin.math.roundToInt
 
 class PriceFactoryPlayerPoints : PriceFactory {
@@ -49,6 +49,5 @@ class PriceFactoryPlayerPoints : PriceFactory {
         override fun setMultiplier(player: Player, multiplier: Double) {
             multipliers[player.uniqueId] = multiplier
         }
-
     }
 }

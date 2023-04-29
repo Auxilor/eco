@@ -358,9 +358,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     Prices.registerPriceFactory(PriceFactoryUltraEconomy(currency))
                 }
             },
-            IntegrationLoader("PlayerPoints") {
-                Prices.registerPriceFactory(PriceFactoryPlayerPoints())
-            },
+            IntegrationLoader("PlayerPoints") { Prices.registerPriceFactory(PriceFactoryPlayerPoints()) },
 
             // Placeholder
             IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },
