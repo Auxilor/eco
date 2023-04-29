@@ -22,7 +22,7 @@ class ProfileHandler(
     private val type: HandlerType,
     private val plugin: EcoSpigotPlugin
 ) {
-    val loaded = mutableMapOf<UUID, Profile>()
+    private val loaded = mutableMapOf<UUID, EcoProfile>()
 
     val handler: DataHandler = when (type) {
         HandlerType.YAML -> YamlDataHandler(plugin, this)
@@ -40,6 +40,9 @@ class ProfileHandler(
             plugin.logger.warning("This can be done in /plugins/eco/config.yml")
         }
     }
+
+    fun accessLoadedProfile(uuid: UUID): EcoProfile? =
+        loaded[uuid]
 
     fun loadGenericProfile(uuid: UUID): Profile {
         val found = loaded[uuid]
