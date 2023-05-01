@@ -33,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -1085,7 +1086,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      *
      * @return The config handler.
      */
-    public ConfigHandler getConfigHandler() {
+    public @NotNull ConfigHandler getConfigHandler() {
         return this.configHandler;
     }
 
@@ -1153,5 +1154,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     @NotNull
     public final String getID() {
         return Registry.tryFitPattern(this.getName());
+    }
+
+    @Override
+    public @NotNull File getFile() {
+        return super.getFile();
     }
 }

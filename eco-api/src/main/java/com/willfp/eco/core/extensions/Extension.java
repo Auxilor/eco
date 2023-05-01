@@ -135,18 +135,28 @@ public abstract class Extension implements PluginLike {
     }
 
     @Override
-    public File getDataFolder() {
+    public @NotNull File getDataFolder() {
         return this.plugin.getDataFolder();
     }
 
     @Override
-    public ConfigHandler getConfigHandler() {
+    public @NotNull ConfigHandler getConfigHandler() {
         return this.plugin.getConfigHandler();
     }
 
     @Override
-    public Logger getLogger() {
+    public @NotNull Logger getLogger() {
         return this.plugin.getLogger();
+    }
+
+    @Override
+    public @NotNull File getFile() {
+        Validate.notNull(metadata, "Metadata cannot be null!");
+        if (this.metadata.file() != null) {
+            return this.metadata.file();
+        } else {
+            throw new MalformedExtensionException("Metadata does not have file!");
+        }
     }
 
     /**

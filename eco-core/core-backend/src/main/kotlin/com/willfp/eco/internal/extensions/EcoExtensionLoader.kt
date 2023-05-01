@@ -75,7 +75,7 @@ class EcoExtensionLoader(
             author = "Unnamed Author"
         }
 
-        val metadata = ExtensionMetadata(version, name, author)
+        val metadata = ExtensionMetadata(version, name, author, extensionJar)
 
         val cls: Class<*> = classLoader.loadClass(mainClass)
         val extension: Extension = cls.getConstructor(EcoPlugin::class.java).newInstance(this.plugin) as Extension
