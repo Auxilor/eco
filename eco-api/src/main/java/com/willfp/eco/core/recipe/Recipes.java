@@ -127,8 +127,8 @@ public final class Recipes {
         }
 
         if (builder.isAir()) {
-            Bukkit.getLogger().warning("RECIPE ERROR! " + plugin.getName() + ":" + key + " consists only");
-            Bukkit.getLogger().warning("of air or invalid items! Please change that or disable this recipe.");
+            Bukkit.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
+            Bukkit.getLogger().warning("of air or invalid items! It will not be registered.");
             return null;
         }
 
