@@ -2,6 +2,7 @@ package com.willfp.eco.internal.integrations
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
+import com.willfp.eco.core.placeholder.context.placeholderContext
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 
@@ -33,8 +34,15 @@ class PAPIExpansion(private val plugin: EcoPlugin) : PlaceholderExpansion() {
     override fun onPlaceholderRequest(
         player: Player?,
         identifier: String
-    ): String {
-        return PlaceholderManager.getResult(player, identifier, plugin)
+    ): String? {
+        return PlaceholderManager.getResult(
+            plugin,
+            identifier,
+            placeholderContext(
+                player = player,
+                item = player?.inventory?.itemInMainHand
+            )
+        )
     }
 
     override fun getPlaceholders(): List<String> {
