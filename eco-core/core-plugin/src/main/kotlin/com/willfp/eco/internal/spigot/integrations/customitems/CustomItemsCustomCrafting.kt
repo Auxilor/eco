@@ -2,6 +2,7 @@
 
 package com.willfp.eco.internal.spigot.integrations.customitems
 
+/*
 import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
@@ -43,3 +44,5 @@ class CustomItemsCustomCrafting : CustomItemsIntegration {
         }
     }
 }
+
+ */
