@@ -39,6 +39,6 @@ class PAPIExpansion(private val plugin: EcoPlugin) : PlaceholderExpansion() {
 
     override fun getPlaceholders(): List<String> {
         return PlaceholderManager.getRegisteredPlaceholders(plugin)
-            .map { it.pattern.pattern() }
+            .map { "%${this.plugin.name.lowercase()}_${it.pattern.pattern()}%" }
     }
 }
