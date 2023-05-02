@@ -59,7 +59,7 @@ class EcoExtensionLoader(
         val pluginVersion = Version(extensionYml.getStringOrNull("plugin-version") ?: "0.0.0")
         val pluginName = extensionYml.getStringOrNull("plugin")
 
-        if (pluginName != null && pluginName != this.plugin.description.name) {
+        if (pluginName != null && pluginName.equals(this.plugin.description.name, ignoreCase = true)) {
             throw ExtensionLoadException("${extensionJar.name} is only compatible with $pluginName!")
         }
 
