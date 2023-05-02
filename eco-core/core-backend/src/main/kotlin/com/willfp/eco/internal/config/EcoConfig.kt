@@ -9,7 +9,6 @@ import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
-import java.util.regex.Pattern
 
 @Suppress("UNCHECKED_CAST")
 open class EcoConfig(
@@ -18,7 +17,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = ConcurrentHashMap<Pattern, InjectablePlaceholder>()
+    var injections = ConcurrentHashMap<String, InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -180,7 +179,7 @@ open class EcoConfig(
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
         for (placeholder in placeholders) {
-            injections[placeholder.pattern] = placeholder
+            injections[placeholder.pattern.pattern()] = placeholder
         }
     }
 
