@@ -152,11 +152,7 @@ public abstract class Extension implements PluginLike {
     @Override
     public @NotNull File getFile() {
         Validate.notNull(metadata, "Metadata cannot be null!");
-        if (this.metadata.file() != null) {
-            return this.metadata.file();
-        } else {
-            throw new MalformedExtensionException("Metadata does not have file!");
-        }
+        return this.metadata.file();
     }
 
     /**
