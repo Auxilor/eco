@@ -39,7 +39,6 @@ class PAPIExpansion(private val plugin: EcoPlugin) : PlaceholderExpansion() {
 
     override fun getPlaceholders(): List<String> {
         return PlaceholderManager.getRegisteredPlaceholders(plugin)
-            .toSet()
             .map { it.pattern.pattern() }
     }
 }
