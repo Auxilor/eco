@@ -4,7 +4,6 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
-import java.util.Objects
 import java.util.concurrent.TimeUnit
 
 class DelegatedExpressionHandler(
@@ -16,11 +15,10 @@ class DelegatedExpressionHandler(
         .build()
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double {
-        val hash = Objects.hash(
-            expression,
-            context.player?.uniqueId,
-            context.injectableContext
-        )
+        // Peak performance (totally not having fun with bitwise operators)
+        val hash = (((expression.hashCode() shl 5) - expression.hashCode()) xor
+                (context.player?.uniqueId?.hashCode() ?: 0)
+                ) xor context.injectableContext.hashCode()
 
         return evaluationCache.get(hash) {
             handler.evaluate(expression, context)

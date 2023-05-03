@@ -7,7 +7,6 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.fast.listView
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
-import java.util.Objects
 import java.util.concurrent.ConcurrentHashMap
 
 @Suppress("UNCHECKED_CAST")
@@ -259,13 +258,12 @@ open class EcoConfig(
 
         var injectionHash = 0
 
-        for (injection in injections.values) {
-            injectionHash = injectionHash * 31 + injection.hashCode()
+        injections.forEachValue(5) {
+            injectionHash = injectionHash xor (it.hashCode() shl 5)
         }
 
-        return Objects.hash(
-            values,
-            configType
-        ) + injectionHash
+        // hashCode() has to compute extremely quickly, so we're using bitwise, because why not?
+        // Fucking filthy to use identityHashCode here, but it should be extremely fast
+        return ((System.identityHashCode(this) shl 5) - (System.identityHashCode(this) xor configType.hashCode()) + injectionHash)
     }
 }
