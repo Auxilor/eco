@@ -34,7 +34,7 @@ Whatever. At least it works.
 
 @Suppress("UNCHECKED_CAST")
 class MySQLDataHandler(
-    private val plugin: EcoSpigotPlugin,
+    plugin: EcoSpigotPlugin,
     private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MYSQL) {
     private val database: Database
@@ -148,10 +148,5 @@ class MySQLDataHandler(
         transaction(database) {
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
-    }
-
-    override fun save() {
-        plugin.dataYml.set("new-mysql", true)
-        plugin.dataYml.save()
     }
 }
