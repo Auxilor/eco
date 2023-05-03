@@ -251,6 +251,21 @@ open class EcoConfig(
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(values, configType, injections)
+        /*
+        The keys are completely redundant, as they are only used to prevent
+        duplicate keys in the map. Therefore, we can ignore them and just
+        hash the actual placeholder values.
+         */
+
+        var injectionHash = 0
+
+        for (injection in injections.values) {
+            injectionHash = injectionHash * 31 + injection.hashCode()
+        }
+
+        return Objects.hash(
+            values,
+            configType
+        ) + injectionHash
     }
 }

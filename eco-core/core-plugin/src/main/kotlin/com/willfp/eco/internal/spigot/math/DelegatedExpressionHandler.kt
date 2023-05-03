@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 class DelegatedExpressionHandler(
     plugin: EcoPlugin,
     private val handler: ExpressionHandler
-): ExpressionHandler {
+) : ExpressionHandler {
     private val evaluationCache: Cache<Int, Double> = Caffeine.newBuilder()
         .expireAfterWrite(plugin.configYml.getInt("math-cache-ttl").toLong(), TimeUnit.MILLISECONDS)
         .build()

@@ -3,10 +3,12 @@ package com.willfp.eco.core.placeholder.context;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -66,5 +68,25 @@ public class MergedInjectableContext implements PlaceholderInjectable {
         injections.addAll(extraInjections);
 
         return injections;
+    }
+
+    @Override
+    public boolean equals(@Nullable final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof MergedInjectableContext that)) {
+            return false;
+        }
+
+        return Objects.equals(baseContext, that.baseContext)
+                && Objects.equals(additionalContext, that.additionalContext)
+                && Objects.equals(extraInjections, that.extraInjections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(baseContext, additionalContext, extraInjections);
     }
 }
