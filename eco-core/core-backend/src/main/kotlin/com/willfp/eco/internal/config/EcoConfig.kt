@@ -234,19 +234,8 @@ open class EcoConfig(
             return false
         }
 
-        if (configType != other.configType) {
-            return false
-        }
-
-        if (values != other.values) {
-            return false
-        }
-
-        if (injections != other.injections) {
-            return false
-        }
-
-        return true
+        // Hey! Don't care. This works.
+        return this.hashCode() == other.hashCode()
     }
 
     override fun hashCode(): Int {
@@ -264,6 +253,7 @@ open class EcoConfig(
 
         // hashCode() has to compute extremely quickly, so we're using bitwise, because why not?
         // Fucking filthy to use identityHashCode here, but it should be extremely fast
-        return ((System.identityHashCode(this) shl 5) - (System.identityHashCode(this) xor configType.hashCode()) + injectionHash)
+        val identityHash = System.identityHashCode(this)
+        return (identityHash shl 5) - (identityHash xor configType.hashCode()) + injectionHash
     }
 }
