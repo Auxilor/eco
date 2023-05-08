@@ -77,6 +77,15 @@ public abstract class CustomSlot implements Slot {
     }
 
     @Override
+    public boolean shouldRenderOnClick() {
+        if (delegate == null) {
+            throw new IllegalStateException("Custom Slot was not initialized!");
+        }
+
+        return delegate.shouldRenderOnClick();
+    }
+
+    @Override
     public final int getRows() {
         return Slot.super.getRows();
     }

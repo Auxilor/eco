@@ -44,19 +44,15 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         if (delegate is EcoSlot) {
             delegate.handleInventoryClick(event, menu)
+
+            if (delegate.shouldRenderOnClick()) {
+                player.renderActiveMenu()
+            }
         } else if (delegate === this) {
             return
         } else {
             delegate.handle(player, event, menu, depth + 1)
         }
-    }
-
-    @EventHandler(
-        priority = EventPriority.HIGHEST
-    )
-    fun handleRender(event: InventoryClickEvent) {
-        val player = event.whoClicked as? Player ?: return
-        player.renderActiveMenu()
     }
 
     @EventHandler(
@@ -94,6 +90,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
             if (slot.isCaptive(player, menu)) {
                 if (!slot.isAllowedCaptive(player, menu, event.oldCursor)) {
                     event.isCancelled = true
+                } else {
+                    player.renderActiveMenu()
                 }
             } else {
                 event.isCancelled = true
@@ -139,18 +137,6 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         menu.handleClose(event)
 
         plugin.scheduler.run { MenuHandler.unregisterInventory(event.inventory) }
-    }
-
-    @EventHandler
-    fun forceRender(event: InventoryClickEvent) {
-        val player = event.whoClicked as? Player ?: return
-        player.renderActiveMenu()
-    }
-
-    @EventHandler
-    fun forceRender(event: InventoryDragEvent) {
-        val player = event.whoClicked as? Player ?: return
-        player.renderActiveMenu()
     }
 
     @EventHandler(
