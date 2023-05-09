@@ -28,6 +28,8 @@ public record EntityGoalTempt(
         boolean canBeScared
 ) implements EntityGoal<Mob> {
     /**
+     * Create a new entity goal.
+     *
      * @param speed       The speed at which the entity follows the item.
      * @param item        The item that the entity will be attracted by.
      * @param canBeScared If the entity can be scared and lose track of the item.

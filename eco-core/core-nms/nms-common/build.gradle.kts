@@ -1,10 +1,10 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.3.6"
+    id("io.papermc.paperweight.userdev")
 }
 
 group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    paperDevBundle("1.17.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.17.1-R0.1-SNAPSHOT")
 }

@@ -1,11 +1,10 @@
 package com.willfp.eco.core.integrations.economy;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Class to handle economy.
@@ -14,7 +13,7 @@ public final class EconomyManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<EconomyIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<EconomyIntegration> REGISTRY = new IntegrationRegistry<>();
 
     /**
      * Register a new integration.
@@ -22,8 +21,7 @@ public final class EconomyManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final EconomyIntegration integration) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
-        REGISTERED.add(integration);
+        REGISTRY.register(integration);
     }
 
     /**
@@ -32,7 +30,7 @@ public final class EconomyManager {
      * @return If any economy.
      */
     public static boolean hasRegistrations() {
-        return !REGISTERED.isEmpty();
+        return REGISTRY.isNotEmpty();
     }
 
     /**
@@ -56,11 +54,10 @@ public final class EconomyManager {
      */
     public static boolean hasAmount(@NotNull final OfflinePlayer player,
                                     final BigDecimal amount) {
-        for (EconomyIntegration integration : REGISTERED) {
-            return integration.hasAmount(player, amount);
-        }
-
-        return false;
+        return REGISTRY.firstSafely(
+                integration -> integration.hasAmount(player, amount),
+                false
+        );
     }
 
     /**
@@ -84,11 +81,10 @@ public final class EconomyManager {
      */
     public static boolean giveMoney(@NotNull final OfflinePlayer player,
                                     @NotNull final BigDecimal amount) {
-        for (EconomyIntegration integration : REGISTERED) {
-            return integration.giveMoney(player, amount);
-        }
-
-        return false;
+        return REGISTRY.firstSafely(
+                integration -> integration.giveMoney(player, amount),
+                false
+        );
     }
 
     /**
@@ -112,11 +108,10 @@ public final class EconomyManager {
      */
     public static boolean removeMoney(@NotNull final OfflinePlayer player,
                                       @NotNull final BigDecimal amount) {
-        for (EconomyIntegration integration : REGISTERED) {
-            return integration.removeMoney(player, amount);
-        }
-
-        return false;
+        return REGISTRY.firstSafely(
+                integration -> integration.removeMoney(player, amount),
+                false
+        );
     }
 
     /**
@@ -136,11 +131,10 @@ public final class EconomyManager {
      * @return The balance.
      */
     public static BigDecimal getExactBalance(@NotNull final OfflinePlayer player) {
-        for (EconomyIntegration integration : REGISTERED) {
-            return integration.getExactBalance(player);
-        }
-
-        return BigDecimal.ZERO;
+        return REGISTRY.firstSafely(
+                integration -> integration.getExactBalance(player),
+                BigDecimal.ZERO
+        );
     }
 
     private EconomyManager() {

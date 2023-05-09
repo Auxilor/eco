@@ -47,6 +47,7 @@ enum class ConflictType(
 }
 
 private fun Plugin.getConflict(): Conflict? {
+    @Suppress("DEPRECATION")
     if (this.description.libraries.any { it.contains("kotlin-stdlib") }) {
         return Conflict(this, ConflictType.LIB_LOADER)
     }

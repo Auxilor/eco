@@ -14,12 +14,14 @@ import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.math.MathContext
 import com.willfp.eco.core.packet.Packet
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand
 import com.willfp.eco.internal.config.*
+import com.willfp.eco.internal.config.handler.ReflectiveConfigHandler
+import com.willfp.eco.internal.config.handler.SimpleConfigHandler
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
 import com.willfp.eco.internal.events.EcoEventManager
@@ -36,6 +38,7 @@ import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 import com.willfp.eco.internal.integrations.PAPIExpansion
 import com.willfp.eco.internal.logging.EcoLogger
+import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
 import com.willfp.eco.internal.scheduling.EcoSchedulerSpigot
@@ -44,7 +47,9 @@ import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.math.evaluateExpression
+import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
+import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
+import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
@@ -88,6 +93,15 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         if (this.configYml.getBool("use-safer-namespacedkey-creation"))
             SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
 
+    private val placeholderParser = PlaceholderParser()
+
+    private val crunchHandler = DelegatedExpressionHandler(
+        this,
+        if (this.configYml.getBool("use-immediate-placeholder-translation-for-math"))
+            ImmediatePlaceholderTranslationExpressionHandler(placeholderParser)
+        else LazyPlaceholderTranslationExpressionHandler(placeholderParser),
+    )
+
     override fun createScheduler(plugin: EcoPlugin) =
         if (Prerequisite.HAS_FOLIA.isMet) EcoSchedulerFolia(plugin) else EcoSchedulerSpigot(plugin)
 
@@ -107,7 +121,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         EcoExtensionLoader(plugin)
 
     override fun createConfigHandler(plugin: EcoPlugin) =
-        EcoConfigHandler(plugin)
+        if (plugin.props.isUsingReflectiveReload) ReflectiveConfigHandler(plugin)
+        else SimpleConfigHandler()
 
     override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
@@ -311,8 +326,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getTPS() =
         getProxy(TPSProxy::class.java).getTPS()
 
-    override fun evaluate(expression: String, context: MathContext) =
-        evaluateExpression(expression, context)
+    override fun evaluate(expression: String, context: PlaceholderContext) =
+        crunchHandler.evaluate(expression, context)
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
@@ -325,4 +340,10 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun sendPacket(player: Player, packet: Packet) =
         this.getProxy(PacketHandlerProxy::class.java).sendPacket(player, packet)
+
+    override fun translatePlaceholders(text: String, context: PlaceholderContext) =
+        placeholderParser.translatePlacholders(text, context)
+
+    override fun getPlaceholderValue(plugin: EcoPlugin?, args: String, context: PlaceholderContext) =
+        placeholderParser.getPlaceholderResult(plugin, args, context)
 }

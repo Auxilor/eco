@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
+import com.willfp.eco.core.data.ExternalDataStore
 import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.afk.AFKManager
@@ -19,6 +20,8 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
+import com.willfp.eco.internal.data.MavenVersionToStringAdapter
+import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
 import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
 import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
@@ -92,6 +95,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsDenizen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
@@ -107,6 +111,7 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicD
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
@@ -120,6 +125,7 @@ import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
+import com.willfp.eco.util.ClassUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
@@ -178,6 +184,20 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         SegmentParserUseIfPresent.register()
 
         CustomItemsManager.registerProviders()
+
+        ExternalDataStore.registerAdapter(VersionToStringAdapter)
+        // Handle with shadow.
+        val className = listOf(
+            "org",
+            "apache",
+            "maven",
+            "artifact",
+            "versioning",
+            "DefaultArtifactVersion"
+        ).joinToString(".")
+        if (ClassUtils.exists(className)) {
+            ExternalDataStore.registerAdapter(MavenVersionToStringAdapter(className))
+        }
     }
 
     override fun handleEnable() {
@@ -270,6 +290,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("CombatLogX") {
                 val pluginManager = Bukkit.getPluginManager()
                 val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
+
+                @Suppress("DEPRECATION")
                 val pluginVersion = combatLogXPlugin.description.version
                 if (pluginVersion.startsWith("10")) {
                     AntigriefManager.register(AntigriefCombatLogXV10())
@@ -293,7 +315,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
-            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen()) },
+            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen(this)) },
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
@@ -303,6 +325,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             },
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
             IntegrationLoader("Scyther") { CustomItemsManager.register(CustomItemsScyther()) },
+            IntegrationLoader("Denizen") { CustomItemsManager.register(CustomItemsDenizen()) },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
@@ -335,6 +358,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     Prices.registerPriceFactory(PriceFactoryUltraEconomy(currency))
                 }
             },
+            IntegrationLoader("PlayerPoints") { Prices.registerPriceFactory(PriceFactoryPlayerPoints()) },
 
             // Placeholder
             IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },

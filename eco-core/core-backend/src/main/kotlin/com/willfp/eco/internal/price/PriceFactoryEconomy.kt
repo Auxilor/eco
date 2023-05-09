@@ -1,10 +1,10 @@
 package com.willfp.eco.internal.price
 
-import com.willfp.eco.core.math.MathContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.core.price.impl.PriceEconomy
-import java.util.function.Function
 
 object PriceFactoryEconomy : PriceFactory {
     override fun getNames() = listOf(
@@ -12,7 +12,7 @@ object PriceFactoryEconomy : PriceFactory {
         "$"
     )
 
-    override fun create(baseContext: MathContext, function: Function<MathContext, Double>): Price {
+    override fun create(baseContext: PlaceholderContext, function: PlaceholderContextSupplier<Double>): Price {
         return PriceEconomy(baseContext, function)
     }
 }

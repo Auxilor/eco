@@ -2,7 +2,8 @@ package com.willfp.eco.core.price;
 
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
-import com.willfp.eco.core.math.MathContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
 import com.willfp.eco.core.price.impl.PriceEconomy;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
@@ -13,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * Class to manage prices.
@@ -48,7 +48,28 @@ public final class Prices {
     @NotNull
     public static Price create(@NotNull final String expression,
                                @Nullable final String priceName) {
-        return create(expression, priceName, MathContext.EMPTY);
+        return create(expression, priceName, PlaceholderContext.EMPTY);
+    }
+
+    /**
+     * Create price from an expression (representing the value),
+     * and a price name. Uses a context to parse the expression.
+     * <p>
+     * Supports items as price names.
+     *
+     * @param expression The expression for the value.
+     * @param priceName  The price name.
+     * @param context    The math context to parse the expression.
+     * @return The price, or free if invalid.
+     * @deprecated Use {@link #create(String, String, PlaceholderContext)} instead.
+     */
+    @NotNull
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @SuppressWarnings("removal")
+    public static Price create(@NotNull final String expression,
+                               @Nullable final String priceName,
+                               @NotNull final com.willfp.eco.core.math.MathContext context) {
+        return create(expression, priceName, context.toPlaceholderContext());
     }
 
     /**
@@ -65,8 +86,8 @@ public final class Prices {
     @NotNull
     public static Price create(@NotNull final String expression,
                                @Nullable final String priceName,
-                               @NotNull final MathContext context) {
-        Function<MathContext, Double> function = (ctx) -> NumberUtils.evaluateExpression(
+                               @NotNull final PlaceholderContext context) {
+        PlaceholderContextSupplier<Double> function = (ctx) -> NumberUtils.evaluateExpression(
                 expression,
                 ctx
         );

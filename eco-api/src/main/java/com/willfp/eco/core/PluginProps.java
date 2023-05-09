@@ -50,6 +50,16 @@ public final class PluginProps {
     private Boolean supportingExtensions;
 
     /**
+     * The environment variables.
+     */
+    private final Map<String, String> environment = new HashMap<>();
+
+    /**
+     * If the plugin uses reflective reload (via {@link com.willfp.eco.core.config.updating.ConfigUpdater}).
+     */
+    private boolean usesReflectiveReload = true;
+
+    /**
      * Create new blank props.
      */
     private PluginProps() {
@@ -154,6 +164,46 @@ public final class PluginProps {
     }
 
     /**
+     * Get an environment variable.
+     *
+     * @param name The name.
+     * @return The value of the variable.
+     */
+    @Nullable
+    public String getEnvironmentVariable(@NotNull final String name) {
+        return environment.get(name);
+    }
+
+    /**
+     * Set an environment variable.
+     *
+     * @param name  The name.
+     * @param value The value.
+     */
+    public void setEnvironmentVariable(@NotNull final String name,
+                                       @NotNull final String value) {
+        environment.put(name, value);
+    }
+
+    /**
+     * Set if the plugin uses reflective reload.
+     *
+     * @return If the plugin uses reflective reload.
+     */
+    public boolean isUsingReflectiveReload() {
+        return usesReflectiveReload;
+    }
+
+    /**
+     * Set if the plugin uses reflective reload.
+     *
+     * @param usesReflectiveReload If the plugin uses reflective reload.
+     */
+    public void setUsesReflectiveReload(final boolean usesReflectiveReload) {
+        this.usesReflectiveReload = usesReflectiveReload;
+    }
+
+    /**
      * Ensure that all required props have been set.
      */
     public void validate() {
@@ -232,7 +282,9 @@ public final class PluginProps {
      * @param color              The primary color of the plugin.
      * @param supportsExtensions If the plugin should attempt to look for extensions.
      * @return The props.
+     * @deprecated Moving to force the usage of eco.yml.
      */
+    @Deprecated(since = "6.53.0")
     static PluginProps createSimple(final int resourceId,
                                     final int bStatsId,
                                     @NotNull final String proxyPackage,

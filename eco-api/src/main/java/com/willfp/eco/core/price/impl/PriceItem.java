@@ -3,7 +3,8 @@ package com.willfp.eco.core.price.impl;
 import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.core.items.HashedItem;
 import com.willfp.eco.core.items.TestableItem;
-import com.willfp.eco.core.math.MathContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
 import com.willfp.eco.core.price.Price;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,14 +21,14 @@ import java.util.function.Function;
  */
 public final class PriceItem implements Price {
     /**
-     * The base MathContext.
+     * The base PlaceholderContext.
      */
-    private final MathContext baseContext;
+    private final PlaceholderContext baseContext;
 
     /**
      * The amount of items.
      */
-    private final Function<MathContext, Double> function;
+    private final PlaceholderContextSupplier<Double> function;
 
     /**
      * The item.
@@ -47,7 +48,23 @@ public final class PriceItem implements Price {
      */
     public PriceItem(final int amount,
                      @NotNull final TestableItem item) {
-        this(MathContext.EMPTY, ctx -> (double) amount, item);
+        this(PlaceholderContext.EMPTY, (PlaceholderContext ctx) -> (double) amount, item);
+    }
+
+    /**
+     * Create a new item-based price.
+     *
+     * @param baseContext The base MathContext.
+     * @param function    The function to get the amount of items to remove.
+     * @param item        The item.
+     * @deprecated Use {@link #PriceItem(PlaceholderContext, PlaceholderContextSupplier, TestableItem)} instead.
+     */
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @SuppressWarnings("removal")
+    public PriceItem(@NotNull final com.willfp.eco.core.math.MathContext baseContext,
+                     @NotNull final Function<com.willfp.eco.core.math.MathContext, Double> function,
+                     @NotNull final TestableItem item) {
+        this(baseContext.toPlaceholderContext(), (PlaceholderContext ctx) -> function.apply(ctx.toMathContext()), item);
     }
 
     /**
@@ -57,8 +74,8 @@ public final class PriceItem implements Price {
      * @param function    The function to get the amount of items to remove.
      * @param item        The item.
      */
-    public PriceItem(@NotNull final MathContext baseContext,
-                     @NotNull final Function<MathContext, Double> function,
+    public PriceItem(@NotNull final PlaceholderContext baseContext,
+                     @NotNull final PlaceholderContextSupplier<Double> function,
                      @NotNull final TestableItem item) {
         this.baseContext = baseContext;
         this.function = function;
@@ -137,7 +154,7 @@ public final class PriceItem implements Price {
     public double getValue(@NotNull final Player player,
                            final double multiplier) {
         return Math.toIntExact(Math.round(
-                this.function.apply(MathContext.copyWithPlayer(baseContext, player))
+                this.function.get(baseContext.copyWithPlayer(player))
                         * getMultiplier(player) * multiplier
         ));
     }

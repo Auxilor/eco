@@ -5,9 +5,11 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.toConfig
 import com.willfp.eco.core.extensions.Extension
+import com.willfp.eco.core.extensions.ExtensionLoadException
 import com.willfp.eco.core.extensions.ExtensionLoader
 import com.willfp.eco.core.extensions.ExtensionMetadata
 import com.willfp.eco.core.extensions.MalformedExtensionException
+import com.willfp.eco.core.version.Version
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.InputStreamReader
@@ -32,7 +34,7 @@ class EcoExtensionLoader(
             }
 
             runCatching { loadExtension(extensionJar) }.onFailure {
-                this.plugin.logger.warning(extensionJar.name + " caused an error!")
+                this.plugin.logger.warning(extensionJar.name + " caused an error: ${it.message ?: "Unknown error"}")
                 if (Eco.get().ecoPlugin.configYml.getBool("log-full-extension-errors")) {
                     it.printStackTrace()
                 }
@@ -54,7 +56,12 @@ class EcoExtensionLoader(
         var name = extensionYml.getStringOrNull("name")
         var version = extensionYml.getStringOrNull("version")
         var author = extensionYml.getStringOrNull("author")
+        val pluginVersion = Version(extensionYml.getStringOrNull("plugin-version") ?: "0.0.0")
+        val pluginName = extensionYml.getStringOrNull("plugin")
 
+        if (pluginName != null && !pluginName.equals(this.plugin.description.name, ignoreCase = true)) {
+            throw ExtensionLoadException("${extensionJar.name} is only compatible with $pluginName!")
+        }
 
         if (mainClass == null) {
             throw MalformedExtensionException("Invalid extension.yml found in " + extensionJar.name)
@@ -75,7 +82,11 @@ class EcoExtensionLoader(
             author = "Unnamed Author"
         }
 
-        val metadata = ExtensionMetadata(version, name, author)
+        if (Version(this.plugin.description.version) < pluginVersion) {
+            throw ExtensionLoadException("Plugin version is too low for ${extensionJar.name}!")
+        }
+
+        val metadata = ExtensionMetadata(version, name, author, extensionJar, pluginVersion)
 
         val cls: Class<*> = classLoader.loadClass(mainClass)
         val extension: Extension = cls.getConstructor(EcoPlugin::class.java).newInstance(this.plugin) as Extension
@@ -85,7 +96,7 @@ class EcoExtensionLoader(
         extensions[extension] = classLoader
     }
 
-    override fun getLoadedExtensions(): MutableSet<Extension> {
+    override fun getLoadedExtensions(): Set<Extension> {
         return ImmutableSet.copyOf(extensions.keys)
     }
 

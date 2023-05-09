@@ -1,5 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,47 +15,72 @@ import java.util.regex.Pattern;
  */
 public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     /**
-     * The name of the placeholder.
+     * The identifier.
      */
     private final String identifier;
 
     /**
-     * The placeholder pattern.
+     * The arguments pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the placeholder.
+     * The function to retrieve the output of the arguments.
      */
-    private final Function<Player, String> function;
+    private final Function<@NotNull Player, @Nullable String> function;
 
     /**
-     * Create a new player placeholder.
+     * Create a new player arguments.
      *
      * @param identifier The identifier.
      * @param function   The function to retrieve the value.
      */
     public PlayerStaticPlaceholder(@NotNull final String identifier,
-                                   @NotNull final Function<Player, String> function) {
-        this.identifier = identifier;
-        this.pattern = Pattern.compile(identifier);
+                                   @NotNull final Function<@NotNull Player, @Nullable String> function) {
+        this.identifier = "%" + identifier + "%";
+        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
         this.function = function;
     }
 
+    @Override
+    public @Nullable String getValue(@NotNull final String args,
+                                     @NotNull final PlaceholderContext context) {
+        Player player = context.getPlayer();
+
+        if (player == null) {
+            return null;
+        }
+
+        return this.getValue(player);
+    }
+
     /**
-     * Get the value of the placeholder.
+     * Get the value of the arguments.
      *
      * @param player The player.
      * @return The value.
+     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
+    @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
     public String getValue(@NotNull final Player player) {
-        return function.apply(player);
+        return Objects.requireNonNullElse(
+                function.apply(player),
+                ""
+        );
     }
 
     @Override
-    public @NotNull String getIdentifier() {
-        return this.identifier;
+    public String tryTranslateQuickly(@NotNull final String text,
+                                      @NotNull final PlaceholderContext context) {
+        return StringUtils.replaceQuickly(
+                text,
+                this.identifier,
+                Objects.requireNonNullElse(
+                        this.getValue(identifier, context),
+                        ""
+                )
+        );
     }
 
     @NotNull
@@ -70,11 +97,11 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
         if (!(o instanceof PlayerStaticPlaceholder that)) {
             return false;
         }
-        return Objects.equals(this.getIdentifier(), that.getIdentifier());
+        return Objects.equals(this.getPattern(), that.getPattern());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getIdentifier());
+        return Objects.hash(this.getPattern());
     }
 }

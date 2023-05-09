@@ -1,6 +1,5 @@
 package com.willfp.eco.core;
 
-import com.willfp.eco.core.integrations.economy.EconomyManager;
 import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.util.ClassUtils;
 import org.jetbrains.annotations.NotNull;
@@ -39,14 +38,11 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to have vault installed.
-     *
-     * @deprecated Use {@link EconomyManager#hasRegistrations()} instead.
+     * Requires the server to be running 1.19.4.
      */
-    @Deprecated(forRemoval = true)
-    public static final Prerequisite HAS_VAULT = new Prerequisite(
-            () -> ClassUtils.exists("net.milkbowl.vault.economy.Economy"),
-            "Requires server to have vault"
+    public static final Prerequisite HAS_1_19_4 = new Prerequisite(
+            () -> ProxyConstants.NMS_VERSION.contains("19_R3"),
+            "Requires server to be running 1.19.4+"
     );
 
     /**
@@ -63,17 +59,6 @@ public class Prerequisite {
     public static final Prerequisite HAS_1_18 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("18") || HAS_1_19.isMet(),
             "Requires server to be running 1.18+"
-    );
-
-    /**
-     * Requires the server to be running 1.17.
-     *
-     * @deprecated eco no longer supports versions before 1.17.
-     */
-    @Deprecated(since = "6.25.2", forRemoval = true)
-    public static final Prerequisite HAS_1_17 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("17") || HAS_1_18.isMet(),
-            "Requires server to be running 1.17+"
     );
 
     /**

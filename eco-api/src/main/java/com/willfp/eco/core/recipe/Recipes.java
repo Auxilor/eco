@@ -53,7 +53,11 @@ public final class Recipes {
      * @return The match, or null if not found.
      */
     @Nullable
-    public static CraftingRecipe getMatch(@NotNull final ItemStack[] matrix) {
+    public static CraftingRecipe getMatch(@Nullable final ItemStack[] matrix) {
+        if (matrix == null) {
+            return null;
+        }
+
         return RECIPES_FROM_MATRIX.get(matrix).orElse(null);
     }
 
@@ -123,8 +127,8 @@ public final class Recipes {
         }
 
         if (builder.isAir()) {
-            Bukkit.getLogger().warning("RECIPE ERROR! " + plugin.getName() + ":" + key + " consists only");
-            Bukkit.getLogger().warning("of air or invalid items! Please change that or disable this recipe.");
+            Bukkit.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
+            Bukkit.getLogger().warning("of air or invalid items! It will not be registered.");
             return null;
         }
 

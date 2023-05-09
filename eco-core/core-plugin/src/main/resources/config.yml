@@ -46,11 +46,6 @@ conflicts:
 # Disable it if it changes drop mechanics too much for you.
 use-fast-collated-drops: true
 
-# Some plugins use their own item display systems (eg Triton)
-# And must be run after eco. Don't enable this unless you run a conflicting plugin
-# and have been told to enable it.
-use-lower-protocollib-priority: false
-
 # Display frames massively optimize PacketWindowItems, however some users have
 # reported display bugs by using it. If you have any problems with it, then you
 # should disable this option.
@@ -83,3 +78,16 @@ displayed-recipes: true
 # as there can be urgent hotfixes that you are then not notified about. If you're confident
 # that you can manage updates on your own, turn this on.
 no-update-checker: false
+
+# Math expressions are parsed using Crunch, which allows for variables to be used in expressions.
+# If this is false, variables will be used to represent placeholders, which leads to fewer
+# expression compilations at the expense of slower evaluation times. If this is true, variables
+# will instead be translated before compilation to reduce evaluation times at the expense of
+# longer compilation times. If your expressions usually contain many variables, then you
+# should enable this option as it may improve performance. If you're unsure, leave it disabled.
+use-immediate-placeholder-translation-for-math: false
+
+# The time (in milliseconds) for math expressions to be cached for. Higher values will lead to
+# faster evaluation times (less CPU usage) at the expense of slightly more memory usage and
+# less reactive values.
+math-cache-ttl: 200

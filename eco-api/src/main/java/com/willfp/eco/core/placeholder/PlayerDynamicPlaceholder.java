@@ -1,7 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,26 +11,26 @@ import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
 /**
- * A placeholder that does not require a player and supports dynamic styles.
+ * A arguments that does not require a player and supports dynamic styles.
  */
-public final class PlayerDynamicPlaceholder implements Placeholder {
+public final class PlayerDynamicPlaceholder implements RegistrablePlaceholder {
     /**
-     * The placeholder pattern.
+     * The arguments pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the placeholder.
+     * The function to retrieve the output of the arguments.
      */
-    private final BiFunction<String, Player, String> function;
+    private final BiFunction<@NotNull String, @NotNull Player, @Nullable String> function;
 
     /**
-     * The plugin for the placeholder.
+     * The plugin for the arguments.
      */
     private final EcoPlugin plugin;
 
     /**
-     * Create a new dynamic placeholder.
+     * Create a new dynamic arguments.
      *
      * @param plugin   The plugin.
      * @param pattern  The pattern.
@@ -38,33 +38,40 @@ public final class PlayerDynamicPlaceholder implements Placeholder {
      */
     public PlayerDynamicPlaceholder(@NotNull final EcoPlugin plugin,
                                     @NotNull final Pattern pattern,
-                                    @NotNull final BiFunction<String, Player, String> function) {
+                                    @NotNull final BiFunction<@NotNull String, @NotNull Player, @Nullable String> function) {
         this.plugin = plugin;
         this.pattern = pattern;
         this.function = function;
     }
 
-    /**
-     * Get the value of the placeholder.
-     *
-     * @param args   The args.
-     * @param player The player.
-     * @return The value.
-     */
-    @NotNull
-    public String getValue(@NotNull final String args,
-                           @NotNull final Player player) {
+    @Override
+    public @Nullable String getValue(@NotNull final String args,
+                                     @NotNull final PlaceholderContext context) {
+        Player player = context.getPlayer();
+
+        if (player == null) {
+            return null;
+        }
+
         return function.apply(args, player);
     }
 
     /**
-     * Register the placeholder.
+     * Get the value of the arguments.
      *
-     * @return The placeholder.
+     * @param args   The args.
+     * @param player The player.
+     * @return The value.
+     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
-    public PlayerDynamicPlaceholder register() {
-        PlaceholderManager.registerPlaceholder(this);
-        return this;
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
+    public String getValue(@NotNull final String args,
+                           @NotNull final Player player) {
+        return Objects.requireNonNullElse(
+                function.apply(args, player),
+                ""
+        );
     }
 
     @Override
@@ -72,16 +79,15 @@ public final class PlayerDynamicPlaceholder implements Placeholder {
         return this.plugin;
     }
 
-    @Override
-    @Deprecated
-    public @NotNull String getIdentifier() {
-        return "dynamic";
-    }
-
     @NotNull
     @Override
     public Pattern getPattern() {
         return this.pattern;
+    }
+
+    @Override
+    public @NotNull PlayerDynamicPlaceholder register() {
+        return (PlayerDynamicPlaceholder) RegistrablePlaceholder.super.register();
     }
 
     @Override
@@ -100,6 +106,6 @@ public final class PlayerDynamicPlaceholder implements Placeholder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getIdentifier(), this.getPlugin());
+        return Objects.hash(this.getPattern(), this.getPlugin());
     }
 }

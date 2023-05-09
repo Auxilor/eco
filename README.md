@@ -63,7 +63,7 @@ eco comes packed with all the tools you need in your plugins:
 # For developers
 
 ## Javadoc
-The 6.49.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.49.0/javadoc/)
+The 6.53.0 Javadoc can be found [here](https://javadoc.jitpack.io/com/willfp/eco/6.53.0/javadoc/)
 
 ## Plugin Information
 
@@ -75,31 +75,31 @@ depend:
   - eco
 ```
 
-## Get from JitPack:
+## Dependency Information:
 
 Gradle:
 
-```groovy
+```kts
 repositories {
-        maven { url 'https://jitpack.io' }
+        maven("https://repo.auxilor.io/repository/maven-public/")
 }
 
 ```
 
 ```groovy
 dependencies {
-        compileOnly 'com.willfp:eco:Tag'
+        compileOnly("com.willfp:eco:Tag")
 }
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.49.0`.
+Replace `Tag` with a release tag for eco, eg `6.53.0`.
 
 Maven:
 
 ```xml
 <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
+        <id>auxilor</id>
+        <url>https://repo.auxilor.io/repository/maven-public/</url>
 </repository>
 ```
 
@@ -112,7 +112,7 @@ Maven:
 </dependency>
 ```
 
-Replace `Tag` with a release tag for eco, eg `6.49.0`.
+Replace `Tag` with a release tag for eco, eg `6.53.0`.
 
 ## Build locally:
 

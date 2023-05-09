@@ -5,11 +5,13 @@ import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
+import io.netty.channel.Channel
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.network.ServerGamePacketListenerImpl
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
 import org.bukkit.Bukkit

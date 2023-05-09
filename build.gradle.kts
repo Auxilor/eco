@@ -26,6 +26,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_18_R2", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_19_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_19_R2", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_19_R3", configuration = "reobf"))
 }
 
 allprojects {
@@ -56,7 +57,7 @@ allprojects {
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
         // ProtocolLib
-        maven("https://repo.dmulloy2.net/nexus/repository/public/")
+        //maven("https://repo.dmulloy2.net/nexus/repository/public/")
 
         // WorldGuard
         maven("https://maven.enginehub.org/repo/")
@@ -79,7 +80,14 @@ allprojects {
         // LibsDisguises
         maven("https://repo.md-5.net/content/groups/public/")
 
+        // UltraEconomy
         maven("https://repo.techscode.com/repository/maven-releases/")
+
+        // PlayerPoints
+        maven("https://repo.rosewooddev.io/repository/public/")
+
+        // Denizen
+        maven("https://maven.citizensnpcs.co/repo")
     }
 
     dependencies {

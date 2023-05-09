@@ -3,7 +3,8 @@ package com.willfp.eco.internal.config
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
-import com.willfp.eco.core.placeholder.StaticPlaceholder
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.internal.fast.listView
 import com.willfp.eco.util.StringUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import java.util.concurrent.ConcurrentHashMap
@@ -15,7 +16,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = mutableListOf<InjectablePlaceholder>()
+    var injections = ConcurrentHashMap<String, InjectablePlaceholder>()
 
     fun init(values: Map<String, Any?>) {
         this.values.clear()
@@ -104,12 +105,12 @@ open class EcoConfig(
     }
 
     override fun getSubsectionOrNull(path: String): Config? {
-        return (get(path) as? Config)?.apply { this.addInjectablePlaceholder(injections) }
+        return (get(path) as? Config)?.apply { this.addInjectablePlaceholder(injections.values) }
     }
 
     override fun getSubsectionsOrNull(path: String): List<Config>? {
         return getList<Config>(path)
-            ?.map { it.apply { this.addInjectablePlaceholder(injections) } }
+            ?.map { it.apply { this.addInjectablePlaceholder(injections.values) } }
             ?.toList()
     }
 
@@ -141,9 +142,7 @@ open class EcoConfig(
         var string = get(path)?.toString() ?: return null
         if (format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
             for (injection in placeholderInjections) {
-                if (injection is StaticPlaceholder) {
-                    string = string.replace("%${injection.identifier}%", injection.value)
-                }
+                string = injection.tryTranslateQuickly(string, PlaceholderContext.EMPTY)
             }
         }
         return if (format) StringUtils.format(string, option) else string
@@ -161,9 +160,7 @@ open class EcoConfig(
             strings.replaceAll {
                 var string = it
                 for (injection in placeholderInjections) {
-                    if (injection is StaticPlaceholder) {
-                        string = string.replace("%${injection.identifier}%", injection.value)
-                    }
+                    string = injection.tryTranslateQuickly(string, PlaceholderContext.EMPTY)
                 }
                 string
             }
@@ -180,12 +177,13 @@ open class EcoConfig(
     }
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
-        injections.removeIf { placeholders.any { placeholder -> it.identifier == placeholder.identifier } }
-        injections.addAll(placeholders)
+        for (placeholder in placeholders) {
+            injections[placeholder.pattern.pattern()] = placeholder
+        }
     }
 
     override fun getPlaceholderInjections(): List<InjectablePlaceholder> {
-        return injections.toList()
+        return injections.values.listView() // Faster than .toList()
     }
 
     override fun clearInjectedPlaceholders() {
@@ -208,14 +206,6 @@ open class EcoConfig(
         return bukkit
     }
 
-    override fun clone(): Config {
-        return EcoConfigSection(type, this.values.toMutableMap(), injections)
-    }
-
-    override fun toString(): String {
-        return this.toPlaintext()
-    }
-
     private inline fun <reified T> getList(path: String): List<T>? {
         val asIterable = get(path) as? Iterable<*> ?: return null
         val asList = asIterable.toList()
@@ -225,5 +215,45 @@ open class EcoConfig(
         }
 
         return asList as List<T>
+    }
+
+    override fun clone(): Config {
+        return EcoConfigSection(type, this.values.toMutableMap(), injections)
+    }
+
+    override fun toString(): String {
+        return this.toPlaintext()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        if (other !is EcoConfig) {
+            return false
+        }
+
+        // Hey! Don't care. This works.
+        return this.hashCode() == other.hashCode()
+    }
+
+    override fun hashCode(): Int {
+        /*
+        The keys are completely redundant, as they are only used to prevent
+        duplicate keys in the map. Therefore, we can ignore them and just
+        hash the actual placeholder values.
+         */
+
+        var injectionHash = 0
+
+        injections.forEachValue(5) {
+            injectionHash = injectionHash xor (it.hashCode() shl 5)
+        }
+
+        // hashCode() has to compute extremely quickly, so we're using bitwise, because why not?
+        // Fucking filthy to use identityHashCode here, but it should be extremely fast
+        val identityHash = System.identityHashCode(this)
+        return (identityHash shl 5) - (identityHash xor configType.hashCode()) + injectionHash
     }
 }

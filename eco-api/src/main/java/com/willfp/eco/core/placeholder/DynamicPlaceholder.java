@@ -1,7 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,24 +12,24 @@ import java.util.regex.Pattern;
 /**
  * A placeholder that does not require a player and supports dynamic styles.
  */
-public final class DynamicPlaceholder implements Placeholder {
+public final class DynamicPlaceholder implements RegistrablePlaceholder {
     /**
-     * The placeholder pattern.
+     * The arguments pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the placeholder.
+     * The function to retrieve the output of the arguments.
      */
-    private final Function<String, String> function;
+    private final Function<@NotNull String, @Nullable String> function;
 
     /**
-     * The plugin for the placeholder.
+     * The plugin for the arguments.
      */
     private final EcoPlugin plugin;
 
     /**
-     * Create a new dynamic placeholder.
+     * Create a new dynamic arguments.
      *
      * @param plugin   The plugin.
      * @param pattern  The pattern.
@@ -37,31 +37,33 @@ public final class DynamicPlaceholder implements Placeholder {
      */
     public DynamicPlaceholder(@NotNull final EcoPlugin plugin,
                               @NotNull final Pattern pattern,
-                              @NotNull final Function<String, String> function) {
+                              @NotNull final Function<@NotNull String, @Nullable String> function) {
         this.plugin = plugin;
         this.pattern = pattern;
         this.function = function;
     }
 
-    /**
-     * Get the value of the placeholder.
-     *
-     * @param args The args.
-     * @return The value.
-     */
-    @NotNull
-    public String getValue(@NotNull final String args) {
+    @Override
+    @Nullable
+    public String getValue(@NotNull final String args,
+                           @NotNull final PlaceholderContext context) {
         return function.apply(args);
     }
 
     /**
-     * Register the placeholder.
+     * Get the value of the arguments.
      *
-     * @return The placeholder.
+     * @param args The args.
+     * @return The value.
+     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
-    public DynamicPlaceholder register() {
-        PlaceholderManager.registerPlaceholder(this);
-        return this;
+    @Deprecated(since = "6.56.0", forRemoval = true)
+    @NotNull
+    public String getValue(@NotNull final String args) {
+        return Objects.requireNonNullElse(
+                function.apply(args),
+                ""
+        );
     }
 
     @Override
@@ -69,16 +71,15 @@ public final class DynamicPlaceholder implements Placeholder {
         return this.plugin;
     }
 
-    @Override
-    @Deprecated
-    public @NotNull String getIdentifier() {
-        return "dynamic";
-    }
-
     @NotNull
     @Override
     public Pattern getPattern() {
         return this.pattern;
+    }
+
+    @Override
+    public @NotNull DynamicPlaceholder register() {
+        return (DynamicPlaceholder) RegistrablePlaceholder.super.register();
     }
 
     @Override
@@ -97,6 +98,6 @@ public final class DynamicPlaceholder implements Placeholder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getIdentifier(), this.getPlugin());
+        return Objects.hash(this.getPattern(), this.getPlugin());
     }
 }

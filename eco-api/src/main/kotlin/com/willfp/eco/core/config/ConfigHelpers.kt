@@ -38,6 +38,15 @@ class DSLConfig internal constructor(type: ConfigType) : GenericConfig(type) {
 fun config(type: ConfigType = ConfigType.YAML, builder: DSLConfig.() -> Unit): Config =
     DSLConfig(type).apply(builder)
 
+/**
+ * Helper function to create JSON configs with a kotlin DSL.
+ *
+ * @param builder The builder.
+ * @return The config.
+ */
+fun json(builder: DSLConfig.() -> Unit): Config =
+    config(ConfigType.JSON, builder)
+
 /** @see Configs.empty */
 fun emptyConfig() = Configs.empty()
 

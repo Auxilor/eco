@@ -1,6 +1,8 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.config.updating.ConfigHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -13,12 +15,13 @@ import java.util.logging.Logger;
  */
 public interface PluginLike {
     /**
-     * Get the data folder of the object.
+     * Get the data folder.
      * <p>
      * Returns the plugin data folder for a plugin, or the extension's parent plugin's folder
      *
      * @return The data folder.
      */
+    @NotNull
     File getDataFolder();
 
     /**
@@ -26,6 +29,7 @@ public interface PluginLike {
      *
      * @return The config handler.
      */
+    @NotNull
     ConfigHandler getConfigHandler();
 
     /**
@@ -33,5 +37,16 @@ public interface PluginLike {
      *
      * @return The logger.
      */
+    @NotNull
     Logger getLogger();
+
+    /**
+     * Get the actual file.
+     *
+     * @return The file, i.e. the jar file.
+     */
+    @Nullable
+    default File getFile() {
+        return null;
+    }
 }

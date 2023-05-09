@@ -30,6 +30,8 @@ public record TargetGoalNearestAttackable(
         @NotNull Predicate<LivingEntity> targetFilter
 ) implements TargetGoal<Raider> {
     /**
+     * Create a new target goal.
+     *
      * @param target           The type of entities to attack.
      * @param checkVisibility  If visibility should be checked.
      * @param checkCanNavigate If navigation should be checked.

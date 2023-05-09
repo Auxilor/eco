@@ -13,12 +13,16 @@ import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.integrations.IntegrationLoader;
+import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
+import com.willfp.eco.core.registry.Registrable;
+import com.willfp.eco.core.registry.Registry;
 import com.willfp.eco.core.scheduling.Scheduler;
+import com.willfp.eco.core.version.OutdatedEcoVersionError;
+import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.apache.commons.lang.Validate;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,12 +33,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -53,27 +59,12 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression"})
-public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression", "MismatchedQueryAndUpdateOfCollection"})
+public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Registrable {
     /**
-     * The polymart resource ID of the plugin.
+     * The properties (eco.yml).
      */
-    private final int resourceId;
-
-    /**
-     * The bStats resource ID of the plugin.
-     */
-    private final int bStatsId;
-
-    /**
-     * The package where proxy implementations are.
-     */
-    private final String proxyPackage;
-
-    /**
-     * The color of the plugin, used in messages.
-     */
-    private final String color;
+    private final PluginProps props;
 
     /**
      * Loaded integrations.
@@ -143,11 +134,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     private boolean outdated = false;
 
     /**
-     * If the plugin supports extensions.
-     */
-    private final boolean supportingExtensions;
-
-    /**
      * The proxy factory.
      */
     @Nullable
@@ -156,27 +142,27 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     /**
      * The tasks to run on enable.
      */
-    private final List<Runnable> onEnable = new ArrayList<>();
+    private final ListMap<LifecyclePosition, Runnable> onEnable = new ListMap<>();
 
     /**
      * The tasks to run on disable.
      */
-    private final List<Runnable> onDisable = new ArrayList<>();
+    private final ListMap<LifecyclePosition, Runnable> onDisable = new ListMap<>();
 
     /**
      * The tasks to run on reload.
      */
-    private final List<Runnable> onReload = new ArrayList<>();
+    private final ListMap<LifecyclePosition, Runnable> onReload = new ListMap<>();
 
     /**
      * The tasks to run on load.
      */
-    private final List<Runnable> onLoad = new ArrayList<>();
+    private final ListMap<LifecyclePosition, Runnable> onLoad = new ListMap<>();
 
     /**
      * The tasks to run after load.
      */
-    private final List<Runnable> afterLoad = new ArrayList<>();
+    private final ListMap<LifecyclePosition, Runnable> afterLoad = new ListMap<>();
 
     /**
      * Create a new plugin.
@@ -193,7 +179,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * Create a new plugin without proxy support, polymart, or bStats.
      *
      * @param color The color.
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(@NotNull final String color) {
         this("", color);
     }
@@ -204,7 +192,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, using standard formatting)
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(@NotNull final String proxyPackage,
                         @NotNull final String color) {
         this(0, 0, proxyPackage, color);
@@ -216,7 +206,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param resourceId The polymart resource ID for the plugin.
      * @param bStatsId   The bStats resource ID for the plugin.
      * @param color      The color of the plugin (used in messages, using standard formatting)
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String color) {
@@ -230,7 +222,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param bStatsId             The bStats resource ID for the plugin.
      * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String color,
@@ -245,7 +239,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param bStatsId     The bStats resource ID for the plugin.
      * @param proxyPackage The package where proxy implementations are stored.
      * @param color        The color of the plugin (used in messages, using standard formatting)
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String proxyPackage,
@@ -261,21 +257,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param proxyPackage         The package where proxy implementations are stored.
      * @param color                The color of the plugin (used in messages, using standard formatting)
      * @param supportingExtensions If the plugin supports extensions.
+     * @deprecated Use eco.yml instead.
      */
+    @Deprecated(since = "6.53.0", forRemoval = true)
     protected EcoPlugin(final int resourceId,
                         final int bStatsId,
                         @NotNull final String proxyPackage,
                         @NotNull final String color,
                         final boolean supportingExtensions) {
-        this(
-                PluginProps.createSimple(
-                        resourceId,
-                        bStatsId,
-                        proxyPackage,
-                        color,
-                        supportingExtensions
-                )
-        );
+        this(PluginProps.createSimple(resourceId, bStatsId, proxyPackage, color, supportingExtensions));
     }
 
     /**
@@ -325,13 +315,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         PluginProps props = this.mutateProps(generatedProps);
         props.validate();
 
-        this.resourceId = props.getResourceId();
-        this.bStatsId = props.getBStatsId();
-        this.proxyPackage = props.getProxyPackage();
-        this.color = props.getColor();
-        this.supportingExtensions = props.isSupportingExtensions();
+        this.props = props;
 
-        this.proxyFactory = this.proxyPackage.equalsIgnoreCase("") ? null : Eco.get().createProxyFactory(this);
+        this.proxyFactory = this.props.getProxyPackage().equalsIgnoreCase("") ? null : Eco.get().createProxyFactory(this);
         this.logger = Eco.get().createLogger(this);
 
         this.getLogger().info("Initializing " + this.getColor() + this.getName());
@@ -363,14 +349,14 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         they have an outdated version of eco installed.
          */
 
-        DefaultArtifactVersion runningVersion = new DefaultArtifactVersion(Eco.get().getEcoPlugin().getDescription().getVersion());
-        DefaultArtifactVersion requiredVersion = new DefaultArtifactVersion(this.getMinimumEcoVersion());
+        Version runningVersion = new Version(Eco.get().getEcoPlugin().getDescription().getVersion());
+        Version requiredVersion = new Version(this.getMinimumEcoVersion());
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
             this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
             this.getLogger().severe("Download the newest version here:");
             this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
-            Bukkit.getPluginManager().disablePlugin(this);
+            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + this.getMinimumEcoVersion() + " to run.");
         }
     }
 
@@ -381,13 +367,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     public final void onEnable() {
         super.onEnable();
 
-        this.getLogger().info("");
         this.getLogger().info("Loading " + this.getColor() + this.getName());
 
         if (this.getResourceId() != 0 && !Eco.get().getEcoPlugin().getConfigYml().getBool("no-update-checker")) {
             new UpdateChecker(this).getVersion(version -> {
-                DefaultArtifactVersion currentVersion = new DefaultArtifactVersion(this.getDescription().getVersion());
-                DefaultArtifactVersion mostRecentVersion = new DefaultArtifactVersion(version);
+                Version currentVersion = new Version(this.getDescription().getVersion());
+                Version mostRecentVersion = new Version(version);
                 if (!(currentVersion.compareTo(mostRecentVersion) > 0 || currentVersion.equals(mostRecentVersion))) {
                     this.outdated = true;
                     this.getLogger().warning(this.getName() + " is out of date! (Version " + this.getDescription().getVersion() + ")");
@@ -401,10 +386,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             Eco.get().registerBStats(this);
         }
 
-        Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                .map(Plugin::getName)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
+        Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).map(String::toLowerCase).collect(Collectors.toSet());
 
         if (enabledPlugins.contains("PlaceholderAPI".toLowerCase())) {
             Eco.get().createPAPIIntegration(this);
@@ -412,14 +394,21 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
 
         this.loadIntegrationLoaders().forEach(integrationLoader -> {
             if (enabledPlugins.contains(integrationLoader.getPluginName().toLowerCase())) {
-                this.loadedIntegrations.add(integrationLoader.getPluginName());
-                integrationLoader.load();
+                try {
+                    integrationLoader.load();
+                    this.loadedIntegrations.add(integrationLoader.getPluginName());
+                } catch (Exception e) {
+                    this.getLogger().warning("Failed to load integration for " + integrationLoader.getPluginName());
+                    e.printStackTrace();
+                }
             }
         });
 
         this.loadedIntegrations.removeIf(pl -> pl.equalsIgnoreCase(this.getName()));
 
-        this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+        if (!this.getLoadedIntegrations().isEmpty()) {
+            this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+        }
 
         Prerequisite.update();
 
@@ -441,18 +430,19 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();
 
-            if (this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
-                this.getLogger().info("&cNo extensions found");
-            } else {
-                this.getLogger().info("Extensions Loaded:");
-                this.getExtensionLoader().getLoadedExtensions().forEach(extension -> this.getLogger().info("- " + extension.getName() + " v" + extension.getVersion()));
+            if (!this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
+                List<String> loadedExtensions = this.getExtensionLoader().getLoadedExtensions().stream().map(
+                        extension -> extension.getName() + " v" + extension.getVersion()
+                ).toList();
+
+                this.getLogger().info(
+                        "Loaded extensions: " +
+                                String.join(", ", loadedExtensions)
+                );
             }
         }
 
-        this.handleEnable();
-        this.onEnable.forEach(Runnable::run);
-
-        this.getLogger().info("");
+        this.handleLifecycle(this.onEnable, this::handleEnable);
     }
 
     /**
@@ -461,7 +451,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void onEnable(@NotNull final Runnable task) {
-        this.onEnable.add(task);
+        this.onEnable(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on enable.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onEnable(@NotNull final LifecyclePosition position,
+                               @NotNull final Runnable task) {
+        this.onEnable.append(position, task);
     }
 
     /**
@@ -474,8 +475,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getEventManager().unregisterAllListeners();
         this.getScheduler().cancelAll();
 
-        this.handleDisable();
-        this.onDisable.forEach(Runnable::run);
+        this.handleLifecycle(this.onDisable, this::handleDisable);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().unloadExtensions();
@@ -491,7 +491,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void onDisable(@NotNull final Runnable task) {
-        this.onDisable.add(task);
+        this.onDisable(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on disable.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onDisable(@NotNull final LifecyclePosition position,
+                                @NotNull final Runnable task) {
+        this.onDisable.append(position, task);
     }
 
     /**
@@ -501,8 +512,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     public final void onLoad() {
         super.onLoad();
 
-        this.handleLoad();
-        this.onLoad.forEach(Runnable::run);
+        this.handleLifecycle(this.onLoad, this::handleLoad);
     }
 
     /**
@@ -511,7 +521,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void onLoad(@NotNull final Runnable task) {
-        this.onLoad.add(task);
+        this.onLoad(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on load.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onLoad(@NotNull final LifecyclePosition position,
+                             @NotNull final Runnable task) {
+        this.onLoad.append(position, task);
     }
 
     /**
@@ -545,8 +566,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             this.getLogger().severe("");
         }
 
-        this.handleAfterLoad();
-        this.afterLoad.forEach(Runnable::run);
+        this.handleLifecycle(this.afterLoad, this::handleAfterLoad);
 
         this.reload();
 
@@ -554,7 +574,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
             extension.handleAfterLoad();
         }
 
-        this.getLogger().info("Loaded " + this.color + this.getName());
+        this.getLogger().info("Loaded " + this.props.getColor() + this.getName());
     }
 
     /**
@@ -563,7 +583,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @param task The task.
      */
     public final void afterLoad(@NotNull final Runnable task) {
-        this.afterLoad.add(task);
+        this.afterLoad(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run after load.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void afterLoad(@NotNull final LifecyclePosition position,
+                                @NotNull final Runnable task) {
+        this.afterLoad.append(position, task);
     }
 
     /**
@@ -576,8 +607,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
-        this.handleReload();
-        this.onReload.forEach(Runnable::run);
+        this.handleLifecycle(this.onReload, this::handleReload);
 
         for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
             extension.handleReload();
@@ -585,12 +615,23 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     }
 
     /**
-     * Add new task to run on enable.
+     * Add new task to run on reload.
      *
      * @param task The task.
      */
     public final void onReload(@NotNull final Runnable task) {
-        this.onReload.add(task);
+        this.onReload(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on reload.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onReload(@NotNull final LifecyclePosition position,
+                               @NotNull final Runnable task) {
+        this.onReload.append(position, task);
     }
 
     /**
@@ -604,6 +645,43 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
         this.reload();
 
         return System.currentTimeMillis() - startTime;
+    }
+
+    /**
+     * Handle lifecycle.
+     *
+     * @param tasks   The tasks.
+     * @param handler The handler.
+     */
+    private void handleLifecycle(@NotNull final ListMap<LifecyclePosition, Runnable> tasks,
+                                 @NotNull final Runnable handler) {
+        for (Runnable task : tasks.get(LifecyclePosition.START)) {
+            try {
+                task.run();
+            } catch (final Exception e) {
+                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+                this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            handler.run();
+        } catch (final Exception e) {
+            this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+            this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
+            e.printStackTrace();
+        }
+
+        for (Runnable task : tasks.get(LifecyclePosition.END)) {
+            try {
+                task.run();
+            } catch (final Exception e) {
+                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+                this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -762,10 +840,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      */
     @Nullable
     protected DisplayModule createDisplayModule() {
-        Validate.isTrue(
-                this.getDisplayModule() == null,
-                "Display module exists!"
-        );
+        Validate.isTrue(this.getDisplayModule() == null, "Display module exists!");
 
         return null;
     }
@@ -880,12 +955,22 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     }
 
     /**
+     * Get the plugin props. (eco.yml).
+     *
+     * @return The props.
+     */
+    @NotNull
+    public PluginProps getProps() {
+        return this.props;
+    }
+
+    /**
      * Get the polymart resource ID.
      *
      * @return The resource ID.
      */
     public int getResourceId() {
-        return this.resourceId;
+        return this.getProps().getResourceId();
     }
 
     /**
@@ -894,7 +979,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return The ID.
      */
     public int getBStatsId() {
-        return this.bStatsId;
+        return this.getProps().getBStatsId();
     }
 
     /**
@@ -903,7 +988,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return The package where proxies are contained.
      */
     public String getProxyPackage() {
-        return this.proxyPackage;
+        return this.getProps().getProxyPackage();
     }
 
     /**
@@ -912,7 +997,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return The color.
      */
     public String getColor() {
-        return this.color;
+        return this.getProps().getColor();
     }
 
     /**
@@ -1001,7 +1086,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      *
      * @return The config handler.
      */
-    public ConfigHandler getConfigHandler() {
+    public @NotNull ConfigHandler getConfigHandler() {
         return this.configHandler;
     }
 
@@ -1030,7 +1115,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
      * @return If extensions are supported.
      */
     public boolean isSupportingExtensions() {
-        return this.supportingExtensions;
+        return this.getProps().isSupportingExtensions();
     }
 
     /**
@@ -1063,5 +1148,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike {
     @NotNull
     public FixedMetadataValue createMetadataValue(@NotNull final Object value) {
         return this.getMetadataValueFactory().create(value);
+    }
+
+    @Override
+    @NotNull
+    public final String getID() {
+        return Registry.tryFitPattern(this.getName());
+    }
+
+    @Override
+    public @NotNull File getFile() {
+        return super.getFile();
     }
 }

@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -201,6 +202,26 @@ public final class StringUtils {
     }
 
     /**
+     * Format a list of strings.
+     * <p>
+     * Coverts color codes and placeholders.
+     *
+     * @param list    The messages to format.
+     * @param context The context.
+     * @return The message, format.
+     */
+    @NotNull
+    public static List<String> formatList(@NotNull final List<String> list,
+                                          @NotNull PlaceholderContext context) {
+        List<String> translated = new ArrayList<>();
+        for (String string : list) {
+            translated.add(format(string, context));
+        }
+
+        return translated;
+    }
+
+    /**
      * Format a string.
      * <p>
      * Converts color codes and placeholders.
@@ -242,7 +263,7 @@ public final class StringUtils {
     @NotNull
     public static String format(@NotNull final String message,
                                 @NotNull final FormatOption option) {
-        return format(message, null, option);
+        return format(message, (Player) null, option);
     }
 
     /**
@@ -287,7 +308,7 @@ public final class StringUtils {
     @NotNull
     public static Component formatToComponent(@NotNull final String message,
                                               @NotNull final FormatOption option) {
-        return formatToComponent(message, null, option);
+        return formatToComponent(message, (Player) null, option);
     }
 
     /**
@@ -321,10 +342,49 @@ public final class StringUtils {
     public static String format(@NotNull final String message,
                                 @Nullable final Player player,
                                 @NotNull final FormatOption option) {
-        String processedMessage = message;
         if (option == FormatOption.WITH_PLACEHOLDERS) {
-            processedMessage = PlaceholderManager.translatePlaceholders(processedMessage, player);
+            return format(
+                    message,
+                    new PlaceholderContext(player)
+            );
         }
+
+        return STRING_FORMAT_CACHE.get(message);
+    }
+
+    /**
+     * Format a string to a component.
+     * <p>
+     * Converts color codes and placeholders if specified.
+     *
+     * @param message The message to translate.
+     * @param context The placeholder context.
+     * @return The message, formatted, as a component.
+     * @see StringUtils#format(String, Player)
+     */
+    @NotNull
+    public static Component formatToComponent(@NotNull final String message,
+                                              @NotNull final PlaceholderContext context) {
+        return toComponent(format(message, context));
+    }
+
+    /**
+     * Format a string.
+     * <p>
+     * Coverts color codes and placeholders if specified.
+     *
+     * @param message The message to format.
+     * @param context The context to translate placeholders with respect to.
+     * @return The message, formatted.
+     */
+    @NotNull
+    public static String format(@NotNull final String message,
+                                @NotNull final PlaceholderContext context) {
+        String processedMessage = message;
+        processedMessage = PlaceholderManager.translatePlaceholders(
+                processedMessage,
+                context
+        );
         return STRING_FORMAT_CACHE.get(processedMessage);
     }
 
@@ -424,20 +484,6 @@ public final class StringUtils {
             }
         }
         return processedString;
-    }
-
-    /**
-     * Internal implementation of {@link String#valueOf}.
-     * Formats collections and doubles better.
-     *
-     * @param object The object to convert to string.
-     * @return The object stringified.
-     * @deprecated Poorly named method. Use {@link StringUtils#toNiceString(Object)} instead.
-     */
-    @NotNull
-    @Deprecated(since = "6.26.0", forRemoval = true)
-    public static String internalToString(@Nullable final Object object) {
-        return toNiceString(object);
     }
 
     /**
@@ -686,6 +732,56 @@ public final class StringUtils {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Fast implementation of {@link String#replace(CharSequence, CharSequence)}
+     *
+     * @param input       The input string.
+     * @param target      The target string.
+     * @param replacement The replacement string.
+     * @return The replaced string.
+     */
+    @NotNull
+    public static String replaceQuickly(@NotNull final String input,
+                                        @NotNull final String target,
+                                        @NotNull final String replacement) {
+        int targetLength = target.length();
+
+        // Count the number of original occurrences
+        int count = 0;
+        for (
+                int index = input.indexOf(target);
+                index != -1;
+                index = input.indexOf(target, index + targetLength)
+        ) {
+            count++;
+        }
+
+        if (count == 0) {
+            return input;
+        }
+
+        int replacementLength = replacement.length();
+        int inputLength = input.length();
+
+        // Pre-calculate the final size of the StringBuilder
+        int newSize = inputLength + (replacementLength - targetLength) * count;
+        StringBuilder result = new StringBuilder(newSize);
+
+        int start = 0;
+        for (
+                int index = input.indexOf(target);
+                index != -1;
+                index = input.indexOf(target, start)
+        ) {
+            result.append(input, start, index);
+            result.append(replacement);
+            start = index + targetLength;
+        }
+
+        result.append(input, start, inputLength);
+        return result.toString();
     }
 
     /**

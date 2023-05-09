@@ -8,7 +8,7 @@ import java.util.logging.Logger
 
 class EcoLogger(private val plugin: EcoPlugin) : Logger(plugin.name, null as String?) {
     override fun info(msg: String) {
-        Bukkit.getConsoleSender().sendMessage("[${plugin.name}] ${StringUtils.format(msg)}")
+        Bukkit.getConsoleSender().sendMessage("[${plugin.name}] ${StringUtils.format(msg, StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)}")
     }
 
     init {

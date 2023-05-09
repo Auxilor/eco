@@ -21,6 +21,13 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     private final Set<GoalFlag> flags = EnumSet.noneOf(GoalFlag.class);
 
     /**
+     * Create a new custom goal.
+     */
+    protected CustomGoal() {
+
+    }
+
+    /**
      * Initialize the goal with a mob.
      * <p>
      * This will be run before any implementation code, treat this as the constructor.

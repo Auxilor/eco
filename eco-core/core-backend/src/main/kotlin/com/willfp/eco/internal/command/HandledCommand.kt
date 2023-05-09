@@ -50,7 +50,7 @@ abstract class HandledCommand(
         command: Command,
         label: String,
         args: Array<out String>?
-    ): List<String>? {
+    ): List<String> {
         return handleTabComplete(sender, args?.toList() ?: listOf())
     }
 

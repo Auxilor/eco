@@ -12,10 +12,16 @@ class ProfileSaver(
         val interval = plugin.configYml.getInt("save-interval").toLong()
 
         plugin.scheduler.runTimer(20, interval) {
-            for ((uuid, set) in EcoProfile.CHANGE_MAP) {
-                handler.saveKeysFor(uuid, set)
+            val iterator = EcoProfile.CHANGE_MAP.iterator()
+
+            while (iterator.hasNext()) {
+                val uuid = iterator.next()
+                iterator.remove()
+
+                val profile = handler.accessLoadedProfile(uuid) ?: continue
+
+                handler.saveKeysFor(uuid, profile.data.keys)
             }
-            EcoProfile.CHANGE_MAP.clear()
         }
     }
 }

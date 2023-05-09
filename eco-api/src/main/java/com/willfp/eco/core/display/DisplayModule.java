@@ -113,23 +113,6 @@ public abstract class DisplayModule {
     }
 
     /**
-     * Get the display priority.
-     *
-     * @return The priority.
-     * @deprecated Use getWeight instead.
-     */
-    @Deprecated(since = "6.35.0", forRemoval = true)
-    public DisplayPriority getPriority() {
-        return switch (this.weight) {
-            case 100 -> DisplayPriority.LOWEST;
-            case 200 -> DisplayPriority.LOW;
-            case 300 -> DisplayPriority.HIGH;
-            case 400 -> DisplayPriority.HIGHEST;
-            default -> DisplayPriority.CUSTOM;
-        };
-    }
-
-    /**
      * Get the display weight.
      *
      * @return The weight.

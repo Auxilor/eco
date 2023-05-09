@@ -16,15 +16,4 @@ public class ProxyError extends Error {
                       @NotNull final Throwable cause) {
         super(message, cause);
     }
-
-    /**
-     * Thrown if there is an error getting a proxy.
-     *
-     * @param message The message to send.
-     * @deprecated Proxy Errors should include a cause.
-     */
-    @Deprecated(forRemoval = true)
-    public ProxyError(@NotNull final String message) {
-        super(message);
-    }
 }

@@ -1,11 +1,9 @@
 package com.willfp.eco.core.integrations.guidetection;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import com.willfp.eco.util.MenuUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Class to handle GUI detection.
@@ -14,7 +12,7 @@ public final class GUIDetectionManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<GUIDetectionIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<GUIDetectionIntegration> REGISTRY = new IntegrationRegistry<>();
 
     /**
      * Register a new integration.
@@ -22,8 +20,7 @@ public final class GUIDetectionManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final GUIDetectionIntegration integration) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
-        REGISTERED.add(integration);
+        REGISTRY.register(integration);
     }
 
     /**
@@ -37,13 +34,7 @@ public final class GUIDetectionManager {
             return true;
         }
 
-        for (GUIDetectionIntegration integration : REGISTERED) {
-            if (integration.hasGUIOpen(player)) {
-                return true;
-            }
-        }
-
-        return false;
+        return REGISTRY.anySafely(integration -> integration.hasGUIOpen(player));
     }
 
     private GUIDetectionManager() {

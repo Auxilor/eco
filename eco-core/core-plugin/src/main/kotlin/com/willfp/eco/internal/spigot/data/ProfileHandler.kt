@@ -9,7 +9,6 @@ import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.ServerLocking
 import com.willfp.eco.internal.spigot.data.storage.DataHandler
 import com.willfp.eco.internal.spigot.data.storage.HandlerType
-import com.willfp.eco.internal.spigot.data.storage.LegacyMySQLDataHandler
 import com.willfp.eco.internal.spigot.data.storage.MongoDataHandler
 import com.willfp.eco.internal.spigot.data.storage.MySQLDataHandler
 import com.willfp.eco.internal.spigot.data.storage.YamlDataHandler
@@ -22,24 +21,16 @@ class ProfileHandler(
     private val type: HandlerType,
     private val plugin: EcoSpigotPlugin
 ) {
-    private val loaded = mutableMapOf<UUID, Profile>()
+    private val loaded = mutableMapOf<UUID, EcoProfile>()
 
     val handler: DataHandler = when (type) {
         HandlerType.YAML -> YamlDataHandler(plugin, this)
         HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
         HandlerType.MONGO -> MongoDataHandler(plugin, this)
-        HandlerType.LEGACY_MYSQL -> LegacyMySQLDataHandler(plugin, this)
     }
 
-    init {
-        if (handler.type == HandlerType.LEGACY_MYSQL) {
-            plugin.logger.warning("You're using the legacy MySQL handler!")
-            plugin.logger.warning("Some features will not work and you may get unfixable errors.")
-            plugin.logger.warning("Support cannot be given to data issues related to legacy MySQL.")
-            plugin.logger.warning("Change your data handler to mysql, mongo, or yaml to fix this!")
-            plugin.logger.warning("This can be done in /plugins/eco/config.yml")
-        }
-    }
+    fun accessLoadedProfile(uuid: UUID): EcoProfile? =
+        loaded[uuid]
 
     fun loadGenericProfile(uuid: UUID): Profile {
         val found = loaded[uuid]
@@ -87,11 +78,7 @@ class ProfileHandler(
         }
 
 
-        var previousHandlerType = HandlerType.valueOf(plugin.dataYml.getString("previous-handler"))
-
-        if (previousHandlerType == HandlerType.MYSQL && !plugin.dataYml.has("new-mysql")) {
-            previousHandlerType = HandlerType.LEGACY_MYSQL
-        }
+        val previousHandlerType = HandlerType.valueOf(plugin.dataYml.getString("previous-handler"))
 
         if (previousHandlerType == type) {
             return
@@ -101,7 +88,6 @@ class ProfileHandler(
             HandlerType.YAML -> YamlDataHandler(plugin, this)
             HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
             HandlerType.MONGO -> MongoDataHandler(plugin, this)
-            HandlerType.LEGACY_MYSQL -> LegacyMySQLDataHandler(plugin, this)
         }
 
         ServerLocking.lock("Migrating player data! Check console for more information.")

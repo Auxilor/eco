@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * Missing or invalid extension.yml.
  * Invalid filetype.
  */
-public class MalformedExtensionException extends RuntimeException {
+public class MalformedExtensionException extends ExtensionLoadException {
     /**
      * Create a new MalformedExtensionException.
      *

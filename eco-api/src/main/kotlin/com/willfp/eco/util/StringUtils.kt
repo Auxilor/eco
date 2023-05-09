@@ -2,6 +2,7 @@
 
 package com.willfp.eco.util
 
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 
@@ -31,6 +32,14 @@ fun String.formatEco(
     if (formatPlaceholders) StringUtils.FormatOption.WITH_PLACEHOLDERS else StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
 )
 
+/** @see StringUtils.format */
+fun String.formatEco(
+    context: PlaceholderContext
+) = StringUtils.format(
+    this,
+    context
+)
+
 /** @see StringUtils.formatList */
 fun List<String>.formatEco(
     player: Player? = null,
@@ -41,6 +50,14 @@ fun List<String>.formatEco(
     if (formatPlaceholders) StringUtils.FormatOption.WITH_PLACEHOLDERS else StringUtils.FormatOption.WITHOUT_PLACEHOLDERS
 )
 
+/** @see StringUtils.formatList */
+fun List<String>.formatEco(
+    context: PlaceholderContext
+): List<String> = StringUtils.formatList(
+    this,
+    context
+)
+
 /** @see StringUtils.splitAround */
 fun String.splitAround(separator: String): Array<String> =
     StringUtils.splitAround(this, separator)
@@ -48,3 +65,7 @@ fun String.splitAround(separator: String): Array<String> =
 /** @see StringUtils.toNiceString */
 fun Any?.toNiceString(): String =
     StringUtils.toNiceString(this)
+
+/** @see StringUtils.replaceQuickly */
+fun String.replaceQuickly(target: String, replacement: String): String =
+    StringUtils.replaceQuickly(this, target, replacement)

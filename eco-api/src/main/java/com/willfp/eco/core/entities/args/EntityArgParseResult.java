@@ -7,6 +7,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
+ * The result of an arg parses.
+ *
  * @param test     The test for the entity.
  * @param modifier The modifier to apply to the entity.
  * @see EntityArgParser

@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.customitems;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -12,7 +13,7 @@ public final class CustomItemsManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<CustomItemsIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<CustomItemsIntegration> REGISTRY = new IntegrationRegistry<>();
 
     /**
      * Register a new integration.
@@ -20,8 +21,7 @@ public final class CustomItemsManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final CustomItemsIntegration integration) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
-        REGISTERED.add(integration);
+        REGISTRY.register(integration);
     }
 
     /**
@@ -30,9 +30,7 @@ public final class CustomItemsManager {
      * @see com.willfp.eco.core.items.Items
      */
     public static void registerAllItems() {
-        for (CustomItemsIntegration customItemsIntegration : REGISTERED) {
-            customItemsIntegration.registerAllItems();
-        }
+        REGISTRY.forEachSafely(CustomItemsIntegration::registerAllItems);
     }
 
     /**
@@ -41,9 +39,7 @@ public final class CustomItemsManager {
      * @see com.willfp.eco.core.items.Items
      */
     public static void registerProviders() {
-        for (CustomItemsIntegration customItemsIntegration : REGISTERED) {
-            customItemsIntegration.registerProvider();
-        }
+        REGISTRY.forEachSafely(CustomItemsIntegration::registerProvider);
     }
 
     private CustomItemsManager() {

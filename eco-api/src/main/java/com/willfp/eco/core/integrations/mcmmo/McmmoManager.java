@@ -1,5 +1,6 @@
 package com.willfp.eco.core.integrations.mcmmo;
 
+import com.willfp.eco.core.integrations.IntegrationRegistry;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ public final class McmmoManager {
     /**
      * A set of all registered integrations.
      */
-    private static final Set<McmmoIntegration> REGISTERED = new HashSet<>();
+    private static final IntegrationRegistry<McmmoIntegration> REGISTERED = new IntegrationRegistry<>();
 
     /**
      * Register a new integration.
@@ -22,8 +23,7 @@ public final class McmmoManager {
      * @param integration The integration to register.
      */
     public static void register(@NotNull final McmmoIntegration integration) {
-        REGISTERED.removeIf(it -> it.getPluginName().equalsIgnoreCase(integration.getPluginName()));
-        REGISTERED.add(integration);
+        REGISTERED.register(integration);
     }
 
     /**
@@ -34,13 +34,11 @@ public final class McmmoManager {
      */
     public static int getBonusDropCount(@NotNull final Block block) {
         int finalValue = 0;
+
         for (McmmoIntegration mcmmoIntegration : REGISTERED) {
             finalValue += mcmmoIntegration.getBonusDropCount(block);
-            
-
-
-            
         }
+
         return finalValue;
     }
 
@@ -51,13 +49,7 @@ public final class McmmoManager {
      * @return If the event is fake.
      */
     public static boolean isFake(@NotNull final Event event) {
-        for (McmmoIntegration mcmmoIntegration : REGISTERED) {
-            if (mcmmoIntegration.isFake(event)) {
-                return true;
-            }
-
-        }
-        return false;
+        return REGISTERED.anySafely(integration -> integration.isFake(event));
     }
 
     private McmmoManager() {
