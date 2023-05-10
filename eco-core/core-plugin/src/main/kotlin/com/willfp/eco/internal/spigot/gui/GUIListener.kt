@@ -124,6 +124,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         if (slot.isCaptive(player, menu)) {
             if (!slot.isAllowedCaptive(player, menu, event.currentItem)) {
                 event.isCancelled = true
+            } else {
+                player.renderActiveMenu()
             }
         } else {
             event.isCancelled = true
