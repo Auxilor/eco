@@ -5,10 +5,10 @@ import com.willfp.eco.internal.spigot.data.EcoProfile
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 
 class ProfileSaver(
-    plugin: EcoPlugin,
-    handler: ProfileHandler
+    private val plugin: EcoPlugin,
+    private val handler: ProfileHandler
 ) {
-    init {
+    fun startTicking() {
         val interval = plugin.configYml.getInt("save-interval").toLong()
 
         plugin.scheduler.runTimer(20, interval) {

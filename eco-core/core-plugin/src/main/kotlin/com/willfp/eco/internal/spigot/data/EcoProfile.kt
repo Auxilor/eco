@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data
 
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.PlayerProfile
 import com.willfp.eco.core.data.Profile
 import com.willfp.eco.core.data.ServerProfile
@@ -11,7 +12,8 @@ import java.util.concurrent.ConcurrentHashMap
 abstract class EcoProfile(
     val data: MutableMap<PersistentDataKey<*>, Any>,
     val uuid: UUID,
-    private val handler: DataHandler
+    private val handler: DataHandler,
+    private val localHandler: DataHandler
 ) : Profile {
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         this.data[key] = value
@@ -25,7 +27,12 @@ abstract class EcoProfile(
             return this.data[key] as T
         }
 
-        this.data[key] = handler.read(uuid, key) ?: key.defaultValue
+        this.data[key] = if (key.isLocal) {
+            localHandler.read(uuid, key)
+        } else {
+            handler.read(uuid, key)
+        } ?: key.defaultValue
+
         return read(key)
     }
 
@@ -49,8 +56,9 @@ abstract class EcoProfile(
 class EcoPlayerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
     uuid: UUID,
-    handler: DataHandler
-) : EcoProfile(data, uuid, handler), PlayerProfile {
+    handler: DataHandler,
+    localHandler: DataHandler
+) : EcoProfile(data, uuid, handler, localHandler), PlayerProfile {
     override fun toString(): String {
         return "EcoPlayerProfile{uuid=$uuid}"
     }
@@ -58,9 +66,13 @@ class EcoPlayerProfile(
 
 class EcoServerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
-    handler: DataHandler
-) : EcoProfile(data, serverProfileUUID, handler), ServerProfile {
+    handler: DataHandler,
+    localHandler: DataHandler
+) : EcoProfile(data, serverProfileUUID, handler, localHandler), ServerProfile {
     override fun toString(): String {
         return "EcoServerProfile"
     }
 }
+
+private val PersistentDataKey<*>.isLocal: Boolean
+    get() = EcoPlugin.getPlugin(this.key.namespace)?.isUsingLocalStorage == true

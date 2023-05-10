@@ -258,6 +258,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun addNewPlugin(plugin: EcoPlugin) {
         loadedEcoPlugins[plugin.name.lowercase()] = plugin
+        loadedEcoPlugins[plugin.id] = plugin
     }
 
     override fun getLoadedPlugins(): List<String> =

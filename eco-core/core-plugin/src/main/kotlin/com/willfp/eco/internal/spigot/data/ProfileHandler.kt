@@ -23,8 +23,10 @@ class ProfileHandler(
 ) {
     private val loaded = mutableMapOf<UUID, EcoProfile>()
 
+    private val localHandler = YamlDataHandler(plugin, this)
+
     val handler: DataHandler = when (type) {
-        HandlerType.YAML -> YamlDataHandler(plugin, this)
+        HandlerType.YAML -> localHandler
         HandlerType.MYSQL -> MySQLDataHandler(plugin, this)
         HandlerType.MONGO -> MongoDataHandler(plugin, this)
     }
@@ -41,7 +43,7 @@ class ProfileHandler(
         val data = mutableMapOf<PersistentDataKey<*>, Any>()
 
         val profile = if (uuid == serverProfileUUID)
-            EcoServerProfile(data, handler) else EcoPlayerProfile(data, uuid, handler)
+            EcoServerProfile(data, handler, localHandler) else EcoPlayerProfile(data, uuid, handler, localHandler)
 
         loaded[uuid] = profile
         return profile
@@ -57,6 +59,11 @@ class ProfileHandler(
 
     fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
         handler.saveKeysFor(uuid, keys)
+
+        // Don't save to local handler if it's the same handler.
+        if (localHandler != handler) {
+            localHandler.saveKeysFor(uuid, keys)
+        }
     }
 
     fun unloadPlayer(uuid: UUID) {
@@ -65,6 +72,10 @@ class ProfileHandler(
 
     fun save() {
         handler.save()
+
+        if (localHandler != handler) {
+            localHandler.save()
+        }
     }
 
     fun migrateIfNeeded() {
@@ -147,5 +158,8 @@ class ProfileHandler(
 
     fun initialize() {
         handler.initialize()
+        if (localHandler != handler) {
+            localHandler.initialize()
+        }
     }
 }

@@ -1150,6 +1150,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         return this.getMetadataValueFactory().create(value);
     }
 
+    /**
+     * Get if all {@link com.willfp.eco.core.data.keys.PersistentDataKey}'s for this
+     * plugin should be saved locally (via data.yml.) even if eco is using a database.
+     *
+     * @return If using local storage.
+     */
+    public boolean isUsingLocalStorage() {
+        return this.configYml.isUsingLocalStorage();
+    }
+
     @Override
     @NotNull
     public final String getID() {

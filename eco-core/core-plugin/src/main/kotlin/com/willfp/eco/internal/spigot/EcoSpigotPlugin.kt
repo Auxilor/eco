@@ -258,7 +258,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             profileHandler.migrateIfNeeded()
         }
 
-        ProfileSaver(this, profileHandler)
+        ProfileSaver(this, profileHandler).startTicking()
+
         this.scheduler.runTimer(
             { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),
