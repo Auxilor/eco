@@ -868,14 +868,16 @@ public final class StringUtils {
 
         List<Component> lines = new ArrayList<>();
         List<TextComponent> currentLine = new ArrayList<>();
+        boolean isFirstLine = true;
 
         for (TextComponent letter : letters) {
             if (currentLine.size() > lineLength && letter.content().isBlank()) {
                 lines.add(Component.join(JoinConfiguration.noSeparators(), currentLine));
                 currentLine.clear();
+                isFirstLine = false;
             } else {
                 // Add margin if starting a new line.
-                if (currentLine.isEmpty()) {
+                if (currentLine.isEmpty() && !isFirstLine) {
                     if (preserveMargin) {
                         for (int i = 0; i < margin; i++) {
                             currentLine.add(space);
