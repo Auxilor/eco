@@ -23,6 +23,9 @@ class EcoPluginCommand(
         if (command == null) {
             unregister()
             commandMap.register(plugin.name.lowercase(), DelegatedBukkitCommand(this))
+            for (alias in aliases) {
+                commandMap.register(plugin.name.lowercase(), DelegatedBukkitCommand(this, alias))
+            }
         } else {
             command.setExecutor(this)
             command.tabCompleter = this
@@ -35,6 +38,9 @@ class EcoPluginCommand(
 
     override fun unregister() {
         commandMap.getCommand(name)?.unregister(commandMap)
+        for (alias in this.aliases) {
+            commandMap.getCommand(alias)?.unregister(commandMap)
+        }
         Eco.get().unregisterCommand(this)
 
         Eco.get().syncCommands()

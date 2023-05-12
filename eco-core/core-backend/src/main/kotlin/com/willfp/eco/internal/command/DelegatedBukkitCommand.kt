@@ -7,8 +7,9 @@ import org.bukkit.command.PluginIdentifiableCommand
 import org.bukkit.command.TabCompleter
 
 class DelegatedBukkitCommand(
-    private val delegate: EcoPluginCommand
-) : Command(delegate.name), TabCompleter, PluginIdentifiableCommand {
+    private val delegate: EcoPluginCommand,
+    name: String = delegate.name
+) : Command(name), TabCompleter, PluginIdentifiableCommand {
     private var _aliases: List<String>? = null
     private var _description: String? = null
 
