@@ -29,10 +29,7 @@ class BukkitCommands : BukkitCommandsProxy {
     }
 
     override fun unregisterCommand(command: PluginCommandBase) {
-        (command.aliases + command.name)
-            .forEach {
-                knownCommands.remove(it)
-                knownCommands.remove("${command.plugin.name.lowercase()}:$it")
-            }
+        knownCommands.remove(command.name)
+        knownCommands.remove("${command.plugin.name.lowercase()}:${command.name}")
     }
 }
