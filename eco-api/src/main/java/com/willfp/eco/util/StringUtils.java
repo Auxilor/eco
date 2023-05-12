@@ -796,21 +796,53 @@ public final class StringUtils {
     @NotNull
     public static List<String> lineWrap(@NotNull final List<String> input,
                                         final int lineLength) {
+        return lineWrap(input, lineLength, true);
+    }
+
+    /**
+     * Line wrap a list of strings while preserving formatting.
+     *
+     * @param input      The input list.
+     * @param lineLength The length of each line.
+     * @return The wrapped list.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final List<String> input,
+                                        final int lineLength,
+                                        final boolean preserveMargin) {
         return input.stream()
-                .flatMap(line -> lineWrap(line, lineLength).stream())
+                .flatMap(line -> lineWrap(line, lineLength, preserveMargin).stream())
                 .toList();
     }
 
     /**
      * Line wrap a string while preserving formatting.
      *
-     * @param input      The input string.
+     * @param input      The input list.
      * @param lineLength The length of each line.
-     * @return The wrapped string.
+     * @return The wrapped list.
      */
     @NotNull
     public static List<String> lineWrap(@NotNull final String input,
                                         final int lineLength) {
+        return lineWrap(input, lineLength, true);
+    }
+
+    /**
+     * Line wrap a string while preserving formatting.
+     *
+     * @param input          The input string.
+     * @param lineLength     The length of each line.
+     * @param preserveMargin If the string has a margin, add it to the start of each line.
+     * @return The wrapped string.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final String input,
+                                        final int lineLength,
+                                        final boolean preserveMargin) {
+        int margin = preserveMargin ? getMargin(input) : 0;
+        TextComponent space = Component.text(" ");
+
         Component asComponent = toComponent(input);
 
         // The component contains the text as its children, so the child components
@@ -841,6 +873,15 @@ public final class StringUtils {
                 lines.add(Component.join(JoinConfiguration.noSeparators(), currentLine));
                 currentLine.clear();
             } else {
+                // Add margin if starting a new line.
+                if (currentLine.isEmpty()) {
+                    if (preserveMargin) {
+                        for (int i = 0; i < margin; i++) {
+                            currentLine.add(space);
+                        }
+                    }
+                }
+
                 currentLine.add(letter);
             }
         }
@@ -851,6 +892,16 @@ public final class StringUtils {
         // Convert back to legacy strings.
         return lines.stream().map(StringUtils::toLegacy)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Get a string's margin.
+     *
+     * @param input The input string.
+     * @return The margin.
+     */
+    public static int getMargin(@NotNull final String input) {
+        return input.indexOf(input.trim());
     }
 
     /**
