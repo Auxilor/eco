@@ -37,9 +37,8 @@ class EcoPluginCommand(
     }
 
     override fun unregister() {
-        commandMap.getCommand(name)?.unregister(commandMap)
-        for (alias in this.aliases) {
-            commandMap.getCommand(alias)?.unregister(commandMap)
+        for (s in (this.aliases + name)) {
+            commandMap.getCommand(s)?.unregister(commandMap)
         }
         Eco.get().unregisterCommand(this)
 
