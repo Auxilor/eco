@@ -787,6 +787,21 @@ public final class StringUtils {
     }
 
     /**
+     * Line wrap a list of strings while preserving formatting.
+     *
+     * @param input      The input list.
+     * @param lineLength The length of each line.
+     * @return The wrapped list.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final List<String> input,
+                                        final int lineLength) {
+        return input.stream()
+                .flatMap(line -> lineWrap(line, lineLength).stream())
+                .toList();
+    }
+
+    /**
      * Line wrap a string while preserving formatting.
      *
      * @param input      The input string.
