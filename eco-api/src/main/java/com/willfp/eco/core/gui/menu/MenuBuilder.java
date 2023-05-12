@@ -143,6 +143,26 @@ public interface MenuBuilder extends PageBuilder {
     }
 
     /**
+     * Set the default page.
+     *
+     * @param page The page.
+     * @return The builder.
+     */
+    default MenuBuilder defaultPage(final int page) {
+        return this.maxPages(player -> page);
+    }
+
+    /**
+     * Set the default page dynamically for a player.
+     *
+     * @param page The default page.
+     * @return The builder.
+     */
+    default MenuBuilder defaultPage(@NotNull final Function<Player, Integer> page) {
+        return this.onOpen((player, menu) -> menu.setState(player, Page.PAGE_KEY, page.apply(player)));
+    }
+
+    /**
      * Add a menu close handler.
      *
      * @param action The handler.
