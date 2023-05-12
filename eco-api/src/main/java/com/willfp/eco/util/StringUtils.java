@@ -802,8 +802,9 @@ public final class StringUtils {
     /**
      * Line wrap a list of strings while preserving formatting.
      *
-     * @param input      The input list.
-     * @param lineLength The length of each line.
+     * @param input          The input list.
+     * @param lineLength     The length of each line.
+     * @param preserveMargin If the string has a margin, add it to the next line.
      * @return The wrapped list.
      */
     @NotNull
