@@ -69,3 +69,11 @@ fun Any?.toNiceString(): String =
 /** @see StringUtils.replaceQuickly */
 fun String.replaceQuickly(target: String, replacement: String): String =
     StringUtils.replaceQuickly(this, target, replacement)
+
+/** @see StringUtils.lineWrap */
+fun String.lineWrap(width: Int): List<String> =
+    StringUtils.lineWrap(this, width)
+
+/** @see StringUtils.lineWrap */
+fun List<String>.lineWrap(width: Int): List<String> =
+    StringUtils.lineWrap(this, width)
