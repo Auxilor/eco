@@ -184,7 +184,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     }
 
     override fun createPluginCommand(
-        parentDelegate: CommandBase,
+        parentDelegate: PluginCommandBase,
         plugin: EcoPlugin,
         name: String,
         permission: String,

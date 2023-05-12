@@ -7,7 +7,7 @@ import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.Bukkit
 
 class EcoPluginCommand(
-    parentDelegate: CommandBase,
+    private val parentDelegate: PluginCommandBase,
     plugin: EcoPlugin,
     name: String,
     permission: String,
@@ -23,9 +23,6 @@ class EcoPluginCommand(
         if (command == null) {
             unregister()
             commandMap.register(plugin.name.lowercase(), DelegatedBukkitCommand(this))
-            for (alias in aliases) {
-                commandMap.register(plugin.name.lowercase(), DelegatedBukkitCommand(this, alias))
-            }
         } else {
             command.setExecutor(this)
             command.tabCompleter = this
@@ -37,13 +34,14 @@ class EcoPluginCommand(
     }
 
     override fun unregister() {
-        for (s in (this.aliases + name)) {
-            commandMap.getCommand(s)?.unregister(commandMap)
-        }
+        commandMap.getCommand(name)?.unregister(commandMap)
         Eco.get().unregisterCommand(this)
 
         Eco.get().syncCommands()
     }
+
+    override fun getAliases(): List<String> = parentDelegate.aliases
+    override fun getDescription(): String? = parentDelegate.description
 }
 
 class EcoSubcommand(
