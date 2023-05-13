@@ -136,6 +136,14 @@ public interface Eco {
     Logger createLogger(@NotNull EcoPlugin plugin);
 
     /**
+     * Get NOOP logger.
+     *
+     * @return The logger.
+     */
+    @NotNull
+    Logger getNOOPLogger();
+
+    /**
      * Create a PAPI integration.
      *
      * @param plugin The plugin.

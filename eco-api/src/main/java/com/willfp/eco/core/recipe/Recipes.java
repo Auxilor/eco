@@ -9,7 +9,6 @@ import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import com.willfp.eco.util.NamespacedKeyUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -127,8 +126,8 @@ public final class Recipes {
         }
 
         if (builder.isAir()) {
-            Bukkit.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
-            Bukkit.getLogger().warning("of air or invalid items! It will not be registered.");
+            plugin.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
+            plugin.getLogger().warning("of air or invalid items! It will not be registered.");
             return null;
         }
 
