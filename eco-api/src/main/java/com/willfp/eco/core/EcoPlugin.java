@@ -603,7 +603,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     public final void reload() {
         this.getConfigHandler().updateConfigs();
 
-        this.getScheduler().cancelAll();
+        if (this.cancelsTasksOnReload()) {
+            this.getScheduler().cancelAll();
+        }
+
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
@@ -1158,6 +1161,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public boolean isUsingLocalStorage() {
         return this.configYml.isUsingLocalStorage();
+    }
+
+    /**
+     * Get if all tasks should be cancelled on reload.
+     *
+     * @return If cancelling tasks on reload.
+     */
+    public boolean cancelsTasksOnReload() {
+        return true;
     }
 
     @Override
