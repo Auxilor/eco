@@ -15,5 +15,5 @@ fun <T> create2DList(rows: Int, columns: Int): MutableList<MutableList<T>> =
     ListUtils.create2DList(rows, columns)
 
 /** @see ListUtils.toSingletonList */
-fun <T> T.toSingletonList(): List<T> =
+fun <T> T?.toSingletonList(): List<T> =
     ListUtils.toSingletonList(this)
