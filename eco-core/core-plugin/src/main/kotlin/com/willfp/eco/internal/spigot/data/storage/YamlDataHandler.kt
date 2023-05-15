@@ -5,6 +5,7 @@ import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import org.bukkit.NamespacedKey
+import java.math.BigDecimal
 import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
@@ -27,6 +28,9 @@ class YamlDataHandler(
             PersistentDataKeyType.BOOLEAN -> dataYml.getBoolOrNull("player.$uuid.${key.key}") as T?
             PersistentDataKeyType.STRING_LIST -> dataYml.getStringsOrNull("player.$uuid.${key.key}") as T?
             PersistentDataKeyType.CONFIG -> dataYml.getSubsectionOrNull("player.$uuid.${key.key}") as T?
+            PersistentDataKeyType.BIG_DECIMAL -> (if (dataYml.has(key.key.toString()))
+                BigDecimal(dataYml.getString(key.key.toString())) else null) as T?
+
             else -> null
         }
 
