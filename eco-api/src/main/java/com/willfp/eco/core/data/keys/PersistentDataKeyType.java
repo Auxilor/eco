@@ -4,6 +4,7 @@ import com.willfp.eco.core.config.interfaces.Config;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +49,11 @@ public final class PersistentDataKeyType<T> {
      * Config.
      */
     public static final PersistentDataKeyType<Config> CONFIG = new PersistentDataKeyType<>("CONFIG");
+
+    /**
+     * Big Decimal.
+     */
+    public static final PersistentDataKeyType<BigDecimal> BIG_DECIMAL = new PersistentDataKeyType<>("BIG_DECIMAL");
 
     /**
      * The name of the key type.
