@@ -87,7 +87,7 @@ public class Prerequisite {
      * Requires the server to be running an implementation of Folia.
      */
     public static final Prerequisite HAS_FOLIA = new Prerequisite(
-            () -> ClassUtils.exists("io.papermc.paper.threadedregions.scheduler.RegionisedScheduler"),
+            () -> ClassUtils.exists("io.papermc.paper.threadedregions.scheduler.RegionScheduler"),
             "Requires server to be running Folia!"
     );
 
