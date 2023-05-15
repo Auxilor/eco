@@ -678,31 +678,33 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     private void handleLifecycle(@NotNull final ListMap<LifecyclePosition, Runnable> tasks,
                                  @NotNull final Runnable handler) {
-        for (Runnable task : tasks.get(LifecyclePosition.START)) {
+        if (!tasks.isEmpty()) {
+            for (Runnable task : tasks.get(LifecyclePosition.START)) {
+                try {
+                    task.run();
+                } catch (final Exception e) {
+                    this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+                    this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
+                    e.printStackTrace();
+                }
+            }
+
             try {
-                task.run();
+                handler.run();
             } catch (final Exception e) {
                 this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
                 this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
                 e.printStackTrace();
             }
-        }
 
-        try {
-            handler.run();
-        } catch (final Exception e) {
-            this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
-            this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
-            e.printStackTrace();
-        }
-
-        for (Runnable task : tasks.get(LifecyclePosition.END)) {
-            try {
-                task.run();
-            } catch (final Exception e) {
-                this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
-                this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
-                e.printStackTrace();
+            for (Runnable task : tasks.get(LifecyclePosition.END)) {
+                try {
+                    task.run();
+                } catch (final Exception e) {
+                    this.getLogger().log(Level.SEVERE, "Error while running lifecycle task!");
+                    this.getLogger().log(Level.SEVERE, "The plugin may not function properly");
+                    e.printStackTrace();
+                }
             }
         }
     }
