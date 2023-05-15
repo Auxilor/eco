@@ -31,7 +31,7 @@ class EntityDeathByEntityListeners(
 
         events += builtEvent
 
-        this.plugin.scheduler.runLater(5) { // Fixes conflicts with WildStacker
+        this.plugin.scheduler.runLater(event.entity.location, 5) { // Fixes conflicts with WildStacker
             events.remove(builtEvent)
         }
     }
