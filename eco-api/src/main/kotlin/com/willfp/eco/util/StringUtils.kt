@@ -69,3 +69,15 @@ fun Any?.toNiceString(): String =
 /** @see StringUtils.replaceQuickly */
 fun String.replaceQuickly(target: String, replacement: String): String =
     StringUtils.replaceQuickly(this, target, replacement)
+
+/** @see StringUtils.lineWrap */
+fun String.lineWrap(width: Int, preserveMargin: Boolean = true): List<String> =
+    StringUtils.lineWrap(this, width, preserveMargin)
+
+/** @see StringUtils.lineWrap */
+fun List<String>.lineWrap(width: Int, preserveMargin: Boolean = true): List<String> =
+    StringUtils.lineWrap(this, width, preserveMargin)
+
+/** @see StringUtils.getMargin */
+val String.margin: Int
+    get() = StringUtils.getMargin(this)

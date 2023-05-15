@@ -10,6 +10,8 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -782,6 +784,127 @@ public final class StringUtils {
 
         result.append(input, start, inputLength);
         return result.toString();
+    }
+
+    /**
+     * Line wrap a list of strings while preserving formatting.
+     *
+     * @param input      The input list.
+     * @param lineLength The length of each line.
+     * @return The wrapped list.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final List<String> input,
+                                        final int lineLength) {
+        return lineWrap(input, lineLength, true);
+    }
+
+    /**
+     * Line wrap a list of strings while preserving formatting.
+     *
+     * @param input          The input list.
+     * @param lineLength     The length of each line.
+     * @param preserveMargin If the string has a margin, add it to the next line.
+     * @return The wrapped list.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final List<String> input,
+                                        final int lineLength,
+                                        final boolean preserveMargin) {
+        return input.stream()
+                .flatMap(line -> lineWrap(line, lineLength, preserveMargin).stream())
+                .toList();
+    }
+
+    /**
+     * Line wrap a string while preserving formatting.
+     *
+     * @param input      The input list.
+     * @param lineLength The length of each line.
+     * @return The wrapped list.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final String input,
+                                        final int lineLength) {
+        return lineWrap(input, lineLength, true);
+    }
+
+    /**
+     * Line wrap a string while preserving formatting.
+     *
+     * @param input          The input string.
+     * @param lineLength     The length of each line.
+     * @param preserveMargin If the string has a margin, add it to the start of each line.
+     * @return The wrapped string.
+     */
+    @NotNull
+    public static List<String> lineWrap(@NotNull final String input,
+                                        final int lineLength,
+                                        final boolean preserveMargin) {
+        int margin = preserveMargin ? getMargin(input) : 0;
+        TextComponent space = Component.text(" ");
+
+        Component asComponent = toComponent(input);
+
+        // The component contains the text as its children, so the child components
+        // are accessed like this:
+        List<TextComponent> children = new ArrayList<>();
+
+        if (asComponent instanceof TextComponent) {
+            children.add((TextComponent) asComponent);
+        }
+
+        for (Component child : asComponent.children()) {
+            children.add((TextComponent) child);
+        }
+
+        // Start by splitting the component into individual characters.
+        List<TextComponent> letters = new ArrayList<>();
+        for (TextComponent child : children) {
+            for (char c : child.content().toCharArray()) {
+                letters.add(Component.text(c).mergeStyle(child));
+            }
+        }
+
+        List<Component> lines = new ArrayList<>();
+        List<TextComponent> currentLine = new ArrayList<>();
+        boolean isFirstLine = true;
+
+        for (TextComponent letter : letters) {
+            if (currentLine.size() > lineLength && letter.content().isBlank()) {
+                lines.add(Component.join(JoinConfiguration.noSeparators(), currentLine));
+                currentLine.clear();
+                isFirstLine = false;
+            } else {
+                // Add margin if starting a new line.
+                if (currentLine.isEmpty() && !isFirstLine) {
+                    if (preserveMargin) {
+                        for (int i = 0; i < margin; i++) {
+                            currentLine.add(space);
+                        }
+                    }
+                }
+
+                currentLine.add(letter);
+            }
+        }
+
+        // Push last line.
+        lines.add(Component.join(JoinConfiguration.noSeparators(), currentLine));
+
+        // Convert back to legacy strings.
+        return lines.stream().map(StringUtils::toLegacy)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get a string's margin.
+     *
+     * @param input The input string.
+     * @return The margin.
+     */
+    public static int getMargin(@NotNull final String input) {
+        return input.indexOf(input.trim());
     }
 
     /**

@@ -136,6 +136,14 @@ public interface Eco {
     Logger createLogger(@NotNull EcoPlugin plugin);
 
     /**
+     * Get NOOP logger.
+     *
+     * @return The logger.
+     */
+    @NotNull
+    Logger getNOOPLogger();
+
+    /**
      * Create a PAPI integration.
      *
      * @param plugin The plugin.
@@ -170,7 +178,7 @@ public interface Eco {
      * @return The PluginCommandBase implementation
      */
     @NotNull
-    PluginCommandBase createPluginCommand(@NotNull CommandBase parentDelegate,
+    PluginCommandBase createPluginCommand(@NotNull PluginCommandBase parentDelegate,
                                           @NotNull EcoPlugin plugin,
                                           @NotNull String name,
                                           @NotNull String permission,

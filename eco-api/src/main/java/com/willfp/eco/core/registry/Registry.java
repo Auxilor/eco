@@ -149,6 +149,10 @@ public class Registry<T extends Registrable> implements Iterable<T> {
      * @param locker The locker.
      */
     public void lock(@Nullable final Object locker) {
+        if (this.isLocked && this.locker != locker) {
+            throw new IllegalArgumentException("Registry is already locked with a different locker!");
+        }
+
         this.locker = locker;
         isLocked = true;
     }
@@ -162,6 +166,8 @@ public class Registry<T extends Registrable> implements Iterable<T> {
         if (this.locker != locker) {
             throw new IllegalArgumentException("Cannot unlock registry!");
         }
+
+        this.locker = null;
         isLocked = false;
     }
 

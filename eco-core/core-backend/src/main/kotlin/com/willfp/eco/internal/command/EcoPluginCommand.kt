@@ -7,7 +7,7 @@ import com.willfp.eco.core.command.PluginCommandBase
 import org.bukkit.Bukkit
 
 class EcoPluginCommand(
-    parentDelegate: CommandBase,
+    private val parentDelegate: PluginCommandBase,
     plugin: EcoPlugin,
     name: String,
     permission: String,
@@ -39,6 +39,9 @@ class EcoPluginCommand(
 
         Eco.get().syncCommands()
     }
+
+    override fun getAliases(): List<String> = parentDelegate.aliases
+    override fun getDescription(): String? = parentDelegate.description
 }
 
 class EcoSubcommand(

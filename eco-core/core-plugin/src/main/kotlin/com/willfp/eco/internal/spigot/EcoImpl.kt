@@ -38,6 +38,7 @@ import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
 import com.willfp.eco.internal.integrations.PAPIExpansion
 import com.willfp.eco.internal.logging.EcoLogger
+import com.willfp.eco.internal.logging.NOOPLogger
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
@@ -127,6 +128,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
 
+    override fun getNOOPLogger() =
+        NOOPLogger
+
     override fun createPAPIIntegration(plugin: EcoPlugin) {
         PAPIExpansion(plugin)
     }
@@ -186,7 +190,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     }
 
     override fun createPluginCommand(
-        parentDelegate: CommandBase,
+        parentDelegate: PluginCommandBase,
         plugin: EcoPlugin,
         name: String,
         permission: String,
@@ -260,6 +264,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun addNewPlugin(plugin: EcoPlugin) {
         loadedEcoPlugins[plugin.name.lowercase()] = plugin
+        loadedEcoPlugins[plugin.id] = plugin
     }
 
     override fun getLoadedPlugins(): List<String> =

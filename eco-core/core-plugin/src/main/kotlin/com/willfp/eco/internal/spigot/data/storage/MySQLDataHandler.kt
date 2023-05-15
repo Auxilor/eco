@@ -149,4 +149,16 @@ class MySQLDataHandler(
             SchemaUtils.createMissingTablesAndColumns(table, withLogs = false)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is MySQLDataHandler
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
 }

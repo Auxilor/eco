@@ -48,4 +48,16 @@ class YamlDataHandler(
     private fun doWrite(uuid: UUID, key: NamespacedKey, value: Any) {
         dataYml.set("player.$uuid.$key", value)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is YamlDataHandler
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
 }

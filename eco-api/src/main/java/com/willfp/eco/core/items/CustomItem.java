@@ -1,7 +1,6 @@
 package com.willfp.eco.core.items;
 
 import com.willfp.eco.core.Eco;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +54,7 @@ public class CustomItem implements TestableItem {
          */
         Eco.get().getEcoPlugin().getScheduler().runLater(() -> {
             if (!matches(getItem())) {
-                Bukkit.getLogger().severe("Item with key " + key + " is invalid!");
+                Eco.get().getEcoPlugin().getLogger().severe("Item with key " + key + " is invalid!");
             }
         }, 1);
     }

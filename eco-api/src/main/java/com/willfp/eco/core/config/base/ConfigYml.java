@@ -10,6 +10,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ConfigYml extends BaseConfig {
     /**
+     * The use local storage key.
+     */
+    public static final String KEY_USES_LOCAL_STORAGE = "use-local-storage";
+
+    /**
      * Config.yml.
      *
      * @param plugin The plugin.
@@ -51,5 +56,14 @@ public class ConfigYml extends BaseConfig {
                      @NotNull final String name,
                      final boolean removeUnused) {
         super(name, plugin, removeUnused, ConfigType.YAML);
+    }
+
+    /**
+     * Get if the plugin is using local storage.
+     *
+     * @return The prefix.
+     */
+    public boolean isUsingLocalStorage() {
+        return this.getBool(KEY_USES_LOCAL_STORAGE);
     }
 }

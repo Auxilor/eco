@@ -100,6 +100,18 @@ class MongoDataHandler(
             profile
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is MongoDataHandler
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
 }
 
 private data class UUIDProfile(

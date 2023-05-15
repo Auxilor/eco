@@ -92,6 +92,15 @@ public interface Slot extends GUIComponent {
         return false;
     }
 
+    /**
+     * If the slot should re-render the menu if clicked.
+     *
+     * @return If the slot should re-render.
+     */
+    default boolean shouldRenderOnClick() {
+        return true;
+    }
+
     @Override
     default int getRows() {
         return 1;

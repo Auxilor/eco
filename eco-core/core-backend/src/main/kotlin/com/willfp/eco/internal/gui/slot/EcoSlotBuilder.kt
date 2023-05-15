@@ -6,6 +6,7 @@ import com.willfp.eco.core.gui.slot.functional.CaptiveFilter
 import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
+import com.willfp.eco.core.map.listMap
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import java.util.function.Predicate
@@ -15,14 +16,14 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captiveFromEmpty = false
     private var updater: SlotUpdater = SlotUpdater { player, menu, _ -> provider.provide(player, menu) }
 
-    private val handlers = mutableMapOf<ClickType, MutableList<SlotHandler>>()
+    private val handlers = listMap<ClickType, SlotHandler>()
 
     private var captiveFilter =
         CaptiveFilter { _, _, _ -> true }
     private var notCaptiveFor: (Player) -> Boolean = { _ -> false}
 
     override fun onClick(type: ClickType, action: SlotHandler): SlotBuilder {
-        handlers.computeIfAbsent(type) { mutableListOf() } += action
+        handlers[type] += action
         return this
     }
 

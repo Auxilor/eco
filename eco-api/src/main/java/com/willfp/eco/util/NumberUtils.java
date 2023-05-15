@@ -268,7 +268,7 @@ public final class NumberUtils {
      * @deprecated Use {@link #evaluateExpression(String, PlaceholderContext)} instead.
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
-    @SuppressWarnings("removal")
+    @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
     public static double evaluateExpression(@NotNull final String expression,
                                             @NotNull final com.willfp.eco.core.math.MathContext context) {
         return evaluateExpression(expression, context.toPlaceholderContext());

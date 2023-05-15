@@ -126,7 +126,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * The logger for the plugin.
      */
-    private final Logger logger;
+    private Logger logger;
 
     /**
      * If the server is running an outdated version of the plugin.
@@ -425,7 +425,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         this.loadPluginCommands().forEach(PluginCommand::register);
 
-        this.getScheduler().runLater(this::afterLoad, 1);
+        // Run preliminary reload to resolve load order issues
+        this.getScheduler().runLater(() -> {
+            Logger before = this.getLogger();
+            // Temporary silence logger.
+            this.logger = Eco.get().getNOOPLogger();
+
+            this.reload(false);
+
+            this.logger = before;
+        }, 1);
+
+        this.getScheduler().runLater(this::afterLoad, 2);
 
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();
@@ -601,9 +612,21 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Reload the plugin.
      */
     public final void reload() {
+        this.reload(true);
+    }
+
+    /**
+     * Reload the plugin.
+     *
+     * @param cancelTasks If tasks should be cancelled.
+     */
+    public final void reload(final boolean cancelTasks) {
         this.getConfigHandler().updateConfigs();
 
-        this.getScheduler().cancelAll();
+        if (cancelTasks) {
+            this.getScheduler().cancelAll();
+        }
+
         this.getConfigHandler().callUpdate();
         this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
@@ -1148,6 +1171,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     @NotNull
     public FixedMetadataValue createMetadataValue(@NotNull final Object value) {
         return this.getMetadataValueFactory().create(value);
+    }
+
+    /**
+     * Get if all {@link com.willfp.eco.core.data.keys.PersistentDataKey}'s for this
+     * plugin should be saved locally (via data.yml.) even if eco is using a database.
+     *
+     * @return If using local storage.
+     */
+    public boolean isUsingLocalStorage() {
+        return this.configYml.isUsingLocalStorage();
     }
 
     @Override
