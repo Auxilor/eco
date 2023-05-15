@@ -8,10 +8,12 @@ import org.bukkit.command.TabCompleter
 
 class DelegatedBukkitCommand(
     private val delegate: EcoPluginCommand
-) : Command(delegate.name), TabCompleter, PluginIdentifiableCommand {
-    private var _aliases: List<String>? = null
-    private var _description: String? = null
-
+) : Command(
+    delegate.name,
+    delegate.description ?: "",
+    "/${delegate.name}",
+    delegate.aliases
+), TabCompleter, PluginIdentifiableCommand {
     override fun execute(sender: CommandSender, label: String, args: Array<out String>?): Boolean {
         return delegate.onCommand(sender, this, label, args)
     }
@@ -36,16 +38,4 @@ class DelegatedBukkitCommand(
 
     override fun getPlugin() = delegate.plugin
     override fun getPermission() = delegate.permission
-    override fun getDescription() = _description ?: delegate.description ?: ""
-    override fun getAliases(): List<String> = _aliases ?: delegate.aliases
-
-    override fun setDescription(description: String): Command {
-        this._description = description
-        return this
-    }
-
-    override fun setAliases(aliases: List<String>): Command {
-        this._aliases = aliases
-        return this
-    }
 }
