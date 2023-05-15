@@ -160,6 +160,11 @@ public interface Scheduler {
     void cancelAll();
 
     /**
+     * Cancel this running task from the linked {@link EcoPlugin}.
+     */
+    void cancel();
+
+    /**
      * Run a task asynchronously.
      *
      * @param task The lambda to run.
