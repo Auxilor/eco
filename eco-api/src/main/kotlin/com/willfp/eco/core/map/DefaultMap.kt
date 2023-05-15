@@ -30,6 +30,12 @@ fun <K : Any, V : Any> defaultMap(defaultValue: V) =
     DefaultMap<K, V>(defaultValue)
 
 /**
+ * @see DefaultMap
+ */
+fun <K : Any, V : Any> defaultMap(defaultValue: () -> V) =
+    DefaultMap<K, V>(defaultValue())
+
+/**
  * @see ListMap
  */
 fun <K : Any, V : Any> listMap() =
@@ -45,4 +51,6 @@ fun <K : Any, K1 : Any, V : Any> nestedMap() =
  * @see DefaultMap.createNestedListMap
  */
 fun <K : Any, K1 : Any, V : Any> nestedListMap() =
-    DefaultMap<K, MutableListMap<K1, V>>(MutableListMap())
+    DefaultMap<K, MutableListMap<K1, V>>() {
+        MutableListMap()
+    }

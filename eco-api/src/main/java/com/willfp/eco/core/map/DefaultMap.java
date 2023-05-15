@@ -150,7 +150,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
      */
     @NotNull
     public static <K, K1, V> DefaultMap<K, Map<K1, V>> createNestedMap() {
-        return new DefaultMap<>(new HashMap<>());
+        return new DefaultMap<>(HashMap::new);
     }
 
     /**
@@ -163,6 +163,6 @@ public class DefaultMap<K, V> implements Map<K, V> {
      */
     @NotNull
     public static <K, K1, V> DefaultMap<K, ListMap<K1, V>> createNestedListMap() {
-        return new DefaultMap<>(new ListMap<>());
+        return new DefaultMap<>(ListMap::new);
     }
 }
