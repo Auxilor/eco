@@ -54,7 +54,6 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun cancelAll() {
-        Bukkit.getScheduler().cancelTasks(plugin)
         Bukkit.getAsyncScheduler().cancelTasks(plugin)
         Bukkit.getGlobalRegionScheduler().cancelTasks(plugin)
     }
