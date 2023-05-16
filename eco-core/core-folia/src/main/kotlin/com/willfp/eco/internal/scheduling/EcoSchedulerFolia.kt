@@ -33,12 +33,12 @@ class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     }
 
     override fun run(runnable: Runnable): BukkitTask? {
-        this.task = Bukkit.getGlobalRegionScheduler().run(plugin) { runnable.run() }
+        Bukkit.getGlobalRegionScheduler().execute(plugin, runnable)
         return null
     }
 
     override fun run(location: Location, task: Runnable): BukkitTask? {
-        this.task = Bukkit.getRegionScheduler().run(plugin, location) { task.run() }
+        Bukkit.getRegionScheduler().execute(plugin, location, task)
         return null
     }
 
