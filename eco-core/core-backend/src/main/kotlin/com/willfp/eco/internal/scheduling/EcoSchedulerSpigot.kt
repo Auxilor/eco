@@ -8,31 +8,35 @@ import org.bukkit.scheduler.BukkitTask
 
 class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
 
-    private lateinit var task : BukkitTask
+    private lateinit var task: BukkitTask
 
-    override fun runLater(location: Location, ticksLater: Int, task: Runnable): BukkitTask {
+    override fun runLater(location: Location, ticksLater: Int, task: Runnable): Scheduler {
         this.task = Bukkit.getScheduler().runTaskLater(plugin, task, ticksLater.toLong())
-        return this.task
+        return this
     }
 
-    override fun runTimer(location: Location, delay: Int, repeat: Int, task: Runnable): BukkitTask {
+    override fun runTimer(location: Location, delay: Int, repeat: Int, task: Runnable): Scheduler {
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, task, delay.toLong(), repeat.toLong())
-        return this.task
+        return this
     }
 
-    override fun run(location: Location, task: Runnable): BukkitTask {
+    override fun run(location: Location, task: Runnable): Scheduler {
         this.task = Bukkit.getScheduler().runTask(plugin, task)
-        return this.task
+        return this
     }
 
-    override fun runAsync(task: Runnable): BukkitTask {
+    override fun getTaskId(): Int {
+        return this.task.taskId
+    }
+
+    override fun runAsync(task: Runnable): Scheduler {
         this.task = Bukkit.getScheduler().runTaskAsynchronously(plugin, task)
-        return this.task
+        return this
     }
 
-    override fun runTimerAsync(delay: Int, repeat: Int, task: Runnable): BukkitTask {
+    override fun runTimerAsync(delay: Int, repeat: Int, task: Runnable): Scheduler {
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, task, delay.toLong(), repeat.toLong())
-        return this.task
+        return this
     }
 
     override fun cancelAll() {

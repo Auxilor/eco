@@ -12,14 +12,14 @@ public interface RunnableTask extends Runnable {
      *
      * @return The created {@link BukkitTask}.
      */
-    @NotNull BukkitTask runTask();
+    @NotNull Scheduler runTask();
 
     /**
      * Run the task asynchronously.
      *
      * @return The created {@link BukkitTask}
      */
-    @NotNull BukkitTask runTaskAsynchronously();
+    @NotNull Scheduler runTaskAsynchronously();
 
     /**
      * Run the task after a specified number of ticks.
@@ -27,7 +27,7 @@ public interface RunnableTask extends Runnable {
      * @param delay The number of ticks to wait.
      * @return The created {@link BukkitTask}
      */
-    @NotNull BukkitTask runTaskLater(long delay);
+    @NotNull Scheduler runTaskLater(long delay);
 
     /**
      * Run the task asynchronously after a specified number of ticks.
@@ -35,7 +35,7 @@ public interface RunnableTask extends Runnable {
      * @param delay The number of ticks to wait.
      * @return The created {@link BukkitTask}
      */
-    @NotNull BukkitTask runTaskLaterAsynchronously(long delay);
+    @NotNull Scheduler runTaskLaterAsynchronously(long delay);
 
     /**
      * Run the task repeatedly on a timer.
@@ -44,7 +44,7 @@ public interface RunnableTask extends Runnable {
      * @param period The ticks elapsed before the task is ran again.
      * @return The created {@link BukkitTask}
      */
-    @NotNull BukkitTask runTaskTimer(long delay, long period);
+    @NotNull Scheduler runTaskTimer(long delay, long period);
 
     /**
      * Run the task repeatedly on a timer asynchronously.
@@ -53,7 +53,7 @@ public interface RunnableTask extends Runnable {
      * @param period The ticks elapsed before the task is ran again.
      * @return The created {@link BukkitTask}
      */
-    @NotNull BukkitTask runTaskTimerAsynchronously(long delay, long period);
+    @NotNull Scheduler runTaskTimerAsynchronously(long delay, long period);
 
     /**
      * Cancel the task.
