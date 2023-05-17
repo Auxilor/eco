@@ -4,6 +4,7 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import org.bukkit.NamespacedKey
+import java.math.BigDecimal
 
 object KeyRegistry {
     private val registry = mutableMapOf<NamespacedKey, PersistentDataKey<*>>()
@@ -43,6 +44,9 @@ object KeyRegistry {
             }
             PersistentDataKeyType.CONFIG -> if (default !is Config) {
                 throw IllegalArgumentException("Invalid Data Type! Should be Config")
+            }
+            PersistentDataKeyType.BIG_DECIMAL -> if (default !is BigDecimal) {
+                throw IllegalArgumentException("Invalid Data Type! Should be BigDecimal")
             }
 
             else -> throw NullPointerException("Null value found!")

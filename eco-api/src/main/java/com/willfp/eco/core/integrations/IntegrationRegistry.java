@@ -17,6 +17,13 @@ import java.util.function.Supplier;
  * @param <T> The type of integration.
  */
 public class IntegrationRegistry<T extends Integration> extends Registry<T> {
+    /**
+     * Create a new integration registry.
+     */
+    public IntegrationRegistry() {
+        super();
+    }
+
     @Override
     public @NotNull T register(@NotNull final T element) {
         return executeSafely(() -> super.register(element), element);
