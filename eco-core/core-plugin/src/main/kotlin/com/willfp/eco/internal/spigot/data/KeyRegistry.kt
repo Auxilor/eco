@@ -44,6 +44,9 @@ object KeyRegistry {
             PersistentDataKeyType.CONFIG -> if (default !is Config) {
                 throw IllegalArgumentException("Invalid Data Type! Should be Config")
             }
+            PersistentDataKeyType.BIG_DECIMAL -> if (default !is BigDecimal) {
+                throw IllegalArgumentException("Invalid Data Type! Should be Config")
+            }
 
             else -> throw NullPointerException("Null value found!")
         }
