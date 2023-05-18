@@ -18,12 +18,7 @@ class ProfileSaver(
                 val uuid = iterator.next()
                 iterator.remove()
 
-                val profile = handler.accessLoadedProfile(uuid)
-
-                if (profile == null) {
-                    iterator.remove()
-                    continue
-                }
+                val profile = handler.accessLoadedProfile(uuid) ?: continue
 
                 handler.saveKeysFor(uuid, profile.data.keys)
             }
