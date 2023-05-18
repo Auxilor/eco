@@ -41,11 +41,9 @@ class YamlDataHandler(
         doWrite(uuid, key.key, value)
     }
 
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
-        for (key in keys) {
-            doWrite(uuid, key.key, profile.read(key))
+    override fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
+        for ((key, value) in keys) {
+            doWrite(uuid, key.key, value)
         }
     }
 

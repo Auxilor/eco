@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.data
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.PlayerUtils
 import org.bukkit.event.EventHandler
@@ -11,11 +10,14 @@ import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class DataListener(
-    private val plugin: EcoPlugin
+    private val plugin: EcoPlugin,
+    private val handler: ProfileHandler
 ) : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onLeave(event: PlayerQuitEvent) {
-        Eco.get().unloadPlayerProfile(event.player.uniqueId)
+        val profile = handler.accessLoadedProfile(event.player.uniqueId) ?: return
+        handler.saveKeysFor(event.player.uniqueId, profile.data.keys)
+        handler.unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler
@@ -27,6 +29,6 @@ class DataListener(
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onLogin(event: PlayerLoginEvent) {
-        Eco.get().unloadPlayerProfile(event.player.uniqueId)
+        handler.unloadPlayer(event.player.uniqueId)
     }
 }

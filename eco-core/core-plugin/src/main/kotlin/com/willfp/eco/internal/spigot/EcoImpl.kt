@@ -288,9 +288,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.load(uuid)
 
-    override fun unloadPlayerProfile(uuid: UUID) =
-        profileHandler.unloadPlayer(uuid)
-
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
 

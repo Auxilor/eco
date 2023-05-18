@@ -402,15 +402,6 @@ public interface Eco {
     ServerProfile getServerProfile();
 
     /**
-     * Unload a player profile from memory.
-     * <p>
-     * This will not save the profile first.
-     *
-     * @param uuid The uuid.
-     */
-    void unloadPlayerProfile(@NotNull UUID uuid);
-
-    /**
      * Create dummy entity - never spawned, exists purely in code.
      *
      * @param location The location.

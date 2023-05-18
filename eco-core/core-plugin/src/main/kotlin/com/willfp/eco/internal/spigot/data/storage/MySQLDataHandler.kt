@@ -101,16 +101,15 @@ class MySQLDataHandler(
         setData(uuid, data)
     }
 
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
+    override fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
         executor.submit {
             val data = getData(uuid)
-            for (key in keys) {
-                data.set(key.key.toString(), profile.read(key))
+
+            for ((key, value) in keys) {
+                data.set(key.key.toString(), value)
             }
 
-            setData(uuid, data)
+            doSetData(uuid, data)
         }
     }
 
@@ -140,10 +139,14 @@ class MySQLDataHandler(
 
     private fun setData(uuid: UUID, config: Config) {
         executor.submit {
-            transaction(database) {
-                table.update({ table.id eq uuid }) {
-                    it[dataColumn] = config.toPlaintext()
-                }
+            doSetData(uuid, config)
+        }
+    }
+
+    private fun doSetData(uuid: UUID, config: Config) {
+        transaction(database) {
+            table.update({ table.id eq uuid }) {
+                it[dataColumn] = config.toPlaintext()
             }
         }
     }

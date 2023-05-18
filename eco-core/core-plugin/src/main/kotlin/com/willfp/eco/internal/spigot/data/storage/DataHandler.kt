@@ -19,7 +19,7 @@ abstract class DataHandler(
     /**
      * Save a set of keys for a given UUID.
      */
-    abstract fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>)
+    abstract fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>)
 
     // Everything below this are methods that are only needed for certain implementations.
 

@@ -58,11 +58,18 @@ class ProfileHandler(
     }
 
     fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        handler.saveKeysFor(uuid, keys)
+        val profile = accessLoadedProfile(uuid) ?: return
+        val map = mutableMapOf<PersistentDataKey<*>, Any>()
+
+        for (key in keys) {
+            map[key] = profile.data[key] ?: continue
+        }
+
+        handler.saveKeysFor(uuid, map)
 
         // Don't save to local handler if it's the same handler.
         if (localHandler != handler) {
-            localHandler.saveKeysFor(uuid, keys)
+            localHandler.saveKeysFor(uuid, map)
         }
     }
 
