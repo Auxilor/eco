@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.data.storage
 
-import com.willfp.eco.core.data.Profile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.ProfileHandler
@@ -51,18 +50,16 @@ class MongoDataHandler(
         }
     }
 
-    override fun saveKeysFor(uuid: UUID, keys: Set<PersistentDataKey<*>>) {
-        val profile = handler.loadGenericProfile(uuid)
-
+    override fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
         scope.launch {
-            for (key in keys) {
-                saveKey(profile, uuid, key)
+            for ((key, value) in keys) {
+                saveKey(uuid, key, value)
             }
         }
     }
 
-    private suspend fun <T : Any> saveKey(profile: Profile, uuid: UUID, key: PersistentDataKey<T>) {
-        val data = profile.read(key)
+    private suspend fun <T : Any> saveKey(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
+        val data = value as T
         doWrite(uuid, key, data)
     }
 

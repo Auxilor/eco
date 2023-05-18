@@ -219,8 +219,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             this.logger.info("No conflicts found!")
         }
 
-
-        CollatedRunnable(this)
         CustomItemsManager.registerProviders() // Do it again here
 
         // Register events for ShopSellEvent
@@ -251,7 +249,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Eco.get().adventure?.close()
     }
 
-    override fun handleReload() {
+    override fun createTasks() {
         CollatedRunnable(this)
 
         this.scheduler.runLater(3) {
@@ -384,7 +382,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
-            DataListener(this),
+            DataListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking
         )
