@@ -112,6 +112,7 @@ import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEconomy
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
@@ -127,6 +128,7 @@ import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipe
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
 import com.willfp.eco.util.ClassUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
+import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
@@ -358,6 +360,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 }
             },
             IntegrationLoader("PlayerPoints") { Prices.registerPriceFactory(PriceFactoryPlayerPoints()) },
+            IntegrationLoader("RoyaleEconomy") {
+                for (currency in MultiCurrencyHandler.getCurrencies()) {
+                    Prices.registerPriceFactory(PriceFactoryRoyaleEconomy(currency))
+                }
+            },
 
             // Placeholder
             IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },
