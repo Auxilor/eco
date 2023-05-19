@@ -198,3 +198,7 @@ dependencies:
   - name: Denizen
     required: false
     bootstrap: false
+
+  - name: RoyaleEconomy
+    required: false
+    bootstrap: false

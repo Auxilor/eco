@@ -27,7 +27,8 @@ class AntigriefPvPManager: AntigriefIntegration {
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
         return when(victim) {
             is Player -> {
-                (PvPlayer.get(victim).isInCombat)}
+                val defender = PvPlayer.get(victim)
+                (defender.hasPvPEnabled() && !defender.isNewbie || defender.isInCombat)}
             else -> true
         }
     }
