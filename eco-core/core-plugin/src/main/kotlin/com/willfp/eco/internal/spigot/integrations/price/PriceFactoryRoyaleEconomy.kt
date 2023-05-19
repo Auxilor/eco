@@ -6,14 +6,13 @@ import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
 import me.qKing12.RoyaleEconomy.MultiCurrency.Currency
-import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import org.bukkit.entity.Player
 import java.util.*
 
 class PriceFactoryRoyaleEconomy(private val currency: Currency) : PriceFactory {
 
     override fun getNames(): List<String> {
-        return currency.currencyName.lowercase().toSingletonList();
+        return currency.currencyId.lowercase().toSingletonList()
     }
 
     override fun create(baseContext: PlaceholderContext, function: PlaceholderContextSupplier<Double>): Price {
@@ -28,18 +27,15 @@ class PriceFactoryRoyaleEconomy(private val currency: Currency) : PriceFactory {
         private val multipliers = mutableMapOf<UUID, Double>()
 
         override fun canAfford(player: Player, multiplier: Double): Boolean {
-            return MultiCurrencyHandler
-                .findCurrencyById(currency.currencyId).getAmount(player.uniqueId.toString()) >= getValue(player, multiplier)
+            return currency.getAmount(player.uniqueId.toString()) >= getValue(player, multiplier)
         }
 
         override fun pay(player: Player, multiplier: Double) {
-            MultiCurrencyHandler.findCurrencyById(currency.currencyId).removeAmount(player.uniqueId.toString(),
-                getValue(player, multiplier))
+            currency.removeAmount(player.uniqueId.toString(), getValue(player, multiplier))
         }
 
         override fun giveTo(player: Player, multiplier: Double) {
-            MultiCurrencyHandler.findCurrencyById(currency.currencyId).addAmount(player.uniqueId.toString(),
-                getValue(player, multiplier))
+            currency.addAmount(player.uniqueId.toString(), getValue(player, multiplier))
         }
 
         override fun getValue(player: Player, multiplier: Double): Double {
