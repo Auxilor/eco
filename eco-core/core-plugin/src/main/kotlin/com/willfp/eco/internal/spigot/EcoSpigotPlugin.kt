@@ -118,6 +118,7 @@ import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
+import com.willfp.eco.internal.spigot.metrics.PlayerflowHandler
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
@@ -261,10 +262,13 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         ProfileSaver(this, profileHandler).startTicking()
 
         this.scheduler.runTimer(
-            { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() },
             this.configYml.getInt("display-frame-ttl").toLong(),
-            this.configYml.getInt("display-frame-ttl").toLong()
-        )
+            this.configYml.getInt("display-frame-ttl").toLong(),
+        ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
+
+        if (this.configYml.getBool("playerflow")) {
+            PlayerflowHandler(this.scheduler).startTicking()
+        }
     }
 
     override fun handleAfterLoad() {
