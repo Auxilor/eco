@@ -1,1 +1,7 @@
 multiple-in-craft: '&l&c! &fThis recipe requires &a%amount%&f of this item.'
+
+# Specify default display names for prices made through ConfiguredPrice#create
+# These will override any custom configured price display names.
+price-display:
+  - type: example_type
+    display: "&e%value% Price"
