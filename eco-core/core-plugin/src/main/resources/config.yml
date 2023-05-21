@@ -91,3 +91,9 @@ use-immediate-placeholder-translation-for-math: false
 # faster evaluation times (less CPU usage) at the expense of slightly more memory usage and
 # less reactive values.
 math-cache-ttl: 200
+
+# If anonymous usage statistics should be tracked. This is very valuable information as it
+# helps understand how eco and other plugins are being used by logging player and server
+# counts. This is completely anonymous and no personal information is logged. This data
+# is primarily used for optimisation and server insights.
+playerflow: true

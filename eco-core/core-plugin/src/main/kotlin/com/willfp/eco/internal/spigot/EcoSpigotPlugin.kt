@@ -264,7 +264,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             this.configYml.getInt("display-frame-ttl").toLong(),
         ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
 
-        PlayerflowHandler(this.scheduler).startTicking()
+        if (this.configYml.getBool("playerflow")) {
+            PlayerflowHandler(this.scheduler).startTicking()
+        }
     }
 
     override fun handleAfterLoad() {
