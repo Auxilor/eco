@@ -10,7 +10,7 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-private const val PLAYERFLOW_URL = "https://playerflow.auxilor.io/v1/ping"
+private const val PLAYERFLOW_URL = "https://playerflow.auxilor.io/api/v1/ping"
 
 private val client = HttpClient.newBuilder().build()
 
