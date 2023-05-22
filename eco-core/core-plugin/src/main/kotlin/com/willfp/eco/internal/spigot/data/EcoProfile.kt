@@ -72,6 +72,12 @@ private val serverIDKey = PersistentDataKey(
     ""
 )
 
+private val localServerIDKey = PersistentDataKey(
+    namespacedKeyOf("eco", "local_server_id"),
+    PersistentDataKeyType.STRING,
+    ""
+)
+
 class EcoServerProfile(
     data: MutableMap<PersistentDataKey<*>, Any>,
     handler: DataHandler,
@@ -85,10 +91,18 @@ class EcoServerProfile(
         return this.read(serverIDKey)
     }
 
+    override fun getLocalServerID(): String {
+        if (this.read(localServerIDKey).isBlank()) {
+            this.write(localServerIDKey, UUID.randomUUID().toString())
+        }
+
+        return this.read(localServerIDKey)
+    }
+
     override fun toString(): String {
         return "EcoServerProfile"
     }
 }
 
 private val PersistentDataKey<*>.isLocal: Boolean
-    get() = EcoPlugin.getPlugin(this.key.namespace)?.isUsingLocalStorage == true
+    get() = this == localServerIDKey || EcoPlugin.getPlugin(this.key.namespace)?.isUsingLocalStorage == true
