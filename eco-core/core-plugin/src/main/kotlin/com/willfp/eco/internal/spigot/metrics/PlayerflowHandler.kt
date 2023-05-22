@@ -25,7 +25,7 @@ class PlayerflowHandler(
 
     private fun makeRequest() {
         val body = json {
-            "uuid" to ServerProfile.load().serverID
+            "uuid" to ServerProfile.load().localServerID
             "players" to Bukkit.getOnlinePlayers().size
             "plugins" to Eco.get().loadedPlugins
         }.toPlaintext()

@@ -18,6 +18,14 @@ public interface ServerProfile extends Profile {
     String getServerID();
 
     /**
+     * Get the local server ID.
+     *
+     * @return The local server ID.
+     */
+    @NotNull
+    String getLocalServerID();
+
+    /**
      * Load the server profile.
      *
      * @return The profile.
