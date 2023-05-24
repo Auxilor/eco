@@ -1,6 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.util.PatternUtils;
 import com.willfp.eco.util.StringUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +39,7 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     public PlayerStaticPlaceholder(@NotNull final String identifier,
                                    @NotNull final Function<@NotNull Player, @Nullable String> function) {
         this.identifier = "%" + identifier + "%";
-        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
+        this.pattern = PatternUtils.compileLiteral(identifier);
         this.function = function;
     }
 

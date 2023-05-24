@@ -2,6 +2,7 @@ package com.willfp.eco.core.placeholder.templates;
 
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.util.PatternUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -28,7 +29,7 @@ public abstract class SimpleInjectablePlaceholder implements InjectablePlacehold
      */
     protected SimpleInjectablePlaceholder(@NotNull final String identifier) {
         this.identifier = identifier;
-        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
+        this.pattern = PatternUtils.compileLiteral(identifier);
     }
 
     @Override
