@@ -2,6 +2,7 @@ package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.util.PatternUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,7 @@ public final class PlayerPlaceholder implements RegistrablePlaceholder {
                              @NotNull final String identifier,
                              @NotNull final Function<@NotNull Player, @Nullable String> function) {
         this.plugin = plugin;
-        this.pattern = Pattern.compile(identifier, Pattern.LITERAL);
+        this.pattern = PatternUtils.compileLiteral(identifier);
         this.function = function;
     }
 
