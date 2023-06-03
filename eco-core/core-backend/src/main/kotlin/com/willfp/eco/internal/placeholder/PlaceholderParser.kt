@@ -7,7 +7,6 @@ import com.willfp.eco.core.placeholder.InjectablePlaceholder
 import com.willfp.eco.core.placeholder.Placeholder
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.util.StringUtils
-import java.util.Optional
 import java.util.concurrent.TimeUnit
 
 /*
@@ -23,7 +22,7 @@ class PlaceholderParser {
 
     private val placeholderLookupCache = Caffeine.newBuilder()
         .expireAfterWrite(1, TimeUnit.SECONDS)
-        .build<PlaceholderLookup, Optional<Placeholder>>()
+        .build<PlaceholderLookup, Placeholder?>()
 
     fun translatePlacholders(text: String, context: PlaceholderContext): String {
         return translatePlacholders(text, context, context.injectableContext.placeholderInjections)
@@ -122,10 +121,10 @@ class PlaceholderParser {
         val lookup = PlaceholderLookup(args, plugin, injections)
 
         val placeholder = placeholderLookupCache.get(lookup) {
-            Optional.ofNullable(it.findMatchingPlaceholder())
-        }.orElse(null) ?: return null
+            it.findMatchingPlaceholder()
+        }
 
-        return placeholder.getValue(args, context)
+        return placeholder?.getValue(args, context)
     }
 
     private fun translateEcoPlaceholdersIn(

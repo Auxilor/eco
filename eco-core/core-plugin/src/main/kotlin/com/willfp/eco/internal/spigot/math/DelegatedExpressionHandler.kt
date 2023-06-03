@@ -10,11 +10,11 @@ class DelegatedExpressionHandler(
     plugin: EcoPlugin,
     private val handler: ExpressionHandler
 ) : ExpressionHandler {
-    private val evaluationCache: Cache<Int, Double> = Caffeine.newBuilder()
+    private val evaluationCache: Cache<Int, Double?> = Caffeine.newBuilder()
         .expireAfterWrite(plugin.configYml.getInt("math-cache-ttl").toLong(), TimeUnit.MILLISECONDS)
         .build()
 
-    override fun evaluate(expression: String, context: PlaceholderContext): Double {
+    override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         // Peak performance (totally not having fun with bitwise operators)
         val hash = (((expression.hashCode() shl 5) - expression.hashCode()) xor
                 (context.player?.uniqueId?.hashCode() ?: 0)
@@ -22,7 +22,7 @@ class DelegatedExpressionHandler(
 
         return evaluationCache.get(hash) {
             handler.evaluate(expression, context)
-                .let { if (!it.isFinite()) 0.0 else it } // Fixes NaN bug.
+                .let { if (it?.isFinite() != true) null else it } // Fixes NaN bug.
         }
     }
 }
