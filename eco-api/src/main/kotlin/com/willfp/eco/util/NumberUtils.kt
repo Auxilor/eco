@@ -31,3 +31,7 @@ fun evaluateExpression(expression: String) =
 /** @see NumberUtils.evaluateExpression */
 fun evaluateExpression(expression: String, context: PlaceholderContext) =
     NumberUtils.evaluateExpression(expression, context)
+
+/** @see NumberUtils.evaluateExpressionOrNull */
+fun evaluateExpressionOrNull(expression: String, context: PlaceholderContext) =
+    NumberUtils.evaluateExpressionOrNull(expression, context)

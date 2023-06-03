@@ -527,9 +527,10 @@ public interface Eco {
      *
      * @param expression The expression.
      * @param context    The context.
-     * @return The value of the expression, or zero if invalid.
+     * @return The value of the expression, or null if invalid.
      */
-    double evaluate(@NotNull String expression,
+    @Nullable
+    Double evaluate(@NotNull String expression,
                     @NotNull PlaceholderContext context);
 
     /**

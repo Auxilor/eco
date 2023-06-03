@@ -98,6 +98,7 @@ public final class PlaceholderManager {
         // Storing as immutable set leads to slower times to register placeholders, but much
         // faster times to access registrations.
         Set<Placeholder> pluginPlaceholders = new HashSet<>(REGISTERED_PLACEHOLDERS.get(placeholder.getPlugin()));
+        pluginPlaceholders.removeIf(p -> p.getPattern().equals(placeholder.getPattern()));
         pluginPlaceholders.add(placeholder);
         REGISTERED_PLACEHOLDERS.put(placeholder.getPlugin(), ImmutableSet.copyOf(pluginPlaceholders));
     }
