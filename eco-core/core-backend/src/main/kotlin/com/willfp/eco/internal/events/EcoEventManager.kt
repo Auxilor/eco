@@ -20,7 +20,15 @@ private val listeners = mutableMapOf<PacketPriority, MutableList<RegisteredPacke
 fun PacketEvent.handleSend() {
     for (priority in PacketPriority.values()) {
         for (listener in listeners[priority] ?: continue) {
-            listener.listener.onSend(this)
+            try {
+                listener.listener.onSend(this)
+            } catch (e: Exception) {
+                listener.plugin.logger.warning(
+                    "Exception in packet listener ${listener.listener.javaClass.simpleName}" +
+                            " for packet ${packet.javaClass.simpleName}!"
+                )
+                e.printStackTrace()
+            }
         }
     }
 }
@@ -28,7 +36,15 @@ fun PacketEvent.handleSend() {
 fun PacketEvent.handleReceive() {
     for (priority in PacketPriority.values()) {
         for (listener in listeners[priority] ?: continue) {
-            listener.listener.onReceive(this)
+            try {
+                listener.listener.onReceive(this)
+            } catch (e: Exception) {
+                listener.plugin.logger.warning(
+                    "Exception in packet listener ${listener.listener.javaClass.simpleName}" +
+                            " for packet ${packet.javaClass.simpleName}!"
+                )
+                e.printStackTrace()
+            }
         }
     }
 }
