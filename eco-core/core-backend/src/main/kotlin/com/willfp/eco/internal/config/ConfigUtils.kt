@@ -30,6 +30,8 @@ internal fun Any?.constrainConfigTypes(type: ConfigType): Any? = when (this) {
             this.toMutableList()
         }
     }
+
+    is Float -> this.toDouble() // Should prevent !!float from being written
     else -> this
 }
 
