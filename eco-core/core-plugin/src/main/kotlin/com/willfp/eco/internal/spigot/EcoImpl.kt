@@ -10,6 +10,7 @@ import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.factory.RunnableFactory
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
@@ -115,8 +116,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createMetadataValueFactory(plugin: EcoPlugin) =
         EcoMetadataValueFactory(plugin)
 
-    override fun createRunnableFactory(plugin: EcoPlugin) =
-        EcoRunnableFactory(plugin)
+    override fun createRunnableFactory(plugin: EcoPlugin): RunnableFactory {
+        TODO("Not yet implemented")
+    }
 
     override fun createExtensionLoader(plugin: EcoPlugin) =
         EcoExtensionLoader(plugin)
