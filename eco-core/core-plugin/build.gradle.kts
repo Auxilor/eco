@@ -21,6 +21,7 @@ dependencies {
     }
 
     // Included in spigot jar
+    compileOnly("org.yaml:snakeyaml:2.0")
     compileOnly("com.google.code.gson:gson:2.8.8")
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
