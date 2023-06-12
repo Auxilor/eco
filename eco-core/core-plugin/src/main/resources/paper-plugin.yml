@@ -4,6 +4,8 @@ main: com.willfp.eco.internal.spigot.EcoImpl
 api-version: 1.19
 load: STARTUP
 
+folia-supported: true
+
 dependencies:
   - name: ProtocolLib
     required: false

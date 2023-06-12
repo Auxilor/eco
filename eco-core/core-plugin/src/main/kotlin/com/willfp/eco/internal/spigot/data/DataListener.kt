@@ -22,7 +22,7 @@ class DataListener(
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        plugin.scheduler.runLater(5) {
+        plugin.scheduler.runLater(event.player.location, 5) {
             PlayerUtils.updateSavedDisplayName(event.player)
         }
     }

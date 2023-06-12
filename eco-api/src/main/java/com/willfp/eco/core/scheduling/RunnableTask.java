@@ -1,6 +1,5 @@
 package com.willfp.eco.core.scheduling;
 
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,50 +9,50 @@ public interface RunnableTask extends Runnable {
     /**
      * Run the task.
      *
-     * @return The created {@link BukkitTask}.
+     * @return The created {@link Scheduler}.
      */
-    @NotNull BukkitTask runTask();
+    @NotNull Scheduler runTask();
 
     /**
      * Run the task asynchronously.
      *
-     * @return The created {@link BukkitTask}
+     * @return The created {@link Scheduler}
      */
-    @NotNull BukkitTask runTaskAsynchronously();
+    @NotNull Scheduler runTaskAsynchronously();
 
     /**
      * Run the task after a specified number of ticks.
      *
      * @param delay The number of ticks to wait.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link Scheduler}
      */
-    @NotNull BukkitTask runTaskLater(long delay);
+    @NotNull Scheduler runTaskLater(long delay);
 
     /**
      * Run the task asynchronously after a specified number of ticks.
      *
      * @param delay The number of ticks to wait.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link Scheduler}
      */
-    @NotNull BukkitTask runTaskLaterAsynchronously(long delay);
+    @NotNull Scheduler runTaskLaterAsynchronously(long delay);
 
     /**
      * Run the task repeatedly on a timer.
      *
      * @param delay  The delay before the task is first ran (in ticks).
      * @param period The ticks elapsed before the task is ran again.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link Scheduler}
      */
-    @NotNull BukkitTask runTaskTimer(long delay, long period);
+    @NotNull Scheduler runTaskTimer(long delay, long period);
 
     /**
      * Run the task repeatedly on a timer asynchronously.
      *
      * @param delay  The delay before the task is first ran (in ticks).
      * @param period The ticks elapsed before the task is ran again.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link Scheduler}
      */
-    @NotNull BukkitTask runTaskTimerAsynchronously(long delay, long period);
+    @NotNull Scheduler runTaskTimerAsynchronously(long delay, long period);
 
     /**
      * Cancel the task.
