@@ -100,15 +100,6 @@ public interface Eco {
     MetadataValueFactory createMetadataValueFactory(@NotNull EcoPlugin plugin);
 
     /**
-     * Create a Runnable factory.
-     *
-     * @param plugin The plugin.
-     * @return The factory.
-     */
-    @NotNull
-    RunnableFactory createRunnableFactory(@NotNull EcoPlugin plugin);
-
-    /**
      * Create an ExtensionLoader.
      *
      * @param plugin The plugin.

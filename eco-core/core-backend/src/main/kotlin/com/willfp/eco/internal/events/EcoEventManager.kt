@@ -24,8 +24,8 @@ fun PacketEvent.handleSend() {
                 listener.listener.onSend(this)
             } catch (e: Exception) {
                 listener.plugin.logger.warning(
-                    "Exception in packet listener ${listener.listener.javaClass.simpleName}" +
-                            " for packet ${packet.javaClass.simpleName}!"
+                    "Exception in packet listener ${listener.listener.javaClass.name}" +
+                            " for packet ${packet.handle.javaClass.name}!"
                 )
                 e.printStackTrace()
             }
@@ -40,8 +40,8 @@ fun PacketEvent.handleReceive() {
                 listener.listener.onReceive(this)
             } catch (e: Exception) {
                 listener.plugin.logger.warning(
-                    "Exception in packet listener ${listener.listener.javaClass.simpleName}" +
-                            " for packet ${packet.javaClass.simpleName}!"
+                    "Exception in packet listener ${listener.listener.javaClass.name}" +
+                            " for packet ${packet.handle.javaClass.name}!"
                 )
                 e.printStackTrace()
             }

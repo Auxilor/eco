@@ -101,10 +101,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     private final MetadataValueFactory metadataValueFactory;
 
-    /**
-     * The factory to produce {@link com.willfp.eco.core.scheduling.RunnableTask}s.
-     */
-    private final RunnableFactory runnableFactory;
 
     /**
      * The loader for all plugin extensions.
@@ -331,7 +327,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.eventManager = Eco.get().createEventManager(this);
         this.namespacedKeyFactory = Eco.get().createNamespacedKeyFactory(this);
         this.metadataValueFactory = Eco.get().createMetadataValueFactory(this);
-        this.runnableFactory = Eco.get().createRunnableFactory(this);
         this.extensionLoader = Eco.get().createExtensionLoader(this);
         this.configHandler = Eco.get().createConfigHandler(this);
 
@@ -1104,14 +1099,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         return this.metadataValueFactory;
     }
 
-    /**
-     * Get the runnable factory.
-     *
-     * @return The runnable factory.
-     */
-    public RunnableFactory getRunnableFactory() {
-        return this.runnableFactory;
-    }
 
     /**
      * Get the extension loader.

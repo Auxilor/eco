@@ -45,6 +45,7 @@ import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
 import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserHead
 import com.willfp.eco.internal.items.ArgParserName
 import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
@@ -150,6 +151,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserFlag)
         Items.registerArgParser(ArgParserUnbreakable)
         Items.registerArgParser(ArgParserName)
+        Items.registerArgParser(ArgParserHead)
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
