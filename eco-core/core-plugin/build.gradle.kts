@@ -2,12 +2,13 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
+    implementation(project(":eco-core:core-folia"))
     compileOnly(project(":eco-core:core-proxy"))
     compileOnly(project(":eco-core:core-backend"))
 
     // Libraries
     implementation("com.github.WillFP:Crunch:1.1.3")
-    implementation("mysql:mysql-connector-java:8.0.25")
+    implementation("mysql:mysql-connector-java:8.0.28")
     implementation("org.jetbrains.exposed:exposed-core:0.37.3")
     implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
@@ -22,7 +23,7 @@ dependencies {
 
     // Included in spigot jar
     compileOnly("org.yaml:snakeyaml:2.0")
-    compileOnly("com.google.code.gson:gson:2.8.8")
+    compileOnly("com.google.code.gson:gson:2.8.9")
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
 
     // Plugin dependencies
@@ -38,7 +39,7 @@ dependencies {
     compileOnly("com.github.jiangdashao:matrix-api-repo:317d4635fd")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.1.202")
     compileOnly("me.clip:placeholderapi:2.10.10")
-    compileOnly("com.github.oraxen:oraxen:1.155.0")
+    compileOnly("com.github.oraxen:oraxen:1.156.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.0")

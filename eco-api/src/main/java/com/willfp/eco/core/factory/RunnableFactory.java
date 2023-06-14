@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 /**
  * Factory to create runnables. Much cleaner syntax than instantiating
- * {@link org.bukkit.scheduler.BukkitRunnable}s.
+ * {@link RunnableTask}s.
  */
 public interface RunnableFactory {
     /**
