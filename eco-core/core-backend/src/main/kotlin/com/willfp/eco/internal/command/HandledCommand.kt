@@ -106,7 +106,7 @@ abstract class HandledCommand(
         }
 
         try {
-            notifyFalse(!isPlayersOnly || sender is Player, LangYml.KEY_NOT_PLAYER)
+            notifyFalse(!isPlayersOnly || sender is Player, "not-player")
 
             onExecute(sender, args)
 
