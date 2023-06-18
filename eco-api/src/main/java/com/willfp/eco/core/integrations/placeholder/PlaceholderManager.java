@@ -169,7 +169,15 @@ public final class PlaceholderManager {
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context) {
-        return translatePlaceholders(text, player, context, new ArrayList<>());
+        return translatePlaceholders(
+                text,
+                new PlaceholderContext(
+                        player,
+                        null,
+                        context,
+                        new ArrayList<>()
+                )
+        );
     }
 
     /**
