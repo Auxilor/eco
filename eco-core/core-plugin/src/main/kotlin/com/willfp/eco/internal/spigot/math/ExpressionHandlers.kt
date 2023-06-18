@@ -26,8 +26,10 @@ interface ExpressionHandler {
     fun evaluate(expression: String, context: PlaceholderContext): Double?
 }
 
-private fun String.fastToDoubleOrNull(): Double? {
-    if (isEmpty()) {
+fun String.fastToDoubleOrNull(): Double? {
+    val len = length
+
+    if (len == 0) {
         return null
     }
 
@@ -39,8 +41,7 @@ private fun String.fastToDoubleOrNull(): Double? {
     var decimalPart = 0.0
     var decimalIdx = -1
 
-    while (idx < length) {
-
+    while (idx < len) {
         when (val char = this[idx]) {
             '.' -> {
                 if (decimalIdx != -1) return null
@@ -62,7 +63,7 @@ private fun String.fastToDoubleOrNull(): Double? {
         idx++
     }
 
-    decimalPart /= 10.0.pow((length - decimalIdx - 1).toDouble())
+    decimalPart /= 10.0.pow((len - decimalIdx - 1).toDouble())
 
     return if (isNegative) -(integerPart + decimalPart) else integerPart + decimalPart
 }
