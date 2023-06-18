@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -647,6 +648,32 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      */
     @Nullable
     List<? extends Config> getSubsectionsOrNull(@NotNull String path);
+
+    /**
+     * Get a big decimal from config.
+     *
+     * @param path The key to fetch the value from.
+     * @return The found value, or 0 if not found.
+     */
+    @NotNull
+    default BigDecimal getBigDecimal(@NotNull final String path) {
+        return Objects.requireNonNullElse(getBigDecimalOrNull(path), BigDecimal.ZERO);
+    }
+
+    /**
+     * Get a big decimal from config.
+     *
+     * @param path The key to fetch the value from.
+     * @return The found value, or null if not found.
+     */
+    @Nullable
+    default BigDecimal getBigDecimalOrNull(@NotNull final String path) {
+        if (this.has(path)) {
+            return new BigDecimal(this.getString(path));
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Get config type.

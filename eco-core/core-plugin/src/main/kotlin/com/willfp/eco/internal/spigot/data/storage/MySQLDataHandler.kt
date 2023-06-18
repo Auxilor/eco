@@ -21,7 +21,6 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
-import java.math.BigDecimal
 import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -85,8 +84,7 @@ class MySQLDataHandler(
             PersistentDataKeyType.BOOLEAN -> data.getBoolOrNull(key.key.toString())
             PersistentDataKeyType.STRING_LIST -> data.getStringsOrNull(key.key.toString())
             PersistentDataKeyType.CONFIG -> data.getSubsectionOrNull(key.key.toString())
-            PersistentDataKeyType.BIG_DECIMAL -> if (data.has(key.key.toString()))
-                BigDecimal(data.getString(key.key.toString())) else null
+            PersistentDataKeyType.BIG_DECIMAL -> data.getBigDecimalOrNull(key.key.toString())
 
             else -> null
         }
