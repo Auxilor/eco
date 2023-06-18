@@ -1,0 +1,21 @@
+name: PR Alert for Master Branch
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment PR
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ PRs should not be opened against the `master` branch directly. Please use the `develop` branch as the base for your PRs. ⚠️'
+            })
