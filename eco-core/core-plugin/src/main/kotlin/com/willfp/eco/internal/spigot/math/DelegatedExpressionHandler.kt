@@ -15,6 +15,8 @@ class DelegatedExpressionHandler(
         .build()
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double? {
+        expression.fastToDoubleOrNull()?.let { return it }
+
         // Peak performance (totally not having fun with bitwise operators)
         val hash = (((expression.hashCode() shl 5) - expression.hashCode()) xor
                 (context.player?.uniqueId?.hashCode() ?: 0)
