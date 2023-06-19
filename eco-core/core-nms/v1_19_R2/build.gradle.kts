@@ -9,7 +9,7 @@ dependencies {
     implementation(project(":eco-core:core-nms:nms-common"))
     paperweight.paperDevBundle("1.19.3-R0.1-SNAPSHOT")
 
-    implementation("net.kyori:adventure-text-minimessage:4.11.0") {
+    implementation("net.kyori:adventure-text-minimessage:4.14.0") {
         version {
             strictly("4.11.0")
         }
