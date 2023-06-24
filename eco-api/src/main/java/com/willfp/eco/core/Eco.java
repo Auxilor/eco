@@ -29,6 +29,7 @@ import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import com.willfp.eco.core.tuples.Pair;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -38,6 +39,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
@@ -586,6 +588,25 @@ public interface Eco {
     String getPlaceholderValue(@Nullable EcoPlugin plugin,
                                @NotNull String args,
                                @NotNull PlaceholderContext context);
+
+    /**
+     * Set the armor trim for the given ItemMeta
+     *
+     * @param meta The given ItemMeta.
+     * @param trim A pair of strings, where the first string represents the trim material name, and the second
+     *             one represents the trim pattern name.
+     */
+    void setArmorTrim(@NotNull ItemMeta meta, @NotNull Pair<String, String> trim);
+
+    /**
+     * Get the armor trim for the given ItemMeta
+     *
+     * @param meta The given ItemMeta.
+     * @return A pair of strings, where the first string represents the trim material name, and the second
+     *             one represents the trim pattern name.
+     */
+    @Nullable
+    Pair<String, String> getArmorTrim(@NotNull ItemMeta meta);
 
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
