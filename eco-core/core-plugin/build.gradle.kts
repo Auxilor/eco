@@ -40,7 +40,7 @@ dependencies {
     compileOnly("com.github.oraxen:oraxen:1.155.0")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
-    compileOnly("com.arcaniax:HeadDatabase-API:1.3.0")
+    compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
     compileOnly("com.github.EssentialsX:Essentials:2.18.2")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.8.3")
