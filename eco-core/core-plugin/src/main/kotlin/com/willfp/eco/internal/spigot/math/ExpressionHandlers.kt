@@ -94,8 +94,7 @@ class ImmediatePlaceholderTranslationExpressionHandler(
 class LazyPlaceholderTranslationExpressionHandler(
     private val placeholderParser: PlaceholderParser
 ) : ExpressionHandler {
-    private val cache: Cache<String, CompiledExpression?> = Caffeine.newBuilder()
-        .build()
+    private val cache = mutableMapOf<String, CompiledExpression?>()
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         val placeholders = PlaceholderManager.findPlaceholdersIn(expression)
@@ -104,7 +103,7 @@ class LazyPlaceholderTranslationExpressionHandler(
             .map { it.fastToDoubleOrNull() ?: 0.0 }
             .toDoubleArray()
 
-        val compiled = cache.get(expression) {
+        val compiled = cache.getOrPut(expression) {
             val env = EvaluationEnvironment()
             env.setVariableNames(*placeholders.toTypedArray())
             env.addFunctions(min, max)
