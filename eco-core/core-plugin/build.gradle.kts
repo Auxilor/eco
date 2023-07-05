@@ -15,7 +15,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.1.0")
     implementation("org.javassist:javassist:3.29.2-GA")
     implementation("org.mongodb:mongodb-driver-sync:4.6.0")
-    implementation("org.litote.kmongo:kmongo-coroutine:4.6.0")
+    implementation("org.litote.kmongo:kmongo-coroutine:4.9.0")
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
