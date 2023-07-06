@@ -41,7 +41,14 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
-import com.willfp.eco.internal.items.*
+import com.willfp.eco.internal.items.ArgParserColor
+import com.willfp.eco.internal.items.ArgParserCustomModelData
+import com.willfp.eco.internal.items.ArgParserEnchantment
+import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserHead
+import com.willfp.eco.internal.items.ArgParserName
+import com.willfp.eco.internal.items.ArgParserTexture
+import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
@@ -139,7 +146,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     init {
         Items.registerArgParser(ArgParserEnchantment)
         Items.registerArgParser(ArgParserColor)
-        Items.registerArgParser(ArgParserTrim)
         Items.registerArgParser(ArgParserTexture)
         Items.registerArgParser(ArgParserCustomModelData)
         Items.registerArgParser(ArgParserFlag)

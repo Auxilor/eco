@@ -15,7 +15,6 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
-import com.willfp.eco.core.tuples.Pair
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand
@@ -50,7 +49,17 @@ import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
 import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
-import com.willfp.eco.internal.spigot.proxy.*
+import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxy.SkullProxy
+import com.willfp.eco.internal.spigot.proxy.TPSProxy
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.ConfigurationSection
@@ -58,7 +67,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.net.URLClassLoader
@@ -338,12 +346,4 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getPlaceholderValue(plugin: EcoPlugin?, args: String, context: PlaceholderContext) =
         placeholderParser.getPlaceholderResult(plugin, args, context)
-
-    override fun setArmorTrim(meta: ItemMeta, trim: Pair<String, String>) {
-        getProxy(ItemMetaProxy::class.java).setTrim(meta, trim)
-    }
-
-    override fun getArmorTrim(meta: ItemMeta): Pair<String, String>? {
-        return getProxy(ItemMetaProxy::class.java).getTrim(meta)
-    }
 }
