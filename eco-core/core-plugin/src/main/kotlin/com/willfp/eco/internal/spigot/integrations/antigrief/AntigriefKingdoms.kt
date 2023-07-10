@@ -6,11 +6,11 @@ import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.kingdoms.constants.group.Kingdom
-import org.kingdoms.constants.group.model.relationships.StandardRelationAttribute
 import org.kingdoms.constants.land.Land
+import org.kingdoms.constants.land.location.SimpleChunkLocation
 import org.kingdoms.constants.player.KingdomPlayer
-import org.kingdoms.constants.player.StandardKingdomPermission
 import org.kingdoms.managers.PvPManager
+import org.kingdoms.managers.land.BuildingProcessor
 
 class AntigriefKingdoms : AntigriefIntegration {
     override fun canBreakBlock(
@@ -21,34 +21,35 @@ class AntigriefKingdoms : AntigriefIntegration {
         if (kp.isAdmin) {
             return true
         }
-        val kingdom: Kingdom = kp.kingdom ?: return false
-        val land = Land.getLand(block) ?: return true
-        val permission = if (land.isNexusLand) {
-            StandardKingdomPermission.NEXUS_BUILD
-        } else StandardKingdomPermission.BUILD
-
-        return if (!kp.hasPermission(permission)) {
+        return BuildingProcessor(
+            player,
+            kp,
+            SimpleChunkLocation.of(block),
             false
-        } else kingdom.hasAttribute(land.kingdom, StandardRelationAttribute.BUILD)
+        ).process().isSuccessful
     }
 
     override fun canCreateExplosion(
         player: Player,
         location: Location
     ): Boolean {
-        val land = Land.getLand(location) ?: return true
-        if (!land.isClaimed) {
-            return true
-        }
-        val kingdom: Kingdom = land.kingdom
-        return kingdom.isMember(player)
+        return canBreakBlock(player, location.block)
     }
 
     override fun canPlaceBlock(
         player: Player,
         block: Block
     ): Boolean {
-        return canBreakBlock(player, block)
+        val kp: KingdomPlayer = KingdomPlayer.getKingdomPlayer(player)
+        if (kp.isAdmin) {
+            return true
+        }
+        return BuildingProcessor(
+            player,
+            kp,
+            SimpleChunkLocation.of(block),
+            true
+        ).process().isSuccessful
     }
 
     override fun canInjure(

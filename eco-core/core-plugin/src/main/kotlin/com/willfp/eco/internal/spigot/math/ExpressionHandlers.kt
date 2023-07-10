@@ -104,10 +104,9 @@ class LazyPlaceholderTranslationExpressionHandler(
             .toDoubleArray()
 
         val compiled = cache.getOrPut(expression) {
-            val env = EvaluationEnvironment().apply {
-                setVariableNames(*placeholders.toTypedArray())
-                addFunctions(min, max)
-            }
+            val env = EvaluationEnvironment()
+            env.setVariableNames(*placeholders.toTypedArray())
+            env.addFunctions(min, max)
             runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
         }
 
