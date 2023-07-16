@@ -598,7 +598,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     default double getDoubleFromExpression(@NotNull String path,
                                            @NotNull PlaceholderContext context) {
         return Objects.requireNonNullElseGet(
-                getDoubleOrNull(path),
+                this.getDoubleOrNull(path),
                 () -> NumberUtils.evaluateExpression(this.getString(path), context.withInjectableContext(this))
         );
     }

@@ -48,6 +48,10 @@ object ArgParserHead : LookupArgParser {
             return null
         }
 
+        if (meta.owningPlayer!!.name.equals("null", true) || meta.owningPlayer!!.name == null) {
+            return null
+        }
+
         return "head:${meta.owningPlayer?.name}"
     }
 }
