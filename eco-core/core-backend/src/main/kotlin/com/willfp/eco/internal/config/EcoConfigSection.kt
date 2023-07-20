@@ -10,7 +10,6 @@ class EcoConfigSection(
     injections: Map<String, InjectablePlaceholder> = emptyMap()
 ) : EcoConfig(type) {
     init {
-        this.init(values)
-        this.injections = ConcurrentHashMap(injections)
+        this.init(values, injections)
     }
 }
