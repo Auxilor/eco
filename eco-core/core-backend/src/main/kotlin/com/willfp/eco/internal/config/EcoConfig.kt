@@ -194,6 +194,7 @@ open class EcoConfig(
 
     override fun clearInjectedPlaceholders() {
         injections.clear()
+        injectionHash = 0 // Reset the hash
     }
 
     override fun toMap(): MutableMap<String, Any?> {
