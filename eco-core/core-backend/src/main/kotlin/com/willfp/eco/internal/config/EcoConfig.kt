@@ -16,11 +16,16 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    var injections = ConcurrentHashMap<String, InjectablePlaceholder>()
+    private val injections = mutableMapOf<String, InjectablePlaceholder>()
 
-    fun init(values: Map<String, Any?>) {
+    @Transient
+    private var injectionHash = 0
+
+    fun init(values: Map<String, Any?>, injections: Map<String, InjectablePlaceholder>) {
         this.values.clear()
         this.values.putAll(values.normalizeToConfig(this.type))
+
+        this.addInjectablePlaceholder(injections.values)
     }
 
     override fun toPlaintext(): String {
@@ -179,6 +184,7 @@ open class EcoConfig(
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
         for (placeholder in placeholders) {
             injections[placeholder.pattern.pattern()] = placeholder
+            injectionHash = injectionHash xor placeholder.hashCode()
         }
     }
 
@@ -188,6 +194,7 @@ open class EcoConfig(
 
     override fun clearInjectedPlaceholders() {
         injections.clear()
+        injectionHash = 0 // Reset the hash
     }
 
     override fun toMap(): MutableMap<String, Any?> {
@@ -239,18 +246,6 @@ open class EcoConfig(
     }
 
     override fun hashCode(): Int {
-        /*
-        The keys are completely redundant, as they are only used to prevent
-        duplicate keys in the map. Therefore, we can ignore them and just
-        hash the actual placeholder values.
-         */
-
-        var injectionHash = 0
-
-        injections.forEachValue(5) {
-            injectionHash = injectionHash xor (it.hashCode() shl 5)
-        }
-
         // hashCode() has to compute extremely quickly, so we're using bitwise, because why not?
         // Fucking filthy to use identityHashCode here, but it should be extremely fast
         val identityHash = System.identityHashCode(this)
