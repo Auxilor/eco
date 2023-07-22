@@ -62,7 +62,7 @@ import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
-import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
+import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListener
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
@@ -389,7 +389,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
             ArmorListener(),
-            EntityDeathByEntityListeners(this),
+            EntityDeathByEntityListener,
             CraftingRecipeListener(),
             StackedRecipeListener(this),
             GUIListener(this),
