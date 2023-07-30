@@ -91,7 +91,7 @@ open class EcoLoadableConfig(
     protected fun init(reader: Reader) {
         val string = reader.readToString()
         makeHeader(string)
-        super.init(type.toMap(string))
+        super.init(type.toMap(string), emptyMap())
     }
 
     fun init(file: File) {

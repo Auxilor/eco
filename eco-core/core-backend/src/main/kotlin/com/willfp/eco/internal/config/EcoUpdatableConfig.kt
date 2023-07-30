@@ -50,7 +50,7 @@ open class EcoUpdatableConfig(
             val reader = BufferedReader(InputStreamReader(newIn, StandardCharsets.UTF_8))
 
             val config = EcoConfigSection(type, emptyMap())
-            config.init(type.toMap(reader.readToString()))
+            config.init(type.toMap(reader.readToString()), emptyMap())
             return config
         }
 

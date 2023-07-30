@@ -389,7 +389,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
             ArmorListener(),
-            EntityDeathByEntityListeners(this),
+            EntityDeathByEntityListeners,
             CraftingRecipeListener(this),
             StackedRecipeListener(this),
             GUIListener(this),

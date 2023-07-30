@@ -98,6 +98,11 @@ math-cache-ttl: 200
 # is primarily used for optimisation and server insights.
 playerflow: true
 
+# If the packet display system should activate on items that have no meta. This is disabled
+# by default for performance reasons, but if you want to use the packet display system on
+# items that have no meta, then you can enable this option.
+display-without-meta: false
+
 # If eco should make sure its recipes are not affected by other plugins on PrepareCraftItemEvent
 # Turn this on if you use ItemsAdder/Oraxen/Other 3d party plugins custom items in eco recipes
 # And having issues with the item being invisible when you are trying to craft ir.
