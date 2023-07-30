@@ -97,3 +97,8 @@ math-cache-ttl: 200
 # counts. This is completely anonymous and no personal information is logged. This data
 # is primarily used for optimisation and server insights.
 playerflow: true
+
+# If eco should make sure its recipes are not affected by other plugins on PrepareCraftItemEvent
+# Turn this on if you use ItemsAdder/Oraxen/Other 3d party plugins custom items in eco recipes
+# And having issues with the item being invisible when you are trying to craft ir.
+enforce-preparing-recipes: false
