@@ -3,7 +3,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bukkit:4.1.0")
 
     // Other
-    compileOnly("org.spigotmc:spigot-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.6.1-SNAPSHOT")
     compileOnly("com.google.code.gson:gson:2.8.8")
 }
