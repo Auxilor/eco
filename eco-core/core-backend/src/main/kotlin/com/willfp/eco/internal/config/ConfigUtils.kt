@@ -112,6 +112,7 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
         representer.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
 
         return Yaml(
+            @Suppress("DEPRECATION")
             YamlConstructor(),
             representer,
             yamlOptions,
