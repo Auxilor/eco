@@ -216,6 +216,17 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         }
     }
 
+    @EventHandler
+    fun temporaryExploitPatch(event: InventoryClickEvent) {
+        if (event.player.renderedInventory == null) {
+            return
+        }
+
+        if (event.action == InventoryAction.COLLECT_TO_CURSOR) {
+            event.isCancelled = true
+        }
+    }
+
     private fun Player.renderActiveMenu() {
         val rendered = this.renderedInventory ?: return
 
