@@ -32,15 +32,15 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
             get() = api.accounts.uuid(this.uniqueId).orElse(null)
 
         override fun canAfford(player: Player, multiplier: Double): Boolean {
-            return (player.account?.getBalance(currency)?.onHand ?: 0f) >= getValue(player, multiplier)
+            return (player.account?.getBalance(currency)?.onHand ?: 0.0) >= getValue(player, multiplier)
         }
 
         override fun pay(player: Player, multiplier: Double) {
-            player.account?.getBalance(currency)?.removeHand(getValue(player, multiplier).toFloat())
+            player.account?.getBalance(currency)?.removeHand(getValue(player, multiplier))
         }
 
         override fun giveTo(player: Player, multiplier: Double) {
-            player.account?.getBalance(currency)?.addHand(getValue(player, multiplier).toFloat())
+            player.account?.getBalance(currency)?.addHand(getValue(player, multiplier))
         }
 
         override fun getValue(player: Player, multiplier: Double): Double {

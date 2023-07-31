@@ -48,8 +48,8 @@ import com.willfp.eco.internal.items.ArgParserFlag
 import com.willfp.eco.internal.items.ArgParserHead
 import com.willfp.eco.internal.items.ArgParserName
 import com.willfp.eco.internal.items.ArgParserTexture
-import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.items.ArgParserTrim
+import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
@@ -389,7 +389,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
             ArmorListener(),
-            EntityDeathByEntityListeners,
+            EntityDeathByEntityListeners(this),
             CraftingRecipeListener(this),
             StackedRecipeListener(this),
             GUIListener(this),
