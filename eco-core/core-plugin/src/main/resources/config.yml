@@ -103,7 +103,7 @@ playerflow: true
 # items that have no meta, then you can enable this option.
 display-without-meta: false
 
-# If eco should make sure its recipes are not affected by other plugins on PrepareCraftItemEvent
-# Turn this on if you use ItemsAdder/Oraxen/Other 3d party plugins custom items in eco recipes
-# And having issues with the item being invisible when you are trying to craft ir.
+# If eco should enforce its recipes against other plugins. Turn this on if use custom items from
+# non eco-based plugins in recipes and are encountering issues with invisible items or similar.
+# This may cause issues with other plugins, so only enable this if you're having issues.
 enforce-preparing-recipes: false
