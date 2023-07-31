@@ -51,7 +51,7 @@ dependencies {
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("com.ticxo.modelengine:api:R3.0.1")
-    compileOnly("me.TechsCode:UltraEconomyAPI:1.0.0")
+    compileOnly("me.TechsCode:UltraEconomyAPI:2.6.4")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("com.github.Ssomar-Developement:SCore:3.4.7")
     compileOnly("io.lumine:Mythic:5.3.5")
