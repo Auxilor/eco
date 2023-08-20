@@ -30,6 +30,31 @@ public final class PersistentDataKey<T> {
     private final PersistentDataKeyType<T> type;
 
     /**
+     * If the key uses local storage.
+     */
+    private final boolean local;
+
+    /**
+     * Create a new Persistent Data Key.
+     *
+     * @param key          The key.
+     * @param type         The data type.
+     * @param defaultValue The default value.
+     * @param local        If the key uses local storage.
+     */
+    public PersistentDataKey(@NotNull final NamespacedKey key,
+                             @NotNull final PersistentDataKeyType<T> type,
+                             @NotNull final T defaultValue,
+                             final boolean local) {
+        this.key = key;
+        this.defaultValue = defaultValue;
+        this.type = type;
+        this.local = local;
+
+        Eco.get().registerPersistentKey(this);
+    }
+
+    /**
      * Create a new Persistent Data Key.
      *
      * @param key          The key.
@@ -42,6 +67,7 @@ public final class PersistentDataKey<T> {
         this.key = key;
         this.defaultValue = defaultValue;
         this.type = type;
+        this.local = false;
 
         Eco.get().registerPersistentKey(this);
     }
@@ -81,6 +107,8 @@ public final class PersistentDataKey<T> {
     public PersistentDataKeyType<T> getType() {
         return this.type;
     }
+
+    public boolean isLocalStorage() { return this.local; }
 
     /**
      * Get all persistent data keys.

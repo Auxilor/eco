@@ -106,3 +106,4 @@ class EcoServerProfile(
 
 private val PersistentDataKey<*>.isLocal: Boolean
     get() = this == localServerIDKey || EcoPlugin.getPlugin(this.key.namespace)?.isUsingLocalStorage == true
+            || this.isLocalStorage
