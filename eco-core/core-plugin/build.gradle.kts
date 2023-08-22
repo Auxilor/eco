@@ -28,7 +28,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT")
     compileOnly("com.github.TechFortress:GriefPrevention:16.17.1")
-    compileOnly("com.github.TownyAdvanced:Towny:0.97.2.6") {
+    compileOnly("com.github.TownyAdvanced:Towny:0.99.5.13") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
     compileOnly("com.github.angeschossen:LandsAPI:6.26.18")
