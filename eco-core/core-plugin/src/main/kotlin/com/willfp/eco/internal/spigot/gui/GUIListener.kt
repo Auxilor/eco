@@ -137,6 +137,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     fun handleClose(event: InventoryCloseEvent) {
         val menu = event.inventory.getMenu() as? EcoMenu ?: return
 
+        menu.refresh(event.player as Player)
+
         menu.handleClose(event)
 
         plugin.scheduler.run { MenuHandler.unregisterInventory(event.inventory) }
