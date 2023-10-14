@@ -117,7 +117,7 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
                                 @Nullable final R defaultValue) {
         try {
             return action.get();
-        } catch (final Exception e) {
+        } catch (final Exception | LinkageError e) {
             Eco.get().getEcoPlugin().getLogger().warning("Integration for " + integration.getPluginName() + " threw an exception!");
             Eco.get().getEcoPlugin().getLogger().warning("The integration will be disabled.");
             e.printStackTrace();
