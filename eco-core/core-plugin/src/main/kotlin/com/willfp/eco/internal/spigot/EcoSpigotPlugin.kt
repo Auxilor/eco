@@ -367,8 +367,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             },
             IntegrationLoader("PlayerPoints") { Prices.registerPriceFactory(PriceFactoryPlayerPoints()) },
             IntegrationLoader("RoyaleEconomy") {
-                for (currency in MultiCurrencyHandler.getCurrencies()) {
-                    Prices.registerPriceFactory(PriceFactoryRoyaleEconomy(currency))
+                if (!MultiCurrencyHandler.getCurrencies().isNullOrEmpty()) {
+                    for (currency in MultiCurrencyHandler.getCurrencies()) {
+                        Prices.registerPriceFactory(PriceFactoryRoyaleEconomy(currency))
+                    }
                 }
             },
 
