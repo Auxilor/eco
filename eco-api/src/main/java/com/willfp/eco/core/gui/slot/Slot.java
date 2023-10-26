@@ -7,6 +7,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,8 +97,20 @@ public interface Slot extends GUIComponent {
      * If the slot should re-render the menu if clicked.
      *
      * @return If the slot should re-render.
+     * @deprecated Use {@link Slot#shouldRenderOnClick(ClickType)} instead.
      */
+    @Deprecated(since = "6.66.0", forRemoval = true)
     default boolean shouldRenderOnClick() {
+        return shouldRenderOnClick(ClickType.LEFT);
+    }
+
+    /**
+     * If the slot should re-render the menu if clicked.
+     *
+     * @param clickType The click type.
+     * @return If the slot should re-render.
+     */
+    default boolean shouldRenderOnClick(@NotNull final ClickType clickType) {
         return true;
     }
 
