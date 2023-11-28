@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
@@ -51,6 +52,7 @@ import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpres
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxy.DisplayNameProxy
 import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
@@ -60,10 +62,12 @@ import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
 import com.willfp.eco.internal.spigot.proxy.TPSProxy
+import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -346,4 +350,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getPlaceholderValue(plugin: EcoPlugin?, args: String, context: PlaceholderContext) =
         placeholderParser.getPlaceholderResult(plugin, args, context)
+
+    override fun setClientsideDisplayName(entity: LivingEntity, player: Player, name: Component, visible: Boolean) =
+        if (Prerequisite.HAS_PAPER.isMet && Prerequisite.HAS_1_20.isMet)
+            this.getProxy(DisplayNameProxy::class.java).setClientsideDisplayName(entity, player, name, visible)
+        else Unit
 }

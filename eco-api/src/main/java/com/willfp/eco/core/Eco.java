@@ -30,11 +30,13 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -586,6 +588,19 @@ public interface Eco {
     String getPlaceholderValue(@Nullable EcoPlugin plugin,
                                @NotNull String args,
                                @NotNull PlaceholderContext context);
+
+    /**
+     * Set a client-side entity display name.
+     *
+     * @param entity  The entity.
+     * @param player  The player.
+     * @param name    The display name.
+     * @param visible If the display name should be forcibly visible.
+     */
+    void setClientsideDisplayName(@NotNull LivingEntity entity,
+                                  @NotNull Player player,
+                                  @NotNull Component name,
+                                  boolean visible);
 
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
