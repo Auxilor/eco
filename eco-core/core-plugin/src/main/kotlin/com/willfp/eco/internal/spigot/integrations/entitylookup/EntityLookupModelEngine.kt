@@ -37,7 +37,8 @@ object EntityLookupModelEngine : Integration {
 
             return EntityArgParseResult(
                 {
-                    val modelled = ModelEngineBridge.instance.getModeledEntity(it.uniqueId) ?: return@EntityArgParseResult false
+                    val modelled =
+                        ModelEngineBridge.instance.getModeledEntity(it.uniqueId) ?: return@EntityArgParseResult false
 
                     modelled.models.containsKey(id)
                 },
