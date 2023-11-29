@@ -42,6 +42,7 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven("https://jitpack.io")
+        maven("https://repo.auxilor.io/repository/maven-public/")
 
         // CustomCrafting
         maven("https://maven.wolfyscript.com/repository/public/")
