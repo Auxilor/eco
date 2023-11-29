@@ -169,6 +169,7 @@ allprojects {
             relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
             relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
             relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
+            relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
 
             /*
             Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.

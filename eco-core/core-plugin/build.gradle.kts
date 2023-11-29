@@ -19,6 +19,7 @@ dependencies {
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
+    implementation("com.willfp:ModelEngineBridge:1.2.0")
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.8")
@@ -50,7 +51,6 @@ dependencies {
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.1.2")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
-    compileOnly("com.ticxo.modelengine:api:R3.0.1")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("com.github.Ssomar-Developement:SCore:3.4.7")
     compileOnly("io.lumine:Mythic:5.3.5")
