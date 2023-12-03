@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
     }
 }
 
@@ -13,7 +13,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "1.7.10"
+    kotlin("jvm") version "1.9.21"
 }
 
 dependencies {
@@ -92,16 +92,16 @@ allprojects {
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "1.7.10"))
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+        implementation(kotlin("stdlib", version = "1.9.21"))
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
         compileOnly("com.google.guava:guava:31.1-jre")
 
         // Test
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 
         // Adventure
         implementation("net.kyori:adventure-api:4.10.1")
@@ -111,8 +111,8 @@ allprojects {
         implementation("net.kyori:adventure-text-serializer-legacy:4.10.1")
 
         // Other
-        implementation("com.github.ben-manes.caffeine:caffeine:3.1.0")
-        implementation("org.apache.maven:maven-artifact:3.8.5")
+        implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+        implementation("org.apache.maven:maven-artifact:3.9.0")
     }
 
     tasks.withType<JavaCompile> {

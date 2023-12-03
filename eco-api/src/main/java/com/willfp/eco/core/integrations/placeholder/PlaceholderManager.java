@@ -150,6 +150,7 @@ public final class PlaceholderManager {
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player) {
         return translatePlaceholders(text, player, EMPTY_INJECTABLE);
@@ -166,6 +167,7 @@ public final class PlaceholderManager {
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context) {
@@ -192,6 +194,7 @@ public final class PlaceholderManager {
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
     @NotNull
+    @SuppressWarnings("DeprecatedIsStillUsed")
     public static String translatePlaceholders(@NotNull final String text,
                                                @Nullable final Player player,
                                                @NotNull final PlaceholderInjectable context,

@@ -74,6 +74,7 @@ tasks {
         minimize {
             exclude(dependency("org.litote.kmongo:kmongo-coroutine:.*"))
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
+            exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }
 

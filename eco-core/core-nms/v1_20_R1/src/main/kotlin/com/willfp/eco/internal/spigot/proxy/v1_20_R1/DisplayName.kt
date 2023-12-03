@@ -30,7 +30,12 @@ class DisplayName : DisplayNameProxy {
         .apply { isAccessible = true }
         .get(null) as EntityDataAccessor<Boolean>
 
-    override fun setClientsideDisplayName(entity: LivingEntity, player: Player, displayName: Component, visible: Boolean) {
+    override fun setClientsideDisplayName(
+        entity: LivingEntity,
+        player: Player,
+        displayName: Component,
+        visible: Boolean
+    ) {
         if (entity !is CraftLivingEntity) {
             return
         }
@@ -53,7 +58,7 @@ class DisplayName : DisplayNameProxy {
         player.sendPacket(Packet(packet))
     }
 
-    private fun <T> SynchedEntityData.forceSet(
+    private fun <T : Any> SynchedEntityData.forceSet(
         accessor: EntityDataAccessor<T>,
         value: T
     ) {

@@ -13,6 +13,7 @@ public final class PotionUtils {
      * @param data The data.
      * @return The duration.
      */
+    @SuppressWarnings("deprecation")
     public static int getDuration(@NotNull final PotionData data) {
         if (data.isExtended()) {
             return switch (data.getType()) {
