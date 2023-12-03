@@ -86,9 +86,6 @@ allprojects {
 
         // Denizen
         maven("https://maven.citizensnpcs.co/repo")
-
-        // FoliaLib
-        maven("https://nexuslite.gcnt.net/repos/other/")
     }
 
     dependencies {

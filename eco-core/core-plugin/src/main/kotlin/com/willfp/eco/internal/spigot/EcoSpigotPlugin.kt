@@ -9,7 +9,6 @@ import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.afk.AFKManager
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
-import com.willfp.eco.core.integrations.custombiomes.CustomBiomesManager
 import com.willfp.eco.core.integrations.customentities.CustomEntitiesManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
@@ -46,7 +45,6 @@ import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.internal.spigot.integrations.anticheat.*
 import com.willfp.eco.internal.spigot.integrations.antigrief.*
-import com.willfp.eco.internal.spigot.integrations.custombiomes.CustomBiomesTerra
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.*
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
@@ -323,9 +321,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     }
                 }
             },
-
-            // Biomes
-            IntegrationLoader("Terra") { CustomBiomesManager.register(CustomBiomesTerra()) },
 
             // Placeholder
             IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },
