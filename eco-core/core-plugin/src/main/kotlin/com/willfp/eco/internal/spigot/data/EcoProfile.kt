@@ -29,7 +29,7 @@ abstract class EcoProfile(
             return this.data[key] as T
         }
 
-        this.data[key] = if (key.isLocal) {
+        this.data[key] = if (key.isSavedLocally) {
             localHandler.read(uuid, key)
         } else {
             handler.read(uuid, key)
@@ -104,6 +104,7 @@ class EcoServerProfile(
     }
 }
 
-private val PersistentDataKey<*>.isLocal: Boolean
-    get() = this == localServerIDKey || EcoPlugin.getPlugin(this.key.namespace)?.isUsingLocalStorage == true
-            || this.isLocalStorage
+private val PersistentDataKey<*>.isSavedLocally: Boolean
+    get() = this == localServerIDKey
+            || EcoPlugin.getPlugin(this.key.namespace)?.isUsingLocalStorage == true
+            || this.isLocal
