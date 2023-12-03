@@ -5,6 +5,10 @@ api-version: 1.19
 load: STARTUP
 
 dependencies:
+  - name: Terra
+    required: false
+    bootstrap: false
+
   - name: ProtocolLib
     required: false
     bootstrap: false
