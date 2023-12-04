@@ -14,7 +14,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
     implementation("com.zaxxer:HikariCP:5.0.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.1.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.1")
     implementation("org.javassist:javassist:3.29.2-GA")
     implementation("org.mongodb:mongodb-driver-sync:4.6.0")
     implementation("org.litote.kmongo:kmongo-coroutine:4.10.0")

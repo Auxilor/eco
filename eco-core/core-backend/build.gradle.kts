@@ -9,7 +9,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.4")
     compileOnly("net.kyori:adventure-text-minimessage:4.10.0")
-    compileOnly("net.kyori:adventure-platform-bukkit:4.1.0")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.1")
     compileOnly("org.yaml:snakeyaml:1.33")
     compileOnly("com.moandjiezana.toml:toml4j:0.7.2")
 }
