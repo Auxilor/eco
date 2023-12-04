@@ -45,7 +45,7 @@ dependencies {
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
-    compileOnly("com.github.EssentialsX:Essentials:2.18.2")
+    compileOnly("com.github.EssentialsX:Essentials:2.20.0")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.8.3")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.WhipDevelopment:CrashClaim:f9cd7d92eb")
