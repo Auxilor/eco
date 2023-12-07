@@ -29,6 +29,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_19_R3", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
 }
 
 allprojects {
@@ -41,8 +42,8 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven("https://jitpack.io")
         maven("https://repo.auxilor.io/repository/maven-public/")
+        maven("https://jitpack.io")
 
         // CustomCrafting
         maven("https://maven.wolfyscript.com/repository/public/")
