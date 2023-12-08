@@ -5,6 +5,11 @@ api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
 load: STARTUP
+
+# Fixes some plugins breaking load order
+loadbefore:
+  - Spartan
+  - CustomCrafting
 softdepend:
   - ProtocolLib
   - WorldGuard
@@ -16,7 +21,6 @@ softdepend:
   - NoCheatPlus
   - AAC
   - Matrix
-  - Spartan
   - Vulcan
   - PlaceholderAPI
   - mcMMO
@@ -40,7 +44,6 @@ softdepend:
   - CrashClaim
   - DecentHolograms
   - MythicMobs
-  - CustomCrafting
   - ExecutableItems
   - RPGHorses
   - EconomyShopGUI
