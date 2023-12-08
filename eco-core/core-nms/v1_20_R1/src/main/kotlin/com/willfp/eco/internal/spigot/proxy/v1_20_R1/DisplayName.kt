@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_20_R1
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.packet.sendPacket
 import com.willfp.eco.internal.spigot.proxy.DisplayNameProxy
+import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
@@ -40,8 +41,7 @@ class DisplayName : DisplayNameProxy {
             return
         }
 
-        val nmsComponent = PaperAdventure.asVanilla(displayName)
-            ?: throw IllegalStateException("Display name component is null!")
+        val nmsComponent = displayName.toNMS()
 
         val nmsEntity = entity.handle
         nmsEntity.isCustomNameVisible

@@ -352,7 +352,5 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         placeholderParser.getPlaceholderResult(plugin, args, context)
 
     override fun setClientsideDisplayName(entity: LivingEntity, player: Player, name: Component, visible: Boolean) =
-        if (Prerequisite.HAS_PAPER.isMet && Prerequisite.HAS_1_20.isMet)
-            this.getProxy(DisplayNameProxy::class.java).setClientsideDisplayName(entity, player, name, visible)
-        else Unit
+        this.getProxy(DisplayNameProxy::class.java).setClientsideDisplayName(entity, player, name, visible)
 }
