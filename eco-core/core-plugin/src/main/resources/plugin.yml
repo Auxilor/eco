@@ -11,6 +11,8 @@ loadbefore:
   - Spartan
   - CustomCrafting
   - Lands
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
 softdepend:
   - ProtocolLib
   - WorldGuard
@@ -46,8 +48,6 @@ softdepend:
   - MythicMobs
   - ExecutableItems
   - RPGHorses
-  - EconomyShopGUI
-  - EconomyShopGUI-Premium
   - zShop
   - DeluxeSellwands
   - Scyther
