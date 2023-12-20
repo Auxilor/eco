@@ -10,13 +10,13 @@ load: STARTUP
 loadbefore:
   - Spartan
   - CustomCrafting
+  - Lands
 softdepend:
   - ProtocolLib
   - WorldGuard
   - GriefPrevention
   - Towny
   - FactionsUUID
-  - Lands
   - Kingdoms
   - NoCheatPlus
   - AAC
