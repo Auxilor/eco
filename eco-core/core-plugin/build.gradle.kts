@@ -50,7 +50,7 @@ dependencies {
     compileOnly("com.github.WhipDevelopment:CrashClaim:f9cd7d92eb")
     compileOnly("com.wolfyscript.wolfyutilities:wolfyutilities:3.16.0.0")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.5")
-    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.6.2")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("com.github.Ssomar-Developement:SCore:3.4.7")
