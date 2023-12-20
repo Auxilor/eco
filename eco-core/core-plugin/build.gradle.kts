@@ -62,7 +62,7 @@ dependencies {
     compileOnly("com.denizenscript:denizen:1.2.7-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
-    implementation("com.iridium:IridiumSkyblock:4.0.8")
+    compileOnly("com.iridium:IridiumSkyblock:4.0.8")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")
