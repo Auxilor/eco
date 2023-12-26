@@ -18,6 +18,10 @@ class YamlDataHandler(
         dataYml.save()
     }
 
+    override fun saveAsync() {
+        dataYml.saveAsync()
+    }
+
     override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
         // Separate `as T?` for each branch to prevent compiler warnings.
         val value = when (key.type) {
