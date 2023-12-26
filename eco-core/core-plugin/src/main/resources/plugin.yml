@@ -10,13 +10,15 @@ load: STARTUP
 loadbefore:
   - Spartan
   - CustomCrafting
+  - Lands
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
 softdepend:
   - ProtocolLib
   - WorldGuard
   - GriefPrevention
   - Towny
   - FactionsUUID
-  - Lands
   - Kingdoms
   - NoCheatPlus
   - AAC
@@ -46,8 +48,6 @@ softdepend:
   - MythicMobs
   - ExecutableItems
   - RPGHorses
-  - EconomyShopGUI
-  - EconomyShopGUI-Premium
   - zShop
   - DeluxeSellwands
   - Scyther

@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
-import com.iridium.iridiumskyblock.PermissionType
 import com.iridium.iridiumskyblock.api.IridiumSkyblockAPI
+import com.iridium.iridiumteams.PermissionType
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
@@ -49,8 +49,13 @@ class AntigriefIridiumSkyblock : AntigriefIntegration {
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {
+        return true
+        /*
         val api = IridiumSkyblockAPI.getInstance()
         return api.getIslandPermission(api.getIslandViaLocation(location).orElse(null) ?: return true, api.getUser(player), PermissionType.PICKUP_ITEMS)
+
+        PICKUP_ITEMS was removed in Iridium v4
+         */
     }
 
     override fun getPluginName(): String {

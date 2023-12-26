@@ -89,6 +89,9 @@ allprojects {
 
         // Denizen
         maven("https://maven.citizensnpcs.co/repo")
+
+        // IridiumSkyblock
+        maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
     }
 
     dependencies {
