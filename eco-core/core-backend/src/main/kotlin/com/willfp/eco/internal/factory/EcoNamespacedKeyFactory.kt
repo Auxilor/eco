@@ -7,6 +7,6 @@ import org.bukkit.NamespacedKey
 
 class EcoNamespacedKeyFactory(private val plugin: EcoPlugin) : NamespacedKeyFactory {
     override fun create(key: String): NamespacedKey {
-        return NamespacedKeyUtils.create(plugin.name, key)
+        return NamespacedKeyUtils.create(plugin.id, key)
     }
 }
