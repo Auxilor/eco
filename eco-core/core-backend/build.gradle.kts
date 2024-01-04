@@ -6,7 +6,7 @@ dependencies {
     implementation("org.reflections:reflections:0.9.12")
     implementation("org.objenesis:objenesis:3.2")
 
-    compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.4")
     compileOnly("net.kyori:adventure-text-minimessage:4.10.0")
     compileOnly("net.kyori:adventure-platform-bukkit:4.1.0")
