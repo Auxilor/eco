@@ -43,6 +43,7 @@ class EcoMenu(
         getPossiblyReactiveSlot(row, column, player)
 
     override fun open(player: Player): Inventory {
+        @Suppress("DEPRECATION")
         val inventory = if (columns == 9) {
             Bukkit.createInventory(null, rows * columns, title)
         } else {

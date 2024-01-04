@@ -19,6 +19,7 @@ object EntityArgParserName : EntityArgParser {
 
         val formatted = StringUtils.format(name)
 
+        @Suppress("DEPRECATION")
         return EntityArgParseResult(
             { it.customName == formatted },
             {

@@ -59,6 +59,7 @@ class EcoExtensionLoader(
         val pluginVersion = Version(extensionYml.getStringOrNull("plugin-version") ?: "0.0.0")
         val pluginName = extensionYml.getStringOrNull("plugin")
 
+        @Suppress("DEPRECATION")
         if (pluginName != null && !pluginName.equals(this.plugin.description.name, ignoreCase = true)) {
             throw ExtensionLoadException("${extensionJar.name} is only compatible with $pluginName!")
         }
@@ -82,6 +83,7 @@ class EcoExtensionLoader(
             author = "Unnamed Author"
         }
 
+        @Suppress("DEPRECATION")
         if (Version(this.plugin.description.version) < pluginVersion) {
             throw ExtensionLoadException("Plugin version is too low for ${extensionJar.name}!")
         }

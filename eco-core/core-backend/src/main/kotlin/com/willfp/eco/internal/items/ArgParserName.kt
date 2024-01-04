@@ -22,12 +22,13 @@ object ArgParserName : LookupArgParser {
         val formatted = StringUtils.format(name)
 
         // I don't know why it says it's redundant, the compiler yells at me
-        @Suppress("UsePropertyAccessSyntax", "RedundantSuppression")
+        @Suppress("UsePropertyAccessSyntax", "RedundantSuppression", "DEPRECATION")
         meta.setDisplayName(formatted)
 
         return Predicate {
             val testMeta = it.itemMeta ?: return@Predicate false
 
+            @Suppress("DEPRECATION")
             testMeta.displayName == formatted
         }
     }
@@ -37,6 +38,7 @@ object ArgParserName : LookupArgParser {
             return null
         }
 
+        @Suppress("DEPRECATION")
         return "name:\"${meta.displayName}\""
     }
 }
