@@ -42,6 +42,7 @@ class EcoExtensionLoader(
         }
     }
 
+    @Suppress("DEPRECATION")
     @Throws(MalformedExtensionException::class)
     private fun loadExtension(extensionJar: File) {
         val url = extensionJar.toURI().toURL()

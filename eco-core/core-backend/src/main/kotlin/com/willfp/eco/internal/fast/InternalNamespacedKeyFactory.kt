@@ -25,7 +25,6 @@ class FastInternalNamespacedKeyFactory : InternalNamespacedKeyFactory {
 
 class SafeInternalNamespacedKeyFactory : InternalNamespacedKeyFactory {
     override fun create(namespace: String, key: String): NamespacedKey {
-        @Suppress("DEPRECATION")
         return NamespacedKey(namespace, key)
     }
 }

@@ -15,7 +15,6 @@ import java.nio.channels.AsynchronousFileChannel
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
-@Suppress("UNCHECKED_CAST")
 open class EcoLoadableConfig(
     type: ConfigType,
     configName: String,

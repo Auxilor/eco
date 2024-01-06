@@ -6,6 +6,7 @@ import com.willfp.eco.core.placeholder.context.placeholderContext
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 
+@Suppress("DEPRECATION")
 class PAPIExpansion(private val plugin: EcoPlugin) : PlaceholderExpansion() {
     init {
         register()
