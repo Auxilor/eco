@@ -8,6 +8,10 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 fun Number.toNumeral(): String =
     NumberUtils.toNumeral(this.toInt())
 
+/** @see NumberUtils.formatWithCommas */
+fun Number.formatWithCommas(): String =
+    NumberUtils.formatWithCommas(this.toDouble())
+
 /** @see NumberUtils.fromNumeral */
 fun String.parseNumeral(): Int =
     NumberUtils.fromNumeral(this)

@@ -204,6 +204,20 @@ public final class NumberUtils {
     }
 
     /**
+     * Format double to string with commas.
+     *
+     * @param toFormat The number to format.
+     * @return Formatted.
+     */
+    @NotNull
+    public static String formatWithCommas(final double toFormat) {
+        DecimalFormat df = new DecimalFormat("#,##0.00");
+        String formatted = df.format(toFormat);
+
+        return formatted.endsWith(".00") ? formatted.substring(0, formatted.length() - 3) : formatted;
+    }
+
+    /**
      * Evaluate an expression.
      *
      * @param expression The expression.
