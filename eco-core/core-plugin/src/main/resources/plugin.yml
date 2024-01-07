@@ -13,6 +13,7 @@ loadbefore:
   - Lands
   - EconomyShopGUI
   - EconomyShopGUI-Premium
+  - CMI
 softdepend:
   - ProtocolLib
   - WorldGuard
@@ -35,7 +36,6 @@ softdepend:
   - Alice
   - HolographicDisplays
   - GHolo
-  - CMI
   - Essentials
   - Vault
   - BentoBox
