@@ -46,7 +46,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         if (delegate is EcoSlot) {
             delegate.handleInventoryClick(event, menu)
 
-            if (delegate.shouldRenderOnClick()) {
+            if (delegate.shouldRenderOnClick(event.click)) {
                 player.renderActiveMenu()
             }
         } else if (delegate === this) {
@@ -136,6 +136,8 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
     @EventHandler(priority = EventPriority.HIGH)
     fun handleClose(event: InventoryCloseEvent) {
         val menu = event.inventory.getMenu() as? EcoMenu ?: return
+
+        menu.refresh(event.player as Player)
 
         menu.handleClose(event)
 

@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.common.ai
 
 import com.willfp.eco.core.entities.ai.CustomGoal
 import com.willfp.eco.core.entities.ai.GoalFlag
+import com.willfp.eco.internal.spigot.proxy.common.toBukkitEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import java.util.EnumSet
@@ -51,7 +52,7 @@ private class NMSCustomGoal<T : org.bukkit.entity.Mob>(
 ) : Goal() {
     init {
         @Suppress("UNCHECKED_CAST")
-        customEntityGoal.initialize(entity.bukkitMob as T)
+        customEntityGoal.initialize(entity.toBukkitEntity() as T)
         this.setFlags(EnumSet.copyOf(customEntityGoal.flags.toNMSFlags()))
     }
 
