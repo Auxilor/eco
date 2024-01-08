@@ -55,7 +55,7 @@ public final class PluginProps {
     private final Map<String, String> environment = new HashMap<>();
 
     /**
-     * If the plugin uses reflective reload (via {@link com.willfp.eco.core.config.updating.ConfigUpdater}).
+     * If the plugin uses reflective reload.
      */
     private boolean usesReflectiveReload = true;
 

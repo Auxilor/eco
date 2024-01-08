@@ -196,6 +196,7 @@ public interface SlotBuilder {
      * @deprecated Use {@link SlotBuilder#setUpdater(SlotUpdater)} instead.
      */
     @Deprecated
+    @SuppressWarnings("DeprecatedIsStillUsed")
     default SlotBuilder setModifier(@NotNull SlotModifier modifier) {
         return setUpdater((player, menu, previous) -> {
             modifier.modify(player, menu, previous);

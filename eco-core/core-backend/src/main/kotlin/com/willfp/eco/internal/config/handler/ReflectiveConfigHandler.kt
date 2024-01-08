@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.config.handler
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.config.updating.ConfigUpdater
 import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 
@@ -14,7 +13,8 @@ class ReflectiveConfigHandler(
     )
 
     override fun callUpdate() {
-        for (method in reflections.getMethodsAnnotatedWith(ConfigUpdater::class.java)) {
+        @Suppress("DEPRECATION", "REMOVAL")
+        for (method in reflections.getMethodsAnnotatedWith(com.willfp.eco.core.config.updating.ConfigUpdater::class.java)) {
             runCatching {
                 when (method.parameterCount) {
                     0 -> method.invoke(null)

@@ -2,8 +2,8 @@
 
 package com.willfp.eco.util
 
-import org.bukkit.potion.PotionData
 
-/** @see PotionData.duration */
-val PotionData.duration: Int
+/** @see PotionUtils.getDuration */
+@Suppress("DEPRECATION")
+val org.bukkit.potion.PotionData.duration: Int
     get() = PotionUtils.getDuration(this)

@@ -10,10 +10,11 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.io.Reader
+import java.nio.ByteBuffer
+import java.nio.channels.AsynchronousFileChannel
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
 
-@Suppress("UNCHECKED_CAST")
 open class EcoLoadableConfig(
     type: ConfigType,
     configName: String,
@@ -70,6 +71,20 @@ open class EcoLoadableConfig(
                 this.toPlaintext().toByteArray(),
                 StandardOpenOption.CREATE,
                 StandardOpenOption.WRITE
+            )
+        }
+    }
+
+    override fun saveAsync() {
+        // Save asynchronously using NIO
+        AsynchronousFileChannel.open(
+            configFile.toPath(),
+            StandardOpenOption.WRITE,
+            StandardOpenOption.CREATE
+        ).use { channel ->
+            channel.write(
+                ByteBuffer.wrap(this.toPlaintext().toByteArray()),
+                0
             )
         }
     }

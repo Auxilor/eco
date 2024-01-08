@@ -1,9 +1,12 @@
 package com.willfp.eco.internal.spigot.proxy.common
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
+import io.papermc.paper.adventure.PaperAdventure
+import net.kyori.adventure.text.Component
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
@@ -68,6 +71,9 @@ fun CompoundTag.setPdc(pdc: PersistentDataContainer?, item: net.minecraft.world.
 fun Player.toNMS(): ServerPlayer =
     impl.toNMS(this)
 
+fun Component.toNMS(): net.minecraft.network.chat.Component =
+    if (Prerequisite.HAS_PAPER.isMet) PaperAdventure.asVanilla(this) else impl.toNMS(this)
+
 interface CommonsProvider {
     val nbtTagString: Int
 
@@ -100,6 +106,8 @@ interface CommonsProvider {
     fun itemToMaterial(item: Item): Material
 
     fun toNMS(player: Player): ServerPlayer
+
+    fun toNMS(component: Component): net.minecraft.network.chat.Component
 
     companion object {
         fun setIfNeeded(provider: CommonsProvider) {

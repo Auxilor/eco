@@ -1,10 +1,10 @@
 package com.willfp.eco.internal.spigot.integrations.entitylookup
 
-import com.ticxo.modelengine.api.ModelEngineAPI
 import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import com.willfp.eco.core.integrations.Integration
+import com.willfp.modelenginebridge.ModelEngineBridge
 
 object EntityLookupModelEngine : Integration {
     fun register() {
@@ -18,7 +18,6 @@ object EntityLookupModelEngine : Integration {
     private object EntityArgParserModelEngine : EntityArgParser {
         override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
             var id: String? = null
-            var animation: String? = null
 
             for (arg in args) {
                 val argSplit = arg.split(":")
@@ -29,10 +28,7 @@ object EntityLookupModelEngine : Integration {
                     continue
                 }
 
-                val modelEngineInfo = argSplit[1].split(",")
-
-                id = modelEngineInfo.getOrNull(0)
-                animation = modelEngineInfo.getOrNull(1)
+                id = argSplit[1]
             }
 
             if (id == null) {
@@ -41,24 +37,16 @@ object EntityLookupModelEngine : Integration {
 
             return EntityArgParseResult(
                 {
-                    val modelled = ModelEngineAPI.getModeledEntity(it.uniqueId) ?: return@EntityArgParseResult false
+                    val modelled =
+                        ModelEngineBridge.instance.getModeledEntity(it.uniqueId) ?: return@EntityArgParseResult false
 
                     modelled.models.containsKey(id)
                 },
                 {
-                    val model = ModelEngineAPI.createActiveModel(id)
+                    val model = ModelEngineBridge.instance.createActiveModel(id) ?: return@EntityArgParseResult
 
-                    if (animation != null) {
-                        val handler = model.animationHandler
-                        val property = handler.getAnimation(animation)
-
-                        if (property != null) {
-                            handler.playAnimation(property, true)
-                        }
-                    }
-
-                    val modelled = ModelEngineAPI.createModeledEntity(it)
-                    modelled.addModel(model, true)
+                    val modelled = ModelEngineBridge.instance.createModeledEntity(it)
+                    modelled.addModel(model)
                 }
             )
         }

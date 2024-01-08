@@ -209,6 +209,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             profileHandler.migrateIfNeeded()
         }
 
+        profileHandler.startAutosaving()
+
         ProfileSaver(this, profileHandler).startTicking()
 
         this.scheduler.runTimer(

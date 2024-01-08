@@ -5,6 +5,14 @@ api-version: 1.17
 authors: [ Auxilor ]
 website: willfp.com
 load: STARTUP
+
+# Fixes some plugins breaking load order
+loadbefore:
+  - Spartan
+  - CustomCrafting
+  - Lands
+  - EconomyShopGUI
+  - EconomyShopGUI-Premium
 softdepend:
   - Terra
   - ProtocolLib
@@ -12,12 +20,10 @@ softdepend:
   - GriefPrevention
   - Towny
   - FactionsUUID
-  - Lands
   - Kingdoms
   - NoCheatPlus
   - AAC
   - Matrix
-  - Spartan
   - Vulcan
   - PlaceholderAPI
   - mcMMO
@@ -41,11 +47,8 @@ softdepend:
   - CrashClaim
   - DecentHolograms
   - MythicMobs
-  - CustomCrafting
   - ExecutableItems
   - RPGHorses
-  - EconomyShopGUI
-  - EconomyShopGUI-Premium
   - zShop
   - DeluxeSellwands
   - Scyther

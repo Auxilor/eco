@@ -6,6 +6,8 @@ import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
 import io.netty.channel.Channel
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
@@ -156,6 +158,11 @@ class CommonsInitializer : CommonsInitializerProxy {
 
         override fun toNMS(player: Player): ServerPlayer {
             return (player as CraftPlayer).handle
+        }
+
+        override fun toNMS(component: Component): net.minecraft.network.chat.Component {
+            val json = GsonComponentSerializer.gson().serialize(component)
+            return net.minecraft.network.chat.Component.Serializer.fromJson(json)!!
         }
     }
 }

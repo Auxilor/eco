@@ -169,4 +169,17 @@ class ProfileHandler(
             localHandler.initialize()
         }
     }
+
+    fun startAutosaving() {
+        if (!plugin.configYml.getBool("yaml.autosave")) {
+            return
+        }
+
+        val interval = plugin.configYml.getInt("yaml.autosave-interval") * 20L
+
+        plugin.scheduler.runTimer(20, interval) {
+            handler.saveAsync()
+            localHandler.saveAsync()
+        }
+    }
 }

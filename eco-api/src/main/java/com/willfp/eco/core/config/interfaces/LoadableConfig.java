@@ -30,6 +30,22 @@ public interface LoadableConfig extends Config {
     void save() throws IOException;
 
     /**
+     * Save the config asynchronously.
+     */
+    default void saveAsync() {
+        // This default implementation exists purely for backwards compatibility
+        // with legacy Config implementations that don't have saveAsync().
+        // Default eco implementations of Config have saveAsync() implemented.
+        new Thread(() -> {
+            try {
+                this.save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    /**
      * Get the config file.
      *
      * @return The file.

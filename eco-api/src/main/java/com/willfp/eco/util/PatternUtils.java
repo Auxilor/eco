@@ -15,7 +15,7 @@ public final class PatternUtils {
      * Cache of compiled literal patterns.
      */
     private static final Cache<String, Pattern> LITERAL_PATTERN_CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .expireAfterAccess(15, TimeUnit.MINUTES)
             .build();
 
     /**

@@ -9,18 +9,28 @@ import java.util.UUID
 
 private lateinit var setProfile: Method
 private lateinit var profile: Field
+private lateinit var value: Field
 
 var SkullMeta.texture: String?
     get() {
+        if (!::value.isInitialized) {
+            // Doing it this way because Property was changed to be a record and this is
+            // a quick hack to get around that
+            value = Property::class.java.getDeclaredField("value")
+            value.isAccessible = true
+        }
+
         if (!::profile.isInitialized) {
             // Assumes instance of CraftMetaSkull; package-private class so can't do manual type check
             profile = this.javaClass.getDeclaredField("profile")
             profile.isAccessible = true
         }
+
         val profile = profile[this] as GameProfile? ?: return null
         val properties = profile.properties ?: return null
-        val prop = properties["textures"] ?: return null
-        return prop.toMutableList().firstOrNull()?.value
+        val props = properties["textures"] ?: return null
+        val prop = props.toMutableList().firstOrNull() ?: return null
+        return value[prop] as String?
     }
     set(base64) {
         if (!::setProfile.isInitialized) {

@@ -38,12 +38,16 @@ import java.lang.annotation.Target;
  * <p>
  * By having a plugin as a parameter, you shouldn't really need getInstance()
  * calls in your code.
- *
+ * <p>
  * While flexible, this can lead to long initialization times, so this feature
  * can be disabled in eco.yml with the uses-reflective-reload option.
+ *
+ * @deprecated This has been deprecated due to the poor control flow and long startup times.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
+@Deprecated(since = "6.67.0", forRemoval = true)
+@SuppressWarnings("DeprecatedIsStillUsed")
 public @interface ConfigUpdater {
 }

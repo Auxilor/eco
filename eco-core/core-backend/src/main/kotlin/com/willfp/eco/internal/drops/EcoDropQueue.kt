@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.drops
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.events.DropQueuePushEvent
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
@@ -72,10 +73,17 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
                 world.dropItem(location, drop!!).velocity = Vector()
             }
             if (xp > 0) {
-                val orb =
-                    world.spawnEntity(player.location.add(0.0, 0.2, 0.0), EntityType.EXPERIENCE_ORB) as ExperienceOrb
-                orb.velocity = Vector(0, 0, 0)
-                orb.experience = xp
+                if (Prerequisite.HAS_PAPER.isMet) {
+                    player.giveExp(xp, true)
+                } else {
+                    val orb =
+                        world.spawnEntity(
+                            player.location.add(0.0, 0.2, 0.0),
+                            EntityType.EXPERIENCE_ORB
+                        ) as ExperienceOrb
+                    orb.velocity = Vector(0, 0, 0)
+                    orb.experience = xp
+                }
             }
         } else {
             for (drop in items) {

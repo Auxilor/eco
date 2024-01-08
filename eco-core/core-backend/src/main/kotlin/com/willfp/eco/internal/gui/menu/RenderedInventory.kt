@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.events.CaptiveItemChangeEvent
-import com.willfp.eco.core.items.isEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.openMenu

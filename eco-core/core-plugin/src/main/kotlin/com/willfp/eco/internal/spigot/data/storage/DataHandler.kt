@@ -27,6 +27,10 @@ abstract class DataHandler(
 
     }
 
+    open fun saveAsync() {
+
+    }
+
     open fun initialize() {
 
     }

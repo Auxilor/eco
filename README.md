@@ -127,7 +127,7 @@ cd eco
 
 ## License
 
-eco is licensed under GNU GPL3. *Click here to read [the entire license](https://github.com/Auxilor/eco/blob/master/LICENSE.md).*
+eco is licensed under the MIT license. *Click here to read [the entire license](https://github.com/Auxilor/eco/blob/master/LICENSE.md).*
 
 <h1 align="center">
   Check out our partners!

@@ -3,7 +3,6 @@ package com.willfp.eco.internal.command
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.NotificationException
-import com.willfp.eco.core.config.base.LangYml
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor

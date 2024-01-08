@@ -30,6 +30,10 @@ mysql:
   user: username
   password: passy
 
+yaml:
+  autosave: true # If data should be saved automatically
+  autosave-interval: 1800 # How often data should be saved (in seconds)
+
 # How many ticks to wait between committing data to a database. This doesn't
 # affect yaml storage, only MySQL and MongoDB. By default, data is committed
 # every tick, but you can increase this to be every x ticks, for example 20
