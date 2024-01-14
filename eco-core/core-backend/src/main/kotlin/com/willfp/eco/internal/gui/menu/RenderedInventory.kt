@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.events.CaptiveItemChangeEvent
+import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.openMenu
@@ -54,7 +55,7 @@ class RenderedInventory(
                     val actualItem = inventory.getItem(bukkit) ?: continue
 
                     if (slot.isCaptiveFromEmpty) {
-                        if (!actualItem.isEmpty) {
+                        if (!actualItem.isEcoEmpty) {
                             newCaptive[position] = actualItem
                         }
                     } else {

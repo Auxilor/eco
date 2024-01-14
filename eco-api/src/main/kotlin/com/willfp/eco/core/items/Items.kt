@@ -37,7 +37,12 @@ fun ItemStack.toSNBT() =
     Items.toSNBT(this)
 
 /** @see Items.isEmpty */
+@Deprecated("Use ItemStack.isEcoEmpty", ReplaceWith("Items.isEmpty(this)"))
 val ItemStack?.isEmpty: Boolean
+    get() = Items.isEmpty(this)
+
+/** @see Items.isEmpty */
+val ItemStack?.isEcoEmpty: Boolean
     get() = Items.isEmpty(this)
 
 /** @see Items.matchesAny */
