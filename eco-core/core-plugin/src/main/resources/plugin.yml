@@ -14,6 +14,7 @@ loadbefore:
   - EconomyShopGUI
   - EconomyShopGUI-Premium
   - CMI
+  - DeluxeCombat
 softdepend:
   - ProtocolLib
   - WorldGuard
@@ -39,7 +40,6 @@ softdepend:
   - Essentials
   - Vault
   - BentoBox
-  - DeluxeCombat
   - IridiumSkyblock
   - SuperiorSkyblock2
   - FabledSkyBlock
