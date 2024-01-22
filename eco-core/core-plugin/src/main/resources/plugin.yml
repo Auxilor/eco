@@ -13,6 +13,8 @@ loadbefore:
   - Lands
   - EconomyShopGUI
   - EconomyShopGUI-Premium
+  - CMI
+  - DeluxeCombat
 softdepend:
   - Terra
   - ProtocolLib
@@ -36,11 +38,9 @@ softdepend:
   - Alice
   - HolographicDisplays
   - GHolo
-  - CMI
   - Essentials
   - Vault
   - BentoBox
-  - DeluxeCombat
   - IridiumSkyblock
   - SuperiorSkyblock2
   - FabledSkyBlock

@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.recipes
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.items.TestableItem
-import com.willfp.eco.core.items.isEmpty
+import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
@@ -33,7 +33,7 @@ class StackedRecipeListener(
         }
 
         // Just in case
-        if (inventory.getItem(event.slot).isEmpty) {
+        if (inventory.getItem(event.slot).isEcoEmpty) {
             return
         }
 
