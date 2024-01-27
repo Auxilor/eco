@@ -62,6 +62,9 @@ dependencies {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.iridium:IridiumSkyblock:4.0.8")
+    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.0.1")
+    compileOnly("net.william278:husktowns:2.6.1")
+    compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")

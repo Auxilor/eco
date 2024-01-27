@@ -244,6 +244,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
             IntegrationLoader("RPGHorses") { AntigriefManager.register(AntigriefRPGHorses()) },
             IntegrationLoader("CrashClaim") { AntigriefManager.register(AntigriefCrashClaim()) },
+            IntegrationLoader("HuskTowns") { AntigriefManager.register(AntigriefHuskTowns()) },
+            IntegrationLoader("HuskClaims") { AntigriefManager.register(AntigriefHuskClaims()) },
             IntegrationLoader("CombatLogX") {
                 val pluginManager = Bukkit.getPluginManager()
                 val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
@@ -283,6 +285,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
             IntegrationLoader("Scyther") { CustomItemsManager.register(CustomItemsScyther()) },
             IntegrationLoader("Denizen") { CustomItemsManager.register(CustomItemsDenizen()) },
+            IntegrationLoader("ItemBridge") { CustomItemsManager.register(CustomItemsItemBridge()) },
 
             // Shop
             IntegrationLoader("ShopGUIPlus") { ShopManager.register(ShopShopGuiPlus()) },
