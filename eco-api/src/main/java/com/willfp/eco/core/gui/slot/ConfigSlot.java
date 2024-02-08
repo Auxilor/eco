@@ -127,16 +127,12 @@ public class ConfigSlot extends CustomSlot {
          * @param player The player.
          */
         void dispatch(@NotNull final Player player) {
-            System.out.println("DISPATCHING " + command);
-
             if (console()) {
-                System.out.println("CONSOLE");
                 Bukkit.dispatchCommand(
                         Bukkit.getConsoleSender(),
                         command().replace("%player%", player.getName())
                 );
             } else {
-                System.out.println("NON-CONSOLE");
                 Bukkit.dispatchCommand(
                         player,
                         command().replace("%player%", player.getName())

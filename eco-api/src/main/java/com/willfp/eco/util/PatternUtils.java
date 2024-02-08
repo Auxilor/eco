@@ -16,7 +16,7 @@ public final class PatternUtils {
      * Cache of compiled literal patterns.
      */
     private static final Cache<String, Pattern> LITERAL_PATTERN_CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(Eco.get().getEcoPlugin().getConfigYml().getInt(""), TimeUnit.MINUTES)
+            .expireAfterAccess(Eco.get().getEcoPlugin().getConfigYml().getInt("literal-cache-ttl"), TimeUnit.MINUTES)
             .build();
 
     /**
