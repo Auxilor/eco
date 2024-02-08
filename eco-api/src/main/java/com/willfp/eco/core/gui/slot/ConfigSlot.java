@@ -86,7 +86,7 @@ public class ConfigSlot extends CustomSlot {
             for (String command : config.getStrings(configKey)) {
                 if (command.startsWith("console:")) {
                     commands.add(new CommandToDispatch(
-                            StringUtils.removePrefix("console:", command),
+                            StringUtils.removePrefix(command, "console:"),
                             true
                     ));
                 } else {
@@ -127,12 +127,16 @@ public class ConfigSlot extends CustomSlot {
          * @param player The player.
          */
         void dispatch(@NotNull final Player player) {
+            System.out.println("DISPATCHING " + command);
+
             if (console()) {
+                System.out.println("CONSOLE");
                 Bukkit.dispatchCommand(
                         Bukkit.getConsoleSender(),
                         command().replace("%player%", player.getName())
                 );
             } else {
+                System.out.println("NON-CONSOLE");
                 Bukkit.dispatchCommand(
                         player,
                         command().replace("%player%", player.getName())

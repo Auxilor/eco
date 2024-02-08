@@ -18,6 +18,10 @@ loadbefore:
   - SCore
   - ExecutableItems
 softdepend:
+  - ItemBridge
+  - HuskClaims
+  - HuskTowns
+  - Terra
   - ProtocolLib
   - WorldGuard
   - GriefPrevention
