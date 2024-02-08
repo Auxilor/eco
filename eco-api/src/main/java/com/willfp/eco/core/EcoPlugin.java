@@ -167,7 +167,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * The tasks to run on task creation.
      */
-    private final ListMap<LifecyclePosition, Runnable> createTasks = new ListMap<>();
+    private final ListMap<LifecyclePosition, Runnable> onCreateTasks = new ListMap<>();
 
     /**
      * Create a new plugin.
@@ -638,7 +638,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.handleLifecycle(this.onReload, this::handleReload);
 
         if (cancelTasks) {
-            this.handleLifecycle(this.createTasks, this::createTasks);
+            this.handleLifecycle(this.onCreateTasks, this::createTasks);
         }
 
         for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
@@ -664,6 +664,26 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     public final void onReload(@NotNull final LifecyclePosition position,
                                @NotNull final Runnable task) {
         this.onReload.append(position, task);
+    }
+
+    /**
+     * Add new task to run on createTasks.
+     *
+     * @param task The task.
+     */
+    public final void onCreateTasks(@NotNull final Runnable task) {
+        this.onCreateTasks(LifecyclePosition.END, task);
+    }
+
+    /**
+     * Add new task to run on createTasks.
+     *
+     * @param position The position to run the task.
+     * @param task     The task.
+     */
+    public final void onCreateTasks(@NotNull final LifecyclePosition position,
+                                    @NotNull final Runnable task) {
+        this.onCreateTasks.append(position, task);
     }
 
     /**
