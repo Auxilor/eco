@@ -46,17 +46,17 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
 
         override fun <T : Any, Z : Any> set(key: String, dataType: PersistentDataType<T, Z>, value: Z) {
             customDataTags[key] =
-                registry.wrap(dataType.primitiveType, dataType.toPrimitive(value, handle.adapterContext))
+                registry.wrap(dataType, dataType.toPrimitive(value, handle.adapterContext))
         }
 
         override fun <T : Any, Z : Any> has(key: String, dataType: PersistentDataType<T, Z>): Boolean {
             val value = customDataTags[key] ?: return false
-            return registry.isInstanceOf(dataType.primitiveType, value)
+            return registry.isInstanceOf(dataType, value)
         }
 
         override fun <T : Any, Z : Any> get(key: String, dataType: PersistentDataType<T, Z>): Z? {
             val value = customDataTags[key] ?: return null
-            return dataType.fromPrimitive(registry.extract(dataType.primitiveType, value), handle.adapterContext)
+            return dataType.fromPrimitive(registry.extract<T, Tag>(dataType, value), handle.adapterContext)
         }
 
         override fun <T : Any, Z : Any> getOrDefault(
