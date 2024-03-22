@@ -1,5 +1,6 @@
 package com.willfp.eco.core.proxy;
 
+import com.willfp.eco.core.version.Version;
 import org.bukkit.Bukkit;
 
 import java.util.Arrays;
@@ -12,7 +13,7 @@ public final class ProxyConstants {
     /**
      * The NMS version that the server is running on.
      */
-    public static final String NMS_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    public static final String NMS_VERSION;
 
     /**
      * All supported NMS versions.
@@ -31,5 +32,18 @@ public final class ProxyConstants {
 
     private ProxyConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    static {
+        String currentMinecraftVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
+        String nmsVersion;
+
+        if (new Version(currentMinecraftVersion).compareTo(new Version("1.20.5")) < 0) {
+            nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+        } else {
+            nmsVersion = currentMinecraftVersion.replace(".", "_");
+        }
+
+        NMS_VERSION = nmsVersion;
     }
 }
