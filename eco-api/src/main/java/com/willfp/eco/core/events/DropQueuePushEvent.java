@@ -27,7 +27,7 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     /**
      * The items.
      */
-    private final Collection<? extends ItemStack> items;
+    private Collection<? extends ItemStack> items;
 
     /**
      * The xp.
@@ -112,6 +112,15 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
      */
     public Collection<? extends ItemStack> getItems() {
         return items;
+    }
+
+    /**
+     * Set the items to be dropped.
+     *
+     * @param items The items.
+     */
+    public void setItems(Collection<? extends ItemStack> items) {
+        this.items = items;
     }
 
     /**
