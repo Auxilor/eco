@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.placeholder.PlaceholderParser
+import com.willfp.eco.util.randDouble
 import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
 import redempt.crunch.functional.EvaluationEnvironment
@@ -20,6 +21,10 @@ private val min = Function("min", 2) {
 
 private val max = Function("max", 2) {
     max(it[0], it[1])
+}
+
+private val rand = Function("random", 2) {
+    randDouble(it[0], it[1])
 }
 
 interface ExpressionHandler {
@@ -77,7 +82,7 @@ class ImmediatePlaceholderTranslationExpressionHandler(
         .build()
 
     private val env = EvaluationEnvironment().apply {
-        addFunctions(min, max)
+        addFunctions(min, max, rand)
     }
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double? {
@@ -106,7 +111,7 @@ class LazyPlaceholderTranslationExpressionHandler(
         val compiled = cache.getOrPut(expression) {
             val env = EvaluationEnvironment()
             env.setVariableNames(*placeholders.toTypedArray())
-            env.addFunctions(min, max)
+            env.addFunctions(rand, min, max)
             runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
         }
 

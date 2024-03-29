@@ -25,7 +25,7 @@ dependencies {
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.8")
-    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0-SNAPSHOT")
@@ -62,6 +62,9 @@ dependencies {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.iridium:IridiumSkyblock:4.0.8")
+    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.0.1")
+    compileOnly("net.william278:husktowns:2.6.1")
+    compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")

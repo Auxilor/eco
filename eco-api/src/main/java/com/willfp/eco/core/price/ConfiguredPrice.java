@@ -120,8 +120,12 @@ public final class ConfiguredPrice implements Price {
      */
     public String getDisplay(@NotNull final Player player,
                              final double multiplier) {
+        double value = this.getPrice().getValue(player, multiplier);
+
         return StringUtils.format(
-                formatString.replace("%value%", NumberUtils.format(this.getPrice().getValue(player, multiplier))),
+                formatString
+                        .replace("%value%", NumberUtils.format(value))
+                        .replace("%value_commas%", NumberUtils.formatWithCommas(value)),
                 player,
                 StringUtils.FormatOption.WITH_PLACEHOLDERS
         );

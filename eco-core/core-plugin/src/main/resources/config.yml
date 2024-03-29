@@ -96,6 +96,11 @@ use-immediate-placeholder-translation-for-math: false
 # less reactive values.
 math-cache-ttl: 200
 
+# The time (in minutes) for literal patterns to be cached for. Higher values will lead to
+# faster evaluation times (less CPU usage) at the expense of slightly more memory usage and
+# less reactive values. (Do not change unless you are told to).
+literal-cache-ttl: 1
+
 # If anonymous usage statistics should be tracked. This is very valuable information as it
 # helps understand how eco and other plugins are being used by logging player and server
 # counts. This is completely anonymous and no personal information is logged. This data

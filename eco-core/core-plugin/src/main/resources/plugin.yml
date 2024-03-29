@@ -13,7 +13,15 @@ loadbefore:
   - Lands
   - EconomyShopGUI
   - EconomyShopGUI-Premium
+  - CMI
+  - DeluxeCombat
+  - SCore
+  - ExecutableItems
 softdepend:
+  - ItemBridge
+  - HuskClaims
+  - HuskTowns
+  - Terra
   - ProtocolLib
   - WorldGuard
   - GriefPrevention
@@ -35,18 +43,15 @@ softdepend:
   - Alice
   - HolographicDisplays
   - GHolo
-  - CMI
   - Essentials
   - Vault
   - BentoBox
-  - DeluxeCombat
   - IridiumSkyblock
   - SuperiorSkyblock2
   - FabledSkyBlock
   - CrashClaim
   - DecentHolograms
   - MythicMobs
-  - ExecutableItems
   - RPGHorses
   - zShop
   - DeluxeSellwands

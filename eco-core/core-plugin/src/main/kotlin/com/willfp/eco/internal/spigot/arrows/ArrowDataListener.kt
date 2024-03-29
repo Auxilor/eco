@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.arrows
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.items.isEmpty
+import com.willfp.eco.core.items.isEcoEmpty
 import org.bukkit.entity.Arrow
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
@@ -29,7 +29,7 @@ class ArrowDataListener(
 
         val item = entity.equipment?.itemInMainHand
 
-        if (item.isEmpty || item == null) {
+        if (item.isEcoEmpty || item == null) {
             return
         }
 

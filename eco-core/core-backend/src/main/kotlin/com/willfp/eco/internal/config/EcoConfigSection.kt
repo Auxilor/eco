@@ -2,7 +2,6 @@ package com.willfp.eco.internal.config
 
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
-import java.util.concurrent.ConcurrentHashMap
 
 class EcoConfigSection(
     type: ConfigType,

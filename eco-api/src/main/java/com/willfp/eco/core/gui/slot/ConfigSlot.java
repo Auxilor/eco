@@ -86,7 +86,7 @@ public class ConfigSlot extends CustomSlot {
             for (String command : config.getStrings(configKey)) {
                 if (command.startsWith("console:")) {
                     commands.add(new CommandToDispatch(
-                            StringUtils.removePrefix("console:", command),
+                            StringUtils.removePrefix(command, "console:"),
                             true
                     ));
                 } else {

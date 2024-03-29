@@ -28,7 +28,6 @@ object ArgParserHead : LookupArgParser {
 
         playerName ?: return null
 
-        @Suppress("DEPRECATION")
         val player = Bukkit.getOfflinePlayer(playerName)
 
         meta.owningPlayer = player
