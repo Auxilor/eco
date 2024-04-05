@@ -139,6 +139,14 @@ allprojects {
         setExtendsFrom(listOf(configurations.compileOnly.get(), configurations.implementation.get()))
     }
 
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(17)
+    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
     tasks {
         compileKotlin {
             kotlinOptions {
