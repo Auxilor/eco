@@ -35,7 +35,7 @@ class MongoDataHandler(
         val url = plugin.configYml.getString("mongodb.url")
 
         client = KMongo.createClient(url).coroutine
-        collection = client.getDatabase(plugin.configYml.getString("mongodb.database", "eco")).getCollection()
+        collection = client.getDatabase(plugin.configYml.getStringOrNull("mongodb.database") ?: "eco").getCollection()
     }
 
     override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
