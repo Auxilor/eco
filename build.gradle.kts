@@ -14,6 +14,7 @@ plugins {
     id("maven-publish")
     id("java")
     kotlin("jvm") version "1.9.21"
+    kotlin("plugin.serialization") version "1.9.21"
 }
 
 dependencies {
@@ -38,6 +39,7 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "kotlin")
+    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
     repositories {
         mavenCentral()
@@ -174,8 +176,6 @@ allprojects {
             relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
             relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
             //relocate("com.mysql", "com.willfp.eco.libs.mysql")
-            relocate("de.undercouch.bson4jackson", "com.willfp.eco.libs.bson4jackson")
-            relocate("com.fasterxml.jackson", "com.willfp.eco.libs.jackson")
             relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
             relocate("org.bson", "com.willfp.eco.libs.bson")
             relocate("org.litote", "com.willfp.eco.libs.litote")
