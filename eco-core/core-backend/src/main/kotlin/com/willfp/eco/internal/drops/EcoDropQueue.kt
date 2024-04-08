@@ -54,12 +54,15 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
             hasTelekinesis = false
         }
 
-        val pushEvent = DropQueuePushEvent(player, items, location, xp, hasTelekinesis)
+        val pushEvent = DropQueuePushEvent(player, items.toMutableList(), location, xp, hasTelekinesis)
         Bukkit.getServer().pluginManager.callEvent(pushEvent)
 
         if (pushEvent.isCancelled) {
             return
         }
+
+        items.clear()
+        items.addAll(pushEvent.items)
 
         val world = location.world!!
         location = location.add(0.5, 0.5, 0.5)
