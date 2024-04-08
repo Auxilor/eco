@@ -4,6 +4,7 @@ version = rootProject.version
 dependencies {
     compileOnly(project(":eco-core:core-proxy"))
     compileOnly(project(":eco-core:core-backend"))
+    compileOnly(project(":eco-core:core-folia"))
 
     // Libraries
     implementation("com.github.WillFP:Crunch:1.1.3")
