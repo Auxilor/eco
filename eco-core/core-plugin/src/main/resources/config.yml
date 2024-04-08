@@ -16,6 +16,8 @@ perform-data-migration: true
 mongodb:
   # The full MongoDB connection URL.
   url: ""
+  # The name of the database to use.
+  database: "eco"
 
 mysql:
   # How many threads to execute statements on. Higher numbers can be faster however

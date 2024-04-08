@@ -1,5 +1,11 @@
 package com.willfp.eco.internal.spigot.data.storage
 
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.ReplaceOptions
+import com.mongodb.client.model.UpdateOptions
+import com.mongodb.client.model.Updates
+import com.mongodb.kotlin.client.coroutine.MongoClient
+import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.ProfileHandler
@@ -8,21 +14,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.bson.codecs.pojo.annotations.BsonId
-import org.litote.kmongo.coroutine.CoroutineClient
-import org.litote.kmongo.coroutine.CoroutineCollection
-import org.litote.kmongo.coroutine.coroutine
-import org.litote.kmongo.eq
-import org.litote.kmongo.reactivestreams.KMongo
-import org.litote.kmongo.setValue
 import java.util.UUID
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.bukkit.Bukkit
 
 @Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
     plugin: EcoSpigotPlugin,
     private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MONGO) {
-    private val client: CoroutineClient
-    private val collection: CoroutineCollection<UUIDProfile>
+    private val client: MongoClient
+    private val collection: MongoCollection<UUIDProfile>
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -34,8 +39,9 @@ class MongoDataHandler(
 
         val url = plugin.configYml.getString("mongodb.url")
 
-        client = KMongo.createClient(url).coroutine
-        collection = client.getDatabase("eco").getCollection()
+        client = MongoClient.create(url)
+        collection = client.getDatabase(plugin.configYml.getStringOrNull("mongodb.database") ?: "eco")
+            .getCollection<UUIDProfile>("uuidprofile") // Compat with jackson mapping
     }
 
     override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
@@ -66,7 +72,7 @@ class MongoDataHandler(
     private suspend fun <T> doWrite(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         val profile = getOrCreateDocument(uuid)
 
-        val newData = profile.data.apply {
+        profile.data.run {
             if (value == null) {
                 this.remove(key.key.toString())
             } else {
@@ -74,25 +80,25 @@ class MongoDataHandler(
             }
         }
 
-        collection.updateOne(UUIDProfile::uuid eq uuid.toString(), setValue(UUIDProfile::data, newData))
+        collection.updateOne(Filters.eq(UUIDProfile::uuid.name, uuid.toString()), Updates.set(UUIDProfile::data.name, profile.data))
     }
 
     private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
-        val profile = collection.findOne(UUIDProfile::uuid eq uuid.toString()) ?: return key.defaultValue
+        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString())).firstOrNull() ?: return key.defaultValue
         return profile.data[key.key.toString()] as? T?
     }
 
     private suspend fun getOrCreateDocument(uuid: UUID): UUIDProfile {
-        val profile = collection.findOne(UUIDProfile::uuid eq uuid.toString())
+        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString())).firstOrNull()
         return if (profile == null) {
-            collection.insertOne(
-                UUIDProfile(
-                    uuid.toString(),
-                    mutableMapOf()
-                )
+            val toInsert = UUIDProfile(
+                uuid.toString(),
+                mutableMapOf()
             )
 
-            getOrCreateDocument(uuid)
+            collection.replaceOne(Filters.eq(UUIDProfile::uuid.name, uuid.toString()), toInsert, ReplaceOptions().upsert(true))
+
+            toInsert
         } else {
             profile
         }
@@ -111,10 +117,10 @@ class MongoDataHandler(
     }
 }
 
-private data class UUIDProfile(
+@Serializable
+internal data class UUIDProfile(
     // Storing UUID as strings for serialization
-    @BsonId
-    val uuid: String,
+    @SerialName("_id") val uuid: String,
     // Storing NamespacedKeys as strings for serialization
-    val data: MutableMap<String, Any>
+    val data: MutableMap<String, @Contextual Any>
 )
