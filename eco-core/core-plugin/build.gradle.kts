@@ -37,7 +37,9 @@ dependencies {
     compileOnly("com.github.jiangdashao:matrix-api-repo:317d4635fd")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.1.202")
     compileOnly("me.clip:placeholderapi:2.10.10")
-    compileOnly("com.github.oraxen:oraxen:1.155.0")
+    compileOnly("com.github.oraxen:oraxen:1.155.0") {
+        exclude(group = "*", module = "*")
+    }
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.0")
@@ -51,7 +53,7 @@ dependencies {
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("com.ticxo.modelengine:api:R3.0.1")
-    compileOnly("me.TechsCode:UltraEconomyAPI:1.0.0")
+    compileOnly("me.TechsCode:UltraEconomyAPI:1.0.0_build-7")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("com.github.Ssomar-Developement:SCore:3.4.7")
     compileOnly("io.lumine:Mythic:5.2.1")
