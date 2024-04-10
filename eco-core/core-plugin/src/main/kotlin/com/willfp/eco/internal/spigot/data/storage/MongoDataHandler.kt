@@ -40,7 +40,7 @@ class MongoDataHandler(
         val url = plugin.configYml.getString("mongodb.url")
 
         client = MongoClient.create(url)
-        collection = client.getDatabase(plugin.configYml.getStringOrNull("mongodb.database") ?: "eco")
+        collection = client.getDatabase(plugin.configYml.getString("mongodb.database"))
             .getCollection<UUIDProfile>("uuidprofile") // Compat with jackson mapping
     }
 
@@ -80,24 +80,32 @@ class MongoDataHandler(
             }
         }
 
-        collection.updateOne(Filters.eq(UUIDProfile::uuid.name, uuid.toString()), Updates.set(UUIDProfile::data.name, profile.data))
+        collection.updateOne(
+            Filters.eq(UUIDProfile::uuid.name, uuid.toString()),
+            Updates.set(UUIDProfile::data.name, profile.data)
+        )
     }
 
     private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
-        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString())).firstOrNull() ?: return key.defaultValue
+        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString()))
+            .firstOrNull() ?: return key.defaultValue
         return profile.data[key.key.toString()] as? T?
     }
 
     private suspend fun getOrCreateDocument(uuid: UUID): UUIDProfile {
-        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString())).firstOrNull()
+        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString()))
+            .firstOrNull()
         return if (profile == null) {
             val toInsert = UUIDProfile(
                 uuid.toString(),
                 mutableMapOf()
             )
 
-            collection.replaceOne(Filters.eq(UUIDProfile::uuid.name, uuid.toString()), toInsert, ReplaceOptions().upsert(true))
-
+            collection.replaceOne(
+                Filters.eq(UUIDProfile::uuid.name, uuid.toString()),
+                toInsert,
+                ReplaceOptions().upsert(true)
+            )
             toInsert
         } else {
             profile
