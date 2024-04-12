@@ -19,6 +19,7 @@ plugins {
 dependencies {
     implementation(project(":eco-api"))
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
+    implementation(project(":eco-core:core-folia"))
     implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
     implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
@@ -81,7 +82,7 @@ allprojects {
         maven("https://repo.md-5.net/content/groups/public/")
 
         // UltraEconomy
-        maven("https://repo.techscode.com/repository/maven-releases/")
+        maven("https://repo.techscode.com/repository/techscode-apis/")
 
         // PlayerPoints
         maven("https://repo.rosewooddev.io/repository/public/")

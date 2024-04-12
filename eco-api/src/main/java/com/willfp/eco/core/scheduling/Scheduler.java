@@ -19,7 +19,7 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runLater(@NotNull Runnable runnable,
+    default ScheduledTask runLater(@NotNull Runnable runnable,
                                 long ticksLater) {
         return runLater(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) ticksLater, runnable);
     }
@@ -35,7 +35,7 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runLater(long ticksLater,
+    default ScheduledTask runLater(long ticksLater,
                                 @NotNull Runnable runnable) {
         return runLater(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) ticksLater, runnable);
     }
@@ -50,7 +50,7 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runTimer(@NotNull Runnable runnable,
+    default ScheduledTask runTimer(@NotNull Runnable runnable,
                                 long delay,
                                 long repeat) {
         return runTimer(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) delay, (int) repeat, runnable);
@@ -68,7 +68,7 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runTimer(long delay,
+    default ScheduledTask runTimer(long delay,
                                 long repeat,
                                 @NotNull Runnable runnable) {
         return runTimer(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), (int) delay, (int) repeat, runnable);
@@ -84,7 +84,7 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runAsyncTimer(@NotNull Runnable runnable,
+    default ScheduledTask runAsyncTimer(@NotNull Runnable runnable,
                                      long delay,
                                      long repeat) {
         return runTimerAsync((int) delay, (int) repeat, runnable);
@@ -102,7 +102,7 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask runAsyncTimer(long delay,
+    default ScheduledTask runAsyncTimer(long delay,
                                      long repeat,
                                      @NotNull Runnable runnable) {
         return runTimerAsync((int) delay, (int) repeat, runnable);
@@ -116,42 +116,8 @@ public interface Scheduler {
      * @deprecated Does not work with Folia.
      */
     @Deprecated(since = "6.53.0", forRemoval = true)
-    default BukkitTask run(@NotNull Runnable runnable) {
+    default ScheduledTask run(@NotNull Runnable runnable) {
         return run(new Location(Bukkit.getWorlds().get(0), 0, 0, 0), runnable);
-    }
-
-    /**
-     * Schedule the task to be run repeatedly on a timer.
-     *
-     * @param runnable The lambda to run.
-     * @param delay    The amount of ticks to wait before the first execution.
-     * @param repeat   The amount of ticks to wait between executions.
-     * @return The id of the task.
-     * @deprecated Not needed.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    default int syncRepeating(@NotNull Runnable runnable,
-                              long delay,
-                              long repeat) {
-        return runTimer(runnable, delay, repeat).getTaskId();
-    }
-
-    /**
-     * Schedule the task to be ran repeatedly on a timer.
-     * <p>
-     * Reordered for better kotlin interop.
-     *
-     * @param runnable The lambda to run.
-     * @param delay    The amount of ticks to wait before the first execution.
-     * @param repeat   The amount of ticks to wait between executions.
-     * @return The id of the task.
-     * @deprecated Not needed.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    default int syncRepeating(long delay,
-                              long repeat,
-                              @NotNull Runnable runnable) {
-        return runTimer(runnable, delay, repeat).getTaskId();
     }
 
     /**
@@ -165,7 +131,7 @@ public interface Scheduler {
      * @param task The lambda to run.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runAsync(@NotNull Runnable task);
+    ScheduledTask runAsync(@NotNull Runnable task);
 
     /**
      * Run a task.
@@ -174,7 +140,7 @@ public interface Scheduler {
      * @param task     The task.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask run(@NotNull Location location,
+    ScheduledTask run(@NotNull Location location,
                    @NotNull Runnable task);
 
     /**
@@ -185,7 +151,7 @@ public interface Scheduler {
      * @param task       The task.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runLater(@NotNull Location location,
+    ScheduledTask runLater(@NotNull Location location,
                         int ticksLater,
                         @NotNull Runnable task);
 
@@ -198,7 +164,7 @@ public interface Scheduler {
      * @param task     The task.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runTimer(@NotNull Location location,
+    ScheduledTask runTimer(@NotNull Location location,
                         int delay,
                         int repeat,
                         @NotNull Runnable task);
@@ -211,7 +177,7 @@ public interface Scheduler {
      * @param task   The task.
      * @return The created {@link BukkitTask}.
      */
-    BukkitTask runTimerAsync(int delay,
+    ScheduledTask runTimerAsync(int delay,
                              int repeat,
                              @NotNull Runnable task);
 }
