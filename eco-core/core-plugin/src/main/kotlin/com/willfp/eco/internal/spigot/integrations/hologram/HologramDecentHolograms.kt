@@ -27,7 +27,10 @@ class HologramDecentHolograms : HologramIntegration {
         }
 
         override fun setContents(contents: List<String>) {
-            DHAPI.setHologramLines(DHAPI.getHologram(id), contents)
+            val hologram = DHAPI.getHologram(id)
+            if (hologram != null) {
+                DHAPI.setHologramLines(hologram, contents)
+            }
         }
     }
 }
