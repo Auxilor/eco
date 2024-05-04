@@ -13,6 +13,7 @@ import com.willfp.eco.core.recipe.parts.TestableStack;
 import com.willfp.eco.core.recipe.parts.UnrestrictedMaterialTestableItem;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
+import kotlin.Suppress;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -515,8 +516,11 @@ public final class Items {
      *
      * @param itemStack The ItemStack.
      * @return The base NBT.
+     * @deprecated Items are now component-based.
      */
     @NotNull
+    @Deprecated(since = "6.70.0", forRemoval = true)
+    @SuppressWarnings("removal")
     public static PersistentDataContainer getBaseNBT(@NotNull final ItemStack itemStack) {
         return FastItemStack.wrap(itemStack).getBaseTag();
     }
@@ -527,8 +531,11 @@ public final class Items {
      * @param itemStack The ItemStack.
      * @param container The base NBT tag.
      * @return The ItemStack, modified. Not required to use, as this modifies the instance.¬
+     * @deprecated Items are now component-based.
      */
     @NotNull
+    @Deprecated(since = "6.70.0", forRemoval = true)
+    @SuppressWarnings("removal")
     public static ItemStack setBaseNBT(@NotNull final ItemStack itemStack,
                                        @Nullable final PersistentDataContainer container) {
         FastItemStack fis = FastItemStack.wrap(itemStack);

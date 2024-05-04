@@ -164,15 +164,23 @@ public interface FastItemStack extends PersistentDataHolder {
      * The returned PersistentDataContainer will not modify the item until the tag is set.
      *
      * @return The base NBT tag.
+     * @deprecated Items are now component-based.
      */
-    PersistentDataContainer getBaseTag();
+    @Deprecated(forRemoval = true, since = "6.70.0")
+    default PersistentDataContainer getBaseTag() {
+        throw new UnsupportedOperationException("Not supported in 1.20.5+");
+    }
 
     /**
      * Set the base NBT tag (Not PublicBukkitValues, the base) from a PersistentDataContainer.
      *
      * @param container The PersistentDataContainer.
+     * @deprecated Items are now component-based.
      */
-    void setBaseTag(@Nullable PersistentDataContainer container);
+    @Deprecated(forRemoval = true, since = "6.70.0")
+    default void setBaseTag(@Nullable PersistentDataContainer container) {
+        throw new UnsupportedOperationException("Not supported in 1.20.5+");
+    }
 
     /**
      * Get the type of the item.

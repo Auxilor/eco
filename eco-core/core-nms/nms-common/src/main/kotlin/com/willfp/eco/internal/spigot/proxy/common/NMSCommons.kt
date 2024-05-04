@@ -7,6 +7,7 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
 import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
@@ -73,6 +74,15 @@ fun Player.toNMS(): ServerPlayer =
 
 fun Component.toNMS(): net.minecraft.network.chat.Component =
     if (Prerequisite.HAS_PAPER.isMet) PaperAdventure.asVanilla(this) else impl.toNMS(this)
+
+fun net.minecraft.network.chat.Component.toAdventure(): Component {
+    if (Prerequisite.HAS_PAPER.isMet) {
+        return PaperAdventure.asAdventure(this)
+    }
+
+    val json = net.minecraft.network.chat.Component.Serializer.toJson(this)
+    return GsonComponentSerializer.gson().deserialize(json)
+}
 
 interface CommonsProvider {
     val nbtTagString: Int

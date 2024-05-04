@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
     id("java-library")
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("io.github.goooler.shadow") version "8.1.7"
     id("maven-publish")
     id("java")
     kotlin("jvm") version "1.9.21"
@@ -30,13 +30,14 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_20_6", configuration = "reobf"))
 }
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.goooler.shadow")
     apply(plugin = "kotlin")
 
     repositories {
@@ -206,6 +207,14 @@ allprojects {
             dependsOn(shadowJar)
         }
     }
+}
+
+
+// Root is Java 21 to support 1.20.6+, rest use Java 17
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+    withSourcesJar()
 }
 
 group = "com.willfp"

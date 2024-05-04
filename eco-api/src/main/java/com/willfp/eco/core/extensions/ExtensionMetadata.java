@@ -13,6 +13,8 @@ import java.io.File;
  * @param version The extension version.
  * @param name    The extension name.
  * @param author  The extension's author.
+ * @param file   The extension's file.
+ * @param minimumPluginVersion The minimum plugin version required for this extension.
  */
 public record ExtensionMetadata(@NotNull String version,
                                 @NotNull String name,

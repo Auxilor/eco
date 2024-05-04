@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Handles menu events.
+ *
+ * @param <T> The type of event to handle.x
  */
 public abstract class MenuEventHandler<T extends MenuEvent> {
     /**

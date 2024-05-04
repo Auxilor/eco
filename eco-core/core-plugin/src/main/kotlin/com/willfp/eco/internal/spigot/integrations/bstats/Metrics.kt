@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.File
 import java.io.InputStreamReader
+import java.net.URI
 import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.UUID
@@ -109,7 +110,7 @@ class Metrics(private val plugin: EcoPlugin) {
                 infoLogger.accept("Sent bStats metrics data: $data")
             }
             val url = String.format(REPORT_URL, platform)
-            val connection = URL(url).openConnection() as HttpsURLConnection
+            val connection = URI(url).toURL().openConnection() as HttpsURLConnection
             // Compress the data to save bandwidth
             val compressedData = compress(data.toString())
             connection.requestMethod = "POST"

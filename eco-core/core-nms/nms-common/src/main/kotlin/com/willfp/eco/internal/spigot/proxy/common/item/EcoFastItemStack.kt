@@ -29,10 +29,14 @@ import kotlin.experimental.and
 import kotlin.experimental.inv
 import kotlin.experimental.or
 
+interface ImplementedFIS : FastItemStack {
+    fun apply()
+}
+
 @Suppress("UsePropertyAccessSyntax")
 class EcoFastItemStack(
     private val bukkit: org.bukkit.inventory.ItemStack
-) : FastItemStack {
+) : ImplementedFIS {
     private val handle = bukkit.asNMSStack()
     private val pdc = (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc()
 
@@ -184,9 +188,11 @@ class EcoFastItemStack(
         return this.flagBits and bitModifier == bitModifier
     }
 
+    @Deprecated("Not supported in 1.20.5+")
     override fun getBaseTag(): PersistentDataContainer =
         (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).makePdc(base = true)
 
+    @Deprecated("Not supported in 1.20.5+")
     override fun setBaseTag(container: PersistentDataContainer?) {
         (if (handle.hasTag()) handle.getTag()!! else CompoundTag()).setPdc(container, item = handle)
         apply()
@@ -259,7 +265,7 @@ class EcoFastItemStack(
         return handle.getTag()?.hashCode() ?: (0b00010101 * 31 + Item.getId(handle.getItem()))
     }
 
-    internal fun apply() {
+    override fun apply() {
         if (handle.hasTag()) {
             handle.getTag()?.setPdc(this.pdc)
         }
@@ -276,9 +282,9 @@ class EcoFastItemStack(
     }
 }
 
-private class ContinuallyAppliedPersistentDataContainer(
+class ContinuallyAppliedPersistentDataContainer(
     val handle: PersistentDataContainer,
-    val fis: EcoFastItemStack
+    private val fis: ImplementedFIS
 ) : PersistentDataContainer by handle {
     override fun <T : Any, Z : Any> set(key: NamespacedKey, type: PersistentDataType<T, Z>, value: Z) {
         handle.set(key, type, value)
