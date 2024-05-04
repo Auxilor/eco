@@ -42,7 +42,7 @@ public final class ProxyConstants {
         if (new Version(currentMinecraftVersion).compareTo(new Version("1.20.5")) < 0) {
             nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         } else {
-            nmsVersion = currentMinecraftVersion.replace(".", "_");
+            nmsVersion = "v" + currentMinecraftVersion.replace(".", "_");
         }
 
         NMS_VERSION = nmsVersion;
