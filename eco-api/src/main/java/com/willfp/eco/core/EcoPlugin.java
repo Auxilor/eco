@@ -575,8 +575,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.getLogger().severe("");
             this.getLogger().severe("You don't seem to be running paper!");
             this.getLogger().severe("Paper is strongly recommended for all servers,");
-            this.getLogger().severe("and some things may not function properly without it");
-            this.getLogger().severe("Download Paper from &fhttps://papermc.io");
+            this.getLogger().severe("and many features may not function properly without it");
+            this.getLogger().severe("Download Paper from https://papermc.io");
+            this.getLogger().severe("It's a drop-in replacement for Spigot, so it's easy to switch.");
             this.getLogger().severe("");
             this.getLogger().severe("----------------------------");
             this.getLogger().severe("");

@@ -239,6 +239,11 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         MergedStateMenu(base, additional)
 
     override fun clean(plugin: EcoPlugin) {
+        // Prevent self-cleaning
+        if (plugin == this) {
+            return
+        }
+
         if (plugin.proxyPackage.isNotEmpty()) {
             val factory = plugin.proxyFactory as EcoProxyFactory
             factory.clean()

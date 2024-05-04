@@ -142,53 +142,15 @@ allprojects {
         setExtendsFrom(listOf(configurations.compileOnly.get(), configurations.implementation.get()))
     }
 
-    java {
-        toolchain.languageVersion = JavaLanguageVersion.of(17)
-    }
-
-    kotlin {
-        jvmToolchain(17)
-    }
-
     tasks {
+        withType<Jar> {
+            duplicatesStrategy = DuplicatesStrategy.WARN
+        }
+
         compileKotlin {
             kotlinOptions {
                 jvmTarget = "17"
             }
-        }
-
-        shadowJar {
-            relocate("org.bstats", "com.willfp.eco.libs.bstats")
-            relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
-            relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
-            relocate("org.apache.maven", "com.willfp.eco.libs.maven")
-            relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")
-            relocate("org.intellij", "com.willfp.eco.libs.intellij")
-            relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
-            //relocate("org.jetbrains.exposed", "com.willfp.eco.libs.exposed")
-            relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
-            relocate("org.reflections", "com.willfp.eco.libs.reflections")
-            relocate("javassist", "com.willfp.eco.libs.javassist")
-            relocate("javax.annotation", "com.willfp.eco.libs.annotation")
-            relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
-            relocate("com.google.j2objc", "com.willfp.eco.libs.j2objc")
-            relocate("com.google.thirdparty", "com.willfp.eco.libs.google.thirdparty")
-            relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
-            relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
-            relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
-            //relocate("com.mysql", "com.willfp.eco.libs.mysql")
-            relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
-            relocate("org.bson", "com.willfp.eco.libs.bson")
-            relocate("org.litote", "com.willfp.eco.libs.litote")
-            relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
-            relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
-            relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
-            relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
-
-            /*
-            Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
-            Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
-             */
         }
 
         compileJava {
@@ -217,6 +179,41 @@ allprojects {
     }
 }
 
+tasks {
+    shadowJar {
+        relocate("org.bstats", "com.willfp.eco.libs.bstats")
+        relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
+        relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
+        relocate("org.apache.maven", "com.willfp.eco.libs.maven")
+        relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")
+        relocate("org.intellij", "com.willfp.eco.libs.intellij")
+        relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
+        //relocate("org.jetbrains.exposed", "com.willfp.eco.libs.exposed")
+        relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
+        relocate("org.reflections", "com.willfp.eco.libs.reflections")
+        relocate("javassist", "com.willfp.eco.libs.javassist")
+        relocate("javax.annotation", "com.willfp.eco.libs.annotation")
+        relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
+        relocate("com.google.j2objc", "com.willfp.eco.libs.j2objc")
+        relocate("com.google.thirdparty", "com.willfp.eco.libs.google.thirdparty")
+        relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
+        relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
+        relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
+        //relocate("com.mysql", "com.willfp.eco.libs.mysql")
+        relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
+        relocate("org.bson", "com.willfp.eco.libs.bson")
+        relocate("org.litote", "com.willfp.eco.libs.litote")
+        relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
+        relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
+        relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
+        relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
+
+        /*
+        Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
+        Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
+         */
+    }
+}
 
 // Root is Java 21 to support 1.20.6+, rest use Java 17
 java {

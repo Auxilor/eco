@@ -23,6 +23,7 @@ import org.bukkit.craftbukkit.entity.CraftEntity
 import org.bukkit.craftbukkit.entity.CraftMob
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.inventory.CraftItemStack
+import org.bukkit.craftbukkit.inventory.CraftMetaArmor
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
 import org.bukkit.craftbukkit.util.CraftMagicNumbers
@@ -47,7 +48,8 @@ class CommonsInitializer : CommonsInitializerProxy {
             isAccessible = true
         }
 
-        private val pdcRegsitry = Class.forName("org.bukkit.craftbukkit.v1_20_R3.inventory.CraftMetaItem")
+        private val pdcRegsitry = CraftMetaArmor::class.java
+            .superclass // Access CraftMetaItem
             .getDeclaredField("DATA_TYPE_REGISTRY")
             .apply { isAccessible = true }
             .get(null) as CraftPersistentDataTypeRegistry
