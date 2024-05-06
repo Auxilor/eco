@@ -16,6 +16,7 @@ import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
@@ -31,6 +32,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.max
 
+private val unstyledComponent = Component.empty().style {
+    it.color(null).decoration(TextDecoration.ITALIC, false)
+}
+
 class FastItemStackFactory : FastItemStackFactoryProxy {
     override fun create(itemStack: ItemStack): FastItemStack {
         return NewEcoFastItemStack(itemStack)
@@ -40,7 +45,10 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
     class NewEcoFastItemStack(
         private val bukkit: ItemStack
     ) : ImplementedFIS {
+        // Cast is there because, try as I might, I can't get IntellIJ to recognise half the classes in the dev bundle
+        @Suppress("USELESS_CAST")
         private val handle = bukkit.asNMSStack() as net.minecraft.world.item.ItemStack
+
         private val pdc = if (handle.has(DataComponents.CUSTOM_DATA)) {
             handle.get(DataComponents.CUSTOM_DATA)!!.copyTag().makePdc()
         } else {
@@ -87,7 +95,16 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
             if (lore == null) {
                 handle.set<ItemLore>(DataComponents.LORE, null)
             } else {
-                handle.set(DataComponents.LORE, ItemLore(lore.map { it.toNMS() }))
+                val components = lore
+                    .map { unstyledComponent.append(it) }
+                    .map { it.toNMS() }
+
+                handle.set(
+                    DataComponents.LORE, ItemLore(
+                        components,
+                        components
+                    )
+                )
             }
 
             apply()
@@ -359,11 +376,11 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
         }
 
         override fun apply() {
-            handle.update(DataComponents.CUSTOM_DATA, CustomData.of(CompoundTag())) {
-                it.apply {
-                    @Suppress("DEPRECATION")
-                    unsafe.setPdc(pdc)
-                }
+            val customData = handle.get(DataComponents.CUSTOM_DATA)
+            if (customData != null) {
+                val tag = customData.copyTag()
+                tag.setPdc(pdc)
+                handle.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
             }
 
             bukkit.mergeIfNeeded(handle)

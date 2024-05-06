@@ -38,10 +38,18 @@ public class Prerequisite {
     );
 
     /**
+     * Requires the server to be running 1.20.5.
+     */
+    public static final Prerequisite HAS_1_20_5 = new Prerequisite(
+            () -> ProxyConstants.NMS_VERSION.contains("1_20_") && !ProxyConstants.NMS_VERSION.contains("R"),
+            "Requires server to be running 1.20.5+"
+    );
+
+    /**
      * Requires the server to be running 1.20.3.
      */
     public static final Prerequisite HAS_1_20_3 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("20_R3"),
+            () -> ProxyConstants.NMS_VERSION.contains("20_R3") || HAS_1_20_5.isMet(),
             "Requires server to be running 1.20.3+"
     );
 
@@ -49,7 +57,7 @@ public class Prerequisite {
      * Requires the server to be running 1.20.
      */
     public static final Prerequisite HAS_1_20 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("20"),
+            () -> ProxyConstants.NMS_VERSION.contains("20") || HAS_1_20_3.isMet(),
             "Requires server to be running 1.20+"
     );
 

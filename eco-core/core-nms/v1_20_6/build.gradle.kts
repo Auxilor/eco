@@ -15,9 +15,6 @@ dependencies {
         }
         exclude(group = "net.kyori", module = "adventure-api")
     }
-
-    // I know this is the wrong version, but org.bukkit.Material refused to work
-    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
 }
 
 tasks {
