@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.SnbtPrinterTagVisitor
 import net.minecraft.nbt.TagParser
 import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_19_R1.util.CraftMagicNumbers
 import org.bukkit.inventory.ItemStack
 
 class SNBTConverter : SNBTConverterProxy {
@@ -19,7 +20,9 @@ class SNBTConverter : SNBTConverterProxy {
 
     override fun toSNBT(itemStack: ItemStack): String {
         val nms = CraftItemStack.asNMSCopy(itemStack)
-        return SnbtPrinterTagVisitor().visit(nms.save(CompoundTag()))
+        val tag = nms.save(CompoundTag())
+        tag.putInt("DataVersion", CraftMagicNumbers.INSTANCE.dataVersion)
+        return SnbtPrinterTagVisitor().visit(tag)
     }
 
     override fun makeSNBTTestable(snbt: String): TestableItem {
