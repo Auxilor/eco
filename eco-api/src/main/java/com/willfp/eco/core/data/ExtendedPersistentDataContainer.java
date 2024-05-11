@@ -87,6 +87,10 @@ public interface ExtendedPersistentDataContainer {
      * @return The extended container.
      */
     static ExtendedPersistentDataContainer extend(@NotNull PersistentDataContainer base) {
+        if (base instanceof ExtendedPersistentDataContainer) {
+            return (ExtendedPersistentDataContainer) base;
+        }
+
         return Eco.get().adaptPdc(base);
     }
 

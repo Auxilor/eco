@@ -28,7 +28,7 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
     override fun adapt(pdc: PersistentDataContainer): ExtendedPersistentDataContainer {
         return when (pdc) {
             is CraftPersistentDataContainer -> EcoPersistentDataContainer(pdc)
-            else -> throw IllegalArgumentException("Custom PDC instance ims not supported!")
+            else -> throw IllegalArgumentException("Custom PDC instance ${pdc::class.java.name} is not supported!")
         }
     }
 

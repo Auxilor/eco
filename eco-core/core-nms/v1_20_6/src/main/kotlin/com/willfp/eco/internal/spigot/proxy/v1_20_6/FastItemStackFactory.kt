@@ -49,13 +49,7 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
         @Suppress("USELESS_CAST")
         private val handle = bukkit.asNMSStack() as net.minecraft.world.item.ItemStack
 
-        private val pdc = if (handle.has(DataComponents.CUSTOM_DATA)) {
-            handle.get(DataComponents.CUSTOM_DATA)!!.copyTag().makePdc()
-        } else {
-            val tag = CompoundTag()
-            handle.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
-            tag.makePdc()
-        }
+        private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
 
         override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
             val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return emptyMap()
@@ -340,6 +334,7 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
 
         override fun setAmount(amount: Int) {
             handle.setCount(amount)
+            apply()
         }
 
         override fun setType(material: org.bukkit.Material) {
@@ -376,11 +371,15 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
         }
 
         override fun apply() {
-            val customData = handle.get(DataComponents.CUSTOM_DATA)
-            if (customData != null) {
-                val tag = customData.copyTag()
-                tag.setPdc(pdc)
-                handle.set(DataComponents.CUSTOM_DATA, CustomData.of(tag))
+            val customData = handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+            val updated = customData.update {
+                it.setPdc(pdc)
+            }
+
+            if (updated.isEmpty) {
+                handle.remove(DataComponents.CUSTOM_DATA)
+            } else {
+                handle.set(DataComponents.CUSTOM_DATA, updated)
             }
 
             bukkit.mergeIfNeeded(handle)
