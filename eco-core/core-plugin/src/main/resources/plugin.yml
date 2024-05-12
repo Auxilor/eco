@@ -15,8 +15,6 @@ loadbefore:
   - EconomyShopGUI-Premium
   - CMI
   - DeluxeCombat
-  - SCore
-  - ExecutableItems
 softdepend:
   - ItemBridge
   - HuskClaims
