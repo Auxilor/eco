@@ -15,6 +15,7 @@ loadbefore:
   - EconomyShopGUI-Premium
   - CMI
   - DeluxeCombat
+  - ShopGUIPlus
 softdepend:
   - ItemBridge
   - HuskClaims
@@ -33,7 +34,6 @@ softdepend:
   - PlaceholderAPI
   - mcMMO
   - CombatLogX
-  - ShopGUIPlus
   - ItemsAdder
   - Oraxen
   - HeadDatabase
