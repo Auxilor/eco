@@ -32,6 +32,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_6", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21", configuration = "reobf"))
 }
 
 allprojects {
@@ -162,6 +163,10 @@ allprojects {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
             withSourcesJar()
+
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(17)
+            }
         }
 
         test {
