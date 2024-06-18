@@ -1,6 +1,6 @@
 dependencies {
     // Adventure
-    compileOnly("net.kyori:adventure-platform-bukkit:4.1.0")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.2")
 
     // Other
     compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
