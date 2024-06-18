@@ -8,6 +8,7 @@ version = rootProject.version
 dependencies {
     implementation(project(":eco-core:core-nms:nms-common"))
     paperweight.paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    pluginRemapper("net.fabricmc:tiny-remapper:0.10.3:fat")
 
     implementation("net.kyori:adventure-text-minimessage:4.10.0") {
         version {

@@ -17,20 +17,27 @@ import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
+import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.Unit
 import net.minecraft.world.item.component.CustomData
 import net.minecraft.world.item.component.CustomModelData
 import net.minecraft.world.item.component.ItemLore
+import net.minecraft.world.item.enchantment.EnchantmentHelper
+import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.CraftRegistry
+import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.max
+import kotlin.math.min
 
 private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)
@@ -72,12 +79,17 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
             val minecraft = CraftRegistry
                 .bukkitToMinecraft<Enchantment, net.minecraft.world.item.enchantment.Enchantment>(enchantment)
 
+            val server = Bukkit.getServer() as CraftServer
+            val access = server.server.registryAccess()
+
+            val holder = access.registryOrThrow(Registries.ENCHANTMENT).wrapAsHolder(minecraft)
+
             val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
-            var level = enchantments.getLevel(minecraft)
+            var level = enchantments.getLevel(holder)
 
             if (checkStored) {
                 val storedEnchantments = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return 0
-                level = max(level, storedEnchantments.getLevel(minecraft))
+                level = max(level, storedEnchantments.getLevel(holder))
             }
 
             return level
@@ -260,7 +272,7 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
 
         override fun getItemFlags(): Set<ItemFlag> {
             val currentFlags = mutableSetOf<ItemFlag>()
-            for (f in ItemFlag.values()) {
+            for (f in ItemFlag.entries) {
                 if (hasItemFlag(f)) {
                     currentFlags.add(f)
                 }
