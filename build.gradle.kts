@@ -45,9 +45,10 @@ allprojects {
 
     repositories {
         mavenCentral()
-        mavenLocal()
         maven("https://repo.auxilor.io/repository/maven-public/")
-        maven("https://jitpack.io")
+        maven("https://jitpack.io") {
+            content { includeGroupByRegex("com\\.github\\..*") }
+        }
 
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
@@ -159,16 +160,6 @@ allprojects {
             options.encoding = "UTF-8"
         }
 
-        java {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-            withSourcesJar()
-
-            toolchain {
-                languageVersion = JavaLanguageVersion.of(17)
-            }
-        }
-
         test {
             useJUnitPlatform()
 
@@ -180,6 +171,17 @@ allprojects {
 
         build {
             dependsOn(shadowJar)
+        }
+
+        withType<JavaCompile>().configureEach {
+            options.release = 17
+        }
+    }
+
+    java {
+        withSourcesJar()
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
         }
     }
 }
@@ -218,13 +220,6 @@ tasks {
         Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
          */
     }
-}
-
-// Root is Java 21 to support 1.20.6+, rest use Java 17
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-    withSourcesJar()
 }
 
 group = "com.willfp"
