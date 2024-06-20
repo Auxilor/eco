@@ -70,7 +70,7 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
             }
 
             if (checkStored) {
-                val stored = handle.get(DataComponents.ENCHANTMENTS) ?: return map
+                val stored = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return map
 
                 for ((enchantment, level) in stored.entrySet()) {
                     val bukkit = CraftEnchantment.minecraftToBukkit(enchantment.value())
