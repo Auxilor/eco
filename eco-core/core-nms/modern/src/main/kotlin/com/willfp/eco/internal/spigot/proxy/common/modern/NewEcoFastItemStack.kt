@@ -14,6 +14,8 @@ import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
@@ -35,6 +37,10 @@ import kotlin.math.max
 
 private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)
+}
+
+private fun Component.unstyled(): Component {
+    return unstyledComponent.append(this)
 }
 
 class NewEcoFastItemStack(
@@ -102,7 +108,7 @@ class NewEcoFastItemStack(
             handle.set<ItemLore>(DataComponents.LORE, null)
         } else {
             val components = lore
-                .map { unstyledComponent.append(it) }
+                .map { it.unstyled() }
                 .map { it.toNMS() }
 
             handle.set(
@@ -126,8 +132,12 @@ class NewEcoFastItemStack(
     override fun setDisplayName(name: Component?) {
         if (name == null) {
             handle.set<net.minecraft.network.chat.Component>(DataComponents.ITEM_NAME, null)
+            handle.set<net.minecraft.network.chat.Component>(DataComponents.CUSTOM_NAME, null)
         } else {
-            handle.set(DataComponents.ITEM_NAME, unstyledComponent.append(name).toNMS())
+            handle.set(
+                DataComponents.CUSTOM_NAME,
+                name.unstyled().toNMS()
+            )
         }
 
         apply()
