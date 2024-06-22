@@ -85,10 +85,18 @@ class EcoFastItemStack(
     override fun setLoreComponents(lore: List<Component>?) {
         val jsonLore = mutableListOf<String>()
 
-        if (lore != null) {
-            for (s in lore) {
-                jsonLore.add(StringUtils.componentToJson(s))
+        if (lore.isNullOrEmpty()) {
+            val element = handle.getOrCreateTagElement("display")
+            element.remove("Lore")
+            if (element.isEmpty) {
+                handle.removeTagKey("display")
             }
+            apply()
+            return
+        }
+
+        for (s in lore) {
+            jsonLore.add(StringUtils.componentToJson(s))
         }
 
         val displayTag = handle.getOrCreateTagElement("display")
