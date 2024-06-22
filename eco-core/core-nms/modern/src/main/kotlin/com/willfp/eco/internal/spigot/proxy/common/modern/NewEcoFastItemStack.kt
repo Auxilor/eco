@@ -125,9 +125,9 @@ class NewEcoFastItemStack(
 
     override fun setDisplayName(name: Component?) {
         if (name == null) {
-            handle.set<net.minecraft.network.chat.Component>(DataComponents.CUSTOM_NAME, null)
+            handle.set<net.minecraft.network.chat.Component>(DataComponents.ITEM_NAME, null)
         } else {
-            handle.set(DataComponents.CUSTOM_NAME, name.toNMS())
+            handle.set(DataComponents.ITEM_NAME, unstyledComponent.append(name).toNMS())
         }
 
         apply()
@@ -137,7 +137,8 @@ class NewEcoFastItemStack(
 
     override fun getDisplayNameComponent(): Component {
         return handle.get(DataComponents.CUSTOM_NAME)?.toAdventure()
-            ?: Component.translatable(bukkit.type.toItem().getDescriptionId())
+            ?: handle.get(DataComponents.ITEM_NAME)?.toAdventure()
+            ?: Component.translatable(bukkit.type.toItem().descriptionId)
     }
 
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
