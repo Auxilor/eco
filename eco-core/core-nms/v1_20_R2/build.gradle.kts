@@ -6,7 +6,7 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    implementation(project(":eco-core:core-nms:nms-common"))
+    implementation(project(":eco-core:core-nms:common"))
     paperweight.paperDevBundle("1.20.2-R0.1-SNAPSHOT")
     pluginRemapper("net.fabricmc:tiny-remapper:0.10.3:fat")
 

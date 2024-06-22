@@ -31,7 +31,6 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_6", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21", configuration = "reobf"))
 }
 

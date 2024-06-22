@@ -6,7 +6,8 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    implementation(project(":eco-core:core-nms:nms-common"))
+    implementation(project(":eco-core:core-nms:modern"))
+    implementation(project(":eco-core:core-nms:common"))
     paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-text-minimessage:4.11.0") {
