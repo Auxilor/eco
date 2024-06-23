@@ -1,14 +1,14 @@
-package com.willfp.eco.internal.items
+package com.willfp.eco.internal.items.modern
 
 import com.willfp.eco.internal.items.templates.FlagArgParser
 import org.bukkit.inventory.meta.ItemMeta
 
-object ArgParserUnbreakable : FlagArgParser("unbreakable") {
+object ArgParserGlint : FlagArgParser("glint") {
     override fun apply(meta: ItemMeta) {
-        meta.isUnbreakable = true
+        meta.setEnchantmentGlintOverride(true)
     }
 
     override fun test(meta: ItemMeta): Boolean {
-        return meta.isUnbreakable
+        return meta.hasEnchantmentGlintOverride()
     }
 }

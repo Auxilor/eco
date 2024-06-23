@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.items
+package com.willfp.eco.internal.items.modern
 
 import com.willfp.eco.core.items.args.LookupArgParser
 import org.bukkit.NamespacedKey
@@ -23,7 +23,11 @@ object ArgParserTrim : LookupArgParser {
             if (!argSplit[0].equals("trim", ignoreCase = true)) {
                 continue
             }
+
+            @Suppress("DEPRECATION")
             material = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(argSplit.getOrElse(1) {""}))
+
+            @Suppress("DEPRECATION")
             pattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(argSplit.getOrElse(2) {""}))
         }
 
@@ -43,6 +47,11 @@ object ArgParserTrim : LookupArgParser {
     override fun serializeBack(meta: ItemMeta): String? {
         val trim = (meta as? ArmorMeta)?.trim ?: return null
 
-        return "trim:${trim.material.key.key.lowercase()}:${trim.pattern.key.key.lowercase()}"
+        @Suppress("DEPRECATION")
+        val materialKey = Registry.TRIM_MATERIAL.getKey(trim.material) ?: return null
+        @Suppress("DEPRECATION")
+        val patternKey = Registry.TRIM_PATTERN.getKey(trim.pattern) ?: return null
+
+        return "trim:${materialKey.key.lowercase()}:${patternKey.key.lowercase()}"
     }
 }

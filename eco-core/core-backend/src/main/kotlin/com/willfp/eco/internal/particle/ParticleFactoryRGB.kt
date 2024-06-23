@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.particle
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.particle.ParticleFactory
 import com.willfp.eco.core.particle.SpawnableParticle
 import org.bukkit.Color
@@ -7,6 +8,14 @@ import org.bukkit.Location
 import org.bukkit.Particle
 
 object ParticleFactoryRGB : ParticleFactory {
+    private val dustParticle = runCatching {
+        if (Prerequisite.HAS_1_20_5.isMet) {
+            Particle.valueOf("DUST")
+        } else {
+            Particle.valueOf("REDSTONE_DUST")
+        }
+    }.getOrNull()
+
     override fun getNames() = listOf(
         "color",
         "rgb",
@@ -30,7 +39,9 @@ object ParticleFactoryRGB : ParticleFactory {
         override fun spawn(location: Location, amount: Int) {
             val world = location.world ?: return
 
-            world.spawnParticle(Particle.REDSTONE, location, amount, 0.0, 0.0, 0.0, 0.0, options)
+            val particle = dustParticle ?: return
+
+            world.spawnParticle(particle, location, amount, 0.0, 0.0, 0.0, 0.0, options)
         }
     }
 }

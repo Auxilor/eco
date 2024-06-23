@@ -20,6 +20,7 @@ object ArgParserEnchantment : LookupArgParser {
                 continue
             }
 
+            @Suppress("DEPRECATION")
             val enchant = Enchantment.getByKey(NamespacedKeyUtils.create("minecraft", argSplit[0]))
             val level = argSplit[1].toIntOrNull()
 

@@ -24,6 +24,12 @@ import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.*
 import com.willfp.eco.internal.items.*
+import com.willfp.eco.internal.items.modern.ArgParserFireResistant
+import com.willfp.eco.internal.items.modern.ArgParserGlint
+import com.willfp.eco.internal.items.modern.ArgParserItemName
+import com.willfp.eco.internal.items.modern.ArgParserMaxDamage
+import com.willfp.eco.internal.items.modern.ArgParserMaxStackSize
+import com.willfp.eco.internal.items.modern.ArgParserTrim
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
@@ -97,8 +103,14 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserName)
         Items.registerArgParser(ArgParserHead)
         Items.registerArgParser(ArgParserEntity)
-        if (Prerequisite.HAS_1_20.isMet) {
+
+        if (Prerequisite.HAS_PAPER.isMet && Prerequisite.HAS_1_21.isMet) {
             Items.registerArgParser(ArgParserTrim)
+            Items.registerArgParser(ArgParserFireResistant)
+            Items.registerArgParser(ArgParserGlint)
+            Items.registerArgParser(ArgParserItemName)
+            Items.registerArgParser(ArgParserMaxDamage)
+            Items.registerArgParser(ArgParserMaxStackSize)
         }
 
         Entities.registerArgParser(EntityArgParserName)
