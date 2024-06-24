@@ -1,5 +1,7 @@
 package com.willfp.eco.internal.gui.menu
 
+import com.willfp.eco.core.Eco
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.gui.menu.events.CaptiveItemChangeEvent
 import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
@@ -20,9 +22,23 @@ fun Player.forceRenderedInventory(menu: RenderedInventory) {
     trackedForceRendered[this.uniqueId] = menu
 }
 
+// Workaround because 1.21 has OpenInventory as an interface instead of an abstract class like in previous versions
+interface TopInventoryProxy {
+    fun getTopInventory(player: Player): Inventory
+}
+
+private val Player.topInventory: Inventory
+    get() {
+        return if (!Prerequisite.HAS_1_21.isMet) {
+            Eco.get().ecoPlugin.getProxy(TopInventoryProxy::class.java).getTopInventory(this)
+        } else {
+            this.openInventory.topInventory
+        }
+    }
+
 val Player.renderedInventory: RenderedInventory?
     get() = trackedForceRendered[this.uniqueId]
-        ?: this.openInventory.topInventory.asRenderedInventory()
+        ?: this.topInventory.asRenderedInventory()
 
 class RenderedInventory(
     val menu: EcoMenu,
