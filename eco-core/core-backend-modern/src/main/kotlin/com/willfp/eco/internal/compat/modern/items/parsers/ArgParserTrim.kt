@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.items.modern
+package com.willfp.eco.internal.compat.modern.items.parsers
 
 import com.willfp.eco.core.items.args.LookupArgParser
 import org.bukkit.NamespacedKey

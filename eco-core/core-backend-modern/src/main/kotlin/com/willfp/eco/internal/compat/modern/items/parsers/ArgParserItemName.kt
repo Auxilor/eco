@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.items.modern
+package com.willfp.eco.internal.compat.modern.items.parsers
 
 import com.willfp.eco.internal.items.templates.ValueArgParser
 import com.willfp.eco.util.StringUtils

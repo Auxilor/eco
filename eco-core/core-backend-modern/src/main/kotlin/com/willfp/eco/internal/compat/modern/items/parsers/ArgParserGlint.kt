@@ -1,14 +1,14 @@
-package com.willfp.eco.internal.items.modern
+package com.willfp.eco.internal.compat.modern.items.parsers
 
 import com.willfp.eco.internal.items.templates.FlagArgParser
 import org.bukkit.inventory.meta.ItemMeta
 
-object ArgParserFireResistant : FlagArgParser("fire_resistant") {
+object ArgParserGlint : FlagArgParser("glint") {
     override fun apply(meta: ItemMeta) {
-        meta.isFireResistant = true
+        meta.setEnchantmentGlintOverride(true)
     }
 
     override fun test(meta: ItemMeta): Boolean {
-        return meta.isFireResistant
+        return meta.hasEnchantmentGlintOverride()
     }
 }

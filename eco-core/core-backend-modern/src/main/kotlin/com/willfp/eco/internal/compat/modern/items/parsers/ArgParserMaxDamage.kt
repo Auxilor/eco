@@ -1,12 +1,8 @@
-package com.willfp.eco.internal.items.modern
+package com.willfp.eco.internal.compat.modern.items.parsers
 
 import com.willfp.eco.internal.items.templates.ValueArgParser
-import com.willfp.eco.util.StringUtils
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
-import org.checkerframework.checker.units.qual.m
 
 object ArgParserMaxDamage : ValueArgParser<Int>("max_damage") {
     override fun parse(arg: String): Int? {

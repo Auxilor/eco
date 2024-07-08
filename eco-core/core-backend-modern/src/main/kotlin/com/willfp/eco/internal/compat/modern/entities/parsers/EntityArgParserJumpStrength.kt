@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.entities
+package com.willfp.eco.internal.compat.modern.entities.parsers
 
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser

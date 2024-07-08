@@ -1,17 +1,19 @@
-package com.willfp.eco.internal.entities
+package com.willfp.eco.internal.compat.modern.entities.parsers
 
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Phantom
+import org.bukkit.entity.Slime
 
-object EntityArgParserFlySpeed : EntityArgParser {
+object EntityArgParserScale : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
         var attributeValue: Double? = null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("fly-speed", ignoreCase = true)) {
+            if (!argSplit[0].equals("scale", ignoreCase = true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -28,7 +30,7 @@ object EntityArgParserFlySpeed : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_FLYING_SPEED) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.GENERIC_SCALE) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +38,7 @@ object EntityArgParserFlySpeed : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.baseValue = attributeValue
+                it.getAttribute(Attribute.GENERIC_SCALE)?.baseValue = attributeValue
             }
         )
     }

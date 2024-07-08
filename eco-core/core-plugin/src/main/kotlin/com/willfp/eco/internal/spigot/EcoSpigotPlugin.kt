@@ -20,16 +20,38 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
+import com.willfp.eco.internal.compat.ifModern
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
-import com.willfp.eco.internal.entities.*
-import com.willfp.eco.internal.items.*
-import com.willfp.eco.internal.items.modern.ArgParserFireResistant
-import com.willfp.eco.internal.items.modern.ArgParserGlint
-import com.willfp.eco.internal.items.modern.ArgParserItemName
-import com.willfp.eco.internal.items.modern.ArgParserMaxDamage
-import com.willfp.eco.internal.items.modern.ArgParserMaxStackSize
-import com.willfp.eco.internal.items.modern.ArgParserTrim
+import com.willfp.eco.internal.entities.EntityArgParserAdult
+import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
+import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
+import com.willfp.eco.internal.entities.EntityArgParserBaby
+import com.willfp.eco.internal.entities.EntityArgParserCharged
+import com.willfp.eco.internal.entities.EntityArgParserEquipment
+import com.willfp.eco.internal.entities.EntityArgParserExplosionRadius
+import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
+import com.willfp.eco.internal.entities.EntityArgParserFollowRange
+import com.willfp.eco.internal.entities.EntityArgParserHealth
+import com.willfp.eco.internal.entities.EntityArgParserKnockback
+import com.willfp.eco.internal.entities.EntityArgParserKnockbackResistance
+import com.willfp.eco.internal.entities.EntityArgParserName
+import com.willfp.eco.internal.entities.EntityArgParserNoAI
+import com.willfp.eco.internal.entities.EntityArgParserSilent
+import com.willfp.eco.internal.entities.EntityArgParserSize
+import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
+import com.willfp.eco.internal.entities.EntityArgParserSpeed
+import com.willfp.eco.internal.entities.ModernEntityArgParsers
+import com.willfp.eco.internal.items.ArgParserColor
+import com.willfp.eco.internal.items.ArgParserCustomModelData
+import com.willfp.eco.internal.items.ArgParserEnchantment
+import com.willfp.eco.internal.items.ArgParserEntity
+import com.willfp.eco.internal.items.ArgParserFlag
+import com.willfp.eco.internal.items.ArgParserHead
+import com.willfp.eco.internal.items.ArgParserName
+import com.willfp.eco.internal.items.ArgParserTexture
+import com.willfp.eco.internal.items.ArgParserUnbreakable
+import com.willfp.eco.internal.items.ModernItemArgParsers
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
@@ -43,16 +65,50 @@ import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import com.willfp.eco.internal.spigot.data.storage.ProfileSaver
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
-import com.willfp.eco.internal.spigot.eventlisteners.*
+import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
+import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
+import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.internal.spigot.gui.GUIListener
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.internal.spigot.integrations.anticheat.*
-import com.willfp.eco.internal.spigot.integrations.antigrief.*
+import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
+import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
+import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
+import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
+import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
+import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV10
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCrashClaim
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefHuskClaims
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefHuskTowns
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefKingdoms
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefPvPManager
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
-import com.willfp.eco.internal.spigot.integrations.customitems.*
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsDenizen
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemBridge
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
@@ -104,13 +160,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserHead)
         Items.registerArgParser(ArgParserEntity)
 
-        if (Prerequisite.HAS_PAPER.isMet && Prerequisite.HAS_1_21.isMet) {
-            Items.registerArgParser(ArgParserTrim)
-            Items.registerArgParser(ArgParserFireResistant)
-            Items.registerArgParser(ArgParserGlint)
-            Items.registerArgParser(ArgParserItemName)
-            Items.registerArgParser(ArgParserMaxDamage)
-            Items.registerArgParser(ArgParserMaxStackSize)
+        ifModern {
+            useProxy<ModernItemArgParsers> {
+                registerAll()
+            }
         }
 
         Entities.registerArgParser(EntityArgParserName)
@@ -120,7 +173,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserFlySpeed)
         Entities.registerArgParser(EntityArgParserFollowRange)
         Entities.registerArgParser(EntityArgParserHealth)
-        Entities.registerArgParser(EntityArgParserJumpStrength)
         Entities.registerArgParser(EntityArgParserKnockback)
         Entities.registerArgParser(EntityArgParserKnockbackResistance)
         Entities.registerArgParser(EntityArgParserSize)
@@ -132,6 +184,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserExplosionRadius)
         Entities.registerArgParser(EntityArgParserSilent)
         Entities.registerArgParser(EntityArgParserEquipment)
+
+        ifModern {
+            useProxy<ModernEntityArgParsers> {
+                registerAll()
+            }
+        }
 
         Prices.registerPriceFactory(PriceFactoryEconomy)
         Prices.registerPriceFactory(PriceFactoryXPLevels)
