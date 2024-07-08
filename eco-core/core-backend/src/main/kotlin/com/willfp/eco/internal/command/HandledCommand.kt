@@ -126,17 +126,20 @@ abstract class HandledCommand(
      * @return The tab completion results.
      */
     private fun CommandBase.handleTabComplete(sender: CommandSender, args: List<String>): List<String> {
-        if (!sender.hasPermission(permission)) return emptyList()
+        if (!sender.hasPermission(permission)) {
+            return emptyList()
+        }
 
         if (args.size == 1) {
-            val completions = subcommands.filter { sender.hasPermission(it.permission) }.map { it.name }
+            val completions = mutableListOf<String>()
 
-            val list = mutableListOf<String>()
+            StringUtil.copyPartialMatches(
+                args[0],
+                subcommands.filter { sender.hasPermission(it.permission) }.map { it.name },
+                completions
+            )
 
-            StringUtil.copyPartialMatches(args[0], completions, list)
-            if (completions.isNotEmpty()) {
-                return completions
-            }
+            return completions
         }
 
         if (args.size >= 2) {
@@ -156,9 +159,11 @@ abstract class HandledCommand(
         }
 
         val completions = tabComplete(sender, args).toMutableList()
+
         if (sender is Player) {
             completions.addAll(tabComplete(sender, args))
         }
+
         return completions.sorted()
     }
 }
