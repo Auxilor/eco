@@ -6,6 +6,7 @@ import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.ProfileHandler
@@ -26,6 +27,7 @@ class MongoDataHandler(
     plugin: EcoSpigotPlugin,
     private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MONGO) {
+    private val plugin: EcoSpigotPlugin
     private val client: MongoClient
     private val collection: MongoCollection<UUIDProfile>
 
@@ -36,8 +38,9 @@ class MongoDataHandler(
             "org.litote.mongo.mapping.service",
             "org.litote.kmongo.jackson.JacksonClassMappingTypeService"
         )
-
+        this.plugin = plugin
         val url = plugin.configYml.getString("mongodb.url")
+
 
         client = MongoClient.create(url)
         collection = client.getDatabase(plugin.configYml.getString("mongodb.database"))
@@ -70,46 +73,24 @@ class MongoDataHandler(
     }
 
     private suspend fun <T> doWrite(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-        val profile = getOrCreateDocument(uuid)
-
-        profile.data.run {
-            if (value == null) {
-                this.remove(key.key.toString())
-            } else {
-                this[key.key.toString()] = value
-            }
-        }
-
-        collection.updateOne(
-            Filters.eq(UUIDProfile::uuid.name, uuid.toString()),
-            Updates.set(UUIDProfile::data.name, profile.data)
+        val filter = Filters.eq(UUIDProfile::uuid.name, uuid.toString())
+        val update = Updates.combine(
+            Updates.setOnInsert(UUIDProfile::uuid.name, uuid.toString()),
+            Updates.set("${UUIDProfile::data.name}.${key.key}", value)
         )
+        val options = UpdateOptions().upsert(true)
+
+        try {
+            collection.updateOne(filter, update, options)
+        } catch (e: Exception) {
+            plugin.logger.severe("Error updating data for player $uuid: ${e.message}")
+        }
     }
 
     private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
         val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString()))
             .firstOrNull() ?: return key.defaultValue
         return profile.data[key.key.toString()] as? T?
-    }
-
-    private suspend fun getOrCreateDocument(uuid: UUID): UUIDProfile {
-        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString()))
-            .firstOrNull()
-        return if (profile == null) {
-            val toInsert = UUIDProfile(
-                uuid.toString(),
-                mutableMapOf()
-            )
-
-            collection.replaceOne(
-                Filters.eq(UUIDProfile::uuid.name, uuid.toString()),
-                toInsert,
-                ReplaceOptions().upsert(true)
-            )
-            toInsert
-        } else {
-            profile
-        }
     }
 
     override fun equals(other: Any?): Boolean {
