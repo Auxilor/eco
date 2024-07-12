@@ -139,7 +139,9 @@ abstract class HandledCommand(
                 completions
             )
 
-            return completions
+            if (completions.isNotEmpty()) {
+                return completions
+            }
         }
 
         if (args.size >= 2) {
