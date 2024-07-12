@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
+import java.lang.reflect.Field
 
 class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFactoryProxy {
     private val registry: CraftPersistentDataTypeRegistry
@@ -21,7 +22,15 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
          */
         val item = CraftItemStack.asCraftCopy(ItemStack(Material.STONE))
         val pdc = item.itemMeta!!.persistentDataContainer
-        this.registry = CraftPersistentDataContainer::class.java.getDeclaredField("registry")
+
+        // Cross-version compatibility:
+        val registryField: Field = try {
+            CraftPersistentDataContainer::class.java.getDeclaredField("registry")
+        } catch (e: NoSuchFieldException) {
+            CraftPersistentDataContainer::class.java.superclass.getDeclaredField("registry")
+        }
+
+        this.registry = registryField
             .apply { isAccessible = true }.get(pdc) as CraftPersistentDataTypeRegistry
     }
 
