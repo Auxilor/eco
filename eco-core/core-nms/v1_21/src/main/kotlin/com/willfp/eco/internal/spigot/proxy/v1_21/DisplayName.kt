@@ -43,15 +43,13 @@ class DisplayName : DisplayNameProxy {
         val nmsComponent = displayName.toNMS()
 
         val nmsEntity = entity.handle
-        nmsEntity.isCustomNameVisible
-        val entityData = SynchedEntityData.Builder(nmsEntity).build()
-
-        entityData.set(displayNameAccessor, Optional.of(nmsComponent), true)
-        entityData.set(customNameVisibleAccessor, visible, true)
 
         val packet = ClientboundSetEntityDataPacket(
             nmsEntity.id,
-            entityData.packDirty() ?: throw IllegalStateException("No packed entity data")
+            listOf(
+                SynchedEntityData.DataValue.create(displayNameAccessor, Optional.of(nmsComponent)),
+                SynchedEntityData.DataValue.create(customNameVisibleAccessor, visible)
+            )
         )
 
         player.sendPacket(Packet(packet))
