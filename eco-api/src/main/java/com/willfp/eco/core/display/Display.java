@@ -211,10 +211,20 @@ public final class Display {
                 new ArrayList<>()
         );
 
-        modules.removeIf(it -> it.getPluginName().equalsIgnoreCase(module.getPluginName()));
         modules.add(module);
 
         REGISTERED_MODULES.put(module.getWeight(), modules);
+    }
+
+    /**
+     * Unregister a display module.
+     *
+     * @param module The module.
+     */
+    public static void unregisterDisplayModule(@NotNull final DisplayModule module) {
+        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
+            modules.remove(module);
+        }
     }
 
     private Display() {

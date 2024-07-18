@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.base.ConfigYml;
 import com.willfp.eco.core.config.base.LangYml;
@@ -36,6 +37,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -120,8 +123,16 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * The display module for the plugin.
+     *
+     * @deprecated Plugins can now have multiple display modules.
      */
+    @Deprecated(since = "6.72.0")
     private DisplayModule displayModule;
+
+    /**
+     * The display modules for the plugin.
+     */
+    private List<DisplayModule> displayModules = new ArrayList<>();
 
     /**
      * The logger for the plugin.
@@ -555,10 +566,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Default code to be executed after the server is up.
      */
     public final void afterLoad() {
-        this.displayModule = createDisplayModule();
+        DisplayModule module = createDisplayModule();
+        if (module != null) {
+            Display.registerDisplayModule(module);
+            this.displayModules.add(module);
+        }
 
-        if (this.getDisplayModule() != null) {
-            Display.registerDisplayModule(this.getDisplayModule());
+        for (DisplayModule displayModule : this.loadDisplayModules()) {
+            Display.registerDisplayModule(displayModule);
+            this.displayModules.add(displayModule);
         }
 
         if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
@@ -899,12 +915,23 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Create the display module for the plugin.
      *
      * @return The display module, or null.
+     * @deprecated Use {@link #loadDisplayModules()} instead.
      */
     @Nullable
+    @Deprecated(since = "6.72.0")
     protected DisplayModule createDisplayModule() {
         Validate.isTrue(this.getDisplayModule() == null, "Display module exists!");
 
         return null;
+    }
+
+    /**
+     * Load display modules.
+     *
+     * @return The display modules.
+     */
+    protected List<DisplayModule> loadDisplayModules() {
+        return new ArrayList<>();
     }
 
     /**
@@ -1156,10 +1183,21 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Get the plugin's display module.
      *
      * @return The display module.
+     * @deprecated Use {@link #getDisplayModules()} instead.
      */
     @Nullable
+    @Deprecated(since = "6.72.0", forRemoval = true)
     public DisplayModule getDisplayModule() {
         return this.displayModule;
+    }
+
+    /**
+     * Get the plugin's display modules.
+     *
+     * @return The display modules.
+     */
+    public List<DisplayModule> getDisplayModules() {
+        return ImmutableList.copyOf(this.displayModules);
     }
 
     /**
