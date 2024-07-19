@@ -8,6 +8,11 @@ import org.bukkit.entity.Player
 import java.util.UUID
 import kotlin.math.roundToInt
 
+private fun getXPNeededForLevel(level: Int): Int {
+    // XP Formula from NMS Player
+    return if (level >= 30) 112 + (level - 30) * 9 else (if (level >= 15) 37 + (level - 15) * 5 else 7 + level * 2)
+}
+
 object PriceFactoryXP : PriceFactory {
     override fun getNames() = listOf(
         "xp",
@@ -25,15 +30,37 @@ object PriceFactoryXP : PriceFactory {
     ) : Price {
         private val multipliers = mutableMapOf<UUID, Double>()
 
-        override fun canAfford(player: Player, multiplier: Double): Boolean =
-            player.totalExperience >= getValue(player, multiplier)
+        override fun canAfford(player: Player, multiplier: Double): Boolean {
+            var totalExperience = 0
+            for (level in 0 until player.level) {
+                totalExperience += getXPNeededForLevel(level)
+            }
+
+            totalExperience += (player.exp * getXPNeededForLevel(player.level)).toInt()
+
+            return totalExperience >= getValue(player, multiplier).roundToInt()
+        }
 
         override fun pay(player: Player, multiplier: Double) {
-            player.totalExperience -= getValue(player, multiplier).roundToInt()
+            takeXP(player, getValue(player, multiplier).roundToInt())
+        }
+
+        private fun takeXP(player: Player, amount: Int) {
+            val currentLevel = player.level
+            val currentExp = player.exp * getXPNeededForLevel(currentLevel)
+
+            if (currentExp >= amount) {
+                player.exp = (currentExp - amount) / getXPNeededForLevel(currentLevel)
+            } else {
+                // Handle recursive level down
+                player.exp = 1f
+                player.level = (currentLevel - 1).coerceAtLeast(0)
+                takeXP(player, (amount - currentExp).toInt())
+            }
         }
 
         override fun giveTo(player: Player, multiplier: Double) {
-            player.totalExperience += getValue(player, multiplier).roundToInt()
+            player.giveExp(getValue(player, multiplier).roundToInt())
         }
 
         override fun getValue(player: Player, multiplier: Double): Double {
