@@ -58,6 +58,7 @@ import com.willfp.eco.internal.particle.ParticleFactoryRGB
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
+import com.willfp.eco.internal.recipes.AutocrafterPatch
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataListener
 import com.willfp.eco.internal.spigot.data.DataYml
@@ -431,6 +432,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         } else {
             listeners.add(PlayerJumpListenersSpigot())
             listeners.add(NaturalExpGainListenersSpigot())
+        }
+
+        ifModern {
+            listeners += loadProxy<AutocrafterPatch>()
         }
 
         return listeners

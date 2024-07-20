@@ -1,10 +1,8 @@
 package com.willfp.eco.internal.spigot.recipes
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.Recipes
 import org.bukkit.Keyed
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.CraftItemEvent
@@ -17,6 +15,7 @@ class CraftingRecipeListener(val plugin: EcoPlugin) : Listener {
         if (!EcoPlugin.getPluginNames().contains(event.recipe.namespace)) {
             return
         }
+
         if (event.recipe.key.contains("_displayed")) {
             event.isCancelled = true
         }
