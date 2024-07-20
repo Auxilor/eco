@@ -17,6 +17,7 @@ import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.items.tag.VanillaItemTag
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
@@ -52,6 +53,7 @@ import com.willfp.eco.internal.items.ArgParserName
 import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.items.ModernItemArgParsers
+import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
@@ -299,6 +301,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         CustomItemsManager.registerAllItems()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
+
+        // Init vanilla item tags, done in afterLoad to ensure tags have been loaded
+        VanillaItemTags.register()
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
