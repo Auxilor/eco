@@ -97,6 +97,9 @@ allprojects {
 
         // HuskPlugins
         maven("https://repo.william278.net/releases")
+
+        // FancyHolograms
+        maven("https://repo.fancyplugins.de/releases")
     }
 
     dependencies {
