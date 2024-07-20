@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A group of items that share a common trait.
  */
-public sealed interface ItemTag permits CustomItemTag, VanillaItemTag {
+public interface ItemTag {
     /**
      * Get the identifier of the tag.
      *
