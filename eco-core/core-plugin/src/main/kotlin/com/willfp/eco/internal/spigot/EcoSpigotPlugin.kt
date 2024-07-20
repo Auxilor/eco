@@ -266,6 +266,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (!Prerequisite.HAS_PAPER.isMet) {
             bukkitAudiences = BukkitAudiences.create(this)
         }
+
+        // Init vanilla item tags
+        VanillaItemTags.register()
     }
 
     override fun handleDisable() {
@@ -301,9 +304,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         CustomItemsManager.registerAllItems()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
-
-        // Init vanilla item tags, done in afterLoad to ensure tags have been loaded
-        VanillaItemTags.register()
     }
 
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
