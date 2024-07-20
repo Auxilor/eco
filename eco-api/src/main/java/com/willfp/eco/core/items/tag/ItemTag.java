@@ -1,6 +1,7 @@
 package com.willfp.eco.core.items.tag;
 
 import com.willfp.eco.core.items.TestableItem;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +31,10 @@ public interface ItemTag {
      *
      * @return The example item.
      */
-    @NotNull
-    ItemStack getExampleItem();
+    @Nullable
+    default ItemStack getExampleItem() {
+        return null;
+    }
 
     /**
      * Convert this tag to a testable item.
@@ -48,7 +51,8 @@ public interface ItemTag {
 
             @Override
             public @NotNull ItemStack getItem() {
-                return ItemTag.this.getExampleItem();
+                ItemStack example = ItemTag.this.getExampleItem();
+                return example == null ? new ItemStack(Material.STONE) : example;
             }
 
             @Override
