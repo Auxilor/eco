@@ -2,7 +2,7 @@ package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.items.args.LookupArgParser
-import com.willfp.eco.util.NamespacedKeyUtils
+import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
@@ -16,17 +16,10 @@ object ArgParserEnchantment : LookupArgParser {
         for (arg in args) {
             val argSplit = arg.split(":")
 
-            if (argSplit.size < 2) {
-                continue
-            }
+            val enchant = Enchantment.getByKey(NamespacedKey.minecraft(argSplit[0])) ?: continue
+            val level = argSplit.getOrNull(1)?.toIntOrNull() ?: enchant.maxLevel
 
-            @Suppress("DEPRECATION")
-            val enchant = Enchantment.getByKey(NamespacedKeyUtils.create("minecraft", argSplit[0]))
-            val level = argSplit[1].toIntOrNull()
-
-            if (enchant != null && level != null) {
-                enchants[enchant] = level
-            }
+            enchants[enchant] = level
         }
 
         if (enchants.isEmpty()) {
