@@ -7,20 +7,12 @@ import java.util.function.Predicate
 
 object ArgParserCustomModelData : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
-        var modelData: Int? = null
+        val arg = args.firstOrNull {
+            it.startsWith("custom-model-data:", ignoreCase = true)
+                    || it.startsWith("custom_model_data:", ignoreCase = true)
+        } ?: return null
 
-        for (arg in args) {
-            val argSplit = arg.split(":")
-            if (!argSplit[0].equals("custom-model-data", ignoreCase = true)) {
-                continue
-            }
-            if (argSplit.size < 2) {
-                continue
-            }
-            modelData = argSplit[1].toIntOrNull()
-        }
-
-        modelData ?: return null
+        val modelData = arg.split(":")[1].toIntOrNull() ?: return null
 
         meta.setCustomModelData(modelData)
 
@@ -40,6 +32,6 @@ object ArgParserCustomModelData : LookupArgParser {
             return null
         }
 
-        return "custom-model-data:${meta.customModelData}"
+        return "custom_model_data:${meta.customModelData}"
     }
 }
