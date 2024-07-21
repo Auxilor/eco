@@ -639,6 +639,15 @@ public final class Items {
         TAGS.put(tag.getIdentifier(), tag);
     }
 
+    /**
+     * Get all tags.
+     *
+     * @return All tags.
+     */
+    public static Collection<ItemTag> getTags() {
+        return TAGS.values();
+    }
+
     private Items() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

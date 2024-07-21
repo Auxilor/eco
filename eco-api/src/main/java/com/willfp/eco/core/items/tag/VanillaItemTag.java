@@ -31,6 +31,15 @@ public final class VanillaItemTag implements ItemTag {
         this.tag = tag;
     }
 
+    /**
+     * Get the tag.
+     *
+     * @return The tag.
+     */
+    public Tag<Material> getTag() {
+        return tag;
+    }
+
     @Override
     @NotNull
     public String getIdentifier() {
