@@ -12,7 +12,7 @@ object ParticleFactoryRGB : ParticleFactory {
         if (Prerequisite.HAS_1_20_5.isMet) {
             Particle.valueOf("DUST")
         } else {
-            Particle.valueOf("REDSTONE_DUST")
+            Particle.valueOf("REDSTONE")
         }
     }.getOrNull()
 
