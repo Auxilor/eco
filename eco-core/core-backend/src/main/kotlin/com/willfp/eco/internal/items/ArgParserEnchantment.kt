@@ -16,7 +16,7 @@ object ArgParserEnchantment : LookupArgParser {
         for (arg in args) {
             val argSplit = arg.split(":")
 
-            val enchant = Enchantment.getByKey(NamespacedKey.minecraft(argSplit[0])) ?: continue
+            val enchant = Enchantment.getByKey(NamespacedKey.minecraft(argSplit[0].lowercase())) ?: continue
             val level = argSplit.getOrNull(1)?.toIntOrNull() ?: enchant.maxLevel
 
             enchants[enchant] = level
