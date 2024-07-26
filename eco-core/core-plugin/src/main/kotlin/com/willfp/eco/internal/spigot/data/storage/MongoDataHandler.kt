@@ -1,114 +1,99 @@
 package com.willfp.eco.internal.spigot.data.storage
 
-import com.mongodb.client.model.Filters
-import com.mongodb.client.model.ReplaceOptions
-import com.mongodb.client.model.UpdateOptions
-import com.mongodb.client.model.Updates
+import com.mongodb.client.model.*
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.ProfileHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.bson.codecs.pojo.annotations.BsonId
-import java.util.UUID
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.bukkit.Bukkit
+import kotlinx.coroutines.*
+import org.bson.Document
+import org.bson.conversions.Bson
+import java.util.*
 
-@Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
-    plugin: EcoSpigotPlugin,
+    private val plugin: EcoSpigotPlugin,
     private val handler: ProfileHandler
 ) : DataHandler(HandlerType.MONGO) {
-    private val client: MongoClient
-    private val collection: MongoCollection<UUIDProfile>
-
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var mongoClient: MongoClient
+    private lateinit var collection: MongoCollection<Document>
+    private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     init {
-        System.setProperty(
-            "org.litote.mongo.mapping.service",
-            "org.litote.kmongo.jackson.JacksonClassMappingTypeService"
-        )
+        val connectionString = plugin.configYml.getString("mongodb.url")
+        val databaseName = plugin.configYml.getString("mongodb.database")
 
-        val url = plugin.configYml.getString("mongodb.url")
-
-        client = MongoClient.create(url)
-        collection = client.getDatabase(plugin.configYml.getString("mongodb.database"))
-            .getCollection<UUIDProfile>("uuidprofile") // Compat with jackson mapping
-    }
-
-    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
-        return runBlocking {
-            doRead(uuid, key)
+        try {
+            mongoClient = MongoClient.create(connectionString)
+            val database = mongoClient.getDatabase(databaseName)
+            collection = database.getCollection("uuidProfile")
+            // Ensure index is created for fast uuid lookups
+            coroutineScope.launch {
+                collection.createIndex(Indexes.ascending("uuid"))
+            }
+        } catch (e: Exception) {
+            plugin.logger.severe("Failed to initialize MongoDB connection: ${e.message}")
         }
     }
+
+    suspend fun <T : Any> readSuspend(uuid: UUID, key: PersistentDataKey<T>): T? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val filter = Filters.eq("uuid", uuid.toString())
+                val update = Updates.setOnInsert("data.${key.key}", key.defaultValue)
+                val options = FindOneAndUpdateOptions()
+                    .upsert(true)
+                    .returnDocument(ReturnDocument.AFTER)
+
+                val document = collection.findOneAndUpdate(filter, update, options)
+                document?.getEmbedded(listOf("data", key.key.toString()), key.defaultValue::class.java) ?: key.defaultValue
+            } catch (e: Exception) {
+                plugin.logger.severe("Error reading/initializing data for player $uuid: ${e.message}")
+                null
+            }
+        }
+    }
+
+
+    @Deprecated("Use readSuspend for better performance", ReplaceWith("runBlocking { readSuspend(uuid, key) }"))
+    override fun <T : Any> read(uuid: UUID, key: PersistentDataKey<T>): T? {
+        return runBlocking { readSuspend(uuid, key) }
+    }
+
 
     override fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-        scope.launch {
-            doWrite(uuid, key, value)
-        }
+        saveKeys(uuid, mapOf(key to value))
     }
 
     override fun saveKeysFor(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
-        scope.launch {
-            for ((key, value) in keys) {
-                saveKey(uuid, key, value)
-            }
-        }
+        saveKeys(uuid, keys)
     }
 
-    private suspend fun <T : Any> saveKey(uuid: UUID, key: PersistentDataKey<T>, value: Any) {
-        val data = value as T
-        doWrite(uuid, key, data)
-    }
 
-    private suspend fun <T> doWrite(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-        val profile = getOrCreateDocument(uuid)
-
-        profile.data.run {
-            if (value == null) {
-                this.remove(key.key.toString())
-            } else {
-                this[key.key.toString()] = value
+    private fun saveKeys(uuid: UUID, keys: Map<PersistentDataKey<*>, Any>) {
+        val updates = mutableListOf<Bson>()
+        keys.forEach { (key, value) ->
+            val keyString = key.key.toString()
+            when (value) {
+                is Int -> updates.add(Updates.set("data.$keyString", value))
+                is Long -> updates.add(Updates.set("data.$keyString", value))
+                is Double -> updates.add(Updates.set("data.$keyString", value))
+                else -> updates.add(Updates.set("data.$keyString", value))
             }
         }
 
-        collection.updateOne(
-            Filters.eq(UUIDProfile::uuid.name, uuid.toString()),
-            Updates.set(UUIDProfile::data.name, profile.data)
-        )
-    }
+        if (updates.isNotEmpty()) {
+            coroutineScope.launch {
+                try {
+                    val filter = Filters.eq("uuid", uuid.toString())
+                    val combinedUpdate = Updates.combine(updates)
+                    val options = UpdateOptions().upsert(true)
 
-    private suspend fun <T> doRead(uuid: UUID, key: PersistentDataKey<T>): T? {
-        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString()))
-            .firstOrNull() ?: return key.defaultValue
-        return profile.data[key.key.toString()] as? T?
-    }
-
-    private suspend fun getOrCreateDocument(uuid: UUID): UUIDProfile {
-        val profile = collection.find<UUIDProfile>(Filters.eq(UUIDProfile::uuid.name, uuid.toString()))
-            .firstOrNull()
-        return if (profile == null) {
-            val toInsert = UUIDProfile(
-                uuid.toString(),
-                mutableMapOf()
-            )
-
-            collection.replaceOne(
-                Filters.eq(UUIDProfile::uuid.name, uuid.toString()),
-                toInsert,
-                ReplaceOptions().upsert(true)
-            )
-            toInsert
-        } else {
-            profile
+                    collection.updateOne(filter, combinedUpdate, options)
+                } catch (e: Exception) {
+                    plugin.logger.severe("Error saving data for player $uuid: ${e.message}")
+                }
+            }
         }
     }
 
@@ -123,12 +108,12 @@ class MongoDataHandler(
     override fun hashCode(): Int {
         return type.hashCode()
     }
-}
 
-@Serializable
-internal data class UUIDProfile(
-    // Storing UUID as strings for serialization
-    @SerialName("_id") val uuid: String,
-    // Storing NamespacedKeys as strings for serialization
-    val data: MutableMap<String, @Contextual Any>
-)
+    // worth calling close on disable?
+    fun close() {
+        runBlocking {
+            coroutineScope.cancel() // Cancel all coroutines
+            mongoClient.close()
+        }
+    }
+}

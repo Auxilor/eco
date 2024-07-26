@@ -16,9 +16,10 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.0.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.0")
     implementation("org.javassist:javassist:3.29.2-GA")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
-    implementation("org.mongodb:bson-kotlinx:5.0.0")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("org.mongodb:bson-kotlinx:5.1.2")
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
