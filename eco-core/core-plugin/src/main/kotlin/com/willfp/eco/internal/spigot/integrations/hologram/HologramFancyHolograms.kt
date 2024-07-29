@@ -9,7 +9,8 @@ import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
 class HologramFancyHolograms : HologramIntegration {
-    private val manager = FancyHologramsPlugin.get().hologramManager
+    private val manager
+        get() = FancyHologramsPlugin.get().hologramManager
 
     override fun createHologram(location: Location, contents: List<String>): Hologram {
         val id = UUID.randomUUID().toString()
@@ -19,7 +20,7 @@ class HologramFancyHolograms : HologramIntegration {
         data.isPersistent = false
 
         val holo = manager.create(data)
-        FancyHologramsPlugin.get().hologramManager.addHologram(holo)
+        manager.addHologram(holo)
 
         return HologramImplFancyHolograms(id)
     }
