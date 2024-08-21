@@ -2,7 +2,6 @@ package com.willfp.eco.internal.spigot.data.storage
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.ReplaceOptions
-import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoCollection
@@ -11,15 +10,13 @@ import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.ProfileHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.bson.codecs.pojo.annotations.BsonId
-import java.util.UUID
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.bukkit.Bukkit
+import java.util.UUID
 
 @Suppress("UNCHECKED_CAST")
 class MongoDataHandler(
