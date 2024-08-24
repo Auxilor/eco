@@ -20,12 +20,13 @@ mongodb:
   database: "eco"
 
 mysql:
-  # How many threads to execute statements on. Higher numbers can be faster however
-  # very high numbers can cause issues with OS configuration. If writes are taking
-  # too long, increase this value.
-  threads: 2
+  # The table prefix to use for all tables.
+  prefix: "eco_"
+
   # The maximum number of MySQL connections.
   connections: 10
+
+  # Connection details for MySQL.
   host: localhost
   port: 3306
   database: database
