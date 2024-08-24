@@ -1,7 +1,6 @@
-package com.willfp.eco.internal.spigot.data.handlers
+package com.willfp.eco.internal.spigot.data.handlers.impl
 
 import com.willfp.eco.core.config.ConfigType
-import com.willfp.eco.core.config.Configs
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.config.readConfig
 import com.willfp.eco.core.data.handlers.DataTypeSerializer
@@ -9,23 +8,12 @@ import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
+import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlerFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import eu.decentsoftware.holograms.api.utils.scheduler.S
-import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.UUIDTable
-import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.Table.Dual.decimal
-import org.jetbrains.exposed.sql.Table.Dual.double
-import org.jetbrains.exposed.sql.Table.Dual.varchar
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,7 +23,7 @@ import java.util.UUID
 class LegacyMySQLPersistentDataHandler(
     plugin: EcoSpigotPlugin,
     config: Config
-) : PersistentDataHandler("mysql_legacy") {
+) : PersistentDataHandler("legacy_mysql") {
     private val dataSource = HikariDataSource(HikariConfig().apply {
         driverClassName = "com.mysql.cj.jdbc.Driver"
         username = config.getString("user")
@@ -108,6 +96,12 @@ class LegacyMySQLPersistentDataHandler(
 
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
             throw UnsupportedOperationException("Legacy MySQL does not support writing")
+        }
+    }
+
+    object Factory: PersistentDataHandlerFactory("legacy_mysql") {
+        override fun create(plugin: EcoSpigotPlugin): PersistentDataHandler {
+            return LegacyMySQLPersistentDataHandler(plugin, plugin.configYml.getSubsection("mysql"))
         }
     }
 }

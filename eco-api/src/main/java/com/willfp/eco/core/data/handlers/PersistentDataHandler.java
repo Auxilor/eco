@@ -16,9 +16,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Handles persistent data.
+ */
 public abstract class PersistentDataHandler implements Registrable {
     /**
-     * The id of the handler.
+     * The id.
      */
     private final String id;
 
@@ -30,7 +33,7 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Create a new persistent data handler.
      *
-     * @param id The id of the handler.
+     * @param id The id.
      */
     protected PersistentDataHandler(@NotNull final String id) {
         this.id = id;
@@ -134,18 +137,16 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Load profile data.
      *
-     * @param data The data.
+     * @param profile The profile.
      */
     @SuppressWarnings("unchecked")
-    public final void loadProfileData(@NotNull Set<SerializedProfile> data) {
-        for (SerializedProfile profile : data) {
-            for (Map.Entry<PersistentDataKey<?>, Object> entry : profile.data().entrySet()) {
-                PersistentDataKey<?> key = entry.getKey();
-                Object value = entry.getValue();
+    public final void loadSerializedProfile(@NotNull final SerializedProfile profile) {
+        for (Map.Entry<PersistentDataKey<?>, Object> entry : profile.data().entrySet()) {
+            PersistentDataKey<?> key = entry.getKey();
+            Object value = entry.getValue();
 
-                // This cast is safe because the data is serialized
-                write(profile.uuid(), (PersistentDataKey<? super Object>) key, value);
-            }
+            // This cast is safe because the data is serialized
+            write(profile.uuid(), (PersistentDataKey<? super Object>) key, value);
         }
     }
 
@@ -153,7 +154,7 @@ public abstract class PersistentDataHandler implements Registrable {
      * Await outstanding writes.
      */
     public final void awaitOutstandingWrites() throws InterruptedException {
-        boolean success = executor.awaitTermination(15, TimeUnit.SECONDS);
+        boolean success = executor.awaitTermination(2, TimeUnit.MINUTES);
 
         if (!success) {
             throw new InterruptedException("Failed to await outstanding writes");
@@ -161,27 +162,22 @@ public abstract class PersistentDataHandler implements Registrable {
     }
 
     @Override
-    public final @NotNull String getID() {
+    @NotNull
+    public final String getID() {
         return id;
     }
 
     @Override
-    public final boolean equals(@Nullable final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
+    public boolean equals(@NotNull final Object obj) {
+        if (!(obj instanceof PersistentDataHandler other)) {
             return false;
         }
 
-        PersistentDataHandler that = (PersistentDataHandler) obj;
-
-        return id.equals(that.id);
+        return other.getClass().equals(this.getClass());
     }
 
     @Override
-    public final int hashCode() {
-        return id.hashCode();
+    public int hashCode() {
+        return this.getClass().hashCode();
     }
 }

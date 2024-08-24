@@ -1,9 +1,8 @@
-package com.willfp.eco.internal.spigot.data.handlers
+package com.willfp.eco.internal.spigot.data.handlers.impl
 
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
-import com.willfp.eco.core.data.handlers.SerializedProfile
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin

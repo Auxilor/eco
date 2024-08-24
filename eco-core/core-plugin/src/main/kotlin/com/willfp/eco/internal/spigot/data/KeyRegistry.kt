@@ -19,8 +19,8 @@ object KeyRegistry {
         this.registry[key.key] = key
     }
 
-    fun getRegisteredKeys(): MutableSet<PersistentDataKey<*>> {
-        return registry.values.toMutableSet()
+    fun getRegisteredKeys(): Set<PersistentDataKey<*>> {
+        return registry.values.toSet()
     }
 
     private fun <T> validateKey(key: PersistentDataKey<T>) {

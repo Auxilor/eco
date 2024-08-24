@@ -4,7 +4,6 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
@@ -44,8 +43,7 @@ import com.willfp.eco.internal.proxy.EcoProxyFactory
 import com.willfp.eco.internal.scheduling.EcoScheduler
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
-import com.willfp.eco.internal.spigot.data.ProfileHandler
-import com.willfp.eco.internal.spigot.data.storage.HandlerType
+import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
 import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
@@ -74,7 +72,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.net.URLClassLoader
-import java.util.*
+import java.util.UUID
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 
@@ -82,10 +80,7 @@ private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 class EcoImpl : EcoSpigotPlugin(), Eco {
     override val dataYml = DataYml(this)
 
-    override val profileHandler = ProfileHandler(
-        HandlerType.valueOf(this.configYml.getString("data-handler").uppercase()),
-        this
-    )
+    override val profileHandler = ProfileHandler(this)
 
     init {
         getProxy(CommonsInitializerProxy::class.java).init(this)
@@ -290,10 +285,10 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         bukkitAudiences
 
     override fun getServerProfile() =
-        profileHandler.loadServerProfile()
+        profileHandler.getServerProfile()
 
     override fun loadPlayerProfile(uuid: UUID) =
-        profileHandler.load(uuid)
+        profileHandler.getPlayerProfile(uuid)
 
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)

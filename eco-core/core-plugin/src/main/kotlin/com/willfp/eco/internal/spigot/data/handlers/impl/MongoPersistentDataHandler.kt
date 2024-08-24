@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.data.handlers
+package com.willfp.eco.internal.spigot.data.handlers.impl
 
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.ReplaceOptions
@@ -35,16 +35,7 @@ class MongoPersistentDataHandler(
         PersistentDataKeyType.INT.registerSerializer(this, MongoSerializer<Int>())
         PersistentDataKeyType.DOUBLE.registerSerializer(this, MongoSerializer<Double>())
         PersistentDataKeyType.STRING_LIST.registerSerializer(this, MongoSerializer<List<String>>())
-
-        PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, object : MongoSerializer<BigDecimal>() {
-            override fun convertToMongo(value: BigDecimal): Any {
-                return value.toString()
-            }
-
-            override fun convertFromMongo(value: Any): BigDecimal {
-                return BigDecimal(value.toString())
-            }
-        })
+        PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, MongoSerializer<BigDecimal>())
 
         PersistentDataKeyType.CONFIG.registerSerializer(this, object : MongoSerializer<Config>() {
             override fun convertToMongo(value: Config): Any {
