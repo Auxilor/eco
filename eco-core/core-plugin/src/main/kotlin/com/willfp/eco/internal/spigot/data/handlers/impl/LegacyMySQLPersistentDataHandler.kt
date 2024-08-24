@@ -21,7 +21,6 @@ import java.math.BigDecimal
 import java.util.UUID
 
 class LegacyMySQLPersistentDataHandler(
-    plugin: EcoSpigotPlugin,
     config: Config
 ) : PersistentDataHandler("legacy_mysql") {
     private val dataSource = HikariDataSource(HikariConfig().apply {
@@ -101,7 +100,7 @@ class LegacyMySQLPersistentDataHandler(
 
     object Factory: PersistentDataHandlerFactory("legacy_mysql") {
         override fun create(plugin: EcoSpigotPlugin): PersistentDataHandler {
-            return LegacyMySQLPersistentDataHandler(plugin, plugin.configYml.getSubsection("mysql"))
+            return LegacyMySQLPersistentDataHandler(plugin.configYml.getSubsection("mysql"))
         }
     }
 }

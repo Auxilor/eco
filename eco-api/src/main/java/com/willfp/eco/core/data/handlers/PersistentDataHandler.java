@@ -1,7 +1,9 @@
 package com.willfp.eco.core.data.handlers;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.registry.Registrable;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,7 +127,10 @@ public abstract class PersistentDataHandler implements Registrable {
 
             for (PersistentDataKey<?> key : keys) {
                 Object value = read(uuid, key);
-                data.put(key, value);
+
+                if (value != null) {
+                    data.put(key, value);
+                }
             }
 
             profiles.add(new SerializedProfile(uuid, data));
@@ -151,13 +156,20 @@ public abstract class PersistentDataHandler implements Registrable {
     }
 
     /**
-     * Await outstanding writes.
+     * Save and shutdown the handler.
+     *
+     * @throws InterruptedException If the writes could not be awaited.
      */
-    public final void awaitOutstandingWrites() throws InterruptedException {
-        boolean success = executor.awaitTermination(2, TimeUnit.MINUTES);
+    public final void shutdown() throws InterruptedException {
+        doSave();
 
-        if (!success) {
-            throw new InterruptedException("Failed to await outstanding writes");
+        if (executor.isShutdown()) {
+            return;
+        }
+
+        executor.shutdown();
+        while (!executor.awaitTermination(2, TimeUnit.MINUTES)) {
+            // Wait
         }
     }
 
@@ -165,19 +177,5 @@ public abstract class PersistentDataHandler implements Registrable {
     @NotNull
     public final String getID() {
         return id;
-    }
-
-    @Override
-    public boolean equals(@NotNull final Object obj) {
-        if (!(obj instanceof PersistentDataHandler other)) {
-            return false;
-        }
-
-        return other.getClass().equals(this.getClass());
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getClass().hashCode();
     }
 }

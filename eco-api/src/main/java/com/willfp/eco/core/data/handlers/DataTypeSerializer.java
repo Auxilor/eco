@@ -9,6 +9,8 @@ import java.util.UUID;
 /**
  * Handles data read/write for a {@link com.willfp.eco.core.data.keys.PersistentDataKeyType} for a specific
  * data handler.
+ *
+ * @param <T> The type of data.
  */
 public abstract class DataTypeSerializer<T> {
     /**

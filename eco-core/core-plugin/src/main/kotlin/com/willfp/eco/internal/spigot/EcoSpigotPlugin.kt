@@ -148,7 +148,7 @@ import org.bukkit.inventory.ItemStack
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
-    protected abstract val profileHandler: ProfileHandler
+    abstract val profileHandler: ProfileHandler
     protected var bukkitAudiences: BukkitAudiences? = null
 
     init {

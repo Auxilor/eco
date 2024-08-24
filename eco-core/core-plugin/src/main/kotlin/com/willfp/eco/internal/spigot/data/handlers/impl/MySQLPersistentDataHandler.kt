@@ -8,7 +8,6 @@ import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
-import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Column
@@ -25,7 +24,6 @@ import java.math.BigDecimal
 import java.util.UUID
 
 class MySQLPersistentDataHandler(
-    plugin: EcoSpigotPlugin,
     config: Config
 ) : PersistentDataHandler("mysql") {
     private val dataSource = HikariDataSource(HikariConfig().apply {
@@ -48,32 +46,32 @@ class MySQLPersistentDataHandler(
             override val table = object : KeyTable<String>("string") {
                 override val value = varchar("value", 128)
             }
-        })
+        }.createTable())
 
         PersistentDataKeyType.BOOLEAN.registerSerializer(this, object : DirectStoreSerializer<Boolean>() {
             override val table = object : KeyTable<Boolean>("boolean") {
                 override val value = bool("value")
             }
-        })
+        }.createTable())
 
         PersistentDataKeyType.INT.registerSerializer(this, object : DirectStoreSerializer<Int>() {
             override val table = object : KeyTable<Int>("int") {
                 override val value = integer("value")
             }
-        })
+        }.createTable())
 
         PersistentDataKeyType.DOUBLE.registerSerializer(this, object : DirectStoreSerializer<Double>() {
             override val table = object : KeyTable<Double>("double") {
                 override val value = double("value")
             }
-        })
+        }.createTable())
 
         PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, object : DirectStoreSerializer<BigDecimal>() {
             override val table = object : KeyTable<BigDecimal>("big_decimal") {
                 // 34 digits of precision, 4 digits of scale
                 override val value = decimal("value", 34, 4)
             }
-        })
+        }.createTable())
 
         PersistentDataKeyType.CONFIG.registerSerializer(this, object : SingleValueSerializer<Config, String>() {
             override val table = object : KeyTable<String>("config") {
@@ -92,13 +90,13 @@ class MySQLPersistentDataHandler(
                     Configs.fromMap(value.toMap(), ConfigType.JSON).toPlaintext()
                 }
             }
-        })
+        }.createTable())
 
         PersistentDataKeyType.STRING_LIST.registerSerializer(this, object : MultiValueSerializer<String>() {
             override val table = object : ListKeyTable<String>("string_list") {
                 override val value = varchar("value", 128)
             }
-        })
+        }.createTable())
     }
 
     override fun getSavedUUIDs(): Set<UUID> {
@@ -115,22 +113,24 @@ class MySQLPersistentDataHandler(
     private abstract inner class MySQLSerializer<T : Any> : DataTypeSerializer<T>() {
         protected abstract val table: ProfileTable
 
-        init {
-            transaction(database) {
-                SchemaUtils.create(table)
-            }
-        }
-
         fun getSavedUUIDs(): Set<UUID> {
             return transaction(database) {
                 table.selectAll().map { it[table.uuid] }.toSet()
             }
         }
+
+        fun createTable(): MySQLSerializer<T> {
+            transaction(database) {
+                SchemaUtils.create(table)
+            }
+
+            return this
+        }
     }
 
     // T is the key type
     // S is the stored value type
-    private abstract inner class SingleValueSerializer<T : Any, S: Any> : MySQLSerializer<T>() {
+    private abstract inner class SingleValueSerializer<T : Any, S : Any> : MySQLSerializer<T>() {
         abstract override val table: KeyTable<S>
 
         abstract fun convertToStored(value: T): S
@@ -148,17 +148,21 @@ class MySQLPersistentDataHandler(
         }
 
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-            transaction(database) {
-                table.insert {
-                    it[table.uuid] = uuid
-                    it[table.key] = key.key.toString()
-                    it[table.value] = convertToStored(value)
+            withRetries {
+                transaction(database) {
+                    table.deleteWhere { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+
+                    table.insert {
+                        it[table.uuid] = uuid
+                        it[table.key] = key.key.toString()
+                        it[table.value] = convertToStored(value)
+                    }
                 }
             }
         }
     }
 
-    private abstract inner class DirectStoreSerializer<T: Any> : SingleValueSerializer<T, T>() {
+    private abstract inner class DirectStoreSerializer<T : Any> : SingleValueSerializer<T, T>() {
         override fun convertToStored(value: T): T {
             return value
         }
@@ -168,7 +172,7 @@ class MySQLPersistentDataHandler(
         }
     }
 
-    private abstract inner class MultiValueSerializer<T: Any> : MySQLSerializer<List<T>>() {
+    private abstract inner class MultiValueSerializer<T : Any> : MySQLSerializer<List<T>>() {
         abstract override val table: ListKeyTable<T>
 
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {
@@ -182,15 +186,17 @@ class MySQLPersistentDataHandler(
         }
 
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<List<T>>, value: List<T>) {
-            transaction(database) {
-                table.deleteWhere { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+            withRetries {
+                transaction(database) {
+                    table.deleteWhere { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
 
-                value.forEachIndexed { index, t ->
-                    table.insert {
-                        it[table.uuid] = uuid
-                        it[table.key] = key.key.toString()
-                        it[table.index] = index
-                        it[table.value] = t
+                    value.forEachIndexed { index, t ->
+                        table.insert {
+                            it[table.uuid] = uuid
+                            it[table.key] = key.key.toString()
+                            it[table.index] = index
+                            it[table.value] = t
+                        }
                     }
                 }
             }
@@ -208,7 +214,7 @@ class MySQLPersistentDataHandler(
         override val primaryKey = PrimaryKey(uuid, key)
 
         init {
-            uniqueIndex()
+            uniqueIndex(uuid, key)
         }
     }
 
@@ -220,7 +226,21 @@ class MySQLPersistentDataHandler(
         override val primaryKey = PrimaryKey(uuid, key, index)
 
         init {
-            uniqueIndex()
+            uniqueIndex(uuid, key, index)
+        }
+    }
+
+    private inline fun <T> withRetries(action: () -> T): T {
+        var retries = 0
+        while (true) {
+            try {
+                return action()
+            } catch (e: Exception) {
+                if (retries >= 3) {
+                    throw e
+                }
+                retries++
+            }
         }
     }
 }

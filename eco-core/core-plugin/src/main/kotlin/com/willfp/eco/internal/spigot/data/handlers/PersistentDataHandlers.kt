@@ -23,12 +23,12 @@ object PersistentDataHandlers: Registry<PersistentDataHandlerFactory>() {
 
         register(object : PersistentDataHandlerFactory("mysql") {
             override fun create(plugin: EcoSpigotPlugin) =
-                MySQLPersistentDataHandler(plugin, plugin.configYml.getSubsection("mysql"))
+                MySQLPersistentDataHandler(plugin.configYml.getSubsection("mysql"))
         })
 
         register(object : PersistentDataHandlerFactory("mongo") {
             override fun create(plugin: EcoSpigotPlugin) =
-                MongoPersistentDataHandler(plugin, plugin.configYml.getSubsection("mongodb"))
+                MongoPersistentDataHandler(plugin.configYml.getSubsection("mongodb"))
         })
     }
 }

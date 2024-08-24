@@ -20,7 +20,6 @@ import java.math.BigDecimal
 import java.util.UUID
 
 class MongoPersistentDataHandler(
-    plugin: EcoSpigotPlugin,
     config: Config
 ) : PersistentDataHandler("mongo") {
     private val client = MongoClient.create(config.getString("url"))
