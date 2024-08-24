@@ -25,6 +25,7 @@ import net.minecraft.util.Unit
 import net.minecraft.world.item.component.CustomData
 import net.minecraft.world.item.component.CustomModelData
 import net.minecraft.world.item.component.ItemLore
+import net.minecraft.world.item.enchantment.ItemEnchantments
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.CraftRegistry
 import org.bukkit.craftbukkit.CraftServer
@@ -53,7 +54,7 @@ class NewEcoFastItemStack(
     private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
-        val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return emptyMap()
+        val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: ItemEnchantments.EMPTY
 
         val map = mutableMapOf<Enchantment, Int>()
 
