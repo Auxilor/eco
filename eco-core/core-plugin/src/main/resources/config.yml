@@ -16,8 +16,12 @@ perform-data-migration: true
 mongodb:
   # The full MongoDB connection URL.
   url: ""
+
   # The name of the database to use.
-  database: "eco"
+  database: eco
+
+  # The collection to use for player data.
+  collection: profiles
 
 mysql:
   # The table prefix to use for all tables.

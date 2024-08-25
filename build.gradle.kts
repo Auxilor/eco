@@ -14,7 +14,6 @@ plugins {
     id("maven-publish")
     id("java")
     kotlin("jvm") version "1.9.21"
-    kotlin("plugin.serialization") version "1.9.21"
 }
 
 dependencies {
@@ -41,7 +40,6 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "io.github.goooler.shadow")
     apply(plugin = "kotlin")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
     repositories {
         mavenCentral()
@@ -212,7 +210,6 @@ tasks {
         //relocate("com.mysql", "com.willfp.eco.libs.mysql")
         relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
         relocate("org.bson", "com.willfp.eco.libs.bson")
-        relocate("org.litote", "com.willfp.eco.libs.litote")
         relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
         relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
         relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")

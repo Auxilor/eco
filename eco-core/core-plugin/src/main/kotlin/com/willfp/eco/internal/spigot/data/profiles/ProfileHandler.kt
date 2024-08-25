@@ -21,8 +21,8 @@ class ProfileHandler(
     private val handlerId = plugin.configYml.getString("data-handler")
 
     val localHandler = YamlPersistentDataHandler(plugin)
-    val defaultHandler = PersistentDataHandlers[handlerId]
-        ?.create(plugin) ?: throw IllegalArgumentException("Invalid data handler ($handlerId)")
+    val defaultHandler = PersistentDataHandlers[handlerId]?.create(plugin)
+        ?: throw IllegalArgumentException("Invalid data handler ($handlerId)")
 
     val profileWriter = ProfileWriter(plugin, this)
 

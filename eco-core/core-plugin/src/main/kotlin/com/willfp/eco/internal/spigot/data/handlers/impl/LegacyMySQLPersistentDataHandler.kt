@@ -13,7 +13,10 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SqlExpressionBuilder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -37,7 +40,7 @@ class LegacyMySQLPersistentDataHandler(
     private val database = Database.connect(dataSource)
 
     private val table = object : UUIDTable("eco_data") {
-        val data = text("json_data")
+        val data = text("json_data", eagerLoading = true)
     }
 
     init {
@@ -65,7 +68,8 @@ class LegacyMySQLPersistentDataHandler(
     private inner class LegacySerializer<T : Any> : DataTypeSerializer<T>() {
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             val json = transaction(database) {
-                table.select { table.id eq uuid }
+                table.selectAll()
+                    .where { table.id eq uuid }
                     .limit(1)
                     .singleOrNull()
                     ?.get(table.data)

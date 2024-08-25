@@ -12,14 +12,21 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SqlExpressionBuilder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.replace
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+import org.jetbrains.exposed.sql.upsert
 import java.math.BigDecimal
 import java.util.UUID
 
@@ -44,7 +51,7 @@ class MySQLPersistentDataHandler(
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
             override val table = object : KeyTable<String>("string") {
-                override val value = varchar("value", 128)
+                override val value = varchar("value", 256)
             }
         }.createTable())
 
@@ -94,7 +101,7 @@ class MySQLPersistentDataHandler(
 
         PersistentDataKeyType.STRING_LIST.registerSerializer(this, object : MultiValueSerializer<String>() {
             override val table = object : ListKeyTable<String>("string_list") {
-                override val value = varchar("value", 128)
+                override val value = varchar("value", 256)
             }
         }.createTable())
     }
@@ -138,7 +145,8 @@ class MySQLPersistentDataHandler(
 
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             val stored = transaction(database) {
-                table.select { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+                table.selectAll()
+                    .where { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
                     .limit(1)
                     .singleOrNull()
                     ?.get(table.value)
@@ -150,9 +158,7 @@ class MySQLPersistentDataHandler(
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
             withRetries {
                 transaction(database) {
-                    table.deleteWhere { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
-
-                    table.insert {
+                    table.upsert {
                         it[table.uuid] = uuid
                         it[table.key] = key.key.toString()
                         it[table.value] = convertToStored(value)
@@ -177,7 +183,8 @@ class MySQLPersistentDataHandler(
 
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {
             val stored = transaction(database) {
-                table.select { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+                table.selectAll()
+                    .where { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
                     .orderBy(table.index)
                     .map { it[table.value] }
             }
@@ -190,8 +197,10 @@ class MySQLPersistentDataHandler(
                 transaction(database) {
                     table.deleteWhere { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
 
+                    // Can't get batch inserts to work, would like to fix
                     value.forEachIndexed { index, t ->
-                        table.insert {
+                        // Using replace instead of insert to avoid any deadlock issues
+                        table.replace {
                             it[table.uuid] = uuid
                             it[table.key] = key.key.toString()
                             it[table.index] = index
