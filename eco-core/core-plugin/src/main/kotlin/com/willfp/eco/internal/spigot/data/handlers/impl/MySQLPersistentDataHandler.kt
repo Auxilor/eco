@@ -219,7 +219,7 @@ class MySQLPersistentDataHandler(
     }
 
     private abstract inner class KeyTable<T>(name: String) : ProfileTable(name) {
-        val key = varchar("key", 128)
+        val key = varchar("dataKey", 128)
         abstract val value: Column<T>
 
         override val primaryKey = PrimaryKey(uuid, key)
@@ -230,7 +230,7 @@ class MySQLPersistentDataHandler(
     }
 
     private abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
-        val key = varchar("key", 128)
+        val key = varchar("dataKey", 128)
         val index = integer("index")
         abstract val value: Column<T>
 
