@@ -10,6 +10,8 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -239,10 +241,14 @@ class MySQLPersistentDataHandler(
             try {
                 return action()
             } catch (e: Exception) {
-                if (retries >= 3) {
+                if (retries >= 5) {
                     throw e
                 }
                 retries++
+
+                runBlocking {
+                    delay(10)
+                }
             }
         }
     }
