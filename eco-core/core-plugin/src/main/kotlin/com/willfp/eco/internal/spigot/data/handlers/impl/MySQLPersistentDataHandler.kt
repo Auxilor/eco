@@ -26,6 +26,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.upsert
 import java.math.BigDecimal
 import java.util.UUID
+import kotlin.math.pow
 
 class MySQLPersistentDataHandler(
     config: Config
@@ -241,18 +242,19 @@ class MySQLPersistentDataHandler(
     }
 
     private inline fun <T> withRetries(action: () -> T): T {
-        var retries = 0
+        var retries = 1
         while (true) {
             try {
                 return action()
             } catch (e: Exception) {
-                if (retries >= 5) {
+                if (retries > 5) {
                     throw e
                 }
                 retries++
 
+                // Exponential backoff
                 runBlocking {
-                    delay(10)
+                    delay(2.0.pow(retries.toDouble()).toLong())
                 }
             }
         }

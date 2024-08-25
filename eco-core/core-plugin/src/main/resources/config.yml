@@ -7,7 +7,7 @@
 # How player/server data is saved:
 # yaml - Stored in data.yml: Good option for single-node servers (i.e. no BungeeCord/Velocity)
 # mysql - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)
-# mongo - Alternative database, may suit some servers better
+# mongo - Alternative database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 data-handler: yaml
 
 # If data should be migrated automatically when changing data handler.
@@ -35,7 +35,7 @@ mysql:
   port: 3306
   database: database
   user: username
-  password: passy
+  password: p4ssw0rd
 
 # How many ticks to wait between committing data to a database. This doesn't
 # affect yaml storage, only MySQL and MongoDB. By default, data is committed
