@@ -16,6 +16,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
@@ -191,11 +192,15 @@ class MySQLPersistentDataHandler(
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<List<T>>, value: List<T>) {
             withRetries {
                 transaction(database) {
-                    table.deleteWhere { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+                    // Remove existing values greater than the new list size
+                    table.deleteWhere {
+                        (table.uuid eq uuid) and
+                                (table.key eq key.key.toString()) and
+                                (table.index greaterEq value.size)
+                    }
 
-                    // Can't get batch inserts to work, would like to fix
+                    // Replace existing values in bounds
                     value.forEachIndexed { index, t ->
-                        // Using replace instead of insert to avoid any deadlock issues
                         table.replace {
                             it[table.uuid] = uuid
                             it[table.key] = key.key.toString()
