@@ -231,7 +231,7 @@ class MySQLPersistentDataHandler(
 
     private abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
         val key = varchar("dataKey", 128)
-        val index = integer("index")
+        val index = integer("listIndex")
         abstract val value: Column<T>
 
         override val primaryKey = PrimaryKey(uuid, key, index)
