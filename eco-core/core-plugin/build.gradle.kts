@@ -9,16 +9,13 @@ dependencies {
 
     // Libraries
     implementation("com.github.WillFP:Crunch:1.1.3")
-    implementation("mysql:mysql-connector-java:8.0.25")
-    implementation("org.jetbrains.exposed:exposed-core:0.37.3")
-    implementation("org.jetbrains.exposed:exposed-dao:0.37.3")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.37.3")
-    implementation("com.zaxxer:HikariCP:5.0.0")
+    implementation("mysql:mysql-connector-java:8.0.28")
+    implementation("org.jetbrains.exposed:exposed-core:0.53.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.53.0")
+    implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.0")
     implementation("org.javassist:javassist:3.29.2-GA")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
-    implementation("org.mongodb:bson-kotlinx:5.0.0")
+    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.2")
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
@@ -76,7 +73,6 @@ dependencies {
 tasks {
     shadowJar {
         minimize {
-            exclude(dependency("org.litote.kmongo:kmongo-coroutine:.*"))
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }

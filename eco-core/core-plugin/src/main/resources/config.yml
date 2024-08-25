@@ -6,8 +6,8 @@
 
 # How player/server data is saved:
 # yaml - Stored in data.yml: Good option for single-node servers (i.e. no BungeeCord/Velocity)
-# mongo - If you're running on a network (Bungee/Velocity), you should use MongoDB if you can.
-# mysql - The alternative to MongoDB. Because of how eco data works, MongoDB is the best option; but use this if you can't.
+# mysql - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)
+# mongo - Alternative database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 data-handler: yaml
 
 # If data should be migrated automatically when changing data handler.
@@ -16,31 +16,35 @@ perform-data-migration: true
 mongodb:
   # The full MongoDB connection URL.
   url: ""
+
   # The name of the database to use.
-  database: "eco"
+  database: eco
+
+  # The collection to use for player data.
+  collection: profiles
 
 mysql:
-  # How many threads to execute statements on. Higher numbers can be faster however
-  # very high numbers can cause issues with OS configuration. If writes are taking
-  # too long, increase this value.
-  threads: 2
+  # The table prefix to use for all tables.
+  prefix: "eco_"
+
   # The maximum number of MySQL connections.
   connections: 10
+
+  # Connection details for MySQL.
   host: localhost
   port: 3306
   database: database
   user: username
-  password: passy
-
-yaml:
-  autosave: true # If data should be saved automatically
-  autosave-interval: 1800 # How often data should be saved (in seconds)
+  password: p4ssw0rd
 
 # How many ticks to wait between committing data to a database. This doesn't
 # affect yaml storage, only MySQL and MongoDB. By default, data is committed
 # every tick, but you can increase this to be every x ticks, for example 20
 # would be committing once a second.
 save-interval: 1
+
+# How many ticks to wait between autosaves for data.yml.
+autosave-interval: 36000 # 30 minutes
 
 # Options to manage the conflict finder
 conflicts:
