@@ -49,38 +49,38 @@ class MySQLPersistentDataHandler(
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
             override val table = object : KeyTable<String>("string") {
-                override val value = varchar("value", 256)
+                override val value = varchar("profileValue", 256)
             }
         }.createTable())
 
         PersistentDataKeyType.BOOLEAN.registerSerializer(this, object : DirectStoreSerializer<Boolean>() {
             override val table = object : KeyTable<Boolean>("boolean") {
-                override val value = bool("value")
+                override val value = bool("profileValue")
             }
         }.createTable())
 
         PersistentDataKeyType.INT.registerSerializer(this, object : DirectStoreSerializer<Int>() {
             override val table = object : KeyTable<Int>("int") {
-                override val value = integer("value")
+                override val value = integer("profileValue")
             }
         }.createTable())
 
         PersistentDataKeyType.DOUBLE.registerSerializer(this, object : DirectStoreSerializer<Double>() {
             override val table = object : KeyTable<Double>("double") {
-                override val value = double("value")
+                override val value = double("profileValue")
             }
         }.createTable())
 
         PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, object : DirectStoreSerializer<BigDecimal>() {
             override val table = object : KeyTable<BigDecimal>("big_decimal") {
                 // 34 digits of precision, 4 digits of scale
-                override val value = decimal("value", 34, 4)
+                override val value = decimal("profileValue", 34, 4)
             }
         }.createTable())
 
         PersistentDataKeyType.CONFIG.registerSerializer(this, object : SingleValueSerializer<Config, String>() {
             override val table = object : KeyTable<String>("config") {
-                override val value = text("value")
+                override val value = text("profileValue")
             }
 
             override fun convertFromStored(value: String): Config {
@@ -99,7 +99,7 @@ class MySQLPersistentDataHandler(
 
         PersistentDataKeyType.STRING_LIST.registerSerializer(this, object : MultiValueSerializer<String>() {
             override val table = object : ListKeyTable<String>("string_list") {
-                override val value = varchar("value", 256)
+                override val value = varchar("profileValue", 256)
             }
         }.createTable())
     }
