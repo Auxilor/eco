@@ -39,7 +39,6 @@ class MongoPersistentDataHandler(
     private val client = MongoClient.create(config.getString("url"))
     private val database = client.getDatabase(config.getString("database"))
 
-    // Collection name is set for backwards compatibility
     private val collection = database.getCollection<BsonDocument>(config.getString("collection"))
         .withCodecRegistry(codecRegistry)
 
