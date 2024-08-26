@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-
 group = "com.willfp"
 version = rootProject.version
 
@@ -9,7 +7,7 @@ dependencies {
 
     // Libraries
     implementation("com.github.WillFP:Crunch:1.1.3")
-    implementation("mysql:mysql-connector-java:8.0.28")
+    implementation("com.mysql:mysql-connector-j:8.4.0")
     implementation("org.jetbrains.exposed:exposed-core:0.53.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.53.0")
     implementation("com.zaxxer:HikariCP:5.1.0")
