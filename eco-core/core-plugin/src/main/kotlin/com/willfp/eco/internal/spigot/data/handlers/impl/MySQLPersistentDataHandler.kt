@@ -28,6 +28,11 @@ import java.math.BigDecimal
 import java.util.UUID
 import kotlin.math.pow
 
+private const val VALUE_COLUMN_NAME = "dataValue"
+private const val UUID_COLUMN_NAME = "profileUUID"
+private const val KEY_COLUMN_NAME = "dataKey"
+private const val INDEX_COLUMN_NAME = "listIndex"
+
 class MySQLPersistentDataHandler(
     config: Config
 ) : PersistentDataHandler("mysql") {
@@ -49,38 +54,38 @@ class MySQLPersistentDataHandler(
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
             override val table = object : KeyTable<String>("string") {
-                override val value = varchar("profileValue", 256)
+                override val value = varchar(VALUE_COLUMN_NAME, 256)
             }
         }.createTable())
 
         PersistentDataKeyType.BOOLEAN.registerSerializer(this, object : DirectStoreSerializer<Boolean>() {
             override val table = object : KeyTable<Boolean>("boolean") {
-                override val value = bool("profileValue")
+                override val value = bool(VALUE_COLUMN_NAME)
             }
         }.createTable())
 
         PersistentDataKeyType.INT.registerSerializer(this, object : DirectStoreSerializer<Int>() {
             override val table = object : KeyTable<Int>("int") {
-                override val value = integer("profileValue")
+                override val value = integer(VALUE_COLUMN_NAME)
             }
         }.createTable())
 
         PersistentDataKeyType.DOUBLE.registerSerializer(this, object : DirectStoreSerializer<Double>() {
             override val table = object : KeyTable<Double>("double") {
-                override val value = double("profileValue")
+                override val value = double(VALUE_COLUMN_NAME)
             }
         }.createTable())
 
         PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, object : DirectStoreSerializer<BigDecimal>() {
             override val table = object : KeyTable<BigDecimal>("big_decimal") {
                 // 34 digits of precision, 4 digits of scale
-                override val value = decimal("profileValue", 34, 4)
+                override val value = decimal(VALUE_COLUMN_NAME, 34, 4)
             }
         }.createTable())
 
         PersistentDataKeyType.CONFIG.registerSerializer(this, object : SingleValueSerializer<Config, String>() {
             override val table = object : KeyTable<String>("config") {
-                override val value = text("profileValue")
+                override val value = text(VALUE_COLUMN_NAME)
             }
 
             override fun convertFromStored(value: String): Config {
@@ -99,7 +104,7 @@ class MySQLPersistentDataHandler(
 
         PersistentDataKeyType.STRING_LIST.registerSerializer(this, object : MultiValueSerializer<String>() {
             override val table = object : ListKeyTable<String>("string_list") {
-                override val value = varchar("profileValue", 256)
+                override val value = varchar(VALUE_COLUMN_NAME, 256)
             }
         }.createTable())
     }
@@ -215,11 +220,11 @@ class MySQLPersistentDataHandler(
     }
 
     private abstract inner class ProfileTable(name: String) : Table(prefix + name) {
-        val uuid = uuid("uuid")
+        val uuid = uuid(UUID_COLUMN_NAME)
     }
 
     private abstract inner class KeyTable<T>(name: String) : ProfileTable(name) {
-        val key = varchar("dataKey", 128)
+        val key = varchar(KEY_COLUMN_NAME, 128)
         abstract val value: Column<T>
 
         override val primaryKey = PrimaryKey(uuid, key)
@@ -230,8 +235,8 @@ class MySQLPersistentDataHandler(
     }
 
     private abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
-        val key = varchar("dataKey", 128)
-        val index = integer("listIndex")
+        val key = varchar(KEY_COLUMN_NAME, 128)
+        val index = integer(INDEX_COLUMN_NAME)
         abstract val value: Column<T>
 
         override val primaryKey = PrimaryKey(uuid, key, index)
