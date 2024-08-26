@@ -2,6 +2,7 @@ package com.willfp.eco.core.data.handlers;
 
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.registry.Registrable;
+import com.willfp.eco.core.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,11 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Handles persistent data.
@@ -121,20 +124,21 @@ public abstract class PersistentDataHandler implements Registrable {
     @NotNull
     public final SerializedProfile serializeProfile(@NotNull final UUID uuid,
                                                     @NotNull final Set<PersistentDataKey<?>> keys) {
-        Map<PersistentDataKey<?>, Object> data = new HashMap<>();
+        Map<PersistentDataKey<?>, CompletableFuture<Object>> futures = keys.stream()
+                .collect(Collectors.toMap(
+                        key -> key,
+                        key -> CompletableFuture.supplyAsync(() -> read(uuid, key), executor)
+                ));
 
-        for (PersistentDataKey<?> key : keys) {
-            Object value = read(uuid, key);
-
-            if (value != null) {
-                data.put(key, value);
-            }
-        }
+        Map<PersistentDataKey<?>, Object> data = futures.entrySet().stream()
+                .map(entry -> new Pair<PersistentDataKey<?>, Object>(entry.getKey(), entry.getValue().join()))
+                .filter(entry -> entry.getSecond() != null)
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 
         return new SerializedProfile(uuid, data);
     }
 
-    /**
+    /**`
      * Load profile data.
      *
      * @param profile The profile.
