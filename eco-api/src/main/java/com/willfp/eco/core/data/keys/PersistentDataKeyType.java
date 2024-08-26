@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -112,7 +113,7 @@ public final class PersistentDataKeyType<T> {
         DataTypeSerializer<T> serializer = this.serializers.get(handler);
 
         if (serializer == null) {
-            throw new IllegalArgumentException("No serializer for handler: " + handler);
+            throw new NoSuchElementException("No serializer for handler: " + handler);
         }
 
         return serializer;
