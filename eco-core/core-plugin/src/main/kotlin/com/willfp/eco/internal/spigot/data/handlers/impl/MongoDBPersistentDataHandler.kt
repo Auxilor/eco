@@ -28,7 +28,7 @@ import org.bson.types.Decimal128
 import java.math.BigDecimal
 import java.util.UUID
 
-class MongoPersistentDataHandler(
+class MongoDBPersistentDataHandler(
     config: Config
 ) : PersistentDataHandler("mongo") {
     private val codecRegistry = CodecRegistries.fromRegistries(

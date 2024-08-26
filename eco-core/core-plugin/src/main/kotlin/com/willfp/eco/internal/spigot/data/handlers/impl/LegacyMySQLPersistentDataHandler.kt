@@ -44,13 +44,13 @@ class LegacyMySQLPersistentDataHandler(
             SchemaUtils.create(table)
         }
 
-        PersistentDataKeyType.STRING.registerSerializer(this, LegacySerializer<String>())
-        PersistentDataKeyType.BOOLEAN.registerSerializer(this, LegacySerializer<Boolean>())
-        PersistentDataKeyType.INT.registerSerializer(this, LegacySerializer<Int>())
-        PersistentDataKeyType.DOUBLE.registerSerializer(this, LegacySerializer<Double>())
-        PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, LegacySerializer<BigDecimal>())
-        PersistentDataKeyType.CONFIG.registerSerializer(this, LegacySerializer<Config>())
-        PersistentDataKeyType.STRING_LIST.registerSerializer(this, LegacySerializer<List<String>>())
+        PersistentDataKeyType.STRING.registerSerializer(this, LegacyMySQLSerializer<String>())
+        PersistentDataKeyType.BOOLEAN.registerSerializer(this, LegacyMySQLSerializer<Boolean>())
+        PersistentDataKeyType.INT.registerSerializer(this, LegacyMySQLSerializer<Int>())
+        PersistentDataKeyType.DOUBLE.registerSerializer(this, LegacyMySQLSerializer<Double>())
+        PersistentDataKeyType.BIG_DECIMAL.registerSerializer(this, LegacyMySQLSerializer<BigDecimal>())
+        PersistentDataKeyType.CONFIG.registerSerializer(this, LegacyMySQLSerializer<Config>())
+        PersistentDataKeyType.STRING_LIST.registerSerializer(this, LegacyMySQLSerializer<List<String>>())
     }
 
     override fun getSavedUUIDs(): Set<UUID> {
@@ -61,7 +61,7 @@ class LegacyMySQLPersistentDataHandler(
         }.map { it.value }.toSet()
     }
 
-    private inner class LegacySerializer<T : Any> : DataTypeSerializer<T>() {
+    private inner class LegacyMySQLSerializer<T : Any> : DataTypeSerializer<T>() {
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             val json = transaction(database) {
                 table.selectAll()

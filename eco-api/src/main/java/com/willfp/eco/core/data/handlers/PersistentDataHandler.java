@@ -1,14 +1,11 @@
 package com.willfp.eco.core.data.handlers;
 
-import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.registry.Registrable;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -43,10 +40,12 @@ public abstract class PersistentDataHandler implements Registrable {
 
     /**
      * Get all UUIDs with saved data.
+     * <p>
+     * This is a blocking operation.
      *
      * @return All saved UUIDs.
      */
-    protected abstract Set<UUID> getSavedUUIDs();
+    public abstract Set<UUID> getSavedUUIDs();
 
     /**
      * Save to disk.
@@ -113,30 +112,26 @@ public abstract class PersistentDataHandler implements Registrable {
     }
 
     /**
-     * Serialize data.
+     * Serialize profile.
      *
+     * @param uuid The uuid to serialize.
      * @param keys The keys to serialize.
      * @return The serialized data.
      */
     @NotNull
-    public final Set<SerializedProfile> serializeData(@NotNull final Set<PersistentDataKey<?>> keys) {
-        Set<SerializedProfile> profiles = new HashSet<>();
+    public final SerializedProfile serializeProfile(@NotNull final UUID uuid,
+                                                    @NotNull final Set<PersistentDataKey<?>> keys) {
+        Map<PersistentDataKey<?>, Object> data = new HashMap<>();
 
-        for (UUID uuid : getSavedUUIDs()) {
-            Map<PersistentDataKey<?>, Object> data = new HashMap<>();
+        for (PersistentDataKey<?> key : keys) {
+            Object value = read(uuid, key);
 
-            for (PersistentDataKey<?> key : keys) {
-                Object value = read(uuid, key);
-
-                if (value != null) {
-                    data.put(key, value);
-                }
+            if (value != null) {
+                data.put(key, value);
             }
-
-            profiles.add(new SerializedProfile(uuid, data));
         }
 
-        return profiles;
+        return new SerializedProfile(uuid, data);
     }
 
     /**

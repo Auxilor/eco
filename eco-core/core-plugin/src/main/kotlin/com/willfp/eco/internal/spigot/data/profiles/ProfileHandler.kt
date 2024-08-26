@@ -5,7 +5,9 @@ import com.willfp.eco.internal.spigot.ServerLocking
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlerFactory
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlers
+import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMySQLPersistentDataHandler
+import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoPlayerProfile
@@ -14,6 +16,8 @@ import com.willfp.eco.internal.spigot.data.profiles.impl.EcoServerProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.serverProfileUUID
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+
+const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
 
 class ProfileHandler(
     private val plugin: EcoSpigotPlugin
@@ -57,7 +61,7 @@ class ProfileHandler(
         // First install
         if (!plugin.dataYml.has("previous-handler")) {
             plugin.dataYml.set("previous-handler", defaultHandler.id)
-            plugin.dataYml.set("legacy-mysql-migrated", true)
+            plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)
             plugin.dataYml.save()
             return false
         }
@@ -70,9 +74,16 @@ class ProfileHandler(
             return true
         }
 
-        if (defaultHandler is MySQLPersistentDataHandler && !plugin.dataYml.getBool("legacy-mysql-migrated")) {
+        if (defaultHandler is MySQLPersistentDataHandler && !plugin.dataYml.getBool(LEGACY_MIGRATED_KEY)) {
             plugin.logger.info("eco has detected a legacy MySQL database. Migrating to new MySQL database...")
             scheduleMigration(LegacyMySQLPersistentDataHandler.Factory)
+
+            return true
+        }
+
+        if (defaultHandler is MongoDBPersistentDataHandler && !plugin.dataYml.getBool(LEGACY_MIGRATED_KEY)) {
+            plugin.logger.info("eco has detected a legacy MongoDB database. Migrating to new MongoDB database...")
+            scheduleMigration(LegacyMongoDBPersistentDataHandler.Factory)
 
             return true
         }
@@ -87,7 +98,7 @@ class ProfileHandler(
         plugin.scheduler.runLater(5) {
             doMigrate(fromFactory)
 
-            plugin.dataYml.set("legacy-mysql-migrated", true)
+            plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)
             plugin.dataYml.save()
         }
     }
@@ -100,14 +111,20 @@ class ProfileHandler(
         val fromHandler = fromFactory.create(plugin)
         val toHandler = defaultHandler
 
-        plugin.logger.info("Loading data from ${fromFactory.id}...")
+        val keys = KeyRegistry.getRegisteredKeys()
 
-        val serialized = fromHandler.serializeData(KeyRegistry.getRegisteredKeys())
+        plugin.logger.info("Keys to migrate: ${keys.map { it.key }.joinToString(", ") }}")
 
-        plugin.logger.info("Found ${serialized.size} profiles to migrate")
+        plugin.logger.info("Loading profile UUIDs from ${fromFactory.id}...")
+        plugin.logger.info("This step may take a while depending on the size of your database.")
 
-        for ((index, profile) in serialized.withIndex()) {
-            plugin.logger.info("(${index + 1}/${serialized.size}) Migrating ${profile.uuid}")
+        val uuids = fromHandler.getSavedUUIDs()
+
+        plugin.logger.info("Found ${uuids.size} profiles to migrate")
+
+        for ((index, uuid) in uuids.withIndex()) {
+            plugin.logger.info("(${index + 1}/${uuids.size}) Migrating $uuid")
+            val profile = fromHandler.serializeProfile(uuid, keys)
             toHandler.loadSerializedProfile(profile)
         }
 

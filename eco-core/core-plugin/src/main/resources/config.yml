@@ -7,7 +7,7 @@
 # How player/server data is saved:
 # yaml - Stored in data.yml: Good option for single-node servers (i.e. no BungeeCord/Velocity)
 # mysql - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)
-# mongo - Alternative database, great option for multi-node servers (i.e. BungeeCord/Velocity)
+# mongodb - Alternative database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 data-handler: yaml
 
 # If data should be migrated automatically when changing data handler.
