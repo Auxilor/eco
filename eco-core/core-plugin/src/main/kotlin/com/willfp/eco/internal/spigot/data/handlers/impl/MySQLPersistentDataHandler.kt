@@ -246,14 +246,14 @@ class MySQLPersistentDataHandler(
         }
     }
 
-    private inline fun <T> withRetries(action: () -> T): T {
+    private inline fun <T> withRetries(action: () -> T): T? {
         var retries = 1
         while (true) {
             try {
                 return action()
             } catch (e: Exception) {
                 if (retries > 5) {
-                    throw e
+                    return null
                 }
                 retries++
 
