@@ -54,8 +54,6 @@ class EcoEntityController<T : Mob>(
             priority, goal.getGoalFactory()?.create(goal, nms) ?: return this
         )
 
-        nms.targetSelector
-
         return this
     }
 
