@@ -3,7 +3,7 @@ version = rootProject.version
 
 dependencies {
     compileOnly(project(":eco-core:core-backend"))
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
 }
 
 tasks {
