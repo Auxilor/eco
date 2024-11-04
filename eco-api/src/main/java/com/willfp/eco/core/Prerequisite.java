@@ -38,15 +38,23 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.21.
+     * Requires the server to be running at least 1.21.3.
+     */
+    public static final Prerequisite HAS_1_21_3 = new Prerequisite(
+            () -> ProxyConstants.NMS_VERSION.contains("1_21_3"),
+            "Requires server to be running 1.21.3+"
+    );
+
+    /**
+     * Requires the server to be running at least 1.21.
      */
     public static final Prerequisite HAS_1_21 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("1_21"),
+            () -> ProxyConstants.NMS_VERSION.contains("1_21") || HAS_1_21_3.isMet(),
             "Requires server to be running 1.21+"
     );
 
     /**
-     * Requires the server to be running 1.20.5.
+     * Requires the server to be running at least 1.20.5.
      */
     public static final Prerequisite HAS_1_20_5 = new Prerequisite(
             () -> (ProxyConstants.NMS_VERSION.contains("1_20_") && !ProxyConstants.NMS_VERSION.contains("R"))
@@ -55,7 +63,7 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.20.3.
+     * Requires the server to be running at least 1.20.3.
      */
     public static final Prerequisite HAS_1_20_3 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("20_R3") || HAS_1_20_5.isMet(),
@@ -63,7 +71,7 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.20.
+     * Requires the server to be running at least 1.20.
      */
     public static final Prerequisite HAS_1_20 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("20") || HAS_1_20_3.isMet(),
@@ -71,7 +79,7 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.19.4.
+     * Requires the server to be running at least 1.19.4.
      */
     public static final Prerequisite HAS_1_19_4 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("19_R3") || HAS_1_20.isMet(),
@@ -79,7 +87,7 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.19.
+     * Requires the server to be running at least 1.19.
      */
     public static final Prerequisite HAS_1_19 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("19") || HAS_1_20.isMet(),
@@ -87,7 +95,7 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running 1.18.
+     * Requires the server to be running at least 1.18.
      */
     public static final Prerequisite HAS_1_18 = new Prerequisite(
             () -> ProxyConstants.NMS_VERSION.contains("18") || HAS_1_19.isMet(),

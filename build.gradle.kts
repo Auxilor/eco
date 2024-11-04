@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
     id("java-library")
-    id("io.github.goooler.shadow") version "8.1.7"
+    id("com.gradleup.shadow") version "8.3.5"
     id("maven-publish")
     id("java")
     kotlin("jvm") version "1.9.21"
@@ -32,13 +32,14 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_3", configuration = "reobf"))
 }
 
 allprojects {
     apply(plugin = "java")
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
-    apply(plugin = "io.github.goooler.shadow")
+    apply(plugin = "com.gradleup.shadow")
     apply(plugin = "kotlin")
 
     repositories {
@@ -47,6 +48,9 @@ allprojects {
         maven("https://jitpack.io") {
             content { includeGroupByRegex("com\\.github\\..*") }
         }
+
+        // Paper
+        maven("https://repo.papermc.io/repository/maven-public/")
 
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
