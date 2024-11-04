@@ -30,7 +30,7 @@ jobs:
 
       - run: ./gradlew build --full-stacktrace
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: eco-dev-${{ steps.vars.outputs.sha_short }}
-          path: build/libs
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: eco-dev-${{ steps.vars.outputs.sha_short }}
+#          path: build/libs
