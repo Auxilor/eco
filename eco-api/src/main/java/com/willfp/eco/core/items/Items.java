@@ -2,6 +2,8 @@ package com.willfp.eco.core.items;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
@@ -27,7 +29,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -56,8 +60,14 @@ public final class Items {
                             return Optional.empty();
                         }
 
+                        // Reverse the list in order to prioritize items that have been added later,
+                        // this is a horribly janky fix to a problem that only exists in one third party
+                        // plugin that does things the wrong way around.
+
+                        List<TestableItem> reversed = ImmutableList.copyOf(REGISTRY.values()).reversed();
+
                         TestableItem match = null;
-                        for (TestableItem item : REGISTRY.values()) {
+                        for (TestableItem item : reversed) {
                             if (item.matches(key.getItem())) {
                                 match = item;
                                 break;
