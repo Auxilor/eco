@@ -12,7 +12,8 @@ class DelegatedExpressionHandler(
 ) : ExpressionHandler {
     private val evaluationCache: Cache<Int, Double?> = Caffeine.newBuilder()
         .expireAfterWrite(plugin.configYml.getInt("math-cache-ttl").toLong(), TimeUnit.MILLISECONDS)
-        .build()
+        .buildAsync<Int, Double?>()
+        .synchronous()
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         expression.fastToDoubleOrNull()?.let { return it }
