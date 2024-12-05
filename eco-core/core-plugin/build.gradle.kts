@@ -43,12 +43,11 @@ dependencies {
     compileOnly("com.github.EssentialsX:Essentials:2.18.2")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.8.3")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
-    compileOnly("com.github.WhipDevelopment:CrashClaim:f9cd7d92eb")
+    compileOnly("com.github.WhipDevelopment:CrashClaim:c697d3e9ef")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.5")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
-    compileOnly("com.github.Ssomar-Developement:SCore:3.4.7")
     compileOnly("io.lumine:Mythic:5.3.5")
     compileOnly("io.lumine:LumineUtils:1.19-SNAPSHOT")
     compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
@@ -61,7 +60,7 @@ dependencies {
     compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.0.1")
     compileOnly("net.william278:husktowns:2.6.1")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
-    compileOnly("de.oliver:FancyHolograms:2.3.0")
+    compileOnly("de.oliver:FancyHolograms:2.4.0")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")

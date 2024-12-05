@@ -44,7 +44,9 @@ allprojects {
 
     repositories {
         mavenCentral()
+
         maven("https://repo.auxilor.io/repository/maven-public/")
+
         maven("https://jitpack.io") {
             content { includeGroupByRegex("com\\.github\\..*") }
         }
@@ -179,14 +181,14 @@ allprojects {
         }
 
         withType<JavaCompile>().configureEach {
-            options.release = 17
+            options.release.set(17)
         }
     }
 
     java {
         withSourcesJar()
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 }

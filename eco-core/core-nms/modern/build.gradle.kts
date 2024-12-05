@@ -12,7 +12,7 @@ dependencies {
 
 tasks {
     compileJava {
-        options.release = 21
+        options.release.set(21)
     }
 
     compileKotlin {
