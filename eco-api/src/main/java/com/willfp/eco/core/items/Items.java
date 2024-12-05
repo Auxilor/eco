@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,10 +65,11 @@ public final class Items {
                         // this is a horribly janky fix to a problem that only exists in one third party
                         // plugin that does things the wrong way around.
 
-                        List<TestableItem> reversed = ImmutableList.copyOf(REGISTRY.values()).reversed();
+                        List<TestableItem> copy = new ArrayList<>(REGISTRY.values());
+                        Collections.reverse(copy);
 
                         TestableItem match = null;
-                        for (TestableItem item : reversed) {
+                        for (TestableItem item : copy) {
                             if (item.matches(key.getItem())) {
                                 match = item;
                                 break;
