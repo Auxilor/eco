@@ -23,7 +23,7 @@ class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var notCaptiveFor: (Player) -> Boolean = { _ -> false}
 
     override fun onClick(type: ClickType, action: SlotHandler): SlotBuilder {
-        handlers[type] += action
+        handlers[type].add(action)
         return this
     }
 

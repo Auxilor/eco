@@ -10,7 +10,7 @@ import net.minecraft.world.entity.monster.RangedAttackMob
 
 object RangedBowAttackGoalFactory : EntityGoalFactory<EntityGoalRangedBowAttack> {
     override fun create(apiGoal: EntityGoalRangedBowAttack, entity: PathfinderMob): Goal? {
-        (if (entity !is Monster) return null)
+        if (entity !is Monster) return null
         if (entity !is RangedAttackMob) return null
 
         return RangedBowAttackGoal(

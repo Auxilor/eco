@@ -1,10 +1,12 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 buildscript {
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
     }
 }
 
@@ -13,7 +15,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.5"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "2.1.0"
 }
 
 dependencies {
@@ -108,12 +110,12 @@ allprojects {
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "1.9.21"))
+        implementation(kotlin("stdlib", version = "2.1.0"))
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
         // Included in spigot jar, no need to move to implementation
         compileOnly("org.jetbrains:annotations:23.0.0")
-        compileOnly("com.google.guava:guava:31.1-jre")
+        compileOnly("com.google.guava:guava:32.0.0-jre")
 
         // Test
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
@@ -157,8 +159,8 @@ allprojects {
         }
 
         compileKotlin {
-            kotlinOptions {
-                jvmTarget = "17"
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_17)
             }
         }
 

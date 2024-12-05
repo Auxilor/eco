@@ -80,9 +80,11 @@ class EcoEventManager(private val plugin: EcoPlugin) : EventManager {
     }
 
     override fun registerPacketListener(listener: PacketListener) {
-        listeners[listener.priority] += RegisteredPacketListener(
-            plugin,
-            listener
+        listeners[listener.priority].add(
+            RegisteredPacketListener(
+                plugin,
+                listener
+            )
         )
     }
 }
