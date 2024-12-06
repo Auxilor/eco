@@ -10,7 +10,7 @@ version = rootProject.version
 dependencies {
     implementation(project(":eco-core:core-nms:modern"))
     implementation(project(":eco-core:core-nms:common"))
-    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-text-minimessage:4.11.0") {
         version {
@@ -32,11 +32,11 @@ tasks {
     shadowJar {
         relocate(
             "com.willfp.eco.internal.spigot.proxy.common",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_3.common"
+            "com.willfp.eco.internal.spigot.proxy.v1_21_4.common"
         )
         relocate(
             "net.kyori.adventure.text.minimessage",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_3.minimessage"
+            "com.willfp.eco.internal.spigot.proxy.v1_21_4.minimessage"
         )
     }
 
