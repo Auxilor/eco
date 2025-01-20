@@ -35,6 +35,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.max
+import kotlin.math.min
 
 private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)
@@ -44,12 +45,13 @@ private fun Component.unstyled(): Component {
     return unstyledComponent.append(this)
 }
 
-class NewEcoFastItemStack(
-    private val bukkit: ItemStack
+open class NewEcoFastItemStack(
+    private val bukkit: ItemStack,
+    private val registryAccessor: RegistryAccessor
 ) : ImplementedFIS {
     // Cast is there because, try as I might, I can't get IntellIJ to recognise half the classes in the dev bundle
     @Suppress("USELESS_CAST")
-    private val handle = bukkit.asNMSStack() as net.minecraft.world.item.ItemStack
+    protected val handle = bukkit.asNMSStack() as net.minecraft.world.item.ItemStack
 
     private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
 
@@ -86,10 +88,8 @@ class NewEcoFastItemStack(
                 enchantment
             )
 
-        val server = Bukkit.getServer() as CraftServer
-        val access = server.server.registryAccess()
-
-        val holder = access.registryOrThrow(Registries.ENCHANTMENT).wrapAsHolder(minecraft)
+        val registry = registryAccessor.getRegistry(Registries.ENCHANTMENT)
+        val holder = registry.wrapAsHolder(minecraft)
 
         val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
         var level = enchantments.getLevel(holder)
@@ -369,18 +369,22 @@ class NewEcoFastItemStack(
 
     override fun getType(): org.bukkit.Material = handle.getItem().toMaterial()
 
+    /*
+    Custom model data doesn't work based on an integer since 1.21.3, so these methods do nothing
+     */
+
     override fun getCustomModelData(): Int? =
-        handle.get(DataComponents.CUSTOM_MODEL_DATA)?.value
+        null
 
     override fun setCustomModelData(data: Int?) {
         if (data == null) {
             handle.remove(DataComponents.CUSTOM_MODEL_DATA)
-        } else {
-            handle.set(DataComponents.CUSTOM_MODEL_DATA, CustomModelData(data))
         }
 
         apply()
     }
+
+    // END
 
     override fun equals(other: Any?): Boolean {
         if (other !is NewEcoFastItemStack) {
