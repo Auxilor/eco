@@ -6,6 +6,7 @@ import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.EntityGoal;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
+import com.willfp.eco.util.SoundUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -50,9 +51,15 @@ public record EntityGoalUseItem(
 
             TestableEntity filter = Entities.lookup(config.getString("condition"));
 
+            Sound sound = SoundUtils.getSound(config.getString("sound"));
+
+            if (sound == null) {
+                return null;
+            }
+
             return new EntityGoalUseItem(
                     Items.lookup(config.getString("item")).getItem(),
-                    Sound.valueOf(config.getString("sound").toUpperCase()),
+                    sound,
                     filter::matches
             );
         }
