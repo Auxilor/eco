@@ -1,9 +1,10 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
-import net.william278.husktowns.api.HuskTownsAPI
+import net.william278.husktowns.api.BukkitHuskTownsAPI
 import net.william278.husktowns.claim.Position
-import net.william278.husktowns.listener.Operation
+import net.william278.husktowns.libraries.cloplib.operation.Operation
+import net.william278.husktowns.libraries.cloplib.operation.OperationType
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
@@ -15,14 +16,14 @@ class AntigriefHuskTowns : AntigriefIntegration {
         player: Player,
         block: Block
     ): Boolean {
-        val api = HuskTownsAPI.getInstance() ?: return true
+        val api = BukkitHuskTownsAPI.getInstance() ?: return true
 
         val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
                 user,
-                Operation.Type.BLOCK_BREAK,
+                OperationType.BLOCK_BREAK,
                 Position.at(
                     block.location.x,
                     block.location.y,
@@ -38,14 +39,14 @@ class AntigriefHuskTowns : AntigriefIntegration {
         player: Player,
         location: Location
     ): Boolean {
-        val api = HuskTownsAPI.getInstance() ?: return true
+        val api = BukkitHuskTownsAPI.getInstance() ?: return true
 
         val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
                 user,
-                Operation.Type.EXPLOSION_DAMAGE_ENTITY,
+                OperationType.EXPLOSION_DAMAGE_ENTITY,
                 Position.at(
                     location.x,
                     location.y,
@@ -61,14 +62,14 @@ class AntigriefHuskTowns : AntigriefIntegration {
         player: Player,
         block: Block
     ): Boolean {
-        val api = HuskTownsAPI.getInstance() ?: return true
+        val api = BukkitHuskTownsAPI.getInstance() ?: return true
 
         val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
                 user,
-                Operation.Type.BLOCK_PLACE,
+                OperationType.BLOCK_PLACE,
                 Position.at(
                     block.location.x,
                     block.location.y,
@@ -84,7 +85,7 @@ class AntigriefHuskTowns : AntigriefIntegration {
         player: Player,
         victim: LivingEntity
     ): Boolean {
-        val api = HuskTownsAPI.getInstance() ?: return true
+        val api = BukkitHuskTownsAPI.getInstance() ?: return true
 
         val user = api.getOnlineUser(player) ?: return true
 
@@ -92,9 +93,9 @@ class AntigriefHuskTowns : AntigriefIntegration {
             Operation.of(
                 user,
                 when(victim) {
-                    is Monster -> Operation.Type.PLAYER_DAMAGE_MONSTER
-                    is Player -> Operation.Type.PLAYER_DAMAGE_PLAYER
-                    else -> Operation.Type.PLACE_HANGING_ENTITY
+                    is Monster -> OperationType.PLAYER_DAMAGE_MONSTER
+                    is Player -> OperationType.PLAYER_DAMAGE_PLAYER
+                    else -> OperationType.PLACE_HANGING_ENTITY
                 },
                 Position.at(
                     player.location.x,
