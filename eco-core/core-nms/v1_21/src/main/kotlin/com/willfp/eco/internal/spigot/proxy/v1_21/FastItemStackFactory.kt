@@ -3,7 +3,6 @@ package com.willfp.eco.internal.spigot.proxy.v1_21
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.common.modern.NewEcoFastItemStack
-import com.willfp.eco.internal.spigot.proxy.common.modern.RegistryAccessor
 import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
@@ -19,7 +18,7 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
     }
 
     private class LegacyNewEcoFastItemStack(itemStack: ItemStack) :
-        NewEcoFastItemStack(itemStack, LegacyRegistryAccessor) {
+        NewEcoFastItemStack(itemStack) {
 
         override fun getCustomModelData(): Int? =
             handle.get(DataComponents.CUSTOM_MODEL_DATA)?.value
@@ -32,14 +31,6 @@ class FastItemStackFactory : FastItemStackFactoryProxy {
             }
 
             apply()
-        }
-    }
-
-    private object LegacyRegistryAccessor : RegistryAccessor {
-        override fun <T> getRegistry(key: ResourceKey<Registry<T>>): Registry<T> {
-            val server = Bukkit.getServer() as CraftServer
-            val access = server.server.registryAccess()
-            return access.registryOrThrow(key)
         }
     }
 }

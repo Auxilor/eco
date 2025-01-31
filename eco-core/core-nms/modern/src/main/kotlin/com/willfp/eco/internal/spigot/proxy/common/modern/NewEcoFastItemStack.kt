@@ -17,6 +17,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
@@ -47,7 +48,6 @@ private fun Component.unstyled(): Component {
 
 open class NewEcoFastItemStack(
     private val bukkit: ItemStack,
-    private val registryAccessor: RegistryAccessor
 ) : ImplementedFIS {
     // Cast is there because, try as I might, I can't get IntellIJ to recognise half the classes in the dev bundle
     @Suppress("USELESS_CAST")
@@ -83,20 +83,17 @@ open class NewEcoFastItemStack(
         enchantment: Enchantment,
         checkStored: Boolean
     ): Int {
-        val minecraft =
-            CraftRegistry.bukkitToMinecraft<Enchantment, net.minecraft.world.item.enchantment.Enchantment>(
-                enchantment
-            )
-
-        val registry = registryAccessor.getRegistry(Registries.ENCHANTMENT)
-        val holder = registry.wrapAsHolder(minecraft)
+        val minecraft = CraftRegistry.bukkitToMinecraftHolder(
+            enchantment,
+            Registries.ENCHANTMENT
+        )
 
         val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
-        var level = enchantments.getLevel(holder)
+        var level = enchantments.getLevel(minecraft)
 
         if (checkStored) {
             val storedEnchantments = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return 0
-            level = max(level, storedEnchantments.getLevel(holder))
+            level = max(level, storedEnchantments.getLevel(minecraft))
         }
 
         return level
