@@ -5,9 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * Class to handle mcmmo integrations.
  */

@@ -18,9 +18,12 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand
-import com.willfp.eco.internal.config.*
+import com.willfp.eco.internal.config.EcoConfigSection
+import com.willfp.eco.internal.config.EcoLoadableConfig
+import com.willfp.eco.internal.config.EcoUpdatableConfig
 import com.willfp.eco.internal.config.handler.ReflectiveConfigHandler
 import com.willfp.eco.internal.config.handler.SimpleConfigHandler
+import com.willfp.eco.internal.config.toMap
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
 import com.willfp.eco.internal.events.EcoEventManager

@@ -3,7 +3,6 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_4
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
-import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketAutoRecipe
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketWindowItems

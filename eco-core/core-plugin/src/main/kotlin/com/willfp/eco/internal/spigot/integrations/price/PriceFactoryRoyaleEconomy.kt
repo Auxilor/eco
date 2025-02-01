@@ -7,7 +7,7 @@ import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
 import me.qKing12.RoyaleEconomy.MultiCurrency.Currency
 import org.bukkit.entity.Player
-import java.util.*
+import java.util.UUID
 
 class PriceFactoryRoyaleEconomy(private val currency: Currency) : PriceFactory {
 

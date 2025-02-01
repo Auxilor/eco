@@ -1,20 +1,15 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
-import net.crashcraft.crashclaim.CrashClaim
-import net.crashcraft.crashclaim.permissions.PermissionRoute
 import net.william278.huskclaims.api.HuskClaimsAPI
 import net.william278.huskclaims.libraries.cloplib.operation.Operation
-import net.william278.huskclaims.libraries.cloplib.operation.OperationPosition
 import net.william278.huskclaims.libraries.cloplib.operation.OperationType
 import net.william278.huskclaims.position.Position
-import net.william278.huskclaims.position.World
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
-import kotlin.jvm.optionals.getOrElse
 
 class AntigriefHuskClaims : AntigriefIntegration {
     override fun canBreakBlock(

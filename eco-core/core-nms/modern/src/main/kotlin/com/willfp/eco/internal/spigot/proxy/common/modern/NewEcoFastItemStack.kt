@@ -14,29 +14,22 @@ import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.Unit
 import net.minecraft.world.item.component.CustomData
-import net.minecraft.world.item.component.CustomModelData
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.enchantment.ItemEnchantments
-import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.CraftRegistry
-import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.craftbukkit.enchantments.CraftEnchantment
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.max
-import kotlin.math.min
 
 private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)

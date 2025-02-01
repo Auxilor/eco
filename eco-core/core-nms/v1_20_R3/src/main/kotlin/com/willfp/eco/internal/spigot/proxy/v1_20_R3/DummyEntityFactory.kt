@@ -5,7 +5,6 @@ import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld
 import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Zombie
 
 class DummyEntityFactory : DummyEntityFactoryProxy {

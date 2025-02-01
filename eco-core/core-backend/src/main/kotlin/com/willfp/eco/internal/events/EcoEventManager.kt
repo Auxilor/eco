@@ -9,7 +9,6 @@ import com.willfp.eco.core.packet.PacketPriority
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
-import java.lang.Exception
 
 
 private class RegisteredPacketListener(

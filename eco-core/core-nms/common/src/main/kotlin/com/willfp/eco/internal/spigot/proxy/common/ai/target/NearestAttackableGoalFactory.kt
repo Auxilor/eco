@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.common.ai.target
 
 import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackable
-import com.willfp.eco.core.lookup.matches
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.toBukkitEntity
 import net.minecraft.world.entity.LivingEntity

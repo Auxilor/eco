@@ -3,13 +3,8 @@ package com.willfp.eco.internal.spigot.proxy.v1_21
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxy.common.modern.NewEcoFastItemStack
-import net.minecraft.core.Registry
 import net.minecraft.core.component.DataComponents
-import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.component.CustomModelData
-import org.bukkit.Bukkit
-import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.inventory.ItemStack
 
 class FastItemStackFactory : FastItemStackFactoryProxy {

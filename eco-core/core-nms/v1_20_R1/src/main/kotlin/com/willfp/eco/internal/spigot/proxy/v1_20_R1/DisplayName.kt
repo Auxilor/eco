@@ -4,7 +4,6 @@ import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.packet.sendPacket
 import com.willfp.eco.internal.spigot.proxy.DisplayNameProxy
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
-import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.syncher.EntityDataAccessor

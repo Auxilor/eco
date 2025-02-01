@@ -4,8 +4,6 @@ import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.Phantom
-import org.bukkit.entity.Slime
 
 object EntityArgParserScale : EntityArgParser {
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
