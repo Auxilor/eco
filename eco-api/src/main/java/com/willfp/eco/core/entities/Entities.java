@@ -111,6 +111,11 @@ public final class Entities {
             } catch (IllegalArgumentException e) {
                 return new EmptyTestableEntity();
             }
+
+            if (type.getEntityClass() == null) {
+                return new EmptyTestableEntity();
+            }
+
             entity = new SimpleTestableEntity(type);
         } else {
             String namespace = split[0];
