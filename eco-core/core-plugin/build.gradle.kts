@@ -57,8 +57,8 @@ dependencies {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.iridium:IridiumSkyblock:4.0.8")
-    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.0.1")
-    compileOnly("net.william278:husktowns:2.6.1")
+    compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5")
+    compileOnly("net.william278.husktowns:husktowns-bukkit:3.0.8")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("de.oliver:FancyHolograms:2.4.0")
 
