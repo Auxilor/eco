@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import kotlin.math.max
+import java.util.logging.Logger
 
 private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)
@@ -76,20 +77,25 @@ open class NewEcoFastItemStack(
         enchantment: Enchantment,
         checkStored: Boolean
     ): Int {
-        val minecraft = CraftRegistry.bukkitToMinecraftHolder(
-            enchantment,
-            Registries.ENCHANTMENT
-        )
+        return try {
+            val minecraft = CraftRegistry.bukkitToMinecraftHolder(
+                enchantment,
+                Registries.ENCHANTMENT
+            )
 
-        val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
-        var level = enchantments.getLevel(minecraft)
+            val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
+            var level = enchantments.getLevel(minecraft)
 
-        if (checkStored) {
-            val storedEnchantments = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return 0
-            level = max(level, storedEnchantments.getLevel(minecraft))
+            if (checkStored) {
+                val storedEnchantments = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return 0
+                level = max(level, storedEnchantments.getLevel(minecraft))
+            }
+
+            level
+        } catch (e: NoSuchMethodError) {
+            Logger.getLogger(NewEcoFastItemStack::class.java.name).severe("Method registryOrThrow not found: ${e.message}")
+            0
         }
-
-        return level
     }
 
     override fun setLore(lore: List<String>?) = setLoreComponents(lore?.map { it.toComponent() })
