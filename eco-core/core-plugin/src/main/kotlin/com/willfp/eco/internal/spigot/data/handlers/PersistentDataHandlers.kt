@@ -4,6 +4,7 @@ import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.registry.KRegistrable
 import com.willfp.eco.core.registry.Registry
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
+import com.willfp.eco.internal.spigot.data.handlers.impl.MariaDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
@@ -35,6 +36,11 @@ object PersistentDataHandlers: Registry<PersistentDataHandlerFactory>() {
         register(object : PersistentDataHandlerFactory("mongo") {
             override fun create(plugin: EcoSpigotPlugin) =
                 MongoDBPersistentDataHandler(plugin.configYml.getSubsection("mongodb"))
+        })
+
+        register(object : PersistentDataHandlerFactory("mariadb") {
+            override fun create(plugin: EcoSpigotPlugin) =
+                MariaDBPersistentDataHandler(plugin.configYml.getSubsection("mysql"))
         })
     }
 }

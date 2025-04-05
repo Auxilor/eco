@@ -7,10 +7,11 @@ dependencies {
 
     // Libraries
     implementation("com.github.WillFP:Crunch:1.1.3")
-    implementation("com.mysql:mysql-connector-j:8.4.0")
+    implementation("com.mysql:mysql-connector-j:9.2.0")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.3")
     implementation("org.jetbrains.exposed:exposed-core:0.53.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.53.0")
-    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("com.zaxxer:HikariCP:6.3.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.0")
     implementation("org.javassist:javassist:3.29.2-GA")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.2")

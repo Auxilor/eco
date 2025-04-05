@@ -29,7 +29,7 @@ eco comes packed with all the tools you need in your plugins:
 - Modern command API
 - Native color parsing with full hex/RGB/MiniMessage support
 - Yaml/JSON/TOML config system
-- Persistent data storage API with Yaml/MySQL/MongoDB support
+- Persistent data storage API with Yaml/MySQL/MariaDB/MongoDB support
 - Packet item display system
 - Lightweight event loop based packet API
 - Entity AI API with near-1:1 NMS mappings
