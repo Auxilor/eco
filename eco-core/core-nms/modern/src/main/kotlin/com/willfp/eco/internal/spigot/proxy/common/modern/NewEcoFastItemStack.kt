@@ -144,7 +144,7 @@ open class NewEcoFastItemStack(
 
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
-    private fun <T> net.minecraft.world.item.ItemStack.modifyComponent(
+    protected fun <T> net.minecraft.world.item.ItemStack.modifyComponent(
         component: DataComponentType<T>,
         modifier: (T) -> T
     ) {
