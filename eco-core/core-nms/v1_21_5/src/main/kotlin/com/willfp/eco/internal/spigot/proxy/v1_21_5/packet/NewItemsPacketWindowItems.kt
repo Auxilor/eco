@@ -2,24 +2,20 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_5.packet
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
-import com.willfp.eco.core.items.HashedItem
 import com.willfp.eco.core.packet.PacketEvent
-import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketWindowItems
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
-import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 class NewItemsPacketWindowItems(
-    private val plugin: EcoPlugin
-) : PacketListener {
+    plugin: EcoPlugin
+) : PacketWindowItems(plugin) {
     private val lastKnownWindowIDs = ConcurrentHashMap<UUID, Int>()
-
 
     override fun onSend(event: PacketEvent) {
         val packet = event.packet.handle as? ClientboundContainerSetContentPacket ?: return
@@ -52,39 +48,5 @@ class NewItemsPacketWindowItems(
         )
 
         event.packet.handle = newPacket
-    }
-
-    private fun modifyWindowItems(
-        itemStacks: MutableList<ItemStack>,
-        windowId: Int,
-        player: Player
-    ): MutableList<ItemStack> {
-        if (plugin.configYml.getBool("use-display-frame") && windowId == 0) {
-            val frameMap = mutableMapOf<Byte, HashedItem>()
-
-            for (index in itemStacks.indices) {
-                frameMap[index.toByte()] = HashedItem.of(itemStacks[index])
-            }
-
-            val newFrame = DisplayFrame(frameMap)
-
-            val lastFrame = player.lastDisplayFrame
-
-            player.lastDisplayFrame = newFrame
-
-            val changes = lastFrame.getChangedSlots(newFrame)
-
-            for (index in changes) {
-                Display.display(itemStacks[index.toInt()], player)
-            }
-
-            for (index in (itemStacks.indices subtract changes.toSet())) {
-                itemStacks[index.toInt()] = lastFrame.getItem(index.toByte()) ?: itemStacks[index.toInt()]
-            }
-        } else {
-            itemStacks.forEach { Display.display(it, player) }
-        }
-
-        return itemStacks
     }
 }
