@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
-import com.craftaro.skyblock.SkyBlock
+import com.songoda.skyblock.SkyBlock
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
