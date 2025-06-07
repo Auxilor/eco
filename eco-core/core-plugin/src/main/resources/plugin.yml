@@ -62,3 +62,5 @@ softdepend:
   - Denizen
   - RoyaleEconomy
   - FancyHolograms
+libraries:
+  - org.mariadb.jdbc:mariadb-java-client:3.5.3
