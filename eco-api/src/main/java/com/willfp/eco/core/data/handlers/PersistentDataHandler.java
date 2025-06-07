@@ -10,10 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -84,18 +82,11 @@ public abstract class PersistentDataHandler implements Registrable {
      * @param <T>  The type of the key.
      * @return The value, or null if not found.
      */
-    @Nullable
-    public final <T> T read(@NotNull final UUID uuid,
-                            @NotNull final PersistentDataKey<T> key) {
+    @NotNull
+    public final <T> CompletableFuture<T> read(@NotNull final UUID uuid,
+                                               @NotNull final PersistentDataKey<T> key) {
         DataTypeSerializer<T> serializer = key.getType().getSerializer(this);
-        Future<T> future = executor.submit(() -> serializer.readAsync(uuid, key));
-
-        try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return CompletableFuture.supplyAsync(() -> serializer.readAsync(uuid, key), executor);
     }
 
     /**
@@ -126,7 +117,7 @@ public abstract class PersistentDataHandler implements Registrable {
         Map<PersistentDataKey<?>, CompletableFuture<Object>> futures = keys.stream()
                 .collect(Collectors.toMap(
                         key -> key,
-                        key -> CompletableFuture.supplyAsync(() -> read(uuid, key), executor)
+                        key -> CompletableFuture.supplyAsync(() -> read(uuid, key).join(), executor)
                 ));
 
         Map<PersistentDataKey<?>, Object> data = futures.entrySet().stream()
