@@ -32,7 +32,8 @@ public final class ProxyConstants {
             "v1_21",
             "v1_21_3",
             "v1_21_4",
-            "v1_21_5"
+            "v1_21_5",
+            "v1_21_6"
     );
 
     private ProxyConstants() {
