@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_7
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.packet.sendPacket
 import com.willfp.eco.internal.spigot.proxy.DisplayNameProxy
@@ -9,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.world.entity.Entity
+import org.apache.maven.model.Prerequisites
 import org.bukkit.craftbukkit.entity.CraftLivingEntity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -37,6 +39,11 @@ class DisplayName : DisplayNameProxy {
         visible: Boolean
     ) {
         if (entity !is CraftLivingEntity) {
+            return
+        }
+
+        // TODO: Remove this when paper hard dependency is gone
+        if (!Prerequisite.HAS_PAPER.isMet) {
             return
         }
 
