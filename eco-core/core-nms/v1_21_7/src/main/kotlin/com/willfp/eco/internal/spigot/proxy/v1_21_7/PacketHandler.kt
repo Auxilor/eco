@@ -9,6 +9,8 @@ import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearFra
 import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.NewItemsPacketOpenWindowMerchant
 import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.NewItemsPacketSetCreativeSlot
 import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.NewItemsPacketWindowItems
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.PacketContainerClick
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.PacketSetCursorItem
 import net.minecraft.network.protocol.Packet
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
@@ -40,7 +42,9 @@ class PacketHandler : PacketHandlerProxy {
             NewItemsPacketOpenWindowMerchant,
             NewItemsPacketSetCreativeSlot,
             PacketSetSlot,
-            NewItemsPacketWindowItems(plugin)
+            NewItemsPacketWindowItems(plugin),
+            PacketSetCursorItem,
+            PacketContainerClick
         )
     }
 }

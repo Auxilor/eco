@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_7
 
-import ca.spottedleaf.dataconverter.minecraft.MCDataConverter
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
@@ -8,12 +7,10 @@ import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
 import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.json.JSONComponentSerializer
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
-import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.PathfinderMob
@@ -29,7 +26,6 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.inventory.CraftMetaArmor
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
-import org.bukkit.craftbukkit.util.CraftMagicNumbers
 import org.bukkit.craftbukkit.util.CraftNamespacedKey
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
@@ -165,7 +161,6 @@ class CommonsInitializer : CommonsInitializerProxy {
         }
 
         override fun toNMS(component: Component): net.minecraft.network.chat.Component {
-            // TODO: Don't have hard dependency on paper
             return PaperAdventure.asVanilla(component)
         }
     }
