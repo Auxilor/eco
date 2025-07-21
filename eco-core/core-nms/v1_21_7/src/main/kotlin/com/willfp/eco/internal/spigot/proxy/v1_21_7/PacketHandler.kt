@@ -1,16 +1,16 @@
-package com.willfp.eco.internal.spigot.proxy.v1_21_4
+package com.willfp.eco.internal.spigot.proxy.v1_21_7
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
-import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketWindowItems
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearFrames
-import com.willfp.eco.internal.spigot.proxy.v1_21_4.packet.NewItemsPacketOpenWindowMerchant
-import com.willfp.eco.internal.spigot.proxy.v1_21_4.packet.NewItemsPacketSetCreativeSlot
-import com.willfp.eco.internal.spigot.proxy.v1_21_4.packet.PacketContainerClick
-import com.willfp.eco.internal.spigot.proxy.v1_21_4.packet.PacketSetCursorItem
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.NewItemsPacketOpenWindowMerchant
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.NewItemsPacketSetCreativeSlot
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.NewItemsPacketWindowItems
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.PacketContainerClick
+import com.willfp.eco.internal.spigot.proxy.v1_21_7.packet.PacketSetCursorItem
 import net.minecraft.network.protocol.Packet
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.entity.Player
@@ -42,9 +42,9 @@ class PacketHandler : PacketHandlerProxy {
             NewItemsPacketOpenWindowMerchant,
             NewItemsPacketSetCreativeSlot,
             PacketSetSlot,
-            PacketWindowItems(plugin),
-            PacketContainerClick,
-            PacketSetCursorItem
+            NewItemsPacketWindowItems(plugin),
+            PacketSetCursorItem,
+            PacketContainerClick
         )
     }
 }
