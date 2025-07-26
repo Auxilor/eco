@@ -54,6 +54,9 @@ public final class TeamUtils {
 
     static {
         for (ChatColor value : ChatColor.values()) {
+            if (!value.isColor()) {
+                continue;
+            }
             fromChatColor(value);
         }
     }
