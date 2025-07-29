@@ -76,9 +76,9 @@ open class NewEcoFastItemStack(
         enchantment: Enchantment,
         checkStored: Boolean
     ): Int {
-        val minecraft = CraftRegistry.bukkitToMinecraftHolder(
-            enchantment,
-            Registries.ENCHANTMENT
+        val minecraft = CraftRegistry.bukkitToMinecraftHolder<Enchantment,
+        Registries.ENCHANTMENT>(
+            enchantment
         )
 
         val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
