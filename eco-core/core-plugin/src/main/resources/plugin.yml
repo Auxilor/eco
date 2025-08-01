@@ -16,6 +16,7 @@ loadbefore:
   - CMI
   - DeluxeCombat
   - ShopGUIPlus
+  - DeluxeMenus
   - Nexo
 softdepend:
   - ItemBridge
