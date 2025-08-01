@@ -33,7 +33,7 @@ public final class ProxyConstants {
             "v1_21_3",
             "v1_21_4",
             "v1_21_5",
-            "v1_21_8"
+            "v1_21_7"
     );
 
     private ProxyConstants() {
@@ -44,7 +44,7 @@ public final class ProxyConstants {
         return switch (version) {
             case "v1_21_1" -> "v1_21";
             case "v1_21_2" -> "v1_21_3";
-            case "v1_21_6", "v1_21_7" -> "v1_21_8";
+            case "v1_21_6", "v1_21_8" -> "v1_21_7";
             default -> version;
         };
     }
