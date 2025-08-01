@@ -5,7 +5,7 @@ dependencies {
     // Other
     compileOnly("org.spigotmc:spigot-api:1.20.2-R0.1-SNAPSHOT")
     compileOnly("commons-lang:commons-lang:2.6")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.6.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("com.google.code.gson:gson:2.8.8")
 }
 
