@@ -17,6 +17,7 @@ loadbefore:
   - DeluxeCombat
   - ShopGUIPlus
   - DeluxeMenus
+  - Nexo
 softdepend:
   - ItemBridge
   - HuskClaims
