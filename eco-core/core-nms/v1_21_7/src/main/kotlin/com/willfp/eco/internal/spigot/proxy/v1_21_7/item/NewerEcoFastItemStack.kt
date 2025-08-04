@@ -10,6 +10,19 @@ import org.bukkit.inventory.ItemStack
 open class NewerEcoFastItemStack(
     bukkit: ItemStack,
 ) : NewEcoFastItemStack(bukkit) {
+    
+//    CraftRegistry.bukkitToMinercraftHolder is seemingly suffering a mis-mapped or missing
+//    net.minecraft.core.Holder in 1.21.7+ Paper Server
+//    Tempfix is to public val bukkit in NewEcoFastItemStack
+//    and allow bukkit's enchant resolver to run with this override
+
+    override fun getEnchantmentLevel(
+        enchantment: Enchantment,
+        checkStored: Boolean
+    ): Int {
+        return bukkit.getEnchantmentLevel(enchantment)
+    }
+
     override fun addItemFlags(vararg hideFlags: ItemFlag) {
         for (flag in hideFlags) {
             when (flag) {
