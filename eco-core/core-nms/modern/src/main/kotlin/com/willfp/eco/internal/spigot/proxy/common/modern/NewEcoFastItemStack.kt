@@ -40,7 +40,8 @@ private fun Component.unstyled(): Component {
 }
 
 open class NewEcoFastItemStack(
-    private val bukkit: ItemStack,
+    // Unprivated val bukkit for 1.21.7+ temporary fix 
+    val bukkit: ItemStack,
 ) : ImplementedFIS {
     // Cast is there because, try as I might, I can't get IntellIJ to recognise half the classes in the dev bundle
     @Suppress("USELESS_CAST")
