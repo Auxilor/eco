@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_7.item
 import com.willfp.eco.internal.spigot.proxy.common.modern.NewEcoFastItemStack
 import net.minecraft.core.component.DataComponents
 import net.minecraft.world.item.component.TooltipDisplay
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
