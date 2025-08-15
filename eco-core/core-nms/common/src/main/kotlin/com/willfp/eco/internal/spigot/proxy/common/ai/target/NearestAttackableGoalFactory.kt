@@ -17,7 +17,9 @@ object NearestAttackableGoalFactory : TargetGoalFactory<TargetGoalNearestAttacka
             apiGoal.checkVisibility,
             apiGoal.checkCanNavigate,
         ) {
-            apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
+            val bukkit = it.toBukkitEntity()
+
+            apiGoal.targetFilter.test(bukkit) && apiGoal.targets.any { t -> t.matches(bukkit) }
         }
     }
 

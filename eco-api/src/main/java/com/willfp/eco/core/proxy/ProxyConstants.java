@@ -2,6 +2,7 @@ package com.willfp.eco.core.proxy;
 
 import com.willfp.eco.core.version.Version;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,11 +29,24 @@ public final class ProxyConstants {
             "v1_20_R1",
             "v1_20_R2",
             "v1_20_R3",
-            "v1_21"
+            "v1_21",
+            "v1_21_3",
+            "v1_21_4",
+            "v1_21_5",
+            "v1_21_7"
     );
 
     private ProxyConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
+    private static String convertVersion(@NotNull final String version) {
+        return switch (version) {
+            case "v1_21_1" -> "v1_21";
+            case "v1_21_2" -> "v1_21_3";
+            case "v1_21_6", "v1_21_8" -> "v1_21_7";
+            default -> version;
+        };
     }
 
     static {
@@ -45,6 +59,6 @@ public final class ProxyConstants {
             nmsVersion = "v" + currentMinecraftVersion.replace(".", "_");
         }
 
-        NMS_VERSION = nmsVersion;
+        NMS_VERSION = convertVersion(nmsVersion);
     }
 }

@@ -2,7 +2,6 @@ package com.willfp.eco.internal.spigot.proxy.v1_20_R3
 
 import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.common.item.ContinuallyAppliedPersistentDataContainer
 import net.minecraft.nbt.Tag
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack

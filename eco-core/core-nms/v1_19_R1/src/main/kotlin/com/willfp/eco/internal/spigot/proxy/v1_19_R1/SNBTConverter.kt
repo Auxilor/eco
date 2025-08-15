@@ -3,7 +3,6 @@ package com.willfp.eco.internal.spigot.proxy.v1_19_R1
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
-import com.willfp.eco.internal.spigot.proxy.common.toMaterial
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.SnbtPrinterTagVisitor
 import net.minecraft.nbt.TagParser

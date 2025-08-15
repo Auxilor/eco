@@ -1,12 +1,17 @@
 package com.willfp.eco.core.data.keys;
 
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.data.handlers.DataTypeSerializer;
+import com.willfp.eco.core.data.handlers.PersistentDataHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
@@ -61,23 +66,57 @@ public final class PersistentDataKeyType<T> {
     private final String name;
 
     /**
-     * Get the name of the key type.
-     *
-     * @return The name.
+     * The serializers for this key type.
      */
-    public String name() {
-        return name;
-    }
+    private final Map<PersistentDataHandler, DataTypeSerializer<T>> serializers = new HashMap<>();
 
     /**
      * Create new PersistentDataKeyType.
      *
-     * @param name      The name.
+     * @param name The name.
      */
     private PersistentDataKeyType(@NotNull final String name) {
         VALUES.add(this);
 
         this.name = name;
+    }
+
+    /**
+     * Get the name of the key type.
+     *
+     * @return The name.
+     */
+    @NotNull
+    public String name() {
+        return name;
+    }
+
+    /**
+     * Register a serializer for this key type.
+     *
+     * @param handler    The handler.
+     * @param serializer The serializer.
+     */
+    public void registerSerializer(@NotNull final PersistentDataHandler handler,
+                                   @NotNull final DataTypeSerializer<T> serializer) {
+        this.serializers.put(handler, serializer);
+    }
+
+    /**
+     * Get the serializer for a handler.
+     *
+     * @param handler The handler.
+     * @return The serializer.
+     */
+    @NotNull
+    public DataTypeSerializer<T> getSerializer(@NotNull final PersistentDataHandler handler) {
+        DataTypeSerializer<T> serializer = this.serializers.get(handler);
+
+        if (serializer == null) {
+            throw new NoSuchElementException("No serializer for handler: " + handler);
+        }
+
+        return serializer;
     }
 
     @Override

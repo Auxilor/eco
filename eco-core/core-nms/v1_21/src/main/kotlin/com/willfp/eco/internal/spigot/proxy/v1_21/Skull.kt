@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21
 
 import com.willfp.eco.internal.spigot.proxy.SkullProxy
-import com.willfp.eco.internal.spigot.proxy.common.texture
+import com.willfp.eco.internal.spigot.proxy.common.modern.texture
 import org.bukkit.inventory.meta.SkullMeta
 
 class Skull : SkullProxy {

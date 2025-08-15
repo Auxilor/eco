@@ -9,7 +9,6 @@ import java.io.DataOutputStream
 import java.io.File
 import java.io.InputStreamReader
 import java.net.URI
-import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import java.util.concurrent.Executors

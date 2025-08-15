@@ -2,9 +2,7 @@ package com.willfp.eco.internal.items
 
 import com.willfp.eco.internal.items.templates.ValueArgParser
 import com.willfp.eco.util.StringUtils
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
-import java.util.function.Predicate
 
 object ArgParserName : ValueArgParser<String>("name") {
     override fun parse(arg: String): String {

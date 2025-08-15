@@ -11,19 +11,21 @@ import org.bukkit.entity.Raider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Allows an entity to attack the closest target within a given subset of specific target types.
  *
- * @param target           The type of entities to attack.
+ * @param targets          The type of entities to attack.
  * @param checkVisibility  If visibility should be checked.
  * @param checkCanNavigate If navigation should be checked.
  * @param reciprocalChance 1 in reciprocalChance chance of not activating on any tick.
  * @param targetFilter     The filter for targets to match.
  */
 public record TargetGoalNearestAttackable(
-        @NotNull TestableEntity target,
+        @NotNull Set<TestableEntity> targets,
         boolean checkVisibility,
         boolean checkCanNavigate,
         int reciprocalChance,
@@ -32,16 +34,16 @@ public record TargetGoalNearestAttackable(
     /**
      * Create a new target goal.
      *
-     * @param target           The type of entities to attack.
+     * @param targets          The type of entities to attack.
      * @param checkVisibility  If visibility should be checked.
      * @param checkCanNavigate If navigation should be checked.
      * @param reciprocalChance 1 in reciprocalChance chance of not activating on any tick.
      */
-    public TargetGoalNearestAttackable(@NotNull final TestableEntity target,
+    public TargetGoalNearestAttackable(@NotNull final Set<TestableEntity> targets,
                                        final boolean checkVisibility,
                                        final boolean checkCanNavigate,
                                        final int reciprocalChance) {
-        this(target, checkVisibility, checkCanNavigate, reciprocalChance, it -> true);
+        this(targets, checkVisibility, checkCanNavigate, reciprocalChance, it -> true);
     }
 
     /**
@@ -65,11 +67,15 @@ public record TargetGoalNearestAttackable(
                 return null;
             }
 
+            Set<TestableEntity> targets = config.getStrings("target").stream()
+                    .map(Entities::lookup)
+                    .collect(Collectors.toSet());
+
             if (config.has("targetFilter")) {
                 TestableEntity filter = Entities.lookup(config.getString("targetFilter"));
 
                 return new TargetGoalNearestAttackable(
-                        Entities.lookup(config.getString("target")),
+                        targets,
                         config.getBool("checkVisibility"),
                         config.getBool("checkCanNavigate"),
                         config.getInt("reciprocalChance"),
@@ -77,7 +83,7 @@ public record TargetGoalNearestAttackable(
                 );
             } else {
                 return new TargetGoalNearestAttackable(
-                        Entities.lookup(config.getString("target")),
+                        targets,
                         config.getBool("checkVisibility"),
                         config.getBool("checkCanNavigate"),
                         config.getInt("reciprocalChance")

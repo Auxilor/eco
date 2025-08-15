@@ -14,12 +14,16 @@ object ArgParserEnchantment : LookupArgParser {
         val enchants = mutableMapOf<Enchantment, Int>()
 
         for (arg in args) {
-            val argSplit = arg.split(":")
+            try {
+                val argSplit = arg.split(":")
 
-            val enchant = Enchantment.getByKey(NamespacedKey.minecraft(argSplit[0].lowercase())) ?: continue
-            val level = argSplit.getOrNull(1)?.toIntOrNull() ?: enchant.maxLevel
+                val enchant = Enchantment.getByKey(NamespacedKey.minecraft(argSplit[0].lowercase())) ?: continue
+                val level = argSplit.getOrNull(1)?.toIntOrNull() ?: enchant.maxLevel
 
-            enchants[enchant] = level
+                enchants[enchant] = level
+            } catch (e: IllegalArgumentException) {
+                continue
+            }
         }
 
         if (enchants.isEmpty()) {

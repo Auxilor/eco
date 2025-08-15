@@ -50,8 +50,7 @@ class EcoProxyFactory(
             )
         } else {
             ProxyError(
-                "Could not initialize proxy. If you're seeing this error message"
-                        + ", something has gone badly wrong. This almost definitely isn't user error, blame the developer.",
+                "Could not initialize proxy. Are you running a supported server version?",
                 e
             )
         }

@@ -1,13 +1,13 @@
 package com.willfp.eco.internal.spigot.integrations.customitems
 
+import com.denizenscript.denizen.objects.ItemTag
+import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper
 import com.willfp.eco.core.integrations.customitems.CustomItemsIntegration
 import com.willfp.eco.core.items.CustomItem
+import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
-import com.denizenscript.denizen.objects.ItemTag
-import com.denizenscript.denizen.scripts.containers.core.ItemScriptHelper
-import com.willfp.eco.core.items.Items
 import org.bukkit.event.Listener
 
 class CustomItemsDenizen : CustomItemsIntegration, Listener {

@@ -2,6 +2,7 @@ package com.willfp.eco.core.sound;
 
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
+import com.willfp.eco.util.SoundUtils;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -82,20 +83,20 @@ public record PlayableSound(@NotNull Sound sound,
                 return null;
             }
 
-            try {
-                Sound sound = Sound.valueOf(config.getString("sound").toUpperCase());
+            Sound sound = SoundUtils.getSound(config.getString("sound"));
 
-                double pitch = Objects.requireNonNullElse(config.getDoubleOrNull("pitch"), 1.0);
-                double volume = Objects.requireNonNullElse(config.getDoubleOrNull("volume"), 1.0);
-
-                return new PlayableSound(
-                        sound,
-                        pitch,
-                        volume
-                );
-            } catch (IllegalArgumentException e) {
+            if (sound == null) {
                 return null;
             }
+
+            double pitch = Objects.requireNonNullElse(config.getDoubleOrNull("pitch"), 1.0);
+            double volume = Objects.requireNonNullElse(config.getDoubleOrNull("volume"), 1.0);
+
+            return new PlayableSound(
+                    sound,
+                    pitch,
+                    volume
+            );
         }
     }
 }

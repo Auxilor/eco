@@ -22,3 +22,6 @@ gradle-app.setting
 
 # Mac OSX
 .DS_Store
+
+# Kotlin
+.kotlin

@@ -9,7 +9,6 @@ import com.willfp.eco.core.packet.PacketPriority
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
-import java.lang.Exception
 
 
 private class RegisteredPacketListener(
@@ -80,9 +79,11 @@ class EcoEventManager(private val plugin: EcoPlugin) : EventManager {
     }
 
     override fun registerPacketListener(listener: PacketListener) {
-        listeners[listener.priority] += RegisteredPacketListener(
-            plugin,
-            listener
+        listeners[listener.priority].add(
+            RegisteredPacketListener(
+                plugin,
+                listener
+            )
         )
     }
 }

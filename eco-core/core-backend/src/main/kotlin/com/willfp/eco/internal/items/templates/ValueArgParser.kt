@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.items.templates
 
 import com.willfp.eco.core.items.args.LookupArgParser
-import com.willfp.eco.util.StringUtils
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import java.util.function.Predicate

@@ -1,39 +1,34 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
-import net.crashcraft.crashclaim.CrashClaim
-import net.crashcraft.crashclaim.permissions.PermissionRoute
-import net.william278.huskclaims.api.HuskClaimsAPI
+import net.william278.huskclaims.api.BukkitHuskClaimsAPI
 import net.william278.huskclaims.libraries.cloplib.operation.Operation
-import net.william278.huskclaims.libraries.cloplib.operation.OperationPosition
 import net.william278.huskclaims.libraries.cloplib.operation.OperationType
 import net.william278.huskclaims.position.Position
-import net.william278.huskclaims.position.World
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Monster
 import org.bukkit.entity.Player
-import kotlin.jvm.optionals.getOrElse
 
 class AntigriefHuskClaims : AntigriefIntegration {
     override fun canBreakBlock(
         player: Player,
         block: Block
     ): Boolean {
-        val api = HuskClaimsAPI.getInstance() ?: return true
+        val api = BukkitHuskClaimsAPI.getInstance() ?: return true
 
-        val user = api.getOnlineUser(player.uniqueId) ?: return true
+        val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
                 user,
                 OperationType.BLOCK_BREAK,
                 Position.at(
-                    block.x.toDouble(),
-                    block.y.toDouble(),
-                    block.z.toDouble(),
-                    api.getWorld(block.location.world.name)
+                    block.location.x,
+                    block.location.y,
+                    block.location.z,
+                    api.getWorld(block.world)
                 ),
                 true
             )
@@ -44,9 +39,9 @@ class AntigriefHuskClaims : AntigriefIntegration {
         player: Player,
         location: Location
     ): Boolean {
-        val api = HuskClaimsAPI.getInstance() ?: return true
+        val api = BukkitHuskClaimsAPI.getInstance() ?: return true
 
-        val user = api.getOnlineUser(player.uniqueId) ?: return true
+        val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
@@ -56,7 +51,7 @@ class AntigriefHuskClaims : AntigriefIntegration {
                     location.x,
                     location.y,
                     location.z,
-                    api.getWorld(location.world.name)
+                    api.getWorld(location.world)
                 ),
                 true
             )
@@ -67,19 +62,19 @@ class AntigriefHuskClaims : AntigriefIntegration {
         player: Player,
         block: Block
     ): Boolean {
-        val api = HuskClaimsAPI.getInstance() ?: return true
+        val api = BukkitHuskClaimsAPI.getInstance() ?: return true
 
-        val user = api.getOnlineUser(player.uniqueId) ?: return true
+        val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
                 user,
                 OperationType.BLOCK_PLACE,
                 Position.at(
-                    block.x.toDouble(),
-                    block.y.toDouble(),
-                    block.z.toDouble(),
-                    api.getWorld(block.location.world.name)
+                    block.location.x,
+                    block.location.y,
+                    block.location.z,
+                    api.getWorld(block.world)
                 ),
                 true
             )
@@ -90,23 +85,23 @@ class AntigriefHuskClaims : AntigriefIntegration {
         player: Player,
         victim: LivingEntity
     ): Boolean {
-        val api = HuskClaimsAPI.getInstance() ?: return true
+        val api = BukkitHuskClaimsAPI.getInstance() ?: return true
 
-        val user = api.getOnlineUser(player.uniqueId) ?: return true
+        val user = api.getOnlineUser(player) ?: return true
 
         return api.isOperationAllowed(
             Operation.of(
                 user,
-                when (victim) {
+                when(victim) {
                     is Monster -> OperationType.PLAYER_DAMAGE_MONSTER
                     is Player -> OperationType.PLAYER_DAMAGE_PLAYER
                     else -> OperationType.PLAYER_DAMAGE_ENTITY
                 },
                 Position.at(
-                    victim.x,
-                    victim.y,
-                    victim.z,
-                    api.getWorld(victim.location.world.name)
+                    player.location.x,
+                    player.location.y,
+                    player.location.z,
+                    api.getWorld(player.world)
                 ),
                 true
             )
