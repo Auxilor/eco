@@ -84,7 +84,7 @@ allprojects {
         maven("https://repo.md-5.net/content/repositories/snapshots/")
 
         // CombatLogX
-        maven("https://nexus.sirblobman.xyz/repository/public/")
+        maven("https://nexus.sirblobman.xyz/public/")
 
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
