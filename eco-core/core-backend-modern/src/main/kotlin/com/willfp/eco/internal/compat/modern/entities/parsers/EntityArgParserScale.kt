@@ -28,7 +28,7 @@ object EntityArgParserScale : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_SCALE) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.SCALE) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserScale : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_SCALE)?.baseValue = attributeValue
+                it.getAttribute(Attribute.SCALE)?.baseValue = attributeValue
             }
         )
     }
