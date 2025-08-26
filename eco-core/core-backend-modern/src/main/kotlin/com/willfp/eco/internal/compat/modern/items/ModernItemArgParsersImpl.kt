@@ -8,6 +8,7 @@ import com.willfp.eco.internal.compat.modern.items.parsers.ArgParserItemName
 import com.willfp.eco.internal.compat.modern.items.parsers.ArgParserMaxDamage
 import com.willfp.eco.internal.compat.modern.items.parsers.ArgParserMaxStackSize
 import com.willfp.eco.internal.compat.modern.items.parsers.ArgParserItemModel
+import com.willfp.eco.internal.compat.modern.items.parsers.ArgParserTooltipStyle
 import com.willfp.eco.internal.compat.modern.items.parsers.ArgParserTrim
 import com.willfp.eco.internal.items.ModernItemArgParsers
 
@@ -21,5 +22,6 @@ class ModernItemArgParsersImpl : ModernItemArgParsers {
         Items.registerArgParser(ArgParserMaxStackSize)
         Items.registerArgParser(ArgParserItemModel)
         Items.registerArgParser(ArgParserGlider)
+        Items.registerArgParser(ArgParserTooltipStyle)
     }
 }
