@@ -48,7 +48,7 @@ dependencies {
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
-    compileOnly("io.lumine:Mythic:5.3.5")
+    compileOnly("io.lumine:Mythic:5.7.0")
     compileOnly("io.lumine:LumineUtils:1.19-SNAPSHOT")
     compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT")
     compileOnly("com.github.sirblobman.combatlogx:api:11.4-SNAPSHOT")
