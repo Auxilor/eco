@@ -28,7 +28,7 @@ object EntityArgParserJumpStrength : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_JUMP_STRENGTH) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.JUMP_STRENGTH) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserJumpStrength : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_JUMP_STRENGTH)?.baseValue = attributeValue
+                it.getAttribute(Attribute.JUMP_STRENGTH)?.baseValue = attributeValue
             }
         )
     }

@@ -8,7 +8,7 @@ import io.lumine.mythic.api.adapters.AbstractItemStack
 import io.lumine.mythic.api.config.MythicLineConfig
 import io.lumine.mythic.api.drops.DropMetadata
 import io.lumine.mythic.api.drops.IItemDrop
-import io.lumine.mythic.bukkit.adapters.BukkitItemStack
+import io.lumine.mythic.bukkit.BukkitAdapter
 import io.lumine.mythic.bukkit.events.MythicDropLoadEvent
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -47,9 +47,9 @@ class CustomItemsMythicMobs(
             val item = Items.lookup(id)
             if (item is EmptyTestableItem) {
                 plugin.logger.warning("Item with ID $id is invalid, check your configs!")
-                return BukkitItemStack(ItemStack(Material.AIR))
+                return BukkitAdapter.adapt(ItemStack(Material.AIR))
             }
-            return BukkitItemStack(item.item.apply { amount = v.toInt() })
+            return BukkitAdapter.adapt(item.item.apply { amount = v.toInt() })
         }
     }
 }

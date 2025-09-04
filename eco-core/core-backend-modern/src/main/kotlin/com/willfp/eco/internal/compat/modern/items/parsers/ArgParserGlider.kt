@@ -2,14 +2,13 @@ package com.willfp.eco.internal.compat.modern.items.parsers
 
 import com.willfp.eco.internal.items.templates.FlagArgParser
 import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.tag.DamageTypeTags.IS_FIRE
 
-object ArgParserFireResistant : FlagArgParser("fire_resistant") {
+object ArgParserGlider : FlagArgParser("glider") {
     override fun apply(meta: ItemMeta) {
-        meta.damageResistant = IS_FIRE
+        meta.isGlider = true
     }
 
     override fun test(meta: ItemMeta): Boolean {
-        return meta.damageResistant == IS_FIRE
+        return meta.isGlider
     }
 }

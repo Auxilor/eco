@@ -24,7 +24,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
 
     // Plugin dependencies
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("net.dmulloy2:ProtocolLib:5.1.0")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7-SNAPSHOT")
     compileOnly("com.github.TechFortress:GriefPrevention:16.17.1")
     compileOnly("com.github.TownyAdvanced:Towny:0.99.5.21") {
@@ -48,10 +48,11 @@ dependencies {
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
-    compileOnly("io.lumine:Mythic:5.3.5")
+    compileOnly("io.lumine:Mythic:5.7.0")
     compileOnly("io.lumine:LumineUtils:1.19-SNAPSHOT")
+    compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT")
+    compileOnly("com.github.sirblobman.combatlogx:api:11.4-SNAPSHOT")
     compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
-    compileOnly("com.github.sirblobman.combatlogx:api:11.0.0.0-SNAPSHOT")
     compileOnly("LibsDisguises:LibsDisguises:10.0.26")
     compileOnly("com.denizenscript:denizen:1.2.7-SNAPSHOT") {
         exclude(group = "*", module = "*")
