@@ -45,7 +45,7 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.WhipDevelopment:CrashClaim:c697d3e9ef")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.5")
-    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.0")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
     compileOnly("io.lumine:Mythic:5.7.0")
