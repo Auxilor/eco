@@ -15,6 +15,7 @@ import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
+import net.minecraft.core.Holder
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.Registries
@@ -76,10 +77,7 @@ open class NewEcoFastItemStack(
         enchantment: Enchantment,
         checkStored: Boolean
     ): Int {
-        val minecraft = CraftRegistry.bukkitToMinecraftHolder(
-            enchantment,
-            Registries.ENCHANTMENT
-        )
+        val minecraft = CraftEnchantment.bukkitToMinecraftHolder(enchantment)
 
         val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return 0
         var level = enchantments.getLevel(minecraft)
