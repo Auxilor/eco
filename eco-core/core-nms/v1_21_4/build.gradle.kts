@@ -18,4 +18,11 @@ tasks {
     reobfJar {
         mustRunAfter(shadowJar)
     }
+
+    shadowJar {
+        relocate(
+            "com.willfp.eco.internal.spigot.proxy.common",
+            "com.willfp.eco.internal.spigot.proxy.v1_21_4.common"
+        )
+    }
 }

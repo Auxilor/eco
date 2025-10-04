@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v1_21_7.item
+package com.willfp.eco.internal.spigot.proxy.common.modern
 
 import com.willfp.eco.internal.spigot.proxy.common.item.EcoFastItemStack
 import net.minecraft.core.component.DataComponents
@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
 
-open class NewerEcoFastItemStack(
+open class ModernEcoFastItemStack(
     bukkit: ItemStack,
 ) : EcoFastItemStack(bukkit) {
     override fun addItemFlags(vararg hideFlags: ItemFlag) {

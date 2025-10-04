@@ -7,6 +7,7 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":eco-core:core-nms:common"))
+    implementation(project(":eco-core:core-nms:modern"))
     paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 }
 
@@ -17,5 +18,12 @@ tasks {
 
     reobfJar {
         mustRunAfter(shadowJar)
+    }
+
+    shadowJar {
+        relocate(
+            "com.willfp.eco.internal.spigot.proxy.common",
+            "com.willfp.eco.internal.spigot.proxy.v1_21_5.common"
+        )
     }
 }
