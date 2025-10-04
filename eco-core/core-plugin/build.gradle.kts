@@ -11,7 +11,6 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.53.0")
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.0")
-    implementation("org.javassist:javassist:3.29.2-GA")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.1.2")
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")

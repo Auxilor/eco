@@ -1,13 +1,7 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    // Libraries
-    implementation("org.reflections:reflections:0.9.12")
-    implementation("org.objenesis:objenesis:3.2")
-
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("net.kyori:adventure-text-minimessage:4.10.0")

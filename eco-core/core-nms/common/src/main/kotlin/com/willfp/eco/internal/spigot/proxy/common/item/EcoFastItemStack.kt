@@ -65,9 +65,7 @@ class ContinuallyAppliedPersistentDataContainer(
 open class EcoFastItemStack(
     private val bukkit: ItemStack,
 ) : ImplementedFIS {
-    // Cast is there because, try as I might, I can't get IntellIJ to recognise half the classes in the dev bundle
-    @Suppress("USELESS_CAST")
-    protected val handle = bukkit.asNMSStack() as net.minecraft.world.item.ItemStack
+    protected val handle = bukkit.asNMSStack()
 
     private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
 

@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression", "MismatchedQueryAndUpdateOfCollection"})
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "MismatchedQueryAndUpdateOfCollection"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Registrable {
     /**
      * The properties (eco.yml).

@@ -56,8 +56,10 @@ public final class PluginProps {
 
     /**
      * If the plugin uses reflective reload.
+     * @deprecated This option has no effect, reflective reload has been removed.
      */
-    private boolean usesReflectiveReload = true;
+    @Deprecated(since = "6.77.0", forRemoval = true)
+    private boolean usesReflectiveReload = false;
 
     /**
      * Create new blank props.
@@ -189,7 +191,9 @@ public final class PluginProps {
      * Set if the plugin uses reflective reload.
      *
      * @return If the plugin uses reflective reload.
+     * @deprecated Reflective reload has been removed.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public boolean isUsingReflectiveReload() {
         return usesReflectiveReload;
     }
@@ -198,7 +202,9 @@ public final class PluginProps {
      * Set if the plugin uses reflective reload.
      *
      * @param usesReflectiveReload If the plugin uses reflective reload.
+     * @deprecated Reflective reload has been removed.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public void setUsesReflectiveReload(final boolean usesReflectiveReload) {
         this.usesReflectiveReload = usesReflectiveReload;
     }

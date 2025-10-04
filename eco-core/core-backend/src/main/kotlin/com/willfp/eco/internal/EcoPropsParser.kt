@@ -31,7 +31,6 @@ object EcoPropsParser : PluginProps.PropsParser<Config> {
         val proxyPackage = config.getStringOrNull("proxy-package") ?: ""
         val color = config.getStringOrNull("color") ?: "&f"
         val supportsExtensions = config.getBoolOrNull("supports-extensions") ?: false
-        val usesReflectiveReload = config.getBoolOrNull("uses-reflective-reload") ?: true
 
         props.apply {
             this.resourceId = resourceId
@@ -39,7 +38,6 @@ object EcoPropsParser : PluginProps.PropsParser<Config> {
             this.proxyPackage = proxyPackage
             this.color = color
             this.isSupportingExtensions = supportsExtensions
-            this.setUsesReflectiveReload(usesReflectiveReload)
         }
     }
 

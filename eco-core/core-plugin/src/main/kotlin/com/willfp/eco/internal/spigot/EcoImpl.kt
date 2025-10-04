@@ -21,7 +21,6 @@ import com.willfp.eco.internal.command.EcoSubcommand
 import com.willfp.eco.internal.config.EcoConfigSection
 import com.willfp.eco.internal.config.EcoLoadableConfig
 import com.willfp.eco.internal.config.EcoUpdatableConfig
-import com.willfp.eco.internal.config.handler.ReflectiveConfigHandler
 import com.willfp.eco.internal.config.handler.SimpleConfigHandler
 import com.willfp.eco.internal.config.toMap
 import com.willfp.eco.internal.drops.EcoDropQueue
@@ -31,8 +30,6 @@ import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
 import com.willfp.eco.internal.factory.EcoRunnableFactory
-import com.willfp.eco.internal.fast.FastInternalNamespacedKeyFactory
-import com.willfp.eco.internal.fast.InternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
@@ -89,10 +86,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         getProxy(CommonsInitializerProxy::class.java).init(this)
     }
 
-    @Suppress("RedundantNullableReturnType")
-    private val keyFactory: InternalNamespacedKeyFactory? =
-        if (this.configYml.getBool("use-safer-namespacedkey-creation"))
-            SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
+    private val keyFactory = SafeInternalNamespacedKeyFactory()
 
     private val placeholderParser = PlaceholderParser()
 
@@ -122,8 +116,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         EcoExtensionLoader(plugin)
 
     override fun createConfigHandler(plugin: EcoPlugin) =
-        if (plugin.props.isUsingReflectiveReload) ReflectiveConfigHandler(plugin)
-        else SimpleConfigHandler()
+        SimpleConfigHandler()
 
     override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
@@ -296,9 +289,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
 
-    @Suppress("DEPRECATION")
     override fun createNamespacedKey(namespace: String, key: String) =
-        keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
+        NamespacedKey(namespace, key)
 
     override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>) =
         existing ?: EcoPropsParser.parseForPlugin(plugin)
