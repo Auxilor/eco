@@ -115,6 +115,7 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDa
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemBridge
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsNexo
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
@@ -350,6 +351,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Custom Items
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen(this)) },
+            IntegrationLoader("Nexo") { CustomItemsManager.register(CustomItemsNexo(this)) },
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
