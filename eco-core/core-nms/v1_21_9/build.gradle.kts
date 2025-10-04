@@ -12,6 +12,7 @@ dependencies {
 }
 
 tasks {
+    /*
     build {
         dependsOn(reobfJar)
     }
@@ -19,4 +20,6 @@ tasks {
     reobfJar {
         mustRunAfter(shadowJar)
     }
+
+     */
 }
