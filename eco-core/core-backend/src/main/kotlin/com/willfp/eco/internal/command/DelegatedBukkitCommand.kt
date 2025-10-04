@@ -14,7 +14,7 @@ class DelegatedBukkitCommand(
     "/${delegate.name}",
     delegate.aliases
 ), TabCompleter, PluginIdentifiableCommand {
-    override fun execute(sender: CommandSender, label: String, args: Array<out String>?): Boolean {
+    override fun execute(sender: CommandSender, label: String, args: Array<out String>): Boolean {
         return delegate.onCommand(sender, this, label, args)
     }
 
@@ -22,7 +22,7 @@ class DelegatedBukkitCommand(
         sender: CommandSender,
         command: Command,
         label: String,
-        args: Array<out String>?
+        args: Array<out String>
     ): List<String> {
         return delegate.onTabComplete(sender, this, label, args)
     }
@@ -30,7 +30,7 @@ class DelegatedBukkitCommand(
     override fun tabComplete(
         sender: CommandSender,
         alias: String,
-        args: Array<out String>?,
+        args: Array<out String>,
         location: Location?
     ): List<String> {
         return delegate.onTabComplete(sender, this, alias, args)

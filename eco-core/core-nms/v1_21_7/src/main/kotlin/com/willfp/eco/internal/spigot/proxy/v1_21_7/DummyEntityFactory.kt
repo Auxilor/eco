@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_7
 
 import com.willfp.eco.internal.entities.EcoDummyEntity
-import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
 import org.bukkit.Location
 import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.entity.Entity

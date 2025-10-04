@@ -21,14 +21,6 @@ public final class SoundUtils {
      */
     @Nullable
     public static Sound getSound(@NotNull final String name) {
-        if (!Prerequisite.HAS_1_21_3.isMet()) {
-            try {
-                return Sound.valueOf(name.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
-        }
-
         // First try from registry (preferred)
         Sound fromRegistry = Registry.SOUNDS.get(NamespacedKey.minecraft(name.toLowerCase()));
         if (fromRegistry != null) {

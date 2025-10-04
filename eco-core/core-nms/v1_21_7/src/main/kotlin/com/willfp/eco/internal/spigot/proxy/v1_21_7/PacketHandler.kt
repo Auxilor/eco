@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_7
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketListener
-import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearFrames
@@ -35,8 +35,6 @@ class PacketHandler : PacketHandlerProxy {
     }
 
     override fun getPacketListeners(plugin: EcoPlugin): List<PacketListener> {
-        // No PacketAutoRecipe for 1.21.3+ because recipes have been changed internally
-
         return listOf(
             PacketHeldItemSlot,
             NewItemsPacketOpenWindowMerchant,

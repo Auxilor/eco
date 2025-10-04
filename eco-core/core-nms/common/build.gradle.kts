@@ -6,12 +6,12 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    paperweight.paperDevBundle("1.17.1-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
     pluginRemapper("net.fabricmc:tiny-remapper:0.10.3:fat")
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }

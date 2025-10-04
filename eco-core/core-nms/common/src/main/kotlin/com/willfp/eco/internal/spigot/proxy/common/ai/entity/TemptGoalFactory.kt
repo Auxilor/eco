@@ -45,7 +45,7 @@ class EnhancedTemptGoal(
 
     init {
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK))
-        targetingConditions = TEMP_TARGETING.copy().selector { shouldFollow(it) }
+        targetingConditions = TEMP_TARGETING.copy().selector { entity, level -> shouldFollow(entity) }
     }
 
     override fun canUse(): Boolean {
@@ -53,7 +53,7 @@ class EnhancedTemptGoal(
             --calmDown
             false
         } else {
-            player = mob.level.getNearestPlayer(targetingConditions, mob as LivingEntity)
+            player = mob.level().getNearestPlayer(mob, 10.0)
             player != null
         }
     }

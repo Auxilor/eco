@@ -21,20 +21,7 @@ plugins {
 dependencies {
     implementation(project(":eco-api"))
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
-    implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
-    implementation(project(":eco-core:core-backend-modern"))
-    implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_18_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_3", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_4", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_5", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_7", configuration = "reobf"))
@@ -58,6 +45,9 @@ allprojects {
 
         // Paper
         maven("https://repo.papermc.io/repository/maven-public/")
+
+        // EssentialsX
+        maven("https://repo.essentialsx.net/releases")
 
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
@@ -163,7 +153,7 @@ allprojects {
 
         compileKotlin {
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_17)
+                jvmTarget.set(JvmTarget.JVM_21)
             }
         }
 
@@ -186,7 +176,7 @@ allprojects {
         }
 
         withType<JavaCompile>().configureEach {
-            options.release.set(17)
+            options.release.set(21)
         }
     }
 

@@ -28,7 +28,7 @@ object EntityArgParserKnockback : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_ATTACK_KNOCKBACK) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.ATTACK_KNOCKBACK) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserKnockback : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_ATTACK_KNOCKBACK)?.baseValue = attributeValue
+                it.getAttribute(Attribute.ATTACK_KNOCKBACK)?.baseValue = attributeValue
             }
         )
     }

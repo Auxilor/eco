@@ -20,17 +20,6 @@ public final class ProxyConstants {
      * All supported NMS versions.
      */
     public static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "v1_17_R1",
-            "v1_18_R1",
-            "v1_18_R2",
-            "v1_19_R1",
-            "v1_19_R2",
-            "v1_19_R3",
-            "v1_20_R1",
-            "v1_20_R2",
-            "v1_20_R3",
-            "v1_21",
-            "v1_21_3",
             "v1_21_4",
             "v1_21_5",
             "v1_21_7"

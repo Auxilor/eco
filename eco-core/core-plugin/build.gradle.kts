@@ -2,7 +2,6 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    compileOnly(project(":eco-core:core-proxy"))
     compileOnly(project(":eco-core:core-backend"))
 
     // Libraries
@@ -21,7 +20,7 @@ dependencies {
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.8")
-    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("net.dmulloy2:ProtocolLib:5.1.0")
@@ -36,14 +35,19 @@ dependencies {
     compileOnly("com.github.jiangdashao:matrix-api-repo:317d4635fd")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.1.202")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
+    compileOnly("com.github.brcdev-minecraft:shopgui-api:3.1.0", {
+        exclude(group = "*", module = "*")
+    })
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
-    compileOnly("com.github.EssentialsX:Essentials:2.18.2")
+    compileOnly("net.essentialsx:EssentialsX:2.21.2", {
+        exclude(group = "*", module = "*")
+    })
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:1.8.3")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
-    compileOnly("com.github.WhipDevelopment:CrashClaim:c697d3e9ef")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7", {
+        exclude(group = "*", module = "*")
+    })
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.5")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.4.6")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")

@@ -2,7 +2,11 @@ package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.items.args.LookupArgParser
+import io.papermc.paper.registry.RegistryAccess
+import io.papermc.paper.registry.RegistryKey
+import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
+import org.bukkit.Registry
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
@@ -17,7 +21,9 @@ object ArgParserEnchantment : LookupArgParser {
             try {
                 val argSplit = arg.split(":")
 
-                val enchant = Enchantment.getByKey(NamespacedKey.minecraft(argSplit[0].lowercase())) ?: continue
+                val enchant = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
+                    .get(NamespacedKey.minecraft(argSplit[0].lowercase())) ?: continue
+
                 val level = argSplit.getOrNull(1)?.toIntOrNull() ?: enchant.maxLevel
 
                 enchants[enchant] = level

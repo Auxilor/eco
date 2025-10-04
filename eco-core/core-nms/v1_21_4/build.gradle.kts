@@ -8,7 +8,6 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    implementation(project(":eco-core:core-nms:modern"))
     implementation(project(":eco-core:core-nms:common"))
     paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
 
@@ -38,15 +37,5 @@ tasks {
             "net.kyori.adventure.text.minimessage",
             "com.willfp.eco.internal.spigot.proxy.v1_21_4.minimessage"
         )
-    }
-
-    compileJava {
-        options.release.set(21)
-    }
-
-    compileKotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
     }
 }

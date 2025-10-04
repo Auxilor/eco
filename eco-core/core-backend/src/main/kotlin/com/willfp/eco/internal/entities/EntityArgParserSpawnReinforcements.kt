@@ -28,7 +28,7 @@ object EntityArgParserSpawnReinforcements : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.SPAWN_REINFORCEMENTS) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserSpawnReinforcements : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS)?.baseValue = attributeValue
+                it.getAttribute(Attribute.SPAWN_REINFORCEMENTS)?.baseValue = attributeValue
             }
         )
     }

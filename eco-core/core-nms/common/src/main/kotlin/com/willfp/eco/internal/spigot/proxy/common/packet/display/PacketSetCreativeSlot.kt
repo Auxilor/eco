@@ -12,7 +12,7 @@ object PacketSetCreativeSlot : PacketListener {
     override fun onReceive(event: PacketEvent) {
         val packet = event.packet.handle as? ServerboundSetCreativeModeSlotPacket ?: return
 
-        Display.revert(packet.item.asBukkitStack())
+        Display.revert(packet.itemStack.asBukkitStack())
 
         event.player.lastDisplayFrame = DisplayFrame.EMPTY
     }

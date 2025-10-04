@@ -28,7 +28,7 @@ object EntityArgParserFollowRange : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_FOLLOW_RANGE) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.FOLLOW_RANGE) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserFollowRange : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_FOLLOW_RANGE)?.baseValue = attributeValue
+                it.getAttribute(Attribute.FOLLOW_RANGE)?.baseValue = attributeValue
             }
         )
     }

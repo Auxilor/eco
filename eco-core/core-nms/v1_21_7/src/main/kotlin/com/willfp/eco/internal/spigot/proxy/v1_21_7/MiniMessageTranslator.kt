@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_7
 
 import com.willfp.eco.core.display.Display
-import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.minimessage.MiniMessage
 
