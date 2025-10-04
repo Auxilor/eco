@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("io.papermc.paperweight.userdev")
 }
@@ -10,13 +8,6 @@ version = rootProject.version
 dependencies {
     implementation(project(":eco-core:core-nms:common"))
     paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
-
-    implementation("net.kyori:adventure-text-minimessage:4.11.0") {
-        version {
-            strictly("4.11.0")
-        }
-        exclude(group = "net.kyori", module = "adventure-api")
-    }
 }
 
 tasks {
@@ -26,16 +17,5 @@ tasks {
 
     reobfJar {
         mustRunAfter(shadowJar)
-    }
-
-    shadowJar {
-        relocate(
-            "com.willfp.eco.internal.spigot.proxy.common",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_4.common"
-        )
-        relocate(
-            "net.kyori.adventure.text.minimessage",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_4.minimessage"
-        )
     }
 }
