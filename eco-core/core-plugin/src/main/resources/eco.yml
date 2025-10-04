@@ -4,4 +4,3 @@ options:
   proxy-package: com.willfp.eco.internal.spigot.proxy
   color: '&a'
   supports-extensions: false
-  uses-reflective-reload: false
