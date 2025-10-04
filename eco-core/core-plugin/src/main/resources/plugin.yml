@@ -17,7 +17,6 @@ loadbefore:
   - DeluxeCombat
   - ShopGUIPlus
   - DeluxeMenus
-  - Nexo
 softdepend:
   - ItemBridge
   - HuskClaims
@@ -38,6 +37,7 @@ softdepend:
   - CombatLogX
   - ItemsAdder
   - Oraxen
+  - Nexo
   - HeadDatabase
   - Multiverse-Inventories
   - Alice
