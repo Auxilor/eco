@@ -1,7 +1,6 @@
 package com.willfp.eco.util;
 
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,20 +14,13 @@ public final class LightningUtils {
      * @param victim The entity to smite.
      * @param damage The damage to deal.
      * @param silent If the lightning sound should be played locally
+     * @deprecated Use {@link #strike(LivingEntity, double)} instead, sound is now client-side.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static void strike(@NotNull final LivingEntity victim,
                               final double damage,
                               final boolean silent) {
-        Location loc = victim.getLocation();
-
-        if (silent) {
-            victim.getWorld().spigot().strikeLightningEffect(loc, true);
-            victim.getWorld().playSound(loc, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 1, 1);
-        } else {
-            victim.getWorld().strikeLightningEffect(loc);
-        }
-
-        victim.damage(damage);
+        strike(victim, damage);
     }
 
     /**
@@ -39,7 +31,11 @@ public final class LightningUtils {
      */
     public static void strike(@NotNull final LivingEntity victim,
                               final double damage) {
-        strike(victim, damage, false);
+        Location loc = victim.getLocation();
+
+        victim.getWorld().strikeLightningEffect(loc);
+
+        victim.damage(damage);
     }
 
     private LightningUtils() {

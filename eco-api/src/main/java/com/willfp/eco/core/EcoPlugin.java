@@ -426,14 +426,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         Prerequisite.update();
 
-        if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
-            this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
-                if (!abstractPacketAdapter.isPostLoad()) {
-                    abstractPacketAdapter.register();
-                }
-            });
-        }
-
         this.loadListeners().forEach(listener -> this.getEventManager().registerListener(listener));
         this.loadPacketListeners().forEach(listener -> this.getEventManager().registerPacketListener(listener));
 
@@ -573,14 +565,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         for (DisplayModule displayModule : this.loadDisplayModules()) {
             Display.registerDisplayModule(displayModule);
             this.displayModules.add(displayModule);
-        }
-
-        if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
-            this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
-                if (abstractPacketAdapter.isPostLoad()) {
-                    abstractPacketAdapter.register();
-                }
-            });
         }
 
         if (!Prerequisite.HAS_PAPER.isMet()) {
@@ -837,19 +821,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return A list of commands.
      */
     protected List<PluginCommand> loadPluginCommands() {
-        return new ArrayList<>();
-    }
-
-    /**
-     * ProtocolLib handle adapters to be registered.
-     * <p>
-     * If the plugin does not require ProtocolLib this can be left empty.
-     *
-     * @return A list of handle adapters.
-     * @deprecated Use {@link #loadPacketListeners()} instead.
-     */
-    @Deprecated(since = "6.51.0")
-    protected List<AbstractPacketAdapter> loadPacketAdapters() {
         return new ArrayList<>();
     }
 

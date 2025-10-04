@@ -160,6 +160,7 @@ allprojects {
         compileJava {
             dependsOn(clean)
             options.encoding = "UTF-8"
+            options.isDeprecation = true
         }
 
         test {
