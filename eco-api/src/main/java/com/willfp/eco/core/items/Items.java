@@ -58,7 +58,7 @@ public final class Items {
 
                         TestableItem match = null;
                         for (TestableItem item : REGISTRY.values()) {
-                            if (item.matches(key.getItem())) {
+                            if (item.shouldMarkAsCustom() && item.matches(key.getItem())) {
                                 match = item;
                                 break;
                             }
