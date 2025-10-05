@@ -9,7 +9,6 @@ import net.minecraft.SharedConstants
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.SnbtPrinterTagVisitor
-import net.minecraft.nbt.Tag
 import net.minecraft.nbt.TagParser
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.datafix.fixes.References
@@ -45,7 +44,7 @@ class SNBTConverter : SNBTConverterProxy {
             val dataVersion = parsed.getIntOr("DataVersion", 0)
             val converted = MinecraftServer.getServer().fixerUpper.update(
                 References.ITEM_STACK,
-                Dynamic<Tag?>(NbtOps.INSTANCE, parsed),
+                Dynamic(NbtOps.INSTANCE, parsed),
                 dataVersion,
                 SharedConstants.getCurrentVersion().dataVersion().version()
             ).getValue() as CompoundTag?

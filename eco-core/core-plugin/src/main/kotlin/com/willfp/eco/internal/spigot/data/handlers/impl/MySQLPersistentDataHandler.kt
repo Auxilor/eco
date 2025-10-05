@@ -54,7 +54,13 @@ class MySQLPersistentDataHandler(
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
             override val table = object : KeyTable<String>("string") {
-                override val value = varchar(VALUE_COLUMN_NAME, 256)
+                override val value = text(VALUE_COLUMN_NAME)
+            }
+
+            override fun afterCreate() {
+                transaction(database) {
+                    exec("ALTER TABLE ${table.tableName} MODIFY COLUMN $VALUE_COLUMN_NAME TEXT")
+                }
             }
         }.createTable())
 
@@ -85,7 +91,13 @@ class MySQLPersistentDataHandler(
 
         PersistentDataKeyType.CONFIG.registerSerializer(this, object : SingleValueSerializer<Config, String>() {
             override val table = object : KeyTable<String>("config") {
-                override val value = text(VALUE_COLUMN_NAME)
+                override val value = mediumText(VALUE_COLUMN_NAME)
+            }
+
+            override fun afterCreate() {
+                transaction(database) {
+                    exec("ALTER TABLE ${table.tableName} MODIFY COLUMN $VALUE_COLUMN_NAME MEDIUMTEXT")
+                }
             }
 
             override fun convertFromStored(value: String): Config {
@@ -104,7 +116,14 @@ class MySQLPersistentDataHandler(
 
         PersistentDataKeyType.STRING_LIST.registerSerializer(this, object : MultiValueSerializer<String>() {
             override val table = object : ListKeyTable<String>("string_list") {
-                override val value = varchar(VALUE_COLUMN_NAME, 256)
+                override val value = mediumText(VALUE_COLUMN_NAME)
+            }
+
+            override fun afterCreate() {
+                // Previously, each entry was stored as varchar(255) rather than MEDIUMTEXT
+                transaction(database) {
+                    exec("ALTER TABLE ${table.tableName} MODIFY COLUMN $VALUE_COLUMN_NAME MEDIUMTEXT")
+                }
             }
         }.createTable())
     }
@@ -134,7 +153,12 @@ class MySQLPersistentDataHandler(
                 SchemaUtils.create(table)
             }
 
+            this.afterCreate()
             return this
+        }
+
+        protected open fun afterCreate() {
+            // Do nothing
         }
     }
 
@@ -205,9 +229,9 @@ class MySQLPersistentDataHandler(
                                 (table.index greaterEq value.size)
                     }
 
-                    // Replace existing values in bounds
+                    // Upsert values (insert new or update existing)
                     value.forEachIndexed { index, t ->
-                        table.replace {
+                        table.upsert {
                             it[table.uuid] = uuid
                             it[table.key] = key.key.toString()
                             it[table.index] = index
@@ -252,6 +276,7 @@ class MySQLPersistentDataHandler(
             try {
                 return action()
             } catch (e: Exception) {
+                e.printStackTrace()
                 if (retries > 5) {
                     return null
                 }
