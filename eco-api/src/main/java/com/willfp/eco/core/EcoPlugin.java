@@ -915,7 +915,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The version.
      * @deprecated Use {@link PluginProps#getEcoApiVersion()} instead, configure in eco.yml as eco-api-version.
      */
-    @Deprecated(since = "6.77.0")
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public String getMinimumEcoVersion() {
         return this.getProps().getEcoApiVersion().toString();
     }
