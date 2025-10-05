@@ -24,5 +24,9 @@ tasks {
             "com.willfp.eco.internal.spigot.proxy.v1_21_5",
             "com.willfp.eco.internal.spigot.proxy.v1_21_6"
         )
+
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_5/SNBTConverter*.class")
+
+        duplicatesStrategy = DuplicatesStrategy.FAIL
     }
 }
