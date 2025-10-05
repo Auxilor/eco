@@ -38,6 +38,7 @@ dependencies {
         exclude(group = "*", module = "*")
     })
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
+    compileOnly("com.nexomc:nexo:1.10.0")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
     compileOnly("net.essentialsx:EssentialsX:2.21.2", {

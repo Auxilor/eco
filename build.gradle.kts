@@ -100,6 +100,9 @@ allprojects {
 
         // FancyHolograms
         maven("https://repo.fancyplugins.de/releases")
+
+        // Nexo
+        maven("https://repo.nexomc.com/releases")
     }
 
     dependencies {
