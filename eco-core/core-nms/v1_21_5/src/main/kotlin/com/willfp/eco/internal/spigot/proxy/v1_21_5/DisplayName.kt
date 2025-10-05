@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_5
 
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.packet.sendPacket
 import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
@@ -37,6 +38,10 @@ class DisplayName : DisplayNameProxy {
         visible: Boolean
     ) {
         if (entity !is CraftLivingEntity) {
+            return
+        }
+
+        if (!Prerequisite.HAS_PAPER.isMet) {
             return
         }
 
