@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.willfp.eco.core.version.Version;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,10 +63,16 @@ public final class PluginProps {
     private boolean usesReflectiveReload = false;
 
     /**
+     * The minimum eco api version required.
+     */
+    @NotNull
+    private Version ecoApiVersion;
+
+    /**
      * Create new blank props.
      */
     private PluginProps() {
-
+        this.ecoApiVersion = new Version("6.0.0");
     }
 
     /**
@@ -163,6 +170,25 @@ public final class PluginProps {
      */
     public void setSupportingExtensions(final boolean supportingExtensions) {
         this.supportingExtensions = supportingExtensions;
+    }
+
+    /**
+     * Get the minimum eco api version required.
+     *
+     * @return The version.
+     */
+    @NotNull
+    public Version getEcoApiVersion() {
+        return ecoApiVersion;
+    }
+
+    /**
+     * Set the minimum eco api version required.
+     *
+     * @param ecoApiVersion The version.
+     */
+    public void setEcoApiVersion(@NotNull final Version ecoApiVersion) {
+        this.ecoApiVersion = ecoApiVersion;
     }
 
     /**

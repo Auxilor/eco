@@ -4,6 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.config.readConfig
+import com.willfp.eco.core.version.Version
 
 object EcoPropsParser : PluginProps.PropsParser<Config> {
     override fun parseFrom(config: Config): PluginProps {
@@ -31,6 +32,7 @@ object EcoPropsParser : PluginProps.PropsParser<Config> {
         val proxyPackage = config.getStringOrNull("proxy-package") ?: ""
         val color = config.getStringOrNull("color") ?: "&f"
         val supportsExtensions = config.getBoolOrNull("supports-extensions") ?: false
+        val ecoApiVersion = config.getStringOrNull("eco-api-version")?.let { Version(it) }
 
         props.apply {
             this.resourceId = resourceId
@@ -38,6 +40,10 @@ object EcoPropsParser : PluginProps.PropsParser<Config> {
             this.proxyPackage = proxyPackage
             this.color = color
             this.isSupportingExtensions = supportsExtensions
+
+            if (ecoApiVersion != null) {
+                this.ecoApiVersion = ecoApiVersion
+            }
         }
     }
 

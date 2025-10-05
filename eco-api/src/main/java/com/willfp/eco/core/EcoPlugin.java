@@ -364,13 +364,19 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
          */
 
         Version runningVersion = new Version(Eco.get().getEcoPlugin().getDescription().getVersion());
+
+        // Support for both legacy and new props configuration
         Version requiredVersion = new Version(this.getMinimumEcoVersion());
+        if (this.getProps().getEcoApiVersion().compareTo(requiredVersion) > 0) {
+            requiredVersion = this.getProps().getEcoApiVersion();
+        }
+
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
-            this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
+            this.getLogger().severe("You must be on at least" + requiredVersion);
             this.getLogger().severe("Download the newest version here:");
-            this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
-            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + this.getMinimumEcoVersion() + " to run.");
+            this.getLogger().severe("https://polymart.org/product/773/eco");
+            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + requiredVersion + " to run.");
         }
     }
 
@@ -907,9 +913,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Get the minimum version of eco to use the plugin.
      *
      * @return The version.
+     * @deprecated Use {@link PluginProps#getEcoApiVersion()} instead, configure in eco.yml as eco-api-version.
      */
+    @Deprecated(since = "6.77.0")
     public String getMinimumEcoVersion() {
-        return "6.0.0";
+        return this.getProps().getEcoApiVersion().toString();
     }
 
     /**

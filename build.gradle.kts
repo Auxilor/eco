@@ -24,7 +24,9 @@ dependencies {
     implementation(project(":eco-core:core-backend"))
     implementation(project(path = ":eco-core:core-nms:v1_21_4", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_5", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_6", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_7", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_8", configuration = "reobf"))
     //implementation(project(path = ":eco-core:core-nms:v1_21_9", configuration = "reobf"))
 }
 
