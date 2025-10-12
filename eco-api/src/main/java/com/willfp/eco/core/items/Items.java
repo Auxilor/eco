@@ -220,9 +220,9 @@ public final class Items {
 
         int stackAmount = 1;
 
-        String base1 = args[0];
+        String base1 = args[0].toLowerCase();
 
-        String[] split = base1.toLowerCase().split(":");
+        String[] split = base1.split(":");
 
         String base2 = split[0];
         boolean isTag = base2.startsWith("#");
