@@ -441,11 +441,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.getScheduler().runLater(() -> {
             Logger before = this.getLogger();
             // Temporary silence logger.
-            this.logger = Eco.get().getNOOPLogger();
+            //this.logger = Eco.get().getNOOPLogger();
 
             this.reload(false);
 
-            this.logger = before;
+            //this.logger = before;
         }, 1);
 
         this.getScheduler().runLater(this::afterLoad, 2);
@@ -636,9 +636,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         if (cancelTasks) {
             this.getScheduler().cancelAll();
         }
-
-        this.getConfigHandler().callUpdate();
-        this.getConfigHandler().callUpdate(); // Call twice to fix issues
 
         this.handleLifecycle(this.onReload, this::handleReload);
 
