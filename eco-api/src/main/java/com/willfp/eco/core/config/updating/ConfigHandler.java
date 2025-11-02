@@ -12,7 +12,10 @@ public interface ConfigHandler {
     /**
      * Invoke all update methods.
      */
-    void callUpdate();
+    @Deprecated(since = "6.77.2", forRemoval = true)
+    default void callUpdate() {
+        // Do nothing
+    }
 
     /**
      * Save all configs.

@@ -1,57 +1,34 @@
 package com.willfp.eco.internal.spigot.proxy.common
 
-import com.mojang.authlib.GameProfile
-import com.mojang.authlib.properties.Property
-import net.minecraft.world.item.component.ResolvableProfile
+import com.destroystokyo.paper.profile.ProfileProperty
+import com.willfp.eco.core.Prerequisite
+import io.papermc.paper.datacomponent.item.ResolvableProfile
 import org.bukkit.inventory.meta.SkullMeta
-import java.lang.reflect.Field
-import java.lang.reflect.Method
-import java.util.UUID
-import kotlin.collections.toMutableList
-import kotlin.jvm.java
-
-private lateinit var setProfile: Method
-private lateinit var profile: Field
-private lateinit var value: Field
 
 var SkullMeta.texture: String?
     get() {
-        if (!::value.isInitialized) {
-            // Doing it this way because Property was changed to be a record and this is
-            // a quick hack to get around that
-            value = Property::class.java.getDeclaredField("value")
-            value.isAccessible = true
+        if (!Prerequisite.HAS_PAPER.isMet) {
+            return null
         }
 
-        if (!::profile.isInitialized) {
-            // Assumes instance of CraftMetaSkull; package-private class so can't do manual type check
-            profile = this.javaClass.getDeclaredField("profile")
-            profile.isAccessible = true
-        }
+        val profile = this.playerProfile ?: return null
+        val property = profile.properties.firstOrNull { it.name == "textures" } ?: return null
 
-        val profile = profile[this] as ResolvableProfile? ?: return null
-        val properties = profile.properties ?: return null
-        val props = properties["textures"] ?: return null
-        val prop = props.toMutableList().firstOrNull() ?: return null
-        return value[prop] as String?
+        return property.value
     }
     set(base64) {
-        if (!::setProfile.isInitialized) {
-            // Same here; that's why I can't delegate to a lazy initializer
-            setProfile = this.javaClass.getDeclaredMethod("setProfile", ResolvableProfile::class.java)
-            setProfile.isAccessible = true
+        if (!Prerequisite.HAS_PAPER.isMet) {
+            return
         }
 
-        if (base64 == null || base64.length < 20) {
-            setProfile.invoke(this, null)
+        if (base64 == null) {
+            this.playerProfile = null
+            return
         } else {
-            val uuid = UUID(
-                base64.substring(base64.length - 20).hashCode().toLong(),
-                base64.substring(base64.length - 10).hashCode().toLong()
-            )
-            val profile = GameProfile(uuid, "eco")
-            profile.properties.put("textures", Property("textures", base64))
-            val resolvable = ResolvableProfile(profile)
-            setProfile.invoke(this, resolvable)
+            val profile = ResolvableProfile.resolvableProfile()
+                .addProperty(ProfileProperty("textures", base64))
+                .build()
+                .resolve().get()
+            this.playerProfile = profile
         }
     }
