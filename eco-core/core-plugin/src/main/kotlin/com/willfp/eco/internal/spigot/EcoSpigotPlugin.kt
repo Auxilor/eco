@@ -128,6 +128,7 @@ import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicD
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryCoinsEngine
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEconomy
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
@@ -154,6 +155,7 @@ import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 import kotlin.jvm.java
+import su.nightexpress.coinsengine.api.CoinsEngineAPI
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
@@ -402,6 +404,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     for (currency in MultiCurrencyHandler.getCurrencies()) {
                         Prices.registerPriceFactory(PriceFactoryRoyaleEconomy(currency))
                     }
+                }
+            },
+            IntegrationLoader("CoinsEngine") {
+                for (currency in CoinsEngineAPI.getCurrencies()) {
+                    Prices.registerPriceFactory(PriceFactoryCoinsEngine(currency))
                 }
             },
 
