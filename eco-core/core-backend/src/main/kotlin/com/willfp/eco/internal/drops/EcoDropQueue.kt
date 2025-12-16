@@ -63,6 +63,7 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
 
         items.clear()
         items.addAll(pushEvent.items)
+        xp = pushEvent.xp
 
         val world = location.world!!
         location = location.add(0.5, 0.5, 0.5)
