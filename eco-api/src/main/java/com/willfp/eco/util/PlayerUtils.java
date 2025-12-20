@@ -184,4 +184,8 @@ public final class PlayerUtils {
     private PlayerUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
+
+    public static void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending) {
+        Eco.get().giveExpAndApplyMending(player, amount, applyMending);
+    }
 }

@@ -602,6 +602,8 @@ public interface Eco {
                                   @NotNull Component name,
                                   boolean visible);
 
+    void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending);
+
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
      *
