@@ -27,3 +27,6 @@ fun Player.runExempted(action: () -> Unit) =
 /** @see PlayerUtils.tryAsPlayer */
 fun Entity?.tryAsPlayer(): Player? =
     PlayerUtils.tryAsPlayer(this)
+
+fun Player.giveExpAndApplyMending(amount: Int, applyMending: Boolean) =
+    PlayerUtils.giveExpAndApplyMending(this, amount, applyMending)
