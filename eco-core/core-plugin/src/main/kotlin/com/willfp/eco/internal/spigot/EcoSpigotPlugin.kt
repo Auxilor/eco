@@ -47,6 +47,8 @@ import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
 import com.willfp.eco.internal.items.ArgParserEntity
 import com.willfp.eco.internal.items.ArgParserFireResistant
+import com.willfp.eco.internal.items.ArgParserFireworkBuilder
+import com.willfp.eco.internal.items.ArgParserFireworkPower
 import com.willfp.eco.internal.items.ArgParserFlag
 import com.willfp.eco.internal.items.ArgParserGlider
 import com.willfp.eco.internal.items.ArgParserGlint
@@ -56,6 +58,7 @@ import com.willfp.eco.internal.items.ArgParserItemName
 import com.willfp.eco.internal.items.ArgParserMaxDamage
 import com.willfp.eco.internal.items.ArgParserMaxStackSize
 import com.willfp.eco.internal.items.ArgParserName
+import com.willfp.eco.internal.items.ArgParserPotionBuilder
 import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserTooltipStyle
 import com.willfp.eco.internal.items.ArgParserTrim
@@ -166,6 +169,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserEnchantment)
         Items.registerArgParser(ArgParserColor)
         Items.registerArgParser(ArgParserTexture)
+        Items.registerArgParser(ArgParserPotionBuilder)
+        Items.registerArgParser(ArgParserFireworkBuilder)
+        Items.registerArgParser(ArgParserFireworkPower)
         Items.registerArgParser(ArgParserCustomModelData)
         Items.registerArgParser(ArgParserFlag)
         Items.registerArgParser(ArgParserUnbreakable)
