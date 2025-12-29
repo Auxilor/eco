@@ -105,6 +105,9 @@ allprojects {
 
         // Nexo
         maven("https://repo.nexomc.com/releases")
+
+        // CoinsEngine
+        maven("https://repo.nightexpressdev.com/releases")
     }
 
     dependencies {
