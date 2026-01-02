@@ -86,7 +86,7 @@ allprojects {
         maven("https://redempt.dev")
 
         // LibsDisguises
-        maven("https://repo.md-5.net/content/groups/public/")
+        maven("https://mvn.lib.co.nz/public")
 
         // PlayerPoints
         maven("https://repo.rosewooddev.io/repository/public/")
@@ -108,6 +108,9 @@ allprojects {
 
         // CraftEngine
         maven("https://repo.momirealms.net/releases/")
+        
+        // CoinsEngine
+        maven("https://repo.nightexpressdev.com/releases")
     }
 
     dependencies {
