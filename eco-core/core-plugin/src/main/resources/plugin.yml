@@ -64,4 +64,5 @@ softdepend:
   - Denizen
   - RoyaleEconomy
   - FancyHolograms
+  - CraftEngine
   - CoinsEngine

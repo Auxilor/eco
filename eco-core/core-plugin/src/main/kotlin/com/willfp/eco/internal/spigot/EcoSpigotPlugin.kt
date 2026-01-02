@@ -111,6 +111,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSk
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
+import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCraftEngine
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsDenizen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
@@ -361,6 +362,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen(this)) },
             IntegrationLoader("Nexo") { CustomItemsManager.register(CustomItemsNexo(this)) },
             IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
+            IntegrationLoader("CraftEngine") { CustomItemsManager.register(CustomItemsCraftEngine(this)) },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
             IntegrationLoader("CustomCrafting") {
