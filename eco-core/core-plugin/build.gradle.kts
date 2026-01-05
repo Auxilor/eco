@@ -39,7 +39,9 @@ dependencies {
         exclude(group = "*", module = "*")
     })
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
-    compileOnly("com.nexomc:nexo:1.10.0")
+    compileOnly("com.nexomc:nexo:1.17.0") {
+        exclude(group = "*", module = "*")
+    }
     compileOnly("net.momirealms:craft-engine-core:0.0.66")
     compileOnly("net.momirealms:craft-engine-bukkit:0.0.66")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")

@@ -98,8 +98,6 @@ object ArgParserFireworkBuilder : LookupArgParser {
         }
         return true
     }
-
-    private fun Color.asRGB(): Int = (red shl 16) or (green shl 8) or blue
 }
 
 object ArgParserFireworkPower : LookupArgParser {

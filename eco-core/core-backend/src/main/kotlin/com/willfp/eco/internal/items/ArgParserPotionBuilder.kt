@@ -21,6 +21,7 @@ object ArgParserPotionBuilder : LookupArgParser {
             if (!split[0].equals("potion_effect", ignoreCase = true)) continue
             if (split.size != 4) continue
 
+            @Suppress("DEPRECATION")
             val type = PotionEffectType.getByName(split[1].uppercase()) ?: continue
             val level = split[2].toIntOrNull() ?: continue
             val duration = split[3].toIntOrNull() ?: continue

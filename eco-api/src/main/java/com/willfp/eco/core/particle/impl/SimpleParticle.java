@@ -36,7 +36,7 @@ public final class SimpleParticle implements SpawnableParticle {
         if (particle.getDataType() == Float.class) {
             world.spawnParticle(particle, location, amount, 0, 0, 0, 1f);
         } else {
-            world.spawnParticle(particle, location, amount, 0, 0, 0, 0, null);
+            world.spawnParticle(particle, location, amount, 0, 0, 0, 0);
         }
     }
 }
