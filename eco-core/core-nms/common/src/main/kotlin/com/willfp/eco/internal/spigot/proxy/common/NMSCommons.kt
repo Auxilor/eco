@@ -14,8 +14,10 @@ import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -80,7 +82,7 @@ fun net.minecraft.network.chat.Component.toAdventure(): Component {
         return PaperAdventure.asAdventure(this)
     }
 
-    val json = net.minecraft.network.chat.Component.Serializer.toJson(this)
+    val json = net.minecraft.network.chat.Component.Serializer.toJson(this, (Bukkit.getServer() as CraftServer).server.registryAccess())
     return GsonComponentSerializer.gson().deserialize(json)
 }
 

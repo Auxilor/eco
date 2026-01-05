@@ -27,18 +27,9 @@ interface TopInventoryProxy {
     fun getTopInventory(player: Player): Inventory
 }
 
-private val Player.topInventory: Inventory
-    get() {
-        return if (!Prerequisite.HAS_1_21.isMet) {
-            Eco.get().ecoPlugin.getProxy(TopInventoryProxy::class.java).getTopInventory(this)
-        } else {
-            this.openInventory.topInventory
-        }
-    }
-
 val Player.renderedInventory: RenderedInventory?
     get() = trackedForceRendered[this.uniqueId]
-        ?: this.topInventory.asRenderedInventory()
+        ?: this.openInventory.topInventory.asRenderedInventory()
 
 class RenderedInventory(
     val menu: EcoMenu,

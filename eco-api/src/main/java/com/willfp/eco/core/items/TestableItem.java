@@ -23,4 +23,15 @@ public interface TestableItem extends Testable<ItemStack> {
      * @return The item.
      */
     ItemStack getItem();
+
+    /**
+     * If an item matching this test should be marked as a custom item.
+     * <p>
+     * This is true by default for backwards compatibility reasons.
+     *
+     * @return If the item should be marked as custom.
+     */
+    default boolean shouldMarkAsCustom() {
+        return true;
+    }
 }

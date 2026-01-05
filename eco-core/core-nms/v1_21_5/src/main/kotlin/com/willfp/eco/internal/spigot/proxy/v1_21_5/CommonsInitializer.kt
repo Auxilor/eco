@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_5
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation

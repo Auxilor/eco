@@ -1,6 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_4
 
-import com.willfp.eco.internal.spigot.proxy.TPSProxy
+import com.willfp.eco.internal.spigot.proxies.TPSProxy
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.CraftServer
 

@@ -95,6 +95,7 @@ class StackedRecipeListener(
 
             // Anti-Underflow
             if (amount == 0) {
+                @Suppress("DEPRECATION")
                 item.type = Material.AIR
             }
             item.amount = amount

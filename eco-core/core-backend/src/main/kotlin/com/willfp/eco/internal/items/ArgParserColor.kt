@@ -5,15 +5,18 @@ import org.bukkit.Color
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.LeatherArmorMeta
+import org.bukkit.inventory.meta.PotionMeta
 import java.util.function.Predicate
 
 object ArgParserColor : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
-        if (meta !is LeatherArmorMeta) {
-            return null
+        val colorableMeta = when (meta) {
+            is LeatherArmorMeta -> meta
+            is PotionMeta -> meta
+            else -> return null
         }
 
-        var color: String? = null
+        var colorHex: String? = null
 
         for (arg in args) {
             val argSplit = arg.split(":")
@@ -23,30 +26,39 @@ object ArgParserColor : LookupArgParser {
             if (argSplit.size < 2) {
                 continue
             }
-            color = argSplit[1].replace("#","")
+            colorHex = argSplit[1].replace("#", "")
         }
 
-        color ?: return null
+        colorHex ?: return null
 
-        meta.setColor(Color.fromRGB(Integer.parseInt(color, 16)))
+        val rgb = Integer.parseInt(colorHex, 16)
+        val bukkitColor = Color.fromRGB(rgb)
+        
+        when (colorableMeta) {
+            is LeatherArmorMeta -> colorableMeta.setColor(bukkitColor)
+            is PotionMeta -> colorableMeta.setColor(bukkitColor)
+        }
 
-        return Predicate {
-            val testMeta = it.itemMeta as? LeatherArmorMeta ?: return@Predicate false
+        return Predicate { item ->
+            val testMeta = item.itemMeta ?: return@Predicate false
 
-            color.equals(
-                Integer.toHexString(testMeta.color.red)
-                        + Integer.toHexString(testMeta.color.green)
-                        + Integer.toHexString(testMeta.color.blue),
-                ignoreCase = true
-            )
+            val testColor = when (testMeta) {
+                is LeatherArmorMeta -> testMeta.color
+                is PotionMeta -> testMeta.color
+                else -> return@Predicate false
+            } ?: return@Predicate false
+
+            testColor.asRGB() == rgb
         }
     }
 
     override fun serializeBack(meta: ItemMeta): String? {
-        if (meta !is LeatherArmorMeta) {
-            return null
-        }
+        val color = when (meta) {
+            is LeatherArmorMeta -> meta.color
+            is PotionMeta -> meta.color
+            else -> return null
+        } ?: return null
 
-        return "color:#${Integer.toHexString(meta.color.asRGB())}"
+        return "color:#${Integer.toHexString(color.asRGB()).uppercase()}"
     }
 }

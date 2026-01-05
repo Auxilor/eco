@@ -1,6 +1,5 @@
 package com.willfp.eco.core;
 
-import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.util.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +29,10 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to be running an implementation of paper.
+     * Requires the server to have ProtocolLib installed.
+     * @deprecated ProtocolLib is no longer used by eco, AbstractPacketAdapter has been marked for removal since 6.77.0.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_PROTOCOLLIB = new Prerequisite(
             () -> ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter"),
             "Requires server to have ProtocolLib"
@@ -39,66 +40,89 @@ public class Prerequisite {
 
     /**
      * Requires the server to be running at least 1.21.3.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_21_3 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("1_21_3"),
+            () -> true,
             "Requires server to be running 1.21.3+"
     );
 
     /**
      * Requires the server to be running at least 1.21.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_21 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("1_21") || HAS_1_21_3.isMet(),
+            () -> true,
             "Requires server to be running 1.21+"
     );
 
     /**
      * Requires the server to be running at least 1.20.5.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_20_5 = new Prerequisite(
-            () -> (ProxyConstants.NMS_VERSION.contains("1_20_") && !ProxyConstants.NMS_VERSION.contains("R"))
-                    || HAS_1_21.isMet(),
+            () -> true,
             "Requires server to be running 1.20.5+"
     );
 
     /**
      * Requires the server to be running at least 1.20.3.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_20_3 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("20_R3") || HAS_1_20_5.isMet(),
+            () -> true,
             "Requires server to be running 1.20.3+"
     );
 
     /**
      * Requires the server to be running at least 1.20.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_20 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("20") || HAS_1_20_3.isMet(),
+            () -> true,
             "Requires server to be running 1.20+"
     );
 
     /**
      * Requires the server to be running at least 1.19.4.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_19_4 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("19_R3") || HAS_1_20.isMet(),
+            () -> true,
             "Requires server to be running 1.19.4+"
     );
 
     /**
      * Requires the server to be running at least 1.19.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_19 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("19") || HAS_1_20.isMet(),
+            () -> true,
             "Requires server to be running 1.19+"
     );
 
     /**
      * Requires the server to be running at least 1.18.
+     *
+     * @deprecated eco requires 1.21.4+, this is always true.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public static final Prerequisite HAS_1_18 = new Prerequisite(
-            () -> ProxyConstants.NMS_VERSION.contains("18") || HAS_1_19.isMet(),
+            () -> true,
             "Requires server to be running 1.18+"
     );
 
@@ -109,7 +133,7 @@ public class Prerequisite {
      */
     @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_BUNGEECORD = new Prerequisite(
-            () -> ClassUtils.exists("net.md_5.bungee.api.event.ServerConnectedEvent"),
+            () -> false,
             "Requires server to be running BungeeCord (or a fork)"
     );
 
@@ -120,7 +144,7 @@ public class Prerequisite {
      */
     @Deprecated(since = "6.49.0", forRemoval = true)
     public static final Prerequisite HAS_VELOCITY = new Prerequisite(
-            () -> ClassUtils.exists("com.velocitypowered.api.event.player.ServerConnectedEvent"),
+            () -> false,
             "Requires server to be running Velocity (or a fork)"
     );
 

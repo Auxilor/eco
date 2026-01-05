@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.willfp.eco.core.version.Version;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,14 +57,22 @@ public final class PluginProps {
 
     /**
      * If the plugin uses reflective reload.
+     * @deprecated This option has no effect, reflective reload has been removed.
      */
-    private boolean usesReflectiveReload = true;
+    @Deprecated(since = "6.77.0", forRemoval = true)
+    private boolean usesReflectiveReload = false;
+
+    /**
+     * The minimum eco api version required.
+     */
+    @NotNull
+    private Version ecoApiVersion;
 
     /**
      * Create new blank props.
      */
     private PluginProps() {
-
+        this.ecoApiVersion = new Version("6.0.0");
     }
 
     /**
@@ -164,6 +173,25 @@ public final class PluginProps {
     }
 
     /**
+     * Get the minimum eco api version required.
+     *
+     * @return The version.
+     */
+    @NotNull
+    public Version getEcoApiVersion() {
+        return ecoApiVersion;
+    }
+
+    /**
+     * Set the minimum eco api version required.
+     *
+     * @param ecoApiVersion The version.
+     */
+    public void setEcoApiVersion(@NotNull final Version ecoApiVersion) {
+        this.ecoApiVersion = ecoApiVersion;
+    }
+
+    /**
      * Get an environment variable.
      *
      * @param name The name.
@@ -189,7 +217,9 @@ public final class PluginProps {
      * Set if the plugin uses reflective reload.
      *
      * @return If the plugin uses reflective reload.
+     * @deprecated Reflective reload has been removed.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public boolean isUsingReflectiveReload() {
         return usesReflectiveReload;
     }
@@ -198,7 +228,9 @@ public final class PluginProps {
      * Set if the plugin uses reflective reload.
      *
      * @param usesReflectiveReload If the plugin uses reflective reload.
+     * @deprecated Reflective reload has been removed.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public void setUsesReflectiveReload(final boolean usesReflectiveReload) {
         this.usesReflectiveReload = usesReflectiveReload;
     }

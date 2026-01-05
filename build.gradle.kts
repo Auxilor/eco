@@ -21,23 +21,14 @@ plugins {
 dependencies {
     implementation(project(":eco-api"))
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
-    implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
-    implementation(project(":eco-core:core-backend-modern"))
-    implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_18_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_3", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_4", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_5", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_6", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_7", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_8", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_10", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_11", configuration = "reobf"))
 }
 
 allprojects {
@@ -58,6 +49,9 @@ allprojects {
 
         // Paper
         maven("https://repo.papermc.io/repository/maven-public/")
+
+        // EssentialsX
+        maven("https://repo.essentialsx.net/releases")
 
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
@@ -84,7 +78,7 @@ allprojects {
         maven("https://repo.md-5.net/content/repositories/snapshots/")
 
         // CombatLogX
-        maven("https://nexus.sirblobman.xyz/repository/public/")
+        maven("https://nexus.sirblobman.xyz/public/")
 
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
@@ -93,7 +87,7 @@ allprojects {
         maven("https://redempt.dev")
 
         // LibsDisguises
-        maven("https://repo.md-5.net/content/groups/public/")
+        maven("https://mvn.lib.co.nz/public")
 
         // PlayerPoints
         maven("https://repo.rosewooddev.io/repository/public/")
@@ -109,6 +103,15 @@ allprojects {
 
         // FancyHolograms
         maven("https://repo.fancyplugins.de/releases")
+
+        // Nexo
+        maven("https://repo.nexomc.com/releases")
+
+        // CraftEngine
+        maven("https://repo.momirealms.net/releases/")
+        
+        // CoinsEngine
+        maven("https://repo.nightexpressdev.com/releases")
     }
 
     dependencies {
@@ -163,13 +166,14 @@ allprojects {
 
         compileKotlin {
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_17)
+                jvmTarget.set(JvmTarget.JVM_21)
             }
         }
 
         compileJava {
             dependsOn(clean)
             options.encoding = "UTF-8"
+            options.isDeprecation = true
         }
 
         test {
@@ -186,7 +190,7 @@ allprojects {
         }
 
         withType<JavaCompile>().configureEach {
-            options.release.set(17)
+            options.release.set(21)
         }
     }
 
@@ -208,9 +212,6 @@ tasks {
         relocate("org.intellij", "com.willfp.eco.libs.intellij")
         relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
         //relocate("org.jetbrains.exposed", "com.willfp.eco.libs.exposed")
-        relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
-        relocate("org.reflections", "com.willfp.eco.libs.reflections")
-        relocate("javassist", "com.willfp.eco.libs.javassist")
         relocate("javax.annotation", "com.willfp.eco.libs.annotation")
         relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
         relocate("com.google.j2objc", "com.willfp.eco.libs.j2objc")

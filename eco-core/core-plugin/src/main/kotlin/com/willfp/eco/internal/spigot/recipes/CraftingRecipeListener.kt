@@ -13,26 +13,7 @@ import org.bukkit.event.player.PlayerRecipeDiscoverEvent
 
 class CraftingRecipeListener(val plugin: EcoPlugin) : Listener {
     @EventHandler
-    fun handleDisplayedRecipeUnlocksPre1213(event: PlayerRecipeDiscoverEvent) {
-        if (Prerequisite.HAS_1_21_3.isMet) {
-            return
-        }
-
-        if (!EcoPlugin.getPluginNames().contains(event.recipe.namespace)) {
-            return
-        }
-
-        if (event.recipe.key.contains("_displayed")) {
-            event.isCancelled = true
-        }
-    }
-
-    @EventHandler
-    fun handleDisplayedRecipeUnlocks1213(event: PlayerRecipeDiscoverEvent) {
-        if (!Prerequisite.HAS_1_21_3.isMet) {
-            return
-        }
-
+    fun handleDisplayedRecipeUnlocks(event: PlayerRecipeDiscoverEvent) {
         if (!EcoPlugin.getPluginNames().contains(event.recipe.namespace)) {
             return
         }
@@ -41,10 +22,12 @@ class CraftingRecipeListener(val plugin: EcoPlugin) : Listener {
             event.isCancelled = true
 
             val player = event.player
-            player.discoverRecipe(namespacedKeyOf(
-                event.recipe.namespace,
-                event.recipe.key + "_displayed"
-            ))
+            player.discoverRecipe(
+                namespacedKeyOf(
+                    event.recipe.namespace,
+                    event.recipe.key + "_displayed"
+                )
+            )
         }
     }
 

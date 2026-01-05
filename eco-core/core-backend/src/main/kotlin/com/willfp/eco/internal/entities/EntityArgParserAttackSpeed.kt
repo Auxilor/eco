@@ -28,7 +28,7 @@ object EntityArgParserAttackSpeed : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_ATTACK_SPEED) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.ATTACK_SPEED) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserAttackSpeed : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_ATTACK_SPEED)?.baseValue = attributeValue
+                it.getAttribute(Attribute.ATTACK_SPEED)?.baseValue = attributeValue
             }
         )
     }

@@ -28,7 +28,7 @@ object EntityArgParserKnockbackResistance : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.KNOCKBACK_RESISTANCE) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserKnockbackResistance : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)?.baseValue = attributeValue
+                it.getAttribute(Attribute.KNOCKBACK_RESISTANCE)?.baseValue = attributeValue
             }
         )
     }

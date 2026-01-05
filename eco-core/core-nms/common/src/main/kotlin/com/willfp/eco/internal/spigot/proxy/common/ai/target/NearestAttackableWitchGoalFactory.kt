@@ -18,8 +18,8 @@ object NearestAttackableWitchGoalFactory : TargetGoalFactory<TargetGoalNearestAt
             apiGoal.reciprocalChance,
             apiGoal.checkVisibility,
             apiGoal.checkCanNavigate,
-        ) {
-            apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
+        ) { entity, level ->
+            apiGoal.targetFilter.test(entity.toBukkitEntity()) && apiGoal.target.matches(entity.toBukkitEntity())
         }
     }
 

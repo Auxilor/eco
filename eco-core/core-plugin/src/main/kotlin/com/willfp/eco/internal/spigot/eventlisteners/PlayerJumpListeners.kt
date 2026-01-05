@@ -21,8 +21,8 @@ class PlayerJumpListenersSpigot : Listener {
         val player = event.player
         if (player.velocity.y > 0) {
             var jumpVelocity = 0.42f
-            if (player.hasPotionEffect(PotionEffectType.JUMP)) {
-                jumpVelocity += (player.getPotionEffect(PotionEffectType.JUMP)!!.amplifier.toFloat() + 1) * 0.1f
+            if (player.hasPotionEffect(PotionEffectType.JUMP_BOOST)) {
+                jumpVelocity += (player.getPotionEffect(PotionEffectType.JUMP_BOOST)!!.amplifier.toFloat() + 1) * 0.1f
             }
             jumpVelocity = FORMAT.format(jumpVelocity.toDouble()).replace(',', '.').toFloat()
             if (event.player.location.block.type != Material.LADDER && PREVIOUS_PLAYERS_ON_GROUND.contains(player.uniqueId)

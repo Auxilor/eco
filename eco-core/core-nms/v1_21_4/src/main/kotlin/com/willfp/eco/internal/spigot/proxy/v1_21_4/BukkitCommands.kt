@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_4
 
 import com.willfp.eco.core.command.PluginCommandBase
-import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.SimpleCommandMap

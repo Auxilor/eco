@@ -18,7 +18,10 @@ import java.util.function.Consumer;
 /**
  * A string that works with internet access, specifically
  * to upload and download from hastebin.
+ *
+ * @deprecated Unnecessary, default haste server has been offline for years.
  */
+@Deprecated(since = "6.77.0", forRemoval = true)
 public class Paste {
     /**
      * The contents.

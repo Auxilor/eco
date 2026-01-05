@@ -9,13 +9,17 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.UseItemGoal
+import org.bukkit.Registry
+import java.util.Optional
 
 object UseItemGoalFactory : EntityGoalFactory<EntityGoalUseItem> {
     override fun create(apiGoal: EntityGoalUseItem, entity: PathfinderMob): Goal {
+        val sound = Registry.SOUNDS.getKey(apiGoal.sound)!!.toResourceLocation()
+
         return UseItemGoal(
             entity,
             apiGoal.item.asNMSStack(),
-            SoundEvent(apiGoal.sound.key.toResourceLocation()),
+            SoundEvent(sound, Optional.empty()),
         ) {
             apiGoal.condition.test(it.toBukkitEntity())
         }

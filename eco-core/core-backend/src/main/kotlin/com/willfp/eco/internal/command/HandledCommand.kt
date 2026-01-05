@@ -31,15 +31,13 @@ abstract class HandledCommand(
         sender: CommandSender,
         command: Command,
         label: String,
-        args: Array<out String>?
+        args: Array<out String>
     ): Boolean {
         if (!command.name.equals(name, true)) {
             return false
         }
 
-        if (args != null) {
-            handleExecution(sender, args.toList())
-        }
+        handleExecution(sender, args.toList())
 
         return true
     }
@@ -48,7 +46,7 @@ abstract class HandledCommand(
         sender: CommandSender,
         command: Command,
         label: String,
-        args: Array<out String>?
+        args: Array<out String>
     ): List<String> {
         return handleTabComplete(sender, args?.toList() ?: listOf())
     }

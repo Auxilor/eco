@@ -65,13 +65,6 @@ use-display-frame: true
 # that display frames will be cleared / deleted.
 display-frame-ttl: 17
 
-# The default bukkit NamespacedKey creation can cause decent amounts of lag under
-# load due to the use of regex validation in the constructor. eco has its own system
-# to create NamespacedKeys, however it can be unsafe as it skips most validation checks.
-# If you encounter any bugs with this, then enable this option - however it will come
-# at a performance penalty.
-use-safer-namespacedkey-creation: false
-
 # If the stack traces of extensions that failed to load should be logged. Disabled by
 # default to prevent users from reporting bugs. Enable if you're a developer.
 log-full-extension-errors: false

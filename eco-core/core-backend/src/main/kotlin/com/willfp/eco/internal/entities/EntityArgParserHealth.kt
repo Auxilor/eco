@@ -35,7 +35,7 @@ object EntityArgParserHealth : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_MAX_HEALTH)?.baseValue = health
+                it.getAttribute(Attribute.MAX_HEALTH)?.baseValue = health
                 it.health = health
             }
         )

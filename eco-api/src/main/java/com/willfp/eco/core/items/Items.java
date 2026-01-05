@@ -58,7 +58,7 @@ public final class Items {
 
                         TestableItem match = null;
                         for (TestableItem item : REGISTRY.values()) {
-                            if (item.matches(key.getItem())) {
+                            if (item.shouldMarkAsCustom() && item.matches(key.getItem())) {
                                 match = item;
                                 break;
                             }
@@ -554,7 +554,7 @@ public final class Items {
      */
     @NotNull
     @Deprecated(since = "6.70.0", forRemoval = true)
-    @SuppressWarnings("removal")
+    @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
     public static ItemStack setBaseNBT(@NotNull final ItemStack itemStack,
                                        @Nullable final PersistentDataContainer container) {
         FastItemStack fis = FastItemStack.wrap(itemStack);

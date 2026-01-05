@@ -8,8 +8,10 @@ import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.trading.ItemCost
 import net.minecraft.world.item.trading.MerchantOffer
 import net.minecraft.world.item.trading.MerchantOffers
+import java.util.Optional
 
 object PacketOpenWindowMerchant : PacketListener {
     private val field = ClientboundMerchantOffersPacket::class.java
@@ -23,15 +25,37 @@ object PacketOpenWindowMerchant : PacketListener {
         val offers = MerchantOffers()
 
         for (offer in packet.offers) {
-            val nbt = offer.createTag()
-            for (tag in arrayOf("buy", "buyB", "sell")) {
-                val nms = ItemStack.of(nbt.getCompound(tag))
-                val displayed = Display.display(nms.asBukkitStack(), event.player)
-                val itemNBT = displayed.asNMSStack().save(CompoundTag())
-                nbt.put(tag, itemNBT)
-            }
+            val costA = Display.display(
+                offer.costA.copy().asBukkitStack(),
+                event.player
+            )
+            val costB = if (offer.costB.isPresent) Display.display(
+                offer.costB.get().itemStack.copy().asBukkitStack(),
+                event.player
+            ) else null
 
-            offers += MerchantOffer(nbt)
+            val result = Display.display(
+                offer.result.copy().asBukkitStack(),
+                event.player
+            )
+
+            val copy = MerchantOffer(
+                ItemCost(costA.asNMSStack().item, offer.baseCostA.count),
+                if (offer.costB.isPresent) Optional.of(
+                    ItemCost(
+                        costB!!.asNMSStack().item,
+                        offer.costB.get().count
+                    )
+                ) else Optional.empty(),
+                result.asNMSStack(),
+                offer.uses,
+                offer.maxUses,
+                offer.xp,
+                offer.priceMultiplier,
+                offer.demand
+            )
+
+            offers += copy
         }
 
         field.set(packet, offers)
