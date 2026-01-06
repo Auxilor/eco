@@ -111,6 +111,9 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksCraftEngine
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksItemsAdder
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksNexo
 import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksOraxen
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCraftEngine
@@ -160,7 +163,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import kotlin.jvm.java
 import su.nightexpress.coinsengine.api.CoinsEngineAPI
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
@@ -427,6 +429,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Custom Blocks
             IntegrationLoader("Oraxen") { CustomBlocksManager.register(CustomBlocksOraxen(this)) },
+            IntegrationLoader("Nexo") { CustomBlocksManager.register(CustomBlocksNexo(this)) },
+            IntegrationLoader("ItemsAdder") { CustomBlocksManager.register(CustomBlocksItemsAdder()) },
+            IntegrationLoader("CraftEngine") { CustomBlocksManager.register(CustomBlocksCraftEngine(this)) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },
