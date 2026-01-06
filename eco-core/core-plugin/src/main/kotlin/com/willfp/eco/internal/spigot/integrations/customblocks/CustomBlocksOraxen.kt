@@ -37,8 +37,9 @@ class CustomBlocksOraxen(
                 return null
             }
 
-            val item = OraxenItems.getItemById(key) ?: return null
-            val id = OraxenItems.getIdByItem(item)
+            if (!OraxenItems.exists(key)) {
+                return null
+            }
 
             val namespacedKey = namespacedKeyOf("oraxen", key)
 
@@ -46,7 +47,7 @@ class CustomBlocksOraxen(
                 namespacedKey,
                 {
                     OraxenBlocks.isOraxenBlock(it) &&
-                            id.equals(OraxenBlocks.getOraxenBlock(it.location).itemID, ignoreCase = true)
+                            key.equals(OraxenBlocks.getOraxenBlock(it.location).itemID, ignoreCase = true)
                 },
                 { location ->
                     OraxenBlocks.place(key, location)

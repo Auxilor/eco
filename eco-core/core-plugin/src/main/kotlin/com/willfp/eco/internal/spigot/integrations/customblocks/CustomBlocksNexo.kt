@@ -9,6 +9,7 @@ import com.willfp.eco.core.blocks.CustomBlock
 import com.willfp.eco.core.blocks.TestableBlock
 import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
+import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistentDataHandler.Factory.id
 import com.willfp.eco.util.namespacedKeyOf
 import io.th0rgal.oraxen.api.OraxenBlocks
 import org.bukkit.event.EventHandler
@@ -38,8 +39,9 @@ class CustomBlocksNexo(
                 return null
             }
 
-            val item = NexoItems.itemFromId(key) ?: return null
-            val id = NexoItems.idFromItem(item)
+            if (!NexoItems.exists(key)) {
+                return null
+            }
 
             val namespacedKey = namespacedKeyOf("oraxen", key)
 
