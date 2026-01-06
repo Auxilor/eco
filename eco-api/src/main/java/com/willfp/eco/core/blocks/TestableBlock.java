@@ -28,4 +28,15 @@ public interface TestableBlock extends Testable<Block> {
      */
     @NotNull
     Block place(@NotNull Location location);
+
+    /**
+     * If an block matching this test should be marked as a custom block.
+     * <p>
+     * This is true by default for backwards compatibility reasons.
+     *
+     * @return If the block should be marked as custom.
+     */
+    default boolean shouldMarkAsCustom() {
+        return true;
+    }
 }
