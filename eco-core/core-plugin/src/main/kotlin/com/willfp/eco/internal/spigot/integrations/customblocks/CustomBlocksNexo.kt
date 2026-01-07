@@ -48,7 +48,7 @@ class CustomBlocksNexo(
                             id.equals(NexoBlocks.customBlockMechanic(it.location)?.itemID, ignoreCase = true)
                 },
                 { location ->
-                    NexoBlocks.place(key, location)
+                    NexoBlocks.place(id, location)
                     location.block
                 }
             )

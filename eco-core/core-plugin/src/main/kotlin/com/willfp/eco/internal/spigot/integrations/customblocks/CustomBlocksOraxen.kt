@@ -48,7 +48,7 @@ class CustomBlocksOraxen(
                             id.equals(OraxenBlocks.getOraxenBlock(it.location).itemID, ignoreCase = true)
                 },
                 { location ->
-                    OraxenBlocks.place(key, location)
+                    OraxenBlocks.place(id, location)
                     location.block
                 }
             )
