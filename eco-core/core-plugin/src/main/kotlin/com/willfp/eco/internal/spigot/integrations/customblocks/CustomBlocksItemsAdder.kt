@@ -28,9 +28,9 @@ class CustomBlocksItemsAdder : CustomBlocksIntegration {
             return CustomBlock(
                 namespacedKey,
                 Predicate { test: Block ->
-                    val customStack =
+                    val customBlock =
                         dev.lone.itemsadder.api.CustomBlock.byAlreadyPlaced(test) ?: return@Predicate false
-                    customStack.id.equals(id, ignoreCase = true)
+                    customBlock.id.equals(id, ignoreCase = true)
                 },
                 { location ->
                     dev.lone.itemsadder.api.CustomBlock.place(id, location)

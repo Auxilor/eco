@@ -28,7 +28,7 @@ class CustomBlocksCraftEngine(
 
     @EventHandler
     @Suppress("UNUSED_PARAMETER")
-    fun onItemRegister(event: CraftEngineReloadEvent) {
+    fun onBlockRegister(event: CraftEngineReloadEvent) {
         Blocks.registerBlockProvider(CraftEngineProvider())
     }
 
@@ -54,7 +54,7 @@ class CustomBlocksCraftEngine(
                         return@Predicate false
                     }
                     val immutableBlockState = CraftEngineBlocks.getCustomBlockState(test) ?: return@Predicate false
-                    return@Predicate immutableBlockState.owner().value().id().equals(id)
+                    return@Predicate immutableBlockState.owner().value().id().equals(blockId.id())
                 },
                 { location ->
                     CraftEngineBlocks.place(location, id, true)

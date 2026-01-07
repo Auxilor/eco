@@ -11,7 +11,6 @@ import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistentDataHandler.Factory.id
 import com.willfp.eco.util.namespacedKeyOf
-import io.th0rgal.oraxen.api.OraxenBlocks
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -28,7 +27,7 @@ class CustomBlocksNexo(
 
     @EventHandler
     @Suppress("UNUSED_PARAMETER")
-    fun onItemRegister(event: NexoItemsLoadedEvent) {
+    fun onBlockRegister(event: NexoItemsLoadedEvent) {
         Blocks.registerBlockProvider(NexoProvider())
     }
 
@@ -43,7 +42,7 @@ class CustomBlocksNexo(
                 return null
             }
 
-            val namespacedKey = namespacedKeyOf("oraxen", key)
+            val namespacedKey = namespacedKeyOf("nexo", key)
 
             return CustomBlock(
                 namespacedKey,
@@ -52,7 +51,7 @@ class CustomBlocksNexo(
                             id.equals(NexoBlocks.customBlockMechanic(it.location)?.itemID, ignoreCase = true)
                 },
                 { location ->
-                    OraxenBlocks.place(key, location)
+                    NexoBlocks.place(key, location)
                     location.block
                 }
             )

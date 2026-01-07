@@ -7,17 +7,15 @@ import com.willfp.eco.core.blocks.impl.MaterialTestableBlock;
 import com.willfp.eco.core.blocks.impl.UnrestrictedMaterialTestableBlock;
 import com.willfp.eco.core.blocks.provider.BlockProvider;
 import com.willfp.eco.core.blocks.tag.BlockTag;
-import com.willfp.eco.core.items.CustomItem;
 import com.willfp.eco.core.items.HashedItem;
-import com.willfp.eco.core.items.args.LookupArgParser;
+import com.willfp.eco.core.items.provider.ItemProvider;
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -184,19 +182,23 @@ public final class Blocks {
             return isWildcard ? new UnrestrictedMaterialTestableBlock(material) : new MaterialTestableBlock(material);
         }
 
-        NamespacedKey namespacedKey = NamespacedKeyUtils.create(split[0], split[1]);
+        String namespace = split[0];
+        String keyID = split[1];
+        NamespacedKey namespacedKey = NamespacedKeyUtils.create(namespace, keyID);
         TestableBlock block = REGISTRY.get(namespacedKey);
 
         if (block != null) {
             return block;
         }
 
-        BlockProvider provider = PROVIDERS.get(split[0]);
+        BlockProvider provider = PROVIDERS.get(namespace);
         if (provider == null) {
             return new EmptyTestableBlock();
         }
 
-        block = provider.provideForKey(split[1]);
+        String reformattedKey = keyID.replace("__", ":");
+
+        block = provider.provideForKey(reformattedKey);
         if (block == null) {
             return new EmptyTestableBlock();
         }

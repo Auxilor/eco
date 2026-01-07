@@ -26,7 +26,7 @@ class CustomBlocksOraxen(
 
     @EventHandler
     @Suppress("UNUSED_PARAMETER")
-    fun onItemRegister(event: OraxenItemsLoadedEvent) {
+    fun onBlockRegister(event: OraxenItemsLoadedEvent) {
         Blocks.registerBlockProvider(OraxenProvider())
     }
 

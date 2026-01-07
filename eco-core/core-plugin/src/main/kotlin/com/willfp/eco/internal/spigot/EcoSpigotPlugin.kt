@@ -230,6 +230,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         SegmentParserUseIfPresent.register()
 
         CustomItemsManager.registerProviders()
+        CustomBlocksManager.registerProviders()
 
         ExternalDataStore.registerAdapter(VersionToStringAdapter)
         // Handle with shadow.
@@ -266,6 +267,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         }
 
         CustomItemsManager.registerProviders() // Do it again here
+        CustomBlocksManager.registerProviders() // Do it again here
 
         // Register events for ShopSellEvent
         for (integration in ShopManager.getRegisteredIntegrations()) {
@@ -315,6 +317,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
     override fun handleAfterLoad() {
         CustomItemsManager.registerAllItems()
+        CustomBlocksManager.registerAllBlocks()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
     }
@@ -363,10 +366,22 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
-            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen(this)) },
-            IntegrationLoader("Nexo") { CustomItemsManager.register(CustomItemsNexo(this)) },
-            IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
-            IntegrationLoader("CraftEngine") { CustomItemsManager.register(CustomItemsCraftEngine(this)) },
+            IntegrationLoader("Oraxen") {
+                CustomItemsManager.register(CustomItemsOraxen(this))
+                CustomBlocksManager.register(CustomBlocksOraxen(this))
+            },
+            IntegrationLoader("Nexo") {
+                CustomItemsManager.register(CustomItemsNexo(this))
+                CustomBlocksManager.register(CustomBlocksNexo(this))
+            },
+            IntegrationLoader("ItemsAdder") {
+                CustomItemsManager.register(CustomItemsItemsAdder())
+                CustomBlocksManager.register(CustomBlocksItemsAdder())
+            },
+            IntegrationLoader("CraftEngine") {
+                CustomItemsManager.register(CustomItemsCraftEngine(this))
+                CustomBlocksManager.register(CustomBlocksCraftEngine(this))
+            },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
             IntegrationLoader("CustomCrafting") {
@@ -426,12 +441,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Placeholder
             IntegrationLoader("PlaceholderAPI") { PlaceholderManager.addIntegration(PlaceholderIntegrationPAPI()) },
-
-            // Custom Blocks
-            IntegrationLoader("Oraxen") { CustomBlocksManager.register(CustomBlocksOraxen(this)) },
-            IntegrationLoader("Nexo") { CustomBlocksManager.register(CustomBlocksNexo(this)) },
-            IntegrationLoader("ItemsAdder") { CustomBlocksManager.register(CustomBlocksItemsAdder()) },
-            IntegrationLoader("CraftEngine") { CustomBlocksManager.register(CustomBlocksCraftEngine(this)) },
 
             // Misc
             IntegrationLoader("mcMMO") { McmmoManager.register(McmmoIntegrationImpl()) },
