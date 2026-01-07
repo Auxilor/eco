@@ -104,7 +104,7 @@ public final class Blocks {
     }
 
     /**
-     * Turn an Block back into a lookup string.
+     * Turn a Block back into a lookup string.
      *
      * @param block The Block.
      * @return The lookup string.
@@ -321,7 +321,7 @@ public final class Blocks {
     }
 
     /**
-     * Get if an block is empty.
+     * Get if a block is empty.
      *
      * @param block The block.
      * @return If empty.

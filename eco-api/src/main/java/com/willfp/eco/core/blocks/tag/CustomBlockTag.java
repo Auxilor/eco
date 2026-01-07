@@ -4,7 +4,7 @@ import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A custom item tag.
+ * A custom block tag.
  */
 public abstract class CustomBlockTag implements BlockTag {
     /**

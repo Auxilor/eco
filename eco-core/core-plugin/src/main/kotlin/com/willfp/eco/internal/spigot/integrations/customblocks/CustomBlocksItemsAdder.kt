@@ -5,7 +5,7 @@ import com.willfp.eco.core.blocks.CustomBlock
 import com.willfp.eco.core.blocks.TestableBlock
 import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
-import com.willfp.eco.util.NamespacedKeyUtils
+import com.willfp.eco.util.namespacedKeyOf
 import org.bukkit.block.Block
 import java.util.function.Predicate
 
@@ -24,7 +24,7 @@ class CustomBlocksItemsAdder : CustomBlocksIntegration {
 
             val block = dev.lone.itemsadder.api.CustomBlock.getInstance(internalId) ?: return null
             val id = block.id
-            val namespacedKey = NamespacedKeyUtils.create("itemsadder", key.lowercase().replace(":", "__"))
+            val namespacedKey = namespacedKeyOf("itemsadder", key.lowercase().replace(":", "__"))
             return CustomBlock(
                 namespacedKey,
                 Predicate { test: Block ->

@@ -1,11 +1,8 @@
 package com.willfp.eco.core.blocks.tag;
 
 import com.willfp.eco.core.blocks.TestableBlock;
-import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +19,7 @@ public interface BlockTag {
     String getIdentifier();
 
     /**
-     * Check if an block matches the tag.
+     * Check if a block matches the tag.
      *
      * @param block The block to check.
      * @return If the block matches the tag.

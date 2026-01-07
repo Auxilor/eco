@@ -30,7 +30,7 @@ public interface TestableBlock extends Testable<Block> {
     Block place(@NotNull Location location);
 
     /**
-     * If an block matching this test should be marked as a custom block.
+     * If a block matching this test should be marked as a custom block.
      * <p>
      * This is true by default for backwards compatibility reasons.
      *

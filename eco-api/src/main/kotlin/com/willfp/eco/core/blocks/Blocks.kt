@@ -1,16 +1,15 @@
-@file:JvmName("ItemsExtensions")
+@file:JvmName("BlocksExtensions")
 
 package com.willfp.eco.core.blocks
 
-import com.willfp.eco.core.items.Items
 import org.bukkit.block.Block
 
-/** @see Items.toLookupString */
+/** @see Blocks.toLookupString */
 fun Block?.toLookupString(): String =
     Blocks.toLookupString(this)
 
-/** @see Items.isEmpty */
-@Deprecated("Use Block.isEcoEmpty", ReplaceWith("Block.isEmpty(this)"))
+/** @see Blocks.isEmpty */
+@Deprecated("Use Blocks.isEcoEmpty", ReplaceWith("Block.isEmpty(this)"))
 val Block?.isEmpty: Boolean
     get() = Blocks.isEmpty(this)
 

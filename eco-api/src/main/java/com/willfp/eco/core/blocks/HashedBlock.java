@@ -1,15 +1,13 @@
 package com.willfp.eco.core.blocks;
 
-import com.willfp.eco.core.fast.FastItemStack;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 /**
- * An block and its hash.
+ * A block and its hash.
  */
 public final class HashedBlock {
     /**

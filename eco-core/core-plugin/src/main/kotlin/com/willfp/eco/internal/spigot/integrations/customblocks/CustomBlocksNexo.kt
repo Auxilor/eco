@@ -9,7 +9,7 @@ import com.willfp.eco.core.blocks.CustomBlock
 import com.willfp.eco.core.blocks.TestableBlock
 import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
-import com.willfp.eco.util.NamespacedKeyUtils
+import com.willfp.eco.util.namespacedKeyOf
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -39,7 +39,7 @@ class CustomBlocksNexo(
 
             val item = NexoItems.itemFromId(key) ?: return null
             val id = NexoItems.idFromItem(item)
-            val namespacedKey = NamespacedKeyUtils.create("nexo", id.toString())
+            val namespacedKey = namespacedKeyOf("nexo", id.toString())
 
             return CustomBlock(
                 namespacedKey,

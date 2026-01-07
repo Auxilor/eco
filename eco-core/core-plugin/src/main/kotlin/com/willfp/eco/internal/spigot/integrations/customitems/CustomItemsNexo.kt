@@ -8,7 +8,7 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
-import com.willfp.eco.util.NamespacedKeyUtils
+import com.willfp.eco.util.namespacedKeyOf
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -33,7 +33,7 @@ class CustomItemsNexo(
         override fun provideForKey(key: String): TestableItem? {
             val item = NexoItems.itemFromId(key) ?: return null
             val id = NexoItems.idFromItem(item)
-            val namespacedKey = NamespacedKeyUtils.create("nexo", id.toString())
+            val namespacedKey = namespacedKeyOf("nexo", id.toString())
             return CustomItem(
                 namespacedKey,
                 { id.equals(NexoItems.idFromItem(it), ignoreCase = true) },

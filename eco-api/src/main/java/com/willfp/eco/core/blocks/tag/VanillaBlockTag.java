@@ -3,7 +3,6 @@ package com.willfp.eco.core.blocks.tag;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
