@@ -8,7 +8,6 @@ import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
 import com.willfp.eco.util.namespacedKeyOf
 import io.th0rgal.oraxen.api.OraxenBlocks
-import io.th0rgal.oraxen.api.OraxenItems
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -34,10 +33,6 @@ class CustomBlocksOraxen(
         override fun provideForKey(key: String): TestableBlock? {
             // The key
             if (!OraxenBlocks.isOraxenBlock(key)) {
-                return null
-            }
-
-            if (!OraxenItems.exists(key)) {
                 return null
             }
 

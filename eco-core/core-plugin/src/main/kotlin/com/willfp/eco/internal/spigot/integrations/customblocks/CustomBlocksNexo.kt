@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.customblocks
 
 import com.nexomc.nexo.api.NexoBlocks
-import com.nexomc.nexo.api.NexoItems
 import com.nexomc.nexo.api.events.NexoItemsLoadedEvent
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.blocks.Blocks
@@ -35,10 +34,6 @@ class CustomBlocksNexo(
         override fun provideForKey(key: String): TestableBlock? {
             // The key
             if (!NexoBlocks.isCustomBlock(key)) {
-                return null
-            }
-
-            if (!NexoItems.exists(key)) {
                 return null
             }
 
