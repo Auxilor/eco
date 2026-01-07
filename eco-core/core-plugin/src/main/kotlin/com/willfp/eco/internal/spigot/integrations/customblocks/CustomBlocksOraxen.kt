@@ -8,6 +8,7 @@ import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
 import com.willfp.eco.util.namespacedKeyOf
 import io.th0rgal.oraxen.api.OraxenBlocks
+import io.th0rgal.oraxen.api.OraxenItems
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -36,13 +37,15 @@ class CustomBlocksOraxen(
                 return null
             }
 
-            val namespacedKey = namespacedKeyOf("oraxen", key)
+            val item = OraxenItems.getItemById(key) ?: return null
+            val id = OraxenItems.getIdByItem(item)
+            val namespacedKey = namespacedKeyOf("oraxen", id)
 
             return CustomBlock(
                 namespacedKey,
                 {
                     OraxenBlocks.isOraxenBlock(it) &&
-                            key.equals(OraxenBlocks.getOraxenBlock(it.location).itemID, ignoreCase = true)
+                            id.equals(OraxenBlocks.getOraxenBlock(it.location).itemID, ignoreCase = true)
                 },
                 { location ->
                     OraxenBlocks.place(key, location)

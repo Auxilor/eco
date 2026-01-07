@@ -7,9 +7,6 @@ import com.willfp.eco.core.blocks.impl.MaterialTestableBlock;
 import com.willfp.eco.core.blocks.impl.UnrestrictedMaterialTestableBlock;
 import com.willfp.eco.core.blocks.provider.BlockProvider;
 import com.willfp.eco.core.blocks.tag.BlockTag;
-import com.willfp.eco.core.items.HashedItem;
-import com.willfp.eco.core.items.provider.ItemProvider;
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Location;
@@ -34,9 +31,9 @@ public final class Blocks {
     private static final Map<NamespacedKey, TestableBlock> REGISTRY = new ConcurrentHashMap<>();
 
     /**
-     * Cached custom item lookups, using {@link HashedItem}.
+     * Cached custom block lookups, using {@link Location}.
      */
-    private static final LoadingCache<Location, Optional<TestableBlock>> CACHE = Caffeine.newBuilder()
+    private static final LoadingCache<HashedBlock, Optional<TestableBlock>> CACHE = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.MINUTES)
             .build(
                     key -> {
@@ -260,7 +257,7 @@ public final class Blocks {
             return null;
         }
 
-        return CACHE.get(block.getLocation()).map(Blocks::getOrWrap).orElse(null);
+        return CACHE.get(HashedBlock.of(block)).map(Blocks::getOrWrap).orElse(null);
     }
 
     /**
@@ -313,14 +310,14 @@ public final class Blocks {
      */
     @NotNull
     public static Collection<TestableBlock> fromMaterials(@NotNull final Iterable<Material> materials) {
-        List<TestableBlock> items = new ArrayList<>();
+        List<TestableBlock> blocks = new ArrayList<>();
         for (Material material : materials) {
             if (material.isBlock()) {
-                items.add(new MaterialTestableBlock(material));
+                blocks.add(new MaterialTestableBlock(material));
             }
         }
 
-        return items;
+        return blocks;
     }
 
     /**
@@ -352,7 +349,7 @@ public final class Blocks {
     }
 
     /**
-     * Get if any item matches any item.
+     * Get all registered custom blocks.
      *
      * @param blocks         The blocks.
      * @param testableBlocks The testable blocks.
