@@ -11,17 +11,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 /**
- * An argument parser should generate the predicate as well
- * as modify the BlockData for {@link TestableBlock#place(Location)} .
+ * An argument parser that should generate
+ * a modified BlockData for {@link TestableBlock#place(Location)} .
  */
 public interface BlockArgParser {
     /**
      * Parse the arguments.
      *
      * @param args      The arguments.
-     * @param blockData The block data to modify.
-     * @return The predicate test to apply to the modified block data.
+     * @param blockData The block data to be modified.
+     * @return The modified block data.
      */
-    @Nullable Predicate<BlockData> parseArguments(@NotNull String[] args,
-                                                  @NotNull BlockData blockData);
+    @Nullable BlockArgParseResult parseArguments(@NotNull String[] args,
+                                      @NotNull BlockData blockData);
 }

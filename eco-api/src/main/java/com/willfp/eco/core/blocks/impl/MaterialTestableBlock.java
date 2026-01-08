@@ -13,33 +13,24 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A testable block for vanilla materials.
  */
-public class BlockDataTestableBlock implements TestableBlock {
+public class MaterialTestableBlock implements TestableBlock {
     /**
      * The block type.
      */
-    private final BlockData blockData;
+    protected final Material material;
 
     /**
      * Create a new block data testable block.
      *
      * @param material The material.
      */
-    public BlockDataTestableBlock(@NotNull final Material material) {
-        this(material.createBlockData());
-    }
-
-    /**
-     * Create a new block data testable block.
-     *
-     * @param blockData The material.
-     */
-    public BlockDataTestableBlock(@NotNull final BlockData blockData) {
-        this.blockData = blockData;
+    public MaterialTestableBlock(@NotNull final Material material) {
+        this.material = material;
     }
 
     @Override
     public boolean matches(@Nullable final Block block) {
-        boolean simpleMatches = block != null && block.getBlockData().equals(blockData);
+        boolean simpleMatches = block != null && block.getType() == material;
 
         if (!simpleMatches) {
             return false;
@@ -53,7 +44,7 @@ public class BlockDataTestableBlock implements TestableBlock {
         Validate.notNull(location.getWorld());
 
         Block block = location.getBlock();
-        block.setBlockData(blockData);
+        block.setType(material);
 
         return block;
     }
@@ -63,7 +54,7 @@ public class BlockDataTestableBlock implements TestableBlock {
      *
      * @return The block data.
      */
-    public BlockData getBlockData() {
-        return this.blockData;
+    public Material getMaterial() {
+        return this.material;
     }
 }

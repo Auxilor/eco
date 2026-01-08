@@ -2,16 +2,17 @@ package com.willfp.eco.core.blocks;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.blocks.args.BlockArgParseResult;
 import com.willfp.eco.core.blocks.args.BlockArgParser;
 import com.willfp.eco.core.blocks.impl.EmptyTestableBlock;
-import com.willfp.eco.core.blocks.impl.BlockDataTestableBlock;
+import com.willfp.eco.core.blocks.impl.MaterialTestableBlock;
 import com.willfp.eco.core.blocks.impl.ModifiedTestableBlock;
 import com.willfp.eco.core.blocks.impl.UnrestrictedMaterialTestableBlock;
 import com.willfp.eco.core.blocks.provider.BlockProvider;
 import com.willfp.eco.core.blocks.tag.BlockTag;
-import com.willfp.eco.core.items.args.LookupArgParser;
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
-import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
+import com.willfp.eco.core.entities.args.EntityArgParseResult;
+import com.willfp.eco.core.entities.args.EntityArgParser;
+import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Location;
@@ -19,14 +20,14 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -200,7 +201,7 @@ public final class Blocks {
             if (material == null || material == Material.AIR) {
                 return new EmptyTestableBlock();
             }
-            block = isWildcard ? new UnrestrictedMaterialTestableBlock(material) : new BlockDataTestableBlock(material);
+            block = isWildcard ? new UnrestrictedMaterialTestableBlock(material) : new MaterialTestableBlock(material);
         }
 
         if (split.length == 2 && !isTag) {
@@ -223,34 +224,46 @@ public final class Blocks {
             }
         }
 
-        if (block == null || block instanceof EmptyTestableBlock) {
+        if (block == null) {
             return new EmptyTestableBlock();
         }
 
-        if (block instanceof BlockDataTestableBlock testableBlock) {
+        if (block instanceof MaterialTestableBlock materialTestableBlock) {
 
             String[] modifierArgs = Arrays.copyOfRange(args, 1, args.length);
+            List<BlockArgParseResult> parseResults = new ArrayList<>();
 
-            List<Predicate<BlockData>> predicates = new ArrayList<>();
+            BlockData blockData = materialTestableBlock.getMaterial().createBlockData();
 
             for (BlockArgParser argParser : ARG_PARSERS) {
-                Predicate<BlockData> result = argParser.parseArguments(modifierArgs, testableBlock.getBlockData());
+                BlockArgParseResult result = argParser.parseArguments(modifierArgs, blockData);
                 if (result != null) {
-                    predicates.add(result);
+                    parseResults.add(result);
                 }
             }
 
-            if (!predicates.isEmpty()) {
+            Function<Location, Block> placer = block::place;
+
+            if (!parseResults.isEmpty()) {
                 block = new ModifiedTestableBlock(
                         block,
                         test -> {
-                            for (Predicate<BlockData> predicate : predicates) {
-                                if (!predicate.test(test)) {
+                            for (BlockArgParseResult parseResult : parseResults) {
+                                if (!parseResult.test().test(test)) {
                                     return false;
                                 }
                             }
 
                             return true;
+                        },
+                        location -> {
+                            Block placed = placer.apply(location);
+
+                            for (BlockArgParseResult parseResult : parseResults) {
+                                parseResult.modifier().accept(placed);
+                            }
+
+                            return placed;
                         }
                 );
             }
@@ -263,7 +276,7 @@ public final class Blocks {
      * Get a Testable Block from a Block.
      * <p>
      * Will search for registered blocks first. If there are no matches in the registry,
-     * then it will return a {@link BlockDataTestableBlock} matching the block type.
+     * then it will return a {@link MaterialTestableBlock} matching the block type.
      * <p>
      * Does not account for modifiers (arg parser data).
      *
@@ -287,7 +300,7 @@ public final class Blocks {
                 return known;
             }
         }
-        return new BlockDataTestableBlock(block.getType());
+        return new MaterialTestableBlock(block.getType());
     }
 
     /**
@@ -353,8 +366,8 @@ public final class Blocks {
     public static TestableBlock[] fromMaterials(@NotNull final Material... materials) {
         return Arrays.stream(materials)
                 .filter(Material::isBlock)
-                .map(BlockDataTestableBlock::new)
-                .toArray(BlockDataTestableBlock[]::new);
+                .map(MaterialTestableBlock::new)
+                .toArray(MaterialTestableBlock[]::new);
     }
 
     /**
@@ -368,7 +381,7 @@ public final class Blocks {
         List<TestableBlock> blocks = new ArrayList<>();
         for (Material material : materials) {
             if (material.isBlock()) {
-                blocks.add(new BlockDataTestableBlock(material));
+                blocks.add(new MaterialTestableBlock(material));
             }
         }
 

@@ -1,13 +1,13 @@
 package com.willfp.eco.internal.blocks
 
+import com.willfp.eco.core.blocks.args.BlockArgParseResult
 import com.willfp.eco.core.blocks.args.BlockArgParser
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
-import java.util.function.Predicate
 
 object BlockArgParserDirection : BlockArgParser {
-    override fun parseArguments(args: Array<out String>, blockData: BlockData): Predicate<BlockData?>? {
+    override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
         var direction: BlockFace? = null
 
         val directional = blockData as? Directional ?: return null
@@ -30,6 +30,20 @@ object BlockArgParserDirection : BlockArgParser {
 
         direction ?: return null
 
-        return Predicate { it is Directional && it.facing == direction }
+        directional.facing = direction
+
+        return BlockArgParseResult(
+            {
+                val directional = it.blockData as? Directional ?: return@BlockArgParseResult false
+
+                directional.facing == direction
+            },
+            {
+                val directional = it.blockData as? Directional ?: return@BlockArgParseResult
+
+                directional.facing = direction
+                it.blockData = directional
+            }
+        )
     }
 }
