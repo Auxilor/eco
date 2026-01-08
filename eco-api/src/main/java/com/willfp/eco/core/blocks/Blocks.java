@@ -2,23 +2,31 @@ package com.willfp.eco.core.blocks;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.blocks.args.BlockArgParser;
 import com.willfp.eco.core.blocks.impl.EmptyTestableBlock;
-import com.willfp.eco.core.blocks.impl.MaterialTestableBlock;
+import com.willfp.eco.core.blocks.impl.BlockDataTestableBlock;
+import com.willfp.eco.core.blocks.impl.ModifiedTestableBlock;
 import com.willfp.eco.core.blocks.impl.UnrestrictedMaterialTestableBlock;
 import com.willfp.eco.core.blocks.provider.BlockProvider;
 import com.willfp.eco.core.blocks.tag.BlockTag;
+import com.willfp.eco.core.items.args.LookupArgParser;
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
+import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +61,11 @@ public final class Blocks {
      * All block providers.
      */
     private static final Map<String, BlockProvider> PROVIDERS = new ConcurrentHashMap<>();
+
+    /**
+     * All block parsers.
+     */
+    private static final List<BlockArgParser> ARG_PARSERS = new ArrayList<>();
 
     /**
      * The lookup handler.
@@ -92,6 +105,15 @@ public final class Blocks {
      */
     public static void registerBlockProvider(@NotNull final BlockProvider provider) {
         PROVIDERS.put(provider.getNamespace(), provider);
+    }
+
+    /**
+     * Register a new arg parser.
+     *
+     * @param parser The parser.
+     */
+    public static void registerArgParser(@NotNull final BlockArgParser parser) {
+        ARG_PARSERS.add(parser);
     }
 
     /**
@@ -151,6 +173,8 @@ public final class Blocks {
             return new EmptyTestableBlock();
         }
 
+        TestableBlock block = null;
+
         String[] split = args[0].toLowerCase().split(":");
 
         String base = split[0];
@@ -163,7 +187,7 @@ public final class Blocks {
             if (blockTag == null) {
                 return new EmptyTestableBlock();
             }
-            return blockTag.toTestableBlock();
+            block = blockTag.toTestableBlock();
         }
 
         if (split.length == 1) {
@@ -176,31 +200,62 @@ public final class Blocks {
             if (material == null || material == Material.AIR) {
                 return new EmptyTestableBlock();
             }
-            return isWildcard ? new UnrestrictedMaterialTestableBlock(material) : new MaterialTestableBlock(material);
+            block = isWildcard ? new UnrestrictedMaterialTestableBlock(material) : new BlockDataTestableBlock(material);
         }
 
-        String namespace = split[0];
-        String keyID = split[1];
-        NamespacedKey namespacedKey = NamespacedKeyUtils.create(namespace, keyID);
-        TestableBlock block = REGISTRY.get(namespacedKey);
+        if (split.length == 2 && !isTag) {
+            String namespace = split[0];
+            String keyID = split[1];
+            NamespacedKey namespacedKey = NamespacedKeyUtils.create(namespace, keyID);
+            TestableBlock part = REGISTRY.get(namespacedKey);
 
-        if (block != null) {
-            return block;
+            if (part == null && PROVIDERS.containsKey(namespace)) {
+                BlockProvider provider = PROVIDERS.get(namespace);
+
+                String reformattedKey = keyID.replace("__", ":");
+
+                part = provider.provideForKey(reformattedKey);
+                if (part instanceof EmptyTestableBlock || part == null) {
+                    return new EmptyTestableBlock();
+                }
+
+                registerCustomBlock(namespacedKey, part);
+            }
         }
 
-        BlockProvider provider = PROVIDERS.get(namespace);
-        if (provider == null) {
+        if (block == null || block instanceof EmptyTestableBlock) {
             return new EmptyTestableBlock();
         }
 
-        String reformattedKey = keyID.replace("__", ":");
+        if (block instanceof BlockDataTestableBlock testableBlock) {
 
-        block = provider.provideForKey(reformattedKey);
-        if (block == null) {
-            return new EmptyTestableBlock();
+            String[] modifierArgs = Arrays.copyOfRange(args, 1, args.length);
+
+            List<Predicate<BlockData>> predicates = new ArrayList<>();
+
+            for (BlockArgParser argParser : ARG_PARSERS) {
+                Predicate<BlockData> result = argParser.parseArguments(modifierArgs, testableBlock.getBlockData());
+                if (result != null) {
+                    predicates.add(result);
+                }
+            }
+
+            if (!predicates.isEmpty()) {
+                block = new ModifiedTestableBlock(
+                        block,
+                        test -> {
+                            for (Predicate<BlockData> predicate : predicates) {
+                                if (!predicate.test(test)) {
+                                    return false;
+                                }
+                            }
+
+                            return true;
+                        }
+                );
+            }
         }
 
-        registerCustomBlock(namespacedKey, block);
         return block;
     }
 
@@ -208,7 +263,7 @@ public final class Blocks {
      * Get a Testable Block from a Block.
      * <p>
      * Will search for registered blocks first. If there are no matches in the registry,
-     * then it will return a {@link MaterialTestableBlock} matching the block type.
+     * then it will return a {@link BlockDataTestableBlock} matching the block type.
      * <p>
      * Does not account for modifiers (arg parser data).
      *
@@ -232,7 +287,7 @@ public final class Blocks {
                 return known;
             }
         }
-        return new MaterialTestableBlock(block.getType());
+        return new BlockDataTestableBlock(block.getType());
     }
 
     /**
@@ -298,8 +353,8 @@ public final class Blocks {
     public static TestableBlock[] fromMaterials(@NotNull final Material... materials) {
         return Arrays.stream(materials)
                 .filter(Material::isBlock)
-                .map(MaterialTestableBlock::new)
-                .toArray(MaterialTestableBlock[]::new);
+                .map(BlockDataTestableBlock::new)
+                .toArray(BlockDataTestableBlock[]::new);
     }
 
     /**
@@ -313,7 +368,7 @@ public final class Blocks {
         List<TestableBlock> blocks = new ArrayList<>();
         for (Material material : materials) {
             if (material.isBlock()) {
-                blocks.add(new MaterialTestableBlock(material));
+                blocks.add(new BlockDataTestableBlock(material));
             }
         }
 

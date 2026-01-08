@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
+import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.data.ExternalDataStore
 import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.integrations.IntegrationLoader
@@ -21,6 +22,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
+import com.willfp.eco.internal.blocks.BlockArgParserDirection
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -192,6 +194,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserMaxStackSize)
         Items.registerArgParser(ArgParserTooltipStyle)
         Items.registerArgParser(ArgParserTrim)
+
+        Blocks.registerArgParser(BlockArgParserDirection)
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
