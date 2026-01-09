@@ -6,7 +6,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 
-object BlockArgParserDirection : BlockArgParser {
+object BlockArgParserDirectional : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
         var direction: BlockFace? = null
 
@@ -21,7 +21,7 @@ object BlockArgParserDirection : BlockArgParser {
             if (argSplit.size < 2) {
                 continue
             }
-            val argDirection = BlockFace.valueOf(argSplit[1].uppercase())
+            val argDirection = runCatching { BlockFace.valueOf(argSplit[1].uppercase()) }.getOrNull() ?: continue
             if (!directions.contains(argDirection)) {
                 continue
             }

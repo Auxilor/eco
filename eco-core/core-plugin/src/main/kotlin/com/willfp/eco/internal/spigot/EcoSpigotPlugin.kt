@@ -22,7 +22,8 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
-import com.willfp.eco.internal.blocks.BlockArgParserDirection
+import com.willfp.eco.internal.blocks.BlockArgParserAgeable
+import com.willfp.eco.internal.blocks.BlockArgParserDirectional
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -195,7 +196,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserTooltipStyle)
         Items.registerArgParser(ArgParserTrim)
 
-        Blocks.registerArgParser(BlockArgParserDirection)
+        Blocks.registerArgParser(BlockArgParserDirectional)
+        Blocks.registerArgParser(BlockArgParserAgeable)
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)

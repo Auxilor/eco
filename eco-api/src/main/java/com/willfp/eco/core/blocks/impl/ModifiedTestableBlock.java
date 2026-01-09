@@ -1,11 +1,9 @@
 package com.willfp.eco.core.blocks.impl;
 
 import com.willfp.eco.core.blocks.TestableBlock;
-import com.willfp.eco.core.entities.TestableEntity;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +52,7 @@ public class ModifiedTestableBlock implements TestableBlock {
     }
 
     @Override
-    public Block place(@NotNull final Location location) {
+    public @NotNull Block place(@NotNull final Location location) {
         Validate.notNull(location.getWorld());
 
         return provider.apply(location);
