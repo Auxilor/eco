@@ -11,32 +11,32 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Existing testable entity with an extra filter.
+ * Existing testable block with an extra function.
  *
  * @see com.willfp.eco.core.entities.CustomEntity
  */
 public class ModifiedTestableBlock implements TestableBlock {
     /**
-     * The item.
+     * The block.
      */
     private final TestableBlock handle;
 
     /**
-     * The amount.
+     * The data.
      */
     private final Predicate<Block> test;
 
     /**
-     * The provider to spawn the entity.
+     * The provider to place a block.
      */
     private final Function<Location, Block> provider;
 
     /**
-     * Create a new modified testable entity.
+     * Create a new modified testable block.
      *
-     * @param block   The base block.
+     * @param block    The base block.
      * @param test     The test.
-     * @param provider The provider to spawn the entity.
+     * @param provider The provider to place a block.
      */
     public ModifiedTestableBlock(@NotNull final TestableBlock block,
                                  @NotNull final Predicate<@NotNull Block> test,

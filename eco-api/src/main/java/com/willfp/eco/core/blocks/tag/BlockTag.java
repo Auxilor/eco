@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A group of items that share a common trait.
+ * A group of blocks that share a common trait.
  */
 public interface BlockTag {
     /**
@@ -27,9 +27,9 @@ public interface BlockTag {
     boolean matches(@NotNull Block block);
 
     /**
-     * Convert this tag to a testable item.
+     * Convert this tag to a testable block.
      *
-     * @return The testable item.
+     * @return The testable block.
      */
     @NotNull
     default TestableBlock toTestableBlock() {

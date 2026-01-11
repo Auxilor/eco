@@ -6,7 +6,7 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.type.TrialSpawner
 import org.bukkit.block.data.type.Vault
 
-object BlockArgParserTrialSpawner : BlockArgParser {
+object BlockArgParserTrial : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
         if (
             blockData !is TrialSpawner &&

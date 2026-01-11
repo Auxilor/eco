@@ -15,7 +15,7 @@ public abstract class CustomBlockTag implements BlockTag {
     /**
      * Create a new custom block tag.
      *
-     * @param key         The key.
+     * @param key The key.
      */
     public CustomBlockTag(@NotNull final NamespacedKey key) {
         this.key = key;

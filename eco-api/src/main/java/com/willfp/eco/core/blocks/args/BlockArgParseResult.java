@@ -11,8 +11,8 @@ import java.util.function.Predicate;
 /**
  * The result of an arg parses.
  *
- * @param test     The test for the entity.
- * @param modifier The modifier to apply to the entity.
+ * @param test     The test for the block.
+ * @param modifier The modifier to apply to the block.
  * @see EntityArgParser
  */
 public record BlockArgParseResult(@NotNull Predicate<Block> test,

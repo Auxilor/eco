@@ -10,18 +10,13 @@ import com.willfp.eco.core.blocks.impl.ModifiedTestableBlock;
 import com.willfp.eco.core.blocks.impl.UnrestrictedMaterialTestableBlock;
 import com.willfp.eco.core.blocks.provider.BlockProvider;
 import com.willfp.eco.core.blocks.tag.BlockTag;
-import com.willfp.eco.core.entities.args.EntityArgParseResult;
-import com.willfp.eco.core.entities.args.EntityArgParser;
-import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +36,7 @@ public final class Blocks {
     private static final Map<NamespacedKey, TestableBlock> REGISTRY = new ConcurrentHashMap<>();
 
     /**
-     * Cached custom block lookups, using {@link Location}.
+     * Cached custom block lookups, using {@link HashedBlock}.
      */
     private static final LoadingCache<HashedBlock, Optional<TestableBlock>> CACHE = Caffeine.newBuilder()
             .expireAfterAccess(10, TimeUnit.MINUTES)

@@ -1,6 +1,5 @@
 package com.willfp.eco.core.blocks.impl;
 
-import com.willfp.eco.core.blocks.TestableBlock;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
