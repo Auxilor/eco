@@ -7,13 +7,12 @@ import org.bukkit.block.data.type.Jigsaw
 
 object BlockArgParserJigsaw : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Jigsaw) return null
         var orientation: Jigsaw.Orientation? = null
-
-        val jigsaw = blockData as? Jigsaw ?: return null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("orientation", ignoreCase = true)) {
+            if (!argSplit[0].equals("orientation", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -23,8 +22,6 @@ object BlockArgParserJigsaw : BlockArgParser {
         }
 
         orientation ?: return null
-
-        jigsaw.orientation = orientation
 
         return BlockArgParseResult(
             {

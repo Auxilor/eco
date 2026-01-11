@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.Gate
 
 object BlockArgParserGate : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Gate) return null
         var inWall: Boolean? = null
-
-        val gate = blockData as? Gate ?: return null
 
         for (arg in args) {
             if (arg.equals("in_wall", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserGate : BlockArgParser {
         }
 
         inWall ?: return null
-
-        gate.isInWall = inWall
 
         return BlockArgParseResult(
             {

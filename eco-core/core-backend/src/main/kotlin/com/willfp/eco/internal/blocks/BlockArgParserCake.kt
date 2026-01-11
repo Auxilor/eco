@@ -7,29 +7,25 @@ import org.bukkit.block.data.type.Cake
 
 object BlockArgParserCake : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
-        var bites: Int? = null
-
         val cake = blockData as? Cake ?: return null
-        val maximumBites = cake.maximumBites
+        var bites: Int? = null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("bites", ignoreCase = true)) {
+            if (!argSplit[0].equals("bites", true)) {
                 continue
             }
             if (argSplit.size < 2) {
                 continue
             }
             val argBites = argSplit[1].toIntOrNull() ?: continue
-            if (argBites in (maximumBites + 1)..<0) {
+            if (argBites in (cake.maximumBites + 1)..<0) {
                 continue
             }
             bites = argBites
         }
 
         bites ?: return null
-
-        cake.bites = bites
 
         return BlockArgParseResult(
             {

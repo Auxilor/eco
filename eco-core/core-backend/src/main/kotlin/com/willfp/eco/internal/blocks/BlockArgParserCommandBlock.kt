@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.CommandBlock
 
 object BlockArgParserCommandBlock : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is CommandBlock) return null
         var conditional: Boolean? = null
-
-        val commandBlock = blockData as? CommandBlock ?: return null
 
         for (arg in args) {
             if (arg.equals("conditional", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserCommandBlock : BlockArgParser {
         }
 
         conditional ?: return null
-
-        commandBlock.isConditional = conditional
 
         return BlockArgParseResult(
             {

@@ -7,9 +7,8 @@ import org.bukkit.block.data.Lightable
 
 object BlockArgParserLightable : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Lightable) return null
         var lit: Boolean? = null
-
-        val lightable = blockData as? Lightable ?: return null
 
         for (arg in args) {
             if (arg.equals("lit", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserLightable : BlockArgParser {
         }
 
         lit ?: return null
-
-        lightable.isLit = lit
 
         return BlockArgParseResult(
             {

@@ -7,13 +7,12 @@ import org.bukkit.block.data.type.Chest
 
 object BlockArgParserChest : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Chest) return null
         var chestType: Chest.Type? = null
-
-        val chest = blockData as? Chest ?: return null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("chest_type", ignoreCase = true)) {
+            if (!argSplit[0].equals("type", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -23,8 +22,6 @@ object BlockArgParserChest : BlockArgParser {
         }
 
         chestType ?: return null
-
-        chest.type = chestType
 
         return BlockArgParseResult(
             {

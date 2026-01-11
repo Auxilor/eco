@@ -7,9 +7,8 @@ import org.bukkit.block.data.Hangable
 
 object BlockArgParserHangable : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Hangable) return null
         var hanging: Boolean? = null
-
-        val hangable = blockData as? Hangable ?: return null
 
         for (arg in args) {
             if (arg.equals("hanging", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserHangable : BlockArgParser {
         }
 
         hanging ?: return null
-
-        hangable.isHanging = hanging
 
         return BlockArgParseResult(
             {

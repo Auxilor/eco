@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.Campfire
 
 object BlockArgParserCampfire : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Campfire) return null
         var signalFire: Boolean? = null
-
-        val campfire = blockData as? Campfire ?: return null
 
         for (arg in args) {
             if (arg.equals("signal_fire", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserCampfire : BlockArgParser {
         }
 
         signalFire ?: return null
-
-        campfire.isSignalFire = signalFire
 
         return BlockArgParseResult(
             {

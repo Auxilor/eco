@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.EndPortalFrame
 
 object BlockArgParserEndPortalFrame : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is EndPortalFrame) return null
         var eye: Boolean? = null
-
-        val endPortalFrame = blockData as? EndPortalFrame ?: return null
 
         for (arg in args) {
             if (arg.equals("eye", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserEndPortalFrame : BlockArgParser {
         }
 
         eye ?: return null
-
-        endPortalFrame.setEye(eye)
 
         return BlockArgParseResult(
             {

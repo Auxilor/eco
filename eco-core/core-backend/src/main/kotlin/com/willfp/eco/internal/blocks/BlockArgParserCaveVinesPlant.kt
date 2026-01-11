@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.CaveVinesPlant
 
 object BlockArgParserCaveVinesPlant : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is CaveVinesPlant) return null
         var berries: Boolean? = null
-
-        val caveVinesPlant = blockData as? CaveVinesPlant ?: return null
 
         for (arg in args) {
             if (arg.equals("berries", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserCaveVinesPlant : BlockArgParser {
         }
 
         berries ?: return null
-
-        caveVinesPlant.isBerries = berries
 
         return BlockArgParseResult(
             {

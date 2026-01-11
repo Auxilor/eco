@@ -4,17 +4,20 @@ import com.willfp.eco.core.blocks.args.BlockArgParseResult
 import com.willfp.eco.core.blocks.args.BlockArgParser
 import org.bukkit.block.data.Ageable
 import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.type.Sapling
 
 object BlockArgParserAgeable : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        val maximumAge = when (blockData) {
+            is Ageable -> blockData.maximumAge
+            is Sapling -> blockData.maximumStage
+            else -> return null
+        }
         var age: Int? = null
-
-        val ageable = blockData as? Ageable ?: return null
-        val maximumAge = ageable.maximumAge
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("age", ignoreCase = true)) {
+            if (!argSplit[0].equals("age", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -29,19 +32,24 @@ object BlockArgParserAgeable : BlockArgParser {
 
         age ?: return null
 
-        ageable.age = age
-
         return BlockArgParseResult(
             {
-                val ageable = it.blockData as? Ageable ?: return@BlockArgParseResult false
-
-                ageable.age == age
+                when (val data = it.blockData) {
+                    is Ageable -> data.age == age
+                    is Sapling -> data.stage == age
+                    else -> false
+                }
             },
             {
-                val ageable = it.blockData as? Ageable ?: return@BlockArgParseResult
+                val data = it.blockData
 
-                ageable.age = age
-                it.blockData = ageable
+                when (data) {
+                    is Ageable -> data.age = age
+                    is Sapling -> data.stage = age
+                    else -> return@BlockArgParseResult
+                }
+
+                it.blockData = data
             }
         )
     }

@@ -7,9 +7,8 @@ import org.bukkit.block.data.BlockData
 
 object BlockArgParserAttachable : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Attachable) return null
         var attached: Boolean? = null
-
-        val attachable = blockData as? Attachable ?: return null
 
         for (arg in args) {
             if (arg.equals("attached", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserAttachable : BlockArgParser {
         }
 
         attached ?: return null
-
-        attachable.isAttached = attached
 
         return BlockArgParseResult(
             {

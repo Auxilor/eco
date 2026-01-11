@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.BubbleColumn
 
 object BlockArgParserBubbleColumn : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is BubbleColumn) return null
         var drag: Boolean? = null
-
-        val bubbleColumn = blockData as? BubbleColumn ?: return null
 
         for (arg in args) {
             if (arg.equals("drag", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserBubbleColumn : BlockArgParser {
         }
 
         drag ?: return null
-
-        bubbleColumn.isDrag = drag
 
         return BlockArgParseResult(
             {

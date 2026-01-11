@@ -7,13 +7,12 @@ import org.bukkit.block.data.FaceAttachable
 
 object BlockArgParserFaceAttachable : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is FaceAttachable) return null
         var attachedFace: FaceAttachable.AttachedFace? = null
-
-        val faceAttachable = blockData as? FaceAttachable ?: return null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("attached_face", ignoreCase = true)) {
+            if (!argSplit[0].equals("attached_face", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -23,8 +22,6 @@ object BlockArgParserFaceAttachable : BlockArgParser {
         }
 
         attachedFace ?: return null
-
-        faceAttachable.attachedFace = attachedFace
 
         return BlockArgParseResult(
             {

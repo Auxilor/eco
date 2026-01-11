@@ -7,13 +7,12 @@ import org.bukkit.block.data.type.Bamboo
 
 object BlockArgParserBamboo : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Bamboo) return null
         var bambooLeaves: Bamboo.Leaves? = null
-
-        val bamboo = blockData as? Bamboo ?: return null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("bamboo_leaves", ignoreCase = true)) {
+            if (!argSplit[0].equals("leaves", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -23,8 +22,6 @@ object BlockArgParserBamboo : BlockArgParser {
         }
 
         bambooLeaves ?: return null
-
-        bamboo.leaves = bambooLeaves
 
         return BlockArgParseResult(
             {

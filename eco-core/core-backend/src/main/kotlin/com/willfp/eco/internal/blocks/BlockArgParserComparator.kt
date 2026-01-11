@@ -7,13 +7,12 @@ import org.bukkit.block.data.type.Comparator
 
 object BlockArgParserComparator : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Comparator) return null
         var comparatorMode: Comparator.Mode? = null
-
-        val comparator = blockData as? Comparator ?: return null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("comparator_mode", ignoreCase = true)) {
+            if (!argSplit[0].equals("mode", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -23,8 +22,6 @@ object BlockArgParserComparator : BlockArgParser {
         }
 
         comparatorMode ?: return null
-
-        comparator.mode = comparatorMode
 
         return BlockArgParseResult(
             {

@@ -3,6 +3,7 @@ package com.willfp.eco.core.blocks.args;
 import com.willfp.eco.core.blocks.TestableBlock;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

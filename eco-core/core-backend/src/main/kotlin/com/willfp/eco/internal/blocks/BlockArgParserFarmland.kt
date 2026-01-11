@@ -7,29 +7,25 @@ import org.bukkit.block.data.type.Farmland
 
 object BlockArgParserFarmland : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
-        var moisture: Int? = null
-
         val farmland = blockData as? Farmland ?: return null
-        val maximumMoisture = farmland.maximumMoisture
+        var moisture: Int? = null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("moisture", ignoreCase = true)) {
+            if (!argSplit[0].equals("moisture", true)) {
                 continue
             }
             if (argSplit.size < 2) {
                 continue
             }
             val argMoisture = argSplit[1].toIntOrNull() ?: continue
-            if (argMoisture in (maximumMoisture + 1)..<0) {
+            if (argMoisture in (farmland.maximumMoisture + 1)..<0) {
                 continue
             }
             moisture = argMoisture
         }
 
         moisture ?: return null
-
-        farmland.moisture = moisture
 
         return BlockArgParseResult(
             {

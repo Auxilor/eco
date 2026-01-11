@@ -8,29 +8,21 @@ import org.bukkit.block.data.Directional
 
 object BlockArgParserDirectional : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
-        var direction: BlockFace? = null
-
         val directional = blockData as? Directional ?: return null
-        val directions = directional.faces
+        var direction: BlockFace? = null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("direction", ignoreCase = true)) {
+            if (!argSplit[0].equals("direction", true)) {
                 continue
             }
             if (argSplit.size < 2) {
                 continue
             }
-            val argDirection = runCatching { BlockFace.valueOf(argSplit[1].uppercase()) }.getOrNull() ?: continue
-            if (!directions.contains(argDirection)) {
-                continue
-            }
-            direction = argDirection
+            direction = directional.faces.firstOrNull { it.name.equals(argSplit[1].uppercase(), true) } ?: continue
         }
 
         direction ?: return null
-
-        directional.facing = direction
 
         return BlockArgParseResult(
             {

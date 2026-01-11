@@ -7,13 +7,12 @@ import org.bukkit.block.data.type.Door
 
 object BlockArgParserDoor : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Door) return null
         var doorHinge: Door.Hinge? = null
-
-        val door = blockData as? Door ?: return null
 
         for (arg in args) {
             val argSplit = arg.split(":")
-            if (!argSplit[0].equals("hinge", ignoreCase = true)) {
+            if (!argSplit[0].equals("hinge", true)) {
                 continue
             }
             if (argSplit.size < 2) {
@@ -23,8 +22,6 @@ object BlockArgParserDoor : BlockArgParser {
         }
 
         doorHinge ?: return null
-
-        door.hinge = doorHinge
 
         return BlockArgParseResult(
             {

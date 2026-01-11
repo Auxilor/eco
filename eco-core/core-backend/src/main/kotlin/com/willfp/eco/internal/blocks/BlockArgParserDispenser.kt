@@ -7,9 +7,8 @@ import org.bukkit.block.data.type.Dispenser
 
 object BlockArgParserDispenser : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
+        if (blockData !is Dispenser) return null
         var triggered: Boolean? = null
-
-        val dispenser = blockData as? Dispenser ?: return null
 
         for (arg in args) {
             if (arg.equals("triggered", true)) {
@@ -18,8 +17,6 @@ object BlockArgParserDispenser : BlockArgParser {
         }
 
         triggered ?: return null
-
-        dispenser.isTriggered = triggered
 
         return BlockArgParseResult(
             {
