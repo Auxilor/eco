@@ -217,6 +217,9 @@ public final class Blocks {
                 }
 
                 registerCustomBlock(namespacedKey, part);
+            }
+
+            if (part != null) {
                 block = part;
             }
         }
