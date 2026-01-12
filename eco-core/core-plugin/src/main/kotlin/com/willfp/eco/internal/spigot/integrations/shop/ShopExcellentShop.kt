@@ -49,11 +49,15 @@ class ShopExcellentShop : ShopIntegration {
                 return
             }
 
+            if (event.transaction.tradeType != TradeType.SELL) {
+                return
+            }
+
             if (event.transactionResult != Transaction.Result.SUCCESS) {
                 return
             }
 
-            val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.transaction.price), event.transaction.product.preview)
+            val ecoEvent = ShopSellEvent(event.player, PriceEconomy(event.transaction.price), event.transaction.product.preview.clone())
             Bukkit.getPluginManager().callEvent(ecoEvent)
             event.transaction.price = ecoEvent.value.getValue(event.player) * ecoEvent.multiplier
         }
