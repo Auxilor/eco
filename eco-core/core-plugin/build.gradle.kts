@@ -16,6 +16,7 @@ dependencies {
         exclude(group = "com.google.code.gson", module = "gson")
     }
     implementation("com.willfp:ModelEngineBridge:1.2.0")
+    implementation(group = "me.libraryaddict.disguises", name = "libsdisguises", version = "11.0.13")
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.8")
@@ -38,7 +39,11 @@ dependencies {
         exclude(group = "*", module = "*")
     })
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
-    compileOnly("com.nexomc:nexo:1.10.0")
+    compileOnly("com.nexomc:nexo:1.17.0") {
+        exclude(group = "*", module = "*")
+    }
+    compileOnly("net.momirealms:craft-engine-core:0.0.66")
+    compileOnly("net.momirealms:craft-engine-bukkit:0.0.66")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
     compileOnly("net.essentialsx:EssentialsX:2.21.2", {
@@ -57,7 +62,6 @@ dependencies {
     compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT")
     compileOnly("com.github.sirblobman.combatlogx:api:11.4-SNAPSHOT")
     compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
-    compileOnly("LibsDisguises:LibsDisguises:10.0.26")
     compileOnly("com.denizenscript:denizen:1.2.7-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
@@ -66,6 +70,7 @@ dependencies {
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.0.8")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("de.oliver:FancyHolograms:2.4.0")
+    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.6.0")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")
