@@ -9,14 +9,12 @@ import io.papermc.paper.adventure.PaperAdventure
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
@@ -25,13 +23,8 @@ import org.bukkit.persistence.PersistentDataContainer
 
 private lateinit var impl: CommonsProvider
 
-val NBT_TAG_STRING by lazy { impl.nbtTagString }
-
 fun Mob.toPathfinderMob(): PathfinderMob? =
     impl.toPathfinderMob(this)
-
-fun NamespacedKey.toResourceLocation(): ResourceLocation =
-    impl.toResourceLocation(this)
 
 fun ItemStack.asNMSStack(): net.minecraft.world.item.ItemStack =
     impl.asNMSStack(this)
@@ -87,15 +80,12 @@ fun net.minecraft.network.chat.Component.toAdventure(): Component {
 }
 
 interface CommonsProvider {
-    val nbtTagString: Int
 
     fun makePdc(tag: CompoundTag, base: Boolean): PersistentDataContainer
 
     fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer?, item: net.minecraft.world.item.ItemStack? = null)
 
     fun toPathfinderMob(mob: Mob): PathfinderMob?
-
-    fun toResourceLocation(namespacedKey: NamespacedKey): ResourceLocation
 
     fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack
 
