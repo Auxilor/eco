@@ -75,7 +75,7 @@ open class EcoFastItemStack(
         val map = mutableMapOf<Enchantment, Int>()
 
         for ((enchantment, level) in enchantments.entrySet()) {
-            val bukkit = CraftEnchantment.minecraftToBukkit(enchantment.value())
+            val bukkit = CraftEnchantment.minecraftHolderToBukkit(enchantment)
 
             map[bukkit] = level
         }
@@ -84,7 +84,7 @@ open class EcoFastItemStack(
             val stored = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return map
 
             for ((enchantment, level) in stored.entrySet()) {
-                val bukkit = CraftEnchantment.minecraftToBukkit(enchantment.value())
+                val bukkit = CraftEnchantment.minecraftHolderToBukkit(enchantment)
 
                 map[bukkit] = max(map.getOrDefault(bukkit, 0), level)
             }
@@ -162,7 +162,7 @@ open class EcoFastItemStack(
 
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
-    protected fun <T> net.minecraft.world.item.ItemStack.modifyComponent(
+    protected fun <T : Any> net.minecraft.world.item.ItemStack.modifyComponent(
         component: DataComponentType<T>,
         modifier: (T) -> T
     ) {
