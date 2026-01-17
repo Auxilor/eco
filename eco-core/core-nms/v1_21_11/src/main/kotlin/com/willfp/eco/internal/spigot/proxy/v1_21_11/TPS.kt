@@ -6,6 +6,6 @@ import org.bukkit.craftbukkit.CraftServer
 
 class TPS : TPSProxy {
     override fun getTPS(): Double {
-        return (Bukkit.getServer() as CraftServer).handle.server.msptData5s?.avg ?: 0.0
+        return (Bukkit.getServer() as CraftServer).tps[0]
     }
 }
