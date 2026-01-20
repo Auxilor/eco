@@ -29,7 +29,7 @@ dependencies {
     compileOnly("com.github.TownyAdvanced:Towny:0.99.5.21") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
-    compileOnly("com.github.angeschossen:LandsAPI:6.26.18")
+    compileOnly("com.github.angeschossen:LandsAPI:7.23.1")
     compileOnly("com.github.angeschossen:PluginFrameworkAPI:1.0.0")
     compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
     compileOnly("com.github.jiangdashao:matrix-api-repo:317d4635fd")
