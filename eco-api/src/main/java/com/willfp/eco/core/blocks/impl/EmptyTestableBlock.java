@@ -1,6 +1,7 @@
 package com.willfp.eco.core.blocks.impl;
 
 import com.willfp.eco.core.blocks.TestableBlock;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,8 @@ public class EmptyTestableBlock implements TestableBlock {
 
     @Override
     public @NotNull Block place(@NotNull final Location location) {
+        Validate.notNull(location.getWorld());
+
         return location.getBlock();
     }
 }

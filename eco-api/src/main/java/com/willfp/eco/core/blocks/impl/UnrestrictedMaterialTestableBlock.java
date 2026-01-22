@@ -1,6 +1,5 @@
 package com.willfp.eco.core.blocks.impl;
 
-import com.willfp.eco.core.blocks.TestableBlock;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,11 +10,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A testable block for materials regardless of data.
  */
-public class UnrestrictedMaterialTestableBlock implements TestableBlock {
-    /**
-     * The block type.
-     */
-    private final Material material;
+public class UnrestrictedMaterialTestableBlock extends MaterialTestableBlock {
 
     /**
      * Create a new unrestricted material testable block.
@@ -23,7 +18,7 @@ public class UnrestrictedMaterialTestableBlock implements TestableBlock {
      * @param material The material.
      */
     public UnrestrictedMaterialTestableBlock(@NotNull final Material material) {
-        this.material = material;
+        super(material);
     }
 
     @Override
@@ -39,14 +34,5 @@ public class UnrestrictedMaterialTestableBlock implements TestableBlock {
         block.setType(material);
 
         return block;
-    }
-
-    /**
-     * Get the material.
-     *
-     * @return The material.
-     */
-    public Material getMaterial() {
-        return this.material;
     }
 }

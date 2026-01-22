@@ -6,6 +6,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,10 +17,10 @@ public class MaterialTestableBlock implements TestableBlock {
     /**
      * The block type.
      */
-    private final Material material;
+    protected final Material material;
 
     /**
-     * Create a new unrestricted material testable block.
+     * Create a new block data testable block.
      *
      * @param material The material.
      */
@@ -42,16 +43,16 @@ public class MaterialTestableBlock implements TestableBlock {
     public @NotNull Block place(@NotNull Location location) {
         Validate.notNull(location.getWorld());
 
-        Block block = location.getWorld().getBlockAt(location);
+        Block block = location.getBlock();
         block.setType(material);
 
         return block;
     }
 
     /**
-     * Get the material.
+     * Get the block data.
      *
-     * @return The material.
+     * @return The block data.
      */
     public Material getMaterial() {
         return this.material;
