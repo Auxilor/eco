@@ -71,6 +71,7 @@ dependencies {
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("de.oliver:FancyHolograms:2.4.0")
     compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.6.0")
+    compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")
