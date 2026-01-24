@@ -44,7 +44,6 @@ public abstract class Extension implements PluginLike {
      * Method to validate metadata and enable extension.
      */
     public final void enable() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
         this.onEnable();
     }
 
@@ -53,6 +52,14 @@ public abstract class Extension implements PluginLike {
      */
     public final void disable() {
         this.onDisable();
+    }
+
+    /**
+     * Method to run any tasks on load.
+     */
+    public final void load() {
+        Validate.notNull(metadata, "Metadata cannot be null!");
+        this.onLoad();
     }
 
     /**
@@ -73,6 +80,13 @@ public abstract class Extension implements PluginLike {
      * Called on enabling Extension.
      */
     protected abstract void onEnable();
+
+    /**
+     * Called when Extension is loaded.
+     */
+    protected void onLoad() {
+        // Override if needed
+    }
 
     /**
      * Called when Extension is disabled.
