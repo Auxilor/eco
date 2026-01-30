@@ -184,4 +184,15 @@ public final class PlayerUtils {
     private PlayerUtils() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
+
+    /**
+     * Gives the player the amount of experience specified.
+     *
+     * @param player       The player.
+     * @param amount       The amount.
+     * @param applyMending Mend players items with mending, with same behavior as picking up orbs.
+     */
+    public static void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending) {
+        Eco.get().giveExpAndApplyMending(player, amount, applyMending);
+    }
 }
