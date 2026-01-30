@@ -110,7 +110,7 @@ class EnhancedTemptGoal(
     override fun tick() {
         player ?: return
 
-        mob.lookControl.setLookAt(player, (mob.maxHeadYRot + 20).toFloat(), mob.maxHeadXRot.toFloat())
+        mob.lookControl.setLookAt(player!!, (mob.maxHeadYRot + 20).toFloat(), mob.maxHeadXRot.toFloat())
         if (mob.distanceToSqr(player as Entity) < 6.25) {
             mob.navigation.stop()
         } else {
