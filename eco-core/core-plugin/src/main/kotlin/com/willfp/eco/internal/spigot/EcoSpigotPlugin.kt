@@ -138,6 +138,7 @@ import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEcono
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
+import com.willfp.eco.internal.spigot.integrations.shop.ShopExcellentShop
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
 import com.willfp.eco.internal.spigot.metrics.PlayerflowHandler
@@ -158,7 +159,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import kotlin.jvm.java
 import su.nightexpress.coinsengine.api.CoinsEngineAPI
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
@@ -380,6 +380,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("DeluxeSellwands") { ShopManager.register(ShopDeluxeSellwands()) },
             IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI()) },
             IntegrationLoader("EconomyShopGUI-Premium") { ShopManager.register(ShopEconomyShopGUI()) },
+            IntegrationLoader("ExcellentShop") { ShopManager.register(ShopExcellentShop()) },
 
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
