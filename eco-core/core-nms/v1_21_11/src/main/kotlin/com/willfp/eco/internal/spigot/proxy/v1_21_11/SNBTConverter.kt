@@ -1,30 +1,31 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_11
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.serialization.Dynamic
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import net.minecraft.SharedConstants
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.SnbtPrinterTagVisitor
 import net.minecraft.nbt.TagParser
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.datafix.fixes.References
-import org.bukkit.Bukkit
-import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.util.CraftMagicNumbers
 import org.bukkit.inventory.ItemStack
-import kotlin.jvm.optionals.getOrNull
 
-private val registryAccess = (Bukkit.getServer() as CraftServer).server.registryAccess()
 
 class SNBTConverter : SNBTConverterProxy {
     private fun parseItemSNBT(snbt: String): CompoundTag? {
         val nbt = runCatching { TagParser.parseCompoundFully(snbt) }.getOrNull() ?: return null
-        val dataVersion = nbt.getInt("DataVersion").getOrNull()
+        val dataVersion = if (nbt.contains("DataVersion")) {
+            nbt.getInt("DataVersion").get()
+        } else null
 
         // If the data version is the same as the server's data version, we don't need to fix it
+
         if (dataVersion == CraftMagicNumbers.INSTANCE.dataVersion) {
             return nbt
         }
@@ -38,28 +39,47 @@ class SNBTConverter : SNBTConverterProxy {
     }
 
     override fun fromSNBT(snbt: String): ItemStack? {
-        val tag = parseItemSNBT(snbt) ?: return null
-        val nbtOps = registryAccess.createSerializationContext(NbtOps.INSTANCE)
-        val nms = net.minecraft.world.item.ItemStack.CODEC.parse(nbtOps, tag).result().orElse(null) ?: return null
-        return CraftItemStack.asBukkitCopy(nms)
+        try {
+            val parsed = TagParser.parseCompoundFully(snbt)
+            val dataVersion = parsed.getIntOr("DataVersion", 0)
+            val converted = MinecraftServer.getServer().fixerUpper.update(
+                References.ITEM_STACK,
+                Dynamic(NbtOps.INSTANCE, parsed),
+                dataVersion,
+                SharedConstants.getCurrentVersion().dataVersion().version()
+            ).getValue() as CompoundTag?
+            val minecraftStack = net.minecraft.world.item.ItemStack.CODEC.parse(
+                MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                converted
+            ).getOrThrow()
+            return CraftItemStack.asCraftMirror(minecraftStack)
+        } catch (_: CommandSyntaxException) {
+            return null
+        }
     }
 
     override fun toSNBT(itemStack: ItemStack): String {
-        val nms = CraftItemStack.asNMSCopy(itemStack)
-        val nbtOps = registryAccess.createSerializationContext(NbtOps.INSTANCE)
-        val tag = net.minecraft.world.item.ItemStack.CODEC.encodeStart(nbtOps, nms).result().get() as CompoundTag
-        tag.putInt("DataVersion", CraftMagicNumbers.INSTANCE.dataVersion)
-        return SnbtPrinterTagVisitor().visit(tag)
+        val compoundTag = net.minecraft.world.item.ItemStack.CODEC.encodeStart(
+            MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+            CraftItemStack.asNMSCopy(itemStack)
+        ).getOrThrow() as CompoundTag
+        compoundTag.putInt("DataVersion", SharedConstants.getCurrentVersion().dataVersion().version())
+        return SnbtPrinterTagVisitor().visit(compoundTag)
     }
 
     override fun makeSNBTTestable(snbt: String): TestableItem {
-        val tag = parseItemSNBT(snbt) ?: return EmptyTestableItem()
-        val nbtOps = registryAccess.createSerializationContext(NbtOps.INSTANCE)
-        val nms = net.minecraft.world.item.ItemStack.CODEC.parse(nbtOps, tag).result().orElse(null)
-            ?: return EmptyTestableItem()
+        try {
+            val tag = parseItemSNBT(snbt) ?: return EmptyTestableItem()
+            tag.remove("Count")
+            val minecraftStack = net.minecraft.world.item.ItemStack.CODEC.parse(
+                MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                tag
+            ).getOrThrow()
+            return SNBTTestableItem(CraftItemStack.asBukkitCopy(minecraftStack), tag)
+        } catch (_: CommandSyntaxException) {
+            return EmptyTestableItem()
+        }
 
-        tag.remove("Count")
-        return SNBTTestableItem(CraftItemStack.asBukkitCopy(nms), tag)
     }
 
     class SNBTTestableItem(
@@ -71,9 +91,10 @@ class SNBTConverter : SNBTConverterProxy {
                 return false
             }
 
-            val nms = CraftItemStack.asNMSCopy(itemStack)
-            val nbtOps = registryAccess.createSerializationContext(NbtOps.INSTANCE)
-            val nmsTag = net.minecraft.world.item.ItemStack.CODEC.encodeStart(nbtOps, nms).result().get() as CompoundTag
+            val nmsTag = net.minecraft.world.item.ItemStack.CODEC.encodeStart(
+                MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                CraftItemStack.asNMSCopy(itemStack)
+            ).getOrThrow() as CompoundTag
             nmsTag.remove("Count")
             return tag.copy().merge(nmsTag) == nmsTag && itemStack.type == item.type
         }
