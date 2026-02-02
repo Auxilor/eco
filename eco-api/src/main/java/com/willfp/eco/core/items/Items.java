@@ -220,14 +220,18 @@ public final class Items {
 
         int stackAmount = 1;
 
-        String[] split = args[0].toLowerCase().split(":");
+        String base1 = args[0].toLowerCase();
 
-        String base = split[0];
-        boolean isTag = base.startsWith("#");
+        String[] split = base1.split(":");
+
+        String base2 = split[0];
+        boolean isTag = base2.startsWith("#");
 
         if (isTag) {
-            String tag = base.substring(1);
-            ItemTag itemTag = TAGS.get(tag);
+            ItemTag itemTag = TAGS.get(base1.substring(1));
+            if (itemTag == null) {
+                itemTag = TAGS.get(base2.substring(1));
+            }
 
             if (itemTag == null) {
                 return new EmptyTestableItem();
