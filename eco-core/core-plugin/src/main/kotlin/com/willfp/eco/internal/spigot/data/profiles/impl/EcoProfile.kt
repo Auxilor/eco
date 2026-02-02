@@ -25,11 +25,13 @@ abstract class EcoProfile(
             return this.data[key] as T
         }
 
-        this.data[key] = if (key.isSavedLocally) {
+        val future = if (key.isSavedLocally) {
             handler.localHandler.read(uuid, key)
         } else {
             handler.defaultHandler.read(uuid, key)
-        } ?: key.defaultValue
+        }
+
+        this.data[key] = future.thenApply { it ?: key.defaultValue }.join()
 
         return read(key)
     }
