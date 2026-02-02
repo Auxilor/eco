@@ -20,6 +20,7 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
     ): Boolean {
         val area = landsIntegration.getArea(block.location) ?: return true
         return area.hasRoleFlag(player, Flags.BLOCK_BREAK, block.type, false)
+                || area.hasRoleFlag(player, Flags.HARVEST, block.type, false)
     }
 
     override fun canCreateExplosion(
@@ -27,7 +28,7 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
         location: Location
     ): Boolean {
         val area = landsIntegration.getArea(location) ?: return true
-        return  area.hasRoleFlag(player, Flags.ATTACK_PLAYER, Material.AIR, false)
+        return area.hasRoleFlag(player, Flags.ATTACK_PLAYER, Material.AIR, false)
                 && area.hasRoleFlag(player, Flags.ATTACK_ANIMAL, Material.AIR, false)
     }
 
@@ -36,7 +37,8 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
         block: Block
     ): Boolean {
         val area = landsIntegration.getArea(block.location) ?: return true
-        return area.hasRoleFlag(player, Flags.BLOCK_PLACE, Material.AIR, false)
+        return area.hasRoleFlag(player, Flags.BLOCK_PLACE, block.type, false)
+                || area.hasRoleFlag(player, Flags.PLANT, block.type, false)
     }
 
     override fun canInjure(
@@ -46,7 +48,7 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
 
         val area = landsIntegration.getArea(victim.location) ?: return true
 
-        return when(victim) {
+        return when (victim) {
             is Player -> area.hasRoleFlag(player, Flags.ATTACK_PLAYER, Material.AIR, false)
             is Monster -> area.hasRoleFlag(player, Flags.ATTACK_MONSTER, Material.AIR, false)
             is Animals -> area.hasRoleFlag(player, Flags.ATTACK_ANIMAL, Material.AIR, false)
