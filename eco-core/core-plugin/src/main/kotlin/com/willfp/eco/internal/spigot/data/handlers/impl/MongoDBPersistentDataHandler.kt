@@ -69,7 +69,12 @@ class MongoDBPersistentDataHandler(
             }
 
             override fun deserialize(value: BsonValue): Int {
-                return value.asInt32().value
+                // Handle both INT32 and DOUBLE
+                return when {
+                    value.isInt32 -> value.asInt32().value
+                    value.isDouble -> value.asDouble().value.toInt()
+                    else -> 0 // default value
+                }
             }
         })
 
@@ -79,7 +84,12 @@ class MongoDBPersistentDataHandler(
             }
 
             override fun deserialize(value: BsonValue): Double {
-                return value.asDouble().value
+                // Handle both DOUBLE and INT32
+                return when {
+                    value.isDouble -> value.asDouble().value
+                    value.isInt32 -> value.asInt32().value.toDouble()
+                    else -> 0.0 // default value
+                }
             }
         })
 

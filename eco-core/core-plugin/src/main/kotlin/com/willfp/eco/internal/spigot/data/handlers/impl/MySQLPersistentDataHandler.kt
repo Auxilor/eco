@@ -70,15 +70,33 @@ class MySQLPersistentDataHandler(
             }
         }.createTable())
 
-        PersistentDataKeyType.INT.registerSerializer(this, object : DirectStoreSerializer<Int>() {
-            override val table = object : KeyTable<Int>("int") {
-                override val value = integer(VALUE_COLUMN_NAME)
+        PersistentDataKeyType.INT.registerSerializer(this, object : SingleValueSerializer<Int, String>() {
+            override val table = object : KeyTable<String>("int") {
+                override val value = varchar(VALUE_COLUMN_NAME, 64)
+            }
+
+            override fun convertToStored(value: Int): String {
+                return value.toString()
+            }
+
+            override fun convertFromStored(value: String): Int {
+                // Handle both int and double string representations
+                return value.toDoubleOrNull()?.toInt() ?: value.toIntOrNull() ?: 0
             }
         }.createTable())
 
-        PersistentDataKeyType.DOUBLE.registerSerializer(this, object : DirectStoreSerializer<Double>() {
-            override val table = object : KeyTable<Double>("double") {
-                override val value = double(VALUE_COLUMN_NAME)
+        PersistentDataKeyType.DOUBLE.registerSerializer(this, object : SingleValueSerializer<Double, String>() {
+            override val table = object : KeyTable<String>("double") {
+                override val value = varchar(VALUE_COLUMN_NAME, 64)
+            }
+
+            override fun convertToStored(value: Double): String {
+                return value.toString()
+            }
+
+            override fun convertFromStored(value: String): Double {
+                // Handle both double and int string representations
+                return value.toDoubleOrNull() ?: 0.0
             }
         }.createTable())
 
