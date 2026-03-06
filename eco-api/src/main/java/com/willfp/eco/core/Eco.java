@@ -603,6 +603,15 @@ public interface Eco {
                                   boolean visible);
 
     /**
+     * Gives the player the amount of experience specified.
+     *
+     * @param player       The player.
+     * @param amount       The amount.
+     * @param applyMending Mend players items with mending, with same behavior as picking up orbs.
+     */
+    void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending);
+
+    /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
      *
      * @return The instance of eco.

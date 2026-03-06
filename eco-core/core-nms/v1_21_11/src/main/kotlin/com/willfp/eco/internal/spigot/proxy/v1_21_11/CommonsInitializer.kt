@@ -1,5 +1,8 @@
-package com.willfp.eco.internal.spigot.proxy.v1_21_5
+package com.willfp.eco.internal.spigot.proxy.v1_21_11
 
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.mojang.serialization.JsonOps
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
@@ -10,6 +13,7 @@ import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
@@ -152,11 +156,15 @@ class CommonsInitializer : CommonsInitializerProxy {
             return (player as CraftPlayer).handle
         }
 
+        val gson = GsonBuilder().create()!!
+
         override fun toNMS(component: Component): net.minecraft.network.chat.Component {
             val json = JSONComponentSerializer.json().serialize(component)
             val holderLookupProvider = (Bukkit.getServer() as CraftServer).server.registryAccess()
 
-            return net.minecraft.network.chat.Component.Serializer.fromJson(json, holderLookupProvider)!!
+            val registryOps = holderLookupProvider.createSerializationContext(JsonOps.INSTANCE)
+
+            return ComponentSerialization.CODEC.parse(registryOps, gson.fromJson(json, JsonElement::class.java)).result().get()
         }
     }
 }
