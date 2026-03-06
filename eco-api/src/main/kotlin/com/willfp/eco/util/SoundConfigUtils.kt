@@ -1,6 +1,7 @@
 package com.willfp.eco.util
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.config.interfaces.Config
 import org.bukkit.SoundCategory
 import org.bukkit.entity.Player
 
@@ -13,7 +14,7 @@ object SoundConfigUtils {
         if (categoryString == null) categoryString = "MASTER"
         val category = SoundCategory.valueOf(categoryString.uppercase())
 
-        if (plugin.configYml.getBool("$configPath.enabled")) {
+        if (config.getBool("$configPath.enabled")) {
             player.playSound(
                 player.location,
                 sound,
