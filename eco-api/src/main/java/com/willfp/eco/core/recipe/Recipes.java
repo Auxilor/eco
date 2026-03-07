@@ -188,6 +188,44 @@ public final class Recipes {
         }
     }
 
+    /**
+     * Create and register recipe.
+     *
+     * @param plugin        The plugin.
+     * @param key           The key.
+     * @param output        The output.
+     * @param recipeStrings The recipe strings (shaped or shapeless depending on flag).
+     * @param shapeless     If true, treat as shapeless recipe (flat list). If false or omitted, treat as shaped (9 positions).
+     * @return The recipe, or null if invalid.
+     */
+    @Nullable
+    public static CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
+                                                         @NotNull final String key,
+                                                         @NotNull final ItemStack output,
+                                                         @NotNull final List<String> recipeStrings,
+                                                         final boolean shapeless) {
+        return createAndRegisterRecipe(plugin, key, output, recipeStrings, null, shapeless);
+    }
+
+    /**
+     * Create and register recipe.
+     *
+     * @param plugin        The plugin.
+     * @param key           The key.
+     * @param output        The output.
+     * @param recipeStrings The recipe.
+     * @param permission    Optional permission required to craft.
+     * @return The recipe.
+     */
+    @Nullable
+    public static CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
+                                                         @NotNull final String key,
+                                                         @NotNull final ItemStack output,
+                                                         @NotNull final List<String> recipeStrings,
+                                                         @Nullable final String permission) {
+        return createAndRegisterRecipe(plugin, key, output, recipeStrings, permission, false);
+    }
+
     private Recipes() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
