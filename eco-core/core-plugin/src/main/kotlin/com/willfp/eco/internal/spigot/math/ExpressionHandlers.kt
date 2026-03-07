@@ -10,20 +10,21 @@ import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
 import redempt.crunch.functional.ExpressionEnv
 import redempt.crunch.functional.Function
+import java.util.OptionalInt
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 
-private val min = Function("min", 2) {
+private val min = Function("min", OptionalInt.of(2)) {
     min(it[0], it[1])
 }
 
-private val max = Function("max", 2) {
+private val max = Function("max", OptionalInt.of(2)) {
     max(it[0], it[1])
 }
 
-private val rand = Function("random", 2) {
+private val rand = Function("random", OptionalInt.of(2)) {
     randDouble(it[0], it[1])
 }
 

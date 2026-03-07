@@ -90,7 +90,6 @@ import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
@@ -350,7 +349,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Anticheat
             IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
-            IntegrationLoader("Matrix") { AnticheatManager.register(AnticheatMatrix()) },
             IntegrationLoader("NoCheatPlus") { AnticheatManager.register(AnticheatNCP()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },

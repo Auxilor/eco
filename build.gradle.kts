@@ -43,8 +43,15 @@ allprojects {
 
         maven("https://repo.auxilor.io/repository/maven-public/")
 
+        // CombatLogX (must be before JitPack to exclude sirblobman from JitPack)
+        maven("https://nexus.sirblobman.xyz/public/")
+
         maven("https://jitpack.io") {
-            content { includeGroupByRegex("com\\.github\\..*") }
+            content {
+                includeGroupByRegex("com\\.github\\..*")
+                excludeGroup("com.github.sirblobman")
+                excludeGroup("com.github.TownyAdvanced")
+            }
         }
 
         // Paper
@@ -77,14 +84,9 @@ allprojects {
         // NoCheatPlus
         maven("https://repo.md-5.net/content/repositories/snapshots/")
 
-        // CombatLogX
-        maven("https://nexus.sirblobman.xyz/public/")
 
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
-
-        // Crunch
-        maven("https://redempt.dev")
 
         // LibsDisguises
         maven("https://mvn.lib.co.nz/public")
@@ -112,6 +114,9 @@ allprojects {
 
         // CoinsEngine
         maven("https://repo.nightexpressdev.com/releases")
+
+        //Towny
+        maven("https://repo.glaremasters.me/repository/towny/")
     }
 
     dependencies {

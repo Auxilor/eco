@@ -5,7 +5,7 @@ dependencies {
     compileOnly(project(":eco-core:core-backend"))
 
     // Libraries
-    implementation("com.github.NicoNekoDev:Crunch:2.0.3")
+    implementation("com.github.Redempt:Crunch:1.0.0")
     implementation("com.mysql:mysql-connector-j:9.6.0")
     implementation("org.jetbrains.exposed:exposed-core:1.0.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0")
@@ -27,19 +27,12 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15") {
         exclude("*", "*")
     }
-    compileOnly("com.github.TechFortress:GriefPrevention:16.18.2")
-    compileOnly("com.github.TownyAdvanced:Towny:0.102.0.0") {
+    compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.9") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
-    compileOnly("com.github.angeschossen:LandsAPI:7.23.1")
-    compileOnly("com.github.angeschossen:PluginFrameworkAPI:1.1.12")
     compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
-    compileOnly("com.github.jiangdashao:matrix-api-repo:9ad3ef3a57")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.049")
     compileOnly("me.clip:placeholderapi:2.11.7")
-    compileOnly("com.github.brcdev-minecraft:shopgui-api:3.2.0") {
-        exclude(group = "*", module = "*")
-    }
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
     compileOnly("com.nexomc:nexo:1.19.1") {
         exclude(group = "*", module = "*")
@@ -56,7 +49,6 @@ dependencies {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.9")
-    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.9.0")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.6")
     compileOnly("io.lumine:Mythic:5.11.1")
