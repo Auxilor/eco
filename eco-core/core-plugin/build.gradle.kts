@@ -15,7 +15,7 @@ dependencies {
     implementation("com.moandjiezana.toml:toml4j:0.7.2") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    implementation("com.willfp:ModelEngineBridge:1.2.0")
+    implementation("com.willfp:ModelEngineBridge:1.3.0")
     implementation(group = "me.libraryaddict.disguises", name = "libsdisguises", version = "11.0.13")
 
     // Included in spigot jar
