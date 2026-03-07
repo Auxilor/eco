@@ -6,8 +6,11 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.items.Items;
+import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
+import com.willfp.eco.core.recipe.recipes.ShapelessCraftingRecipe;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +24,7 @@ import java.util.Optional;
  * Utility class to manage and register crafting recipes.
  */
 public final class Recipes {
+
     /**
      * Registry of all recipes.
      */
@@ -98,7 +102,7 @@ public final class Recipes {
                                                          @NotNull final String key,
                                                          @NotNull final ItemStack output,
                                                          @NotNull final List<String> recipeStrings) {
-        return createAndRegisterRecipe(plugin, key, output, recipeStrings, null);
+        return createAndRegisterRecipe(plugin, key, output, recipeStrings, null, false);
     }
 
     /**
@@ -107,34 +111,81 @@ public final class Recipes {
      * @param plugin        The plugin.
      * @param key           The key.
      * @param output        The output.
-     * @param recipeStrings The recipe.
-     * @param permission    The permission.
-     * @return The recipe.
+     * @param recipeStrings The recipe strings (shaped or shapeless depending on flag).
+     * @param permission    Optional permission required to craft.
+     * @param shapeless     If true, treat as shapeless recipe (flat list). If false or omitted, treat as shaped (9 positions).
+     * @return The recipe, or null if invalid.
      */
     @Nullable
     public static CraftingRecipe createAndRegisterRecipe(@NotNull final EcoPlugin plugin,
                                                          @NotNull final String key,
                                                          @NotNull final ItemStack output,
                                                          @NotNull final List<String> recipeStrings,
-                                                         @Nullable final String permission) {
-        ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
-                .setOutput(output)
-                .setPermission(permission);
+                                                         @Nullable final String permission,
+                                                         final boolean shapeless) {
 
-        for (int i = 0; i < 9; i++) {
-            builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
+        NamespacedKey namespacedKey = plugin.getNamespacedKeyFactory().create(key);
+
+        if (shapeless) {
+            // Shapeless: flat list of ingredients
+            ShapelessCraftingRecipe.Builder builder = ShapelessCraftingRecipe.builder(plugin, key)
+                    .setOutput(output);
+
+            if (permission != null) {
+                builder.setPermission(permission);
+            }
+
+            boolean hasValid = false;
+
+            for (String line : recipeStrings) {
+                String trimmed = line.trim();
+                if (trimmed.isEmpty()) continue;
+
+                TestableItem part = Items.lookup(trimmed);
+                if (part != null && !(part instanceof EmptyTestableItem)) {
+                    builder.addRecipePart(part);
+                    hasValid = true;
+                }
+            }
+
+            if (!hasValid) {
+                plugin.getLogger().warning("Shapeless recipe " + plugin.getID() + ":" + key +
+                        " has no valid ingredients — not registered.");
+                return null;
+            }
+
+            ShapelessCraftingRecipe recipe = builder.build();
+            recipe.register();
+            return recipe;
+        } else {
+            // Shaped: exactly 9 positions
+            if (recipeStrings.size() != 9) {
+                plugin.getLogger().warning("Shaped recipe " + plugin.getID() + ":" + key +
+                        " has " + recipeStrings.size() + " ingredients — expected exactly 9.");
+                return null;
+            }
+
+            ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
+                    .setOutput(output);
+
+            if (permission != null) {
+                builder.setPermission(permission);
+            }
+
+            for (int i = 0; i < 9; i++) {
+                builder.setRecipePart(i, Items.lookup(recipeStrings.get(i)));
+            }
+
+            if (builder.isAir()) {
+                plugin.getLogger().warning("Shaped recipe " + plugin.getID() + ":" + key +
+                        " consists only of air or invalid items — not registered.");
+                return null;
+            }
+
+            ShapedCraftingRecipe recipe = builder.build();
+            recipe.register();
+            return recipe;
         }
-
-        if (builder.isAir()) {
-            plugin.getLogger().warning("Crafting recipe " + plugin.getID() + ":" + key + " consists only");
-            plugin.getLogger().warning("of air or invalid items! It will not be registered.");
-            return null;
-        }
-
-        ShapedCraftingRecipe recipe = builder.build();
-        recipe.register();
-
-        return recipe;
     }
 
     private Recipes() {
