@@ -27,7 +27,7 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15") {
         exclude("*", "*")
     }
-    compileOnly("com.github.TechFortress:GriefPrevention:16.18.5")
+    compileOnly("com.github.TechFortress:GriefPrevention:16.18.2")
     compileOnly("com.github.TownyAdvanced:Towny:0.102.0.0") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
