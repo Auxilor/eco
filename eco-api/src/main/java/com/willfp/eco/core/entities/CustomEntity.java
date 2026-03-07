@@ -1,6 +1,6 @@
 package com.willfp.eco.core.entities;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -61,7 +61,7 @@ public class CustomEntity implements TestableEntity {
 
     @Override
     public Entity spawn(@NotNull final Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld(), "World must not be null!");
 
         return provider.apply(location);
     }

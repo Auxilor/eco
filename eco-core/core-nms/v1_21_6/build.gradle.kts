@@ -27,6 +27,6 @@ tasks {
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_5/SNBTConverter*.class")
 
-        duplicatesStrategy = DuplicatesStrategy.FAIL
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }

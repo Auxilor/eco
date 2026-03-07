@@ -1,7 +1,7 @@
 package com.willfp.eco.core.entities.impl;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.entities.TestableEntity;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +53,7 @@ public class ModifiedTestableEntity implements TestableEntity {
 
     @Override
     public Entity spawn(@NotNull final Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld(), "World must not be null!");
 
         return provider.apply(location);
     }

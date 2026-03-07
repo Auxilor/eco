@@ -71,7 +71,7 @@ class EnhancedTemptGoal(
                     return false
                 }
                 if (abs(p.xRot.toDouble() - pRotX) > 5.0 || abs(
-                        p.getYRot().toDouble() - pRotY
+                        p.yRot.toDouble() - pRotY
                     ) > 5.0
                 ) {
                     return false
@@ -82,7 +82,7 @@ class EnhancedTemptGoal(
                 pz = p.z
             }
             pRotX = p.xRot.toDouble()
-            pRotY = p.getYRot().toDouble()
+            pRotY = p.yRot.toDouble()
         }
         return canUse()
     }

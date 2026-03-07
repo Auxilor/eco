@@ -22,7 +22,7 @@ object ArgParserTooltipStyle : LookupArgParser {
 
         val namespacedKey = NamespacedKey(namespace, key)
 
-        meta.setTooltipStyle(namespacedKey)
+        meta.tooltipStyle = namespacedKey
 
         return Predicate { stack ->
             val testMeta = stack.itemMeta ?: return@Predicate false

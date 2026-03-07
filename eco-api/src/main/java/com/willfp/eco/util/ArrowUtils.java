@@ -26,11 +26,11 @@ public final class ArrowUtils {
             return null;
         }
 
-        if (!(values.get(0).value() instanceof ItemStack)) {
+        if (!(values.getFirst().value() instanceof ItemStack)) {
             return null;
         }
 
-        return (ItemStack) values.get(0).value();
+        return (ItemStack) values.getFirst().value();
     }
 
     private ArrowUtils() {

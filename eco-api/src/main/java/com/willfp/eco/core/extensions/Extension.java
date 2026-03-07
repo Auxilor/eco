@@ -1,9 +1,9 @@
 package com.willfp.eco.core.extensions;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.updating.ConfigHandler;
-import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -44,7 +44,7 @@ public abstract class Extension implements PluginLike {
      * Method to validate metadata and enable extension.
      */
     public final void enable() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         this.onEnable();
     }
 
@@ -110,7 +110,7 @@ public abstract class Extension implements PluginLike {
      * @return The name of the metadata attached to the extension.
      */
     public final String getName() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.name();
     }
 
@@ -120,7 +120,7 @@ public abstract class Extension implements PluginLike {
      * @return The author of the metadata attached to the extension.
      */
     public final String getAuthor() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.author();
     }
 
@@ -130,7 +130,7 @@ public abstract class Extension implements PluginLike {
      * @return The version of the metadata attached to the extension.
      */
     public final String getVersion() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.version();
     }
 
@@ -151,7 +151,7 @@ public abstract class Extension implements PluginLike {
 
     @Override
     public @NotNull File getFile() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.file();
     }
 

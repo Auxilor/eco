@@ -15,7 +15,7 @@ import org.bukkit.event.entity.EntityRemoveEvent
 
 class PlayerHandler : PlayerHandlerProxy {
     override fun giveExpAndApplyMending(player: Player, amount: Int, applyMending: Boolean) {
-        var finalExp = amount;
+        var finalExp = amount
         if (applyMending) {
             finalExp = player.applyMending(amount)
         }
@@ -51,11 +51,11 @@ class PlayerHandler : PlayerHandlerProxy {
                 i,
                 consumedExperience
             )
-            i = event.repairAmount;
+            i = event.repairAmount
             orb.discard(EntityRemoveEvent.Cause.DESPAWN)
             if (!event.isCancelled) {
-                finalAmount -= consumedExperience; // Use previously computed variable to reduce diff on change.
-                itemStack.damageValue -= i;
+                finalAmount -= consumedExperience // Use previously computed variable to reduce diff on change.
+                itemStack.damageValue -= i
             }
         }
         return finalAmount

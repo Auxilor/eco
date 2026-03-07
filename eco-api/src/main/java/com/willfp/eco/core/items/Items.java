@@ -539,7 +539,7 @@ public final class Items {
      */
     @NotNull
     @Deprecated(since = "6.70.0", forRemoval = true)
-    @SuppressWarnings("removal")
+    @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
     public static PersistentDataContainer getBaseNBT(@NotNull final ItemStack itemStack) {
         return FastItemStack.wrap(itemStack).getBaseTag();
     }

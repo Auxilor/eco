@@ -8,7 +8,7 @@ import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.util.randDouble
 import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
-import redempt.crunch.functional.EvaluationEnvironment
+import redempt.crunch.functional.ExpressionEnv
 import redempt.crunch.functional.Function
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -81,7 +81,7 @@ class ImmediatePlaceholderTranslationExpressionHandler(
         .expireAfterAccess(500, TimeUnit.MILLISECONDS)
         .build()
 
-    private val env = EvaluationEnvironment().apply {
+    private val env = ExpressionEnv().apply {
         addFunctions(min, max, rand)
     }
 
@@ -101,6 +101,10 @@ class LazyPlaceholderTranslationExpressionHandler(
 ) : ExpressionHandler {
     private val cache = mutableMapOf<String, CompiledExpression?>()
 
+    private val env = ExpressionEnv().apply {
+        addFunctions(min, max, rand)
+    }
+
     override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         val placeholders = PlaceholderManager.findPlaceholdersIn(expression)
 
@@ -109,9 +113,8 @@ class LazyPlaceholderTranslationExpressionHandler(
             .toDoubleArray()
 
         val compiled = cache.getOrPut(expression) {
-            val env = EvaluationEnvironment()
+            // crunch variable names must begin with an alphabetic character
             env.setVariableNames(*placeholders.toTypedArray())
-            env.addFunctions(rand, min, max)
             runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
         }
 

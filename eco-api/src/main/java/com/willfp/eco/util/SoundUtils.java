@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import com.willfp.eco.core.Prerequisite;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;

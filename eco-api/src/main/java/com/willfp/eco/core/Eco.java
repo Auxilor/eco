@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.PluginCommandBase;
 import com.willfp.eco.core.command.impl.PluginCommand;
@@ -31,7 +32,6 @@ import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -640,7 +640,7 @@ public interface Eco {
          */
         @ApiStatus.Internal
         static void set(@NotNull final Eco eco) {
-            Validate.isTrue(Instance.eco == null, "Already initialized!");
+            Preconditions.checkArgument(Instance.eco == null, "Already initialized!");
 
             Instance.eco = eco;
         }
