@@ -95,7 +95,7 @@ class EcoExtensionLoader(
         val extension: Extension = cls.getConstructor(EcoPlugin::class.java).newInstance(this.plugin) as Extension
 
         extension.setMetadata(metadata)
-        extension.enable()
+        extension.load()
         extensions[extension] = classLoader
     }
 
