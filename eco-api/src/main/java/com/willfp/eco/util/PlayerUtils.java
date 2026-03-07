@@ -9,6 +9,7 @@ import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.Entity;
@@ -32,6 +33,24 @@ public final class PlayerUtils {
             NamespacedKeyUtils.createEcoKey("player_name"),
             PersistentDataKeyType.STRING,
             "Unknown Player"
+    );
+
+    /**
+     * The data key for saved player display names.
+     */
+    private static final PersistentDataKey<String> PLAYER_DISPLAY_NAME_KEY = new PersistentDataKey<>(
+            NamespacedKeyUtils.createEcoKey("player_display_name"),
+            PersistentDataKeyType.STRING,
+            "Unknown Player"
+    );
+
+    /**
+     * The data key for saved player health.
+     */
+    private static final PersistentDataKey<Double> PLAYER_HEALTH_KEY = new PersistentDataKey<>(
+            NamespacedKeyUtils.createEcoKey("player_health"),
+            PersistentDataKeyType.DOUBLE,
+            20.0
     );
 
     /**
@@ -97,9 +116,9 @@ public final class PlayerUtils {
 
         PlayerProfile profile = PlayerProfile.load(player);
 
-        String saved = profile.read(PLAYER_NAME_KEY);
+        String saved = profile.read(PLAYER_DISPLAY_NAME_KEY);
 
-        if (saved.equals(PLAYER_NAME_KEY.getDefaultValue())) {
+        if (saved.equals(PLAYER_DISPLAY_NAME_KEY.getDefaultValue())) {
             return player.getName();
         }
 
@@ -113,7 +132,61 @@ public final class PlayerUtils {
      */
     public static void updateSavedDisplayName(@NotNull final Player player) {
         PlayerProfile profile = PlayerProfile.load(player);
-        profile.write(PLAYER_NAME_KEY, player.getDisplayName());
+        profile.write(PLAYER_DISPLAY_NAME_KEY, player.getDisplayName());
+    }
+
+    /**
+     * Get the saved name for an offline player.
+     *
+     * @param player The player.
+     * @return The player name.
+     */
+    public static String getSavedName(@NotNull final OfflinePlayer player) {
+        if (player instanceof Player onlinePlayer) {
+            updateSavedName(onlinePlayer);
+        }
+
+        PlayerProfile profile = PlayerProfile.load(player);
+
+        String saved = profile.read(PLAYER_NAME_KEY);
+
+        if (saved.equals(PLAYER_NAME_KEY.getDefaultValue())) {
+            return player.getName();
+        }
+
+        return saved;
+    }
+
+    /**
+     * Update the saved name for a player.
+     *
+     * @param player The player.
+     */
+    public static void updateSavedName(@NotNull final Player player) {
+        PlayerProfile profile = PlayerProfile.load(player);
+        profile.write(PLAYER_NAME_KEY, player.getName());
+    }
+
+    /**
+     * Get the saved health for an offline player.
+     *
+     * @param player The player.
+     * @return The player health.
+     */
+    public static double getSavedHealth(@NotNull final OfflinePlayer player) {
+        PlayerProfile profile = PlayerProfile.load(player);
+
+        return profile.read(PLAYER_HEALTH_KEY);
+    }
+
+    /**
+     * Update the saved health for a player.
+     *
+     * @param player The player.
+     */
+    public static void saveHealth(@NotNull final Player player) {
+        PlayerProfile profile = PlayerProfile.load(player);
+        profile.write(PLAYER_HEALTH_KEY, player.getHealth());
     }
 
     /**

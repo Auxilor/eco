@@ -88,12 +88,16 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
         RecipeTest test = newTest();
 
         for (ItemStack stack : matrix) {
+            if (stack == null || stack.getType().isAir() || stack.getAmount() <= 0) {
+                continue;
+            }
+
             if (test.matchAndRemove(stack) == null) {
                 return false;
             }
         }
 
-        return true;
+        return test.remaining.isEmpty();
     }
 
     @Override

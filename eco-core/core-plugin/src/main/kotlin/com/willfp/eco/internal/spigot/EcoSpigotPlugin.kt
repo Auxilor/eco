@@ -80,6 +80,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.AutocrafterPatch
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerHealthPatch
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
@@ -447,7 +448,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ProfileLoadListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking,
-            AutocrafterPatch
+            AutocrafterPatch,
+            PlayerHealthPatch
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {

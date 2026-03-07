@@ -115,3 +115,7 @@ display-without-meta: false
 # non eco-based plugins in recipes and are encountering issues with invisible items or similar.
 # This may cause issues with other plugins, so only enable this if you're having issues.
 enforce-preparing-recipes: false
+
+# If enabled, eco will save the health of players when they log out and restore it when they log back in
+# as a workaround for player health being reset to 20 on login.
+enable-health-fix: true
