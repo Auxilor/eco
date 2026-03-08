@@ -18,6 +18,7 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.ExposedConnectionImpl
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -52,7 +53,7 @@ class MySQLPersistentDataHandler(
 
     private val prefix = config.getString("prefix")
 
-    private val database = Database.connect(dataSource)
+    private val database = Database.connect(dataSource, connectionAutoRegistration = ExposedConnectionImpl())
 
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
