@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.data
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.events.MultiBlockBreakEvent
 import com.willfp.eco.util.BlockUtils
 import org.bukkit.Location
 import org.bukkit.block.Block
@@ -38,6 +39,15 @@ class PlayerBlockListener(
 
         this.plugin.scheduler.run {
             removeKey(block)
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onBreak(event: MultiBlockBreakEvent) {
+        this.plugin.scheduler.run {
+            for (block in event.blocks) {
+                removeKey(block)
+            }
         }
     }
 
