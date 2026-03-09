@@ -43,6 +43,7 @@ public class MultiBlockBreakEvent extends PlayerEvent implements Cancellable {
     /**
      * Get if block is dropping items.
      *
+     * @param block the block
      * @return if the block is dropping items.
      */
     public boolean isDropItems(Block block) {

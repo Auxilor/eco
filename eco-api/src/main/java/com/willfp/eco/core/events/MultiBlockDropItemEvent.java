@@ -109,6 +109,11 @@ public class MultiBlockDropItemEvent extends PlayerEvent implements Cancellable 
         this.cancelled = cancelled;
     }
 
-    public record BlockStateAndItems(BlockState blockState, List<Item> items) {
-    }
+    /**
+     * Utility class
+     *
+     * @param blockState the block state
+     * @param items      the items
+     */
+    public record BlockStateAndItems(BlockState blockState, List<Item> items) { }
 }
