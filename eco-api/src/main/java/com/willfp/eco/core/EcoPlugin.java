@@ -694,9 +694,19 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The time.
      */
     public final long reloadWithTime() {
+        return reloadWithTime(true);
+    }
+
+    /**
+     * Reload the plugin and return the time taken to reload.
+     *
+     * @param cancelTasks If tasks should be cancelled.
+     * @return The time.
+     */
+    public final long reloadWithTime(final boolean cancelTasks) {
         long startTime = System.currentTimeMillis();
 
-        this.reload();
+        this.reload(cancelTasks);
 
         return System.currentTimeMillis() - startTime;
     }
