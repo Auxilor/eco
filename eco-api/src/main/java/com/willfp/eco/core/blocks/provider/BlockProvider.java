@@ -1,8 +1,6 @@
 package com.willfp.eco.core.blocks.provider;
 
 import com.willfp.eco.core.blocks.TestableBlock;
-import com.willfp.eco.core.registry.Registry;
-import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

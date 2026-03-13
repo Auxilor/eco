@@ -1,8 +1,8 @@
 package com.willfp.eco.core.blocks.impl;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.blocks.TestableBlock;
 import com.willfp.eco.util.NumberUtils;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class GroupedTestableBlocks implements TestableBlock {
      * @param children The children.
      */
     public GroupedTestableBlocks(@NotNull final Collection<TestableBlock> children) {
-        Validate.isTrue(!children.isEmpty(), "Group must have at least one child!");
+        Preconditions.checkArgument(!children.isEmpty(), "Group must have at least one child!");
 
         this.children = children;
     }
