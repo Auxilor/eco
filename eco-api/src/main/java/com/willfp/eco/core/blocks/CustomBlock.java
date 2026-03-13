@@ -1,6 +1,6 @@
 package com.willfp.eco.core.blocks;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -61,7 +61,7 @@ public class CustomBlock implements TestableBlock {
 
     @Override
     public @NotNull Block place(@NotNull final Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld());
 
         return provider.apply(location);
     }

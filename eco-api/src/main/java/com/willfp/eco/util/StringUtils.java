@@ -3,6 +3,7 @@ package com.willfp.eco.util;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
@@ -14,9 +15,9 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +54,7 @@ public final class StringUtils {
      * Regexes for hex codes.
      */
     private static final List<Pattern> HEX_PATTERNS = new ImmutableList.Builder<Pattern>()
-            .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + ""))
+            .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})"))
             .add(Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}"))
             .add(Pattern.compile("<#" + "([A-Fa-f0-9]{6})" + ">"))
             .build();
@@ -62,7 +63,7 @@ public final class StringUtils {
      * Legacy serializer.
      */
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
-            .character('\u00a7')
+            .character('§')
             .useUnusualXRepeatedCharacterHexFormat()
             .hexColors()
             .build();
@@ -71,7 +72,7 @@ public final class StringUtils {
      * GSON serializer.
      */
     private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder()
-            .emitLegacyHoverEvent()
+            .editOptions(option -> option.value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.ALL))
             .build();
 
     /**
@@ -265,7 +266,7 @@ public final class StringUtils {
     @NotNull
     public static String format(@NotNull final String message,
                                 @NotNull final FormatOption option) {
-        return format(message, (Player) null, option);
+        return format(message, null, option);
     }
 
     /**
@@ -310,7 +311,7 @@ public final class StringUtils {
     @NotNull
     public static Component formatToComponent(@NotNull final String message,
                                               @NotNull final FormatOption option) {
-        return formatToComponent(message, (Player) null, option);
+        return formatToComponent(message, null, option);
     }
 
     /**
@@ -497,21 +498,15 @@ public final class StringUtils {
      */
     @NotNull
     public static String toNiceString(@Nullable final Object object) {
-        if (object == null) {
-            return "null";
-        }
+        return switch (object) {
+            case null -> "null";
+            case Integer i -> i.toString();
+            case String s -> s;
+            case Double v -> NumberUtils.format(v);
+            case Collection<?> c -> c.stream().map(StringUtils::toNiceString).collect(Collectors.joining(", "));
+            default -> String.valueOf(object);
+        };
 
-        if (object instanceof Integer) {
-            return ((Integer) object).toString();
-        } else if (object instanceof String) {
-            return (String) object;
-        } else if (object instanceof Double) {
-            return NumberUtils.format((Double) object);
-        } else if (object instanceof Collection<?> c) {
-            return c.stream().map(StringUtils::toNiceString).collect(Collectors.joining(", "));
-        } else {
-            return String.valueOf(object);
-        }
     }
 
     /**
@@ -701,8 +696,8 @@ public final class StringUtils {
                                            @NotNull final String completeFormat,
                                            @NotNull final String inProgressFormat,
                                            @NotNull final String incompleteFormat) {
-        Validate.isTrue(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
-        Validate.isTrue(bars > 1, "Must have at least 2 bars!");
+        Preconditions.checkArgument(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
+        Preconditions.checkArgument(bars > 1, "Must have at least 2 bars!");
 
         String completeColor = format(completeFormat);
         String inProgressColor = format(inProgressFormat);

@@ -1,12 +1,11 @@
 package com.willfp.eco.core.blocks.impl;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.blocks.Blocks;
 import com.willfp.eco.core.blocks.TestableBlock;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +40,7 @@ public class MaterialTestableBlock implements TestableBlock {
 
     @Override
     public @NotNull Block place(@NotNull Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld());
 
         Block block = location.getBlock();
         block.setType(material);

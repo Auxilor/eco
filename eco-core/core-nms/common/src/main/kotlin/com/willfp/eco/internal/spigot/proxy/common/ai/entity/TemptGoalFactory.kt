@@ -71,7 +71,7 @@ class EnhancedTemptGoal(
                     return false
                 }
                 if (abs(p.xRot.toDouble() - pRotX) > 5.0 || abs(
-                        p.getYRot().toDouble() - pRotY
+                        p.yRot.toDouble() - pRotY
                     ) > 5.0
                 ) {
                     return false
@@ -82,7 +82,7 @@ class EnhancedTemptGoal(
                 pz = p.z
             }
             pRotX = p.xRot.toDouble()
-            pRotY = p.getYRot().toDouble()
+            pRotY = p.yRot.toDouble()
         }
         return canUse()
     }
@@ -110,7 +110,7 @@ class EnhancedTemptGoal(
     override fun tick() {
         player ?: return
 
-        mob.lookControl.setLookAt(player, (mob.maxHeadYRot + 20).toFloat(), mob.maxHeadXRot.toFloat())
+        mob.lookControl.setLookAt(player!!, (mob.maxHeadYRot + 20).toFloat(), mob.maxHeadXRot.toFloat())
         if (mob.distanceToSqr(player as Entity) < 6.25) {
             mob.navigation.stop()
         } else {

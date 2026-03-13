@@ -4,14 +4,13 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
-import com.willfp.eco.internal.spigot.proxy.common.toResourceLocation
+import com.willfp.eco.internal.spigot.proxy.common.recipes.RecipeManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer
 import net.minecraft.core.component.DataComponents
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.Tag
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
@@ -26,12 +25,12 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.inventory.CraftMetaArmor
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
-import org.bukkit.craftbukkit.util.CraftMagicNumbers
 import org.bukkit.craftbukkit.util.CraftNamespacedKey
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.Recipe
 import org.bukkit.persistence.PersistentDataContainer
 import java.lang.reflect.Field
 
@@ -43,9 +42,33 @@ class CommonsInitializer : CommonsInitializerProxy {
         }
     }
 
+    override fun addBukkitRecipeNoResend(recipe: Recipe) {
+        CommonsProviderImpl.addBukkitRecipeNoResend(recipe)
+    }
+
+    override fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
+        return CommonsProviderImpl.removeBukkitRecipeNoResend(key)
+    }
+
+    override fun reloadBukkitRecipes() {
+        CommonsProviderImpl.resendBukkitRecipes()
+    }
+
     object CommonsProviderImpl : CommonsProvider {
         private val cisHandle: Field = CraftItemStack::class.java.getDeclaredField("handle").apply {
             isAccessible = true
+        }
+
+        override fun addBukkitRecipeNoResend(recipe: Recipe) {
+            RecipeManager.addRecipeNoResend(recipe)
+        }
+
+        override fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
+            return RecipeManager.removeRecipeNoResend(key)
+        }
+
+        override fun resendBukkitRecipes() {
+            RecipeManager.reloadRecipes()
         }
 
         private val pdcRegsitry = CraftMetaArmor::class.java
@@ -54,15 +77,10 @@ class CommonsInitializer : CommonsInitializerProxy {
             .apply { isAccessible = true }
             .get(null) as CraftPersistentDataTypeRegistry
 
-        override val nbtTagString = 8
-
         override fun toPathfinderMob(mob: Mob): PathfinderMob? {
             val craft = mob as? CraftMob ?: return null
             return craft.handle as? PathfinderMob
         }
-
-        override fun toResourceLocation(namespacedKey: NamespacedKey): ResourceLocation =
-            CraftNamespacedKey.toMinecraft(namespacedKey)
 
         override fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack {
             return if (itemStack !is CraftItemStack) {
@@ -150,7 +168,7 @@ class CommonsInitializer : CommonsInitializerProxy {
         }
 
         override fun materialToItem(material: Material): Item =
-            BuiltInRegistries.ITEM.getOptional(material.key.toResourceLocation())
+            BuiltInRegistries.ITEM.getOptional(CraftNamespacedKey.toMinecraft(material.key))
                 .orElseThrow { IllegalArgumentException("Material is not item!") }
 
         override fun itemToMaterial(item: Item) =

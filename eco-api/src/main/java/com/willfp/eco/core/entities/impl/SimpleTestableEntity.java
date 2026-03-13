@@ -1,7 +1,7 @@
 package com.willfp.eco.core.entities.impl;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.entities.TestableEntity;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -25,7 +25,7 @@ public class SimpleTestableEntity implements TestableEntity {
     public SimpleTestableEntity(@NotNull final EntityType type) {
         this.type = type;
 
-        Validate.notNull(type.getEntityClass(), "Entity cannot be of unknown type!");
+        Preconditions.checkNotNull(type.getEntityClass(), "Entity cannot be of unknown type!");
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SimpleTestableEntity implements TestableEntity {
 
     @Override
     public Entity spawn(@NotNull final Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld(), "World must not be null!");
 
         assert type.getEntityClass() != null;
 

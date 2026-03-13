@@ -75,7 +75,7 @@ open class EcoFastItemStack(
         val map = mutableMapOf<Enchantment, Int>()
 
         for ((enchantment, level) in enchantments.entrySet()) {
-            val bukkit = CraftEnchantment.minecraftToBukkit(enchantment.value())
+            val bukkit = CraftEnchantment.minecraftHolderToBukkit(enchantment)
 
             map[bukkit] = level
         }
@@ -84,7 +84,7 @@ open class EcoFastItemStack(
             val stored = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return map
 
             for ((enchantment, level) in stored.entrySet()) {
-                val bukkit = CraftEnchantment.minecraftToBukkit(enchantment.value())
+                val bukkit = CraftEnchantment.minecraftHolderToBukkit(enchantment)
 
                 map[bukkit] = max(map.getOrDefault(bukkit, 0), level)
             }
@@ -136,7 +136,7 @@ open class EcoFastItemStack(
     }
 
     override fun getLore(): List<String> =
-        getLoreComponents().map { StringUtils.toLegacy(it) }
+        loreComponents.map { StringUtils.toLegacy(it) }
 
     override fun setDisplayName(name: Component?) {
         if (name == null) {
@@ -162,7 +162,7 @@ open class EcoFastItemStack(
 
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
-    protected fun <T> net.minecraft.world.item.ItemStack.modifyComponent(
+    protected fun <T : Any> net.minecraft.world.item.ItemStack.modifyComponent(
         component: DataComponentType<T>,
         modifier: (T) -> T
     ) {
@@ -362,20 +362,20 @@ open class EcoFastItemStack(
         return ContinuallyAppliedPersistentDataContainer(this.pdc, this)
     }
 
-    override fun getAmount(): Int = handle.getCount()
+    override fun getAmount(): Int = handle.count
 
     override fun setAmount(amount: Int) {
-        handle.setCount(amount)
+        handle.count = amount
         apply()
     }
 
     override fun setType(material: Material) {
         @Suppress("DEPRECATION")
-        handle.setItem(material.toItem())
+        handle.item = material.toItem()
         apply()
     }
 
-    override fun getType(): Material = handle.getItem().toMaterial()
+    override fun getType(): Material = handle.item.toMaterial()
 
     /*
     Custom model data doesn't work based on an integer since 1.21.3, so these methods do nothing

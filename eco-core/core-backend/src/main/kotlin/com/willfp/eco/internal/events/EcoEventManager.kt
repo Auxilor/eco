@@ -19,7 +19,7 @@ private class RegisteredPacketListener(
 private val listeners = listMap<PacketPriority, RegisteredPacketListener>()
 
 fun PacketEvent.handleSend() {
-    for (priority in PacketPriority.values()) {
+    for (priority in PacketPriority.entries) {
         for (listener in listeners[priority]) {
             try {
                 listener.listener.onSend(this)
@@ -41,7 +41,7 @@ fun PacketEvent.handleSend() {
 }
 
 fun PacketEvent.handleReceive() {
-    for (priority in PacketPriority.values()) {
+    for (priority in PacketPriority.entries) {
         for (listener in listeners[priority]) {
             try {
                 listener.listener.onReceive(this)

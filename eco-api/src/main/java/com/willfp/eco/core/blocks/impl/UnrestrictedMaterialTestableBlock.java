@@ -1,6 +1,6 @@
 package com.willfp.eco.core.blocks.impl;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,7 +28,7 @@ public class UnrestrictedMaterialTestableBlock extends MaterialTestableBlock {
 
     @Override
     public @NotNull Block place(@NotNull Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld());
 
         Block block = location.getWorld().getBlockAt(location);
         block.setType(material);

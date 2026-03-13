@@ -17,7 +17,7 @@ class EcoCaptiveSlot(
     private val filter: CaptiveFilter
 ) : EcoSlot(
     provider,
-    ClickType.values().associateWith {
+    ClickType.entries.associateWith {
         captiveWithTest(notCaptiveFor, filter).toSingletonList()
     },
     { _, _, prev -> prev }

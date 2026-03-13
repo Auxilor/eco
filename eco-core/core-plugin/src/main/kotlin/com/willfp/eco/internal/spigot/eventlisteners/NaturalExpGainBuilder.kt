@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.events.NaturalExpGainEvent
-import org.apache.commons.lang.Validate
+import moss.factions.shade.com.google.common.base.Preconditions
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.event.player.PlayerExpChangeEvent
@@ -12,7 +12,7 @@ internal class NaturalExpGainBuilder(var reason: BuildReason) {
     var location: Location? = null
 
     fun push() {
-        Validate.notNull(event)
+        Preconditions.checkNotNull(event, "PlayerExpChangeEvent cannot be null!")
         if (cancelled) {
             return
         }

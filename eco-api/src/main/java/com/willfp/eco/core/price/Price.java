@@ -1,6 +1,6 @@
 package com.willfp.eco.core.price;
 
-import org.apache.commons.lang.NotImplementedException;
+import kotlin.NotImplementedError;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  *     <li><code>getMultiplier(Player)</code></li>
  *     <li><code>setMultiplier(Player, double)</code></li>
  * </ul>
- * Otherwise, your implementation will throw {@link NotImplementedException}.
+ * Otherwise, your implementation will throw {@link NotImplementedError}.
  * <p>
  * Also, getValue() should always return the value with player multipliers applied.
  */
@@ -42,7 +42,7 @@ public interface Price {
      */
     default boolean canAfford(@NotNull final Player player,
                               final double multiplier) {
-        throw new NotImplementedException("Override canAfford(Player, double) in your Price implementation!");
+        throw new NotImplementedError("Override canAfford(Player, double) in your Price implementation!");
     }
 
     /**
@@ -66,7 +66,7 @@ public interface Price {
      */
     default void pay(@NotNull final Player player,
                      final double multiplier) {
-        throw new NotImplementedException("Override pay(Player, double) in your Price implementation!");
+        throw new NotImplementedError("Override pay(Player, double) in your Price implementation!");
     }
 
     /**
@@ -86,7 +86,7 @@ public interface Price {
      */
     default void giveTo(@NotNull final Player player,
                         final double multiplier) {
-        throw new NotImplementedException("Override giveTo(Player, double) in your Price implementation!");
+        throw new NotImplementedError("Override giveTo(Player, double) in your Price implementation!");
     }
 
     /**
@@ -108,7 +108,7 @@ public interface Price {
      */
     default double getValue(@NotNull final Player player,
                             final double multiplier) {
-        throw new NotImplementedException("Override getValue(Player, double) in your Price implementation!");
+        throw new NotImplementedError("Override getValue(Player, double) in your Price implementation!");
     }
 
     /**
@@ -129,7 +129,7 @@ public interface Price {
      */
     default void setMultiplier(@NotNull final Player player,
                                final double multiplier) {
-        throw new NotImplementedException("Override setMultiplier(Player, double) in your Price implementation!");
+        throw new NotImplementedError("Override setMultiplier(Player, double) in your Price implementation!");
     }
 
     /**

@@ -12,7 +12,7 @@ object EntityArgParserEquipment : EntityArgParser {
         val equipment = mutableMapOf<EquipmentSlot, TestableItem>()
 
         for (arg in args) {
-            for (slot in EquipmentSlot.values()) {
+            for (slot in EquipmentSlot.entries) {
                 if (!arg.lowercase().startsWith("${slot.name.lowercase()}:")) {
                     continue
                 }

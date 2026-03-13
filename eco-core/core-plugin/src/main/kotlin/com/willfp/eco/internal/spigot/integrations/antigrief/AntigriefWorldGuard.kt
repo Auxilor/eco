@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
+import com.google.common.base.Preconditions
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldguard.LocalPlayer
 import com.sk89q.worldguard.WorldGuard
@@ -8,7 +9,6 @@ import com.sk89q.worldguard.protection.flags.Flags
 import com.sk89q.worldguard.protection.regions.RegionContainer
 import com.sk89q.worldguard.protection.regions.RegionQuery
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
-import org.apache.commons.lang.Validate
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.Animals
@@ -46,7 +46,7 @@ class AntigriefWorldGuard : AntigriefIntegration {
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
         val world = location.world
-        Validate.notNull(world, "World cannot be null!")
+        Preconditions.checkNotNull(world, "World cannot be null!")
         return if (!query.testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.TNT)) {
             WorldGuard.getInstance().platform.sessionManager.hasBypass(
                 localPlayer,
@@ -82,7 +82,7 @@ class AntigriefWorldGuard : AntigriefIntegration {
         val localPlayer: LocalPlayer = WorldGuardPlugin.inst().wrapPlayer(player)
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
-        val flag = when(victim) {
+        val flag = when (victim) {
             is Player -> Flags.PVP
             is Monster -> Flags.MOB_DAMAGE
             is Animals -> Flags.DAMAGE_ANIMALS
@@ -105,7 +105,7 @@ class AntigriefWorldGuard : AntigriefIntegration {
         val container: RegionContainer = WorldGuard.getInstance().platform.regionContainer
         val query: RegionQuery = container.createQuery()
         val world = location.world
-        Validate.notNull(world, "World cannot be null!")
+        Preconditions.checkNotNull(world, "World cannot be null!")
         return if (!query.testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.ITEM_PICKUP)) {
             WorldGuard.getInstance().platform.sessionManager.hasBypass(
                 localPlayer,
