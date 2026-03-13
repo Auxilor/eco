@@ -20,6 +20,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
+import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -308,6 +309,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         if (this.configYml.getBool("playerflow")) {
             PlayerflowHandler(this.scheduler).startTicking()
+        }
+
+        this.scheduler.runTimer(1L, 20L) {
+            Recipes.checkBatching()
         }
     }
 

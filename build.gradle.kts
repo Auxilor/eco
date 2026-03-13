@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
@@ -234,10 +235,9 @@ tasks {
         relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
         relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
 
-        relocate("kotlin", "com.willfp.eco.libs.kotlin")
-        relocate("kotlin.jvm", "com.willfp.eco.libs.kotlin.jvm")
-        relocate("kotlin.coroutines", "com.willfp.eco.libs.kotlin.coroutines")
-        relocate("kotlin.reflect", "com.willfp.eco.libs.kotlin.reflect")
+        relocate("kotlin", "com.willfp.eco.libs.kotlin") {
+            exclude("kotlin.kotlin_builtins")
+        }
 
         /*
         Caffeine is not shaded so that it can be accessed directly by eco plugins.

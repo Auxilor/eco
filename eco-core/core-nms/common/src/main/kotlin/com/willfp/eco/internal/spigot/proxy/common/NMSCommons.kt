@@ -15,10 +15,12 @@ import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.Recipe
 import org.bukkit.persistence.PersistentDataContainer
 
 private lateinit var impl: CommonsProvider
@@ -43,6 +45,18 @@ fun <T : EntityGoal<*>> T.getVersionSpecificEntityGoalFactory(): EntityGoalFacto
 
 fun <T : TargetGoal<*>> T.getVersionSpecificEntityGoalFactory(): TargetGoalFactory<T>? =
     impl.getVersionSpecificTargetGoalFactory(this)
+
+fun addBukkitRecipeNoResend(recipe: Recipe) {
+    impl.addBukkitRecipeNoResend(recipe)
+}
+
+fun resendBukkitRecipes() {
+    impl.resendBukkitRecipes()
+}
+
+fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
+    return impl.removeBukkitRecipeNoResend(key)
+}
 
 private val MATERIAL_TO_ITEM = mutableMapOf<Material, Item>()
 
@@ -110,6 +124,12 @@ interface CommonsProvider {
     fun toNMS(player: Player): ServerPlayer
 
     fun toNMS(component: Component): net.minecraft.network.chat.Component
+
+    fun addBukkitRecipeNoResend(recipe: Recipe)
+
+    fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean
+
+    fun resendBukkitRecipes()
 
     companion object {
         fun setIfNeeded(provider: CommonsProvider) {

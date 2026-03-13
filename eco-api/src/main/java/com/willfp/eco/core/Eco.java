@@ -40,6 +40,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
@@ -543,6 +544,25 @@ public interface Eco {
      */
     @Nullable
     Menu getOpenMenu(@NotNull Player player);
+
+    /**
+     * Register bukkit recipe without resending recipe packet.
+     * @param recipe the recipe
+     */
+    void addBukkitRecipeNoResend(Recipe recipe);
+
+    /**
+     * Reload Bukkit recipes by resending the recipe packet to all players.
+     */
+    void reloadBukkitRecipes();
+
+
+    /**
+     * Remove a bukkit recipe without resending recipe packet.
+      * @param key the recipe key
+      * @return if the recipe was successfully removed
+     */
+    boolean removeBukkitRecipeNoResend(@NotNull NamespacedKey key);
 
     /**
      * Sync commands.
