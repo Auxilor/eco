@@ -19,7 +19,9 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
         block: Block
     ): Boolean {
         val area = landsIntegration.getArea(block.location) ?: return true
-        return area.hasRoleFlag(player, Flags.BLOCK_BREAK, block.type, false)
+        val landPlayer = landsIntegration.getLandPlayer(player.uniqueId)
+        return area.hasRoleFlag(landPlayer, Flags.BLOCK_BREAK, block.type, false)
+                || area.hasRoleFlag(landPlayer, Flags.HARVEST, block.type, false)
     }
 
     override fun canCreateExplosion(
@@ -27,8 +29,9 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
         location: Location
     ): Boolean {
         val area = landsIntegration.getArea(location) ?: return true
-        return  area.hasRoleFlag(player, Flags.ATTACK_PLAYER, Material.AIR, false)
-                && area.hasRoleFlag(player, Flags.ATTACK_ANIMAL, Material.AIR, false)
+        val landPlayer = landsIntegration.getLandPlayer(player.uniqueId)
+        return area.hasRoleFlag(landPlayer, Flags.ATTACK_PLAYER, Material.AIR, false)
+                && area.hasRoleFlag(landPlayer, Flags.ATTACK_ANIMAL, Material.AIR, false)
     }
 
     override fun canPlaceBlock(
@@ -36,7 +39,9 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
         block: Block
     ): Boolean {
         val area = landsIntegration.getArea(block.location) ?: return true
-        return area.hasRoleFlag(player, Flags.BLOCK_PLACE, Material.AIR, false)
+        val landPlayer = landsIntegration.getLandPlayer(player.uniqueId)
+        return area.hasRoleFlag(landPlayer, Flags.BLOCK_PLACE, block.type, false)
+                || area.hasRoleFlag(landPlayer, Flags.PLANT, block.type, false)
     }
 
     override fun canInjure(
@@ -45,18 +50,20 @@ class AntigriefLands(private val plugin: EcoPlugin) : AntigriefIntegration {
     ): Boolean {
 
         val area = landsIntegration.getArea(victim.location) ?: return true
+        val landPlayer = landsIntegration.getLandPlayer(player.uniqueId)
 
-        return when(victim) {
-            is Player -> area.hasRoleFlag(player, Flags.ATTACK_PLAYER, Material.AIR, false)
-            is Monster -> area.hasRoleFlag(player, Flags.ATTACK_MONSTER, Material.AIR, false)
-            is Animals -> area.hasRoleFlag(player, Flags.ATTACK_ANIMAL, Material.AIR, false)
+        return when (victim) {
+            is Player -> area.hasRoleFlag(landPlayer, Flags.ATTACK_PLAYER, Material.AIR, false)
+            is Monster -> area.hasRoleFlag(landPlayer, Flags.ATTACK_MONSTER, Material.AIR, false)
+            is Animals -> area.hasRoleFlag(landPlayer, Flags.ATTACK_ANIMAL, Material.AIR, false)
             else -> area.isTrusted(player.uniqueId)
         }
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {
         val area = landsIntegration.getArea(location) ?: return true
-        return area.hasRoleFlag(player, Flags.ITEM_PICKUP, Material.AIR, false)
+        val landPlayer = landsIntegration.getLandPlayer(player.uniqueId)
+        return area.hasRoleFlag(landPlayer, Flags.ITEM_PICKUP, Material.AIR, false)
     }
 
     override fun getPluginName(): String {

@@ -32,7 +32,7 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     /**
      * The xp.
      */
-    private final int xp;
+    private int xp;
 
     /**
      * The location.
@@ -130,6 +130,14 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
      */
     public int getXp() {
         return xp;
+    }
+
+    /**
+     * Set the xp to be dropped.
+     * @param xp The xp.
+     */
+    public void setXp(int xp) {
+        this.xp = xp;
     }
 
     /**

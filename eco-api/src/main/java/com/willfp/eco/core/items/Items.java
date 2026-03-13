@@ -226,7 +226,7 @@ public final class Items {
         boolean isTag = base.startsWith("#");
 
         if (isTag) {
-            String tag = base.substring(1);
+            String tag = args[0].substring(1);
             ItemTag itemTag = TAGS.get(tag);
 
             if (itemTag == null) {
@@ -538,7 +538,7 @@ public final class Items {
      */
     @NotNull
     @Deprecated(since = "6.70.0", forRemoval = true)
-    @SuppressWarnings("removal")
+    @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
     public static PersistentDataContainer getBaseNBT(@NotNull final ItemStack itemStack) {
         return FastItemStack.wrap(itemStack).getBaseTag();
     }

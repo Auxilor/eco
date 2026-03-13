@@ -88,20 +88,24 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
         RecipeTest test = newTest();
 
         for (ItemStack stack : matrix) {
+            if (stack == null || stack.getType().isAir() || stack.getAmount() <= 0) {
+                continue;
+            }
+
             if (test.matchAndRemove(stack) == null) {
                 return false;
             }
         }
 
-        return true;
+        return test.remaining.isEmpty();
     }
 
     @Override
     public void register() {
         Recipes.register(this);
 
-        Bukkit.getServer().removeRecipe(this.getKey());
-        Bukkit.getServer().removeRecipe(this.getDisplayedKey());
+        Recipes.scheduleBukkitRecipeRemoval(this.getKey());
+        Recipes.scheduleBukkitRecipeRemoval(this.getDisplayedKey());
 
         ShapelessRecipe shapelessRecipe = new ShapelessRecipe(this.getKey(), this.getOutput());
         for (TestableItem part : parts) {
@@ -144,10 +148,10 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
                 displayedRecipe.addIngredient(new RecipeChoice.ExactChoice(displayedItems));
             }
 
-            Bukkit.getServer().addRecipe(displayedRecipe);
+            Recipes.scheduleBukkitRecipeRegistration(displayedRecipe);
         }
 
-        Bukkit.getServer().addRecipe(shapelessRecipe);
+        Recipes.scheduleBukkitRecipeRegistration(shapelessRecipe);
     }
 
     /**

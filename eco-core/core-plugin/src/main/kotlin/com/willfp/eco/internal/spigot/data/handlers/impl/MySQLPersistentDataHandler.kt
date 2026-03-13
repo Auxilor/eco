@@ -12,21 +12,25 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.replace
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.upsert
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.ExposedConnectionImpl
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.upsert
 import java.math.BigDecimal
 import java.util.UUID
 import kotlin.math.pow
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
+import kotlin.uuid.toJavaUuid
+import kotlin.uuid.toKotlinUuid
 
 private const val VALUE_COLUMN_NAME = "dataValue"
 private const val UUID_COLUMN_NAME = "profileUUID"
@@ -49,7 +53,7 @@ class MySQLPersistentDataHandler(
 
     private val prefix = config.getString("prefix")
 
-    private val database = Database.connect(dataSource)
+    private val database = Database.connect(dataSource, connectionAutoRegistration = ExposedConnectionImpl())
 
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
@@ -128,12 +132,13 @@ class MySQLPersistentDataHandler(
         }.createTable())
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     override fun getSavedUUIDs(): Set<UUID> {
         val savedUUIDs = mutableSetOf<UUID>()
 
         for (keyType in PersistentDataKeyType.values()) {
             val serializer = keyType.getSerializer(this) as MySQLSerializer<*>
-            savedUUIDs.addAll(serializer.getSavedUUIDs())
+            savedUUIDs.addAll(serializer.getSavedUUIDs().map { it.toJavaUuid() })
         }
 
         return savedUUIDs
@@ -142,7 +147,8 @@ class MySQLPersistentDataHandler(
     private abstract inner class MySQLSerializer<T : Any> : DataTypeSerializer<T>() {
         protected abstract val table: ProfileTable
 
-        fun getSavedUUIDs(): Set<UUID> {
+        @OptIn(ExperimentalUuidApi::class)
+        fun getSavedUUIDs(): Set<Uuid> {
             return transaction(database) {
                 table.selectAll().map { it[table.uuid] }.toSet()
             }
@@ -170,10 +176,11 @@ class MySQLPersistentDataHandler(
         abstract fun convertToStored(value: T): S
         abstract fun convertFromStored(value: S): T
 
+        @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             val stored = transaction(database) {
                 table.selectAll()
-                    .where { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+                    .where { (table.uuid eq uuid.toKotlinUuid()) and (table.key eq key.key.toString()) }
                     .limit(1)
                     .singleOrNull()
                     ?.get(table.value)
@@ -182,11 +189,12 @@ class MySQLPersistentDataHandler(
             return stored?.let { convertFromStored(it) }
         }
 
+        @OptIn(ExperimentalUuidApi::class)
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
             withRetries {
                 transaction(database) {
                     table.upsert {
-                        it[table.uuid] = uuid
+                        it[table.uuid] = uuid.toKotlinUuid()
                         it[table.key] = key.key.toString()
                         it[table.value] = convertToStored(value)
                     }
@@ -208,10 +216,11 @@ class MySQLPersistentDataHandler(
     private abstract inner class MultiValueSerializer<T : Any> : MySQLSerializer<List<T>>() {
         abstract override val table: ListKeyTable<T>
 
+        @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {
             val stored = transaction(database) {
                 table.selectAll()
-                    .where { (table.uuid eq uuid) and (table.key eq key.key.toString()) }
+                    .where { (table.uuid eq uuid.toKotlinUuid()) and (table.key eq key.key.toString()) }
                     .orderBy(table.index)
                     .map { it[table.value] }
             }
@@ -219,12 +228,13 @@ class MySQLPersistentDataHandler(
             return stored
         }
 
+        @OptIn(ExperimentalUuidApi::class)
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<List<T>>, value: List<T>) {
             withRetries {
                 transaction(database) {
                     // Remove existing values greater than the new list size
                     table.deleteWhere {
-                        (table.uuid eq uuid) and
+                        (table.uuid eq uuid.toKotlinUuid()) and
                                 (table.key eq key.key.toString()) and
                                 (table.index greaterEq value.size)
                     }
@@ -232,7 +242,7 @@ class MySQLPersistentDataHandler(
                     // Upsert values (insert new or update existing)
                     value.forEachIndexed { index, t ->
                         table.upsert {
-                            it[table.uuid] = uuid
+                            it[table.uuid] = uuid.toKotlinUuid()
                             it[table.key] = key.key.toString()
                             it[table.index] = index
                             it[table.value] = t
@@ -244,9 +254,11 @@ class MySQLPersistentDataHandler(
     }
 
     private abstract inner class ProfileTable(name: String) : Table(prefix + name) {
+        @OptIn(ExperimentalUuidApi::class)
         val uuid = uuid(UUID_COLUMN_NAME)
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private abstract inner class KeyTable<T>(name: String) : ProfileTable(name) {
         val key = varchar(KEY_COLUMN_NAME, 128)
         abstract val value: Column<T>
@@ -258,6 +270,7 @@ class MySQLPersistentDataHandler(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
         val key = varchar(KEY_COLUMN_NAME, 128)
         val index = integer(INDEX_COLUMN_NAME)

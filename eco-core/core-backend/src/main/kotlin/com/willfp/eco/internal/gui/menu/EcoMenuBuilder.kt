@@ -95,7 +95,7 @@ class EcoMenuBuilder(
         val layeredComponents = LayeredComponents()
 
         // 5 nested for loops? Shut up. Silence. Quiet.
-        for (layer in MenuLayer.values()) {
+        for (layer in MenuLayer.entries) {
             for (row in (1..rows)) {
                 for (column in (1..columns)) {
                     for ((anchor, availableComponents) in components.computeIfAbsent(layer) { mutableMapOf() }) {

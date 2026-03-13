@@ -1,9 +1,9 @@
 package com.willfp.eco.core.items.builder;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.util.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -70,7 +70,7 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
 
     @Override
     public U setAmount(final int amount) {
-        Validate.isTrue(amount >= 1);
+        Preconditions.checkArgument(amount >= 1);
         base.setAmount(amount);
         return (U) this;
     }

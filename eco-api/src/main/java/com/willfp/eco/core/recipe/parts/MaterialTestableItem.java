@@ -1,8 +1,8 @@
 package com.willfp.eco.core.recipe.parts;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ public class MaterialTestableItem implements TestableItem {
      * @param material The material.
      */
     public MaterialTestableItem(@NotNull final Material material) {
-        Validate.isTrue(material != Material.AIR, "You can't have air as the type!");
+        Preconditions.checkArgument(material != Material.AIR, "You can't have air as the type!");
 
         this.material = material;
     }

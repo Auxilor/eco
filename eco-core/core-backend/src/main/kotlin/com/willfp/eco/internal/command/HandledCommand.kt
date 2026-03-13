@@ -48,7 +48,7 @@ abstract class HandledCommand(
         label: String,
         args: Array<out String>
     ): List<String> {
-        return handleTabComplete(sender, args?.toList() ?: listOf())
+        return handleTabComplete(sender, args.toList())
     }
 
     override fun getPlugin() = this.plugin

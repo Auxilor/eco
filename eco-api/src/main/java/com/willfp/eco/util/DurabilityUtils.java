@@ -36,7 +36,7 @@ public final class DurabilityUtils {
             return;
         }
 
-        if (!(item.getItemMeta() instanceof Damageable)) {
+        if (!(item.getItemMeta() instanceof Damageable meta)) {
             return;
         }
 
@@ -50,7 +50,6 @@ public final class DurabilityUtils {
 
         if (!event3.isCancelled()) {
             int damage2 = event3.getDamage();
-            Damageable meta = (Damageable) item.getItemMeta();
             meta.setDamage(meta.getDamage() + damage2);
 
             if (meta.getDamage() >= item.getType().getMaxDurability()) {
@@ -122,7 +121,7 @@ public final class DurabilityUtils {
             return;
         }
 
-        if (!(item.getItemMeta() instanceof Damageable)) {
+        if (!(item.getItemMeta() instanceof Damageable meta)) {
             return;
         }
 
@@ -131,7 +130,6 @@ public final class DurabilityUtils {
 
         if (!event3.isCancelled()) {
             int damage2 = event3.getDamage();
-            Damageable meta = (Damageable) item.getItemMeta();
             meta.setDamage(meta.getDamage() + damage2);
 
             if (meta.getDamage() >= item.getType().getMaxDurability()) {

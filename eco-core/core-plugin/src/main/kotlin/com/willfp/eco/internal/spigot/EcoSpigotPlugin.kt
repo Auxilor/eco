@@ -75,6 +75,7 @@ import com.willfp.eco.internal.blocks.BlockArgParserTripwire
 import com.willfp.eco.internal.blocks.BlockArgParserWall
 import com.willfp.eco.internal.blocks.BlockArgParserWaterlogged
 import com.willfp.eco.internal.blocks.tags.VanillaBlockTags
+import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -97,6 +98,7 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
+import com.willfp.eco.internal.items.ArgParserAttribute
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -135,6 +137,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.AutocrafterPatch
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerHealthPatch
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
@@ -144,7 +147,6 @@ import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
@@ -197,6 +199,7 @@ import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEcono
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
 import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
+import com.willfp.eco.internal.spigot.integrations.shop.ShopExcellentShop
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
 import com.willfp.eco.internal.spigot.metrics.PlayerflowHandler
@@ -246,6 +249,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserMaxStackSize)
         Items.registerArgParser(ArgParserTooltipStyle)
         Items.registerArgParser(ArgParserTrim)
+        Items.registerArgParser(ArgParserAttribute)
 
         Blocks.registerArgParser(BlockArgParserAgeable)
         Blocks.registerArgParser(BlockArgParserAnaloguePowerable)
@@ -422,6 +426,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (this.configYml.getBool("playerflow")) {
             PlayerflowHandler(this.scheduler).startTicking()
         }
+
+        this.scheduler.runTimer(1L, 20L) {
+            Recipes.checkBatching()
+        }
     }
 
     override fun handleAfterLoad() {
@@ -465,7 +473,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Anticheat
             IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
-            IntegrationLoader("Matrix") { AnticheatManager.register(AnticheatMatrix()) },
             IntegrationLoader("NoCheatPlus") { AnticheatManager.register(AnticheatNCP()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
@@ -508,6 +515,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("DeluxeSellwands") { ShopManager.register(ShopDeluxeSellwands()) },
             IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI()) },
             IntegrationLoader("EconomyShopGUI-Premium") { ShopManager.register(ShopEconomyShopGUI()) },
+            IntegrationLoader("ExcellentShop") { ShopManager.register(ShopExcellentShop()) },
 
             // Hologram
             IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
@@ -574,7 +582,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ProfileLoadListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking,
-            AutocrafterPatch
+            AutocrafterPatch,
+            PlayerHealthPatch
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {

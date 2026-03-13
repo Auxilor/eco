@@ -89,8 +89,8 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
     public void register() {
         Recipes.register(this);
 
-        Bukkit.getServer().removeRecipe(this.getKey());
-        Bukkit.getServer().removeRecipe(this.getDisplayedKey());
+        Recipes.scheduleBukkitRecipeRemoval(this.getKey());
+        Recipes.scheduleBukkitRecipeRemoval(this.getDisplayedKey());
 
         ShapedRecipe shapedRecipe = new ShapedRecipe(this.getKey(), this.getOutput());
         shapedRecipe.shape("012", "345", "678");
@@ -146,10 +146,10 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
                 displayedRecipe.setIngredient(character, new RecipeChoice.ExactChoice(displayedItems));
             }
 
-            Bukkit.getServer().addRecipe(displayedRecipe);
+            Recipes.scheduleBukkitRecipeRegistration(displayedRecipe);
         }
 
-        Bukkit.getServer().addRecipe(shapedRecipe);
+        Recipes.scheduleBukkitRecipeRegistration(shapedRecipe);
     }
 
     /**

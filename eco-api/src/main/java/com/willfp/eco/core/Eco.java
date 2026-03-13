@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.PluginCommandBase;
 import com.willfp.eco.core.command.impl.PluginCommand;
@@ -31,7 +32,6 @@ import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,6 +40,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
@@ -545,6 +546,25 @@ public interface Eco {
     Menu getOpenMenu(@NotNull Player player);
 
     /**
+     * Register bukkit recipe without resending recipe packet.
+     * @param recipe the recipe
+     */
+    void addBukkitRecipeNoResend(Recipe recipe);
+
+    /**
+     * Reload Bukkit recipes by resending the recipe packet to all players.
+     */
+    void reloadBukkitRecipes();
+
+
+    /**
+     * Remove a bukkit recipe without resending recipe packet.
+      * @param key the recipe key
+      * @return if the recipe was successfully removed
+     */
+    boolean removeBukkitRecipeNoResend(@NotNull NamespacedKey key);
+
+    /**
      * Sync commands.
      */
     void syncCommands();
@@ -603,6 +623,15 @@ public interface Eco {
                                   boolean visible);
 
     /**
+     * Gives the player the amount of experience specified.
+     *
+     * @param player       The player.
+     * @param amount       The amount.
+     * @param applyMending Mend players items with mending, with same behavior as picking up orbs.
+     */
+    void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending);
+
+    /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
      *
      * @return The instance of eco.
@@ -631,7 +660,7 @@ public interface Eco {
          */
         @ApiStatus.Internal
         static void set(@NotNull final Eco eco) {
-            Validate.isTrue(Instance.eco == null, "Already initialized!");
+            Preconditions.checkArgument(Instance.eco == null, "Already initialized!");
 
             Instance.eco = eco;
         }

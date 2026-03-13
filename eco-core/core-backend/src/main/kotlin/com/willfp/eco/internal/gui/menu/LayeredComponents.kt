@@ -11,7 +11,7 @@ class LayeredComponents {
     fun getSlotAt(row: Int, column: Int, player: Player?, menu: Menu): Slot {
         val guiPosition = GUIPosition(row, column)
 
-        for (layer in MenuLayer.values().reversed()) {
+        for (layer in MenuLayer.entries.reversed()) {
             val componentsAtPoints = layers[layer] ?: continue
 
             val components = componentsAtPoints[guiPosition] ?: continue

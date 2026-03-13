@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.spigot.recipes
 
 import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.util.namespacedKeyOf
 import org.bukkit.Keyed
