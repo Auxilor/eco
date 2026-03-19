@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.map.DefaultMap;
-import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
@@ -14,8 +13,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -78,21 +75,6 @@ public final class PlaceholderManager {
      * Register a arguments.
      *
      * @param placeholder The arguments to register.
-     * @deprecated Use {@link #registerPlaceholder(RegistrablePlaceholder)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    public static void registerPlaceholder(@NotNull final Placeholder placeholder) {
-        if (!(placeholder instanceof RegistrablePlaceholder)) {
-            throw new IllegalArgumentException("Placeholder must be RegistrablePlaceholder!");
-        }
-
-        registerPlaceholder((RegistrablePlaceholder) placeholder);
-    }
-
-    /**
-     * Register a arguments.
-     *
-     * @param placeholder The arguments to register.
      */
     public static void registerPlaceholder(@NotNull final RegistrablePlaceholder placeholder) {
         // Storing as immutable set leads to slower times to register placeholders, but much
@@ -140,75 +122,6 @@ public final class PlaceholderManager {
         return Eco.get().getPlaceholderValue(plugin, args, context);
     }
 
-    /**
-     * Translate all placeholders with respect to a player.
-     *
-     * @param text   The text that may contain placeholders to translate.
-     * @param player The player to translate the placeholders with respect to.
-     * @return The text, translated.
-     * @deprecated Use {@link #translatePlaceholders(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    public static String translatePlaceholders(@NotNull final String text,
-                                               @Nullable final Player player) {
-        return translatePlaceholders(text, player, EMPTY_INJECTABLE);
-    }
-
-    /**
-     * Translate all placeholders with respect to a player.
-     *
-     * @param text    The text that may contain placeholders to translate.
-     * @param player  The player to translate the placeholders with respect to.
-     * @param context The injectableContext parseContext.
-     * @return The text, translated.
-     * @deprecated Use {@link #translatePlaceholders(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    public static String translatePlaceholders(@NotNull final String text,
-                                               @Nullable final Player player,
-                                               @NotNull final PlaceholderInjectable context) {
-        return translatePlaceholders(
-                text,
-                new PlaceholderContext(
-                        player,
-                        null,
-                        context,
-                        new ArrayList<>()
-                )
-        );
-    }
-
-    /**
-     * Translate all placeholders with respect to a player.
-     *
-     * @param text              The text that may contain placeholders to translate.
-     * @param player            The player to translate the placeholders with respect to.
-     * @param context           The injectableContext parseContext.
-     * @param additionalPlayers Additional players to translate placeholders for.
-     * @return The text, translated.
-     * @deprecated Use {@link #translatePlaceholders(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    public static String translatePlaceholders(@NotNull final String text,
-                                               @Nullable final Player player,
-                                               @NotNull final PlaceholderInjectable context,
-                                               @NotNull final Collection<AdditionalPlayer> additionalPlayers) {
-        return translatePlaceholders(
-                text,
-                new PlaceholderContext(
-                        player,
-                        null,
-                        context,
-                        additionalPlayers
-                )
-        );
-    }
 
     /**
      * Translate all placeholders without a placeholder context.
@@ -252,7 +165,7 @@ public final class PlaceholderManager {
             found.addAll(integration.findPlaceholdersIn(text));
         }
 
-        return new ArrayList<>(found);
+        return List.copyOf(found);
     }
 
     /**

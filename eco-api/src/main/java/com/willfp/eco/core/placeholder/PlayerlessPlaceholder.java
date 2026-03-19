@@ -50,20 +50,6 @@ public final class PlayerlessPlaceholder implements RegistrablePlaceholder {
         return function.get();
     }
 
-    /**
-     * Get the value of the arguments.
-     *
-     * @return The value.
-     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    public String getValue() {
-        return Objects.requireNonNullElse(
-                this.function.get(),
-                ""
-        );
-    }
 
     @Override
     public @NotNull EcoPlugin getPlugin() {

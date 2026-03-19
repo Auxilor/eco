@@ -26,7 +26,6 @@ import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +58,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "MismatchedQueryAndUpdateOfCollection"})
+@SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Registrable {
     /**
      * The properties (eco.yml).
@@ -120,22 +118,14 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     private final ConfigHandler configHandler;
 
     /**
-     * The display module for the plugin.
-     *
-     * @deprecated Plugins can now have multiple display modules.
-     */
-    @Deprecated(since = "6.72.0")
-    private DisplayModule displayModule;
-
-    /**
      * The display modules for the plugin.
      */
-    private List<DisplayModule> displayModules = new ArrayList<>();
+    private final List<DisplayModule> displayModules = new ArrayList<>();
 
     /**
      * The logger for the plugin.
      */
-    private Logger logger;
+    private final Logger logger;
 
     /**
      * If the server is running an outdated version of the plugin.
@@ -186,100 +176,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * support, without proxy support, with no update-checker or bStats, and with the color white.
      */
     protected EcoPlugin() {
-        this((PluginProps) null);
-    }
-
-    /**
-     * Create a new plugin without proxy support, polymart, or bStats.
-     *
-     * @param color The color.
-     * @deprecated Use eco.yml instead.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    protected EcoPlugin(@NotNull final String color) {
-        this("", color);
-    }
-
-
-    /**
-     * Create a new plugin unlinked to polymart and bStats.
-     *
-     * @param proxyPackage The package where proxy implementations are stored.
-     * @param color        The color of the plugin (used in messages, using standard formatting)
-     * @deprecated Use eco.yml instead.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    protected EcoPlugin(@NotNull final String proxyPackage,
-                        @NotNull final String color) {
-        this(0, 0, proxyPackage, color);
-    }
-
-    /**
-     * Create a new plugin without proxy or extension support.
-     *
-     * @param resourceId The polymart resource ID for the plugin.
-     * @param bStatsId   The bStats resource ID for the plugin.
-     * @param color      The color of the plugin (used in messages, using standard formatting)
-     * @deprecated Use eco.yml instead.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    protected EcoPlugin(final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String color) {
-        this(resourceId, bStatsId, "", color);
-    }
-
-    /**
-     * Create a new plugin without proxy support.
-     *
-     * @param resourceId           The polymart resource ID for the plugin.
-     * @param bStatsId             The bStats resource ID for the plugin.
-     * @param color                The color of the plugin (used in messages, using standard formatting)
-     * @param supportingExtensions If the plugin supports extensions.
-     * @deprecated Use eco.yml instead.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    protected EcoPlugin(final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String color,
-                        final boolean supportingExtensions) {
-        this(resourceId, bStatsId, "", color, supportingExtensions);
-    }
-
-    /**
-     * Create a new plugin without extension support.
-     *
-     * @param resourceId   The polymart resource ID for the plugin.
-     * @param bStatsId     The bStats resource ID for the plugin.
-     * @param proxyPackage The package where proxy implementations are stored.
-     * @param color        The color of the plugin (used in messages, using standard formatting)
-     * @deprecated Use eco.yml instead.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    protected EcoPlugin(final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String proxyPackage,
-                        @NotNull final String color) {
-        this(resourceId, bStatsId, proxyPackage, color, false);
-    }
-
-    /**
-     * Create a new plugin.
-     *
-     * @param resourceId           The polymart resource ID for the plugin.
-     * @param bStatsId             The bStats resource ID for the plugin.
-     * @param proxyPackage         The package where proxy implementations are stored.
-     * @param color                The color of the plugin (used in messages, using standard formatting)
-     * @param supportingExtensions If the plugin supports extensions.
-     * @deprecated Use eco.yml instead.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    protected EcoPlugin(final int resourceId,
-                        final int bStatsId,
-                        @NotNull final String proxyPackage,
-                        @NotNull final String color,
-                        final boolean supportingExtensions) {
-        this(PluginProps.createSimple(resourceId, bStatsId, proxyPackage, color, supportingExtensions));
+        this(null);
     }
 
     /**
@@ -365,11 +262,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         Version runningVersion = new Version(Eco.get().getEcoPlugin().getDescription().getVersion());
 
-        // Support for both legacy and new props configuration
-        Version requiredVersion = new Version(this.getMinimumEcoVersion());
-        if (this.getProps().getEcoApiVersion().compareTo(requiredVersion) > 0) {
-            requiredVersion = this.getProps().getEcoApiVersion();
-        }
+        Version requiredVersion = this.getProps().getEcoApiVersion();
 
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
@@ -562,12 +455,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Default code to be executed after the server is up.
      */
     public final void afterLoad() {
-        DisplayModule module = createDisplayModule();
-        if (module != null) {
-            Display.registerDisplayModule(module);
-            this.displayModules.add(module);
-        }
-
         for (DisplayModule displayModule : this.loadDisplayModules()) {
             Display.registerDisplayModule(displayModule);
             this.displayModules.add(displayModule);
@@ -894,37 +781,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     }
 
     /**
-     * Create the display module for the plugin.
-     *
-     * @return The display module, or null.
-     * @deprecated Use {@link #loadDisplayModules()} instead.
-     */
-    @Nullable
-    @Deprecated(since = "6.72.0")
-    protected DisplayModule createDisplayModule() {
-        Preconditions.checkArgument(this.getDisplayModule() == null, "Display module exists!");
-
-        return null;
-    }
-
-    /**
      * Load display modules.
      *
      * @return The display modules.
      */
     protected List<DisplayModule> loadDisplayModules() {
         return new ArrayList<>();
-    }
-
-    /**
-     * Get the minimum version of eco to use the plugin.
-     *
-     * @return The version.
-     * @deprecated Use {@link PluginProps#getEcoApiVersion()} instead, configure in eco.yml as eco-api-version.
-     */
-    @Deprecated(since = "6.77.0", forRemoval = true)
-    public String getMinimumEcoVersion() {
-        return this.getProps().getEcoApiVersion().toString();
     }
 
     /**
@@ -949,61 +811,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         Preconditions.checkNotNull(proxyFactory, "Plugin does not support proxies!");
 
         return proxyFactory.getProxy(proxyClass);
-    }
-
-    /**
-     * Get unwrapped config.
-     * Does not use eco config system, don't use.
-     *
-     * @return The bukkit config.
-     * @deprecated Use getConfigYml() instead.
-     */
-    @NotNull
-    @Override
-    @Deprecated
-    public final FileConfiguration getConfig() {
-        this.getLogger().warning("Call to default config method in eco plugin!");
-
-        return Objects.requireNonNull(this.getConfigYml().toBukkit());
-    }
-
-    /**
-     * Does not use eco config system, don't use.
-     *
-     * @deprecated Use eco config system.
-     */
-    @Override
-    @Deprecated
-    public final void saveConfig() {
-        this.getLogger().warning("Call to default config method in eco plugin!");
-
-        super.saveConfig();
-    }
-
-    /**
-     * Does not use eco config system, don't use.
-     *
-     * @deprecated Use eco config system.
-     */
-    @Override
-    @Deprecated
-    public final void saveDefaultConfig() {
-        this.getLogger().warning("Call to default config method in eco plugin!");
-
-        super.saveDefaultConfig();
-    }
-
-    /**
-     * Does not use eco config system, don't use.
-     *
-     * @deprecated Use eco config system.
-     */
-    @Override
-    @Deprecated
-    public final void reloadConfig() {
-        this.getLogger().warning("Call to default config method in eco plugin!");
-
-        super.reloadConfig();
     }
 
     /**
@@ -1163,17 +970,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         return this.configHandler;
     }
 
-    /**
-     * Get the plugin's display module.
-     *
-     * @return The display module.
-     * @deprecated Use {@link #getDisplayModules()} instead.
-     */
-    @Nullable
-    @Deprecated(since = "6.72.0", forRemoval = true)
-    public DisplayModule getDisplayModule() {
-        return this.displayModule;
-    }
 
     /**
      * Get the plugin's display modules.

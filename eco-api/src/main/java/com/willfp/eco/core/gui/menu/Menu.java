@@ -56,26 +56,6 @@ public interface Menu {
      * @param row    The row.
      * @param column The column.
      * @param player The player
-     * @param menu   The menu.
-     * @return The slot.
-     * @deprecated Menu shouldn't be a parameter.
-     */
-    @Deprecated(since = "6.46.0", forRemoval = true)
-    default Slot getSlot(final int row,
-                         final int column,
-                         @NotNull final Player player,
-                         @NotNull final Menu menu) {
-        return this.getSlot(row, column, player);
-    }
-
-    /**
-     * Get a slot at a given row and column.
-     * <p>
-     * Defaults to static slot if no reactive slot exists.
-     *
-     * @param row    The row.
-     * @param column The column.
-     * @param player The player
      * @return The slot.
      */
     default Slot getSlot(final int row,
@@ -135,20 +115,6 @@ public interface Menu {
         // Blank method for backwards compatibility.
     }
 
-    /**
-     * Add state for a player.
-     *
-     * @param player The player.
-     * @param key    The key.
-     * @param value  The state.
-     * @deprecated Poorly named, use setState instead.
-     */
-    @Deprecated(since = "6.44.0", forRemoval = true)
-    default void addState(@NotNull Player player,
-                          @NotNull String key,
-                          @Nullable Object value) {
-        this.setState(player, key, value);
-    }
 
     /**
      * Remove state for a player.

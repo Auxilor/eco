@@ -52,19 +52,6 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
             return null;
         }
 
-        return this.getValue(player);
-    }
-
-    /**
-     * Get the value of the arguments.
-     *
-     * @param player The player.
-     * @return The value.
-     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    public String getValue(@NotNull final Player player) {
         return Objects.requireNonNullElse(
                 function.apply(player),
                 ""

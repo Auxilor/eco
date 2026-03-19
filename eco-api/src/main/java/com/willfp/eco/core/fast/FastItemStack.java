@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -158,29 +157,6 @@ public interface FastItemStack extends PersistentDataHolder {
      */
     boolean hasItemFlag(@NotNull ItemFlag flag);
 
-    /**
-     * Get the base NBT tag (Not PublicBukkitValues, the base) as a PersistentDataContainer.
-     * <p>
-     * The returned PersistentDataContainer will not modify the item until the tag is set.
-     *
-     * @return The base NBT tag.
-     * @deprecated Items are now component-based.
-     */
-    @Deprecated(forRemoval = true, since = "6.70.0")
-    default PersistentDataContainer getBaseTag() {
-        throw new UnsupportedOperationException("Not supported in 1.20.5+");
-    }
-
-    /**
-     * Set the base NBT tag (Not PublicBukkitValues, the base) from a PersistentDataContainer.
-     *
-     * @param container The PersistentDataContainer.
-     * @deprecated Items are now component-based.
-     */
-    @Deprecated(forRemoval = true, since = "6.70.0")
-    default void setBaseTag(@Nullable PersistentDataContainer container) {
-        throw new UnsupportedOperationException("Not supported in 1.20.5+");
-    }
 
     /**
      * Get the type of the item.

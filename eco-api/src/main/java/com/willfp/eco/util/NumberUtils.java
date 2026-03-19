@@ -277,20 +277,6 @@ public final class NumberUtils {
         );
     }
 
-    /**
-     * Evaluate an expression in a context.
-     *
-     * @param expression The expression.
-     * @param context    The context.
-     * @return The value of the expression, or zero if invalid.
-     * @deprecated Use {@link #evaluateExpression(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
-    public static double evaluateExpression(@NotNull final String expression,
-                                            @NotNull final com.willfp.eco.core.math.MathContext context) {
-        return evaluateExpression(expression, context.toPlaceholderContext());
-    }
 
     /**
      * Evaluate an expression in a context.

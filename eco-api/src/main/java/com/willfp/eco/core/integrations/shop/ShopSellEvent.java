@@ -1,7 +1,6 @@
 package com.willfp.eco.core.integrations.shop;
 
 import com.willfp.eco.core.price.Price;
-import com.willfp.eco.core.price.impl.PriceEconomy;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
@@ -33,21 +32,6 @@ public class ShopSellEvent extends PlayerEvent {
      */
     @Nullable
     private final ItemStack item;
-
-    /**
-     * Create new shop sell event.
-     *
-     * @param who   The player.
-     * @param price The price.
-     * @param item  The item.
-     * @deprecated Use the price system instead.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    public ShopSellEvent(@NotNull final Player who,
-                         final double price,
-                         @Nullable final ItemStack item) {
-        this(who, new PriceEconomy(price), item);
-    }
 
     /**
      * Create new shop sell event.
@@ -139,27 +123,6 @@ public class ShopSellEvent extends PlayerEvent {
         this.multiplier = multiplier;
     }
 
-    /**
-     * Get the price.
-     *
-     * @return The price.
-     * @deprecated Use the price system instead.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    public double getPrice() {
-        return this.getValue().getValue(player);
-    }
-
-    /**
-     * Set the price.
-     *
-     * @param price The price.
-     * @deprecated Use the price system instead.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    public void setPrice(final double price) {
-        this.setValue(new PriceEconomy(price));
-    }
 
     /**
      * Bukkit parity.

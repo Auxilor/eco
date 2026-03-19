@@ -12,8 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 /**
  * A slot is an item in a GUI that can handle clicks.
  * <p>
@@ -96,17 +94,6 @@ public interface Slot extends GUIComponent {
     /**
      * If the slot should re-render the menu if clicked.
      *
-     * @return If the slot should re-render.
-     * @deprecated Use {@link Slot#shouldRenderOnClick(ClickType)} instead.
-     */
-    @Deprecated(since = "6.66.0", forRemoval = true)
-    default boolean shouldRenderOnClick() {
-        return shouldRenderOnClick(ClickType.LEFT);
-    }
-
-    /**
-     * If the slot should re-render the menu if clicked.
-     *
      * @param clickType The click type.
      * @return If the slot should re-render.
      */
@@ -157,18 +144,6 @@ public interface Slot extends GUIComponent {
      */
     static SlotBuilder builder(@NotNull final TestableItem item) {
         return Eco.get().createSlotBuilder((player, menu) -> item.getItem());
-    }
-
-    /**
-     * Create a builder for a player-specific ItemStack.
-     *
-     * @param provider The provider.
-     * @return The builder.
-     * @deprecated This method was written incorrectly, should have been a Player + Menu function.
-     */
-    @Deprecated(since = "6.45.0", forRemoval = true)
-    static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {
-        return Eco.get().createSlotBuilder((player, menu) -> provider.apply(player));
     }
 
     /**

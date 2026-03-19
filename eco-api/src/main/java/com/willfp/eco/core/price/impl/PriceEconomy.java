@@ -10,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 
 /**
  * Economy-based price (for Vault, Treasury, etc.)
@@ -40,19 +39,6 @@ public final class PriceEconomy implements Price {
         this(PlaceholderContext.EMPTY, (PlaceholderContext ctx) -> value);
     }
 
-    /**
-     * Create a new economy-based price.
-     *
-     * @param baseContext The base context.
-     * @param function    The function.
-     * @deprecated Use {@link #PriceEconomy(PlaceholderContext, PlaceholderContextSupplier)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @SuppressWarnings("removal")
-    public PriceEconomy(@NotNull final com.willfp.eco.core.math.MathContext baseContext,
-                        @NotNull final Function<com.willfp.eco.core.math.MathContext, Double> function) {
-        this(baseContext.toPlaceholderContext(), (PlaceholderContext ctx) -> function.apply(ctx.toMathContext()));
-    }
 
     /**
      * Create a new economy-based price.

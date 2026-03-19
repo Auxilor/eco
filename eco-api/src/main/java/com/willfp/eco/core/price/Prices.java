@@ -61,27 +61,6 @@ public final class Prices {
      * @param priceName  The price name.
      * @param context    The math context to parse the expression.
      * @return The price, or free if invalid.
-     * @deprecated Use {@link #create(String, String, PlaceholderContext)} instead.
-     */
-    @NotNull
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @SuppressWarnings("removal")
-    public static Price create(@NotNull final String expression,
-                               @Nullable final String priceName,
-                               @NotNull final com.willfp.eco.core.math.MathContext context) {
-        return create(expression, priceName, context.toPlaceholderContext());
-    }
-
-    /**
-     * Create price from an expression (representing the value),
-     * and a price name. Uses a context to parse the expression.
-     * <p>
-     * Supports items as price names.
-     *
-     * @param expression The expression for the value.
-     * @param priceName  The price name.
-     * @param context    The math context to parse the expression.
-     * @return The price, or free if invalid.
      */
     @NotNull
     public static Price create(@NotNull final String expression,

@@ -4,13 +4,6 @@ package com.willfp.eco.core.display;
  * The priority (order) of display modules.
  */
 public enum DisplayPriority {
-    /**
-     * Custom weight.
-     *
-     * @deprecated Will never be used.
-     */
-    @Deprecated(since = "6.53.0", forRemoval = true)
-    CUSTOM(250),
 
     /**
      * Ran first.

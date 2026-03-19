@@ -14,7 +14,6 @@ import java.util.Set;
 /**
  * Class to handle shop integrations.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
 public final class ShopManager {
     /**
      * A set of all registered integrations.
@@ -75,38 +74,6 @@ public final class ShopManager {
         );
     }
 
-    /**
-     * Get the price of an item.
-     *
-     * @param itemStack The item.
-     * @return The price.
-     * @deprecated Use getValue instead. This will always return 0 as prices depend on players.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    public static double getItemPrice(@Nullable final ItemStack itemStack) {
-        return getItemPrice(itemStack, null);
-    }
-
-    /**
-     * Get the price of an item.
-     *
-     * @param itemStack The item.
-     * @param player    The player.
-     * @return The price.
-     * @deprecated Use getValue instead. Null players / null items will always return 0.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    public static double getItemPrice(@Nullable final ItemStack itemStack,
-                                      @Nullable final Player player) {
-        if (itemStack == null || player == null) {
-            return 0.0;
-        }
-
-        return REGISTRY.firstSafely(
-                integration -> integration.getUnitValue(itemStack, player).getValue(player, itemStack.getAmount()),
-                0.0
-        );
-    }
 
     /**
      * Get all registered integrations.

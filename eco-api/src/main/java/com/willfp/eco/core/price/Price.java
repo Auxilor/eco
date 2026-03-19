@@ -147,25 +147,4 @@ public interface Price {
         return this.getClass().getName();
     }
 
-    /**
-     * If the price is backed by a value, get it here.
-     *
-     * @return The value.
-     * @deprecated Use getValue(Player) instead.
-     */
-    @Deprecated(since = "6.45.0", forRemoval = true)
-    default double getValue() {
-        return 0;
-    }
-
-    /**
-     * If the price is backed by a value, set it here.
-     *
-     * @param value The value.
-     * @deprecated Values shouldn't be fixed. This method should never work.
-     */
-    @Deprecated(since = "6.45.0", forRemoval = true)
-    default void setValue(final double value) {
-        // Override when needed.
-    }
 }

@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 
 /**
  * Item-based price.
@@ -54,23 +53,7 @@ public final class PriceItem implements Price {
     /**
      * Create a new item-based price.
      *
-     * @param baseContext The base MathContext.
-     * @param function    The function to get the amount of items to remove.
-     * @param item        The item.
-     * @deprecated Use {@link #PriceItem(PlaceholderContext, PlaceholderContextSupplier, TestableItem)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @SuppressWarnings("removal")
-    public PriceItem(@NotNull final com.willfp.eco.core.math.MathContext baseContext,
-                     @NotNull final Function<com.willfp.eco.core.math.MathContext, Double> function,
-                     @NotNull final TestableItem item) {
-        this(baseContext.toPlaceholderContext(), (PlaceholderContext ctx) -> function.apply(ctx.toMathContext()), item);
-    }
-
-    /**
-     * Create a new item-based price.
-     *
-     * @param baseContext The base MathContext.
+     * @param baseContext The base placeholder context.
      * @param function    The function to get the amount of items to remove.
      * @param item        The item.
      */

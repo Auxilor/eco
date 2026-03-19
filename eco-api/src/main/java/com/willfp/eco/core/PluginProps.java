@@ -56,13 +56,6 @@ public final class PluginProps {
     private final Map<String, String> environment = new HashMap<>();
 
     /**
-     * If the plugin uses reflective reload.
-     * @deprecated This option has no effect, reflective reload has been removed.
-     */
-    @Deprecated(since = "6.77.0", forRemoval = true)
-    private boolean usesReflectiveReload = false;
-
-    /**
      * The minimum eco api version required.
      */
     @NotNull
@@ -214,28 +207,6 @@ public final class PluginProps {
     }
 
     /**
-     * Set if the plugin uses reflective reload.
-     *
-     * @return If the plugin uses reflective reload.
-     * @deprecated Reflective reload has been removed.
-     */
-    @Deprecated(since = "6.77.0", forRemoval = true)
-    public boolean isUsingReflectiveReload() {
-        return usesReflectiveReload;
-    }
-
-    /**
-     * Set if the plugin uses reflective reload.
-     *
-     * @param usesReflectiveReload If the plugin uses reflective reload.
-     * @deprecated Reflective reload has been removed.
-     */
-    @Deprecated(since = "6.77.0", forRemoval = true)
-    public void setUsesReflectiveReload(final boolean usesReflectiveReload) {
-        this.usesReflectiveReload = usesReflectiveReload;
-    }
-
-    /**
      * Ensure that all required props have been set.
      */
     public void validate() {
@@ -301,35 +272,6 @@ public final class PluginProps {
         return false;
     }
 
-    /**
-     * Create new props from known values.
-     * <p>
-     * Marked as internal as this method will break whenever the properties themselves
-     * are updated (e.g. if a new property is added) - so to prevent any potential
-     * backwards-compatibility bugs, this method cannot be invoked outside eco itself.
-     *
-     * @param resourceId         The ID of the plugin on polymart.
-     * @param bStatsId           The ID of the plugin on bStats.
-     * @param proxyPackage       The package where proxies can be found.
-     * @param color              The primary color of the plugin.
-     * @param supportsExtensions If the plugin should attempt to look for extensions.
-     * @return The props.
-     * @deprecated Moving to force the usage of eco.yml.
-     */
-    @Deprecated(since = "6.53.0")
-    static PluginProps createSimple(final int resourceId,
-                                    final int bStatsId,
-                                    @NotNull final String proxyPackage,
-                                    @NotNull final String color,
-                                    final boolean supportsExtensions) {
-        PluginProps props = new PluginProps();
-        props.setResourceId(resourceId);
-        props.setBStatsId(bStatsId);
-        props.setProxyPackage(proxyPackage);
-        props.setColor(color);
-        props.setSupportingExtensions(supportsExtensions);
-        return props;
-    }
 
     /**
      * Parse arguments into props for a plugin.

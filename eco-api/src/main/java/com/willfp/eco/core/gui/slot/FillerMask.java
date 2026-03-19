@@ -53,22 +53,6 @@ public class FillerMask implements GUIComponent {
     /**
      * Create a new filler mask.
      *
-     * @param materials The mask materials.
-     * @param pattern   The pattern.
-     * @deprecated Use {@link MaskItems} instead.
-     */
-    @Deprecated(since = "6.24.0")
-    public FillerMask(@NotNull final MaskMaterials materials,
-                      @NotNull final String... pattern) {
-        this(
-                materials.toMaskItems(),
-                pattern
-        );
-    }
-
-    /**
-     * Create a new filler mask.
-     *
      * @param items   The mask items.
      * @param pattern The pattern.
      */

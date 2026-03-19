@@ -56,23 +56,6 @@ public final class PlayerDynamicPlaceholder implements RegistrablePlaceholder {
         return function.apply(args, player);
     }
 
-    /**
-     * Get the value of the arguments.
-     *
-     * @param args   The args.
-     * @param player The player.
-     * @return The value.
-     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    public String getValue(@NotNull final String args,
-                           @NotNull final Player player) {
-        return Objects.requireNonNullElse(
-                function.apply(args, player),
-                ""
-        );
-    }
 
     @Override
     public @NotNull EcoPlugin getPlugin() {

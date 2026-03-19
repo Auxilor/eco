@@ -50,21 +50,6 @@ public final class DynamicPlaceholder implements RegistrablePlaceholder {
         return function.apply(args);
     }
 
-    /**
-     * Get the value of the arguments.
-     *
-     * @param args The args.
-     * @return The value.
-     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    public String getValue(@NotNull final String args) {
-        return Objects.requireNonNullElse(
-                function.apply(args),
-                ""
-        );
-    }
 
     @Override
     public @NotNull EcoPlugin getPlugin() {

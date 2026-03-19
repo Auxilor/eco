@@ -57,21 +57,6 @@ public final class PlayerPlaceholder implements RegistrablePlaceholder {
         return function.apply(player);
     }
 
-    /**
-     * Get the value of the arguments for a given player.
-     *
-     * @param player The player.
-     * @return The value.
-     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    public String getValue(@NotNull final Player player) {
-        return Objects.requireNonNullElse(
-                function.apply(player),
-                ""
-        );
-    }
 
     @Override
     public @NotNull EcoPlugin getPlugin() {

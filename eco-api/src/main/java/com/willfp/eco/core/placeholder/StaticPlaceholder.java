@@ -48,20 +48,6 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
         return function.get();
     }
 
-    /**
-     * Get the value of the arguments.
-     *
-     * @return The value.
-     * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    public String getValue() {
-        return Objects.requireNonNullElse(
-                function.get(),
-                ""
-        );
-    }
 
     @Override
     public String tryTranslateQuickly(@NotNull final String text,

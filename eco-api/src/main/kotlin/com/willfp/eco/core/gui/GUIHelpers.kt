@@ -78,13 +78,6 @@ fun SlotBuilder.notCaptiveFor(test: (Player) -> Boolean): SlotBuilder =
 fun SlotBuilder.setCaptiveFilter(test: (Player, Menu, ItemStack?) -> Boolean): SlotBuilder =
     this.setCaptiveFilter { a, b, c -> test(a, b, c) }
 
-/**
- * @see SlotBuilder.setModifier
- * @deprecated Use SlotUpdater instead.
- */
-@Deprecated("Use SlotUpdater instead")
-fun SlotBuilder.setModifier(action: (Player, Menu, item: ItemStack) -> Unit): SlotBuilder =
-    this.setUpdater { a, b, c -> c.apply { action(a, b, c) } }
 
 /** @see SlotBuilder.setUpdater */
 fun SlotBuilder.setUpdater(action: (Player, Menu, item: ItemStack) -> ItemStack): SlotBuilder =

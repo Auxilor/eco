@@ -145,17 +145,6 @@ public class PlaceholderContext {
         return additionalPlayers;
     }
 
-    /**
-     * Convert to a {@link com.willfp.eco.core.math.MathContext}.
-     *
-     * @return The math context.
-     * @deprecated MathContext is deprecated, use {@link PlaceholderContext} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @SuppressWarnings({"removal", "DeprecatedIsStillUsed"})
-    public com.willfp.eco.core.math.MathContext toMathContext() {
-        return new com.willfp.eco.core.math.MathContext(this.getInjectableContext(), this.getPlayer(), this.getAdditionalPlayers());
-    }
 
     /**
      * Copy with a player.

@@ -40,16 +40,6 @@ public class Packet {
         this.handle = handle;
     }
 
-    /**
-     * Get the packet handle, compatible with the old record-based packet system.
-     *
-     * @return The packet handle.
-     * @deprecated Use {@link #getHandle()} instead.
-     */
-    @Deprecated
-    public Object handle() {
-        return handle;
-    }
 
     /**
      * Send to a player.

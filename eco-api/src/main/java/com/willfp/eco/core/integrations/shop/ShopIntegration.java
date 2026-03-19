@@ -58,30 +58,4 @@ public interface ShopIntegration extends Integration {
         return new PriceFree();
     }
 
-    /**
-     * Get the price of an item.
-     *
-     * @param itemStack The item.
-     * @return The price.
-     * @deprecated Use getValue instead.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    default double getPrice(@NotNull final ItemStack itemStack) {
-        // Do nothing unless overridden.
-        return 0.0;
-    }
-
-    /**
-     * Get the price of an item.
-     *
-     * @param itemStack The item.
-     * @param player    The player.
-     * @return The price.
-     * @deprecated Use getValue instead.
-     */
-    @Deprecated(since = "6.47.0", forRemoval = true)
-    default double getPrice(@NotNull final ItemStack itemStack,
-                            @NotNull final Player player) {
-        return getUnitValue(itemStack, player).getValue(player);
-    }
 }

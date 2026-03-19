@@ -2,7 +2,6 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.gui.slot.functional.CaptiveFilter;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
-import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -188,19 +187,4 @@ public interface SlotBuilder {
      */
     Slot build();
 
-    /**
-     * Modify the ItemStack.
-     *
-     * @param modifier The modifier.
-     * @return The builder.
-     * @deprecated Use {@link SlotBuilder#setUpdater(SlotUpdater)} instead.
-     */
-    @Deprecated
-    @SuppressWarnings("DeprecatedIsStillUsed")
-    default SlotBuilder setModifier(@NotNull SlotModifier modifier) {
-        return setUpdater((player, menu, previous) -> {
-            modifier.modify(player, menu, previous);
-            return previous;
-        });
-    }
 }

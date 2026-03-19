@@ -10,14 +10,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface ConfigHandler {
     /**
-     * Invoke all update methods.
-     */
-    @Deprecated(since = "6.77.2", forRemoval = true)
-    default void callUpdate() {
-        // Do nothing
-    }
-
-    /**
      * Save all configs.
      */
     void saveAllConfigs();

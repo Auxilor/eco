@@ -50,15 +50,4 @@ public interface Placeholder {
         return text;
     }
 
-    /**
-     * Get the identifier for the arguments.
-     *
-     * @return The identifier.
-     * @deprecated Some arguments may not have an identifier. Use {@link #getPattern()} instead.
-     */
-    @Deprecated(since = "6.56.0", forRemoval = true)
-    @NotNull
-    default String getIdentifier() {
-        return this.getPattern().pattern();
-    }
 }
