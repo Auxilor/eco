@@ -161,7 +161,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import su.nightexpress.coinsengine.api.CoinsEngineAPI
+import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
@@ -422,8 +422,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 }
             },
             IntegrationLoader("CoinsEngine") {
-                for (currency in CoinsEngineAPI.getCurrencies()) {
-                    Prices.registerPriceFactory(PriceFactoryCoinsEngine(currency))
+                val rsp = Bukkit.getServer().servicesManager.getRegistration(ExcellentEconomyAPI::class.java)
+                if (rsp != null) {
+                    val api = rsp.provider
+                    for (currency in api.currencies) {
+                        Prices.registerPriceFactory(PriceFactoryCoinsEngine(api, currency))
+                    }
                 }
             },
 
