@@ -30,6 +30,7 @@ import com.willfp.eco.internal.entities.EntityArgParserBaby
 import com.willfp.eco.internal.entities.EntityArgParserCharged
 import com.willfp.eco.internal.entities.EntityArgParserEquipment
 import com.willfp.eco.internal.entities.EntityArgParserExplosionRadius
+import com.willfp.eco.internal.entities.EntityArgParserFirework
 import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
 import com.willfp.eco.internal.entities.EntityArgParserFollowRange
 import com.willfp.eco.internal.entities.EntityArgParserHealth
@@ -212,6 +213,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserEquipment)
         Entities.registerArgParser(EntityArgParserJumpStrength)
         Entities.registerArgParser(EntityArgParserScale)
+        Entities.registerArgParser(EntityArgParserFirework)
 
         Prices.registerPriceFactory(PriceFactoryEconomy)
         Prices.registerPriceFactory(PriceFactoryXPLevels)
