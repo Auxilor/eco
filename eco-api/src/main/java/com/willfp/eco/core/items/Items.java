@@ -328,7 +328,7 @@ public final class Items {
                 LookupArgParser argParser : ARG_PARSERS) {
             Predicate<ItemStack> predicate = argParser.parseArguments(modifierArgs, meta);
             if (predicate != null) {
-                predicates.add(argParser.parseArguments(modifierArgs, meta));
+                predicates.add(predicate);
             }
         }
 

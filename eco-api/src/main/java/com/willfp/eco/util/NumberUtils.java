@@ -200,7 +200,7 @@ public final class NumberUtils {
         DecimalFormat df = new DecimalFormat("0.00");
         String formatted = df.format(toFormat);
 
-        return formatted.endsWith("00") ? String.valueOf((int) toFormat) : formatted;
+        return formatted.endsWith("00") ? String.valueOf((long) toFormat) : formatted;
     }
 
     /**

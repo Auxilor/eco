@@ -188,12 +188,6 @@ public final class Entities {
             return null;
         }
 
-        TestableEntity customEntity = getEntity(entity);
-
-        if (customEntity != null) {
-            return customEntity;
-        }
-
         for (TestableEntity known : REGISTRY.values()) {
             if (known.matches(entity)) {
                 return known;
