@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 import java.util.regex.Pattern
 
 class PlaceholderIntegrationPAPI : PlaceholderIntegration {
-    private val pattern = Pattern.compile("[%]([^% ]+)[%]")
+    private val pattern = Pattern.compile("%([^% ]+)%")
 
     override fun registerIntegration() {
         // Do nothing.

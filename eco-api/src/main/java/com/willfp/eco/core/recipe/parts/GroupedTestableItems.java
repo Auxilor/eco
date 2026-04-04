@@ -1,7 +1,7 @@
 package com.willfp.eco.core.recipe.parts;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.items.TestableItem;
-import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public class GroupedTestableItems implements TestableItem {
      * @param children The children.
      */
     public GroupedTestableItems(@NotNull final Collection<TestableItem> children) {
-        Validate.isTrue(!children.isEmpty(), "Group must have at least one child!");
+        Preconditions.checkArgument(!children.isEmpty(), "Group must have at least one child!");
 
         this.children = children;
     }

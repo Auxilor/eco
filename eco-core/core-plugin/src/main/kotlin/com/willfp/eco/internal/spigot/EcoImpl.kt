@@ -58,6 +58,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.net.URLClassLoader
@@ -319,6 +320,18 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
+
+    override fun addBukkitRecipeNoResend(recipe: Recipe) {
+        this.getProxy(CommonsInitializerProxy::class.java).addBukkitRecipeNoResend(recipe)
+    }
+
+    override fun reloadBukkitRecipes() {
+        this.getProxy(CommonsInitializerProxy::class.java).reloadBukkitRecipes()
+    }
+
+    override fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
+        return this.getProxy(CommonsInitializerProxy::class.java).removeBukkitRecipeNoResend(key)
+    }
 
     override fun syncCommands() =
         this.getProxy(BukkitCommandsProxy::class.java).syncCommands()

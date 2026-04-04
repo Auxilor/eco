@@ -121,7 +121,7 @@ class LegacyMongoDBPersistentDataHandler(
 
                 try {
                     return@runBlocking deserialize(value)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }

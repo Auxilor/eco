@@ -26,6 +26,11 @@ object PersistentDataHandlers: Registry<PersistentDataHandlerFactory>() {
                 MySQLPersistentDataHandler(plugin.configYml.getSubsection("mysql"))
         })
 
+        register(object : PersistentDataHandlerFactory("mariadb") {
+            override fun create(plugin: EcoSpigotPlugin) =
+                MySQLPersistentDataHandler(plugin.configYml.getSubsection("mysql"))
+        })
+
         register(object : PersistentDataHandlerFactory("mongodb") {
             override fun create(plugin: EcoSpigotPlugin) =
                 MongoDBPersistentDataHandler(plugin.configYml.getSubsection("mongodb"))

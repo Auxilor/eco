@@ -23,7 +23,7 @@ object ArgParserHead : LookupArgParser {
             if (argSplit.size < 2) {
                 continue
             }
-            playerName = argSplit[1]
+            playerName = argSplit[1].replace("%", "")
         }
 
         playerName ?: return null

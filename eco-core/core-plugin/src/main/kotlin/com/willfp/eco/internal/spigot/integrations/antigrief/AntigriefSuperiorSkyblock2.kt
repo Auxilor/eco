@@ -22,12 +22,8 @@ class AntigriefSuperiorSkyblock2 : AntigriefIntegration {
         val superiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
 
         if (island == null) {
-            if (!superiorPlayer.hasBypassModeEnabled() && SuperiorSkyblockAPI.getSuperiorSkyblock().grid
-                    .isIslandsWorld(superiorPlayer.world)
-            ) {
-                return false
-            }
-            return true
+            return superiorPlayer.hasBypassModeEnabled() || !SuperiorSkyblockAPI.getSuperiorSkyblock().grid
+                .isIslandsWorld(superiorPlayer.world)
         }
 
         if (!island.hasPermission(superiorPlayer, IslandPrivilege.getByName("BREAK"))) {
@@ -53,12 +49,8 @@ class AntigriefSuperiorSkyblock2 : AntigriefIntegration {
         val superiorPlayer: SuperiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
 
         if (island == null) {
-            if (!superiorPlayer.hasBypassModeEnabled() && SuperiorSkyblockAPI.getSuperiorSkyblock().grid
-                    .isIslandsWorld(superiorPlayer.world)
-            ) {
-                return false
-            }
-            return true
+            return superiorPlayer.hasBypassModeEnabled() || !SuperiorSkyblockAPI.getSuperiorSkyblock().grid
+                .isIslandsWorld(superiorPlayer.world)
         }
 
         if (!island.hasPermission(superiorPlayer, IslandPrivilege.getByName("BUILD"))) {
@@ -84,11 +76,7 @@ class AntigriefSuperiorSkyblock2 : AntigriefIntegration {
             else -> IslandPrivilege.getByName("ANIMAL_DAMAGE")
         }
 
-        if (island != null && !island.hasPermission(player, islandPermission)) {
-            return false
-        }
-
-        return true
+        return (island == null || island.hasPermission(player, islandPermission))
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {

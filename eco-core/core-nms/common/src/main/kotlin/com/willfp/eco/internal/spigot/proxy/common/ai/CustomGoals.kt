@@ -35,13 +35,12 @@ private fun Collection<Goal.Flag>.toEcoFlags(): Collection<GoalFlag> {
 }
 
 private fun Collection<GoalFlag>.toNMSFlags(): Collection<Goal.Flag> {
-    return this.mapNotNull {
+    return this.map {
         when (it) {
             GoalFlag.JUMP -> Goal.Flag.JUMP
             GoalFlag.LOOK -> Goal.Flag.LOOK
             GoalFlag.MOVE -> Goal.Flag.MOVE
             GoalFlag.TARGET -> Goal.Flag.TARGET
-            else -> null
         }
     }
 }

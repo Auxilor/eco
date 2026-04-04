@@ -20,6 +20,7 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
+import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -42,6 +43,7 @@ import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
+import com.willfp.eco.internal.items.ArgParserAttribute
 import com.willfp.eco.internal.items.ArgParserColor
 import com.willfp.eco.internal.items.ArgParserCustomModelData
 import com.willfp.eco.internal.items.ArgParserEnchantment
@@ -80,6 +82,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.AutocrafterPatch
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
+import com.willfp.eco.internal.spigot.eventlisteners.PlayerHealthPatch
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
@@ -89,7 +92,6 @@ import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatMatrix
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatNCP
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
@@ -159,7 +161,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import su.nightexpress.coinsengine.api.CoinsEngineAPI
+import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI
 
 abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val dataYml: DataYml
@@ -188,6 +190,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserMaxStackSize)
         Items.registerArgParser(ArgParserTooltipStyle)
         Items.registerArgParser(ArgParserTrim)
+        Items.registerArgParser(ArgParserAttribute)
 
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
@@ -307,6 +310,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (this.configYml.getBool("playerflow")) {
             PlayerflowHandler(this.scheduler).startTicking()
         }
+
+        this.scheduler.runTimer(1L, 20L) {
+            Recipes.checkBatching()
+        }
     }
 
     override fun handleAfterLoad() {
@@ -349,7 +356,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Anticheat
             IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
-            IntegrationLoader("Matrix") { AnticheatManager.register(AnticheatMatrix()) },
             IntegrationLoader("NoCheatPlus") { AnticheatManager.register(AnticheatNCP()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
@@ -416,8 +422,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 }
             },
             IntegrationLoader("CoinsEngine") {
-                for (currency in CoinsEngineAPI.getCurrencies()) {
-                    Prices.registerPriceFactory(PriceFactoryCoinsEngine(currency))
+                val rsp = Bukkit.getServer().servicesManager.getRegistration(ExcellentEconomyAPI::class.java)
+                if (rsp != null) {
+                    val api = rsp.provider
+                    for (currency in api.currencies) {
+                        Prices.registerPriceFactory(PriceFactoryCoinsEngine(api, currency))
+                    }
                 }
             },
 
@@ -447,7 +457,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ProfileLoadListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking,
-            AutocrafterPatch
+            AutocrafterPatch,
+            PlayerHealthPatch
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {

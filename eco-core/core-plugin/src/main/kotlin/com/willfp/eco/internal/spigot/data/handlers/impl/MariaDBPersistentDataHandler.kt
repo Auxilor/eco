@@ -37,14 +37,14 @@ private const val UUID_COLUMN_NAME = "profileUUID"
 private const val KEY_COLUMN_NAME = "dataKey"
 private const val INDEX_COLUMN_NAME = "listIndex"
 
-class MySQLPersistentDataHandler(
+class MariaDBPersistentDataHandler(
     config: Config
-) : PersistentDataHandler("mysql") {
+) : PersistentDataHandler("mariadb") {
     private val dataSource = HikariDataSource(HikariConfig().apply {
-        driverClassName = "com.mysql.cj.jdbc.Driver"
+        driverClassName = "org.mariadb.jdbc.Driver"
         username = config.getString("user")
         password = config.getString("password")
-        jdbcUrl = "jdbc:mysql://" +
+        jdbcUrl = "jdbc:mariadb://" +
                 "${config.getString("host")}:" +
                 "${config.getString("port")}/" +
                 config.getString("database")

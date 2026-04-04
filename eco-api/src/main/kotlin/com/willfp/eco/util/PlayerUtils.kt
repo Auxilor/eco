@@ -12,6 +12,18 @@ import org.bukkit.entity.Player
 val OfflinePlayer.savedDisplayName: String
     get() = PlayerUtils.getSavedDisplayName(this)
 
+/** @see PlayerUtils.getSavedName */
+val OfflinePlayer.savedName: String
+    get() = PlayerUtils.getSavedName(this)
+
+/** @see PlayerUtils.getSavedHealth */
+val OfflinePlayer.savedHealth: Double
+    get() = PlayerUtils.getSavedHealth(this)
+
+/** @see PlayerUtils.saveHealth */
+fun Player.saveHealth() =
+    PlayerUtils.saveHealth(this)
+
 /** @see PlayerUtils.getAudience */
 fun Player.asAudience(): Audience =
     PlayerUtils.getAudience(this)

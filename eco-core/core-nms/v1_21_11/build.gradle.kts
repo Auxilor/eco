@@ -34,7 +34,8 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/PlayerHandler*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/TPS*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/CommonsInitializer*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/SNBTConverter*.class")
 
-        duplicatesStrategy = DuplicatesStrategy.FAIL
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }

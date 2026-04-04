@@ -59,6 +59,6 @@ object ArgParserEntity : LookupArgParser {
 
         val state = meta.blockState as CreatureSpawner
 
-        return state.spawnedType?.let { "entity:${state.spawnedType!!.name}" } ?: return null
+        return state.spawnedType?.let { "entity:${state.spawnedType!!.name}" }
     }
 }
