@@ -23,7 +23,7 @@ fun PacketEvent.handleSend() {
         for (listener in listeners[priority]) {
             try {
                 listener.listener.onSend(this)
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 listener.plugin.logger.warning(
                     "Exception in packet listener ${listener.listener.javaClass.name}" +
                             " for packet ${packet.handle.javaClass.name}!"

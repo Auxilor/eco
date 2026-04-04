@@ -14,7 +14,7 @@ object ArgParserEntity : LookupArgParser {
             return null
         }
 
-        if (meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
+        if (!meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
             return null
         }
 
@@ -42,7 +42,7 @@ object ArgParserEntity : LookupArgParser {
         meta.blockState = state
 
         return Predicate {
-            val testMeta = ((it.itemMeta as? BlockStateMeta) as? CreatureSpawner) ?: return@Predicate false
+            val testMeta = ((it.itemMeta as? BlockStateMeta)?.blockState as? CreatureSpawner) ?: return@Predicate false
 
             testMeta.spawnedType?.name?.equals(type, true) == true
         }
@@ -53,7 +53,7 @@ object ArgParserEntity : LookupArgParser {
             return null
         }
 
-        if (meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
+        if (!meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
             return null
         }
 

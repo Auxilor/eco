@@ -8,7 +8,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.io.OutputStream
 import java.io.Reader
 import java.nio.ByteBuffer
 import java.nio.channels.AsynchronousFileChannel
@@ -33,7 +32,6 @@ open class EcoLoadableConfig(
     }
 
     final override fun createFile() {
-        val inputStream = source.getResourceAsStream(resourcePath)!!
         val outFile = File(this.plugin.dataFolder, resourcePath)
         val lastIndex = resourcePath.lastIndexOf('/')
         val outDir = File(this.plugin.dataFolder, resourcePath.substring(0, lastIndex.coerceAtLeast(0)))
@@ -41,10 +39,11 @@ open class EcoLoadableConfig(
             outDir.mkdirs()
         }
         if (!outFile.exists()) {
-            val out: OutputStream = FileOutputStream(outFile)
-            inputStream.copyTo(out)
-            out.close()
-            inputStream.close()
+            source.getResourceAsStream(resourcePath)!!.use { inputStream ->
+                FileOutputStream(outFile).use { out ->
+                    inputStream.copyTo(out)
+                }
+            }
         }
     }
 
@@ -77,16 +76,26 @@ open class EcoLoadableConfig(
 
     override fun saveAsync() {
         // Save asynchronously using NIO
-        AsynchronousFileChannel.open(
+        val channel = AsynchronousFileChannel.open(
             configFile.toPath(),
             StandardOpenOption.WRITE,
-            StandardOpenOption.CREATE
-        ).use { channel ->
-            channel.write(
-                ByteBuffer.wrap(this.toPlaintext().toByteArray()),
-                0
-            )
-        }
+            StandardOpenOption.CREATE,
+            StandardOpenOption.TRUNCATE_EXISTING
+        )
+        channel.write(
+            ByteBuffer.wrap(this.toPlaintext().toByteArray()),
+            0,
+            channel,
+            object : java.nio.channels.CompletionHandler<Int, AsynchronousFileChannel> {
+                override fun completed(result: Int, attachment: AsynchronousFileChannel) {
+                    attachment.close()
+                }
+
+                override fun failed(exc: Throwable, attachment: AsynchronousFileChannel) {
+                    attachment.close()
+                }
+            }
+        )
     }
 
     private fun makeHeader(contents: String) {
