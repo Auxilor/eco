@@ -58,7 +58,7 @@ class AntigriefFactionsUUID : AntigriefIntegration {
                 return fplayer.isAdminBypassing
             }
         } else {
-            if (faction.hasAccess(fplayer, PermissibleActions.DESTROY, flocation)) {
+            if (!faction.hasAccess(fplayer, PermissibleActions.DESTROY, flocation)) {
                 return fplayer.isAdminBypassing
             }
         }

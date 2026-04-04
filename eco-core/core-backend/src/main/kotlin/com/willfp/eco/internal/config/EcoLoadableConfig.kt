@@ -33,7 +33,6 @@ open class EcoLoadableConfig(
     }
 
     final override fun createFile() {
-        val inputStream = source.getResourceAsStream(resourcePath)!!
         val outFile = File(this.plugin.dataFolder, resourcePath)
         val lastIndex = resourcePath.lastIndexOf('/')
         val outDir = File(this.plugin.dataFolder, resourcePath.substring(0, lastIndex.coerceAtLeast(0)))
@@ -41,10 +40,11 @@ open class EcoLoadableConfig(
             outDir.mkdirs()
         }
         if (!outFile.exists()) {
-            val out: OutputStream = FileOutputStream(outFile)
-            inputStream.copyTo(out)
-            out.close()
-            inputStream.close()
+            source.getResourceAsStream(resourcePath)!!.use { inputStream ->
+                FileOutputStream(outFile).use { out ->
+                    inputStream.copyTo(out)
+                }
+            }
         }
     }
 
@@ -80,12 +80,13 @@ open class EcoLoadableConfig(
         AsynchronousFileChannel.open(
             configFile.toPath(),
             StandardOpenOption.WRITE,
-            StandardOpenOption.CREATE
+            StandardOpenOption.CREATE,
+            StandardOpenOption.TRUNCATE_EXISTING
         ).use { channel ->
             channel.write(
                 ByteBuffer.wrap(this.toPlaintext().toByteArray()),
                 0
-            )
+            ).get()
         }
     }
 

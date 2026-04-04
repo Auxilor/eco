@@ -58,11 +58,11 @@ private fun Plugin.getConflict(): Conflict? {
         return null
     }
 
-    val zip = ZipFile(file)
-
-    for (entry in zip.entries()) {
-        if (entry.name.startsWith("kotlin/") || entry.name.startsWith("kotlinx/")) {
-            return Conflict(this, ConflictType.KOTLIN_SHADE)
+    ZipFile(file).use { zip ->
+        for (entry in zip.entries()) {
+            if (entry.name.startsWith("kotlin/") || entry.name.startsWith("kotlinx/")) {
+                return Conflict(this, ConflictType.KOTLIN_SHADE)
+            }
         }
     }
 
