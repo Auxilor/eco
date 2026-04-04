@@ -8,7 +8,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
-import java.io.OutputStream
 import java.io.Reader
 import java.nio.ByteBuffer
 import java.nio.channels.AsynchronousFileChannel
@@ -77,17 +76,26 @@ open class EcoLoadableConfig(
 
     override fun saveAsync() {
         // Save asynchronously using NIO
-        AsynchronousFileChannel.open(
+        val channel = AsynchronousFileChannel.open(
             configFile.toPath(),
             StandardOpenOption.WRITE,
             StandardOpenOption.CREATE,
             StandardOpenOption.TRUNCATE_EXISTING
-        ).use { channel ->
-            channel.write(
-                ByteBuffer.wrap(this.toPlaintext().toByteArray()),
-                0
-            ).get()
-        }
+        )
+        channel.write(
+            ByteBuffer.wrap(this.toPlaintext().toByteArray()),
+            0,
+            channel,
+            object : java.nio.channels.CompletionHandler<Int, AsynchronousFileChannel> {
+                override fun completed(result: Int, attachment: AsynchronousFileChannel) {
+                    attachment.close()
+                }
+
+                override fun failed(exc: Throwable, attachment: AsynchronousFileChannel) {
+                    attachment.close()
+                }
+            }
+        )
     }
 
     private fun makeHeader(contents: String) {
