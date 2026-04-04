@@ -252,7 +252,7 @@ public interface CommandBase {
 
         boolean hasPlayedBefore = player.hasPlayedBefore() || player.isOnline();
 
-        notifyFalse(!hasPlayedBefore, key);
+        notifyFalse(hasPlayedBefore, key);
 
         return player;
     }
