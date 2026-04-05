@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalUuidApi::class)
+
 package com.willfp.eco.internal.spigot.data.handlers.impl
 
 import com.willfp.eco.core.config.ConfigType
@@ -137,14 +139,14 @@ class MariaDBPersistentDataHandler(
         val savedUUIDs = mutableSetOf<UUID>()
 
         for (keyType in PersistentDataKeyType.values()) {
-            val serializer = keyType.getSerializer(this) as MySQLSerializer<*>
+            val serializer = keyType.getSerializer(this) as MariaDBSerializer<*>
             savedUUIDs.addAll(serializer.getSavedUUIDs().map { it.toJavaUuid() })
         }
 
         return savedUUIDs
     }
 
-    private abstract inner class MySQLSerializer<T : Any> : DataTypeSerializer<T>() {
+    private abstract inner class MariaDBSerializer<T : Any> : DataTypeSerializer<T>() {
         protected abstract val table: ProfileTable
 
         @OptIn(ExperimentalUuidApi::class)
@@ -154,7 +156,7 @@ class MariaDBPersistentDataHandler(
             }
         }
 
-        fun createTable(): MySQLSerializer<T> {
+        fun createTable(): MariaDBSerializer<T> {
             transaction(database) {
                 SchemaUtils.create(table)
             }
@@ -170,13 +172,12 @@ class MariaDBPersistentDataHandler(
 
     // T is the key type
     // S is the stored value type
-    private abstract inner class SingleValueSerializer<T : Any, S : Any> : MySQLSerializer<T>() {
+    private abstract inner class SingleValueSerializer<T : Any, S : Any> : MariaDBSerializer<T>() {
         abstract override val table: KeyTable<S>
 
         abstract fun convertToStored(value: T): S
         abstract fun convertFromStored(value: S): T
 
-        @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             val stored = transaction(database) {
                 table.selectAll()
@@ -189,7 +190,6 @@ class MariaDBPersistentDataHandler(
             return stored?.let { convertFromStored(it) }
         }
 
-        @OptIn(ExperimentalUuidApi::class)
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
             withRetries {
                 transaction(database) {
@@ -213,10 +213,9 @@ class MariaDBPersistentDataHandler(
         }
     }
 
-    private abstract inner class MultiValueSerializer<T : Any> : MySQLSerializer<List<T>>() {
+    private abstract inner class MultiValueSerializer<T : Any> : MariaDBSerializer<List<T>>() {
         abstract override val table: ListKeyTable<T>
 
-        @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {
             val stored = transaction(database) {
                 table.selectAll()
@@ -228,7 +227,6 @@ class MariaDBPersistentDataHandler(
             return stored
         }
 
-        @OptIn(ExperimentalUuidApi::class)
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<List<T>>, value: List<T>) {
             withRetries {
                 transaction(database) {
@@ -254,11 +252,9 @@ class MariaDBPersistentDataHandler(
     }
 
     private abstract inner class ProfileTable(name: String) : Table(prefix + name) {
-        @OptIn(ExperimentalUuidApi::class)
         val uuid = uuid(UUID_COLUMN_NAME)
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     private abstract inner class KeyTable<T>(name: String) : ProfileTable(name) {
         val key = varchar(KEY_COLUMN_NAME, 128)
         abstract val value: Column<T>
@@ -270,7 +266,6 @@ class MariaDBPersistentDataHandler(
         }
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     private abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
         val key = varchar(KEY_COLUMN_NAME, 128)
         val index = integer(INDEX_COLUMN_NAME)
