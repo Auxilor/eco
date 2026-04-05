@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.19" apply false
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21" apply false
 }
 
 
@@ -12,5 +12,12 @@ subprojects {
         compileOnly(project(":eco-core:core-backend"))
         // libraries.minecraft.net machine broke
         compileOnly("com.github.Mojang:brigadier:1.0.18")
+    }
+
+    // Keep reobf tooling consistent across all NMS modules.
+    pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+        dependencies {
+            add("pluginRemapper", "net.fabricmc:tiny-remapper:0.13.1")
+        }
     }
 }

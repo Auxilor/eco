@@ -30,6 +30,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_21_8", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_10", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_11", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v26_1_1", configuration = "shadow"))
 }
 
 allprojects {
@@ -81,10 +82,6 @@ allprojects {
 
         // FactionsUUID
         //maven("https://ci.ender.zone/plugin/repository/everything/")
-
-        // NoCheatPlus
-        maven("https://repo.md-5.net/content/repositories/snapshots/")
-
 
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
@@ -202,7 +199,7 @@ allprojects {
     java {
         withSourcesJar()
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(21))
+            languageVersion.set(JavaLanguageVersion.of(25))
         }
     }
 }

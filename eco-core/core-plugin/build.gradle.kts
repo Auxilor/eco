@@ -31,7 +31,6 @@ dependencies {
     compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.9") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
-    compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.049")
     compileOnly("me.clip:placeholderapi:2.11.7")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")

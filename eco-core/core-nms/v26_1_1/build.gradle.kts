@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("io.papermc.paperweight.userdev")
 }
@@ -9,26 +11,18 @@ dependencies {
     implementation(project(":eco-core:core-nms:common"))
     implementation(project(":eco-core:core-nms:modern"))
     implementation(project(":eco-core:core-nms:v1_21_6", configuration = "shadow"))
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.1.build.+")
 }
 
 tasks {
-    build {
-        dependsOn(reobfJar)
-    }
-
-    reobfJar {
-        mustRunAfter(shadowJar)
-    }
-
     shadowJar {
         relocate(
             "com.willfp.eco.internal.spigot.proxy.v1_21_6",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_11"
+            "com.willfp.eco.internal.spigot.proxy.v26_1_1"
         )
         relocate(
             "com.willfp.eco.internal.spigot.proxy.common",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_11.common"
+            "com.willfp.eco.internal.spigot.proxy.v26_1_1.common"
         )
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/PlayerHandler*.class")
@@ -38,10 +32,14 @@ tasks {
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
-}
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+    compileJava {
+        options.release.set(25)
+    }
+
+    compileKotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_25)
+        }
     }
 }
