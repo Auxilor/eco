@@ -7,9 +7,9 @@ dependencies {
     // Libraries
     implementation("com.github.Redempt:Crunch:1.0.0")
     implementation("com.mysql:mysql-connector-j:9.6.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.7")
-    implementation("org.jetbrains.exposed:exposed-core:1.0.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.12")
+    implementation("org.jetbrains.exposed:exposed-core:1.2.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("net.kyori:adventure-platform-bukkit:4.4.1")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
@@ -77,6 +77,7 @@ tasks {
     shadowJar {
         minimize {
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
+            exclude(dependency("org.mariadb.jdbc:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }
