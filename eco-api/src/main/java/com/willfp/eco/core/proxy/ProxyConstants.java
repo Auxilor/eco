@@ -26,8 +26,7 @@ public final class ProxyConstants {
             "v1_21_7",
             "v1_21_8",
             "v1_21_10",
-            "v1_21_11",
-            "v26_1_1"
+            "v1_21_11"
     );
 
     private ProxyConstants() {
@@ -35,17 +34,9 @@ public final class ProxyConstants {
     }
 
     private static String convertVersion(@NotNull final String version) {
-        String normalized = version;
-
-        // Paper API versions can include build suffixes (e.g. v26_1_1_build_16).
-        int buildSuffixIndex = normalized.indexOf("_build_");
-        if (buildSuffixIndex != -1) {
-            normalized = normalized.substring(0, buildSuffixIndex);
-        }
-
-        return switch (normalized) {
+        return switch (version) {
             case "v1_21_9" -> "v1_21_10";
-            default -> normalized;
+            default -> version;
         };
     }
 

@@ -30,7 +30,6 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_21_8", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_10", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_11", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v26_1_1", configuration = "shadow"))
 }
 
 allprojects {
@@ -199,7 +198,7 @@ allprojects {
     java {
         withSourcesJar()
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(25))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
     }
 }
