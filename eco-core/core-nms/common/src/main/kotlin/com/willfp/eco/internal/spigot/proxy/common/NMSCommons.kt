@@ -6,9 +6,11 @@ import com.willfp.eco.core.entities.ai.TargetGoal
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory
 import io.papermc.paper.adventure.PaperAdventure
+import com.mojang.serialization.JsonOps
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
@@ -89,8 +91,9 @@ fun net.minecraft.network.chat.Component.toAdventure(): Component {
         return PaperAdventure.asAdventure(this)
     }
 
-    val json = net.minecraft.network.chat.Component.Serializer.toJson(this, (Bukkit.getServer() as CraftServer).server.registryAccess())
-    return GsonComponentSerializer.gson().deserialize(json)
+    val registryOps = (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(JsonOps.INSTANCE)
+    val json = ComponentSerialization.CODEC.encodeStart(registryOps, this).result().get()
+    return GsonComponentSerializer.gson().deserialize(json.toString())
 }
 
 interface CommonsProvider {

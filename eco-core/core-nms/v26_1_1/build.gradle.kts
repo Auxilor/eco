@@ -9,15 +9,14 @@ version = rootProject.version
 
 dependencies {
     implementation(project(":eco-core:core-nms:common"))
-    implementation(project(":eco-core:core-nms:modern"))
-    implementation(project(":eco-core:core-nms:v1_21_6", configuration = "shadow"))
+    implementation(project(":eco-core:core-nms:v1_21_8", configuration = "shadow"))
     paperweight.paperDevBundle("26.1.1.build.+")
 }
 
 tasks {
     shadowJar {
         relocate(
-            "com.willfp.eco.internal.spigot.proxy.v1_21_6",
+            "com.willfp.eco.internal.spigot.proxy.v1_21_8",
             "com.willfp.eco.internal.spigot.proxy.v26_1_1"
         )
         relocate(
@@ -25,10 +24,10 @@ tasks {
             "com.willfp.eco.internal.spigot.proxy.v26_1_1.common"
         )
 
-        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/PlayerHandler*.class")
-        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/TPS*.class")
-        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/CommonsInitializer*.class")
-        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_6/SNBTConverter*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/PlayerHandler*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/TPS*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/CommonsInitializer*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }

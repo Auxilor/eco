@@ -1,6 +1,5 @@
 package com.willfp.eco.core.proxy;
 
-import com.willfp.eco.core.version.Version;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +19,6 @@ public final class ProxyConstants {
      * All supported NMS versions.
      */
     public static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "v1_21_4",
-            "v1_21_5",
-            "v1_21_6",
-            "v1_21_7",
             "v1_21_8",
             "v1_21_10",
             "v1_21_11",
@@ -51,13 +46,7 @@ public final class ProxyConstants {
 
     static {
         String currentMinecraftVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
-        String nmsVersion;
-
-        if (new Version(currentMinecraftVersion).compareTo(new Version("1.20.5")) < 0) {
-            nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        } else {
-            nmsVersion = "v" + currentMinecraftVersion.replace(".", "_");
-        }
+        String nmsVersion = "v" + currentMinecraftVersion.replace(".", "_");
 
         NMS_VERSION = convertVersion(nmsVersion);
     }

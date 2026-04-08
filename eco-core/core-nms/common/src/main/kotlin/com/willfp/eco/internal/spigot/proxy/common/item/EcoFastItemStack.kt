@@ -17,8 +17,8 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.util.Unit
 import net.minecraft.world.item.component.CustomData
+import net.minecraft.world.item.component.TooltipDisplay
 import net.minecraft.world.item.component.ItemLore
 import net.minecraft.world.item.enchantment.ItemEnchantments
 import org.bukkit.Material
@@ -62,10 +62,10 @@ class ContinuallyAppliedPersistentDataContainer(
     }
 }
 
-open class EcoFastItemStack(
+class EcoFastItemStack(
     private val bukkit: ItemStack,
 ) : ImplementedFIS {
-    protected val handle = bukkit.asNMSStack()
+    private val handle = bukkit.asNMSStack()
 
     private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
 
@@ -162,7 +162,7 @@ open class EcoFastItemStack(
 
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
-    protected fun <T : Any> net.minecraft.world.item.ItemStack.modifyComponent(
+    private fun <T : Any> net.minecraft.world.item.ItemStack.modifyComponent(
         component: DataComponentType<T>,
         modifier: (T) -> T
     ) {
@@ -174,54 +174,56 @@ open class EcoFastItemStack(
         for (flag in hideFlags) {
             when (flag) {
                 ItemFlag.HIDE_ENCHANTS -> {
-                    handle.modifyComponent(DataComponents.ENCHANTMENTS) { enchantments ->
-                        enchantments.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.ENCHANTMENTS, true)
                     }
                 }
 
                 ItemFlag.HIDE_ATTRIBUTES -> {
-                    handle.modifyComponent(DataComponents.ATTRIBUTE_MODIFIERS) { attributes ->
-                        attributes.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.ATTRIBUTE_MODIFIERS, true)
                     }
                 }
 
                 ItemFlag.HIDE_UNBREAKABLE -> {
-                    handle.modifyComponent(DataComponents.UNBREAKABLE) { unbreakable ->
-                        unbreakable.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.UNBREAKABLE, true)
                     }
                 }
 
                 ItemFlag.HIDE_DESTROYS -> {
-                    handle.modifyComponent(DataComponents.CAN_BREAK) { destroys ->
-                        destroys.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.CAN_BREAK, true)
                     }
                 }
 
                 ItemFlag.HIDE_PLACED_ON -> {
-                    handle.modifyComponent(DataComponents.CAN_PLACE_ON) { placedOn ->
-                        placedOn.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.CAN_PLACE_ON, true)
                     }
                 }
 
                 ItemFlag.HIDE_ADDITIONAL_TOOLTIP -> {
-                    handle.set(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        TooltipDisplay(true, tooltip.hiddenComponents)
+                    }
                 }
 
                 ItemFlag.HIDE_DYE -> {
-                    handle.modifyComponent(DataComponents.DYED_COLOR) { dyed ->
-                        dyed.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.DYED_COLOR, true)
                     }
                 }
 
                 ItemFlag.HIDE_ARMOR_TRIM -> {
-                    handle.modifyComponent(DataComponents.TRIM) { trim ->
-                        trim.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.TRIM, true)
                     }
                 }
 
                 ItemFlag.HIDE_STORED_ENCHANTS -> {
-                    handle.modifyComponent(DataComponents.STORED_ENCHANTMENTS) { storedEnchants ->
-                        storedEnchants.withTooltip(false)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.STORED_ENCHANTMENTS, true)
                     }
                 }
             }
@@ -234,54 +236,56 @@ open class EcoFastItemStack(
         for (flag in hideFlags) {
             when (flag) {
                 ItemFlag.HIDE_ENCHANTS -> {
-                    handle.modifyComponent(DataComponents.ENCHANTMENTS) { enchantments ->
-                        enchantments.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.ENCHANTMENTS, false)
                     }
                 }
 
                 ItemFlag.HIDE_ATTRIBUTES -> {
-                    handle.modifyComponent(DataComponents.ATTRIBUTE_MODIFIERS) { attributes ->
-                        attributes.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.ATTRIBUTE_MODIFIERS, false)
                     }
                 }
 
                 ItemFlag.HIDE_UNBREAKABLE -> {
-                    handle.modifyComponent(DataComponents.UNBREAKABLE) { unbreakable ->
-                        unbreakable.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.UNBREAKABLE, false)
                     }
                 }
 
                 ItemFlag.HIDE_DESTROYS -> {
-                    handle.modifyComponent(DataComponents.CAN_BREAK) { destroys ->
-                        destroys.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.CAN_BREAK, false)
                     }
                 }
 
                 ItemFlag.HIDE_PLACED_ON -> {
-                    handle.modifyComponent(DataComponents.CAN_PLACE_ON) { placedOn ->
-                        placedOn.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.CAN_PLACE_ON, false)
                     }
                 }
 
                 ItemFlag.HIDE_ADDITIONAL_TOOLTIP -> {
-                    handle.remove(DataComponents.HIDE_ADDITIONAL_TOOLTIP)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        TooltipDisplay(false, tooltip.hiddenComponents)
+                    }
                 }
 
                 ItemFlag.HIDE_DYE -> {
-                    handle.modifyComponent(DataComponents.DYED_COLOR) { dyed ->
-                        dyed.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.DYED_COLOR, false)
                     }
                 }
 
                 ItemFlag.HIDE_ARMOR_TRIM -> {
-                    handle.modifyComponent(DataComponents.TRIM) { trim ->
-                        trim.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.TRIM, false)
                     }
                 }
 
                 ItemFlag.HIDE_STORED_ENCHANTS -> {
-                    handle.modifyComponent(DataComponents.STORED_ENCHANTMENTS) { storedEnchants ->
-                        storedEnchants.withTooltip(true)
+                    handle.modifyComponent(DataComponents.TOOLTIP_DISPLAY) { tooltip ->
+                        tooltip.withHidden(DataComponents.STORED_ENCHANTMENTS, false)
                     }
                 }
             }
@@ -303,47 +307,48 @@ open class EcoFastItemStack(
     override fun hasItemFlag(flag: ItemFlag): Boolean {
         return when (flag) {
             ItemFlag.HIDE_ENCHANTS -> {
-                val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: return false
-                !enchantments.showInTooltip
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.ENCHANTMENTS)
             }
 
             ItemFlag.HIDE_ATTRIBUTES -> {
-                val attributes = handle.get(DataComponents.ATTRIBUTE_MODIFIERS) ?: return false
-                !attributes.showInTooltip
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.ATTRIBUTE_MODIFIERS)
             }
 
             ItemFlag.HIDE_UNBREAKABLE -> {
-                val unbreakable = handle.get(DataComponents.UNBREAKABLE) ?: return false
-                !unbreakable.showInTooltip
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.UNBREAKABLE)
             }
 
             ItemFlag.HIDE_DESTROYS -> {
-                val destroys = handle.get(DataComponents.CAN_BREAK) ?: return false
-                !destroys.showInTooltip()
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.CAN_BREAK)
             }
 
             ItemFlag.HIDE_PLACED_ON -> {
-                val placedOn = handle.get(DataComponents.CAN_PLACE_ON) ?: return false
-                !placedOn.showInTooltip()
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.CAN_PLACE_ON)
             }
 
             ItemFlag.HIDE_ADDITIONAL_TOOLTIP -> {
-                handle.get(DataComponents.HIDE_ADDITIONAL_TOOLTIP) != null
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                tooltip.hideTooltip
             }
 
             ItemFlag.HIDE_DYE -> {
-                val dyed = handle.get(DataComponents.DYED_COLOR) ?: return false
-                !dyed.showInTooltip()
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.DYED_COLOR)
             }
 
             ItemFlag.HIDE_ARMOR_TRIM -> {
-                val armorTrim = handle.get(DataComponents.TRIM) ?: return false
-                !armorTrim.showInTooltip
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.TRIM)
             }
 
             ItemFlag.HIDE_STORED_ENCHANTS -> {
-                val storedEnchants = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return false
-                !storedEnchants.showInTooltip
+                val tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: return false
+                !tooltip.shows(DataComponents.STORED_ENCHANTMENTS)
             }
         }
     }
