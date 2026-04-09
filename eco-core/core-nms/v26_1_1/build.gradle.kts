@@ -30,6 +30,15 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/packet/PacketContainerClick*.class")
 
+        // 26.1.1 changes that broke `common` :(
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatLieOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatSitOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/FollowBoatsGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/IllusionerBlindnessSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/IllusionerMirrorSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/target/DefendVillageGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/recipes/RecipeManager*.class")
+
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
