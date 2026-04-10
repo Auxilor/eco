@@ -1,9 +1,7 @@
 package com.willfp.eco.core.integrations.placeholder;
 
-import com.google.common.collect.ImmutableSet;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.map.DefaultMap;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.Placeholder;
@@ -18,9 +16,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +32,7 @@ public final class PlaceholderManager {
     /**
      * All registered placeholders.
      */
-    private static final DefaultMap<EcoPlugin, Set<Placeholder>> REGISTERED_PLACEHOLDERS = new DefaultMap<>(HashSet::new);
+    private static final Map<EcoPlugin, Map<String, Placeholder>> REGISTERED_PLACEHOLDERS = new ConcurrentHashMap<>();
 
     /**
      * All registered arguments integrations.
@@ -95,12 +96,11 @@ public final class PlaceholderManager {
      * @param placeholder The arguments to register.
      */
     public static void registerPlaceholder(@NotNull final RegistrablePlaceholder placeholder) {
-        // Storing as immutable set leads to slower times to register placeholders, but much
-        // faster times to access registrations.
-        Set<Placeholder> pluginPlaceholders = new HashSet<>(REGISTERED_PLACEHOLDERS.get(placeholder.getPlugin()));
-        pluginPlaceholders.removeIf(p -> p.getPattern().pattern().equals(placeholder.getPattern().pattern()));
-        pluginPlaceholders.add(placeholder);
-        REGISTERED_PLACEHOLDERS.put(placeholder.getPlugin(), ImmutableSet.copyOf(pluginPlaceholders));
+        Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.computeIfAbsent(
+                placeholder.getPlugin(),
+                k -> Collections.synchronizedMap(new LinkedHashMap<>())
+        );
+        pluginPlaceholders.put(placeholder.getPattern().pattern(), placeholder);
     }
 
     /**
@@ -270,8 +270,14 @@ public final class PlaceholderManager {
      * @param plugin The plugin.
      * @return The placeholders.
      */
-    public static Set<Placeholder> getRegisteredPlaceholders(@NotNull final EcoPlugin plugin) {
-        return REGISTERED_PLACEHOLDERS.get(plugin);
+    public static Collection<Placeholder> getRegisteredPlaceholders(@NotNull final EcoPlugin plugin) {
+        Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(plugin);
+        if (pluginPlaceholders == null) {
+            return Collections.emptyList();
+        }
+        synchronized (pluginPlaceholders) {
+            return List.copyOf(pluginPlaceholders.values());
+        }
     }
 
     private PlaceholderManager() {
