@@ -29,6 +29,13 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/CommonsInitializer*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/packet/PacketContainerClick*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/recipes/RecipeManager*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/CatLieOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/CatSitOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/FollowBoatsGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/IllusionerBlindnessSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/IllusionerMirrorSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/target/DefendVillageGoalFactory*.class")
 
         // 26.1.1 changes that broke `common` :(
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatLieOnBedGoalFactory*.class")
