@@ -7,8 +7,9 @@ dependencies {
     // Libraries
     implementation("com.github.Redempt:Crunch:1.0.0")
     implementation("com.mysql:mysql-connector-j:9.6.0")
-    implementation("org.jetbrains.exposed:exposed-core:1.0.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0")
+    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.12")
+    implementation("org.jetbrains.exposed:exposed-core:1.2.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("net.kyori:adventure-platform-bukkit:4.4.1")
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
@@ -30,7 +31,6 @@ dependencies {
     compileOnly("com.palmergames.bukkit.towny:towny:0.102.0.9") {
         exclude(group = "com.zaxxer", module = "HikariCP")
     }
-    compileOnly("fr.neatmonster:nocheatplus:3.16.1-SNAPSHOT")
     compileOnly("com.gmail.nossr50.mcMMO:mcMMO:2.2.049")
     compileOnly("me.clip:placeholderapi:2.11.7")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:2.4.7")
@@ -64,7 +64,8 @@ dependencies {
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("de.oliver:FancyHolograms:2.9.1")
-    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.6.0")
+    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.7.0")
+    compileOnly("su.nightexpress.nightcore:main:2.14.1")
     compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
 
     compileOnly(fileTree("../../lib") {
@@ -76,6 +77,7 @@ tasks {
     shadowJar {
         minimize {
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
+            exclude(dependency("org.mariadb.jdbc:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }

@@ -35,8 +35,9 @@ class PlayerHandler : PlayerHandlerProxy {
                 .has(DataComponents.MAX_DAMAGE)
         ) {
             val orb = EntityType.EXPERIENCE_ORB.create(handle.level(), EntitySpawnReason.COMMAND)
-            orb?.value = finalAmount
-            orb!!.spawnReason = ExperienceOrb.SpawnReason.CUSTOM
+                ?: return finalAmount
+            orb.value = finalAmount
+            orb.spawnReason = ExperienceOrb.SpawnReason.CUSTOM
             orb.setPosRaw(handle.x, handle.y, handle.z)
             val possibleDurabilityFromXp = EnchantmentHelper.modifyDurabilityToRepairFromXp(
                 handle.serverLevel(), itemStack, amount

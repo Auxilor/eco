@@ -2,41 +2,38 @@ package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.items.args.LookupArgParser
 import org.bukkit.Color
+import org.bukkit.FireworkEffect
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.inventory.meta.LeatherArmorMeta
-import org.bukkit.inventory.meta.PotionMeta
+import org.bukkit.inventory.meta.*
 import java.util.function.Predicate
 
 object ArgParserColor : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
-        val colorableMeta = when (meta) {
-            is LeatherArmorMeta -> meta
-            is PotionMeta -> meta
-            else -> return null
-        }
-
-        var colorHex: String? = null
-
-        for (arg in args) {
-            val argSplit = arg.split(":")
-            if (!argSplit[0].equals("color", ignoreCase = true)) {
-                continue
-            }
-            if (argSplit.size < 2) {
-                continue
-            }
-            colorHex = argSplit[1].replace("#", "")
-        }
-
-        colorHex ?: return null
+        val colorHex = args
+            .map { it.split(":") }
+            .firstNotNullOfOrNull {
+                if (it[0].equals("color", true) && it.size >= 2) {
+                    it[1].replace("#", "")
+                } else null
+            } ?: return null
 
         val rgb = Integer.parseInt(colorHex, 16)
-        val bukkitColor = Color.fromRGB(rgb)
-        
-        when (colorableMeta) {
-            is LeatherArmorMeta -> colorableMeta.setColor(bukkitColor)
-            is PotionMeta -> colorableMeta.setColor(bukkitColor)
+        val color = Color.fromRGB(rgb)
+
+        when (meta) {
+            is LeatherArmorMeta -> meta.setColor(color)
+
+            is PotionMeta -> meta.setColor(color)
+
+            is FireworkEffectMeta -> {
+                val effect = FireworkEffect.builder()
+                    .withColor(color)
+                    .build()
+                meta.setEffect(effect)
+            }
+
+            else -> return null
         }
 
         return Predicate { item ->
@@ -45,7 +42,13 @@ object ArgParserColor : LookupArgParser {
             val testColor = when (testMeta) {
                 is LeatherArmorMeta -> testMeta.color
                 is PotionMeta -> testMeta.color
-                else -> return@Predicate false
+
+                is FireworkEffectMeta -> {
+                    if (item.type != Material.FIREWORK_STAR) return@Predicate false
+                    testMeta.effect?.colors?.firstOrNull()
+                }
+
+                else -> null
             } ?: return@Predicate false
 
             testColor.asRGB() == rgb
@@ -56,7 +59,8 @@ object ArgParserColor : LookupArgParser {
         val color = when (meta) {
             is LeatherArmorMeta -> meta.color
             is PotionMeta -> meta.color
-            else -> return null
+            is FireworkEffectMeta -> meta.effect?.colors?.firstOrNull()
+            else -> null
         } ?: return null
 
         return "color:#${Integer.toHexString(color.asRGB()).uppercase()}"

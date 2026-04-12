@@ -76,8 +76,8 @@ open class PacketWindowItems(
                 Display.display(itemStacks[index.toInt()], player)
             }
 
-            for (index in (itemStacks.indices subtract changes.toSet())) {
-                itemStacks[index.toInt()] = lastFrame.getItem(index.toByte()) ?: itemStacks[index.toInt()]
+            for (index in (itemStacks.indices subtract changes.map { it.toInt() }.toSet())) {
+                itemStacks[index] = lastFrame.getItem(index.toByte()) ?: itemStacks[index]
             }
         } else {
             itemStacks.forEach { Display.display(it, player) }

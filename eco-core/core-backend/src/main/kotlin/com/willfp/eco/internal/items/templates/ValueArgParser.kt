@@ -33,7 +33,7 @@ abstract class ValueArgParser<T: Any>(
         return Predicate {
             val testMeta = it.itemMeta ?: return@Predicate false
 
-            test(testMeta) == parsed
+            test(testMeta) == parsed.toString()
         }
     }
 

@@ -17,7 +17,6 @@ loadbefore:
   - DeluxeCombat
   - ShopGUIPlus
   - DeluxeMenus
-  - Nexo
 softdepend:
   - ItemBridge
   - HuskClaims
@@ -29,7 +28,6 @@ softdepend:
   - Towny
   - FactionsUUID
   - Kingdoms
-  - NoCheatPlus
   - AAC
   - Matrix
   - Vulcan

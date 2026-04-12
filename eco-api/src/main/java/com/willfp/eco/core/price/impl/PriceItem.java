@@ -123,12 +123,11 @@ public final class PriceItem implements Price {
 
             if (item.matches(itemStack)) {
                 int itemAmount = itemStack.getAmount();
+                int remaining = toRemove - count;
 
-                if (itemAmount > toRemove) {
-                    itemStack.setAmount(itemAmount - toRemove);
-                }
-
-                if (itemAmount <= toRemove) {
+                if (itemAmount > remaining) {
+                    itemStack.setAmount(itemAmount - remaining);
+                } else {
                     itemStack.setAmount(0);
                     itemStack.setType(Material.AIR);
                 }

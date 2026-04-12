@@ -103,7 +103,7 @@ open class EcoFastItemStack(
         var level = enchantments.getLevel(minecraft)
 
         if (checkStored) {
-            val storedEnchantments = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return 0
+            val storedEnchantments = handle.get(DataComponents.STORED_ENCHANTMENTS) ?: return level
             level = max(level, storedEnchantments.getLevel(minecraft))
         }
 

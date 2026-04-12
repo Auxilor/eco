@@ -72,7 +72,6 @@ public final class StringUtils {
      * GSON serializer.
      */
     private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder()
-            .editOptions(option -> option.value(JSONOptions.EMIT_HOVER_EVENT_TYPE, JSONOptions.HoverEventValueMode.ALL))
             .build();
 
     /**
@@ -456,7 +455,11 @@ public final class StringUtils {
                                                  @NotNull final Color end,
                                                  final int step) {
         ChatColor[] colors = new ChatColor[step];
-        if (step <= 1) {
+        if (step <= 0) {
+            return colors;
+        }
+        if (step == 1) {
+            colors[0] = ChatColor.of(start);
             return colors;
         }
         int stepR = Math.abs(start.getRed() - end.getRed()) / (step - 1);

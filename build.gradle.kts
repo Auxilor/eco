@@ -82,10 +82,6 @@ allprojects {
         // FactionsUUID
         //maven("https://ci.ender.zone/plugin/repository/everything/")
 
-        // NoCheatPlus
-        maven("https://repo.md-5.net/content/repositories/snapshots/")
-
-
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
 
