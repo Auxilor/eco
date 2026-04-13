@@ -3,12 +3,14 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.Prerequisite
+import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.data.ExternalDataStore
 import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.integrations.IntegrationLoader
 import com.willfp.eco.core.integrations.afk.AFKManager
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
+import com.willfp.eco.core.integrations.customblocks.CustomBlocksManager
 import com.willfp.eco.core.integrations.customentities.CustomEntitiesManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
@@ -20,6 +22,59 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
+import com.willfp.eco.internal.blocks.BlockArgParserAgeable
+import com.willfp.eco.internal.blocks.BlockArgParserAnaloguePowerable
+import com.willfp.eco.internal.blocks.BlockArgParserAttachable
+import com.willfp.eco.internal.blocks.BlockArgParserBamboo
+import com.willfp.eco.internal.blocks.BlockArgParserBisected
+import com.willfp.eco.internal.blocks.BlockArgParserBubbleColumn
+import com.willfp.eco.internal.blocks.BlockArgParserCake
+import com.willfp.eco.internal.blocks.BlockArgParserCampfire
+import com.willfp.eco.internal.blocks.BlockArgParserCaveVinesPlant
+import com.willfp.eco.internal.blocks.BlockArgParserChest
+import com.willfp.eco.internal.blocks.BlockArgParserCommandBlock
+import com.willfp.eco.internal.blocks.BlockArgParserComparator
+import com.willfp.eco.internal.blocks.BlockArgParserCrafter
+import com.willfp.eco.internal.blocks.BlockArgParserDaylightDetector
+import com.willfp.eco.internal.blocks.BlockArgParserDirectional
+import com.willfp.eco.internal.blocks.BlockArgParserDispenser
+import com.willfp.eco.internal.blocks.BlockArgParserDoor
+import com.willfp.eco.internal.blocks.BlockArgParserEndPortalFrame
+import com.willfp.eco.internal.blocks.BlockArgParserFaceAttachable
+import com.willfp.eco.internal.blocks.BlockArgParserFarmland
+import com.willfp.eco.internal.blocks.BlockArgParserGate
+import com.willfp.eco.internal.blocks.BlockArgParserHangable
+import com.willfp.eco.internal.blocks.BlockArgParserHangingMoss
+import com.willfp.eco.internal.blocks.BlockArgParserJigsaw
+import com.willfp.eco.internal.blocks.BlockArgParserLevelled
+import com.willfp.eco.internal.blocks.BlockArgParserLightable
+import com.willfp.eco.internal.blocks.BlockArgParserMossyCarpet
+import com.willfp.eco.internal.blocks.BlockArgParserMultipleFacing
+import com.willfp.eco.internal.blocks.BlockArgParserNoteBlock
+import com.willfp.eco.internal.blocks.BlockArgParserOpenable
+import com.willfp.eco.internal.blocks.BlockArgParserOrientable
+import com.willfp.eco.internal.blocks.BlockArgParserPointedDripstone
+import com.willfp.eco.internal.blocks.BlockArgParserPowerable
+import com.willfp.eco.internal.blocks.BlockArgParserQuantity
+import com.willfp.eco.internal.blocks.BlockArgParserRail
+import com.willfp.eco.internal.blocks.BlockArgParserRedstoneWire
+import com.willfp.eco.internal.blocks.BlockArgParserRepeater
+import com.willfp.eco.internal.blocks.BlockArgParserRespawnAnchor
+import com.willfp.eco.internal.blocks.BlockArgParserRotatable
+import com.willfp.eco.internal.blocks.BlockArgParserScaffolding
+import com.willfp.eco.internal.blocks.BlockArgParserSculkSensor
+import com.willfp.eco.internal.blocks.BlockArgParserSculkShrieker
+import com.willfp.eco.internal.blocks.BlockArgParserSlab
+import com.willfp.eco.internal.blocks.BlockArgParserSnow
+import com.willfp.eco.internal.blocks.BlockArgParserSnowy
+import com.willfp.eco.internal.blocks.BlockArgParserStairs
+import com.willfp.eco.internal.blocks.BlockArgParserStructureBlock
+import com.willfp.eco.internal.blocks.BlockArgParserTNT
+import com.willfp.eco.internal.blocks.BlockArgParserTrial
+import com.willfp.eco.internal.blocks.BlockArgParserTripwire
+import com.willfp.eco.internal.blocks.BlockArgParserWall
+import com.willfp.eco.internal.blocks.BlockArgParserWaterlogged
+import com.willfp.eco.internal.blocks.tags.VanillaBlockTags
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
@@ -112,6 +167,10 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksCraftEngine
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksItemsAdder
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksNexo
+import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksOraxen
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCraftEngine
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
@@ -192,6 +251,59 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserTrim)
         Items.registerArgParser(ArgParserAttribute)
 
+        Blocks.registerArgParser(BlockArgParserAgeable)
+        Blocks.registerArgParser(BlockArgParserAnaloguePowerable)
+        Blocks.registerArgParser(BlockArgParserAttachable)
+        Blocks.registerArgParser(BlockArgParserBamboo)
+        Blocks.registerArgParser(BlockArgParserBisected)
+        Blocks.registerArgParser(BlockArgParserBubbleColumn)
+        Blocks.registerArgParser(BlockArgParserCake)
+        Blocks.registerArgParser(BlockArgParserCampfire)
+        Blocks.registerArgParser(BlockArgParserCaveVinesPlant)
+        Blocks.registerArgParser(BlockArgParserChest)
+        Blocks.registerArgParser(BlockArgParserCommandBlock)
+        Blocks.registerArgParser(BlockArgParserComparator)
+        Blocks.registerArgParser(BlockArgParserCrafter)
+        Blocks.registerArgParser(BlockArgParserDaylightDetector)
+        Blocks.registerArgParser(BlockArgParserDirectional)
+        Blocks.registerArgParser(BlockArgParserDispenser)
+        Blocks.registerArgParser(BlockArgParserDoor)
+        Blocks.registerArgParser(BlockArgParserEndPortalFrame)
+        Blocks.registerArgParser(BlockArgParserFaceAttachable)
+        Blocks.registerArgParser(BlockArgParserFarmland)
+        Blocks.registerArgParser(BlockArgParserGate)
+        Blocks.registerArgParser(BlockArgParserHangable)
+        Blocks.registerArgParser(BlockArgParserHangingMoss)
+        Blocks.registerArgParser(BlockArgParserJigsaw)
+        Blocks.registerArgParser(BlockArgParserLevelled)
+        Blocks.registerArgParser(BlockArgParserLightable)
+        Blocks.registerArgParser(BlockArgParserMossyCarpet)
+        Blocks.registerArgParser(BlockArgParserMultipleFacing)
+        Blocks.registerArgParser(BlockArgParserNoteBlock)
+        Blocks.registerArgParser(BlockArgParserOpenable)
+        Blocks.registerArgParser(BlockArgParserOrientable)
+        Blocks.registerArgParser(BlockArgParserPointedDripstone)
+        Blocks.registerArgParser(BlockArgParserPowerable)
+        Blocks.registerArgParser(BlockArgParserQuantity)
+        Blocks.registerArgParser(BlockArgParserRail)
+        Blocks.registerArgParser(BlockArgParserRedstoneWire)
+        Blocks.registerArgParser(BlockArgParserRepeater)
+        Blocks.registerArgParser(BlockArgParserRespawnAnchor)
+        Blocks.registerArgParser(BlockArgParserRotatable)
+        Blocks.registerArgParser(BlockArgParserScaffolding)
+        Blocks.registerArgParser(BlockArgParserSculkSensor)
+        Blocks.registerArgParser(BlockArgParserSculkShrieker)
+        Blocks.registerArgParser(BlockArgParserSlab)
+        Blocks.registerArgParser(BlockArgParserSnow)
+        Blocks.registerArgParser(BlockArgParserSnowy)
+        Blocks.registerArgParser(BlockArgParserStairs)
+        Blocks.registerArgParser(BlockArgParserStructureBlock)
+        Blocks.registerArgParser(BlockArgParserTNT)
+        Blocks.registerArgParser(BlockArgParserTrial)
+        Blocks.registerArgParser(BlockArgParserTripwire)
+        Blocks.registerArgParser(BlockArgParserWall)
+        Blocks.registerArgParser(BlockArgParserWaterlogged)
+
         Entities.registerArgParser(EntityArgParserName)
         Entities.registerArgParser(EntityArgParserNoAI)
         Entities.registerArgParser(EntityArgParserAttackDamage)
@@ -230,6 +342,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         SegmentParserUseIfPresent.register()
 
         CustomItemsManager.registerProviders()
+        CustomBlocksManager.registerProviders()
 
         ExternalDataStore.registerAdapter(VersionToStringAdapter)
         // Handle with shadow.
@@ -265,7 +378,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             this.logger.info("No conflicts found!")
         }
 
-        CustomItemsManager.registerProviders() // Do it again here
+        // Do it again here
+        CustomItemsManager.registerProviders()
+        CustomBlocksManager.registerProviders()
 
         // Register events for ShopSellEvent
         for (integration in ShopManager.getRegisteredIntegrations()) {
@@ -283,8 +398,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             bukkitAudiences = BukkitAudiences.create(this)
         }
 
-        // Init vanilla item tags
+        // Init vanilla tags
         VanillaItemTags.register()
+        VanillaBlockTags.register()
     }
 
     override fun handleDisable() {
@@ -319,6 +435,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
     override fun handleAfterLoad() {
         CustomItemsManager.registerAllItems()
+        CustomBlocksManager.registerAllBlocks()
         CustomEntitiesManager.registerAllEntities()
         ShopManager.registerEcoProvider()
     }
@@ -365,10 +482,22 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
 
             // Custom Items
-            IntegrationLoader("Oraxen") { CustomItemsManager.register(CustomItemsOraxen(this)) },
-            IntegrationLoader("Nexo") { CustomItemsManager.register(CustomItemsNexo(this)) },
-            IntegrationLoader("ItemsAdder") { CustomItemsManager.register(CustomItemsItemsAdder()) },
-            IntegrationLoader("CraftEngine") { CustomItemsManager.register(CustomItemsCraftEngine(this)) },
+            IntegrationLoader("Oraxen") {
+                CustomItemsManager.register(CustomItemsOraxen(this))
+                CustomBlocksManager.register(CustomBlocksOraxen(this))
+            },
+            IntegrationLoader("Nexo") {
+                CustomItemsManager.register(CustomItemsNexo(this))
+                CustomBlocksManager.register(CustomBlocksNexo(this))
+            },
+            IntegrationLoader("ItemsAdder") {
+                CustomItemsManager.register(CustomItemsItemsAdder())
+                CustomBlocksManager.register(CustomBlocksItemsAdder())
+            },
+            IntegrationLoader("CraftEngine") {
+                CustomItemsManager.register(CustomItemsCraftEngine(this))
+                CustomBlocksManager.register(CustomBlocksCraftEngine(this))
+            },
             IntegrationLoader("HeadDatabase") { CustomItemsManager.register(CustomItemsHeadDatabase(this)) },
             IntegrationLoader("ExecutableItems") { CustomItemsManager.register(CustomItemsExecutableItems()) },
             IntegrationLoader("CustomCrafting") {
