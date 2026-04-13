@@ -19,7 +19,7 @@ object BlockArgParserSnow : BlockArgParser {
                 continue
             }
             val argLayers = argSplit[1].toIntOrNull() ?: continue
-            if (argLayers in (snow.maximumLayers + 1)..<snow.minimumLayers) {
+            if (argLayers !in snow.minimumLayers..snow.maximumLayers) {
                 continue
             }
             layers = argLayers

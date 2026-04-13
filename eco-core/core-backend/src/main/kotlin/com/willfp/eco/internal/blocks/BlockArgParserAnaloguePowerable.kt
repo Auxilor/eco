@@ -19,7 +19,7 @@ object BlockArgParserAnaloguePowerable : BlockArgParser {
                 continue
             }
             val argPower = argSplit[1].toIntOrNull() ?: continue
-            if (argPower in (analoguePowerable.maximumPower + 1)..<0) {
+            if (argPower !in 0..analoguePowerable.maximumPower) {
                 continue
             }
             power = argPower

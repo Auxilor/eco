@@ -19,7 +19,7 @@ object BlockArgParserLevelled : BlockArgParser {
                 continue
             }
             val argLevel = argSplit[1].toIntOrNull() ?: continue
-            if (argLevel in (levelled.maximumLevel + 1)..<0) {
+            if (argLevel !in 0..levelled.maximumLevel) {
                 continue
             }
             level = argLevel

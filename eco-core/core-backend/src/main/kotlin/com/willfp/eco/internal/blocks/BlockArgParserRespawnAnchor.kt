@@ -19,7 +19,7 @@ object BlockArgParserRespawnAnchor : BlockArgParser {
                 continue
             }
             val argCharges = argSplit[1].toIntOrNull() ?: continue
-            if (argCharges in (respawnAnchor.maximumCharges + 1)..<0) {
+            if (argCharges !in 0..respawnAnchor.maximumCharges) {
                 continue
             }
             charges = argCharges

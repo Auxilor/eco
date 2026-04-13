@@ -19,7 +19,7 @@ object BlockArgParserCake : BlockArgParser {
                 continue
             }
             val argBites = argSplit[1].toIntOrNull() ?: continue
-            if (argBites in (cake.maximumBites + 1)..<0) {
+            if (argBites !in 0..cake.maximumBites) {
                 continue
             }
             bites = argBites

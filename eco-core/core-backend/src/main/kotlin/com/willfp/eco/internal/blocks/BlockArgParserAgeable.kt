@@ -24,7 +24,7 @@ object BlockArgParserAgeable : BlockArgParser {
                 continue
             }
             val argAge = argSplit[1].toIntOrNull() ?: continue
-            if (argAge in (maximumAge + 1)..<0) {
+            if (argAge !in 0..maximumAge) {
                 continue
             }
             age = argAge

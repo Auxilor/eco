@@ -61,7 +61,11 @@ public final class HashedBlock {
             return false;
         }
 
-        return o.hash == this.hash;
+        return o.hash == this.hash
+                && o.block.getWorld().getName().equals(this.block.getWorld().getName())
+                && o.block.getX() == this.block.getX()
+                && o.block.getY() == this.block.getY()
+                && o.block.getZ() == this.block.getZ();
     }
 
     /**

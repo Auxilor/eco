@@ -33,7 +33,7 @@ object BlockArgParserQuantity : BlockArgParser {
                 continue
             }
             val argQuantity = argSplit[1].toIntOrNull() ?: continue
-            if (argQuantity in (maximumQuantity + 1)..<minimumQuantity) {
+            if (argQuantity !in minimumQuantity..maximumQuantity) {
                 continue
             }
             quantity = argQuantity

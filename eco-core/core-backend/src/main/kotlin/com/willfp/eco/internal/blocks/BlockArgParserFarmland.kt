@@ -19,7 +19,7 @@ object BlockArgParserFarmland : BlockArgParser {
                 continue
             }
             val argMoisture = argSplit[1].toIntOrNull() ?: continue
-            if (argMoisture in (farmland.maximumMoisture + 1)..<0) {
+            if (argMoisture !in 0..farmland.maximumMoisture) {
                 continue
             }
             moisture = argMoisture

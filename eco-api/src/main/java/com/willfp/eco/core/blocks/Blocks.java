@@ -178,7 +178,7 @@ public final class Blocks {
         boolean isTag = base.startsWith("#");
 
         if (isTag) {
-            String tag = base.substring(1);
+            String tag = args[0].substring(1);
             BlockTag blockTag = TAGS.get(tag);
 
             if (blockTag == null) {
@@ -187,7 +187,7 @@ public final class Blocks {
             block = blockTag.toTestableBlock();
         }
 
-        if (split.length == 1) {
+        if (split.length == 1 && !isTag) {
             String blockType = args[0];
             boolean isWildcard = blockType.startsWith("*");
             if (isWildcard) {
