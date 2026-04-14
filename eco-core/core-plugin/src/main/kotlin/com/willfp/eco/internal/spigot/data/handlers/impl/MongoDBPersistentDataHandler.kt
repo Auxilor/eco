@@ -12,6 +12,7 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.bson.BsonArray
 import org.bson.BsonBoolean
@@ -155,7 +156,7 @@ class MongoDBPersistentDataHandler(
 
     private abstract inner class MongoSerializer<T : Any> : DataTypeSerializer<T>() {
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
-            return runBlocking {
+            return runBlocking(Dispatchers.IO) {
                 val filter = Filters.eq("uuid", uuid.toString())
 
                 val profile = collection.find(filter)
@@ -168,7 +169,7 @@ class MongoDBPersistentDataHandler(
         }
 
         override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-            runBlocking {
+            runBlocking(Dispatchers.IO) {
                 val filter = Filters.eq("uuid", uuid.toString())
 
                 val profile = collection.find(filter).firstOrNull()
