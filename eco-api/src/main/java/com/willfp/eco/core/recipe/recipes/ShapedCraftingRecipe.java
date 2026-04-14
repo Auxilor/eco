@@ -75,14 +75,13 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
         }
 
         List<ItemStack> dynamicMatrix = Arrays.asList(matrix);
-        boolean matches = true;
         for (int i = 0; i < 9; i++) {
             if (!parts.get(i).matches(ListUtils.getOrNull(dynamicMatrix, i))) {
-                matches = false;
+                return false;
             }
         }
 
-        return matches;
+        return true;
     }
 
     @Override
