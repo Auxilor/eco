@@ -3,12 +3,15 @@ package com.willfp.eco.internal.spigot.drops
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
+import org.bukkit.Bukkit
 
 class CollatedRunnable(plugin: EcoPlugin) {
     init {
         plugin.scheduler.runTimer({
-            for ((key, value) in EcoFastCollatedDropQueue.COLLATED_MAP) {
-                val queue = EcoDropQueue(key)
+            val snapshot = HashMap(EcoFastCollatedDropQueue.COLLATED_MAP)
+            for ((uuid, value) in snapshot) {
+                val player = Bukkit.getPlayer(uuid) ?: continue
+                val queue = EcoDropQueue(player)
                     .setLocation(value.location)
                     .addItems(value.drops)
                     .addXP(value.xp)
@@ -19,9 +22,8 @@ class CollatedRunnable(plugin: EcoPlugin) {
 
                 queue.push()
 
-                EcoFastCollatedDropQueue.COLLATED_MAP.remove(key)
+                EcoFastCollatedDropQueue.COLLATED_MAP.remove(uuid, value)
             }
-            EcoFastCollatedDropQueue.COLLATED_MAP.clear()
         }, 0, 1)
     }
 }
