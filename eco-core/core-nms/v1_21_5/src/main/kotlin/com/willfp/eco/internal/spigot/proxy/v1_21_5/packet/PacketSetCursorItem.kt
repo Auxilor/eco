@@ -36,13 +36,14 @@ object PacketSetCursorItem : PacketListener {
         .first { it.type == ContainerSynchronizer::class.java }
         .apply { isAccessible = true }
 
+    private val cacheField = ContainerSynchronizer::class.java
+        .declaredFields
+        .first { it.type == LoadingCache::class.java }
+        .apply { isAccessible = true }
+
     private fun ContainerSynchronizer.getCache(): LoadingCache<TypedDataComponent<*>, Int> {
         @Suppress("UNCHECKED_CAST")
-        return this::class.java
-            .declaredFields
-            .first { it.type == LoadingCache::class.java }
-            .apply { isAccessible = true }
-            .get(this) as LoadingCache<TypedDataComponent<*>, Int>
+        return cacheField.get(this) as LoadingCache<TypedDataComponent<*>, Int>
     }
 
     override fun onSend(event: PacketEvent) {
