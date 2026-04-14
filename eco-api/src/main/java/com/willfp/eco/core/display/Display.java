@@ -6,14 +6,13 @@ import com.willfp.eco.core.integrations.guidetection.GUIDetectionManager;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -59,7 +58,7 @@ public final class Display {
      */
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player) {
-        Map<String, Object[]> pluginVarArgs = new HashMap<>();
+        Map<String, Object[]> pluginVarArgs = new IdentityHashMap<>(4);
 
         for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
             for (DisplayModule module : modules) {
@@ -76,8 +75,7 @@ public final class Display {
         }
 
         ItemStack original = itemStack.clone();
-        Inventory inventory = player == null ? null : player.getOpenInventory().getTopInventory();
-        boolean inInventory = inventory != null && inventory.contains(original);
+        boolean inInventory = false;
         boolean inGui = player != null && GUIDetectionManager.hasGUIOpen(player);
 
         DisplayProperties properties = new DisplayProperties(
@@ -135,6 +133,10 @@ public final class Display {
      * @return The ItemStack.
      */
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
+        if (!itemStack.hasItemMeta()) {
+            return itemStack;
+        }
+
         if (Display.isFinalized(itemStack)) {
             Display.unfinalize(itemStack);
         }
