@@ -7,17 +7,24 @@ import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.monster.Illusioner
 
 object IllusionerBlindnessSpellGoalFactory : EntityGoalFactory<EntityGoalIllusionerBlindnessSpell> {
+    private val blindnessSpellClass by lazy {
+        Illusioner::class.java.declaredClasses
+            .first { it.simpleName == "IllusionerBlindnessSpellGoal" }
+    }
+
+    private val blindnessSpellConstructor by lazy {
+        blindnessSpellClass
+            .getDeclaredConstructor(Illusioner::class.java)
+            .apply { isAccessible = true }
+    }
+
     override fun create(apiGoal: EntityGoalIllusionerBlindnessSpell, entity: PathfinderMob): Goal? {
         if (entity !is Illusioner) return null
 
-        // Have to use reflection for it to work
-        return Illusioner::class.java.declaredClasses[1]
-            .getDeclaredConstructor(Illusioner::class.java)
-            .apply { isAccessible = true }
-            .newInstance(entity) as Goal
+        return blindnessSpellConstructor.newInstance(entity) as Goal
     }
 
     override fun isGoalOfType(goal: Goal): Boolean {
-        return Illusioner::class.java.declaredClasses[1].isInstance(goal)
+        return blindnessSpellClass.isInstance(goal)
     }
 }
