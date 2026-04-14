@@ -1,5 +1,7 @@
 package com.willfp.eco.core.price.impl;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.willfp.eco.core.integrations.economy.EconomyManager;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
@@ -7,9 +9,8 @@ import com.willfp.eco.core.price.Price;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -29,7 +30,9 @@ public final class PriceEconomy implements Price {
     /**
      * The multipliers.
      */
-    private final Map<UUID, Double> multipliers = new HashMap<>();
+    private final Cache<UUID, Double> multipliers = Caffeine.newBuilder()
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build();
 
     /**
      * Create a new economy-based price.
@@ -92,7 +95,8 @@ public final class PriceEconomy implements Price {
 
     @Override
     public double getMultiplier(@NotNull final Player player) {
-        return this.multipliers.getOrDefault(player.getUniqueId(), 1.0);
+        Double value = this.multipliers.getIfPresent(player.getUniqueId());
+        return value != null ? value : 1.0;
     }
 
     @Override
