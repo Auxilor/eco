@@ -4,26 +4,30 @@ import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import java.util.UUID
 import java.util.concurrent.TimeUnit
+
+data class ExpressionCacheKey(val expression: String, val playerUUID: UUID?, val injectableContext: Any?)
 
 class DelegatedExpressionHandler(
     plugin: EcoPlugin,
     private val handler: ExpressionHandler
 ) : ExpressionHandler {
-    private val evaluationCache: Cache<Int, Double?> = Caffeine.newBuilder()
+    private val evaluationCache: Cache<ExpressionCacheKey, Double?> = Caffeine.newBuilder()
         .expireAfterWrite(plugin.configYml.getInt("math-cache-ttl").toLong(), TimeUnit.MILLISECONDS)
-        .buildAsync<Int, Double?>()
+        .buildAsync<ExpressionCacheKey, Double?>()
         .synchronous()
 
     override fun evaluate(expression: String, context: PlaceholderContext): Double? {
         expression.fastToDoubleOrNull()?.let { return it }
 
-        // Peak performance (totally not having fun with bitwise operators)
-        val hash = (((expression.hashCode() shl 5) - expression.hashCode()) xor
-                (context.player?.uniqueId?.hashCode() ?: 0)
-                ) xor context.injectableContext.hashCode()
+        val cacheKey = ExpressionCacheKey(
+            expression,
+            context.player?.uniqueId,
+            context.injectableContext
+        )
 
-        return evaluationCache.get(hash) {
+        return evaluationCache.get(cacheKey) {
             handler.evaluate(expression, context)
                 .let { if (it?.isFinite() != true) null else it } // Fixes NaN bug.
         }
