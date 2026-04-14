@@ -1,6 +1,5 @@
 package com.willfp.eco.util;
 
-import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,14 +24,9 @@ public final class VectorUtils {
      * @return If the vector is finite.
      */
     public static boolean isFinite(@NotNull final Vector vector) {
-        try {
-            NumberConversions.checkFinite(vector.getX(), "x not finite");
-            NumberConversions.checkFinite(vector.getY(), "y not finite");
-            NumberConversions.checkFinite(vector.getZ(), "z not finite");
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-        return true;
+        return Double.isFinite(vector.getX())
+                && Double.isFinite(vector.getY())
+                && Double.isFinite(vector.getZ());
     }
 
     /**
