@@ -75,11 +75,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
             return defaultValue.get();
         }
 
-        if (map.get(key) == null) {
-            map.put((K) key, defaultValue.get());
-        }
-
-        return map.get(key);
+        return map.computeIfAbsent((K) key, k -> defaultValue.get());
     }
 
     @Override
