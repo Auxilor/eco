@@ -10,8 +10,6 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.and
@@ -296,9 +294,7 @@ class MySQLPersistentDataHandler(
                 retries++
 
                 // Exponential backoff
-                runBlocking {
-                    delay(2.0.pow(retries.toDouble()).toLong())
-                }
+                Thread.sleep(2.0.pow(retries.toDouble()).toLong())
             }
         }
     }

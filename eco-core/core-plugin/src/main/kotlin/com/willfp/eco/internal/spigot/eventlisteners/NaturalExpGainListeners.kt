@@ -36,7 +36,7 @@ class NaturalExpGainListenersSpigot : Listener {
             }
             if (searchBuilder.reason == NaturalExpGainBuilder.BuildReason.BOTTLE && searchBuilder.location!!.distanceSquared(
                     event.player.location
-                ) > 52
+                ) < 52
             ) {
                 toRemove = searchBuilder
             }

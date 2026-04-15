@@ -481,7 +481,7 @@ public final class StringUtils {
     private static String translateGradients(@NotNull final String string) {
         String processedString = string;
         for (Pattern pattern : GRADIENT_PATTERNS) {
-            Matcher matcher = pattern.matcher(string);
+            Matcher matcher = pattern.matcher(processedString);
             while (matcher.find()) {
                 String start = matcher.group(1);
                 String end = matcher.group(3);
@@ -645,12 +645,15 @@ public final class StringUtils {
                 Work until the next unescaped quote to handle quotes with
                 spaces in them - assumes the input string is well-formatted
                  */
-                for (i++; chars[i] != '"'; i++) {
+                for (i++; i < chars.length && chars[i] != '"'; i++) {
                     /*
                     If the found quote is escaped, ignore it in the parsing
                      */
                     if (chars[i] == '\\') {
                         i++;
+                        if (i >= chars.length) {
+                            break;
+                        }
                     }
                     tokenBuilder.append(chars[i]);
                 }

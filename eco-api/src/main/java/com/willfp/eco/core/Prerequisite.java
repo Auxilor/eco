@@ -198,7 +198,11 @@ public class Prerequisite {
      * @return If all the prerequisites are met.
      */
     public static boolean areMet(@NotNull final Prerequisite[] prerequisites) {
-        update();
+        for (Prerequisite prerequisite : prerequisites) {
+            if (!prerequisite.isMet()) {
+                prerequisite.refresh();
+            }
+        }
         return Arrays.stream(prerequisites).allMatch(Prerequisite::isMet);
     }
 

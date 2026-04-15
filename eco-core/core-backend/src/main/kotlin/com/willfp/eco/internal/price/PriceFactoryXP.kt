@@ -1,11 +1,13 @@
 package com.willfp.eco.internal.price
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import org.bukkit.entity.Player
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 private fun getXPNeededForLevel(level: Int): Int {
@@ -28,7 +30,9 @@ object PriceFactoryXP : PriceFactory {
         private val baseContext: PlaceholderContext,
         private val xp: (PlaceholderContext) -> Int
     ) : Price {
-        private val multipliers = mutableMapOf<UUID, Double>()
+        private val multipliers = Caffeine.newBuilder()
+            .expireAfterAccess(10, TimeUnit.MINUTES)
+            .build<UUID, Double>()
 
         override fun canAfford(player: Player, multiplier: Double): Boolean {
             var totalExperience = 0
@@ -46,16 +50,22 @@ object PriceFactoryXP : PriceFactory {
         }
 
         private fun takeXP(player: Player, amount: Int) {
-            val currentLevel = player.level
-            val currentExp = player.exp * getXPNeededForLevel(currentLevel)
+            var remaining = amount
+            while (remaining > 0) {
+                val currentLevel = player.level
+                val currentExp = player.exp * getXPNeededForLevel(currentLevel)
 
-            if (currentExp >= amount) {
-                player.exp = (currentExp - amount) / getXPNeededForLevel(currentLevel)
-            } else {
-                // Handle recursive level down
-                player.exp = 1f
-                player.level = (currentLevel - 1).coerceAtLeast(0)
-                takeXP(player, (amount - currentExp).toInt())
+                if (currentExp >= remaining) {
+                    player.exp = (currentExp - remaining) / getXPNeededForLevel(currentLevel)
+                    break
+                } else {
+                    remaining -= currentExp.toInt()
+                    player.exp = 1f
+                    player.level = (currentLevel - 1).coerceAtLeast(0)
+                    if (player.level == 0 && player.exp <= 0f) {
+                        break
+                    }
+                }
             }
         }
 
@@ -68,11 +78,11 @@ object PriceFactoryXP : PriceFactory {
         }
 
         override fun getMultiplier(player: Player): Double {
-            return multipliers[player.uniqueId] ?: 1.0
+            return multipliers.getIfPresent(player.uniqueId) ?: 1.0
         }
 
         override fun setMultiplier(player: Player, multiplier: Double) {
-            multipliers[player.uniqueId] = multiplier.roundToInt().toDouble()
+            multipliers.put(player.uniqueId, multiplier.roundToInt().toDouble())
         }
 
         override fun getIdentifier(): String {

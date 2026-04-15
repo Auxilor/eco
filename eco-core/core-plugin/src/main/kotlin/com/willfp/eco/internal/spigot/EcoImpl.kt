@@ -250,8 +250,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         if (classLoader is URLClassLoader) {
             classLoader.close()
         }
-
-        System.gc()
     }
 
     override fun createProxyFactory(plugin: EcoPlugin) =

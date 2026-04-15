@@ -44,11 +44,42 @@ open class PacketWindowItems(
             player.lastDisplayFrame = DisplayFrame.EMPTY
         }
 
-        val itemStacks = packet.items.map { it.asBukkitStack() }
+        val nmsItems = packet.items
+        val useDisplayFrame = plugin.configYml.getBool("use-display-frame") && windowId == 0
 
-        val newItems = modifyWindowItems(itemStacks.toMutableList(), windowId, player)
+        if (useDisplayFrame) {
+            // Only convert items that actually changed vs last frame
+            val lastFrame = player.lastDisplayFrame
+            val frameItems = Array<HashedItem?>(nmsItems.size) { HashedItem.of(nmsItems[it].asBukkitStack()) }
+            val newFrame = DisplayFrame(frameItems)
+            val changes = lastFrame.getChangedSlots(newFrame)
+            val changedSet = changes.toHashSet()
 
-        field.set(packet, newItems.map { it.asNMSStack() })
+            player.lastDisplayFrame = newFrame
+
+            // Build result list: only convert changed items to bukkit for display
+            val resultNms = ArrayList<net.minecraft.world.item.ItemStack>(nmsItems.size)
+            for (index in nmsItems.indices) {
+                if (index in changedSet) {
+                    val bukkit = nmsItems[index].asBukkitStack()
+                    Display.display(bukkit, player)
+                    resultNms.add(bukkit.asNMSStack())
+                } else {
+                    val cached = lastFrame.getItem(index)
+                    if (cached != null) {
+                        resultNms.add(cached.asNMSStack())
+                    } else {
+                        resultNms.add(nmsItems[index])
+                    }
+                }
+            }
+
+            field.set(packet, resultNms)
+        } else {
+            val itemStacks = nmsItems.map { it.asBukkitStack() }
+            itemStacks.forEach { Display.display(it, player) }
+            field.set(packet, itemStacks.map { it.asNMSStack() })
+        }
     }
 
 
@@ -58,26 +89,25 @@ open class PacketWindowItems(
         player: Player
     ): MutableList<ItemStack> {
         if (plugin.configYml.getBool("use-display-frame") && windowId == 0) {
-            val frameMap = mutableMapOf<Byte, HashedItem>()
+            val frameItems = Array<HashedItem?>(itemStacks.size) { HashedItem.of(itemStacks[it]) }
 
-            for (index in itemStacks.indices) {
-                frameMap[index.toByte()] = HashedItem.of(itemStacks[index])
-            }
-
-            val newFrame = DisplayFrame(frameMap)
+            val newFrame = DisplayFrame(frameItems)
 
             val lastFrame = player.lastDisplayFrame
 
             player.lastDisplayFrame = newFrame
 
             val changes = lastFrame.getChangedSlots(newFrame)
+            val changedSet = changes.toHashSet()
 
             for (index in changes) {
-                Display.display(itemStacks[index.toInt()], player)
+                Display.display(itemStacks[index], player)
             }
 
-            for (index in (itemStacks.indices subtract changes.map { it.toInt() }.toSet())) {
-                itemStacks[index] = lastFrame.getItem(index.toByte()) ?: itemStacks[index]
+            for (index in itemStacks.indices) {
+                if (index !in changedSet) {
+                    itemStacks[index] = lastFrame.getItem(index) ?: itemStacks[index]
+                }
             }
         } else {
             itemStacks.forEach { Display.display(it, player) }

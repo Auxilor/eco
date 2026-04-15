@@ -8,6 +8,7 @@ import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import net.kyori.adventure.text.Component
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.syncher.EntityDataAccessor
+import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.world.entity.Entity
 import org.bukkit.craftbukkit.entity.CraftLivingEntity
@@ -17,19 +18,31 @@ import java.util.Optional
 
 @Suppress("UNCHECKED_CAST")
 class DisplayName : DisplayNameProxy {
-    private val displayNameAccessor = Entity::class.java
-        .declaredFields
-        .filter { it.type == EntityDataAccessor::class.java }
-        .toList()[2]
-        .apply { isAccessible = true }
-        .get(null) as EntityDataAccessor<Optional<net.minecraft.network.chat.Component>>
+    private val displayNameAccessor: EntityDataAccessor<Optional<net.minecraft.network.chat.Component>>
+    private val customNameVisibleAccessor: EntityDataAccessor<Boolean>
 
-    private val customNameVisibleAccessor = Entity::class.java
-        .declaredFields
-        .filter { it.type == EntityDataAccessor::class.java }
-        .toList()[3]
-        .apply { isAccessible = true }
-        .get(null) as EntityDataAccessor<Boolean>
+    init {
+        val accessorFields = Entity::class.java.declaredFields
+            .filter { it.type == EntityDataAccessor::class.java }
+
+        val nameField = accessorFields.first { field ->
+            field.isAccessible = true
+            (field.get(null) as? EntityDataAccessor<*>)
+                ?.serializer == EntityDataSerializers.OPTIONAL_COMPONENT
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        displayNameAccessor = nameField.get(null) as EntityDataAccessor<Optional<net.minecraft.network.chat.Component>>
+
+        val visibleField = accessorFields.first { field ->
+            field.isAccessible = true
+            val accessor = field.get(null) as? EntityDataAccessor<*>
+            accessor?.serializer == EntityDataSerializers.BOOLEAN && field != nameField
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        customNameVisibleAccessor = visibleField.get(null) as EntityDataAccessor<Boolean>
+    }
 
     override fun setClientsideDisplayName(
         entity: LivingEntity,

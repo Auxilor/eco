@@ -61,18 +61,18 @@ object ArgParserAttribute : LookupArgParser {
                 }
 
                 attributes.computeIfAbsent(attribute) { mutableListOf() }.add(modifier)
-
-                if (attributes.isEmpty()) {
-                    return null
-                }
-
-                for ((attribute, modifiers) in attributes) {
-                    for (modifier in modifiers) {
-                        meta.addAttributeModifier(attribute, modifier)
-                    }
-                }
             } catch (e: IllegalArgumentException) {
                 continue
+            }
+        }
+
+        if (attributes.isEmpty()) {
+            return null
+        }
+
+        for ((attr, mods) in attributes) {
+            for (mod in mods) {
+                meta.addAttributeModifier(attr, mod)
             }
         }
 

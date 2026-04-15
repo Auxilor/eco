@@ -16,7 +16,7 @@ open class EcoConfig(
     private val values = ConcurrentHashMap<String, Any?>()
 
     @Transient
-    private val injections = mutableMapOf<String, InjectablePlaceholder>()
+    private val injections = ConcurrentHashMap<String, InjectablePlaceholder>()
 
     @Transient
     private var injectionHash = 0
@@ -58,10 +58,11 @@ open class EcoConfig(
     }
 
     override fun get(path: String): Any? {
-        val nearestPath = path.split(".")[0]
+        val dotIndex = path.indexOf('.')
 
-        if (path.contains(".")) {
-            val remainingPath = path.removePrefix("${nearestPath}.")
+        if (dotIndex != -1) {
+            val nearestPath = path.substring(0, dotIndex)
+            val remainingPath = path.substring(dotIndex + 1)
 
             if (remainingPath.isEmpty()) {
                 return null
@@ -76,17 +77,18 @@ open class EcoConfig(
             }
         }
 
-        return values[nearestPath]
+        return values[path]
     }
 
     override fun set(
         path: String,
         obj: Any?
     ) {
-        val nearestPath = path.split(".")[0]
+        val dotIndex = path.indexOf('.')
 
-        if (path.contains(".")) {
-            val remainingPath = path.removePrefix("${nearestPath}.")
+        if (dotIndex != -1) {
+            val nearestPath = path.substring(0, dotIndex)
+            val remainingPath = path.substring(dotIndex + 1)
 
             if (remainingPath.isEmpty()) {
                 return
@@ -99,9 +101,9 @@ open class EcoConfig(
         }
 
         if (obj == null) {
-            values.remove(nearestPath)
+            values.remove(path)
         } else {
-            values[nearestPath] = obj.constrainConfigTypes(type)
+            values[path] = obj.constrainConfigTypes(type)
         }
     }
 
@@ -116,7 +118,6 @@ open class EcoConfig(
     override fun getSubsectionsOrNull(path: String): List<Config>? {
         return getList<Config>(path)
             ?.map { it.apply { this.addInjectablePlaceholder(injections.values) } }
-            ?.toList()
     }
 
     override fun getType(): ConfigType {
@@ -241,14 +242,10 @@ open class EcoConfig(
             return false
         }
 
-        // Hey! Don't care. This works.
-        return this.hashCode() == other.hashCode()
+        return this.configType == other.configType && this.toMap() == other.toMap()
     }
 
     override fun hashCode(): Int {
-        // hashCode() has to compute extremely quickly, so we're using bitwise, because why not?
-        // Fucking filthy to use identityHashCode here, but it should be extremely fast
-        val identityHash = System.identityHashCode(this)
-        return (identityHash shl 5) - (identityHash xor configType.hashCode()) + injectionHash
+        return 31 * configType.hashCode() + toMap().hashCode()
     }
 }

@@ -92,7 +92,7 @@ private abstract class ConfigTypeHandler(
 }
 
 private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
-    private fun newYaml(): Yaml {
+    private val YAML_INSTANCE: ThreadLocal<Yaml> = ThreadLocal.withInitial {
         val yamlOptions = DumperOptions()
         val loaderOptions = LoaderOptions()
         val representer = EcoRepresenter()
@@ -111,7 +111,7 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
 
         representer.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
 
-        return Yaml(
+        Yaml(
             @Suppress("DEPRECATION")
             YamlConstructor(),
             representer,
@@ -121,11 +121,11 @@ private object YamlConfigTypeHandler : ConfigTypeHandler(ConfigType.YAML) {
     }
 
     override fun parseToMap(input: String): Map<*, *> {
-        return newYaml().load(input) ?: emptyMap<Any, Any>()
+        return YAML_INSTANCE.get().load(input) ?: emptyMap<Any, Any>()
     }
 
     override fun toString(map: Map<String, Any?>): String {
-        return newYaml().dump(map)
+        return YAML_INSTANCE.get().dump(map)
     }
 }
 

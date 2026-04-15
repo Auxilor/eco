@@ -1,16 +1,19 @@
 package com.willfp.eco.internal.drops
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
     override fun push() {
-        val fetched = COLLATED_MAP[player]
+        val uuid = player.uniqueId
+        val fetched = COLLATED_MAP[uuid]
 
         if (fetched == null) {
-            COLLATED_MAP[player] = CollatedDrops(items, location, xp, hasTelekinesis)
+            COLLATED_MAP[uuid] = CollatedDrops(items, location, xp, hasTelekinesis)
         } else {
             fetched.addDrops(items)
             fetched.location = location
@@ -19,7 +22,7 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
                 fetched.forceTelekinesis()
             }
 
-            COLLATED_MAP[player] = fetched
+            COLLATED_MAP[uuid] = fetched
         }
     }
 
@@ -45,6 +48,6 @@ class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
     }
 
     companion object {
-        val COLLATED_MAP: MutableMap<Player, CollatedDrops> = ConcurrentHashMap()
+        val COLLATED_MAP: MutableMap<UUID, CollatedDrops> = ConcurrentHashMap()
     }
 }
