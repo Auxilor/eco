@@ -4,6 +4,8 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.integrations.guidetection.GUIDetectionManager;
 import com.willfp.eco.util.NamespacedKeyUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -141,10 +143,10 @@ public final class Display {
 
         FastItemStack fast = FastItemStack.wrap(itemStack);
 
-        List<String> lore = fast.getLore();
+        List<Component> lore = new ArrayList<>(fast.getLoreComponents());
 
-        if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(Display.PREFIX))) {
-            fast.setLore(lore);
+        if (!lore.isEmpty() && lore.removeIf(Display::isDisplayLine)) {
+            fast.setLoreComponents(lore);
         }
 
         for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
@@ -154,6 +156,14 @@ public final class Display {
         }
 
         return itemStack;
+    }
+
+    private static boolean isDisplayLine(@NotNull final Component line) {
+        // Display lines are tagged by prepending the "§z" PREFIX to their text content. Display
+        // modules only ever add legacy-safe lines, so we can identify them by inspecting the
+        // TextComponent content directly without round-tripping through legacy serialization
+        // (which would discard sprite/font/hover content on non-display lines we must preserve).
+        return line instanceof TextComponent textComponent && textComponent.content().startsWith(PREFIX);
     }
 
     /**
