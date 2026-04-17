@@ -5,7 +5,7 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
-import com.willfp.eco.util.NamespacedKeyUtils
+import com.willfp.eco.util.namespacedKeyOf
 import dev.lone.itemsadder.api.CustomStack
 import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
@@ -25,7 +25,7 @@ class CustomItemsItemsAdder : CustomItemsIntegration {
 
             val item = CustomStack.getInstance(internalId) ?: return null
             val id = item.id
-            val namespacedKey = NamespacedKeyUtils.create("itemsadder", key.lowercase().replace(":", "__"))
+            val namespacedKey = namespacedKeyOf("itemsadder", key.lowercase().replace(":", "__"))
             val stack = item.itemStack
             return CustomItem(
                 namespacedKey,

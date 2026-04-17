@@ -1,0 +1,38 @@
+package com.willfp.eco.core.blocks.impl;
+
+import com.google.common.base.Preconditions;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * A testable block for materials regardless of data.
+ */
+public class UnrestrictedMaterialTestableBlock extends MaterialTestableBlock {
+
+    /**
+     * Create a new unrestricted material testable block.
+     *
+     * @param material The material.
+     */
+    public UnrestrictedMaterialTestableBlock(@NotNull final Material material) {
+        super(material);
+    }
+
+    @Override
+    public boolean matches(@Nullable final Block other) {
+        return other != null && other.getType() == material;
+    }
+
+    @Override
+    public @NotNull Block place(@NotNull Location location) {
+        Preconditions.checkNotNull(location.getWorld());
+
+        Block block = location.getWorld().getBlockAt(location);
+        block.setType(material);
+
+        return block;
+    }
+}

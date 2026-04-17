@@ -324,8 +324,7 @@ public final class Items {
 
         List<Predicate<ItemStack>> predicates = new ArrayList<>();
 
-        for (
-                LookupArgParser argParser : ARG_PARSERS) {
+        for (LookupArgParser argParser : ARG_PARSERS) {
             Predicate<ItemStack> predicate = argParser.parseArguments(modifierArgs, meta);
             if (predicate != null) {
                 predicates.add(predicate);
