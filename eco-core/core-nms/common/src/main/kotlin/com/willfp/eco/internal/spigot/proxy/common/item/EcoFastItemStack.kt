@@ -9,7 +9,6 @@ import com.willfp.eco.internal.spigot.proxy.common.toAdventure
 import com.willfp.eco.internal.spigot.proxy.common.toItem
 import com.willfp.eco.internal.spigot.proxy.common.toMaterial
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
-import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.Component
@@ -141,7 +140,7 @@ open class EcoFastItemStack(
     }
 
     override fun getLore(): List<String> =
-        loreComponents.map { StringUtils.toLegacy(it) }
+        loreComponents.map { it.toLegacy() }
 
     override fun setDisplayName(name: Component?) {
         if (name == null) {
