@@ -58,14 +58,14 @@ fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
     return impl.removeBukkitRecipeNoResend(key)
 }
 
-private val MATERIAL_TO_ITEM = java.util.concurrent.ConcurrentHashMap<Material, Item>()
+private val MATERIAL_TO_ITEM = mutableMapOf<Material, Item>()
 
 fun Material.toItem(): Item =
     MATERIAL_TO_ITEM.getOrPut(this) {
         impl.materialToItem(this)
     }
 
-private val ITEM_TO_MATERIAL = java.util.concurrent.ConcurrentHashMap<Item, Material>()
+private val ITEM_TO_MATERIAL = mutableMapOf<Item, Material>()
 
 fun Item.toMaterial(): Material =
     ITEM_TO_MATERIAL.getOrPut(this) {

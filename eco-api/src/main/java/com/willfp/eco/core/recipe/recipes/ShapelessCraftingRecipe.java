@@ -27,11 +27,6 @@ import java.util.Optional;
 @Beta
 public final class ShapelessCraftingRecipe implements CraftingRecipe {
     /**
-     * Shared empty testable item instance.
-     */
-    private static final TestableItem EMPTY_TESTABLE = new EmptyTestableItem();
-
-    /**
      * The plugin.
      */
     private final EcoPlugin plugin;
@@ -355,7 +350,7 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
          */
         @Nullable
         public TestableItem matchAndRemove(@NotNull final ItemStack itemStack) {
-            if (remaining.isEmpty() && !(EMPTY_TESTABLE.matches(itemStack))) {
+            if (remaining.isEmpty() && !(new EmptyTestableItem().matches(itemStack))) {
                 return null;
             }
 

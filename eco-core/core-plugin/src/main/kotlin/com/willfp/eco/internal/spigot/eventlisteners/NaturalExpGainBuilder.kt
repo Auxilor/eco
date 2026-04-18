@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.events.NaturalExpGainEvent
-import com.google.common.base.Preconditions
+import moss.factions.shade.com.google.common.base.Preconditions
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.event.player.PlayerExpChangeEvent

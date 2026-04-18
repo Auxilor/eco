@@ -8,28 +8,14 @@ import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import java.util.UUID
 
 class EcoChannelDuplexHandler(
     private val uuid: UUID
 ) : ChannelDuplexHandler() {
 
-    @Volatile
-    private var cachedPlayer: Player? = null
-
-    private fun getPlayer(): Player? {
-        val cached = cachedPlayer
-        if (cached != null && cached.isOnline) {
-            return cached
-        }
-        val player = Bukkit.getPlayer(uuid)
-        cachedPlayer = player
-        return player
-    }
-
     override fun channelRead(ctx: ChannelHandlerContext, msg: Any) {
-        val player = getPlayer()
+        val player = Bukkit.getPlayer(uuid)
 
         if (player != null) {
             val event = PacketEvent(Packet(msg), player)
@@ -45,7 +31,7 @@ class EcoChannelDuplexHandler(
     }
 
     override fun write(ctx: ChannelHandlerContext, msg: Any, promise: ChannelPromise) {
-        val player = getPlayer()
+        val player = Bukkit.getPlayer(uuid)
 
         if (player != null) {
             val event = PacketEvent(Packet(msg), player)
@@ -58,10 +44,5 @@ class EcoChannelDuplexHandler(
         } else {
             super.write(ctx, msg, promise)
         }
-    }
-
-    override fun channelInactive(ctx: ChannelHandlerContext) {
-        cachedPlayer = null
-        super.channelInactive(ctx)
     }
 }

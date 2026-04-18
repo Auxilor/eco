@@ -75,12 +75,6 @@ open class EcoLoadableConfig(
     }
 
     override fun saveAsync() {
-        if (requiresChangesToSave) {
-            if (!hasChanged) { // In order to preserve comments
-                return
-            }
-        }
-
         // Save asynchronously using NIO
         val channel = AsynchronousFileChannel.open(
             configFile.toPath(),
@@ -133,11 +127,11 @@ open class EcoLoadableConfig(
 
         if (this.type == ConfigType.YAML) {
             for (s in header) {
-                contents.append(s).append('\n')
+                contents.append(s + "\n")
             }
 
             if (header.isNotEmpty()) {
-                contents.append('\n')
+                contents.append("\n")
             }
         }
 
@@ -146,7 +140,7 @@ open class EcoLoadableConfig(
                 continue
             }
 
-            contents.append(line).append('\n')
+            contents.append(line + "\n")
         }
 
         return contents.toString()

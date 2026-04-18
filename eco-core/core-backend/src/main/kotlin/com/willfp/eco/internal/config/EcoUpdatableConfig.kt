@@ -22,23 +22,19 @@ open class EcoUpdatableConfig(
     fun update() {
         this.init(configFile)
         val newConfig = configInJar ?: return
-        val newKeys = newConfig.getKeys(true)
-        val currentKeys = this.getKeys(true)
-        if (newKeys == currentKeys) {
+        if (newConfig.getKeys(true) == this.getKeys(true)) {
             return
         }
-        val currentKeysSet = currentKeys.toSet()
-        newKeys.forEach { key: String ->
-            if (!currentKeysSet.contains(key)) {
+        newConfig.getKeys(true).forEach { key: String ->
+            if (!this.getKeys(true).contains(key)) {
                 if (updateBlacklist.stream().noneMatch { s: String -> key.contains(s) }) {
                     this.set(key, newConfig[key])
                 }
             }
         }
         if (removeUnused) {
-            val newKeysSet = newKeys.toSet()
-            currentKeys.forEach { s ->
-                if (!newKeysSet.contains(s)) {
+            this.getKeys(true).forEach { s ->
+                if (!newConfig.getKeys(true).contains(s)) {
                     if (updateBlacklist.stream().noneMatch(s::contains)) {
                         this.set(s, null)
                     }

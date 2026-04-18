@@ -118,13 +118,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val menu = inv.getMenu() ?: return
 
-        val firstEmpty = inv.firstEmpty()
-        if (firstEmpty == -1) {
-            event.isCancelled = true
-            return
-        }
-
-        val (row, column) = MenuUtils.convertSlotToRowColumn(firstEmpty, menu.columns)
+        val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty(), menu.columns)
 
         val slot = menu.getSlot(row, column, player)
 

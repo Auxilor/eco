@@ -6,11 +6,10 @@ import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayF
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
 import net.minecraft.network.HashedStack
 import net.minecraft.network.protocol.game.ServerboundContainerClickPacket
-import java.util.concurrent.ConcurrentHashMap
 
 object PacketContainerClick : PacketListener {
     // Displayed hash -> original, required to avoid ghost items in cursor
-    private val originals = ConcurrentHashMap<Int, HashedStack>()
+    private val originals = hashMapOf<Int, HashedStack>()
 
     fun map(original: HashedStack, displayed: Int) {
         originals[displayed] = original
@@ -21,7 +20,7 @@ object PacketContainerClick : PacketListener {
 
         val carried = packet.carriedItem as? HashedStack.ActualItem ?: return
         val player = event.player
-        val original = originals.remove(carried.hash()) ?: return
+        val original = originals[carried.hash()] ?: return
 
         event.packet.handle = ServerboundContainerClickPacket(
             packet.containerId,

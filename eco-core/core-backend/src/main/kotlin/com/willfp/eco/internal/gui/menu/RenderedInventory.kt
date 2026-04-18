@@ -9,9 +9,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 
-private val trackedForceRendered = ConcurrentHashMap<UUID, RenderedInventory>()
+private val trackedForceRendered = mutableMapOf<UUID, RenderedInventory>()
 
 fun Player.removeForcedRenderedInventory() {
     trackedForceRendered.remove(this.uniqueId)
@@ -37,10 +36,6 @@ class RenderedInventory(
 ) {
     val captiveItems = mutableMapOf<GUIPosition, ItemStack>()
     val state = mutableMapOf<String, Any?>()
-
-    companion object {
-        private val EMPTY_TESTABLE_ITEM = EmptyTestableItem()
-    }
 
     fun render() {
         // This can happen when opening menus from other menus,
@@ -69,7 +64,7 @@ class RenderedInventory(
                             newCaptive[position] = actualItem
                         }
                     } else {
-                        if (actualItem != renderedItem && !EMPTY_TESTABLE_ITEM.matches(actualItem)) {
+                        if (actualItem != renderedItem && !EmptyTestableItem().matches(actualItem)) {
                             newCaptive[position] = actualItem
                         }
                     }

@@ -8,7 +8,6 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandMap
 import org.bukkit.command.CommandSender
-import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
@@ -106,9 +105,9 @@ abstract class HandledCommand(
         try {
             notifyFalse(!isPlayersOnly || sender is Player, "not-player")
 
+            onExecute(sender, args)
+
             if (sender is Player) {
-                onExecute(sender, args)
-            } else {
                 onExecute(sender, args)
             }
         } catch (e: NotificationException) {
@@ -149,20 +148,20 @@ abstract class HandledCommand(
                     sender.hasPermission(it.permission) && it.name.equals(args[0], true)
                 }
             if (matchingCommand != null) {
-                val completions = if (sender is Player) {
-                    matchingCommand.handleTabComplete(sender, args.subList(1, args.size)).toMutableList()
-                } else {
-                    matchingCommand.handleTabComplete(sender, args.subList(1, args.size)).toMutableList()
+                val completions = matchingCommand.handleTabComplete(sender, args.subList(1, args.size)).toMutableList()
+
+                if (sender is Player) {
+                    completions.addAll(matchingCommand.handleTabComplete(sender, args.subList(1, args.size)))
                 }
 
                 return completions
             }
         }
 
-        val completions = if (sender is Player) {
-            tabComplete(sender, args).toMutableList()
-        } else {
-            tabComplete(sender, args).toMutableList()
+        val completions = tabComplete(sender, args).toMutableList()
+
+        if (sender is Player) {
+            completions.addAll(tabComplete(sender, args))
         }
 
         return completions.sorted()
@@ -179,14 +178,8 @@ val commandMap: CommandMap
     }
 
 fun CommandSender.canExecute(command: CommandBase, plugin: EcoPlugin): Boolean {
-    if (this is ConsoleCommandSender) {
-        return true
-    }
-
-    if (!this.hasPermission(command.permission)) {
-        if (this is Player) {
-            this.sendMessage(plugin.langYml.noPermission)
-        }
+    if (!this.hasPermission(command.permission) && this is Player) {
+        this.sendMessage(plugin.langYml.noPermission)
         return false
     }
 

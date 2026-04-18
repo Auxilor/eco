@@ -95,7 +95,7 @@ class AntigriefHuskTowns : AntigriefIntegration {
                 when(victim) {
                     is Monster -> OperationType.PLAYER_DAMAGE_MONSTER
                     is Player -> OperationType.PLAYER_DAMAGE_PLAYER
-                    else -> OperationType.PLAYER_DAMAGE_ENTITY
+                    else -> OperationType.PLACE_HANGING_ENTITY
                 },
                 Position.at(
                     player.location.x,

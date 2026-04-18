@@ -10,7 +10,6 @@ import redempt.crunch.CompiledExpression
 import redempt.crunch.Crunch
 import redempt.crunch.functional.ExpressionEnv
 import redempt.crunch.functional.Function
-import java.util.Optional
 import java.util.OptionalInt
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -70,10 +69,6 @@ fun String.fastToDoubleOrNull(): Double? {
         idx++
     }
 
-    if (decimalIdx == -1) {
-        return if (isNegative) -integerPart else integerPart
-    }
-
     decimalPart /= 10.0.pow((len - decimalIdx - 1).toDouble())
 
     return if (isNegative) -(integerPart + decimalPart) else integerPart + decimalPart
@@ -105,9 +100,7 @@ class ImmediatePlaceholderTranslationExpressionHandler(
 class LazyPlaceholderTranslationExpressionHandler(
     private val placeholderParser: PlaceholderParser
 ) : ExpressionHandler {
-    private val cache: Cache<String, Optional<CompiledExpression>> = Caffeine.newBuilder()
-        .maximumSize(1024)
-        .build()
+    private val cache = mutableMapOf<String, CompiledExpression?>()
 
     private val env = ExpressionEnv().apply {
         addFunctions(min, max, rand)
@@ -120,14 +113,11 @@ class LazyPlaceholderTranslationExpressionHandler(
             .map { it.fastToDoubleOrNull() ?: 0.0 }
             .toDoubleArray()
 
-        val compiled = cache.getIfPresent(expression)?.orElse(null)
-            ?: run {
-                // crunch variable names must begin with an alphabetic character
-                env.setVariableNames(*placeholders.toTypedArray())
-                val result = runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
-                cache.put(expression, Optional.ofNullable(result))
-                result
-            }
+        val compiled = cache.getOrPut(expression) {
+            // crunch variable names must begin with an alphabetic character
+            env.setVariableNames(*placeholders.toTypedArray())
+            runCatching { Crunch.compileExpression(expression, env) }.getOrNull()
+        }
 
         return runCatching { compiled?.evaluate(*placeholderValues) }.getOrNull()
     }

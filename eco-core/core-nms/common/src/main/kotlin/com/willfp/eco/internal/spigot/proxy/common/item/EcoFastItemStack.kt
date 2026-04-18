@@ -40,7 +40,6 @@ private fun Component.unstyled(): Component {
 
 interface ImplementedFIS : FastItemStack {
     fun apply()
-    fun markPdcDirty() {}
 }
 
 class ContinuallyAppliedPersistentDataContainer(
@@ -49,19 +48,16 @@ class ContinuallyAppliedPersistentDataContainer(
 ) : PersistentDataContainer by handle {
     override fun <T : Any, Z : Any> set(key: NamespacedKey, type: PersistentDataType<T, Z>, value: Z) {
         handle.set(key, type, value)
-        fis.markPdcDirty()
         fis.apply()
     }
 
     override fun remove(key: NamespacedKey) {
         handle.remove(key)
-        fis.markPdcDirty()
         fis.apply()
     }
 
     override fun readFromBytes(bytes: ByteArray) {
         handle.readFromBytes(bytes)
-        fis.markPdcDirty()
     }
 }
 
@@ -70,8 +66,7 @@ open class EcoFastItemStack(
 ) : ImplementedFIS {
     protected val handle = bukkit.asNMSStack()
 
-    private val pdc by lazy { (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc() }
-    private var pdcDirty = false
+    private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: ItemEnchantments.EMPTY
@@ -399,34 +394,27 @@ open class EcoFastItemStack(
     // END
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is EcoFastItemStack) return false
-        if (this.hashCode() != other.hashCode()) return false
-        return net.minecraft.world.item.ItemStack.isSameItemSameComponents(this.handle, other.handle)
+        if (other !is EcoFastItemStack) {
+            return false
+        }
+
+        return other.hashCode() == this.hashCode()
     }
 
     override fun hashCode(): Int {
         return net.minecraft.world.item.ItemStack.hashItemAndComponents(handle)
     }
 
-    override fun markPdcDirty() {
-        pdcDirty = true
-    }
-
     override fun apply() {
-        if (pdcDirty) {
-            val customData = handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
-            val updated = customData.update {
-                it.setPdc(pdc)
-            }
+        val customData = handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+        val updated = customData.update {
+            it.setPdc(pdc)
+        }
 
-            if (updated.isEmpty) {
-                handle.remove(DataComponents.CUSTOM_DATA)
-            } else {
-                handle.set(DataComponents.CUSTOM_DATA, updated)
-            }
-
-            pdcDirty = false
+        if (updated.isEmpty) {
+            handle.remove(DataComponents.CUSTOM_DATA)
+        } else {
+            handle.set(DataComponents.CUSTOM_DATA, updated)
         }
 
         bukkit.mergeIfNeeded(handle)

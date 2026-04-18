@@ -14,8 +14,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
-private val ZERO_VECTOR = Vector(0, 0, 0)
-
 open class EcoDropQueue(val player: Player) : DropQueue() {
     val items = mutableListOf<ItemStack>()
     var xp: Int = 0
@@ -74,7 +72,7 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
             if (!items.isEmpty()) {
                 val leftover = player.inventory.addItem(*items.toTypedArray())
                 for (drop in leftover.values) {
-                    world.dropItem(location, drop!!).velocity = ZERO_VECTOR
+                    world.dropItem(location, drop!!).velocity = Vector()
                 }
             }
             if (xp > 0)
@@ -82,7 +80,7 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
         } else {
             if (!items.isEmpty()) {
                 for (drop in items) {
-                    world.dropItem(location, drop).velocity = ZERO_VECTOR
+                    world.dropItem(location, drop).velocity = Vector()
                 }
             }
             if (xp > 0) {
