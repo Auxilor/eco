@@ -13,15 +13,11 @@ import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -41,21 +37,6 @@ public final class Entities {
     private static final List<EntityArgParser> ARG_PARSERS = new ArrayList<>();
 
     /**
-     * Cached entity lookups by Entity.
-     */
-    private static final LoadingCache<Entity, Optional<TestableEntity>> ENTITY_CACHE = Caffeine.newBuilder()
-            .maximumSize(512)
-            .weakKeys()
-            .build(entity -> {
-                for (TestableEntity known : REGISTRY.values()) {
-                    if (known.matches(entity)) {
-                        return Optional.of(known);
-                    }
-                }
-                return Optional.empty();
-            });
-
-    /**
      * The lookup handler.
      */
     private static final EntitiesLookupHandler ENTITIES_LOOKUP_HANDLER = new EntitiesLookupHandler(Entities::doParse);
@@ -69,7 +50,6 @@ public final class Entities {
     public static void registerCustomEntity(@NotNull final NamespacedKey key,
                                             @NotNull final TestableEntity item) {
         REGISTRY.put(key, item);
-        ENTITY_CACHE.invalidateAll();
     }
 
     /**
@@ -208,9 +188,10 @@ public final class Entities {
             return null;
         }
 
-        Optional<TestableEntity> cached = ENTITY_CACHE.get(entity);
-        if (cached.isPresent()) {
-            return cached.get();
+        for (TestableEntity known : REGISTRY.values()) {
+            if (known.matches(entity)) {
+                return known;
+            }
         }
 
         if (entity.getType() == EntityType.UNKNOWN) {
@@ -227,7 +208,12 @@ public final class Entities {
      * @return If is custom.
      */
     public static boolean isCustomEntity(@NotNull final Entity entity) {
-        return ENTITY_CACHE.get(entity).isPresent();
+        for (TestableEntity testable : REGISTRY.values()) {
+            if (testable.matches(entity)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

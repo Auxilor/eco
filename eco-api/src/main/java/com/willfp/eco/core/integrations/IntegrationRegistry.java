@@ -133,12 +133,6 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
      * @return If all integrations return true.
      */
     public boolean allSafely(@NotNull final Predicate<T> predicate) {
-        for (T integration : new HashSet<>(this.values())) {
-            Boolean result = executeSafely(() -> predicate.test(integration), integration);
-            if (result == null || !result) {
-                return false;
-            }
-        }
-        return true;
+        return !this.anySafely(predicate.negate());
     }
 }

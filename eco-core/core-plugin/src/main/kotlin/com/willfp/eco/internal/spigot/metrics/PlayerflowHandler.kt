@@ -36,8 +36,10 @@ class PlayerflowHandler(
             .POST(HttpRequest.BodyPublishers.ofString(body))
             .build()
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept { response ->
-            // Handle if needed
+        try {
+            client.send(request, HttpResponse.BodyHandlers.ofString())
+        } catch (e: Exception) {
+            // Silently fail
         }
     }
 }

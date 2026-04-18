@@ -421,11 +421,6 @@ public final class Items {
     }
 
     /**
-     * Cache for wrapped TestableItems to avoid creating new CustomItems with random keys.
-     */
-    private static final Map<TestableItem, CustomItem> WRAPPED_CACHE = new HashMap<>();
-
-    /**
      * Return a CustomItem instance for a given TestableItem.
      * <p>
      * Used internally since 6.10.0 when the registration moved from {@link CustomItem}
@@ -439,11 +434,11 @@ public final class Items {
         if (item instanceof CustomItem) {
             return (CustomItem) item;
         } else {
-            return WRAPPED_CACHE.computeIfAbsent(item, it -> new CustomItem(
-                    NamespacedKeyUtils.createEcoKey("wrapped_" + it.getClass().getSimpleName().toLowerCase() + "_" + Math.abs(it.hashCode())),
-                    it::matches,
-                    it.getItem()
-            ));
+            return new CustomItem(
+                    NamespacedKeyUtils.createEcoKey("wrapped_" + NumberUtils.randInt(0, 100000)),
+                    item::matches,
+                    item.getItem()
+            );
         }
     }
 

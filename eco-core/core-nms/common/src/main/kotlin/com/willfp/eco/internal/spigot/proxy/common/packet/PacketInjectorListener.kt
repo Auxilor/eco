@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.common.packet
 
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
-import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.removeFrame
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -31,8 +30,6 @@ object PacketInjectorListener : Listener {
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
         val player = event.player
-
-        removeFrame(player.uniqueId)
 
         val channel = player.toNMS().connection.connection.channel
 

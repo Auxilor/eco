@@ -78,11 +78,7 @@ public final class HashedItem {
             return false;
         }
 
-        if (o.hash != this.hash) {
-            return false;
-        }
-
-        return this.item.isSimilar(o.item);
+        return o.hash == this.hash;
     }
 
     /**

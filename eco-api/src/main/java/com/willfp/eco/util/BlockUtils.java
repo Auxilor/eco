@@ -7,7 +7,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,14 +17,6 @@ import java.util.Set;
  * Utilities / API methods for blocks.
  */
 public final class BlockUtils {
-    /**
-     * Cardinal block faces used for vein mining adjacency.
-     */
-    private static final Set<BlockFace> CARDINAL_FACES = EnumSet.of(
-            BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
-            BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
-    );
-
     /**
      * Get a set of all blocks in contact with each other of a specific type.
      *
@@ -54,7 +45,7 @@ public final class BlockUtils {
 
             blocks.add(currentBlock);
 
-            for (BlockFace face : CARDINAL_FACES) {
+            for (BlockFace face : BlockFace.values()) {
                 Block adjacentBlock = currentBlock.getRelative(face);
 
                 if (!blocks.contains(adjacentBlock) && allowedMaterials.contains(adjacentBlock.getType())) {

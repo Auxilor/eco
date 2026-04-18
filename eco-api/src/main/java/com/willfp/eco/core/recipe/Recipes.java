@@ -19,7 +19,6 @@ import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,31 +28,6 @@ import java.util.Optional;
 public final class Recipes {
 
     /**
-     * A key wrapping an ItemStack[] with proper hashCode/equals for use in caches.
-     */
-    private record MatrixKey(ItemStack[] matrix) {
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(matrix);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (!(obj instanceof MatrixKey other)) return false;
-            if (matrix.length != other.matrix.length) return false;
-            for (int i = 0; i < matrix.length; i++) {
-                ItemStack a = matrix[i];
-                ItemStack b = other.matrix[i];
-                if (a == null && b == null) continue;
-                if (a == null || b == null) return false;
-                if (!a.isSimilar(b)) return false;
-            }
-            return true;
-        }
-    }
-
-    /**
      * Registry of all recipes.
      */
     private static final BiMap<NamespacedKey, CraftingRecipe> RECIPES = HashBiMap.create();
@@ -61,10 +35,10 @@ public final class Recipes {
     /**
      * Cached recipes from matrix.
      */
-    private static final LoadingCache<MatrixKey, Optional<CraftingRecipe>> RECIPES_FROM_MATRIX = Caffeine.newBuilder()
+    private static final LoadingCache<ItemStack[], Optional<CraftingRecipe>> RECIPES_FROM_MATRIX = Caffeine.newBuilder()
             .maximumSize(2048L)
             .build(
-                    key -> RECIPES.values().stream().filter(recipe -> recipe.test(key.matrix())).findFirst()
+                    matrix -> RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst()
             );
 
     /**
@@ -95,7 +69,7 @@ public final class Recipes {
             return null;
         }
 
-        return RECIPES_FROM_MATRIX.get(new MatrixKey(matrix)).orElse(null);
+        return RECIPES_FROM_MATRIX.get(matrix).orElse(null);
     }
 
     /**

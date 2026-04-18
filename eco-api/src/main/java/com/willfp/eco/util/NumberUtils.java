@@ -190,11 +190,6 @@ public final class NumberUtils {
     }
 
     /**
-     * Cached DecimalFormat for 2 decimal places.
-     */
-    private static final ThreadLocal<DecimalFormat> FORMAT_2DP = ThreadLocal.withInitial(() -> new DecimalFormat("0.00"));
-
-    /**
      * Format double to string.
      *
      * @param toFormat The number to format.
@@ -202,7 +197,8 @@ public final class NumberUtils {
      */
     @NotNull
     public static String format(final double toFormat) {
-        String formatted = FORMAT_2DP.get().format(toFormat);
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formatted = df.format(toFormat);
 
         return formatted.endsWith("00") ? String.valueOf((long) toFormat) : formatted;
     }

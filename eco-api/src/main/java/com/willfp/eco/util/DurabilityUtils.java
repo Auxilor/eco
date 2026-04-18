@@ -28,17 +28,15 @@ public final class DurabilityUtils {
     public static void damageItem(@NotNull final Player player,
                                   @NotNull final ItemStack item,
                                   final int damage) {
-        ItemMeta rawMeta = item.getItemMeta();
-
-        if (rawMeta == null) {
+        if (item.getItemMeta() == null) {
             return;
         }
 
-        if (rawMeta.isUnbreakable()) {
+        if (item.getItemMeta().isUnbreakable()) {
             return;
         }
 
-        if (!(rawMeta instanceof Damageable meta)) {
+        if (!(item.getItemMeta() instanceof Damageable meta)) {
             return;
         }
 
@@ -75,17 +73,15 @@ public final class DurabilityUtils {
      */
     public static void damageItem(@NotNull final ItemStack item,
                                   final int damage) {
-        ItemMeta rawMeta = item.getItemMeta();
-
-        if (rawMeta == null) {
+        if (item.getItemMeta() == null) {
             return;
         }
 
-        if (rawMeta.isUnbreakable()) {
+        if (item.getItemMeta().isUnbreakable()) {
             return;
         }
 
-        if (!(rawMeta instanceof Damageable)) {
+        if (!(item.getItemMeta() instanceof Damageable)) {
             return;
         }
 
@@ -95,7 +91,7 @@ public final class DurabilityUtils {
         }
 
         // Suppression because when I fix it, it causes weird compile bugs.
-        @SuppressWarnings("PatternVariableCanBeUsed") Damageable meta = (Damageable) rawMeta;
+        @SuppressWarnings("PatternVariableCanBeUsed") Damageable meta = (Damageable) item.getItemMeta();
         meta.setDamage(meta.getDamage() + damage);
 
         if (meta.getDamage() >= item.getType().getMaxDurability()) {
@@ -117,17 +113,15 @@ public final class DurabilityUtils {
     public static void damageItemNoBreak(@NotNull final ItemStack item,
                                          final int damage,
                                          @NotNull final Player player) {
-        ItemMeta rawMeta2 = item.getItemMeta();
-
-        if (rawMeta2 == null) {
+        if (item.getItemMeta() == null) {
             return;
         }
 
-        if (rawMeta2.isUnbreakable()) {
+        if (item.getItemMeta().isUnbreakable()) {
             return;
         }
 
-        if (!(rawMeta2 instanceof Damageable meta)) {
+        if (!(item.getItemMeta() instanceof Damageable meta)) {
             return;
         }
 
@@ -153,17 +147,15 @@ public final class DurabilityUtils {
      */
     public static void repairItem(@NotNull final ItemStack item,
                                   final int repair) {
-        ItemMeta rawMeta3 = item.getItemMeta();
-
-        if (rawMeta3 == null) {
+        if (item.getItemMeta() == null) {
             return;
         }
 
-        if (rawMeta3.isUnbreakable()) {
+        if (item.getItemMeta().isUnbreakable()) {
             return;
         }
 
-        if (rawMeta3 instanceof Damageable meta) {
+        if (item.getItemMeta() instanceof Damageable meta) {
             meta.setDamage(Math.max(0, meta.getDamage() - repair));
 
             item.setItemMeta((ItemMeta) meta);

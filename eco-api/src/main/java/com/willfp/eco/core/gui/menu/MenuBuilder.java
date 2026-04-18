@@ -149,7 +149,7 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     default MenuBuilder defaultPage(final int page) {
-        return this.defaultPage(player -> page);
+        return this.maxPages(player -> page);
     }
 
     /**
