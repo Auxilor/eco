@@ -143,10 +143,9 @@ public final class Display {
 
         FastItemStack fast = FastItemStack.wrap(itemStack);
 
-        List<Component> lore = new ArrayList<>(fast.getLoreComponents());
-
-        if (!lore.isEmpty() && lore.removeIf(Display::isDisplayLine)) {
-            fast.setLoreComponents(lore);
+        List<String> lore = new ArrayList<>(fast.getLore());
+        if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(Display.PREFIX))) {
+            fast.setLore(lore);
         }
 
         for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
@@ -156,14 +155,6 @@ public final class Display {
         }
 
         return itemStack;
-    }
-
-    private static boolean isDisplayLine(@NotNull final Component line) {
-        // Display lines are tagged by prepending the "§z" PREFIX to their text content. Display
-        // modules only ever add legacy-safe lines, so we can identify them by inspecting the
-        // TextComponent content directly without round-tripping through legacy serialization
-        // (which would discard sprite/font/hover content on non-display lines we must preserve).
-        return line instanceof TextComponent textComponent && textComponent.content().startsWith(PREFIX);
     }
 
     /**
