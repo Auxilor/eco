@@ -3,22 +3,14 @@ package com.willfp.eco.internal.spigot.gui
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.gui.player
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.internal.gui.menu.EcoMenu
-import com.willfp.eco.internal.gui.menu.MenuHandler
-import com.willfp.eco.internal.gui.menu.asRenderedInventory
-import com.willfp.eco.internal.gui.menu.getMenu
-import com.willfp.eco.internal.gui.menu.renderedInventory
+import com.willfp.eco.internal.gui.menu.*
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.MenuUtils
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.ClickType
-import org.bukkit.event.inventory.InventoryAction
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.event.inventory.*
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.inventory.PlayerInventory
 
@@ -141,7 +133,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         menu.handleClose(event)
 
-        plugin.scheduler.run { MenuHandler.unregisterInventory(event.inventory) }
+        plugin.scheduler.runTask(event.player) { MenuHandler.unregisterInventory(event.inventory) }
     }
 
     @EventHandler(
@@ -234,6 +226,6 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         val rendered = this.renderedInventory ?: return
 
         rendered.render()
-        plugin.scheduler.run { rendered.render() }
+        plugin.scheduler.runTask(this) { rendered.render() }
     }
 }

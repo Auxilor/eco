@@ -9,7 +9,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
-object PlayerHealthPatch: Listener {
+object PlayerHealthPatch : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun handlePlayerQuit(event: PlayerQuitEvent) {
         event.player.saveHealth()
@@ -17,9 +17,10 @@ object PlayerHealthPatch: Listener {
 
     @EventHandler
     fun handlePlayerJoin(event: PlayerJoinEvent) {
+        val player = event.player
         if (Eco.get().ecoPlugin.configYml.getBool("enable-health-fix")) {
-            Eco.get().ecoPlugin.scheduler.runLater(5L) {
-                event.player.health = event.player.savedHealth
+            Eco.get().ecoPlugin.scheduler.runTaskLater(player, 5L) {
+                player.health = player.savedHealth
             }
         }
     }

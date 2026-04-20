@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.drops
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.drops.DropQueue
 import com.willfp.eco.core.events.DropQueuePushEvent
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
@@ -68,24 +69,26 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
         val world = location.world!!
         location = location.add(0.5, 0.5, 0.5)
         items.removeIf { itemStack: ItemStack -> itemStack.type == Material.AIR }
-        if (hasTelekinesis) {
-            if (!items.isEmpty()) {
-                val leftover = player.inventory.addItem(*items.toTypedArray())
-                for (drop in leftover.values) {
-                    world.dropItem(location, drop!!).velocity = Vector()
+        Eco.get().ecoPlugin.scheduler.runTask(location) { // folia issue, drops need to be region scheduled
+            if (hasTelekinesis) {
+                if (!items.isEmpty()) {
+                    val leftover = player.inventory.addItem(*items.toTypedArray())
+                    for (drop in leftover.values) {
+                        world.dropItem(location, drop!!).velocity = Vector()
+                    }
                 }
-            }
-            if (xp > 0)
-                player.giveExpAndApplyMending(xp, true)
-        } else {
-            if (!items.isEmpty()) {
-                for (drop in items) {
-                    world.dropItem(location, drop).velocity = Vector()
+                if (xp > 0)
+                    player.giveExpAndApplyMending(xp, true)
+            } else {
+                if (!items.isEmpty()) {
+                    for (drop in items) {
+                        world.dropItem(location, drop).velocity = Vector()
+                    }
                 }
-            }
-            if (xp > 0) {
-                val orb = world.spawnEntity(location, EntityType.EXPERIENCE_ORB) as ExperienceOrb
-                orb.experience = xp
+                if (xp > 0) {
+                    val orb = world.spawnEntity(location, EntityType.EXPERIENCE_ORB) as ExperienceOrb
+                    orb.experience = xp
+                }
             }
         }
     }

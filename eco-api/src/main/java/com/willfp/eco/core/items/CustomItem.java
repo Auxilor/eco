@@ -52,11 +52,11 @@ public class CustomItem implements TestableItem {
         immediately after due to registration order; so eco waits until the item should be
         working in order to check.
          */
-        Eco.get().getEcoPlugin().getScheduler().runLater(() -> {
+        Eco.get().getEcoPlugin().getScheduler().runTaskLater(1, () -> {
             if (!matches(getItem())) {
                 Eco.get().getEcoPlugin().getLogger().severe("Item with key " + key + " is invalid!");
             }
-        }, 1);
+        });
     }
 
     @Override

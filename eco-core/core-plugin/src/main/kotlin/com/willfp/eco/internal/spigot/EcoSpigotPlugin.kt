@@ -22,105 +22,13 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
 import com.willfp.eco.core.price.Prices
-import com.willfp.eco.internal.blocks.BlockArgParserAgeable
-import com.willfp.eco.internal.blocks.BlockArgParserAnaloguePowerable
-import com.willfp.eco.internal.blocks.BlockArgParserAttachable
-import com.willfp.eco.internal.blocks.BlockArgParserBamboo
-import com.willfp.eco.internal.blocks.BlockArgParserBisected
-import com.willfp.eco.internal.blocks.BlockArgParserBubbleColumn
-import com.willfp.eco.internal.blocks.BlockArgParserCake
-import com.willfp.eco.internal.blocks.BlockArgParserCampfire
-import com.willfp.eco.internal.blocks.BlockArgParserCaveVinesPlant
-import com.willfp.eco.internal.blocks.BlockArgParserChest
-import com.willfp.eco.internal.blocks.BlockArgParserCommandBlock
-import com.willfp.eco.internal.blocks.BlockArgParserComparator
-import com.willfp.eco.internal.blocks.BlockArgParserCrafter
-import com.willfp.eco.internal.blocks.BlockArgParserDaylightDetector
-import com.willfp.eco.internal.blocks.BlockArgParserDirectional
-import com.willfp.eco.internal.blocks.BlockArgParserDispenser
-import com.willfp.eco.internal.blocks.BlockArgParserDoor
-import com.willfp.eco.internal.blocks.BlockArgParserEndPortalFrame
-import com.willfp.eco.internal.blocks.BlockArgParserFaceAttachable
-import com.willfp.eco.internal.blocks.BlockArgParserFarmland
-import com.willfp.eco.internal.blocks.BlockArgParserGate
-import com.willfp.eco.internal.blocks.BlockArgParserHangable
-import com.willfp.eco.internal.blocks.BlockArgParserHangingMoss
-import com.willfp.eco.internal.blocks.BlockArgParserJigsaw
-import com.willfp.eco.internal.blocks.BlockArgParserLevelled
-import com.willfp.eco.internal.blocks.BlockArgParserLightable
-import com.willfp.eco.internal.blocks.BlockArgParserMossyCarpet
-import com.willfp.eco.internal.blocks.BlockArgParserMultipleFacing
-import com.willfp.eco.internal.blocks.BlockArgParserNoteBlock
-import com.willfp.eco.internal.blocks.BlockArgParserOpenable
-import com.willfp.eco.internal.blocks.BlockArgParserOrientable
-import com.willfp.eco.internal.blocks.BlockArgParserPointedDripstone
-import com.willfp.eco.internal.blocks.BlockArgParserPowerable
-import com.willfp.eco.internal.blocks.BlockArgParserQuantity
-import com.willfp.eco.internal.blocks.BlockArgParserRail
-import com.willfp.eco.internal.blocks.BlockArgParserRedstoneWire
-import com.willfp.eco.internal.blocks.BlockArgParserRepeater
-import com.willfp.eco.internal.blocks.BlockArgParserRespawnAnchor
-import com.willfp.eco.internal.blocks.BlockArgParserRotatable
-import com.willfp.eco.internal.blocks.BlockArgParserScaffolding
-import com.willfp.eco.internal.blocks.BlockArgParserSculkSensor
-import com.willfp.eco.internal.blocks.BlockArgParserSculkShrieker
-import com.willfp.eco.internal.blocks.BlockArgParserSlab
-import com.willfp.eco.internal.blocks.BlockArgParserSnow
-import com.willfp.eco.internal.blocks.BlockArgParserSnowy
-import com.willfp.eco.internal.blocks.BlockArgParserStairs
-import com.willfp.eco.internal.blocks.BlockArgParserStructureBlock
-import com.willfp.eco.internal.blocks.BlockArgParserTNT
-import com.willfp.eco.internal.blocks.BlockArgParserTrial
-import com.willfp.eco.internal.blocks.BlockArgParserTripwire
-import com.willfp.eco.internal.blocks.BlockArgParserWall
-import com.willfp.eco.internal.blocks.BlockArgParserWaterlogged
-import com.willfp.eco.internal.blocks.tags.VanillaBlockTags
 import com.willfp.eco.core.recipe.Recipes
+import com.willfp.eco.internal.blocks.*
+import com.willfp.eco.internal.blocks.tags.VanillaBlockTags
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
-import com.willfp.eco.internal.entities.EntityArgParserAdult
-import com.willfp.eco.internal.entities.EntityArgParserAttackDamage
-import com.willfp.eco.internal.entities.EntityArgParserAttackSpeed
-import com.willfp.eco.internal.entities.EntityArgParserBaby
-import com.willfp.eco.internal.entities.EntityArgParserCharged
-import com.willfp.eco.internal.entities.EntityArgParserEquipment
-import com.willfp.eco.internal.entities.EntityArgParserExplosionRadius
-import com.willfp.eco.internal.entities.EntityArgParserFirework
-import com.willfp.eco.internal.entities.EntityArgParserFlySpeed
-import com.willfp.eco.internal.entities.EntityArgParserFollowRange
-import com.willfp.eco.internal.entities.EntityArgParserHealth
-import com.willfp.eco.internal.entities.EntityArgParserJumpStrength
-import com.willfp.eco.internal.entities.EntityArgParserKnockback
-import com.willfp.eco.internal.entities.EntityArgParserKnockbackResistance
-import com.willfp.eco.internal.entities.EntityArgParserName
-import com.willfp.eco.internal.entities.EntityArgParserNoAI
-import com.willfp.eco.internal.entities.EntityArgParserScale
-import com.willfp.eco.internal.entities.EntityArgParserSilent
-import com.willfp.eco.internal.entities.EntityArgParserSize
-import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
-import com.willfp.eco.internal.entities.EntityArgParserSpeed
-import com.willfp.eco.internal.items.ArgParserAttribute
-import com.willfp.eco.internal.items.ArgParserColor
-import com.willfp.eco.internal.items.ArgParserCustomModelData
-import com.willfp.eco.internal.items.ArgParserEnchantment
-import com.willfp.eco.internal.items.ArgParserEntity
-import com.willfp.eco.internal.items.ArgParserFireResistant
-import com.willfp.eco.internal.items.ArgParserFireworkBuilder
-import com.willfp.eco.internal.items.ArgParserFireworkPower
-import com.willfp.eco.internal.items.ArgParserFlag
-import com.willfp.eco.internal.items.ArgParserGlider
-import com.willfp.eco.internal.items.ArgParserGlint
-import com.willfp.eco.internal.items.ArgParserHead
-import com.willfp.eco.internal.items.ArgParserItemModel
-import com.willfp.eco.internal.items.ArgParserItemName
-import com.willfp.eco.internal.items.ArgParserMaxDamage
-import com.willfp.eco.internal.items.ArgParserMaxStackSize
-import com.willfp.eco.internal.items.ArgParserName
-import com.willfp.eco.internal.items.ArgParserPotionBuilder
-import com.willfp.eco.internal.items.ArgParserTexture
-import com.willfp.eco.internal.items.ArgParserTooltipStyle
-import com.willfp.eco.internal.items.ArgParserTrim
-import com.willfp.eco.internal.items.ArgParserUnbreakable
+import com.willfp.eco.internal.entities.*
+import com.willfp.eco.internal.items.*
 import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
@@ -134,13 +42,7 @@ import com.willfp.eco.internal.spigot.data.PlayerBlockListener
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.ProfileLoadListener
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
-import com.willfp.eco.internal.spigot.eventlisteners.AutocrafterPatch
-import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
-import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
-import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
-import com.willfp.eco.internal.spigot.eventlisteners.PlayerHealthPatch
-import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
-import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
+import com.willfp.eco.internal.spigot.eventlisteners.*
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.internal.spigot.gui.GUIListener
@@ -150,39 +52,13 @@ import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV10
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefHuskClaims
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefHuskTowns
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSkyblock
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefKingdoms
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefPvPManager
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefWorldGuard
+import com.willfp.eco.internal.spigot.integrations.antigrief.*
 import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksCraftEngine
 import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksItemsAdder
 import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksNexo
 import com.willfp.eco.internal.spigot.integrations.customblocks.CustomBlocksOraxen
 import com.willfp.eco.internal.spigot.integrations.customentities.CustomEntitiesMythicMobs
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCraftEngine
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsDenizen
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsExecutableItems
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemBridge
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsAdder
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsNexo
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
+import com.willfp.eco.internal.spigot.integrations.customitems.*
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
@@ -197,11 +73,7 @@ import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryCoinsEngine
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEconomy
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
-import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
-import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
-import com.willfp.eco.internal.spigot.integrations.shop.ShopExcellentShop
-import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
-import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
+import com.willfp.eco.internal.spigot.integrations.shop.*
 import com.willfp.eco.internal.spigot.metrics.PlayerflowHandler
 import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
@@ -419,7 +291,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             profileHandler.profileWriter.startTickingSaves()
         }
 
-        this.scheduler.runTimer(
+        this.scheduler.runTaskTimer(
             this.configYml.getInt("display-frame-ttl").toLong(),
             this.configYml.getInt("display-frame-ttl").toLong(),
         ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
@@ -428,7 +300,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             PlayerflowHandler(this.scheduler).startTicking()
         }
 
-        this.scheduler.runTimer(1L, 20L) {
+        this.scheduler.runTaskTimer(1L, 20L) {
             Recipes.checkBatching()
         }
     }

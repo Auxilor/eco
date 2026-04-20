@@ -18,7 +18,7 @@ class PlayerflowHandler(
     private val scheduler: Scheduler
 ) {
     internal fun startTicking() {
-        scheduler.runAsyncTimer(1200L, 1200L) {
+        scheduler.runTaskAsyncTimer(1200L, 1200L) {
             makeRequest()
         }
     }

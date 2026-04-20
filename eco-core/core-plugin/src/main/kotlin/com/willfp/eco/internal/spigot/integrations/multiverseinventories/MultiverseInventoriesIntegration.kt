@@ -13,7 +13,7 @@ class MultiverseInventoriesIntegration(
     @EventHandler
     fun onWorldChange(event: WorldChangeShareHandlingEvent) {
         val before = event.player.inventory.armorContents.toMutableList()
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.runTask(event.player) {
             val after = event.player.inventory.armorContents.toMutableList()
             Bukkit.getPluginManager().callEvent(ArmorChangeEvent(event.player, before, after))
         }

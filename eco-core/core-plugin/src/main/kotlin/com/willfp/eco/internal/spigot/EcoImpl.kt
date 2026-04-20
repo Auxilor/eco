@@ -1,9 +1,6 @@
 package com.willfp.eco.internal.spigot
 
-import com.willfp.eco.core.Eco
-import com.willfp.eco.core.EcoPlugin
-import com.willfp.eco.core.PluginLike
-import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.*
 import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
@@ -30,7 +27,8 @@ import com.willfp.eco.internal.events.EcoEventManager
 import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
-import com.willfp.eco.internal.factory.EcoRunnableFactory
+import com.willfp.eco.internal.factory.EcoRunnableFactoryFolia
+import com.willfp.eco.internal.factory.EcoRunnableFactorySpigot
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
@@ -41,7 +39,8 @@ import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.logging.NOOPLogger
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
-import com.willfp.eco.internal.scheduling.EcoScheduler
+import com.willfp.eco.internal.schedule.EcoSchedulerFolia
+import com.willfp.eco.internal.scheduling.EcoSchedulerSpigot
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
@@ -89,7 +88,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     )
 
     override fun createScheduler(plugin: EcoPlugin) =
-        EcoScheduler(plugin)
+        if (Prerequisite.HAS_FOLIA.isMet) EcoSchedulerFolia(plugin) else EcoSchedulerSpigot(plugin)
 
     override fun createEventManager(plugin: EcoPlugin) =
         EcoEventManager(plugin)
@@ -101,7 +100,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         EcoMetadataValueFactory(plugin)
 
     override fun createRunnableFactory(plugin: EcoPlugin) =
-        EcoRunnableFactory(plugin)
+        if (Prerequisite.HAS_FOLIA.isMet) EcoRunnableFactoryFolia(plugin) else EcoRunnableFactorySpigot(plugin)
 
     override fun createExtensionLoader(plugin: EcoPlugin) =
         EcoExtensionLoader(plugin)

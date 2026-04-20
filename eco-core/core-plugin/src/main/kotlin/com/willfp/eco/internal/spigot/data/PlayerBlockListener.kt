@@ -7,11 +7,7 @@ import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.event.block.BlockMultiPlaceEvent
-import org.bukkit.event.block.BlockPistonExtendEvent
-import org.bukkit.event.block.BlockPistonRetractEvent
-import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.block.*
 import org.bukkit.event.world.StructureGrowEvent
 import org.bukkit.persistence.PersistentDataType
 
@@ -36,7 +32,7 @@ class PlayerBlockListener(
     fun onBreak(event: BlockBreakEvent) {
         val block = event.block
 
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.runTask(block.location) {
             removeKey(block)
         }
     }
@@ -45,7 +41,7 @@ class PlayerBlockListener(
     fun onGrow(event: StructureGrowEvent) {
         val block = event.location.block
 
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.runTask(event.location) {
             removeKey(block)
         }
     }
@@ -62,7 +58,7 @@ class PlayerBlockListener(
             }
         }
 
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.runTask(event.block.location) {
             for (loc in toRemove) {
                 removeKey(loc)
             }
@@ -85,7 +81,7 @@ class PlayerBlockListener(
             }
         }
 
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.runTask(event.block.location) {
             for (loc in toRemove) {
                 removeKey(loc)
             }

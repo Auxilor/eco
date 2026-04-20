@@ -5,16 +5,12 @@ import com.willfp.eco.internal.spigot.ServerLocking
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlerFactory
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlers
-import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistentDataHandler
-import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMySQLPersistentDataHandler
-import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
-import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
-import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
+import com.willfp.eco.internal.spigot.data.handlers.impl.*
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoPlayerProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoServerProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.serverProfileUUID
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
@@ -95,7 +91,7 @@ class ProfileHandler(
         ServerLocking.lock("Migrating player data! Check console for more information.")
 
         // Run after 5 ticks to allow plugins to load their data keys
-        plugin.scheduler.runLater(5) {
+        plugin.scheduler.runTaskLater(5) {
             doMigrate(fromFactory)
 
             plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)

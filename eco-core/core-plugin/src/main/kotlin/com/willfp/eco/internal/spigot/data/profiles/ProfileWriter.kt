@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.data.profiles
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /*
@@ -28,7 +28,7 @@ class ProfileWriter(
     }
 
     fun startTickingSaves() {
-        plugin.scheduler.runTimer(20, saveInterval) {
+        plugin.scheduler.runTaskTimer(20, saveInterval) {
             val iterator = valuesToWrite.iterator()
 
             while (iterator.hasNext()) {
@@ -45,7 +45,7 @@ class ProfileWriter(
     }
 
     fun startTickingAutosave() {
-        plugin.scheduler.runTimer(autosaveInterval, autosaveInterval) {
+        plugin.scheduler.runTaskTimer(autosaveInterval, autosaveInterval) {
             if (handler.localHandler.shouldAutosave()) {
                 handler.localHandler.save()
             }
