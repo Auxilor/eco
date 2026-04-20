@@ -40,7 +40,7 @@ dependencies {
     compileOnly("net.momirealms:craft-engine-core:0.0.66")
     compileOnly("net.momirealms:craft-engine-bukkit:0.0.66")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
-    compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
+    compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:3.0.0")
     compileOnly("net.essentialsx:EssentialsX:2.21.2") {
         exclude(group = "*", module = "*")
     }
