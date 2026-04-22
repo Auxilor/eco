@@ -42,21 +42,19 @@ public interface PageBuilder {
         return this.addComponent(row, column, slot);
     }
 
-
     /**
      * Add a component.
      *
-     * @param layer     The layer.
+     * @param layer     The layer, see {@link MenuLayer} for constants.
      * @param row       The row of the top left corner.
      * @param column    The column of the top left corner.
      * @param component The component.
      * @return The builder.
      */
-    PageBuilder addComponent(@NotNull MenuLayer layer,
+    PageBuilder addComponent(int layer,
                              int row,
                              int column,
                              @NotNull GUIComponent component);
-
 
     /**
      * Add a component.

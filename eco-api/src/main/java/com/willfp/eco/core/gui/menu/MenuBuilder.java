@@ -60,7 +60,7 @@ public interface MenuBuilder extends PageBuilder {
      * @return The builder.
      */
     @Override
-    MenuBuilder addComponent(@NotNull MenuLayer layer,
+    MenuBuilder addComponent(int layer,
                              int row,
                              int column,
                              @NotNull GUIComponent component);
