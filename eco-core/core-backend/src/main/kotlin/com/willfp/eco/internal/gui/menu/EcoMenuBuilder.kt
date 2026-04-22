@@ -5,7 +5,6 @@ import com.willfp.eco.core.gui.menu.CloseHandler
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuEventHandler
-import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.util.StringUtils
 import org.bukkit.entity.Player
@@ -17,7 +16,7 @@ class EcoMenuBuilder(
     private val columns: Int
 ) : MenuBuilder {
     private var title = "Menu"
-    private val components = mutableMapOf<MenuLayer, MutableMap<GUIPosition, MutableList<GUIComponent>>>()
+    private val components = mutableMapOf<Int, MutableMap<GUIPosition, MutableList<GUIComponent>>>()
     private val onClose = mutableListOf<CloseHandler>()
     private val onOpen = mutableListOf<OpenHandler>()
     private val onRender = mutableListOf<(Player, Menu) -> Unit>()
@@ -37,7 +36,7 @@ class EcoMenuBuilder(
         return title
     }
 
-    override fun addComponent(layer: MenuLayer, row: Int, column: Int, component: GUIComponent): MenuBuilder {
+    override fun addComponent(layer: Int, row: Int, column: Int, component: GUIComponent): MenuBuilder {
         require(row in 1..rows) { "Invalid row number!" }
         require(column in 1..columns) { "Invalid column number!" }
 
@@ -95,10 +94,10 @@ class EcoMenuBuilder(
         val layeredComponents = LayeredComponents()
 
         // 5 nested for loops? Shut up. Silence. Quiet.
-        for (layer in MenuLayer.entries) {
+        for ((layer, layerComponents) in components.entries.sortedBy { it.key }) {
             for (row in (1..rows)) {
                 for (column in (1..columns)) {
-                    for ((anchor, availableComponents) in components.computeIfAbsent(layer) { mutableMapOf() }) {
+                    for ((anchor, availableComponents) in layerComponents) {
                         for (component in availableComponents) {
                             val rowOffset = 1 + row - anchor.row
                             val columnOffset = 1 + column - anchor.column
