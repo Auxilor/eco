@@ -21,7 +21,7 @@ class EcoPluginCommand(
         val knownAliases = command?.aliases ?: aliases
 
         if (command == null) {
-            unregister()
+            unregisterWithoutSync()
             commandMap.register(plugin.name.lowercase(), DelegatedBukkitCommand(this))
         } else {
             command.setExecutor(this)
@@ -34,10 +34,13 @@ class EcoPluginCommand(
     }
 
     override fun unregister() {
+        unregisterWithoutSync()
+        Eco.get().syncCommands()
+    }
+
+    private fun unregisterWithoutSync() {
         commandMap.getCommand(name)?.unregister(commandMap)
         Eco.get().unregisterCommand(this)
-
-        Eco.get().syncCommands()
     }
 
     override fun getAliases(): List<String> = parentDelegate.aliases

@@ -340,8 +340,29 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         return this.getProxy(CommonsInitializerProxy::class.java).removeBukkitRecipeNoResend(key)
     }
 
-    override fun syncCommands() =
+    private var batchDepth = 0
+    private var syncDuringBatch = false
+
+    override fun syncCommands() {
+        if (batchDepth > 0) {
+            syncDuringBatch = true
+            return
+        }
         this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+    }
+
+    override fun beginCommandBatch() {
+        batchDepth++
+    }
+
+    override fun endCommandBatch() {
+        check(batchDepth > 0) { "endCommandBatch() called without matching beginCommandBatch()" }
+        batchDepth--
+        if (batchDepth == 0 && syncDuringBatch) {
+            syncDuringBatch = false
+            this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+        }
+    }
 
     override fun unregisterCommand(command: PluginCommandBase) =
         this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)
