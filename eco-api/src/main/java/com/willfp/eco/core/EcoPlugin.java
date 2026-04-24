@@ -435,7 +435,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.loadListeners().forEach(listener -> this.getEventManager().registerListener(listener));
         this.loadPacketListeners().forEach(listener -> this.getEventManager().registerPacketListener(listener));
 
-        this.loadPluginCommands().forEach(PluginCommand::register);
+        Eco.get().beginCommandBatch();
+        try {
+            this.loadPluginCommands().forEach(PluginCommand::register);
+        } finally {
+            Eco.get().endCommandBatch();
+        }
 
         // Run preliminary reload to resolve load order issues
         this.getScheduler().runTaskLater(() -> {
