@@ -570,6 +570,23 @@ public interface Eco {
     void syncCommands();
 
     /**
+     * Begin a batch of command (un)registrations. While a batch is open,
+     * {@link #syncCommands()} calls are deferred and coalesced into a single
+     * sync when the batch closes.
+     *
+     * <p>Nestable — requires a matching {@link #endCommandBatch()} per call.
+     * Must be called from the main thread.
+     */
+    void beginCommandBatch();
+
+    /**
+     * End a batch opened with {@link #beginCommandBatch()}. When the outermost
+     * batch closes, a single {@link #syncCommands()} runs if any sync was
+     * requested during the batch.
+     */
+    void endCommandBatch();
+
+    /**
      * Unregister a command.
      *
      * @param command The command.
