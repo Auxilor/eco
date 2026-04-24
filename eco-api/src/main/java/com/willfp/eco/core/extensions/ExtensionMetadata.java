@@ -1,9 +1,8 @@
 package com.willfp.eco.core.extensions;
 
 import com.willfp.eco.core.version.Version;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The extension's metadata.

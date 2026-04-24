@@ -4,13 +4,12 @@ import com.willfp.eco.core.gui.slot.functional.CaptiveFilter;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
 import com.willfp.eco.core.gui.slot.functional.SlotModifier;
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
 
 /**
  * Builder to create slots.

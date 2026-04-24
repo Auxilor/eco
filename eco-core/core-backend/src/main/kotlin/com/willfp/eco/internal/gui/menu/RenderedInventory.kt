@@ -5,10 +5,10 @@ import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.openMenu
+import java.util.UUID
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
 
 private val trackedForceRendered = mutableMapOf<UUID, RenderedInventory>()
 

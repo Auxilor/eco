@@ -1,12 +1,11 @@
 package com.willfp.eco.core.drops;
 
 import com.willfp.eco.core.Eco;
+import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 /**
  * A {@link DropQueue} is a set of drops linked to player.

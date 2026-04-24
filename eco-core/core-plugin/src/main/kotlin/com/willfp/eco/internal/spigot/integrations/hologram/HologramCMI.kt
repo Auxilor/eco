@@ -4,9 +4,9 @@ import com.Zrips.CMI.CMI
 import com.Zrips.CMI.Modules.Holograms.CMIHologram
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramIntegration
+import java.util.UUID
 import net.Zrips.CMILib.Container.CMILocation
 import org.bukkit.Location
-import java.util.UUID
 
 @Suppress("DEPRECATION")
 class HologramCMI : HologramIntegration {

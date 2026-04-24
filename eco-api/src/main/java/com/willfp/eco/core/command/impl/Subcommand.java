@@ -3,9 +3,8 @@ package com.willfp.eco.core.command.impl;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A command implementation that must exist as a subcommand (i.e. cannot be registered directly).

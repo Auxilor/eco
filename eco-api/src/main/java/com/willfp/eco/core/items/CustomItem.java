@@ -1,12 +1,11 @@
 package com.willfp.eco.core.items;
 
 import com.willfp.eco.core.Eco;
+import java.util.function.Predicate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 /**
  * A custom item has 3 components.

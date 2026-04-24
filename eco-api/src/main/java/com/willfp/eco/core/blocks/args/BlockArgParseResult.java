@@ -1,12 +1,10 @@
 package com.willfp.eco.core.blocks.args;
 
 import com.willfp.eco.core.entities.args.EntityArgParser;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The result of an arg parses.

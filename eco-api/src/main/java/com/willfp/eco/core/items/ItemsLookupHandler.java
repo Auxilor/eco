@@ -3,10 +3,9 @@ package com.willfp.eco.core.items;
 import com.willfp.eco.core.lookup.LookupHandler;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handle item lookup strings.

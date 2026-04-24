@@ -3,10 +3,10 @@ package com.willfp.eco.internal.schedule
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.scheduling.EcoWrappedTask
 import com.willfp.eco.core.scheduling.RunnableTask
+import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import java.util.concurrent.TimeUnit
 
 abstract class EcoRunnableTaskFolia(protected val plugin: EcoPlugin) : RunnableTask {
     private var task: EcoWrappedTaskFolia? = null

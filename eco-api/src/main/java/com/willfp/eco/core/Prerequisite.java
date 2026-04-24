@@ -1,12 +1,11 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.util.ClassUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A prerequisite is a requirement for something.

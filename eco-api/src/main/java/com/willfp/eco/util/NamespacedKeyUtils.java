@@ -1,11 +1,10 @@
 package com.willfp.eco.util;
 
 import com.willfp.eco.core.Eco;
+import java.util.Objects;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * Utilities / API methods for {@link NamespacedKey}s.

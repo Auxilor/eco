@@ -2,10 +2,10 @@ package com.willfp.eco.internal.scheduling
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.scheduling.Scheduler
+import java.util.concurrent.FutureTask
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import java.util.concurrent.FutureTask
 
 class EcoSchedulerSpigot(private val plugin: EcoPlugin) : Scheduler {
     override fun runTaskLater(

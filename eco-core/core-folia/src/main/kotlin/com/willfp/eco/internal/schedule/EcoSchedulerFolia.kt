@@ -3,12 +3,12 @@ package com.willfp.eco.internal.schedule
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.scheduling.EcoWrappedTask
 import com.willfp.eco.core.scheduling.Scheduler
+import java.util.concurrent.FutureTask
+import java.util.concurrent.TimeUnit
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
-import java.util.concurrent.FutureTask
-import java.util.concurrent.TimeUnit
 
 class EcoSchedulerFolia(private val plugin: EcoPlugin) : Scheduler {
     @Deprecated("Deprecated")

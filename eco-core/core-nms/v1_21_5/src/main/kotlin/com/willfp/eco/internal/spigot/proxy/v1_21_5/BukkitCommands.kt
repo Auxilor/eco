@@ -2,11 +2,11 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_5
 
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
+import java.lang.reflect.Field
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.SimpleCommandMap
 import org.bukkit.craftbukkit.CraftServer
-import java.lang.reflect.Field
 
 class BukkitCommands : BukkitCommandsProxy {
     private val knownCommandsField: Field by lazy {

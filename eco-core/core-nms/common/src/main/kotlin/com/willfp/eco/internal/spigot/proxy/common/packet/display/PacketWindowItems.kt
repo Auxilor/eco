@@ -9,11 +9,11 @@ import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 
 open class PacketWindowItems(
     private val plugin: EcoPlugin

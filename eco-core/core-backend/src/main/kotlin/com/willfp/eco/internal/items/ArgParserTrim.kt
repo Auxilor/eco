@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.items.args.LookupArgParser
+import java.util.function.Predicate
 import org.bukkit.NamespacedKey
 import org.bukkit.Registry
 import org.bukkit.inventory.ItemStack
@@ -9,7 +10,6 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.trim.ArmorTrim
 import org.bukkit.inventory.meta.trim.TrimMaterial
 import org.bukkit.inventory.meta.trim.TrimPattern
-import java.util.function.Predicate
 
 object ArgParserTrim : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {

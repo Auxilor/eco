@@ -1,5 +1,7 @@
 package com.willfp.eco.core.items.builder;
 
+import java.util.List;
+import java.util.function.Supplier;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -7,9 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Interface for all item builders.

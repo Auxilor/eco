@@ -1,12 +1,11 @@
 package com.willfp.eco.core.items.args;
 
 import com.willfp.eco.core.items.TestableItem;
+import java.util.function.Predicate;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 /**
  * An argument parser should generate the predicate as well

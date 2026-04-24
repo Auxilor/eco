@@ -3,16 +3,10 @@ package com.willfp.eco.core.data.keys;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.data.handlers.DataTypeSerializer;
 import com.willfp.eco.core.data.handlers.PersistentDataHandler;
+import java.math.BigDecimal;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 /**
  * All storable data key types.

@@ -2,9 +2,9 @@ package com.willfp.eco.internal.spigot.integrations.hologram
 
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramIntegration
+import java.util.UUID
 import me.gholo.api.GHoloAPI
 import org.bukkit.Location
-import java.util.UUID
 
 class HologramGHolo : HologramIntegration {
     companion object {

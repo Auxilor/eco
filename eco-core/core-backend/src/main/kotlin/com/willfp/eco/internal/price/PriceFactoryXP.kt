@@ -4,9 +4,9 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
-import org.bukkit.entity.Player
 import java.util.UUID
 import kotlin.math.roundToInt
+import org.bukkit.entity.Player
 
 private fun getXPNeededForLevel(level: Int): Int {
     // XP Formula from NMS Player

@@ -1,11 +1,10 @@
 package com.willfp.eco.core.proxy;
 
 import com.willfp.eco.core.version.Version;
-import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.List;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Proxy / NMS constants.

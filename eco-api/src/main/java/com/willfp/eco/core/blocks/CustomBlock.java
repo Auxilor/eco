@@ -1,14 +1,13 @@
 package com.willfp.eco.core.blocks;
 
 import com.google.common.base.Preconditions;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * A custom block has 3 components.

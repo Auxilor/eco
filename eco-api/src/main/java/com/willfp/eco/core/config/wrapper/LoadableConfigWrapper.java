@@ -1,11 +1,10 @@
 package com.willfp.eco.core.config.wrapper;
 
 import com.willfp.eco.core.config.interfaces.LoadableConfig;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrapper to handle the backend loadable yaml config implementations.

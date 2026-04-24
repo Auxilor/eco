@@ -1,11 +1,11 @@
 package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.items.args.LookupArgParser
+import java.util.function.Predicate
 import org.bukkit.Bukkit
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
-import java.util.function.Predicate
 
 object ArgParserHead : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {

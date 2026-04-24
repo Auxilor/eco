@@ -1,14 +1,13 @@
 package com.willfp.eco.core.web;
 
 import com.willfp.eco.core.EcoPlugin;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to check for updates of a plugin on spigot.

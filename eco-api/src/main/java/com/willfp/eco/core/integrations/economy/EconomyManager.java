@@ -1,10 +1,9 @@
 package com.willfp.eco.core.integrations.economy;
 
 import com.willfp.eco.core.integrations.IntegrationRegistry;
+import java.math.BigDecimal;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-
-import java.math.BigDecimal;
 
 /**
  * Class to handle economy.

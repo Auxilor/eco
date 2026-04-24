@@ -1,6 +1,10 @@
 package com.willfp.eco.internal.spigot
 
-import com.willfp.eco.core.*
+import com.willfp.eco.core.Eco
+import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.PluginLike
+import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
@@ -48,7 +52,21 @@ import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
 import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
-import com.willfp.eco.internal.spigot.proxies.*
+import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
+import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxies.SkullProxy
+import com.willfp.eco.internal.spigot.proxies.TPSProxy
+import java.net.URLClassLoader
+import java.util.UUID
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -61,8 +79,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
-import java.net.URLClassLoader
-import java.util.*
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 

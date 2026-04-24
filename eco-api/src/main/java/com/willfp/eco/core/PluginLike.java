@@ -1,11 +1,10 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.core.config.updating.ConfigHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents any class that acts like a plugin, for example {@link EcoPlugin}

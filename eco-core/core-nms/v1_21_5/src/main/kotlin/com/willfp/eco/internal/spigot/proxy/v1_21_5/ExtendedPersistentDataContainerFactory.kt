@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_5
 
 import com.willfp.eco.core.data.ExtendedPersistentDataContainer
 import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
+import java.lang.reflect.Field
 import net.minecraft.nbt.Tag
 import org.bukkit.Material
 import org.bukkit.craftbukkit.inventory.CraftItemStack
@@ -10,7 +11,6 @@ import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import java.lang.reflect.Field
 
 class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFactoryProxy {
     private val registry: CraftPersistentDataTypeRegistry

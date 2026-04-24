@@ -2,7 +2,7 @@ package com.willfp.eco.internal.spigot.data.profiles
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 /*

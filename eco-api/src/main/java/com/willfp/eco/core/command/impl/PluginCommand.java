@@ -4,9 +4,8 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.PluginCommandBase;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * PluginCommands are the class to be used instead of CommandExecutor, they function as the base

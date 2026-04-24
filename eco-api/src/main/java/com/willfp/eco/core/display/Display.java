@@ -4,8 +4,7 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.integrations.guidetection.GUIDetectionManager;
 import com.willfp.eco.util.NamespacedKeyUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import java.util.*;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,12 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Utility class to manage client-side item display.

@@ -10,6 +10,8 @@ import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import java.math.BigDecimal
+import java.util.UUID
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -25,8 +27,6 @@ import org.bson.BsonValue
 import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.bson.types.Decimal128
-import java.math.BigDecimal
-import java.util.UUID
 
 class MongoDBPersistentDataHandler(
     config: Config

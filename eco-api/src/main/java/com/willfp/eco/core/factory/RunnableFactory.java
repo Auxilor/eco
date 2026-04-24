@@ -1,9 +1,8 @@
 package com.willfp.eco.core.factory;
 
 import com.willfp.eco.core.scheduling.RunnableTask;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.function.Consumer;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Factory to create runnables. Much cleaner syntax than instantiating

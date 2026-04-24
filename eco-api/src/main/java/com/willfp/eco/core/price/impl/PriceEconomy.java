@@ -4,13 +4,12 @@ import com.willfp.eco.core.integrations.economy.EconomyManager;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
 import com.willfp.eco.core.price.Price;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Economy-based price (for Vault, Treasury, etc.)

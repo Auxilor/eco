@@ -1,10 +1,10 @@
 package com.willfp.eco.internal.spigot.proxy.common.packet.display.frame
 
 import com.willfp.eco.core.items.HashedItem
-import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 data class DisplayFrame(val items: Map<Byte, HashedItem>) {
     fun getChangedSlots(newFrame: DisplayFrame): List<Byte> {

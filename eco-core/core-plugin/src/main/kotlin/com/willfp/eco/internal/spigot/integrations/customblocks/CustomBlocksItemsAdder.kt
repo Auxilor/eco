@@ -6,8 +6,8 @@ import com.willfp.eco.core.blocks.TestableBlock
 import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
 import com.willfp.eco.util.namespacedKeyOf
-import org.bukkit.block.Block
 import java.util.function.Predicate
+import org.bukkit.block.Block
 
 class CustomBlocksItemsAdder : CustomBlocksIntegration {
     override fun registerProvider() {

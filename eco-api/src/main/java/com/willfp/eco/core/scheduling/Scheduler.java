@@ -1,12 +1,11 @@
 package com.willfp.eco.core.scheduling;
 
 import com.willfp.eco.core.EcoPlugin;
+import java.util.concurrent.FutureTask;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.FutureTask;
 
 /**
  * Thread scheduler to handle tasks and asynchronous code.

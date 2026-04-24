@@ -2,12 +2,11 @@ package com.willfp.eco.core.recipe.parts;
 
 import com.google.common.base.Preconditions;
 import com.willfp.eco.core.items.TestableItem;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * A group of testable items.

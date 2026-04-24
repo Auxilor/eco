@@ -6,14 +6,13 @@ import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Allows an entity to be tempted by a set item.

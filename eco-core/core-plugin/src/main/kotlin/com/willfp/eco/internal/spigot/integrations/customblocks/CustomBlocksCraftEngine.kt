@@ -7,13 +7,13 @@ import com.willfp.eco.core.blocks.TestableBlock
 import com.willfp.eco.core.blocks.provider.BlockProvider
 import com.willfp.eco.core.integrations.customblocks.CustomBlocksIntegration
 import com.willfp.eco.util.namespacedKeyOf
+import java.util.function.Predicate
 import net.momirealms.craftengine.bukkit.api.CraftEngineBlocks
 import net.momirealms.craftengine.bukkit.api.event.CraftEngineReloadEvent
 import net.momirealms.craftengine.core.util.Key
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import java.util.function.Predicate
 
 class CustomBlocksCraftEngine(
     private val plugin: EcoPlugin

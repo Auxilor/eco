@@ -5,9 +5,9 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
+import java.util.UUID
 import me.qKing12.RoyaleEconomy.MultiCurrency.Currency
 import org.bukkit.entity.Player
-import java.util.UUID
 
 class PriceFactoryRoyaleEconomy(private val currency: Currency) : PriceFactory {
 

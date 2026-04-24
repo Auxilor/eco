@@ -7,11 +7,10 @@ import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
+import java.util.Objects;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * A price that can be shown to a player.

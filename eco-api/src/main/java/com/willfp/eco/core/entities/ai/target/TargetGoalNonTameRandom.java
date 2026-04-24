@@ -5,13 +5,12 @@ import com.willfp.eco.core.entities.Entities;
 import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.TargetGoal;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
+import java.util.function.Predicate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Tameable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 /**
  * Target random non-tame entity.

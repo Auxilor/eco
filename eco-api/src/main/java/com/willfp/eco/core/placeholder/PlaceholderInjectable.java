@@ -1,8 +1,7 @@
 package com.willfp.eco.core.placeholder;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a class that can have placeholders injected into it.

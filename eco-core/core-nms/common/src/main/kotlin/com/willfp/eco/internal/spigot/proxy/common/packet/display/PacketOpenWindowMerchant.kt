@@ -5,11 +5,11 @@ import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
+import java.util.Optional
 import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket
 import net.minecraft.world.item.trading.ItemCost
 import net.minecraft.world.item.trading.MerchantOffer
 import net.minecraft.world.item.trading.MerchantOffers
-import java.util.Optional
 
 object PacketOpenWindowMerchant : PacketListener {
     private val field = ClientboundMerchantOffersPacket::class.java
