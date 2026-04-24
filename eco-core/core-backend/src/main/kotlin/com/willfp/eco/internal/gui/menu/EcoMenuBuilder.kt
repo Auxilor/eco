@@ -7,9 +7,9 @@ import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuEventHandler
 import com.willfp.eco.core.gui.menu.OpenHandler
 import com.willfp.eco.util.StringUtils
-import org.bukkit.entity.Player
 import java.util.function.BiConsumer
 import java.util.function.Consumer
+import org.bukkit.entity.Player
 
 class EcoMenuBuilder(
     private val rows: Int,

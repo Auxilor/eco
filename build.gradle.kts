@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
@@ -23,6 +22,7 @@ dependencies {
     implementation(project(":eco-api"))
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
     implementation(project(":eco-core:core-backend"))
+    implementation(project(":eco-core:core-folia"))
     implementation(project(path = ":eco-core:core-nms:v1_21_4", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_5", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_6", configuration = "reobf"))

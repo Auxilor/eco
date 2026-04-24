@@ -2,14 +2,14 @@ package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.events.PlayerJumpEvent
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
+import java.text.DecimalFormat
+import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.potion.PotionEffectType
-import java.text.DecimalFormat
-import java.util.UUID
 
 @Suppress("DEPRECATION")
 class PlayerJumpListenersSpigot : Listener {

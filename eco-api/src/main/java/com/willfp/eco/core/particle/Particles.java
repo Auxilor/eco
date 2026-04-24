@@ -3,11 +3,10 @@ package com.willfp.eco.core.particle;
 import com.willfp.eco.core.particle.impl.EmptyParticle;
 import com.willfp.eco.core.particle.impl.SimpleParticle;
 import com.willfp.eco.util.StringUtils;
-import org.bukkit.Particle;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.bukkit.Particle;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to manage particles.

@@ -11,6 +11,7 @@ import com.willfp.eco.internal.spigot.proxy.common.toMaterial
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
+import kotlin.math.max
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.core.component.DataComponentType
@@ -28,7 +29,6 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import kotlin.math.max
 
 private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)

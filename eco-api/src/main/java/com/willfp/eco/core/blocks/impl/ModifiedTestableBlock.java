@@ -2,13 +2,12 @@ package com.willfp.eco.core.blocks.impl;
 
 import com.google.common.base.Preconditions;
 import com.willfp.eco.core.blocks.TestableBlock;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Existing testable block with an extra function.

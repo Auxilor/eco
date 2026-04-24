@@ -6,20 +6,16 @@ import com.willfp.eco.core.data.PlayerProfile;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.data.keys.PersistentDataKeyType;
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager;
+import java.util.function.Consumer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Tameable;
+import org.bukkit.entity.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 /**
  * Utilities / API methods for players.
@@ -253,10 +249,6 @@ public final class PlayerUtils {
         return null;
     }
 
-    private PlayerUtils() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-    }
-
     /**
      * Gives the player the amount of experience specified.
      *
@@ -266,5 +258,36 @@ public final class PlayerUtils {
      */
     public static void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending) {
         Eco.get().giveExpAndApplyMending(player, amount, applyMending);
+    }
+
+    /**
+     * Gets all 6 directions a player might be looking.
+     *
+     * @param player The player.
+     * @return The direction a player is facing.
+     */
+    public static BlockFace getDirection(Player player) {
+        float pitch = player.getLocation().getPitch();
+        float yaw = player.getLocation().getYaw();
+
+        if (pitch < -45) {
+            return BlockFace.UP;
+        } else if (pitch > 45) {
+            return BlockFace.DOWN;
+        }
+
+        double rotation = (yaw - 90) % 360;
+        if (rotation < 0) rotation += 360;
+
+        if (0 <= rotation && rotation < 45) return BlockFace.WEST;
+        if (45 <= rotation && rotation < 135) return BlockFace.NORTH;
+        if (135 <= rotation && rotation < 225) return BlockFace.EAST;
+        if (225 <= rotation && rotation < 315) return BlockFace.SOUTH;
+
+        return BlockFace.EAST;
+    }
+
+    private PlayerUtils() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

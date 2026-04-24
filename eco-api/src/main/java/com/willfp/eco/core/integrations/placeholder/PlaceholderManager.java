@@ -2,28 +2,15 @@ package com.willfp.eco.core.integrations.placeholder;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
-import com.willfp.eco.core.placeholder.AdditionalPlayer;
-import com.willfp.eco.core.placeholder.InjectablePlaceholder;
-import com.willfp.eco.core.placeholder.Placeholder;
-import com.willfp.eco.core.placeholder.PlaceholderInjectable;
-import com.willfp.eco.core.placeholder.RegistrablePlaceholder;
+import com.willfp.eco.core.placeholder.*;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class to handle arguments integrations.

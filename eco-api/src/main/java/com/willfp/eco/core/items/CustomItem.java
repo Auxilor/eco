@@ -1,12 +1,11 @@
 package com.willfp.eco.core.items;
 
 import com.willfp.eco.core.Eco;
+import java.util.function.Predicate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 /**
  * A custom item has 3 components.
@@ -52,11 +51,11 @@ public class CustomItem implements TestableItem {
         immediately after due to registration order; so eco waits until the item should be
         working in order to check.
          */
-        Eco.get().getEcoPlugin().getScheduler().runLater(() -> {
+        Eco.get().getEcoPlugin().getScheduler().runTaskLater(1, () -> {
             if (!matches(getItem())) {
                 Eco.get().getEcoPlugin().getLogger().severe("Item with key " + key + " is invalid!");
             }
-        }, 1);
+        });
     }
 
     @Override

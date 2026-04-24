@@ -3,15 +3,14 @@ package com.willfp.eco.core.gui.menu;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.gui.page.Page;
 import com.willfp.eco.core.gui.slot.Slot;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * GUI version of {@link Inventory}.

@@ -35,7 +35,7 @@ class CraftingRecipeListener(val plugin: EcoPlugin) : Listener {
         handlePrepare(event)
 
         if (plugin.configYml.getBool("enforce-preparing-recipes")) {
-            plugin.scheduler.runLater(1) {
+            plugin.scheduler.runTaskLater(1) {
                 handlePrepare(event)
             }
         }

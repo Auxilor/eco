@@ -7,13 +7,13 @@ import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
+import java.util.Objects
 import net.minecraft.core.component.TypedDataComponent
 import net.minecraft.network.HashedStack
 import net.minecraft.network.protocol.game.ClientboundSetCursorItemPacket
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.inventory.ContainerSynchronizer
 import org.bukkit.craftbukkit.entity.CraftPlayer
-import java.util.Objects
 
 
 fun HashedStack.ActualItem.hash(): Int {

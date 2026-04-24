@@ -1,10 +1,9 @@
 package com.willfp.eco.core.data.handlers;
 
 import com.willfp.eco.core.data.keys.PersistentDataKey;
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
 
 /**
  * Handles data read/write for a {@link com.willfp.eco.core.data.keys.PersistentDataKeyType} for a specific

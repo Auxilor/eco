@@ -4,9 +4,9 @@ import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramIntegration
 import de.oliver.fancyholograms.api.FancyHologramsPlugin
 import de.oliver.fancyholograms.api.data.TextHologramData
-import org.bukkit.Location
 import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
+import org.bukkit.Location
 
 class HologramFancyHolograms : HologramIntegration {
     private val manager

@@ -7,13 +7,14 @@ import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
 import com.willfp.eco.core.items.provider.ItemProvider;
 import com.willfp.eco.core.items.tag.ItemTag;
-import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
-import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
-import com.willfp.eco.core.recipe.parts.ModifiedTestableItem;
-import com.willfp.eco.core.recipe.parts.TestableStack;
-import com.willfp.eco.core.recipe.parts.UnrestrictedMaterialTestableItem;
+import com.willfp.eco.core.recipe.parts.*;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -22,19 +23,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Class to manage all custom and vanilla items.

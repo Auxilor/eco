@@ -5,10 +5,9 @@ import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuLayer;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
+import java.util.function.BiConsumer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.BiConsumer;
 
 /**
  * Builder to create pages.

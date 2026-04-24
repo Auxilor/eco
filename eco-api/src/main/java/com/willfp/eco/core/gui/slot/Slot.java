@@ -5,14 +5,13 @@ import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.items.TestableItem;
+import java.util.function.Function;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
 
 /**
  * A slot is an item in a GUI that can handle clicks.

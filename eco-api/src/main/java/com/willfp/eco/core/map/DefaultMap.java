@@ -1,13 +1,14 @@
 package com.willfp.eco.core.map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 /**
  * A map with a default value.
@@ -15,11 +16,11 @@ import java.util.function.Supplier;
  * @param <K> The key type.
  * @param <V> The value type.
  */
-public class DefaultMap<K, V> implements Map<K, V> {
+public class DefaultMap<K, V> implements ConcurrentMap<K, V> {
     /**
      * The map.
      */
-    private final Map<K, V> map;
+    private final ConcurrentMap<K, V> map;
 
     /**
      * The default value.
@@ -41,7 +42,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
      * @param defaultValue The default value.
      */
     public DefaultMap(@NotNull final Supplier<V> defaultValue) {
-        this(new HashMap<>(), defaultValue);
+        this(new ConcurrentHashMap<>(), defaultValue);
     }
 
     /**
@@ -50,7 +51,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
      * @param map          The map.
      * @param defaultValue The default value.
      */
-    public DefaultMap(@NotNull final Map<K, V> map,
+    public DefaultMap(@NotNull final ConcurrentMap<K, V> map,
                       @NotNull final V defaultValue) {
         this(map, () -> defaultValue);
     }
@@ -61,7 +62,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
      * @param map          The map.
      * @param defaultValue The default value.
      */
-    public DefaultMap(@NotNull final Map<K, V> map,
+    public DefaultMap(@NotNull final ConcurrentMap<K, V> map,
                       @NotNull final Supplier<V> defaultValue) {
         this.map = map;
         this.defaultValue = defaultValue;
@@ -150,7 +151,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
      */
     @NotNull
     public static <K, K1, V> DefaultMap<K, Map<K1, V>> createNestedMap() {
-        return new DefaultMap<>(HashMap::new);
+        return new DefaultMap<>(ConcurrentHashMap::new);
     }
 
     /**
@@ -164,5 +165,25 @@ public class DefaultMap<K, V> implements Map<K, V> {
     @NotNull
     public static <K, K1, V> DefaultMap<K, ListMap<K1, V>> createNestedListMap() {
         return new DefaultMap<>(ListMap::new);
+    }
+
+    @Override
+    public V putIfAbsent(@NonNull K key, V value) {
+        return map.putIfAbsent(key, value);
+    }
+
+    @Override
+    public boolean remove(@NonNull Object key, Object value) {
+        return map.remove(key, value);
+    }
+
+    @Override
+    public boolean replace(@NonNull K key, @NonNull V oldValue, @NonNull V newValue) {
+        return map.replace(key, oldValue, newValue);
+    }
+
+    @Override
+    public V replace(@NonNull K key, @NonNull V value) {
+        return map.replace(key, value);
     }
 }

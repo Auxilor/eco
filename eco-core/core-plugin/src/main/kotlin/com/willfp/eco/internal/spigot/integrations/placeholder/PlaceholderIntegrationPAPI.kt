@@ -1,9 +1,9 @@
 package com.willfp.eco.internal.spigot.integrations.placeholder
 
 import com.willfp.eco.core.integrations.placeholder.PlaceholderIntegration
+import java.util.regex.Pattern
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.entity.Player
-import java.util.regex.Pattern
 
 class PlaceholderIntegrationPAPI : PlaceholderIntegration {
     private val pattern = Pattern.compile("%([^% ]+)%")

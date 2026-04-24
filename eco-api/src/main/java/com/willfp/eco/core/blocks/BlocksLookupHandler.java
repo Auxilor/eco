@@ -3,10 +3,9 @@ package com.willfp.eco.core.blocks;
 import com.willfp.eco.core.blocks.impl.EmptyTestableBlock;
 import com.willfp.eco.core.blocks.impl.GroupedTestableBlocks;
 import com.willfp.eco.core.lookup.LookupHandler;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handle block lookup strings.

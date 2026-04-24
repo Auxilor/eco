@@ -2,12 +2,11 @@ package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A placeholder that does not require a player and supports dynamic styles.

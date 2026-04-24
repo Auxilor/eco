@@ -12,6 +12,11 @@ import com.willfp.eco.core.blocks.provider.BlockProvider;
 import com.willfp.eco.core.blocks.tag.BlockTag;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -19,12 +24,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Class to manage all custom and vanilla blocks.

@@ -8,7 +8,9 @@ import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems;
 import com.willfp.eco.core.recipe.parts.TestableStack;
-import org.bukkit.Bukkit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -16,10 +18,6 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Shapeless crafting recipe.

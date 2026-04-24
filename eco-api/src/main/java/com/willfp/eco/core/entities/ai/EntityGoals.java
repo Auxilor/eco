@@ -2,51 +2,13 @@ package com.willfp.eco.core.entities.ai;
 
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.config.interfaces.Config;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalAvoidEntity;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalBreakDoors;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalBreatheAir;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalBreed;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalCatLieOnBed;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalCatSitOnBed;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalEatGrass;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalFleeSun;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalFloat;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowMobs;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalIllusionerBlindnessSpell;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalIllusionerMirrorSpell;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalInteract;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalLeapAtTarget;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalLookAtPlayer;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalMeleeAttack;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalMoveBackToVillage;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalMoveThroughVillage;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalMoveTowardsRestriction;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalMoveTowardsTarget;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalOcelotAttack;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalOpenDoors;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalPanic;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRandomLookAround;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRandomStroll;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRandomSwimming;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRangedAttack;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRangedBowAttack;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRangedCrossbowAttack;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalRestrictSun;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalStrollThroughVillage;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalTempt;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalTryFindWater;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalUseItem;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomFlying;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalWaterAvoidingRandomStroll;
-import com.willfp.eco.core.entities.ai.entity.EntityGoalWolfBeg;
+import com.willfp.eco.core.entities.ai.entity.*;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
+import java.util.Map;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 /**
  * Class to manage entity goals.

@@ -1,13 +1,12 @@
 package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.items.args.LookupArgParser
+import java.util.function.Predicate
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
-import java.util.function.Predicate
-import kotlin.collections.plusAssign
 
 object ArgParserPotionBuilder : LookupArgParser {
 

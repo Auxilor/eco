@@ -3,11 +3,6 @@ package com.willfp.eco.core.config;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.config.wrapper.ConfigWrapper;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +10,10 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Config that exists purely in the code, not linked to any file.

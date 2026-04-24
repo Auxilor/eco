@@ -1,11 +1,10 @@
 package com.willfp.eco.core.items.builder;
 
+import java.util.function.Supplier;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 /**
  * Class to build enchanted books.

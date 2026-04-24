@@ -3,6 +3,7 @@ version = rootProject.version
 
 dependencies {
     compileOnly(project(":eco-core:core-backend"))
+    compileOnly(project(":eco-core:core-folia"))
 
     // Libraries
     implementation("com.github.Redempt:Crunch:1.0.0")

@@ -7,8 +7,8 @@ import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.namespacedKeyOf
 import dev.lone.itemsadder.api.CustomStack
-import org.bukkit.inventory.ItemStack
 import java.util.function.Predicate
+import org.bukkit.inventory.ItemStack
 
 class CustomItemsItemsAdder : CustomItemsIntegration {
     override fun registerProvider() {

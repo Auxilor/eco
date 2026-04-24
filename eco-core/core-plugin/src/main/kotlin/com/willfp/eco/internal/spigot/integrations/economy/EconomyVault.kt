@@ -1,9 +1,9 @@
 package com.willfp.eco.internal.spigot.integrations.economy
 
 import com.willfp.eco.core.integrations.economy.EconomyIntegration
+import java.math.BigDecimal
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.OfflinePlayer
-import java.math.BigDecimal
 
 class EconomyVault(
     private val vault: Economy

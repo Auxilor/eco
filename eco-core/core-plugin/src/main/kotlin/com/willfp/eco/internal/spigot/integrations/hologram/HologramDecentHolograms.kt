@@ -3,8 +3,8 @@ package com.willfp.eco.internal.spigot.integrations.hologram
 import com.willfp.eco.core.integrations.hologram.Hologram
 import com.willfp.eco.core.integrations.hologram.HologramIntegration
 import eu.decentsoftware.holograms.api.DHAPI
-import org.bukkit.Location
 import java.util.UUID
+import org.bukkit.Location
 
 class HologramDecentHolograms : HologramIntegration {
     override fun createHologram(location: Location, contents: List<String>): Hologram {

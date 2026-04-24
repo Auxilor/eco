@@ -7,12 +7,12 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
+import java.util.function.Predicate
 import me.arcaniax.hdb.api.DatabaseLoadEvent
 import me.arcaniax.hdb.api.HeadDatabaseAPI
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import java.util.function.Predicate
 
 class CustomItemsHeadDatabase(
     plugin: EcoPlugin

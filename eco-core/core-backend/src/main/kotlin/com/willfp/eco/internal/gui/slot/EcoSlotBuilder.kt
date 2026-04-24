@@ -7,9 +7,9 @@ import com.willfp.eco.core.gui.slot.functional.SlotHandler
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.gui.slot.functional.SlotUpdater
 import com.willfp.eco.core.map.listMap
+import java.util.function.Predicate
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import java.util.function.Predicate
 
 class EcoSlotBuilder(private val provider: SlotProvider) : SlotBuilder {
     private var captive = false

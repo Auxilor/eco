@@ -3,13 +3,12 @@ package com.willfp.eco.core.blocks.impl;
 import com.google.common.base.Preconditions;
 import com.willfp.eco.core.blocks.TestableBlock;
 import com.willfp.eco.util.NumberUtils;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * A group of testable blocks.

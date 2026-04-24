@@ -1,8 +1,7 @@
 package com.willfp.eco.core.lookup;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.function.Predicate;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for testing if any object matches another object.

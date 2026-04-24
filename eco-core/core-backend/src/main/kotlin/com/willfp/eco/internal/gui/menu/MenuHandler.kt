@@ -1,9 +1,9 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
+import java.util.WeakHashMap
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
-import java.util.WeakHashMap
 
 private val inventories = WeakHashMap<Inventory, RenderedInventory>()
 

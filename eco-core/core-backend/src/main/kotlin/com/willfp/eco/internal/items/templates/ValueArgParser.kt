@@ -1,9 +1,9 @@
 package com.willfp.eco.internal.items.templates
 
 import com.willfp.eco.core.items.args.LookupArgParser
+import java.util.function.Predicate
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
-import java.util.function.Predicate
 
 abstract class ValueArgParser<T: Any>(
     protected val flag: String

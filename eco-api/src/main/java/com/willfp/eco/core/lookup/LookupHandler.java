@@ -1,9 +1,8 @@
 package com.willfp.eco.core.lookup;
 
 import com.willfp.eco.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Handle lookups, used in {@link com.willfp.eco.core.entities.Entities} and {@link com.willfp.eco.core.items.Items}.

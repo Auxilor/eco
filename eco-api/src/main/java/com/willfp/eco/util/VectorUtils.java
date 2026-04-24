@@ -1,13 +1,12 @@
 package com.willfp.eco.util;
 
-import org.bukkit.util.NumberConversions;
-import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.util.NumberConversions;
+import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for vectors.

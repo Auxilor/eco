@@ -4,17 +4,12 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.placeholder.AdditionalPlayer;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Utilities / API methods for numbers.

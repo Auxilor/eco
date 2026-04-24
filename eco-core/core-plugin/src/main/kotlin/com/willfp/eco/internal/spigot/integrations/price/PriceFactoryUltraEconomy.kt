@@ -5,11 +5,11 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
+import java.util.UUID
 import me.TechsCode.UltraEconomy.UltraEconomy
 import me.TechsCode.UltraEconomy.objects.Account
 import me.TechsCode.UltraEconomy.objects.Currency
 import org.bukkit.entity.Player
-import java.util.UUID
 
 class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
     override fun getNames(): List<String> {

@@ -1,10 +1,9 @@
 package com.willfp.eco.core.blocks;
 
+import java.util.Objects;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * A block and its hash.

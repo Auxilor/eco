@@ -1,12 +1,11 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.util.ClassUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A prerequisite is a requirement for something.
@@ -29,7 +28,16 @@ public class Prerequisite {
     );
 
     /**
+     * Requires the server to be running an implementation of Folia.
+     */
+    public static final Prerequisite HAS_FOLIA = new Prerequisite(
+            () -> ClassUtils.exists("io.papermc.paper.threadedregions.RegionizedServer"),
+            "Requires server to be running Folia!"
+    );
+
+    /**
      * Requires the server to have ProtocolLib installed.
+     *
      * @deprecated ProtocolLib is no longer used by eco, AbstractPacketAdapter has been marked for removal since 6.77.0.
      */
     @Deprecated(since = "6.77.0", forRemoval = true)

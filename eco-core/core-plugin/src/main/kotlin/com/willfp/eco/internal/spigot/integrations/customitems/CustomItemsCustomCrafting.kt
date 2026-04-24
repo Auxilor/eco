@@ -8,10 +8,10 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
+import java.util.function.Predicate
 import me.wolfyscript.utilities.util.NamespacedKey
 import me.wolfyscript.utilities.util.Registry
 import org.bukkit.inventory.ItemStack
-import java.util.function.Predicate
 
 class CustomItemsCustomCrafting : CustomItemsIntegration {
     override fun registerProvider() {
