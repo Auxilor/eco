@@ -1,14 +1,16 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.events.CaptiveItemChangeEvent
+import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
-import com.willfp.eco.util.MenuUtils
 import com.willfp.eco.util.openMenu
 import java.util.UUID
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+
+private val emptyTestableItem = EmptyTestableItem()
 
 private val trackedForceRendered = mutableMapOf<UUID, RenderedInventory>()
 
@@ -38,39 +40,47 @@ class RenderedInventory(
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
-        // This can happen when opening menus from other menus,
-        // fixing a bug where multiple paginated menus on top of
-        // each other caused bugs with page changer display.
         if (this.menu != player.openMenu) {
             MenuHandler.unregisterInventory(this.inventory)
             return
         }
 
+        val rows = menu.rows
+        val columns = menu.columns
+        val totalSlots = rows * columns
         val newCaptive = mutableMapOf<GUIPosition, ItemStack>()
 
-        for (row in (1..menu.rows)) {
-            for (column in (1..menu.columns)) {
-                val position = GUIPosition(row, column)
-                val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
+        val slotCache = arrayOfNulls<Slot>(totalSlots)
+        val captiveFlags = BooleanArray(totalSlots)
 
+        var bukkit = 0
+        for (row in (1..rows)) {
+            for (column in (1..columns)) {
                 val slot = menu.getSlot(row, column, player)
-                val renderedItem = slot.getItemStack(player)
+                slotCache[bukkit] = slot
 
                 if (slot.isCaptive(player, menu)) {
-                    val actualItem = inventory.getItem(bukkit) ?: continue
+                    captiveFlags[bukkit] = true
+                    val actualItem = inventory.getItem(bukkit)
 
-                    if (slot.isCaptiveFromEmpty) {
-                        if (!actualItem.isEcoEmpty) {
-                            newCaptive[position] = actualItem
-                        }
-                    } else {
-                        if (actualItem != renderedItem && !EmptyTestableItem().matches(actualItem)) {
-                            newCaptive[position] = actualItem
+                    if (actualItem != null) {
+                        if (slot.isCaptiveFromEmpty) {
+                            if (!actualItem.isEcoEmpty) {
+                                newCaptive[GUIPosition(row, column)] = actualItem
+                            }
+                        } else {
+                            if (actualItem != slot.getItemStack(player)
+                                && !emptyTestableItem.matches(actualItem)
+                            ) {
+                                newCaptive[GUIPosition(row, column)] = actualItem
+                            }
                         }
                     }
                 } else {
-                    inventory.setItem(bukkit, renderedItem)
+                    inventory.setItem(bukkit, slot.getItemStack(player))
                 }
+
+                bukkit++
             }
         }
 
@@ -78,9 +88,10 @@ class RenderedInventory(
         captiveItems.clear()
         captiveItems.putAll(newCaptive)
 
-        // Call captive item change event
+        var captiveChanged = false
         for (position in previousCaptive.keys union newCaptive.keys) {
             if (previousCaptive[position] != newCaptive[position]) {
+                captiveChanged = true
                 menu.callEvent(
                     player, CaptiveItemChangeEvent(
                         position.row,
@@ -94,18 +105,10 @@ class RenderedInventory(
 
         menu.runOnRender(player)
 
-        // Run second render if captive items changed
-        if (captiveItems != previousCaptive) {
-            for (row in (1..menu.rows)) {
-                for (column in (1..menu.columns)) {
-                    val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
-
-                    val slot = menu.getSlot(row, column, player)
-                    val renderedItem = slot.getItemStack(player)
-
-                    if (!slot.isCaptive(player, menu)) {
-                        inventory.setItem(bukkit, renderedItem)
-                    }
+        if (captiveChanged) {
+            for (i in 0 until totalSlots) {
+                if (!captiveFlags[i]) {
+                    inventory.setItem(i, slotCache[i]!!.getItemStack(player))
                 }
             }
         }
@@ -114,15 +117,16 @@ class RenderedInventory(
     fun renderDefaultCaptiveItems() {
         menu.runOnRender(player)
 
+        var bukkit = 0
         for (row in (1..menu.rows)) {
             for (column in (1..menu.columns)) {
-                val bukkit = MenuUtils.rowColumnToSlot(row, column, menu.columns)
-
                 val slot = menu.getSlot(row, column, player)
 
                 if (slot.isCaptive(player, menu)) {
                     inventory.setItem(bukkit, slot.getItemStack(player))
                 }
+
+                bukkit++
             }
         }
     }

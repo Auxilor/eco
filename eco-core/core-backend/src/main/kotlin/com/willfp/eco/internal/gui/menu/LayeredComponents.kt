@@ -6,11 +6,12 @@ import org.bukkit.entity.Player
 
 class LayeredComponents {
     private val layers = mutableMapOf<Int, Map<GUIPosition, List<OffsetComponent>>>()
+    private var sortedLayerKeys = emptyList<Int>()
 
     fun getSlotAt(row: Int, column: Int, player: Player?, menu: Menu): Slot {
         val guiPosition = GUIPosition(row, column)
 
-        for (layer in layers.keys.sortedDescending()) {
+        for (layer in sortedLayerKeys) {
             val componentsAtPoints = layers[layer] ?: continue
 
             val components = componentsAtPoints[guiPosition] ?: continue
@@ -41,5 +42,6 @@ class LayeredComponents {
         atPosition.add(component)
         inLayer[position] = atPosition
         layers[layer] = inLayer
+        sortedLayerKeys = layers.keys.sortedDescending()
     }
 }
