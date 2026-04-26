@@ -905,6 +905,34 @@ public final class StringUtils {
     }
 
     /**
+     * Convert a string to title case.
+     *
+     * @param string The string to convert.
+     * @return The title-cased string.
+     */
+    @NotNull
+    public static String toTitleCase(@NotNull final String string) {
+        if (string.isEmpty()) {
+            return string;
+        }
+        String[] words = string.split(" ", -1);
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)));
+                if (word.length() > 1) {
+                    result.append(word.substring(1).toLowerCase());
+                }
+            }
+            if (i < words.length - 1) {
+                result.append(' ');
+            }
+        }
+        return result.toString();
+    }
+
+    /**
      * Options for formatting.
      */
     public enum FormatOption {
