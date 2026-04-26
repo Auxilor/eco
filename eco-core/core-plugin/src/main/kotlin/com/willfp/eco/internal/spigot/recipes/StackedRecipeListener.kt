@@ -136,7 +136,7 @@ class StackedRecipeListener(
 
     private fun runTwice(block: () -> Unit) {
         block()
-        plugin.scheduler.runTask(block)
+        plugin.scheduler.run(block)
     }
 
     companion object {

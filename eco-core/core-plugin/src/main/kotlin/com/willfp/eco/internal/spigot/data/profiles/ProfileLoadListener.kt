@@ -25,7 +25,7 @@ class ProfileLoadListener(
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        plugin.scheduler.runTaskLater(5) {
+        plugin.scheduler.runLater(5) {
             PlayerUtils.updateSavedDisplayName(event.player)
         }
     }

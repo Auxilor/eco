@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_4
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
 import java.lang.reflect.Field
@@ -26,13 +25,7 @@ class BukkitCommands : BukkitCommandsProxy {
     }
 
     override fun syncCommands() {
-        // (Bukkit.getServer() as CraftServer).syncCommands()
-        // does the same thing, but you have API for that
-        Bukkit.getOnlinePlayers().forEach {
-            Eco.get().ecoPlugin.scheduler.runTask(it) {
-                it.updateCommands()
-            }
-        }
+        (Bukkit.getServer() as CraftServer).syncCommands()
     }
 
     override fun unregisterCommand(command: PluginCommandBase) {

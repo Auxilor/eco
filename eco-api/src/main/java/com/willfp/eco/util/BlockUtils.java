@@ -1,8 +1,8 @@
 package com.willfp.eco.util;
 
-import com.willfp.eco.core.blocks.TestableBlock;
 import java.util.*;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.persistence.PersistentDataType;
@@ -15,19 +15,19 @@ public final class BlockUtils {
     /**
      * Get a set of all blocks in contact with each other of a specific type.
      *
-     * @param start         The initial block.
-     * @param allowedBlocks A list of all valid {@link TestableBlock}s.
-     * @param limit         The maximum size of vein to return.
+     * @param start            The initial block.
+     * @param allowedMaterials A list of all valid {@link Material}s.
+     * @param limit            The maximum size of vein to return.
      * @return A set of all {@link Block}s.
      */
     @NotNull
     public static Set<Block> getVein(@NotNull final Block start,
-                                     @NotNull final List<TestableBlock> allowedBlocks,
+                                     @NotNull final List<Material> allowedMaterials,
                                      final int limit) {
         Set<Block> blocks = new HashSet<>();
         Queue<Block> toProcess = new LinkedList<>();
 
-        if (allowedBlocks.stream().anyMatch(testableBlock -> testableBlock.matches(start))) {
+        if (allowedMaterials.contains(start.getType())) {
             toProcess.add(start);
         }
 
@@ -43,8 +43,7 @@ public final class BlockUtils {
             for (BlockFace face : BlockFace.values()) {
                 Block adjacentBlock = currentBlock.getRelative(face);
 
-                if (!blocks.contains(adjacentBlock) &&
-                        allowedBlocks.stream().anyMatch(testableBlock -> testableBlock.matches(adjacentBlock))) {
+                if (!blocks.contains(adjacentBlock) && allowedMaterials.contains(adjacentBlock.getType())) {
                     toProcess.add(adjacentBlock);
                 }
             }

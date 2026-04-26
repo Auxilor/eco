@@ -419,7 +419,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             profileHandler.profileWriter.startTickingSaves()
         }
 
-        this.scheduler.runTaskTimer(
+        this.scheduler.runTimer(
             this.configYml.getInt("display-frame-ttl").toLong(),
             this.configYml.getInt("display-frame-ttl").toLong(),
         ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
@@ -428,7 +428,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             PlayerflowHandler(this.scheduler).startTicking()
         }
 
-        this.scheduler.runTaskTimer(1L, 20L) {
+        this.scheduler.runTimer(1L, 20L) {
             Recipes.checkBatching()
         }
     }

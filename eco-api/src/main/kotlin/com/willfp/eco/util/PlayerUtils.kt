@@ -4,7 +4,6 @@ package com.willfp.eco.util
 
 import net.kyori.adventure.audience.Audience
 import org.bukkit.OfflinePlayer
-import org.bukkit.block.BlockFace
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -41,10 +40,5 @@ fun Player.runExempted(action: () -> Unit) =
 fun Entity?.tryAsPlayer(): Player? =
     PlayerUtils.tryAsPlayer(this)
 
-/** @see PlayerUtils.giveExpAndApplyMending */
 fun Player.giveExpAndApplyMending(amount: Int, applyMending: Boolean) =
     PlayerUtils.giveExpAndApplyMending(this, amount, applyMending)
-
-/** @see PlayerUtils.getDirection */
-val Player.direction: BlockFace
-    get() = PlayerUtils.getDirection(this)
