@@ -78,6 +78,10 @@ fun String.lineWrap(width: Int, preserveMargin: Boolean = true): List<String> =
 fun List<String>.lineWrap(width: Int, preserveMargin: Boolean = true): List<String> =
     StringUtils.lineWrap(this, width, preserveMargin)
 
+/** @see StringUtils.toTitleCase */
+fun String.titlecase(): String =
+    StringUtils.toTitleCase(this)
+
 /** @see StringUtils.getMargin */
 val String.margin: Int
     get() = StringUtils.getMargin(this)
