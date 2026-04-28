@@ -6,7 +6,7 @@ import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
 
 class CollatedRunnable(plugin: EcoPlugin) {
     init {
-        plugin.scheduler.runTaskTimer({
+        plugin.scheduler.runTimer({
             for ((key, value) in EcoFastCollatedDropQueue.COLLATED_MAP) {
                 val queue = EcoDropQueue(key)
                     .setLocation(value.location)
@@ -22,6 +22,6 @@ class CollatedRunnable(plugin: EcoPlugin) {
                 EcoFastCollatedDropQueue.COLLATED_MAP.remove(key)
             }
             EcoFastCollatedDropQueue.COLLATED_MAP.clear()
-        }, 1, 1) // folia requires a start delay of 1 at least
+        }, 0, 1)
     }
 }
