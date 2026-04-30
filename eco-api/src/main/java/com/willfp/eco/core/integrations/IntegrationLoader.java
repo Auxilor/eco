@@ -1,12 +1,11 @@
 package com.willfp.eco.core.integrations;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An integration loader runs a runnable only if a specific plugin is present on the server.

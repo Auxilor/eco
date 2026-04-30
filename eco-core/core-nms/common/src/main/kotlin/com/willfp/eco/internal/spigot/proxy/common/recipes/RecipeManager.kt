@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.common.recipes
 
 import com.google.common.base.Function
 import com.google.common.collect.Maps
+import java.util.Objects
 import net.minecraft.server.MinecraftServer
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.RecipeHolder
@@ -16,7 +17,6 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
-import java.util.*
 
 object RecipeManager {
     fun removeRecipeNoResend(recipeKey: NamespacedKey): Boolean {

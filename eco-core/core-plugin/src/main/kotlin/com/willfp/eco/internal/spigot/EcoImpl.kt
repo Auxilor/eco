@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
@@ -48,7 +49,21 @@ import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
 import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
-import com.willfp.eco.internal.spigot.proxies.*
+import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
+import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxies.SkullProxy
+import com.willfp.eco.internal.spigot.proxies.TPSProxy
+import java.net.URLClassLoader
+import java.util.UUID
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -61,8 +76,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
-import java.net.URLClassLoader
-import java.util.*
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 
@@ -238,6 +251,12 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
             }
         }
 
+        for (customBlock in Blocks.getCustomBlocks()) {
+            if (customBlock.key.namespace.equals(plugin.name.lowercase(), ignoreCase = true)) {
+                Blocks.removeCustomBlock(customBlock.key)
+            }
+        }
+
         val classLoader = plugin::class.java.classLoader
 
         if (classLoader is URLClassLoader) {
@@ -333,8 +352,29 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         return this.getProxy(CommonsInitializerProxy::class.java).removeBukkitRecipeNoResend(key)
     }
 
-    override fun syncCommands() =
+    private var batchDepth = 0
+    private var syncDuringBatch = false
+
+    override fun syncCommands() {
+        if (batchDepth > 0) {
+            syncDuringBatch = true
+            return
+        }
         this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+    }
+
+    override fun beginCommandBatch() {
+        batchDepth++
+    }
+
+    override fun endCommandBatch() {
+        check(batchDepth > 0) { "endCommandBatch() called without matching beginCommandBatch()" }
+        batchDepth--
+        if (batchDepth == 0 && syncDuringBatch) {
+            syncDuringBatch = false
+            this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+        }
+    }
 
     override fun unregisterCommand(command: PluginCommandBase) =
         this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)

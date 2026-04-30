@@ -2,10 +2,9 @@ package com.willfp.eco.core.placeholder.templates;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.RegistrablePlaceholder;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A template class for dynamic placeholders.

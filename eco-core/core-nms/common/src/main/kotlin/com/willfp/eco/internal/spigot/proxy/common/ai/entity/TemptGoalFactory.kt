@@ -4,14 +4,14 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalTempt
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
+import java.util.EnumSet
+import kotlin.math.abs
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.TemptGoal
 import net.minecraft.world.entity.ai.targeting.TargetingConditions
-import java.util.EnumSet
-import kotlin.math.abs
 
 object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
     override fun create(apiGoal: EntityGoalTempt, entity: PathfinderMob): Goal {

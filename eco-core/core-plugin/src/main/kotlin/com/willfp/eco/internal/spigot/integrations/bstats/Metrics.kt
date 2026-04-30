@@ -1,8 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.bstats
 
 import com.willfp.eco.core.EcoPlugin
-import org.bukkit.Bukkit
-import org.bukkit.configuration.file.YamlConfiguration
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
@@ -18,6 +16,8 @@ import java.util.function.Supplier
 import java.util.logging.Level
 import java.util.zip.GZIPOutputStream
 import javax.net.ssl.HttpsURLConnection
+import org.bukkit.Bukkit
+import org.bukkit.configuration.file.YamlConfiguration
 
 class Metrics(private val plugin: EcoPlugin) {
     private val metricsBase: MetricsBase

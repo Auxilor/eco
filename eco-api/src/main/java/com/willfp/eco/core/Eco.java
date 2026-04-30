@@ -30,6 +30,11 @@ import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -46,12 +51,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Holds the instance of eco for bridging between the frontend and backend.
@@ -568,6 +567,23 @@ public interface Eco {
      * Sync commands.
      */
     void syncCommands();
+
+    /**
+     * Begin a batch of command (un)registrations. While a batch is open,
+     * {@link #syncCommands()} calls are deferred and coalesced into a single
+     * sync when the batch closes.
+     *
+     * <p>Nestable — requires a matching {@link #endCommandBatch()} per call.
+     * Must be called from the main thread.
+     */
+    void beginCommandBatch();
+
+    /**
+     * End a batch opened with {@link #beginCommandBatch()}. When the outermost
+     * batch closes, a single {@link #syncCommands()} runs if any sync was
+     * requested during the batch.
+     */
+    void endCommandBatch();
 
     /**
      * Unregister a command.

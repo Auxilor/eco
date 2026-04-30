@@ -1,11 +1,10 @@
 package com.willfp.eco.core.items.builder;
 
 import com.willfp.eco.util.SkullUtils;
+import java.util.function.Supplier;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 /**
  * Builder for player heads.

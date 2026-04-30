@@ -11,6 +11,8 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlerFactory
+import java.math.BigDecimal
+import java.util.UUID
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
@@ -24,8 +26,6 @@ import org.bson.BsonString
 import org.bson.BsonValue
 import org.bson.codecs.configuration.CodecRegistries
 import org.bson.codecs.pojo.PojoCodecProvider
-import java.math.BigDecimal
-import java.util.UUID
 
 class LegacyMongoDBPersistentDataHandler(
     config: Config

@@ -8,6 +8,7 @@ import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.common.recipes.RecipeManager
+import java.lang.reflect.Field
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer
 import net.minecraft.core.component.DataComponents
@@ -36,7 +37,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.persistence.PersistentDataContainer
-import java.lang.reflect.Field
 
 class CommonsInitializer : CommonsInitializerProxy {
     override fun init(plugin: EcoPlugin) {

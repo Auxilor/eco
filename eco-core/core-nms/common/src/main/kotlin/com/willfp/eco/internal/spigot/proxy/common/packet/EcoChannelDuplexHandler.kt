@@ -7,8 +7,8 @@ import com.willfp.eco.internal.events.handleSend
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
-import org.bukkit.Bukkit
 import java.util.UUID
+import org.bukkit.Bukkit
 
 class EcoChannelDuplexHandler(
     private val uuid: UUID

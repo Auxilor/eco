@@ -3,6 +3,7 @@ package com.willfp.eco.core.sound;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
 import com.willfp.eco.util.SoundUtils;
+import java.util.Objects;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -10,8 +11,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 /**
  * A sound that can be played at a location.

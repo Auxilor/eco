@@ -2,14 +2,13 @@ package com.willfp.eco.core.integrations;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.registry.Registry;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.HashSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Registry for integrations.

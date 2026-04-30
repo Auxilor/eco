@@ -1,15 +1,10 @@
 package com.willfp.eco.core.registry;
 
 import com.google.common.base.Preconditions;
+import java.util.*;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * A registry for {@link Registrable}s.

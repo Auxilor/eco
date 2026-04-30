@@ -6,14 +6,14 @@ import com.willfp.eco.core.items.CustomItem
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
-import com.willfp.eco.util.NamespacedKeyUtils
+import com.willfp.eco.util.namespacedKeyOf
+import java.util.function.Predicate
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems
 import net.momirealms.craftengine.bukkit.api.event.CraftEngineReloadEvent
 import net.momirealms.craftengine.core.util.Key
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
-import java.util.function.Predicate
 
 class CustomItemsCraftEngine(
     private val plugin: EcoPlugin
@@ -45,7 +45,7 @@ class CustomItemsCraftEngine(
 
             val id = Key.of(namespace, value)
             val item = CraftEngineItems.byId(id) ?: return null
-            val namespacedKey = NamespacedKeyUtils.create("craftengine", key.lowercase().replace(":", "__"))
+            val namespacedKey = namespacedKeyOf("craftengine", key.lowercase().replace(":", "__"))
             val stack = item.buildItemStack()
 
             return CustomItem(

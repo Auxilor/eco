@@ -1,12 +1,11 @@
 package com.willfp.eco.util;
 
+import java.util.List;
 import org.bukkit.entity.Arrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Utilities / API methods for arrows.

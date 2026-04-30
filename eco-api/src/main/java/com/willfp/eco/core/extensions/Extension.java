@@ -4,10 +4,9 @@ import com.google.common.base.Preconditions;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.updating.ConfigHandler;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An extension is a separate jar file that hooks into the base plugin jar.

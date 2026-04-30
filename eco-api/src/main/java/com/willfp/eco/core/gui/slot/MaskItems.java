@@ -4,12 +4,11 @@ import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
-import org.bukkit.Material;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Mask materials store a set of items which can be accessed by

@@ -6,21 +6,15 @@ import com.willfp.eco.core.entities.impl.EmptyTestableEntity;
 import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.core.entities.impl.SimpleTestableEntity;
 import com.willfp.eco.util.NamespacedKeyUtils;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * Class to manage all custom and vanilla entities.

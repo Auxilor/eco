@@ -1,12 +1,11 @@
 package com.willfp.eco.core.events;
 
+import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * The armor change event <b>does</b> contain information about the event.

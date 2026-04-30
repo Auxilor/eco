@@ -7,6 +7,8 @@ import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe
+import kotlin.math.max
+import kotlin.math.min
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -14,8 +16,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
-import kotlin.math.max
-import kotlin.math.min
 
 class StackedRecipeListener(
     private val plugin: EcoPlugin

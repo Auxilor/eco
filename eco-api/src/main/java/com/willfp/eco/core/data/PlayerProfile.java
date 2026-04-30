@@ -1,10 +1,9 @@
 package com.willfp.eco.core.data;
 
 import com.willfp.eco.core.Eco;
+import java.util.UUID;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 /**
  * Persistent data storage interface for players.

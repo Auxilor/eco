@@ -8,9 +8,9 @@ import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketWindowItems
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
-import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
 
 class NewItemsPacketWindowItems(
     plugin: EcoPlugin

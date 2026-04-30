@@ -1,10 +1,9 @@
 package com.willfp.eco.core.config.interfaces;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.io.IOException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface for configs that physically exist as files in plugins.

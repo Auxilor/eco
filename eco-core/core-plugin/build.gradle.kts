@@ -54,7 +54,7 @@ dependencies {
     compileOnly("io.lumine:Mythic:5.11.1")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
     compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT")
-    compileOnly("com.github.sirblobman.combatlogx:api:11.4-SNAPSHOT")
+    compileOnly("com.github.sirblobman.combatlogx:api:11.6-SNAPSHOT")
     compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
     compileOnly("com.denizenscript:denizen:1.3.0-SNAPSHOT") {
         exclude(group = "*", module = "*")

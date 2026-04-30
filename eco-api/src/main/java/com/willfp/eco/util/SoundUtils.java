@@ -1,12 +1,11 @@
 package com.willfp.eco.util;
 
+import java.lang.reflect.Field;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Field;
 
 /**
  * Utilities / API methods for sounds.

@@ -1,13 +1,13 @@
 package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.items.args.LookupArgParser
+import java.util.function.Predicate
 import org.bukkit.Color
 import org.bukkit.FireworkEffect
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.FireworkEffectMeta
 import org.bukkit.inventory.meta.FireworkMeta
 import org.bukkit.inventory.meta.ItemMeta
-import java.util.function.Predicate
 
 object ArgParserFireworkBuilder : LookupArgParser {
 

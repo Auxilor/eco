@@ -2,10 +2,10 @@ package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.containsIgnoreCase
-import org.bukkit.Bukkit
-import org.bukkit.plugin.Plugin
 import java.io.File
 import java.util.zip.ZipFile
+import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 
 object ConflictFinder {
     fun searchForConflicts(eco: EcoPlugin): List<Conflict> {

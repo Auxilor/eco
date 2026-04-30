@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.util.StringUtils;
+import java.util.List;
+import java.util.function.Supplier;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -13,9 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Abstract item builder class to build items.

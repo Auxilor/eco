@@ -7,11 +7,11 @@ import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.NotificationException
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.command.impl.Subcommand
+import java.util.function.Predicate
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.util.function.Predicate
 
 /**
  * Helper class for creating commands with builders.

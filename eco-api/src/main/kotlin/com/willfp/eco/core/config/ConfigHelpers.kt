@@ -3,9 +3,9 @@
 package com.willfp.eco.core.config
 
 import com.willfp.eco.core.config.interfaces.Config
-import org.bukkit.configuration.ConfigurationSection
 import java.io.File
 import java.io.InputStream
+import org.bukkit.configuration.ConfigurationSection
 
 /** Helper class to create configs with a kotlin DSL. */
 class DSLConfig internal constructor(type: ConfigType) : GenericConfig(type) {

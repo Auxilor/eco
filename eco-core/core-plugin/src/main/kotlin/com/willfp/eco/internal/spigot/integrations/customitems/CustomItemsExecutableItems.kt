@@ -7,9 +7,9 @@ import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
-import org.bukkit.inventory.ItemStack
 import java.util.Optional
 import java.util.function.Predicate
+import org.bukkit.inventory.ItemStack
 
 class CustomItemsExecutableItems : CustomItemsIntegration {
     override fun registerProvider() {

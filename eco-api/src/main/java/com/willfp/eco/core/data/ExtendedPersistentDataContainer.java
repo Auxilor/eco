@@ -1,12 +1,11 @@
 package com.willfp.eco.core.data;
 
 import com.willfp.eco.core.Eco;
+import java.util.Set;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
 
 /**
  * Persistent data container wrapper that allows for full string (non-namespaced) keys.

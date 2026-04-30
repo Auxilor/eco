@@ -1,10 +1,9 @@
 package com.willfp.eco.core.data.handlers;
 
 import com.willfp.eco.core.data.keys.PersistentDataKey;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Map;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Serialized profile.

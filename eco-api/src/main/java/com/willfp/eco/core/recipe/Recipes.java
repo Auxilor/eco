@@ -13,14 +13,13 @@ import com.willfp.eco.core.recipe.recipes.CraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapelessCraftingRecipe;
 import com.willfp.eco.util.NamespacedKeyUtils;
+import java.util.List;
+import java.util.Optional;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Utility class to manage and register crafting recipes.

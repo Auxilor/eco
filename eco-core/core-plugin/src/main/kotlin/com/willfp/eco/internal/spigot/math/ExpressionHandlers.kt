@@ -6,15 +6,15 @@ import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.util.randDouble
-import redempt.crunch.CompiledExpression
-import redempt.crunch.Crunch
-import redempt.crunch.functional.ExpressionEnv
-import redempt.crunch.functional.Function
 import java.util.OptionalInt
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import redempt.crunch.CompiledExpression
+import redempt.crunch.Crunch
+import redempt.crunch.functional.ExpressionEnv
+import redempt.crunch.functional.Function
 
 private val min = Function("min", OptionalInt.of(2)) {
     min(it[0], it[1])

@@ -5,10 +5,10 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
+import java.util.UUID
 import org.bukkit.entity.Player
 import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI
 import su.nightexpress.excellenteconomy.api.currency.ExcellentCurrency
-import java.util.UUID
 
 class PriceFactoryCoinsEngine(
     private val api: ExcellentEconomyAPI,
