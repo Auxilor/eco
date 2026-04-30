@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v26_1_1.common.ai.entity
+package com.willfp.eco.internal.spigot.proxy.v26_1_2.common.ai.entity
 
 import com.willfp.eco.core.entities.ai.entity.EntityGoalFollowBoats
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory

@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v26_1_1.common.ai.target
+package com.willfp.eco.internal.spigot.proxy.v26_1_2.common.ai.target
 
 import com.willfp.eco.core.entities.ai.target.TargetGoalDefendVillage
 import com.willfp.eco.internal.spigot.proxy.common.ai.TargetGoalFactory

@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v26_1_1.packet
+package com.willfp.eco.internal.spigot.proxy.v26_1_2.packet
 
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener

@@ -22,7 +22,7 @@ public final class ProxyConstants {
             "v1_21_8",
             "v1_21_10",
             "v1_21_11",
-            "v26_1_1"
+            "v26_1_2"
     );
 
     private ProxyConstants() {
@@ -40,6 +40,7 @@ public final class ProxyConstants {
 
         return switch (normalized) {
             case "v1_21_9" -> "v1_21_10";
+            case "v26_1_1" -> "v26_1_2";
             default -> normalized;
         };
     }

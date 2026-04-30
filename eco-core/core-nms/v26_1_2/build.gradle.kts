@@ -10,18 +10,18 @@ version = rootProject.version
 dependencies {
     implementation(project(":eco-core:core-nms:common"))
     implementation(project(":eco-core:core-nms:v1_21_8", configuration = "shadow"))
-    paperweight.paperDevBundle("26.1.1.build.+")
+    paperweight.paperDevBundle("26.1.2.build.+")
 }
 
 tasks {
     shadowJar {
         relocate(
             "com.willfp.eco.internal.spigot.proxy.v1_21_8",
-            "com.willfp.eco.internal.spigot.proxy.v26_1_1"
+            "com.willfp.eco.internal.spigot.proxy.v26_1_2"
         )
         relocate(
             "com.willfp.eco.internal.spigot.proxy.common",
-            "com.willfp.eco.internal.spigot.proxy.v26_1_1.common"
+            "com.willfp.eco.internal.spigot.proxy.v26_1_2.common"
         )
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/PlayerHandler*.class")
@@ -37,7 +37,7 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/IllusionerMirrorSpellGoalFactory*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/target/DefendVillageGoalFactory*.class")
 
-        // 26.1.1 changes that broke `common` :(
+        // 26.1.x changes that broke `common`
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatLieOnBedGoalFactory*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatSitOnBedGoalFactory*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/FollowBoatsGoalFactory*.class")
@@ -57,5 +57,11 @@ tasks {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_25)
         }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }

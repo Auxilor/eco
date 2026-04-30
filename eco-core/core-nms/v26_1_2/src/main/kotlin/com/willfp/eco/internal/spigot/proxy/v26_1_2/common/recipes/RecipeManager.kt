@@ -1,4 +1,4 @@
-package com.willfp.eco.internal.spigot.proxy.v26_1_1.common.recipes
+package com.willfp.eco.internal.spigot.proxy.v26_1_2.common.recipes
 
 import com.google.common.base.Function
 import com.google.common.collect.Maps
