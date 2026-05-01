@@ -113,6 +113,17 @@ allprojects {
 
         //Towny
         maven("https://repo.glaremasters.me/repository/towny/")
+
+        // FactionsUUID
+        exclusiveContent {
+            forRepository {
+                maven("https://dependency.download/releases")
+            }
+
+            filter {
+                includeGroup("dev.kitteh")
+            }
+        }
     }
 
     dependencies {

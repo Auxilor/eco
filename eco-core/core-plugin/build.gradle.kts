@@ -67,6 +67,7 @@ dependencies {
     compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.7.0")
     compileOnly("su.nightexpress.nightcore:main:2.14.1")
     compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
+    compileOnly("dev.kitteh:factions:4.4.0")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")
