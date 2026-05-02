@@ -15,6 +15,8 @@ import com.willfp.eco.core.integrations.customentities.CustomEntitiesManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.hologram.HologramManager
+import com.willfp.eco.core.integrations.discord.DiscordManager
+import com.willfp.eco.internal.discord.DiscordIntegrationImpl
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.integrations.shop.ShopManager
@@ -357,6 +359,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (ClassUtils.exists(className)) {
             ExternalDataStore.registerAdapter(MavenVersionToStringAdapter(className))
         }
+
+        // Register internal Discord webhook integration
+        DiscordManager.register(DiscordIntegrationImpl(this))
     }
 
     override fun handleEnable() {
@@ -404,6 +409,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     }
 
     override fun handleDisable() {
+        DiscordManager.shutdown()
         this.logger.info("Saving player data...")
         val start = System.currentTimeMillis()
         profileHandler.save()
