@@ -15,7 +15,7 @@ plugins {
     id("com.gradleup.shadow") version "9.4.1"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "2.3.0"
+    kotlin("jvm") version "2.3.21"
 }
 
 dependencies {
@@ -121,7 +121,7 @@ allprojects {
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "2.3.0"))
+        implementation(kotlin("stdlib", version = "2.3.21"))
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
         // Included in spigot jar, no need to move to implementation
