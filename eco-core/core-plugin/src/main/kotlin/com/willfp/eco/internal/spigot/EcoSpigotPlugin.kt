@@ -153,8 +153,7 @@ import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV10
-import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogXV11
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogX
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
@@ -462,19 +461,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("RPGHorses") { AntigriefManager.register(AntigriefRPGHorses()) },
             IntegrationLoader("HuskTowns") { AntigriefManager.register(AntigriefHuskTowns()) },
             IntegrationLoader("HuskClaims") { AntigriefManager.register(AntigriefHuskClaims()) },
-            IntegrationLoader("CombatLogX") {
-                val pluginManager = Bukkit.getPluginManager()
-                val combatLogXPlugin = pluginManager.getPlugin("CombatLogX") ?: return@IntegrationLoader
-
-                @Suppress("DEPRECATION")
-                val pluginVersion = combatLogXPlugin.description.version
-                if (pluginVersion.startsWith("10")) {
-                    AntigriefManager.register(AntigriefCombatLogXV10())
-                }
-                if (pluginVersion.startsWith("11")) {
-                    AntigriefManager.register(AntigriefCombatLogXV11())
-                }
-            },
+            IntegrationLoader("CombatLogX") { AntigriefManager.register(AntigriefCombatLogX()) },
             IntegrationLoader("PvPManager") { AntigriefManager.register(AntigriefPvPManager()) },
             IntegrationLoader("FabledSkyblock") { AntigriefManager.register(AntigriefFabledSkyBlock()) },
 
