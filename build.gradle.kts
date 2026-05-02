@@ -125,8 +125,8 @@ allprojects {
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
         // Included in spigot jar, no need to move to implementation
-        compileOnly("com.google.guava:guava:32.0.0-jre")
         compileOnly("org.jetbrains:annotations:26.1.0")
+        compileOnly("com.google.guava:guava:33.6.0-jre")
 
         // Test
         testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.2")
