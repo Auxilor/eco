@@ -11,7 +11,7 @@ open class ModernEcoFastItemStack(
     bukkit: ItemStack,
 ) : EcoFastItemStack(bukkit) {
     override fun addItemFlags(vararg hideFlags: ItemFlag) {
-        var tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: TooltipDisplay(false, emptyList())
+        var tooltip = handle.get(DataComponents.TOOLTIP_DISPLAY) ?: TooltipDisplay(false, LinkedHashSet())
 
         for (flag in hideFlags) {
             tooltip = when (flag) {
