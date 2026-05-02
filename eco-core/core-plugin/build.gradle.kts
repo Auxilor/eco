@@ -53,9 +53,6 @@ dependencies {
     compileOnly("org.black_ixx:playerpoints:3.2.6")
     compileOnly("io.lumine:Mythic:5.11.1")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
-    compileOnly("com.github.sirblobman.api:core:2.9-SNAPSHOT")
-    compileOnly("com.github.sirblobman.combatlogx:api:11.6-SNAPSHOT")
-    compileOnly("com.SirBlobman.combatlogx:CombatLogX-API:10.0.0.0-SNAPSHOT")
     compileOnly("com.denizenscript:denizen:1.3.0-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
@@ -67,6 +64,7 @@ dependencies {
     compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.7.0")
     compileOnly("su.nightexpress.nightcore:main:2.14.1")
     compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
+    compileOnly("dev.kitteh:factions:4.4.0")
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")

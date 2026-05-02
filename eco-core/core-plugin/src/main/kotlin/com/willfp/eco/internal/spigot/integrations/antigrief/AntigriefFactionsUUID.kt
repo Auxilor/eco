@@ -1,12 +1,12 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
-import com.massivecraft.factions.Board
-import com.massivecraft.factions.FLocation
-import com.massivecraft.factions.FPlayer
-import com.massivecraft.factions.FPlayers
-import com.massivecraft.factions.Faction
-import com.massivecraft.factions.perms.PermissibleActions
+import dev.kitteh.factions.Board
+import dev.kitteh.factions.FLocation
+import dev.kitteh.factions.FPlayer
+import dev.kitteh.factions.FPlayers
+import dev.kitteh.factions.Faction
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
+import dev.kitteh.factions.permissible.PermissibleActions
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.entity.LivingEntity
@@ -17,11 +17,11 @@ class AntigriefFactionsUUID : AntigriefIntegration {
         player: Player,
         block: Block
     ): Boolean {
-        val fplayer: FPlayer = FPlayers.getInstance().getByPlayer(player)
+        val fplayer: FPlayer = FPlayers.fPlayers().get(player)
         val flocation = FLocation(block.location)
-        val faction: Faction = Board.getInstance().getFactionAt(flocation)
+        val faction: Faction = Board.board().factionAt(flocation)
         return if (!faction.hasAccess(fplayer, PermissibleActions.DESTROY, flocation)) {
-            fplayer.isAdminBypassing
+            fplayer.adminBypass()
         } else true
     }
 
@@ -30,7 +30,7 @@ class AntigriefFactionsUUID : AntigriefIntegration {
         location: Location
     ): Boolean {
         val flocation = FLocation(location)
-        val faction: Faction = Board.getInstance().getFactionAt(flocation)
+        val faction: Faction = Board.board().factionAt(flocation)
         return !faction.noExplosionsInTerritory()
     }
 
@@ -38,11 +38,11 @@ class AntigriefFactionsUUID : AntigriefIntegration {
         player: Player,
         block: Block
     ): Boolean {
-        val fplayer: FPlayer = FPlayers.getInstance().getByPlayer(player)
+        val fplayer: FPlayer = FPlayers.fPlayers().get(player)
         val flocation = FLocation(block.location)
-        val faction: Faction = Board.getInstance().getFactionAt(flocation)
+        val faction: Faction = Board.board().factionAt(flocation)
         return if (!faction.hasAccess(fplayer, PermissibleActions.BUILD, flocation)) {
-            fplayer.isAdminBypassing
+            fplayer.adminBypass()
         } else true
     }
 
@@ -50,16 +50,16 @@ class AntigriefFactionsUUID : AntigriefIntegration {
         player: Player,
         victim: LivingEntity
     ): Boolean {
-        val fplayer: FPlayer = FPlayers.getInstance().getByPlayer(player)
+        val fplayer: FPlayer = FPlayers.fPlayers().get(player)
         val flocation = FLocation(victim.location)
-        val faction: Faction = Board.getInstance().getFactionAt(flocation)
+        val faction: Faction = Board.board().factionAt(flocation)
         if (victim is Player) {
             if (faction.isPeaceful) {
-                return fplayer.isAdminBypassing
+                return fplayer.adminBypass()
             }
         } else {
             if (!faction.hasAccess(fplayer, PermissibleActions.DESTROY, flocation)) {
-                return fplayer.isAdminBypassing
+                return fplayer.adminBypass()
             }
         }
         return true
