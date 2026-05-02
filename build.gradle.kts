@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id("java-library")
-    id("com.gradleup.shadow") version "9.3.1"
+    id("com.gradleup.shadow") version "9.4.1"
     id("maven-publish")
     id("java")
     kotlin("jvm") version "2.3.0"
