@@ -53,7 +53,7 @@ dependencies {
     compileOnly("org.black_ixx:playerpoints:3.2.6")
     compileOnly("io.lumine:Mythic:5.11.1")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
-compileOnly("com.denizenscript:denizen:1.3.0-SNAPSHOT") {
+    compileOnly("com.denizenscript:denizen:1.3.0-SNAPSHOT") {
         exclude(group = "*", module = "*")
     }
     compileOnly("com.iridium:IridiumSkyblock:4.1.2")
