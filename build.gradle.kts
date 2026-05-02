@@ -43,13 +43,9 @@ allprojects {
 
         maven("https://repo.auxilor.io/repository/maven-public/")
 
-        // CombatLogX (must be before JitPack to exclude sirblobman from JitPack)
-        maven("https://nexus.sirblobman.xyz/public/")
-
         maven("https://jitpack.io") {
             content {
                 includeGroupByRegex("com\\.github\\..*")
-                excludeGroup("com.github.sirblobman")
                 excludeGroup("com.github.TownyAdvanced")
             }
         }
