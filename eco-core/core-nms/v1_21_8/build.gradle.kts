@@ -6,7 +6,7 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
-    implementation(project(":eco-core:core-nms:v1_21_6", configuration = "shadow"))
+    implementation(project(":eco-core:core-nms:common"))
     paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
 }
 
@@ -21,8 +21,8 @@ tasks {
 
     shadowJar {
         relocate(
-            "com.willfp.eco.internal.spigot.proxy.v1_21_6",
-            "com.willfp.eco.internal.spigot.proxy.v1_21_8"
+            "com.willfp.eco.internal.spigot.proxy.common",
+            "com.willfp.eco.internal.spigot.proxy.v1_21_8.common"
         )
     }
 }
