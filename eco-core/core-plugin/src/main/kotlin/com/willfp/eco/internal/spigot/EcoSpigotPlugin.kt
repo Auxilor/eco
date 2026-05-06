@@ -78,6 +78,7 @@ import com.willfp.eco.internal.blocks.BlockArgParserTripwire
 import com.willfp.eco.internal.blocks.BlockArgParserWall
 import com.willfp.eco.internal.blocks.BlockArgParserWaterlogged
 import com.willfp.eco.internal.blocks.tags.VanillaBlockTags
+import com.willfp.eco.internal.entities.tags.VanillaEntityTags
 import com.willfp.eco.internal.data.MavenVersionToStringAdapter
 import com.willfp.eco.internal.data.VersionToStringAdapter
 import com.willfp.eco.internal.entities.EntityArgParserAdult
@@ -405,6 +406,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         // Init vanilla tags
         VanillaItemTags.register()
         VanillaBlockTags.register()
+        VanillaEntityTags.register()
     }
 
     override fun handleDisable() {
