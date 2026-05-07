@@ -2,22 +2,13 @@ package com.willfp.eco.core.entities.ai;
 
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.config.interfaces.Config;
-import com.willfp.eco.core.entities.ai.target.TargetGoalDefendVillage;
-import com.willfp.eco.core.entities.ai.target.TargetGoalHurtBy;
-import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackable;
-import com.willfp.eco.core.entities.ai.target.TargetGoalNearestAttackableWitch;
-import com.willfp.eco.core.entities.ai.target.TargetGoalNearestHealableRaider;
-import com.willfp.eco.core.entities.ai.target.TargetGoalNonTameRandom;
-import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerHurtBy;
-import com.willfp.eco.core.entities.ai.target.TargetGoalOwnerTarget;
-import com.willfp.eco.core.entities.ai.target.TargetGoalResetUniversalAnger;
+import com.willfp.eco.core.entities.ai.target.*;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
+import java.util.Map;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 /**
  * Class to manage target goals.

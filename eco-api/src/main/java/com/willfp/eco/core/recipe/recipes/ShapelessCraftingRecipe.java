@@ -8,7 +8,9 @@ import com.willfp.eco.core.recipe.Recipes;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems;
 import com.willfp.eco.core.recipe.parts.TestableStack;
-import org.bukkit.Bukkit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -16,10 +18,6 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Shapeless crafting recipe.
@@ -88,20 +86,24 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
         RecipeTest test = newTest();
 
         for (ItemStack stack : matrix) {
+            if (stack == null || stack.getType().isAir() || stack.getAmount() <= 0) {
+                continue;
+            }
+
             if (test.matchAndRemove(stack) == null) {
                 return false;
             }
         }
 
-        return true;
+        return test.remaining.isEmpty();
     }
 
     @Override
     public void register() {
         Recipes.register(this);
 
-        Bukkit.getServer().removeRecipe(this.getKey());
-        Bukkit.getServer().removeRecipe(this.getDisplayedKey());
+        Recipes.scheduleBukkitRecipeRemoval(this.getKey());
+        Recipes.scheduleBukkitRecipeRemoval(this.getDisplayedKey());
 
         ShapelessRecipe shapelessRecipe = new ShapelessRecipe(this.getKey(), this.getOutput());
         for (TestableItem part : parts) {
@@ -144,10 +146,10 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
                 displayedRecipe.addIngredient(new RecipeChoice.ExactChoice(displayedItems));
             }
 
-            Bukkit.getServer().addRecipe(displayedRecipe);
+            Recipes.scheduleBukkitRecipeRegistration(displayedRecipe);
         }
 
-        Bukkit.getServer().addRecipe(shapelessRecipe);
+        Recipes.scheduleBukkitRecipeRegistration(shapelessRecipe);
     }
 
     /**

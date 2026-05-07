@@ -2,14 +2,9 @@ package com.willfp.eco.core.placeholder.context;
 
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.PlaceholderInjectable;
+import java.util.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * A merged injectable context.

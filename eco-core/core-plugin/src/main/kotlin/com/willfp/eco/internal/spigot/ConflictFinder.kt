@@ -2,10 +2,10 @@ package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.containsIgnoreCase
-import org.bukkit.Bukkit
-import org.bukkit.plugin.Plugin
 import java.io.File
 import java.util.zip.ZipFile
+import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
 
 object ConflictFinder {
     fun searchForConflicts(eco: EcoPlugin): List<Conflict> {
@@ -58,11 +58,11 @@ private fun Plugin.getConflict(): Conflict? {
         return null
     }
 
-    val zip = ZipFile(file)
-
-    for (entry in zip.entries()) {
-        if (entry.name.startsWith("kotlin/") || entry.name.startsWith("kotlinx/")) {
-            return Conflict(this, ConflictType.KOTLIN_SHADE)
+    ZipFile(file).use { zip ->
+        for (entry in zip.entries()) {
+            if (entry.name.startsWith("kotlin/") || entry.name.startsWith("kotlinx/")) {
+                return Conflict(this, ConflictType.KOTLIN_SHADE)
+            }
         }
     }
 

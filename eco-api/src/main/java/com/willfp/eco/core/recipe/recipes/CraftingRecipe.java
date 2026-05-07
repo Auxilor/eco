@@ -1,12 +1,11 @@
 package com.willfp.eco.core.recipe.recipes;
 
 import com.willfp.eco.core.items.TestableItem;
+import java.util.List;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Any crafting recipe.

@@ -5,7 +5,7 @@ import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.BegGoal
 import net.minecraft.world.entity.ai.goal.Goal
-import net.minecraft.world.entity.animal.Wolf
+import net.minecraft.world.entity.animal.wolf.Wolf
 
 object WolfBegGoalFactory : EntityGoalFactory<EntityGoalWolfBeg> {
     override fun create(apiGoal: EntityGoalWolfBeg, entity: PathfinderMob): Goal? {

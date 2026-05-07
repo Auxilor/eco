@@ -3,24 +3,13 @@ package com.willfp.eco.util;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.Validate;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +19,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utilities / API methods for strings.
@@ -53,7 +52,7 @@ public final class StringUtils {
      * Regexes for hex codes.
      */
     private static final List<Pattern> HEX_PATTERNS = new ImmutableList.Builder<Pattern>()
-            .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})" + ""))
+            .add(Pattern.compile("&#" + "([A-Fa-f0-9]{6})"))
             .add(Pattern.compile("\\{#" + "([A-Fa-f0-9]{6})" + "}"))
             .add(Pattern.compile("<#" + "([A-Fa-f0-9]{6})" + ">"))
             .build();
@@ -62,7 +61,7 @@ public final class StringUtils {
      * Legacy serializer.
      */
     private static final LegacyComponentSerializer LEGACY_COMPONENT_SERIALIZER = LegacyComponentSerializer.builder()
-            .character('\u00a7')
+            .character('§')
             .useUnusualXRepeatedCharacterHexFormat()
             .hexColors()
             .build();
@@ -71,7 +70,6 @@ public final class StringUtils {
      * GSON serializer.
      */
     private static final GsonComponentSerializer GSON_COMPONENT_SERIALIZER = GsonComponentSerializer.builder()
-            .emitLegacyHoverEvent()
             .build();
 
     /**
@@ -265,7 +263,7 @@ public final class StringUtils {
     @NotNull
     public static String format(@NotNull final String message,
                                 @NotNull final FormatOption option) {
-        return format(message, (Player) null, option);
+        return format(message, null, option);
     }
 
     /**
@@ -310,7 +308,7 @@ public final class StringUtils {
     @NotNull
     public static Component formatToComponent(@NotNull final String message,
                                               @NotNull final FormatOption option) {
-        return formatToComponent(message, (Player) null, option);
+        return formatToComponent(message, null, option);
     }
 
     /**
@@ -455,7 +453,11 @@ public final class StringUtils {
                                                  @NotNull final Color end,
                                                  final int step) {
         ChatColor[] colors = new ChatColor[step];
-        if (step <= 1) {
+        if (step <= 0) {
+            return colors;
+        }
+        if (step == 1) {
+            colors[0] = ChatColor.of(start);
             return colors;
         }
         int stepR = Math.abs(start.getRed() - end.getRed()) / (step - 1);
@@ -497,21 +499,15 @@ public final class StringUtils {
      */
     @NotNull
     public static String toNiceString(@Nullable final Object object) {
-        if (object == null) {
-            return "null";
-        }
+        return switch (object) {
+            case null -> "null";
+            case Integer i -> i.toString();
+            case String s -> s;
+            case Double v -> NumberUtils.format(v);
+            case Collection<?> c -> c.stream().map(StringUtils::toNiceString).collect(Collectors.joining(", "));
+            default -> String.valueOf(object);
+        };
 
-        if (object instanceof Integer) {
-            return ((Integer) object).toString();
-        } else if (object instanceof String) {
-            return (String) object;
-        } else if (object instanceof Double) {
-            return NumberUtils.format((Double) object);
-        } else if (object instanceof Collection<?> c) {
-            return c.stream().map(StringUtils::toNiceString).collect(Collectors.joining(", "));
-        } else {
-            return String.valueOf(object);
-        }
     }
 
     /**
@@ -701,8 +697,8 @@ public final class StringUtils {
                                            @NotNull final String completeFormat,
                                            @NotNull final String inProgressFormat,
                                            @NotNull final String incompleteFormat) {
-        Validate.isTrue(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
-        Validate.isTrue(bars > 1, "Must have at least 2 bars!");
+        Preconditions.checkArgument(progress >= 0 && progress <= 1, "Progress must be between 0 and 1!");
+        Preconditions.checkArgument(bars > 1, "Must have at least 2 bars!");
 
         String completeColor = format(completeFormat);
         String inProgressColor = format(inProgressFormat);
@@ -905,6 +901,34 @@ public final class StringUtils {
      */
     public static int getMargin(@NotNull final String input) {
         return input.indexOf(input.trim());
+    }
+
+    /**
+     * Convert a string to title case.
+     *
+     * @param string The string to convert.
+     * @return The title-cased string.
+     */
+    @NotNull
+    public static String toTitleCase(@NotNull final String string) {
+        if (string.isEmpty()) {
+            return string;
+        }
+        String[] words = string.split(" ", -1);
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (!word.isEmpty()) {
+                result.append(Character.toUpperCase(word.charAt(0)));
+                if (word.length() > 1) {
+                    result.append(word.substring(1).toLowerCase());
+                }
+            }
+            if (i < words.length - 1) {
+                result.append(' ');
+            }
+        }
+        return result.toString();
     }
 
     /**

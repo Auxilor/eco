@@ -1,8 +1,7 @@
 package com.willfp.eco.core.integrations.hologram;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Dummy hologram, created if no integrations are present on the server.

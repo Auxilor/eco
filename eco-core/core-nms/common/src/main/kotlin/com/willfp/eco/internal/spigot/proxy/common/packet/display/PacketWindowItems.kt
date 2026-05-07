@@ -9,13 +9,13 @@ import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 
-class PacketWindowItems(
+open class PacketWindowItems(
     private val plugin: EcoPlugin
 ) : PacketListener {
     private val lastKnownWindowIDs = ConcurrentHashMap<UUID, Int>()
@@ -52,7 +52,7 @@ class PacketWindowItems(
     }
 
 
-    private fun modifyWindowItems(
+    protected fun modifyWindowItems(
         itemStacks: MutableList<ItemStack>,
         windowId: Int,
         player: Player
@@ -76,8 +76,8 @@ class PacketWindowItems(
                 Display.display(itemStacks[index.toInt()], player)
             }
 
-            for (index in (itemStacks.indices subtract changes.toSet())) {
-                itemStacks[index.toInt()] = lastFrame.getItem(index.toByte()) ?: itemStacks[index.toInt()]
+            for (index in (itemStacks.indices subtract changes.map { it.toInt() }.toSet())) {
+                itemStacks[index] = lastFrame.getItem(index.toByte()) ?: itemStacks[index]
             }
         } else {
             itemStacks.forEach { Display.display(it, player) }

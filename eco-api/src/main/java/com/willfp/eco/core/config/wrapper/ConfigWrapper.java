@@ -4,12 +4,11 @@ import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Configs from eco have an internal implementation,

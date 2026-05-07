@@ -1,14 +1,13 @@
 package com.willfp.eco.core.entities;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * A custom entity has 3 components.
@@ -61,7 +60,7 @@ public class CustomEntity implements TestableEntity {
 
     @Override
     public Entity spawn(@NotNull final Location location) {
-        Validate.notNull(location.getWorld());
+        Preconditions.checkNotNull(location.getWorld(), "World must not be null!");
 
         return provider.apply(location);
     }

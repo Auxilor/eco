@@ -1,9 +1,9 @@
 package com.willfp.eco.internal.drops
 
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.concurrent.ConcurrentHashMap
 
 class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
     override fun push() {

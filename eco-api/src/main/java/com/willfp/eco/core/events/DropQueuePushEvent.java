@@ -1,5 +1,6 @@
 package com.willfp.eco.core.events;
 
+import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -7,8 +8,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 /**
  * Called on DropQueue push.
@@ -32,7 +31,7 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     /**
      * The xp.
      */
-    private final int xp;
+    private int xp;
 
     /**
      * The location.
@@ -130,6 +129,14 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
      */
     public int getXp() {
         return xp;
+    }
+
+    /**
+     * Set the xp to be dropped.
+     * @param xp The xp.
+     */
+    public void setXp(int xp) {
+        this.xp = xp;
     }
 
     /**

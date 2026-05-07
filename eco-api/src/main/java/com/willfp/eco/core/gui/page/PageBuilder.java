@@ -5,10 +5,9 @@ import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.menu.MenuLayer;
 import com.willfp.eco.core.gui.slot.FillerMask;
 import com.willfp.eco.core.gui.slot.Slot;
+import java.util.function.BiConsumer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.BiConsumer;
 
 /**
  * Builder to create pages.
@@ -42,21 +41,19 @@ public interface PageBuilder {
         return this.addComponent(row, column, slot);
     }
 
-
     /**
      * Add a component.
      *
-     * @param layer     The layer.
+     * @param layer     The layer, see {@link MenuLayer} for constants.
      * @param row       The row of the top left corner.
      * @param column    The column of the top left corner.
      * @param component The component.
      * @return The builder.
      */
-    PageBuilder addComponent(@NotNull MenuLayer layer,
+    PageBuilder addComponent(int layer,
                              int row,
                              int column,
                              @NotNull GUIComponent component);
-
 
     /**
      * Add a component.

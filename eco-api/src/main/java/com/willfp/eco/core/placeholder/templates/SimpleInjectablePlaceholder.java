@@ -3,10 +3,9 @@ package com.willfp.eco.core.placeholder.templates;
 import com.willfp.eco.core.placeholder.InjectablePlaceholder;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.PatternUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A template class for simple placeholders.

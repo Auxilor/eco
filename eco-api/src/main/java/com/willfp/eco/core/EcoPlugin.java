@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.willfp.eco.core.command.impl.PluginCommand;
 import com.willfp.eco.core.config.base.ConfigYml;
@@ -23,7 +24,11 @@ import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.version.OutdatedEcoVersionError;
 import com.willfp.eco.core.version.Version;
 import com.willfp.eco.core.web.UpdateChecker;
-import org.apache.commons.lang.Validate;
+import java.io.File;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,17 +38,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * EcoPlugin is the base plugin class for eco-based plugins.
@@ -60,7 +54,7 @@ import java.util.stream.Collectors;
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
-@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "deprecation", "RedundantSuppression", "MismatchedQueryAndUpdateOfCollection"})
+@SuppressWarnings({"unused", "DeprecatedIsStillUsed", "MismatchedQueryAndUpdateOfCollection"})
 public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Registrable {
     /**
      * The properties (eco.yml).
@@ -93,12 +87,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     private final LangYml langYml;
 
     /**
-     * The factory to produce {@link org.bukkit.NamespacedKey}s.
+     * The factory to produce {@link NamespacedKey}s.
      */
     private final NamespacedKeyFactory namespacedKeyFactory;
 
     /**
-     * The factory to produce {@link org.bukkit.metadata.FixedMetadataValue}s.
+     * The factory to produce {@link FixedMetadataValue}s.
      */
     private final MetadataValueFactory metadataValueFactory;
 
@@ -364,13 +358,19 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
          */
 
         Version runningVersion = new Version(Eco.get().getEcoPlugin().getDescription().getVersion());
+
+        // Support for both legacy and new props configuration
         Version requiredVersion = new Version(this.getMinimumEcoVersion());
+        if (this.getProps().getEcoApiVersion().compareTo(requiredVersion) > 0) {
+            requiredVersion = this.getProps().getEcoApiVersion();
+        }
+
         if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
             this.getLogger().severe("You are running an outdated version of eco!");
-            this.getLogger().severe("You must be on at least" + this.getMinimumEcoVersion());
+            this.getLogger().severe("You must be on at least " + requiredVersion);
             this.getLogger().severe("Download the newest version here:");
-            this.getLogger().severe("https://polymart.org/download/773/recent/JSpprMspkuyecf5y1wQ2Jn8OoLQSQ_IW");
-            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + this.getMinimumEcoVersion() + " to run.");
+            this.getLogger().severe("https://polymart.org/product/773/eco");
+            throw new OutdatedEcoVersionError("This plugin requires at least eco version " + requiredVersion + " to run.");
         }
     }
 
@@ -426,28 +426,25 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         Prerequisite.update();
 
-        if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
-            this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
-                if (!abstractPacketAdapter.isPostLoad()) {
-                    abstractPacketAdapter.register();
-                }
-            });
-        }
-
         this.loadListeners().forEach(listener -> this.getEventManager().registerListener(listener));
         this.loadPacketListeners().forEach(listener -> this.getEventManager().registerPacketListener(listener));
 
-        this.loadPluginCommands().forEach(PluginCommand::register);
+        Eco.get().beginCommandBatch();
+        try {
+            this.loadPluginCommands().forEach(PluginCommand::register);
+        } finally {
+            Eco.get().endCommandBatch();
+        }
 
         // Run preliminary reload to resolve load order issues
         this.getScheduler().runLater(() -> {
             Logger before = this.getLogger();
             // Temporary silence logger.
-            this.logger = Eco.get().getNOOPLogger();
+            //this.logger = Eco.get().getNOOPLogger();
 
             this.reload(false);
 
-            this.logger = before;
+            //this.logger = before;
         }, 1);
 
         this.getScheduler().runLater(this::afterLoad, 2);
@@ -582,14 +579,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.displayModules.add(displayModule);
         }
 
-        if (Prerequisite.HAS_PROTOCOLLIB.isMet()) {
-            this.loadPacketAdapters().forEach(abstractPacketAdapter -> {
-                if (abstractPacketAdapter.isPostLoad()) {
-                    abstractPacketAdapter.register();
-                }
-            });
-        }
-
         if (!Prerequisite.HAS_PAPER.isMet()) {
             this.getLogger().severe("");
             this.getLogger().severe("----------------------------");
@@ -654,9 +643,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.getScheduler().cancelAll();
         }
 
-        this.getConfigHandler().callUpdate();
-        this.getConfigHandler().callUpdate(); // Call twice to fix issues
-
         this.handleLifecycle(this.onReload, this::handleReload);
 
         if (cancelTasks) {
@@ -714,9 +700,19 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The time.
      */
     public final long reloadWithTime() {
+        return reloadWithTime(true);
+    }
+
+    /**
+     * Reload the plugin and return the time taken to reload.
+     *
+     * @param cancelTasks If tasks should be cancelled.
+     * @return The time.
+     */
+    public final long reloadWithTime(final boolean cancelTasks) {
         long startTime = System.currentTimeMillis();
 
-        this.reload();
+        this.reload(cancelTasks);
 
         return System.currentTimeMillis() - startTime;
     }
@@ -848,19 +844,6 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     }
 
     /**
-     * ProtocolLib handle adapters to be registered.
-     * <p>
-     * If the plugin does not require ProtocolLib this can be left empty.
-     *
-     * @return A list of handle adapters.
-     * @deprecated Use {@link #loadPacketListeners()} instead.
-     */
-    @Deprecated(since = "6.51.0")
-    protected List<AbstractPacketAdapter> loadPacketAdapters() {
-        return new ArrayList<>();
-    }
-
-    /**
      * Packet Listeners to be registered.
      *
      * @return A list of handle listeners.
@@ -925,7 +908,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     @Nullable
     @Deprecated(since = "6.72.0")
     protected DisplayModule createDisplayModule() {
-        Validate.isTrue(this.getDisplayModule() == null, "Display module exists!");
+        Preconditions.checkArgument(this.getDisplayModule() == null, "Display module exists!");
 
         return null;
     }
@@ -943,9 +926,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Get the minimum version of eco to use the plugin.
      *
      * @return The version.
+     * @deprecated Use {@link PluginProps#getEcoApiVersion()} instead, configure in eco.yml as eco-api-version.
      */
+    @Deprecated(since = "6.77.0", forRemoval = true)
     public String getMinimumEcoVersion() {
-        return "6.0.0";
+        return this.getProps().getEcoApiVersion().toString();
     }
 
     /**
@@ -967,7 +952,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @return The proxy.
      */
     public final <T> T getProxy(@NotNull final Class<T> proxyClass) {
-        Validate.notNull(proxyFactory, "Plugin does not support proxies!");
+        Preconditions.checkNotNull(proxyFactory, "Plugin does not support proxies!");
 
         return proxyFactory.getProxy(proxyClass);
     }

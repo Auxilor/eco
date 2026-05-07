@@ -6,17 +6,16 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import java.util.Collections;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
 
 /**
  * Wrapper class for ProtocolLib packets.
  *
  * @deprecated ProtocolLib is no longer used by eco. Use {@link com.willfp.eco.core.packet.PacketListener} instead.
  */
-@Deprecated(since = "6.51.0")
+@Deprecated(since = "6.51.0", forRemoval = true)
 public abstract class AbstractPacketAdapter extends PacketAdapter {
     /**
      * The handle type to listen for.

@@ -9,21 +9,13 @@ import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
+import java.math.BigDecimal;
+import java.util.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * All configs implement this interface.

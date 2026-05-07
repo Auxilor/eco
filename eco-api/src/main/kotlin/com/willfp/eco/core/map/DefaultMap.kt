@@ -51,6 +51,6 @@ fun <K : Any, K1 : Any, V> nestedMap() =
  * @see DefaultMap.createNestedListMap
  */
 fun <K : Any, K1 : Any, V> nestedListMap() =
-    DefaultMap<K, MutableListMap<K1, V>>() {
+    DefaultMap<K, MutableListMap<K1, V>> {
         MutableListMap()
     }

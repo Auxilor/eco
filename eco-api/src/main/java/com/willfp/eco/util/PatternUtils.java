@@ -3,10 +3,9 @@ package com.willfp.eco.util;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.willfp.eco.core.Eco;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for patterns.

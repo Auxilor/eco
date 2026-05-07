@@ -1,5 +1,6 @@
 package com.willfp.eco.core;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.PluginCommandBase;
 import com.willfp.eco.core.command.impl.PluginCommand;
@@ -29,9 +30,13 @@ import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Logger;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -40,17 +45,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Holds the instance of eco for bridging between the frontend and backend.
@@ -545,9 +545,45 @@ public interface Eco {
     Menu getOpenMenu(@NotNull Player player);
 
     /**
+     * Register bukkit recipe without resending recipe packet.
+     * @param recipe the recipe
+     */
+    void addBukkitRecipeNoResend(Recipe recipe);
+
+    /**
+     * Reload Bukkit recipes by resending the recipe packet to all players.
+     */
+    void reloadBukkitRecipes();
+
+
+    /**
+     * Remove a bukkit recipe without resending recipe packet.
+      * @param key the recipe key
+      * @return if the recipe was successfully removed
+     */
+    boolean removeBukkitRecipeNoResend(@NotNull NamespacedKey key);
+
+    /**
      * Sync commands.
      */
     void syncCommands();
+
+    /**
+     * Begin a batch of command (un)registrations. While a batch is open,
+     * {@link #syncCommands()} calls are deferred and coalesced into a single
+     * sync when the batch closes.
+     *
+     * <p>Nestable — requires a matching {@link #endCommandBatch()} per call.
+     * Must be called from the main thread.
+     */
+    void beginCommandBatch();
+
+    /**
+     * End a batch opened with {@link #beginCommandBatch()}. When the outermost
+     * batch closes, a single {@link #syncCommands()} runs if any sync was
+     * requested during the batch.
+     */
+    void endCommandBatch();
 
     /**
      * Unregister a command.
@@ -603,6 +639,15 @@ public interface Eco {
                                   boolean visible);
 
     /**
+     * Gives the player the amount of experience specified.
+     *
+     * @param player       The player.
+     * @param amount       The amount.
+     * @param applyMending Mend players items with mending, with same behavior as picking up orbs.
+     */
+    void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending);
+
+    /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
      *
      * @return The instance of eco.
@@ -631,7 +676,7 @@ public interface Eco {
          */
         @ApiStatus.Internal
         static void set(@NotNull final Eco eco) {
-            Validate.isTrue(Instance.eco == null, "Already initialized!");
+            Preconditions.checkArgument(Instance.eco == null, "Already initialized!");
 
             Instance.eco = eco;
         }

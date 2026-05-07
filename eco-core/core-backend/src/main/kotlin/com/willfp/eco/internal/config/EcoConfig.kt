@@ -6,8 +6,8 @@ import com.willfp.eco.core.placeholder.InjectablePlaceholder
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.fast.listView
 import com.willfp.eco.util.StringUtils
-import org.bukkit.configuration.file.YamlConfiguration
 import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.configuration.file.YamlConfiguration
 
 @Suppress("UNCHECKED_CAST")
 open class EcoConfig(

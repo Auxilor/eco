@@ -6,36 +6,26 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.21")
     }
 }
 
 plugins {
     id("java-library")
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.4.1"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "2.3.21"
 }
 
 dependencies {
     implementation(project(":eco-api"))
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
-    implementation(project(":eco-core:core-proxy"))
     implementation(project(":eco-core:core-backend"))
-    implementation(project(":eco-core:core-backend-modern"))
-    implementation(project(path = ":eco-core:core-nms:v1_17_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_18_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_18_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_19_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R1", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R2", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_20_R3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_3", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_4", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_8", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_10", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v1_21_11", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v26_1_2", configuration = "shadow"))
 }
 
 allprojects {
@@ -51,11 +41,17 @@ allprojects {
         maven("https://repo.auxilor.io/repository/maven-public/")
 
         maven("https://jitpack.io") {
-            content { includeGroupByRegex("com\\.github\\..*") }
+            content {
+                includeGroupByRegex("com\\.github\\..*")
+                excludeGroup("com.github.TownyAdvanced")
+            }
         }
 
         // Paper
         maven("https://repo.papermc.io/repository/maven-public/")
+
+        // EssentialsX
+        maven("https://repo.essentialsx.net/releases")
 
         // SuperiorSkyblock2
         maven("https://repo.bg-software.com/repository/api/")
@@ -78,20 +74,11 @@ allprojects {
         // FactionsUUID
         //maven("https://ci.ender.zone/plugin/repository/everything/")
 
-        // NoCheatPlus
-        maven("https://repo.md-5.net/content/repositories/snapshots/")
-
-        // CombatLogX
-        maven("https://nexus.sirblobman.xyz/repository/public/")
-
         // MythicMobs
         maven("https://mvn.lumine.io/repository/maven-public/")
 
-        // Crunch
-        maven("https://redempt.dev")
-
         // LibsDisguises
-        maven("https://repo.md-5.net/content/groups/public/")
+        maven("https://mvn.lib.co.nz/public")
 
         // PlayerPoints
         maven("https://repo.rosewooddev.io/repository/public/")
@@ -107,31 +94,56 @@ allprojects {
 
         // FancyHolograms
         maven("https://repo.fancyplugins.de/releases")
+
+        // Nexo
+        maven("https://repo.nexomc.com/releases")
+
+        // CraftEngine
+        maven("https://repo.momirealms.net/releases/")
+
+        // CoinsEngine
+        maven("https://repo.nightexpressdev.com/releases")
+
+        //Towny
+        maven("https://repo.glaremasters.me/repository/towny/")
+
+        // FactionsUUID
+        exclusiveContent {
+            forRepository {
+                maven("https://dependency.download/releases")
+            }
+
+            filter {
+                includeGroup("dev.kitteh")
+            }
+        }
     }
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "2.1.0"))
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+        implementation(kotlin("stdlib", version = "2.3.21"))
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
         // Included in spigot jar, no need to move to implementation
-        compileOnly("org.jetbrains:annotations:23.0.0")
-        compileOnly("com.google.guava:guava:32.0.0-jre")
+        compileOnly("org.jetbrains:annotations:26.1.0")
+        compileOnly("com.google.guava:guava:33.6.0-jre")
 
         // Test
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.3")
 
         // Adventure
-        implementation("net.kyori:adventure-api:4.10.1")
-        implementation("net.kyori:adventure-text-serializer-gson:4.10.1") {
+        implementation("net.kyori:adventure-api:5.0.1") {
+            exclude("com.github.ben-manes.caffeine", "caffeine")
+        }
+        implementation("net.kyori:adventure-text-serializer-gson:5.0.1") {
             exclude("com.google.code.gson", "gson") // Prevent shading into the jar
         }
-        implementation("net.kyori:adventure-text-serializer-legacy:4.10.1")
+        implementation("net.kyori:adventure-text-serializer-legacy:5.0.1")
 
         // Other
-        implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
-        implementation("org.apache.maven:maven-artifact:3.9.0")
+        implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
+        implementation("org.apache.maven:maven-artifact:3.9.15")
     }
 
     tasks.withType<JavaCompile> {
@@ -155,23 +167,21 @@ allprojects {
     }
 
     tasks {
-        withType<Jar> {
-            duplicatesStrategy = DuplicatesStrategy.WARN
-        }
-
         compileKotlin {
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_17)
+                jvmTarget.set(JvmTarget.JVM_21)
             }
         }
 
         compileJava {
             dependsOn(clean)
             options.encoding = "UTF-8"
+            options.isDeprecation = true
         }
 
         test {
             useJUnitPlatform()
+            include("**/*Pdf")
 
             // Show test results.
             testLogging {
@@ -184,7 +194,7 @@ allprojects {
         }
 
         withType<JavaCompile>().configureEach {
-            options.release.set(17)
+            options.release.set(21)
         }
     }
 
@@ -198,6 +208,9 @@ allprojects {
 
 tasks {
     shadowJar {
+        exclude("META-INF/**")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
         relocate("org.bstats", "com.willfp.eco.libs.bstats")
         relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
         relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
@@ -206,9 +219,6 @@ tasks {
         relocate("org.intellij", "com.willfp.eco.libs.intellij")
         relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
         //relocate("org.jetbrains.exposed", "com.willfp.eco.libs.exposed")
-        relocate("org.objenesis", "com.willfp.eco.libs.objenesis")
-        relocate("org.reflections", "com.willfp.eco.libs.reflections")
-        relocate("javassist", "com.willfp.eco.libs.javassist")
         relocate("javax.annotation", "com.willfp.eco.libs.annotation")
         relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
         relocate("com.google.j2objc", "com.willfp.eco.libs.j2objc")
@@ -224,8 +234,12 @@ tasks {
         relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
         relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
 
+        relocate("kotlin", "com.willfp.eco.libs.kotlin") {
+            exclude("kotlin.kotlin_builtins")
+        }
+
         /*
-        Kotlin and caffeine are not shaded so that they can be accessed directly by eco plugins.
+        Caffeine is not shaded so that it can be accessed directly by eco plugins.
         Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
          */
     }

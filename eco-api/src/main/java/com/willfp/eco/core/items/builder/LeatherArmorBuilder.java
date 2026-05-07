@@ -1,13 +1,12 @@
 package com.willfp.eco.core.items.builder;
 
 import com.willfp.eco.core.items.TestableItem;
+import java.util.function.Supplier;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 /**
  * Builder for leather armor.

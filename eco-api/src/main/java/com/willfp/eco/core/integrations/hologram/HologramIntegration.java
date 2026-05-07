@@ -1,10 +1,9 @@
 package com.willfp.eco.core.integrations.hologram;
 
 import com.willfp.eco.core.integrations.Integration;
+import java.util.List;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Wrapper class for hologram integrations.

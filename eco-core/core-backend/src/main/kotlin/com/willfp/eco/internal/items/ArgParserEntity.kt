@@ -1,12 +1,12 @@
 package com.willfp.eco.internal.items
 
 import com.willfp.eco.core.items.args.LookupArgParser
+import java.util.function.Predicate
 import org.bukkit.block.CreatureSpawner
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BlockStateMeta
 import org.bukkit.inventory.meta.ItemMeta
-import java.util.function.Predicate
 
 object ArgParserEntity : LookupArgParser {
     override fun parseArguments(args: Array<out String>, meta: ItemMeta): Predicate<ItemStack>? {
@@ -14,7 +14,7 @@ object ArgParserEntity : LookupArgParser {
             return null
         }
 
-        if (meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
+        if (!meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
             return null
         }
 
@@ -42,7 +42,7 @@ object ArgParserEntity : LookupArgParser {
         meta.blockState = state
 
         return Predicate {
-            val testMeta = ((it.itemMeta as? BlockStateMeta) as? CreatureSpawner) ?: return@Predicate false
+            val testMeta = ((it.itemMeta as? BlockStateMeta)?.blockState as? CreatureSpawner) ?: return@Predicate false
 
             testMeta.spawnedType?.name?.equals(type, true) == true
         }
@@ -53,12 +53,12 @@ object ArgParserEntity : LookupArgParser {
             return null
         }
 
-        if (meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
+        if (!meta.hasBlockState() || meta.blockState !is CreatureSpawner) {
             return null
         }
 
         val state = meta.blockState as CreatureSpawner
 
-        return state.spawnedType?.let { "entity:${state.spawnedType!!.name}" } ?: return null
+        return state.spawnedType?.let { "entity:${state.spawnedType!!.name}" }
     }
 }

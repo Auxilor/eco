@@ -1,7 +1,7 @@
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoImpl
-api-version: 1.17
+api-version: 1.21.4
 authors: [ Auxilor ]
 website: willfp.com
 load: STARTUP
@@ -16,6 +16,7 @@ loadbefore:
   - CMI
   - DeluxeCombat
   - ShopGUIPlus
+  - DeluxeMenus
 softdepend:
   - ItemBridge
   - HuskClaims
@@ -27,7 +28,6 @@ softdepend:
   - Towny
   - FactionsUUID
   - Kingdoms
-  - NoCheatPlus
   - AAC
   - Matrix
   - Vulcan
@@ -36,6 +36,7 @@ softdepend:
   - CombatLogX
   - ItemsAdder
   - Oraxen
+  - Nexo
   - HeadDatabase
   - Multiverse-Inventories
   - Alice
@@ -47,7 +48,6 @@ softdepend:
   - IridiumSkyblock
   - SuperiorSkyblock2
   - FabledSkyBlock
-  - CrashClaim
   - DecentHolograms
   - MythicMobs
   - RPGHorses
@@ -62,3 +62,6 @@ softdepend:
   - Denizen
   - RoyaleEconomy
   - FancyHolograms
+  - CraftEngine
+  - CoinsEngine
+  - ExcellentShop

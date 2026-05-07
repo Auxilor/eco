@@ -4,6 +4,7 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
@@ -21,7 +22,6 @@ import com.willfp.eco.internal.command.EcoSubcommand
 import com.willfp.eco.internal.config.EcoConfigSection
 import com.willfp.eco.internal.config.EcoLoadableConfig
 import com.willfp.eco.internal.config.EcoUpdatableConfig
-import com.willfp.eco.internal.config.handler.ReflectiveConfigHandler
 import com.willfp.eco.internal.config.handler.SimpleConfigHandler
 import com.willfp.eco.internal.config.toMap
 import com.willfp.eco.internal.drops.EcoDropQueue
@@ -31,8 +31,6 @@ import com.willfp.eco.internal.extensions.EcoExtensionLoader
 import com.willfp.eco.internal.factory.EcoMetadataValueFactory
 import com.willfp.eco.internal.factory.EcoNamespacedKeyFactory
 import com.willfp.eco.internal.factory.EcoRunnableFactory
-import com.willfp.eco.internal.fast.FastInternalNamespacedKeyFactory
-import com.willfp.eco.internal.fast.InternalNamespacedKeyFactory
 import com.willfp.eco.internal.fast.SafeInternalNamespacedKeyFactory
 import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
@@ -51,18 +49,21 @@ import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
 import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
 import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
-import com.willfp.eco.internal.spigot.proxy.BukkitCommandsProxy
-import com.willfp.eco.internal.spigot.proxy.CommonsInitializerProxy
-import com.willfp.eco.internal.spigot.proxy.DisplayNameProxy
-import com.willfp.eco.internal.spigot.proxy.DummyEntityFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.EntityControllerFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.ExtendedPersistentDataContainerFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.FastItemStackFactoryProxy
-import com.willfp.eco.internal.spigot.proxy.MiniMessageTranslatorProxy
-import com.willfp.eco.internal.spigot.proxy.PacketHandlerProxy
-import com.willfp.eco.internal.spigot.proxy.SNBTConverterProxy
-import com.willfp.eco.internal.spigot.proxy.SkullProxy
-import com.willfp.eco.internal.spigot.proxy.TPSProxy
+import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
+import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
+import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
+import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.EntityControllerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
+import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxies.SkullProxy
+import com.willfp.eco.internal.spigot.proxies.TPSProxy
+import java.net.URLClassLoader
+import java.util.UUID
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
@@ -72,10 +73,9 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
-import java.net.URLClassLoader
-import java.util.UUID
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
 
@@ -89,10 +89,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         getProxy(CommonsInitializerProxy::class.java).init(this)
     }
 
-    @Suppress("RedundantNullableReturnType")
-    private val keyFactory: InternalNamespacedKeyFactory? =
-        if (this.configYml.getBool("use-safer-namespacedkey-creation"))
-            SafeInternalNamespacedKeyFactory() else FastInternalNamespacedKeyFactory()
+    private val keyFactory = SafeInternalNamespacedKeyFactory()
 
     private val placeholderParser = PlaceholderParser()
 
@@ -122,8 +119,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         EcoExtensionLoader(plugin)
 
     override fun createConfigHandler(plugin: EcoPlugin) =
-        if (plugin.props.isUsingReflectiveReload) ReflectiveConfigHandler(plugin)
-        else SimpleConfigHandler()
+        SimpleConfigHandler()
 
     override fun createLogger(plugin: EcoPlugin) =
         EcoLogger(plugin)
@@ -255,6 +251,12 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
             }
         }
 
+        for (customBlock in Blocks.getCustomBlocks()) {
+            if (customBlock.key.namespace.equals(plugin.name.lowercase(), ignoreCase = true)) {
+                Blocks.removeCustomBlock(customBlock.key)
+            }
+        }
+
         val classLoader = plugin::class.java.classLoader
 
         if (classLoader is URLClassLoader) {
@@ -296,9 +298,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
 
-    @Suppress("DEPRECATION")
     override fun createNamespacedKey(namespace: String, key: String) =
-        keyFactory?.create(namespace, key) ?: NamespacedKey(namespace, key)
+        NamespacedKey(namespace, key)
 
     override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>) =
         existing ?: EcoPropsParser.parseForPlugin(plugin)
@@ -339,8 +340,41 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
 
-    override fun syncCommands() =
+    override fun addBukkitRecipeNoResend(recipe: Recipe) {
+        this.getProxy(CommonsInitializerProxy::class.java).addBukkitRecipeNoResend(recipe)
+    }
+
+    override fun reloadBukkitRecipes() {
+        this.getProxy(CommonsInitializerProxy::class.java).reloadBukkitRecipes()
+    }
+
+    override fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
+        return this.getProxy(CommonsInitializerProxy::class.java).removeBukkitRecipeNoResend(key)
+    }
+
+    private var batchDepth = 0
+    private var syncDuringBatch = false
+
+    override fun syncCommands() {
+        if (batchDepth > 0) {
+            syncDuringBatch = true
+            return
+        }
         this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+    }
+
+    override fun beginCommandBatch() {
+        batchDepth++
+    }
+
+    override fun endCommandBatch() {
+        check(batchDepth > 0) { "endCommandBatch() called without matching beginCommandBatch()" }
+        batchDepth--
+        if (batchDepth == 0 && syncDuringBatch) {
+            syncDuringBatch = false
+            this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+        }
+    }
 
     override fun unregisterCommand(command: PluginCommandBase) =
         this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)
@@ -356,4 +390,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun setClientsideDisplayName(entity: LivingEntity, player: Player, name: Component, visible: Boolean) =
         this.getProxy(DisplayNameProxy::class.java).setClientsideDisplayName(entity, player, name, visible)
+
+    override fun giveExpAndApplyMending(player: Player, amount: Int, applyMending: Boolean) {
+        getProxy(PlayerHandlerProxy::class.java).giveExpAndApplyMending(player, amount, applyMending)
+    }
 }

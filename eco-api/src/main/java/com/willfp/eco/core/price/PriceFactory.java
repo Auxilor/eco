@@ -2,11 +2,10 @@ package com.willfp.eco.core.price;
 
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.function.Function;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Create prices.

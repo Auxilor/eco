@@ -1,15 +1,14 @@
 package com.willfp.eco.core.entities.impl;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.util.NumberUtils;
-import org.apache.commons.lang.Validate;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * A group of testable entities.
@@ -28,7 +27,7 @@ public class GroupedTestableEntities implements TestableEntity {
      * @param children The children.
      */
     public GroupedTestableEntities(@NotNull final Collection<TestableEntity> children) {
-        Validate.isTrue(!children.isEmpty(), "Group must have at least one child!");
+        Preconditions.checkArgument(!children.isEmpty(), "Group must have at least one child!");
 
         this.children = children;
     }

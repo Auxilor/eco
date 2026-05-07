@@ -1,9 +1,8 @@
 package com.willfp.eco.core.particle;
 
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * Create particles.

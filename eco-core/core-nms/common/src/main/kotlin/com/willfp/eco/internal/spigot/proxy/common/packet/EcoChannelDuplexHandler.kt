@@ -7,8 +7,8 @@ import com.willfp.eco.internal.events.handleSend
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
-import org.bukkit.Bukkit
 import java.util.UUID
+import org.bukkit.Bukkit
 
 class EcoChannelDuplexHandler(
     private val uuid: UUID
@@ -23,7 +23,7 @@ class EcoChannelDuplexHandler(
             event.handleReceive()
 
             if (!event.isCancelled) {
-                super.channelRead(ctx, msg)
+                super.channelRead(ctx, event.packet.handle)
             }
         } else {
             super.channelRead(ctx, msg)
@@ -39,7 +39,7 @@ class EcoChannelDuplexHandler(
             event.handleSend()
 
             if (!event.isCancelled) {
-                super.write(ctx, msg, promise)
+                super.write(ctx, event.packet.handle, promise)
             }
         } else {
             super.write(ctx, msg, promise)

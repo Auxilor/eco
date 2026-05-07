@@ -53,7 +53,7 @@ eco comes packed with all the tools you need in your plugins:
 - And much more
 
 # For server owners
-- Supports 1.17+
+- Supports 1.21.4+
 
 ## Downloads
 

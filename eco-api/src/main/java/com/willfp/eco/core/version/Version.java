@@ -5,8 +5,6 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A minimal class to represent a version, uses DefaultArtifactVersion under the hood.
- * <p>
- * This class exists to resolve issues where 1.17 doesn't include DefaultArtifactVersion.
  */
 public class Version implements Comparable<Version> {
     /**

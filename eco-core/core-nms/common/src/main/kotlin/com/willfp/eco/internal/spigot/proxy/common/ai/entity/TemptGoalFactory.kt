@@ -4,14 +4,14 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalTempt
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
+import java.util.EnumSet
+import kotlin.math.abs
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.TemptGoal
 import net.minecraft.world.entity.ai.targeting.TargetingConditions
-import java.util.EnumSet
-import kotlin.math.abs
 
 object TemptGoalFactory : EntityGoalFactory<EntityGoalTempt> {
     override fun create(apiGoal: EntityGoalTempt, entity: PathfinderMob): Goal {
@@ -45,7 +45,7 @@ class EnhancedTemptGoal(
 
     init {
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK))
-        targetingConditions = TEMP_TARGETING.copy().selector { shouldFollow(it) }
+        targetingConditions = TEMP_TARGETING.copy().selector { entity, level -> shouldFollow(entity) }
     }
 
     override fun canUse(): Boolean {
@@ -53,7 +53,7 @@ class EnhancedTemptGoal(
             --calmDown
             false
         } else {
-            player = mob.level.getNearestPlayer(targetingConditions, mob as LivingEntity)
+            player = mob.level().getNearestPlayer(mob, 10.0)
             player != null
         }
     }
@@ -71,7 +71,7 @@ class EnhancedTemptGoal(
                     return false
                 }
                 if (abs(p.xRot.toDouble() - pRotX) > 5.0 || abs(
-                        p.getYRot().toDouble() - pRotY
+                        p.yRot.toDouble() - pRotY
                     ) > 5.0
                 ) {
                     return false
@@ -82,7 +82,7 @@ class EnhancedTemptGoal(
                 pz = p.z
             }
             pRotX = p.xRot.toDouble()
-            pRotY = p.getYRot().toDouble()
+            pRotY = p.yRot.toDouble()
         }
         return canUse()
     }
@@ -110,7 +110,7 @@ class EnhancedTemptGoal(
     override fun tick() {
         player ?: return
 
-        mob.lookControl.setLookAt(player, (mob.maxHeadYRot + 20).toFloat(), mob.maxHeadXRot.toFloat())
+        mob.lookControl.setLookAt(player!!, (mob.maxHeadYRot + 20).toFloat(), mob.maxHeadXRot.toFloat())
         if (mob.distanceToSqr(player as Entity) < 6.25) {
             mob.navigation.stop()
         } else {

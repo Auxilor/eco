@@ -5,12 +5,12 @@ package com.willfp.eco.internal.config
 import com.moandjiezana.toml.Toml
 import com.moandjiezana.toml.TomlWriter
 import com.willfp.eco.core.config.ConfigType
+import java.io.BufferedReader
+import java.io.Reader
 import org.bukkit.configuration.file.YamlConstructor
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
-import java.io.BufferedReader
-import java.io.Reader
 
 fun ConfigType.toMap(input: String?): Map<String, Any?> =
     this.handler.toMap(input)

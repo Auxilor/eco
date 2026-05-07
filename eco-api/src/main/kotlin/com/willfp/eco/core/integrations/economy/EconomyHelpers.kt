@@ -2,8 +2,8 @@
 
 package com.willfp.eco.core.integrations.economy
 
-import org.bukkit.OfflinePlayer
 import java.math.BigDecimal
+import org.bukkit.OfflinePlayer
 
 /** @see EconomyManager */
 var OfflinePlayer.balance: Double

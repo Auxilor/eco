@@ -1,12 +1,11 @@
 package com.willfp.eco.core.integrations.placeholder;
 
 import com.willfp.eco.core.integrations.Integration;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Wrapper class for arguments integrations.

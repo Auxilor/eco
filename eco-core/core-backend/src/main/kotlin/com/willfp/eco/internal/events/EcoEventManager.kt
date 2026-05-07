@@ -19,11 +19,11 @@ private class RegisteredPacketListener(
 private val listeners = listMap<PacketPriority, RegisteredPacketListener>()
 
 fun PacketEvent.handleSend() {
-    for (priority in PacketPriority.values()) {
+    for (priority in PacketPriority.entries) {
         for (listener in listeners[priority]) {
             try {
                 listener.listener.onSend(this)
-            } catch (e: Throwable) {
+            } catch (e: Exception) {
                 listener.plugin.logger.warning(
                     "Exception in packet listener ${listener.listener.javaClass.name}" +
                             " for packet ${packet.handle.javaClass.name}!"
@@ -41,7 +41,7 @@ fun PacketEvent.handleSend() {
 }
 
 fun PacketEvent.handleReceive() {
-    for (priority in PacketPriority.values()) {
+    for (priority in PacketPriority.entries) {
         for (listener in listeners[priority]) {
             try {
                 listener.listener.onReceive(this)

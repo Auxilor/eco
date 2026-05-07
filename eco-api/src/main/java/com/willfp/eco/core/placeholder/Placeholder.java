@@ -2,10 +2,9 @@ package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.regex.Pattern;
 
 /**
  * A placeholder represents a string that can hold a value.

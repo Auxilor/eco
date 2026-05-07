@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
 import com.iridium.iridiumskyblock.api.IridiumSkyblockAPI
-import com.iridium.iridiumteams.PermissionType
+import com.iridium.iridiumskyblock.dependencies.iridiumteams.PermissionType
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block

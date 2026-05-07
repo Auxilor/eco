@@ -8,10 +8,6 @@ import com.willfp.eco.internal.config.EcoUpdatableConfig
 open class SimpleConfigHandler : ConfigHandler {
     private val configs = mutableListOf<LoadableConfig>()
 
-    override fun callUpdate() {
-        // Do nothing.
-    }
-
     override fun saveAllConfigs() {
         for (config in configs) {
             config.save()

@@ -42,15 +42,17 @@ private class EnhancedInteractGoal(
             if (mob.target != null) {
                 lookAt = mob.target
             }
+            val level = getServerLevel(this.mob)
+
             val lookAt = if (lookAtType == Player::class.java) {
-                mob.level.getNearestPlayer(lookAtContext, mob, mob.x, mob.eyeY, mob.z)
+                level.getNearestPlayer(lookAtContext, mob, mob.x, mob.eyeY, mob.z)
             } else {
-                mob.level.getNearestEntity(
-                    mob.level.getEntitiesOfClass(
+                level.getNearestEntity(
+                    mob.level().getEntitiesOfClass(
                         lookAtType, mob.boundingBox.inflate(
                             lookDistance.toDouble(), 3.0, lookDistance.toDouble()
                         )
-                    ) { target.matches(it.toBukkitEntity()) }, // Change this line to check with TestableEntity.
+                    ) { target.matches(it.toBukkitEntity()) },
                     lookAtContext, mob, mob.x, mob.eyeY, mob.z
                 )
             }

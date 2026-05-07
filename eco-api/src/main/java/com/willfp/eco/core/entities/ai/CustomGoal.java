@@ -1,11 +1,10 @@
 package com.willfp.eco.core.entities.ai;
 
-import org.bukkit.entity.Mob;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import org.bukkit.entity.Mob;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base interface for all custom goals.

@@ -9,11 +9,10 @@ import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.price.impl.PriceItem;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.util.NumberUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class to manage prices.

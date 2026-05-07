@@ -1,12 +1,12 @@
 package com.willfp.eco.internal.spigot.integrations.anticheat
 
+import ai.idealistic.spartan.api.PlayerViolationEvent
 import com.willfp.eco.core.integrations.anticheat.AnticheatIntegration
-import me.vagdedes.spartan.api.PlayerViolationEvent
+import java.util.UUID
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import java.util.UUID
 
 class AnticheatSpartan : AnticheatIntegration, Listener {
     private val exempt: MutableSet<UUID> = HashSet()

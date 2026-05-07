@@ -28,7 +28,7 @@ object EntityArgParserFlySpeed : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_FLYING_SPEED) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.FLYING_SPEED) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserFlySpeed : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_FLYING_SPEED)?.baseValue = attributeValue
+                it.getAttribute(Attribute.FLYING_SPEED)?.baseValue = attributeValue
             }
         )
     }

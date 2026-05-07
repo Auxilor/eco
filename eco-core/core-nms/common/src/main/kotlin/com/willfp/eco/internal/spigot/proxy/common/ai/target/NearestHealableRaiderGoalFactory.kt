@@ -15,8 +15,8 @@ object NearestHealableRaiderGoalFactory : TargetGoalFactory<TargetGoalNearestHea
             entity as? Raider ?: return null,
             LivingEntity::class.java,
             apiGoal.checkVisibility,
-        ) {
-            apiGoal.targetFilter.test(it.toBukkitEntity()) && apiGoal.target.matches(it.toBukkitEntity())
+        ) { entity, level ->
+            apiGoal.targetFilter.test(entity.toBukkitEntity()) && apiGoal.target.matches(entity.toBukkitEntity())
         }
     }
 

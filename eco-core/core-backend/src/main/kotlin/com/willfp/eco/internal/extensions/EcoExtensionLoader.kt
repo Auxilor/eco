@@ -10,10 +10,10 @@ import com.willfp.eco.core.extensions.ExtensionLoader
 import com.willfp.eco.core.extensions.ExtensionMetadata
 import com.willfp.eco.core.extensions.MalformedExtensionException
 import com.willfp.eco.core.version.Version
-import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 import java.io.InputStreamReader
 import java.net.URLClassLoader
+import org.bukkit.configuration.file.YamlConfiguration
 
 class EcoExtensionLoader(
     private val plugin: EcoPlugin

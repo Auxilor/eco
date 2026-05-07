@@ -22,7 +22,7 @@ fun ItemMeta.mergeFrom(other: ItemMeta): ItemMeta =
  * @see Items.getBaseNBT
  * @see Items.setBaseNBT
  */
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "REMOVAL")
 @Deprecated("Not supported in 1.20.5+", level = DeprecationLevel.ERROR)
 var ItemStack.baseNBT: PersistentDataContainer
     get() = Items.getBaseNBT(this)
@@ -31,7 +31,7 @@ var ItemStack.baseNBT: PersistentDataContainer
     }
 
 /** @see Items.setBaseNBT */
-@Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+@Suppress("DEPRECATION", "REMOVAL", "DeprecatedCallableAddReplaceWith")
 @Deprecated("Not supported in 1.20.5+", level = DeprecationLevel.ERROR)
 fun ItemStack.clearNBT() =
     Items.setBaseNBT(this, null)

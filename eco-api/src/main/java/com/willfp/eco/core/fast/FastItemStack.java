@@ -1,6 +1,10 @@
 package com.willfp.eco.core.fast;
 
 import com.willfp.eco.core.Eco;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,11 +14,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.

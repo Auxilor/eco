@@ -5,13 +5,12 @@ import com.willfp.eco.core.items.builder.ItemStackBuilder;
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem;
 import com.willfp.eco.core.recipe.parts.MaterialTestableItem;
 import com.willfp.eco.util.ListUtils;
+import java.util.Arrays;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Mask of filler slots.

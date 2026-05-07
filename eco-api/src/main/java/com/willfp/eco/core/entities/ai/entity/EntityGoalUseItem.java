@@ -7,6 +7,7 @@ import com.willfp.eco.core.entities.ai.EntityGoal;
 import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
 import com.willfp.eco.util.SoundUtils;
+import java.util.function.Predicate;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
@@ -14,8 +15,6 @@ import org.bukkit.entity.Mob;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 /**
  * Use item.

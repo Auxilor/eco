@@ -1,17 +1,17 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
-import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.slot.Slot
 import org.bukkit.entity.Player
 
 class LayeredComponents {
-    private val layers = mutableMapOf<MenuLayer, Map<GUIPosition, List<OffsetComponent>>>()
+    private val layers = mutableMapOf<Int, Map<GUIPosition, List<OffsetComponent>>>()
+    private var sortedLayerKeys = emptyList<Int>()
 
     fun getSlotAt(row: Int, column: Int, player: Player?, menu: Menu): Slot {
         val guiPosition = GUIPosition(row, column)
 
-        for (layer in MenuLayer.values().reversed()) {
+        for (layer in sortedLayerKeys) {
             val componentsAtPoints = layers[layer] ?: continue
 
             val components = componentsAtPoints[guiPosition] ?: continue
@@ -36,11 +36,12 @@ class LayeredComponents {
         return emptyFillerSlot
     }
 
-    fun addOffsetComponent(layer: MenuLayer, position: GUIPosition, component: OffsetComponent) {
+    fun addOffsetComponent(layer: Int, position: GUIPosition, component: OffsetComponent) {
         val inLayer = layers[layer]?.toMutableMap() ?: mutableMapOf()
         val atPosition = inLayer[position]?.toMutableList() ?: mutableListOf()
         atPosition.add(component)
         inLayer[position] = atPosition
         layers[layer] = inLayer
+        sortedLayerKeys = layers.keys.sortedDescending()
     }
 }

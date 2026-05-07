@@ -4,9 +4,8 @@ import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.BaseConfig;
 import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.util.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Default plugin lang.yml.

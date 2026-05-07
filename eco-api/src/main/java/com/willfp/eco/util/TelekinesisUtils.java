@@ -1,11 +1,10 @@
 package com.willfp.eco.util;
 
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utilities / API methods for telekinesis.

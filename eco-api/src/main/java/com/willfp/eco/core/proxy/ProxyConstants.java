@@ -1,6 +1,5 @@
 package com.willfp.eco.core.proxy;
 
-import com.willfp.eco.core.version.Version;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,18 +19,10 @@ public final class ProxyConstants {
      * All supported NMS versions.
      */
     public static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "v1_17_R1",
-            "v1_18_R1",
-            "v1_18_R2",
-            "v1_19_R1",
-            "v1_19_R2",
-            "v1_19_R3",
-            "v1_20_R1",
-            "v1_20_R2",
-            "v1_20_R3",
-            "v1_21",
-            "v1_21_3",
-            "v1_21_4"
+            "v1_21_8",
+            "v1_21_10",
+            "v1_21_11",
+            "v26_1_2"
     );
 
     private ProxyConstants() {
@@ -39,22 +30,24 @@ public final class ProxyConstants {
     }
 
     private static String convertVersion(@NotNull final String version) {
-        return switch (version) {
-            case "v1_21_1" -> "v1_21";
-            case "v1_21_2" -> "v1_21_3";
-            default -> version;
+        String normalized = version;
+
+        // Paper API versions can include build suffixes (e.g. v26_1_1_build_16).
+        int buildSuffixIndex = normalized.indexOf("_build_");
+        if (buildSuffixIndex != -1) {
+            normalized = normalized.substring(0, buildSuffixIndex);
+        }
+
+        return switch (normalized) {
+            case "v1_21_9" -> "v1_21_10";
+            case "v26_1_1" -> "v26_1_2";
+            default -> normalized;
         };
     }
 
     static {
         String currentMinecraftVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
-        String nmsVersion;
-
-        if (new Version(currentMinecraftVersion).compareTo(new Version("1.20.5")) < 0) {
-            nmsVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        } else {
-            nmsVersion = "v" + currentMinecraftVersion.replace(".", "_");
-        }
+        String nmsVersion = "v" + currentMinecraftVersion.replace(".", "_");
 
         NMS_VERSION = convertVersion(nmsVersion);
     }

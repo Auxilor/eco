@@ -1,13 +1,12 @@
 package com.willfp.eco.core.extensions;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.PluginLike;
 import com.willfp.eco.core.config.updating.ConfigHandler;
-import org.apache.commons.lang.Validate;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An extension is a separate jar file that hooks into the base plugin jar.
@@ -58,7 +57,7 @@ public abstract class Extension implements PluginLike {
      * Method to run any tasks on load.
      */
     public final void load() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         this.onLoad();
     }
 
@@ -124,7 +123,7 @@ public abstract class Extension implements PluginLike {
      * @return The name of the metadata attached to the extension.
      */
     public final String getName() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.name();
     }
 
@@ -134,7 +133,7 @@ public abstract class Extension implements PluginLike {
      * @return The author of the metadata attached to the extension.
      */
     public final String getAuthor() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.author();
     }
 
@@ -144,7 +143,7 @@ public abstract class Extension implements PluginLike {
      * @return The version of the metadata attached to the extension.
      */
     public final String getVersion() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.version();
     }
 
@@ -165,7 +164,7 @@ public abstract class Extension implements PluginLike {
 
     @Override
     public @NotNull File getFile() {
-        Validate.notNull(metadata, "Metadata cannot be null!");
+        Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         return this.metadata.file();
     }
 

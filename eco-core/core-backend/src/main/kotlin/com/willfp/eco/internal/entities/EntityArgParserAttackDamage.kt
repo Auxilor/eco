@@ -28,7 +28,7 @@ object EntityArgParserAttackDamage : EntityArgParser {
                     return@EntityArgParseResult false
                 }
 
-                val inst = it.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE) ?: return@EntityArgParseResult false
+                val inst = it.getAttribute(Attribute.ATTACK_DAMAGE) ?: return@EntityArgParseResult false
                 inst.value >= attributeValue
             },
             {
@@ -36,7 +36,7 @@ object EntityArgParserAttackDamage : EntityArgParser {
                     return@EntityArgParseResult
                 }
 
-                it.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE)?.baseValue = attributeValue
+                it.getAttribute(Attribute.ATTACK_DAMAGE)?.baseValue = attributeValue
             }
         )
     }

@@ -1,13 +1,11 @@
 package com.willfp.eco.util;
 
-import com.willfp.eco.core.Prerequisite;
+import java.lang.reflect.Field;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.Field;
 
 /**
  * Utilities / API methods for sounds.
@@ -21,14 +19,6 @@ public final class SoundUtils {
      */
     @Nullable
     public static Sound getSound(@NotNull final String name) {
-        if (!Prerequisite.HAS_1_21_3.isMet()) {
-            try {
-                return Sound.valueOf(name.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
-        }
-
         // First try from registry (preferred)
         Sound fromRegistry = Registry.SOUNDS.get(NamespacedKey.minecraft(name.toLowerCase()));
         if (fromRegistry != null) {

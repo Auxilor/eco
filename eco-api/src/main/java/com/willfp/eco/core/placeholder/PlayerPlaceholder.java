@@ -3,13 +3,12 @@ package com.willfp.eco.core.placeholder;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.PatternUtils;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A arguments that requires a player.

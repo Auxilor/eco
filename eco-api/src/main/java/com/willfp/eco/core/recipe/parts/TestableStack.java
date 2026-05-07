@@ -1,7 +1,7 @@
 package com.willfp.eco.core.recipe.parts;
 
+import com.google.common.base.Preconditions;
 import com.willfp.eco.core.items.TestableItem;
-import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +28,8 @@ public class TestableStack implements TestableItem {
      */
     public TestableStack(@NotNull final TestableItem item,
                          final int amount) {
-        Validate.isTrue(!(item instanceof TestableStack), "You can't stack a stack!");
-        Validate.isTrue(!(item instanceof EmptyTestableItem), "You can't stack air!");
+        Preconditions.checkArgument(!(item instanceof TestableStack), "You can't stack a stack!");
+        Preconditions.checkArgument(!(item instanceof EmptyTestableItem), "You can't stack air!");
 
         this.handle = item;
         this.amount = amount;

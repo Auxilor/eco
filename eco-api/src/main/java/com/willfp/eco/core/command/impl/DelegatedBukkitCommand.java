@@ -1,13 +1,12 @@
 package com.willfp.eco.core.command.impl;
 
+import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 /**
  * Delegates a bukkit command to an eco command (for registrations).

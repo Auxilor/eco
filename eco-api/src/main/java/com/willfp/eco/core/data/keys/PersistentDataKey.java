@@ -1,12 +1,11 @@
 package com.willfp.eco.core.data.keys;
 
 import com.willfp.eco.core.Eco;
+import java.util.Objects;
+import java.util.Set;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * A persistent data key is a key with a type that can be stored about an offline player.

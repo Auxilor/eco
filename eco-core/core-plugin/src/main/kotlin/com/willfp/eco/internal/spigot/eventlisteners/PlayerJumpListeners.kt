@@ -2,14 +2,14 @@ package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.events.PlayerJumpEvent
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
+import java.text.DecimalFormat
+import java.util.UUID
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.potion.PotionEffectType
-import java.text.DecimalFormat
-import java.util.UUID
 
 @Suppress("DEPRECATION")
 class PlayerJumpListenersSpigot : Listener {
@@ -21,8 +21,8 @@ class PlayerJumpListenersSpigot : Listener {
         val player = event.player
         if (player.velocity.y > 0) {
             var jumpVelocity = 0.42f
-            if (player.hasPotionEffect(PotionEffectType.JUMP)) {
-                jumpVelocity += (player.getPotionEffect(PotionEffectType.JUMP)!!.amplifier.toFloat() + 1) * 0.1f
+            if (player.hasPotionEffect(PotionEffectType.JUMP_BOOST)) {
+                jumpVelocity += (player.getPotionEffect(PotionEffectType.JUMP_BOOST)!!.amplifier.toFloat() + 1) * 0.1f
             }
             jumpVelocity = FORMAT.format(jumpVelocity.toDouble()).replace(',', '.').toFloat()
             if (event.player.location.block.type != Material.LADDER && PREVIOUS_PLAYERS_ON_GROUND.contains(player.uniqueId)

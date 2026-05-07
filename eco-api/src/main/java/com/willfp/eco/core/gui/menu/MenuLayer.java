@@ -1,31 +1,23 @@
 package com.willfp.eco.core.gui.menu;
 
 /**
- * Different layers of the menu.
+ * Layer constants for menus.
  */
-public enum MenuLayer {
-    /**
-     * Right at the back.
-     */
-    BACKGROUND,
+public final class MenuLayer {
+    /** Right at the back. */
+    public static final int BACKGROUND = 0;
 
-    /**
-     * Second from the back.
-     */
-    LOWER,
+    /** Second from the back. */
+    public static final int LOWER = 1;
 
-    /**
-     * In the middle (default).
-     */
-    MIDDLE,
+    /** In the middle (default). */
+    public static final int MIDDLE = 2;
 
-    /**
-     * Near the top.
-     */
-    UPPER,
+    /** Near the top. */
+    public static final int UPPER = 3;
 
-    /**
-     * At the absolute top.
-     */
-    TOP
+    /** At the absolute top. */
+    public static final int TOP = 4;
+
+    private MenuLayer() {}
 }

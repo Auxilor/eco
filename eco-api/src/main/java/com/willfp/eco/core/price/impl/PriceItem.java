@@ -6,15 +6,14 @@ import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier;
 import com.willfp.eco.core.price.Price;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Item-based price.
@@ -123,12 +122,11 @@ public final class PriceItem implements Price {
 
             if (item.matches(itemStack)) {
                 int itemAmount = itemStack.getAmount();
+                int remaining = toRemove - count;
 
-                if (itemAmount > toRemove) {
-                    itemStack.setAmount(itemAmount - toRemove);
-                }
-
-                if (itemAmount <= toRemove) {
+                if (itemAmount > remaining) {
+                    itemStack.setAmount(itemAmount - remaining);
+                } else {
                     itemStack.setAmount(0);
                     itemStack.setType(Material.AIR);
                 }

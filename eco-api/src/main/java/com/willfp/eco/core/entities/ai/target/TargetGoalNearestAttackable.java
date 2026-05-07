@@ -5,15 +5,14 @@ import com.willfp.eco.core.entities.Entities;
 import com.willfp.eco.core.entities.TestableEntity;
 import com.willfp.eco.core.entities.ai.TargetGoal;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Raider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Allows an entity to attack the closest target within a given subset of specific target types.
