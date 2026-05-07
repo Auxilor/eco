@@ -53,7 +53,7 @@ class ExpressionEvaluator(
     private val placeholderParser: PlaceholderParser,
     resultCacheTtlMs: Long
 ) {
-    private val compilationCache = ConcurrentHashMap<String, PreparedExpression?>()
+    private val compilationCache = ConcurrentHashMap<String, Any>()
 
     private val resultCache: Cache<Long, Double> = Caffeine.newBuilder()
         .expireAfterWrite(resultCacheTtlMs, TimeUnit.MILLISECONDS)
@@ -61,11 +61,13 @@ class ExpressionEvaluator(
 
     private val threadLocalArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
 
+    private object CompilationFailed
+
     fun evaluate(expression: String, context: PlaceholderContext): Double? {
         expression.fastToDoubleOrNull()?.let { return it }
 
-        val prepared = compilationCache.getOrPut(expression) { compile(expression) }
-            ?: return null
+        val cached = compilationCache.getOrPut(expression) { compile(expression) ?: CompilationFailed }
+        val prepared = cached as? PreparedExpression ?: return null
 
         val cacheKey = resultCacheKey(expression, context)
         resultCache.getIfPresent(cacheKey)?.let { return it }
