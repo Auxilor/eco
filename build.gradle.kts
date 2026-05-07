@@ -212,7 +212,6 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         relocate("org.bstats", "com.willfp.eco.libs.bstats")
-        relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
         relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
         relocate("org.apache.maven", "com.willfp.eco.libs.maven")
         relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")

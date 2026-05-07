@@ -1,7 +1,7 @@
-package redempt.crunch.functional
+package com.willfp.eco.internal.spigot.math.functional
 
-import redempt.crunch.token.TokenType
-import redempt.crunch.token.Value
+import com.willfp.eco.internal.spigot.math.token.TokenType
+import com.willfp.eco.internal.spigot.math.token.Value
 
 class FunctionCall(
     private val function: Function,

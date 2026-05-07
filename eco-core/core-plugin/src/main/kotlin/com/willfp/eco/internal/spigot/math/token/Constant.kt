@@ -1,4 +1,4 @@
-package redempt.crunch.token
+package com.willfp.eco.internal.spigot.math.token
 
 import java.util.Locale
 

@@ -1,7 +1,7 @@
-package redempt.crunch.functional
+package com.willfp.eco.internal.spigot.math.functional
 
-import redempt.crunch.token.Token
-import redempt.crunch.token.TokenType
+import com.willfp.eco.internal.spigot.math.token.Token
+import com.willfp.eco.internal.spigot.math.token.TokenType
 import java.util.OptionalInt
 import java.util.function.ToDoubleFunction
 

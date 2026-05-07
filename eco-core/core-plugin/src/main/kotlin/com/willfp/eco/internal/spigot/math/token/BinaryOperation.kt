@@ -1,4 +1,4 @@
-package redempt.crunch.token
+package com.willfp.eco.internal.spigot.math.token
 
 data class BinaryOperation(
     val operator: BinaryOperator,

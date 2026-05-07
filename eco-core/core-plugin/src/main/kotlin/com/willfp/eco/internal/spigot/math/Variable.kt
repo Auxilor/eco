@@ -1,7 +1,7 @@
-package redempt.crunch
+package com.willfp.eco.internal.spigot.math
 
-import redempt.crunch.token.TokenType
-import redempt.crunch.token.Value
+import com.willfp.eco.internal.spigot.math.token.TokenType
+import com.willfp.eco.internal.spigot.math.token.Value
 
 data class Variable(val index: Int) : Value {
     override fun getType() = TokenType.VARIABLE

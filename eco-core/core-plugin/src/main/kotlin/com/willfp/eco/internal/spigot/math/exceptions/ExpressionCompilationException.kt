@@ -1,6 +1,6 @@
-package redempt.crunch.exceptions
+package com.willfp.eco.internal.spigot.math.exceptions
 
-import redempt.crunch.ExpressionParser
+import com.willfp.eco.internal.spigot.math.ExpressionParser
 
 class ExpressionCompilationException(
     private val parser: ExpressionParser?,

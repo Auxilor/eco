@@ -1,8 +1,8 @@
-package redempt.crunch.functional
+package com.willfp.eco.internal.spigot.math.functional
 
-import redempt.crunch.token.Token
-import redempt.crunch.token.TokenType
-import redempt.crunch.token.Value
+import com.willfp.eco.internal.spigot.math.token.Token
+import com.willfp.eco.internal.spigot.math.token.TokenType
+import com.willfp.eco.internal.spigot.math.token.Value
 
 class ArgumentList(private val arguments: Array<Value>) : Token {
     override fun getType() = TokenType.ARGUMENT_LIST

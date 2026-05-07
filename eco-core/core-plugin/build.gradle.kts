@@ -5,7 +5,6 @@ dependencies {
     compileOnly(project(":eco-core:core-backend"))
 
     // Libraries
-    implementation("com.github.Redempt:Crunch:1.0.0")
     implementation("com.mysql:mysql-connector-j:9.6.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:2.7.12")
     implementation("org.jetbrains.exposed:exposed-core:1.2.0")

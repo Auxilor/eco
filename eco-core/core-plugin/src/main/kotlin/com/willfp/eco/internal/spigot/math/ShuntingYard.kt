@@ -1,10 +1,10 @@
-package redempt.crunch
+package com.willfp.eco.internal.spigot.math
 
-import redempt.crunch.token.BinaryOperation
-import redempt.crunch.token.BinaryOperator
-import redempt.crunch.token.Constant
-import redempt.crunch.token.LiteralValue
-import redempt.crunch.token.Value
+import com.willfp.eco.internal.spigot.math.token.BinaryOperation
+import com.willfp.eco.internal.spigot.math.token.BinaryOperator
+import com.willfp.eco.internal.spigot.math.token.Constant
+import com.willfp.eco.internal.spigot.math.token.LiteralValue
+import com.willfp.eco.internal.spigot.math.token.Value
 
 class ShuntingYard {
     private val operators = ArrayDeque<BinaryOperator>()

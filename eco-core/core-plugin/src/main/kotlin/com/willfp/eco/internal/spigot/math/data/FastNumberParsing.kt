@@ -1,4 +1,4 @@
-package redempt.crunch.data
+package com.willfp.eco.internal.spigot.math.data
 
 object FastNumberParsing {
     @JvmStatic
