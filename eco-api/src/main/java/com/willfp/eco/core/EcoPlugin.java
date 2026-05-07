@@ -449,8 +449,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         this.getScheduler().runLater(this::afterLoad, 2);
 
-        for (Extension extension : this.getExtensionLoader().getLoadedExtensions()) {
-            extension.enable();
+        if (this.isSupportingExtensions()) {
+            for (Extension extension : this.getExtensionLoader().getLoadedExtensions()) {
+                extension.enable();
+            }
         }
 
         this.handleLifecycle(this.onEnable, this::handleEnable);
