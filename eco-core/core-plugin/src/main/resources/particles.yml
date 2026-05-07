@@ -91,33 +91,43 @@ square:
   parameters:
     size: 1
     points: 16
+    interval: 20
     child: flame
-  type: iterate
-  count: $points
-  vars:
-    per_side: "{{n / 4}}"
-    side: "{{floor(4 * i / n)}}"
-    side_pos: "{{(i % per_side) / per_side}}"
-    sx: "{{$size}}"
-  offset_x: "{{(side == 0) * sx + (side == 1) * sx + (side == 2) * (sx - 2 * sx * side_pos) + (side == 3) * (-sx)}}"
-  offset_y: 0
-  offset_z: "{{(side == 0) * (-sx + 2 * sx * side_pos) + (side == 1) * sx + (side == 2) * sx + (side == 3) * (sx - 2 * sx * side_pos)}}"
-  child: $child
+  type: tick
+  interval: $interval
+  duration: -1
+  child:
+    type: iterate
+    count: $points
+    vars:
+      per_side: "{{n / 4}}"
+      side: "{{floor(4 * i / n)}}"
+      side_pos: "{{(i % per_side) / per_side}}"
+      sx: "{{$size}}"
+    offset_x: "{{(side == 0) * (-sx + 2 * sx * side_pos) + (side == 1) * sx + (side == 2) * (sx - 2 * sx * side_pos) + (side == 3) * (-sx)}}"
+    offset_y: 0
+    offset_z: "{{(side == 0) * (-sx) + (side == 1) * (-sx + 2 * sx * side_pos) + (side == 2) * sx + (side == 3) * (sx - 2 * sx * side_pos)}}"
+    child: $child
 
 sphere:
   parameters:
     radius: 1
     points: 64
+    interval: 20
     child: flame
-  type: iterate
-  count: $points
-  vars:
-    phi: "{{acos(1 - 2 * i / n)}}"
-    theta: "{{pi * (1 + sqrt(5)) * i}}"
-  offset_x: "{{$radius * sin(phi) * cos(theta)}}"
-  offset_y: "{{$radius * cos(phi)}}"
-  offset_z: "{{$radius * sin(phi) * sin(theta)}}"
-  child: $child
+  type: tick
+  interval: $interval
+  duration: -1
+  child:
+    type: iterate
+    count: $points
+    vars:
+      phi: "{{acos(1 - 2 * i / n)}}"
+      theta: "{{pi * (1 + sqrt(5)) * i}}"
+    offset_x: "{{$radius * sin(phi) * cos(theta)}}"
+    offset_y: "{{$radius * cos(phi)}}"
+    offset_z: "{{$radius * sin(phi) * sin(theta)}}"
+    child: $child
 
 helix:
   parameters:
@@ -209,7 +219,7 @@ twirl:
     angle: "{{2 * pi * $spirals_per_second * t / 20}}"
     flip: "{{1 - 2 * (t % 2)}}"
   offset_x: "{{flip * radius * sin(angle)}}"
-  offset_y: height
+  offset_y: "{{height}}"
   offset_z: "{{flip * radius * cos(angle)}}"
   child: $child
 
@@ -234,7 +244,7 @@ tilted_rings:
         vars:
           point_angle: "{{2 * pi * i / n + angle}}"
           active_xz: "{{1 - pick}}"
-        offset_x: "{{active_xz * ($radius * cos(point_angle) + $x_offset)}}"
+        offset_x: "{{active_xz * $radius * cos(point_angle)}}"
         offset_y: "{{active_xz * $y_offset}}"
         offset_z: "{{active_xz * $radius * sin(point_angle)}}"
         child: $child
@@ -243,6 +253,6 @@ tilted_rings:
         vars:
           point_angle: "{{2 * pi * i / n + angle}}"
         offset_x: "{{pick * $x_offset}}"
-        offset_y: "{{pick * ($radius * cos(point_angle) + $y_offset)}}"
+        offset_y: "{{pick * $radius * cos(point_angle)}}"
         offset_z: "{{pick * $radius * sin(point_angle)}}"
         child: $child

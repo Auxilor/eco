@@ -7,8 +7,10 @@ import com.willfp.eco.internal.particle.EvaluationScope
 import com.willfp.eco.internal.particle.NoOpCancellable
 import com.willfp.eco.internal.particle.ParticleExpression
 import com.willfp.eco.internal.particle.ParticleVars
+import com.willfp.eco.internal.particle.ScopedSpawn
 import com.willfp.eco.internal.particle.sanitiseCount
 import com.willfp.eco.internal.particle.sanitiseDouble
+import com.willfp.eco.internal.particle.spawnWith
 import org.bukkit.Location
 import org.bukkit.event.Cancellable
 
@@ -27,28 +29,35 @@ internal class IterateSpawnableParticle(
     private val countVarNames: List<String>,
     private val pointVarNames: List<String>,
     private val child: SpawnableParticle
-) : SpawnableParticle {
+) : SpawnableParticle, ScopedSpawn {
 
     override fun spawn(
         location: Location,
         context: PlaceholderContext,
         audience: ParticleAudience
+    ): Cancellable = spawnScoped(location, context, audience, EvaluationScope.empty(context))
+
+    override fun spawnScoped(
+        location: Location,
+        context: PlaceholderContext,
+        audience: ParticleAudience,
+        outerScope: EvaluationScope
     ): Cancellable {
         val effective =
             if (audience === ParticleAudience.DEFAULT) configuredAudience else audience
 
-        val baseScope = vars.applyTo(EvaluationScope.empty(context))
-        val countValues = DoubleArray(countVarNames.size) { i -> baseScope.lookup(countVarNames[i]) }
+        val countValues = DoubleArray(countVarNames.size) { j -> outerScope.lookup(countVarNames[j]) }
         val n = sanitiseCount(countExpr.evaluate(countValues))
         if (n <= 0) return NoOpCancellable
 
         for (i in 0 until n) {
-            val pointScope = baseScope.withReserved(mapOf("i" to i.toDouble(), "n" to n.toDouble()))
+            val reservedScope = outerScope.withReserved(mapOf("i" to i.toDouble(), "n" to n.toDouble()))
+            val pointScope = vars.applyTo(reservedScope)
             val values = DoubleArray(pointVarNames.size) { j -> pointScope.lookup(pointVarNames[j]) }
             val ox = sanitiseDouble(offsetXExpr.evaluate(values))
             val oy = sanitiseDouble(offsetYExpr.evaluate(values))
             val oz = sanitiseDouble(offsetZExpr.evaluate(values))
-            child.spawn(location.clone().add(ox, oy, oz), context, effective)
+            child.spawnWith(location.clone().add(ox, oy, oz), context, effective, pointScope)
         }
         return NoOpCancellable
     }

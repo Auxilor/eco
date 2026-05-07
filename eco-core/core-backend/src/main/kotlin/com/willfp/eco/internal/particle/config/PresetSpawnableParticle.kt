@@ -5,7 +5,10 @@ import com.willfp.eco.core.particle.ParticleAudience
 import com.willfp.eco.core.particle.SpawnableParticle
 import com.willfp.eco.core.particle.impl.EmptyParticle
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.internal.particle.EvaluationScope
 import com.willfp.eco.internal.particle.ParticleScope
+import com.willfp.eco.internal.particle.ScopedSpawn
+import com.willfp.eco.internal.particle.spawnWith
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.event.Cancellable
@@ -21,15 +24,22 @@ internal class PresetSpawnableParticle(
     val bodyTemplate: Map<String, Any>,
     private val plugin: EcoPlugin,
     private val loader: () -> ParticleConfigLoader
-) : SpawnableParticle {
+) : SpawnableParticle, ScopedSpawn {
 
     override fun spawn(
         location: Location,
         context: PlaceholderContext,
         audience: ParticleAudience
+    ): Cancellable = spawnScoped(location, context, audience, EvaluationScope.empty(context))
+
+    override fun spawnScoped(
+        location: Location,
+        context: PlaceholderContext,
+        audience: ParticleAudience,
+        outerScope: EvaluationScope
     ): Cancellable {
         val instantiated = instantiate(emptyMap(), ParticleScope(resolvingChain = listOf(key)))
-        return instantiated.spawn(location, context, audience)
+        return instantiated.spawnWith(location, context, audience, outerScope)
     }
 
     /**

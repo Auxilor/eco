@@ -9,7 +9,9 @@ import com.willfp.eco.internal.particle.EvaluationScope
 import com.willfp.eco.internal.particle.NoOpCancellable
 import com.willfp.eco.internal.particle.ParticleExpression
 import com.willfp.eco.internal.particle.ParticleVars
+import com.willfp.eco.internal.particle.ScopedSpawn
 import com.willfp.eco.internal.particle.sanitiseDouble
+import com.willfp.eco.internal.particle.spawnWith
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.event.Cancellable
@@ -32,25 +34,31 @@ internal class TickSpawnableParticle(
     private val startVarNames: List<String>,
     private val tickVarNames: List<String>,
     private val child: SpawnableParticle
-) : SpawnableParticle {
+) : SpawnableParticle, ScopedSpawn {
 
     override fun spawn(
         location: Location,
         context: PlaceholderContext,
         audience: ParticleAudience
+    ): Cancellable = spawnScoped(location, context, audience, EvaluationScope.empty(context))
+
+    override fun spawnScoped(
+        location: Location,
+        context: PlaceholderContext,
+        audience: ParticleAudience,
+        outerScope: EvaluationScope
     ): Cancellable {
         val effective: ParticleAudience =
             if (audience === ParticleAudience.DEFAULT) configuredAudience else audience
 
-        val startScope = vars.applyTo(EvaluationScope.empty(context))
-        val startValues = DoubleArray(startVarNames.size) { i -> startScope.lookup(startVarNames[i]) }
+        val startValues = DoubleArray(startVarNames.size) { i -> outerScope.lookup(startVarNames[i]) }
         val interval = sanitiseDouble(intervalExpr.evaluate(startValues)).toLong().coerceAtLeast(1L)
         val duration = sanitiseDouble(durationExpr.evaluate(startValues)).toLong()
 
         if (!Bukkit.isPrimaryThread()) {
             val handleRef = AtomicReference<BukkitTaskCancellable?>(null)
             plugin.scheduler.run {
-                handleRef.set(start(location, context, effective, interval, duration) as BukkitTaskCancellable)
+                handleRef.set(start(location, context, effective, interval, duration, outerScope) as BukkitTaskCancellable)
             }
             return object : Cancellable {
                 @Volatile private var cancelled = false
@@ -63,7 +71,7 @@ internal class TickSpawnableParticle(
                 }
             }
         }
-        return start(location, context, effective, interval, duration)
+        return start(location, context, effective, interval, duration, outerScope)
     }
 
     private fun start(
@@ -71,22 +79,22 @@ internal class TickSpawnableParticle(
         context: PlaceholderContext,
         effective: ParticleAudience,
         interval: Long,
-        duration: Long
+        duration: Long,
+        outerScope: EvaluationScope
     ): Cancellable {
         var tick = 0L
         val taskRef = AtomicReference<BukkitTask?>(null)
 
         val task = plugin.scheduler.runTimer(0L, interval) {
-            val baseScope = EvaluationScope.empty(context)
-                .withReserved(mapOf("t" to tick.toDouble()))
-            val tickScope = vars.applyTo(baseScope)
+            val tickReserved = outerScope.withReserved(mapOf("t" to tick.toDouble()))
+            val tickScope = vars.applyTo(tickReserved)
             val values = DoubleArray(tickVarNames.size) { i -> tickScope.lookup(tickVarNames[i]) }
 
             val ox = sanitiseDouble(offsetXExpr.evaluate(values))
             val oy = sanitiseDouble(offsetYExpr.evaluate(values))
             val oz = sanitiseDouble(offsetZExpr.evaluate(values))
 
-            child.spawn(location.clone().add(ox, oy, oz), context, effective)
+            child.spawnWith(location.clone().add(ox, oy, oz), context, effective, tickScope)
 
             tick++
             val current = taskRef.get()

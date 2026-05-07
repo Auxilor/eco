@@ -7,6 +7,7 @@ import com.willfp.eco.internal.particle.EvaluationScope
 import com.willfp.eco.internal.particle.NoOpCancellable
 import com.willfp.eco.internal.particle.ParticleExpression
 import com.willfp.eco.internal.particle.ParticleVars
+import com.willfp.eco.internal.particle.ScopedSpawn
 import com.willfp.eco.internal.particle.sanitiseCount
 import com.willfp.eco.internal.particle.sanitiseDouble
 import org.bukkit.Bukkit
@@ -36,12 +37,19 @@ internal class SimpleSpawnableParticle(
     private val configuredAudience: ParticleAudience,
     private val vars: ParticleVars,
     private val fieldVarNames: List<String>
-) : SpawnableParticle {
+) : SpawnableParticle, ScopedSpawn {
 
     override fun spawn(
         location: Location,
         context: PlaceholderContext,
         audience: ParticleAudience
+    ): Cancellable = spawnScoped(location, context, audience, EvaluationScope.empty(context))
+
+    override fun spawnScoped(
+        location: Location,
+        context: PlaceholderContext,
+        audience: ParticleAudience,
+        outerScope: EvaluationScope
     ): Cancellable {
         location.world ?: return NoOpCancellable
 
@@ -50,8 +58,7 @@ internal class SimpleSpawnableParticle(
         val resolved: ParticleAudience =
             if (effective === ParticleAudience.DEFAULT) ParticleAudience.WORLD else effective
 
-        val baseScope = EvaluationScope.empty(context)
-        val scope = vars.applyTo(baseScope)
+        val scope = vars.applyTo(outerScope)
         val values = DoubleArray(fieldVarNames.size) { i -> scope.lookup(fieldVarNames[i]) }
 
         val count = sanitiseCount(countExpr.evaluate(values))

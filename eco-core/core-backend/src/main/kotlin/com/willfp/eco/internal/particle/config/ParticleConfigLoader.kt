@@ -136,7 +136,7 @@ internal class ParticleConfigLoader {
         visibleReserved: List<String>,
         outerVars: List<String>
     ): SpawnableParticle {
-        val vars = compileVars(body["vars"], scope, visibleReserved, outerVars)
+        val vars = compileVars(body["vars"], scope, visibleReserved + listOf("t"), outerVars)
         val varsBlockNames = (body["vars"] as? Map<*, *>)?.keys?.map { it.toString() } ?: emptyList()
         val startVarNames = visibleReserved + outerVars + varsBlockNames
         val tickVarNames = startVarNames + "t"
@@ -165,7 +165,7 @@ internal class ParticleConfigLoader {
         visibleReserved: List<String>,
         outerVars: List<String>
     ): SpawnableParticle {
-        val vars = compileVars(body["vars"], scope, visibleReserved, outerVars)
+        val vars = compileVars(body["vars"], scope, visibleReserved + listOf("i", "n"), outerVars)
         val varsBlockNames = (body["vars"] as? Map<*, *>)?.keys?.map { it.toString() } ?: emptyList()
         val countVarNames = visibleReserved + outerVars + varsBlockNames
         val pointVarNames = countVarNames + listOf("i", "n")
