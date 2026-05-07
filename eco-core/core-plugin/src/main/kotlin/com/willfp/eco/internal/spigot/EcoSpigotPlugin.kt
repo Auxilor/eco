@@ -127,7 +127,7 @@ import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
-import com.willfp.eco.internal.particle.ParticleFactoryRGB
+import com.willfp.eco.internal.particle.ParticleSystemBootstrap
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
@@ -332,7 +332,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Prices.registerPriceFactory(PriceFactoryXPLevels)
         Prices.registerPriceFactory(PriceFactoryXP)
 
-        Particles.registerParticleFactory(ParticleFactoryRGB)
+        ParticleSystemBootstrap.install(this)
+        Particles.loadFromConfig(this, "particles")
 
         CraftingRecipeListener.registerListener(ComplexInComplex)
         CraftingRecipeListener.registerListener(ComplexInVanilla)
@@ -407,6 +408,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         VanillaItemTags.register()
         VanillaBlockTags.register()
         VanillaEntityTags.register()
+    }
+
+    override fun handleReload() {
+        Particles.reloadConfigs()
     }
 
     override fun handleDisable() {

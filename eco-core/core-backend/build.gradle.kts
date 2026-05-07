@@ -2,6 +2,7 @@ group = "com.willfp"
 version = rootProject.version
 
 dependencies {
+    compileOnly("com.github.Redempt:Crunch:1.0.0")
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.7")
     compileOnly("net.kyori:adventure-text-minimessage:5.0.1")
