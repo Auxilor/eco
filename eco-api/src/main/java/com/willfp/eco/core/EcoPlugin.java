@@ -526,7 +526,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         if (this.isSupportingExtensions()) {
             this.getExtensionLoader().loadExtensions();
             for (Extension extension : this.getExtensionLoader().getLoadedExtensions()) {
-                extension.load();
+                extension.loadExtension();
             }
             if (!this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
                 List<String> loadedExtensions = this.getExtensionLoader().getLoadedExtensions().stream().map(

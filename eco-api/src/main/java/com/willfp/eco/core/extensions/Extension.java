@@ -56,7 +56,7 @@ public abstract class Extension implements PluginLike {
     /**
      * Method to run any tasks on load.
      */
-    public final void load() {
+    public final void loadExtension() {
         Preconditions.checkNotNull(metadata, "Metadata cannot be null!");
         this.onLoad();
     }
