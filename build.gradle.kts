@@ -12,23 +12,20 @@ buildscript {
 
 plugins {
     id("java-library")
-    id("com.gradleup.shadow") version "9.3.1"
+    id("com.gradleup.shadow") version "9.4.1"
     id("maven-publish")
     id("java")
-    kotlin("jvm") version "2.3.0"
+    kotlin("jvm") version "2.3.21"
 }
 
 dependencies {
     implementation(project(":eco-api"))
     implementation(project(path = ":eco-core:core-plugin", configuration = "shadow"))
     implementation(project(":eco-core:core-backend"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_4", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_5", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_6", configuration = "reobf"))
-    implementation(project(path = ":eco-core:core-nms:v1_21_7", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_8", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_10", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_11", configuration = "reobf"))
+    implementation(project(path = ":eco-core:core-nms:v26_1_2", configuration = "shadow"))
 }
 
 allprojects {
@@ -124,29 +121,29 @@ allprojects {
 
     dependencies {
         // Kotlin
-        implementation(kotlin("stdlib", version = "2.3.0"))
+        implementation(kotlin("stdlib", version = "2.3.21"))
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
         // Included in spigot jar, no need to move to implementation
-        compileOnly("org.jetbrains:annotations:26.0.2")
-        compileOnly("com.google.guava:guava:32.0.0-jre")
+        compileOnly("org.jetbrains:annotations:26.1.0")
+        compileOnly("com.google.guava:guava:33.6.0-jre")
 
         // Test
-        testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.2")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.2")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.3")
 
         // Adventure
-        implementation("net.kyori:adventure-api:4.26.1") {
+        implementation("net.kyori:adventure-api:5.0.1") {
             exclude("com.github.ben-manes.caffeine", "caffeine")
         }
-        implementation("net.kyori:adventure-text-serializer-gson:4.26.1") {
+        implementation("net.kyori:adventure-text-serializer-gson:5.0.1") {
             exclude("com.google.code.gson", "gson") // Prevent shading into the jar
         }
-        implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
+        implementation("net.kyori:adventure-text-serializer-legacy:5.0.1")
 
         // Other
         implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
-        implementation("org.apache.maven:maven-artifact:3.9.12")
+        implementation("org.apache.maven:maven-artifact:3.9.15")
     }
 
     tasks.withType<JavaCompile> {

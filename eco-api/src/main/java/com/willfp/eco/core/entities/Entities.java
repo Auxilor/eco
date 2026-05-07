@@ -5,6 +5,7 @@ import com.willfp.eco.core.entities.args.EntityArgParser;
 import com.willfp.eco.core.entities.impl.EmptyTestableEntity;
 import com.willfp.eco.core.entities.impl.ModifiedTestableEntity;
 import com.willfp.eco.core.entities.impl.SimpleTestableEntity;
+import com.willfp.eco.core.entities.tag.EntityTag;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +30,11 @@ public final class Entities {
      * All entity parsers.
      */
     private static final List<EntityArgParser> ARG_PARSERS = new ArrayList<>();
+
+    /**
+     * All tags.
+     */
+    private static final Map<String, EntityTag> TAGS = new HashMap<>();
 
     /**
      * The lookup handler.
@@ -98,7 +104,19 @@ public final class Entities {
 
         String[] split = args[0].toLowerCase().split(":");
 
-        if (split.length == 1) {
+        String base = split[0];
+        boolean isTag = base.startsWith("#");
+
+        if (isTag) {
+            String tag = args[0].substring(1);
+            EntityTag entityTag = TAGS.get(tag);
+
+            if (entityTag == null) {
+                return new EmptyTestableEntity();
+            }
+
+            entity = entityTag.toTestableEntity();
+        } else if (split.length == 1) {
             EntityType type;
             try {
                 type = EntityType.valueOf(args[0].toUpperCase());
@@ -217,6 +235,24 @@ public final class Entities {
      */
     public static Set<TestableEntity> getCustomEntities() {
         return new HashSet<>(REGISTRY.values());
+    }
+
+    /**
+     * Register a new entity tag.
+     *
+     * @param tag The tag.
+     */
+    public static void registerTag(@NotNull final EntityTag tag) {
+        TAGS.put(tag.getIdentifier(), tag);
+    }
+
+    /**
+     * Get all tags.
+     *
+     * @return All tags.
+     */
+    public static Collection<EntityTag> getTags() {
+        return TAGS.values();
     }
 
     private Entities() {
