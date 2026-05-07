@@ -157,6 +157,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefCombatLogX
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefDeluxeCombat
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFabledSkyBlock
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsBridge
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefFactionsUUID
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefGriefPrevention
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefHuskClaims
@@ -457,6 +458,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("WorldGuard") { AntigriefManager.register(AntigriefWorldGuard()) },
             IntegrationLoader("GriefPrevention") { AntigriefManager.register(AntigriefGriefPrevention()) },
             IntegrationLoader("FactionsUUID") { AntigriefManager.register(AntigriefFactionsUUID()) },
+            IntegrationLoader("FactionsBridge") { AntigriefManager.register(AntigriefFactionsBridge()) },
             IntegrationLoader("Towny") { AntigriefManager.register(AntigriefTowny()) },
             IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
             IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
