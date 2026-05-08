@@ -183,7 +183,7 @@ open class EcoConfig(
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
         for (placeholder in placeholders) {
-            injections[placeholder.pattern.pattern()] = placeholder
+            injections[placeholder.patternString] = placeholder
             injectionHash = injectionHash xor placeholder.hashCode()
         }
     }

@@ -98,6 +98,12 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
         return result;
     }
 
+    @NotNull
+    @Override
+    public String getPatternString() {
+        return this.rawIdentifier;
+    }
+
     @Override
     public boolean equals(@Nullable final Object o) {
         if (this == o) {
@@ -111,6 +117,6 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getPattern());
+        return Objects.hash(this.getPatternString());
     }
 }
