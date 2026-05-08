@@ -2,7 +2,9 @@ package com.willfp.eco.core.placeholder;
 
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+
 import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +38,19 @@ public interface Placeholder {
      */
     @NotNull
     Pattern getPattern();
+
+    /**
+     * Get the pattern string.
+     * <p>
+     * This method is available to allow for greater performance where the pattern string can be accessed without
+     * compiling the regex.
+     *
+     * @return The pattern string.
+     */
+    @NotNull
+    default String getPatternString() {
+        return this.getPattern().pattern();
+    }
 
     /**
      * Try to translate all instances of this placeholder in text quickly.
