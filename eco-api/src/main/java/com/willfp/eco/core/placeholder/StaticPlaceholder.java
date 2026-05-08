@@ -117,6 +117,6 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getPattern());
+        return Objects.hash(this.getPatternString());
     }
 }
