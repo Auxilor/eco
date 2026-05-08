@@ -128,6 +128,7 @@ import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
 import com.willfp.eco.internal.particle.ParticleSystemBootstrap
+import com.willfp.eco.internal.spigot.particle.installParticleExpressionCompiler
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
@@ -332,6 +333,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Prices.registerPriceFactory(PriceFactoryXPLevels)
         Prices.registerPriceFactory(PriceFactoryXP)
 
+        installParticleExpressionCompiler()
         ParticleSystemBootstrap.install(this)
         Particles.loadFromConfig(this, "particles")
 

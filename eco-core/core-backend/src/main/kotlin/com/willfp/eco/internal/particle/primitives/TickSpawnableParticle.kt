@@ -66,7 +66,7 @@ internal class TickSpawnableParticle(
                 override fun setCancelled(cancel: Boolean) {
                     if (cancel) {
                         cancelled = true
-                        handleRef.get()?.setCancelled(true)
+                        handleRef.get()?.isCancelled = true
                     }
                 }
             }
@@ -98,7 +98,7 @@ internal class TickSpawnableParticle(
 
             tick++
             val current = taskRef.get()
-            if (duration >= 0 && tick >= duration && current != null) {
+            if (duration in 0..tick && current != null) {
                 current.cancel()
             }
         }
