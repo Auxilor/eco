@@ -46,9 +46,7 @@ import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
-import com.willfp.eco.internal.spigot.math.DelegatedExpressionHandler
-import com.willfp.eco.internal.spigot.math.ImmediatePlaceholderTranslationExpressionHandler
-import com.willfp.eco.internal.spigot.math.LazyPlaceholderTranslationExpressionHandler
+import com.willfp.eco.internal.spigot.math.ExpressionEvaluator
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
@@ -93,11 +91,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     private val placeholderParser = PlaceholderParser()
 
-    private val crunchHandler = DelegatedExpressionHandler(
-        this,
-        if (this.configYml.getBool("use-immediate-placeholder-translation-for-math"))
-            ImmediatePlaceholderTranslationExpressionHandler(placeholderParser)
-        else LazyPlaceholderTranslationExpressionHandler(placeholderParser),
+    private val expressionEvaluator = ExpressionEvaluator(
+        placeholderParser,
+        this.configYml.getInt("math-cache-ttl").toLong()
     )
 
     override fun createScheduler(plugin: EcoPlugin) =
@@ -335,7 +331,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         getProxy(TPSProxy::class.java).getTPS()
 
     override fun evaluate(expression: String, context: PlaceholderContext) =
-        crunchHandler.evaluate(expression, context)
+        expressionEvaluator.evaluate(expression, context)
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu

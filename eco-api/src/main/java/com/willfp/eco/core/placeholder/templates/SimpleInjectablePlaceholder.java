@@ -22,6 +22,11 @@ public abstract class SimpleInjectablePlaceholder implements InjectablePlacehold
     private final Pattern pattern;
 
     /**
+     * The identifier wrapped in %, e.g. "%identifier%".
+     */
+    private final String wrappedIdentifier;
+
+    /**
      * Create a new simple injectable placeholder.
      *
      * @param identifier The identifier.
@@ -29,13 +34,14 @@ public abstract class SimpleInjectablePlaceholder implements InjectablePlacehold
     protected SimpleInjectablePlaceholder(@NotNull final String identifier) {
         this.identifier = identifier;
         this.pattern = PatternUtils.compileLiteral(identifier);
+        this.wrappedIdentifier = "%" + identifier + "%";
     }
 
     @Override
     public String tryTranslateQuickly(@NotNull final String text,
                                       @NotNull final PlaceholderContext context) {
         return text.replace(
-                "%" + this.identifier + "%",
+                this.wrappedIdentifier,
                 Objects.requireNonNullElse(this.getValue(this.identifier, context), "")
         );
     }

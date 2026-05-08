@@ -8,11 +8,6 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.core.placeholder.templates.SimpleInjectablePlaceholder
 import java.util.regex.Pattern
 
-/*
-
-A set of global placeholders that are always available.
-
- */
 private val globalPlaceholders = setOf<Placeholder>(
     object : SimpleInjectablePlaceholder("player") {
         override fun getValue(args: String, context: PlaceholderContext): String? {
@@ -21,31 +16,29 @@ private val globalPlaceholders = setOf<Placeholder>(
     },
 )
 
-class PlaceholderLookup(
+data class PlaceholderLookup(
     val args: String,
     val plugin: EcoPlugin?,
     private val injections: Collection<InjectablePlaceholder>?
 ) {
     fun findMatchingPlaceholder(): Placeholder? {
         if (plugin != null) {
-            val pluginPlaceholders = PlaceholderManager.getRegisteredPlaceholders(plugin)
-            for (placeholder in pluginPlaceholders) {
-                if (placeholder.matches(this)) {
-                    return placeholder
-                }
+            val direct = PlaceholderManager.getRegisteredPlaceholder(plugin, args)
+            if (direct != null) {
+                return direct
             }
         }
 
         if (injections != null) {
             for (placeholder in injections) {
-                if (placeholder.matches(this)) {
+                if (placeholder.matches(args)) {
                     return placeholder
                 }
             }
         }
 
         for (placeholder in globalPlaceholders) {
-            if (placeholder.matches(this)) {
+            if (placeholder.matches(args)) {
                 return placeholder
             }
         }
@@ -53,13 +46,13 @@ class PlaceholderLookup(
         return null
     }
 
-    private fun Placeholder.matches(lookup: PlaceholderLookup): Boolean {
-        val pattern = this.pattern
-        val patternString = pattern.pattern()
+    companion object {
+        private fun Placeholder.matches(args: String): Boolean {
+            val pattern = this.pattern
+            val patternFlags = pattern.flags()
+            val isLiteral = Pattern.LITERAL and patternFlags != 0
 
-        val patternFlags = pattern.flags()
-        val isLiteral = Pattern.LITERAL and patternFlags != 0
-
-        return if (isLiteral) lookup.args == patternString else pattern.matcher(lookup.args).matches()
+            return if (isLiteral) args == pattern.pattern() else pattern.matcher(args).matches()
+        }
     }
 }

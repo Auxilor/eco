@@ -131,6 +131,8 @@ allprojects {
         // Test
         testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.3")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher:2.0.3")
+        testImplementation("io.mockk:mockk-jvm:1.13.17")
 
         // Adventure
         implementation("net.kyori:adventure-api:5.0.1") {
@@ -181,7 +183,6 @@ allprojects {
 
         test {
             useJUnitPlatform()
-            include("**/*Pdf")
 
             // Show test results.
             testLogging {
@@ -212,7 +213,6 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         relocate("org.bstats", "com.willfp.eco.libs.bstats")
-        relocate("redempt.crunch", "com.willfp.eco.libs.crunch")
         relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
         relocate("org.apache.maven", "com.willfp.eco.libs.maven")
         relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")

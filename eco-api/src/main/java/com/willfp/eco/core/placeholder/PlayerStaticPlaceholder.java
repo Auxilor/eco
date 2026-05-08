@@ -3,9 +3,11 @@ package com.willfp.eco.core.placeholder;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.PatternUtils;
 import com.willfp.eco.util.StringUtils;
+
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,9 +22,15 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     private final String identifier;
 
     /**
+     * The raw identifier.
+     */
+    private final String rawIdentifier;
+
+    /**
      * The arguments pattern.
      */
-    private final Pattern pattern;
+    @Nullable
+    private volatile Pattern pattern = null;
 
     /**
      * The function to retrieve the output of the arguments.
@@ -37,8 +45,8 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
      */
     public PlayerStaticPlaceholder(@NotNull final String identifier,
                                    @NotNull final Function<@NotNull Player, @Nullable String> function) {
+        this.rawIdentifier = identifier;
         this.identifier = "%" + identifier + "%";
-        this.pattern = PatternUtils.compileLiteral(identifier);
         this.function = function;
     }
 
@@ -86,7 +94,19 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     @NotNull
     @Override
     public Pattern getPattern() {
-        return this.pattern;
+        Pattern result = this.pattern;
+
+        if (result == null) {
+            synchronized (this) {
+                result = this.pattern;
+                if (result == null) {
+                    result = PatternUtils.compileLiteral(this.rawIdentifier);
+                    this.pattern = result;
+                }
+            }
+        }
+
+        return result;
     }
 
     @Override

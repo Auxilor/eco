@@ -3,9 +3,11 @@ package com.willfp.eco.core.placeholder;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.PatternUtils;
 import com.willfp.eco.util.StringUtils;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +21,15 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     private final String identifier;
 
     /**
-     * The arguments pattern.
+     * The raw identifier.
      */
-    private final Pattern pattern;
+    private final String rawIdentifier;
+
+    /**
+     * The arguments pattern, lazy initialized.
+     */
+    @Nullable
+    private volatile Pattern pattern = null;
 
     /**
      * The function to retrieve the output of the arguments.
@@ -37,7 +45,7 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     public StaticPlaceholder(@NotNull final String identifier,
                              @NotNull final Supplier<@Nullable String> function) {
         this.identifier = "%" + identifier + "%";
-        this.pattern = PatternUtils.compileLiteral(identifier);
+        this.rawIdentifier = identifier;
         this.function = function;
     }
 
@@ -75,7 +83,25 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     @NotNull
     @Override
     public Pattern getPattern() {
-        return this.pattern;
+        Pattern result = this.pattern;
+
+        if (result == null) {
+            synchronized (this) {
+                result = this.pattern;
+                if (result == null) {
+                    result = PatternUtils.compileLiteral(this.rawIdentifier);
+                    this.pattern = result;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @NotNull
+    @Override
+    public String getPatternString() {
+        return this.rawIdentifier;
     }
 
     @Override
@@ -91,6 +117,6 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getPattern());
+        return Objects.hash(this.getPatternString());
     }
 }
