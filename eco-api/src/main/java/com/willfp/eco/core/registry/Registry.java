@@ -28,6 +28,12 @@ public class Registry<T extends Registrable> implements Iterable<T> {
     private boolean isLocked = false;
 
     /**
+     * Cached values set, invalidated on mutation.
+     */
+    @Nullable
+    private Set<T> cachedValues = null;
+
+    /**
      * The locker, used to 'secure' registries and prevent random unlocking.
      */
     @Nullable
@@ -55,6 +61,7 @@ public class Registry<T extends Registrable> implements Iterable<T> {
         Preconditions.checkArgument(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern() + " (was " + element.getID() + ")");
 
         registry.put(element.getID(), element);
+        this.cachedValues = null;
 
         element.onRegister();
         onRegister(element);
@@ -77,6 +84,7 @@ public class Registry<T extends Registrable> implements Iterable<T> {
         onRemove(element);
 
         registry.remove(element.getID());
+        this.cachedValues = null;
 
         return element;
     }
@@ -128,7 +136,12 @@ public class Registry<T extends Registrable> implements Iterable<T> {
      * @return All elements.
      */
     public Set<T> values() {
-        return Set.copyOf(registry.values());
+        Set<T> cached = this.cachedValues;
+        if (cached == null) {
+            cached = Set.copyOf(registry.values());
+            this.cachedValues = cached;
+        }
+        return cached;
     }
 
     /**
