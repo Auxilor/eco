@@ -7,8 +7,6 @@ data class BinaryOperation(
 ) : Value {
     override fun getType() = TokenType.BINARY_OPERATION
 
-    fun getValues() = arrayOf(first, second)
-
     override fun getValue(variableValues: DoubleArray) =
         operator.getOperation().applyAsDouble(first.getValue(variableValues), second.getValue(variableValues))
 

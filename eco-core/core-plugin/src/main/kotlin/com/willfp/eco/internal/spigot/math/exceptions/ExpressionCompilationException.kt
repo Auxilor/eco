@@ -3,15 +3,17 @@ package com.willfp.eco.internal.spigot.math.exceptions
 import com.willfp.eco.internal.spigot.math.ExpressionParser
 
 class ExpressionCompilationException(
-    private val parser: ExpressionParser?,
+    parser: ExpressionParser?,
     message: String
-) : RuntimeException(generateMessage(parser, message)) {
-    fun getParser(): ExpressionParser? = parser
+): RuntimeException(generateMessage(parser, message)) {
 
     companion object {
-        private fun generateMessage(parser: ExpressionParser?, message: String): String {
-            if (parser == null) return message
-            return "$message:\n${parser.input}\n${" ".repeat(parser.cursor)}^"
-        }
+        private fun generateMessage(parser: ExpressionParser?, message: String): String =
+            if (parser == null) {
+                message
+            } else {
+                "$message:\n${parser.input}\n${" ".repeat(parser.cursor)}^"
+            }
     }
+
 }

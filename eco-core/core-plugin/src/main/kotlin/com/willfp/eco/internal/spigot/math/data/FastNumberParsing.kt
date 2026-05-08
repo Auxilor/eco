@@ -1,8 +1,6 @@
 package com.willfp.eco.internal.spigot.math.data
 
 object FastNumberParsing {
-    @JvmStatic
-    fun parseInt(input: String): Int = parseInt(input, 0, input.length)
 
     @JvmStatic
     fun parseInt(input: String, start: Int, end: Int): Int {
@@ -16,16 +14,13 @@ object FastNumberParsing {
         var output = 0
         while (i < end) {
             val c = input[i]
-            if (c > '9' || c < '0') throw NumberFormatException("Non-numeric character in input '${input.substring(start, end)}'")
+            if (c !in '0'..'9') throw NumberFormatException("Non-numeric character in input '${input.substring(start, end)}'")
             output *= 10
             output += c - '0'
             i++
         }
         return if (negative) -output else output
     }
-
-    @JvmStatic
-    fun parseDouble(input: String): Double = parseDouble(input, 0, input.length)
 
     @JvmStatic
     fun parseDouble(input: String, start: Int, end: Int): Double {
@@ -43,7 +38,7 @@ object FastNumberParsing {
                 i++
                 break
             }
-            if (c > '9' || c < '0') throw NumberFormatException("Non-numeric character in input '$input'")
+            if (c !in '0'..'9') throw NumberFormatException("Non-numeric character in input '$input'")
             output = output * 10.0 + (c - '0')
             i++
         }
@@ -51,7 +46,7 @@ object FastNumberParsing {
         while (i < end) {
             val c = input[i]
             if (c == '.') throw NumberFormatException("Second period in double for input '$input'")
-            if (c > '9' || c < '0') throw NumberFormatException("Non-numeric character in input '$input'")
+            if (c !in '0'..'9') throw NumberFormatException("Non-numeric character in input '$input'")
             output = output * 10.0 + (c - '0')
             divisor *= 10.0
             i++

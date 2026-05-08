@@ -22,25 +22,6 @@ class CharTree<T> {
         return node?.getValue() as T?
     }
 
-    fun containsFirstChar(c: Char): Boolean = root.getNode(c) != null
-
-    @Suppress("UNCHECKED_CAST")
-    fun getFrom(str: String, index: Int): Pair<T?, Int> {
-        var node: Node? = root
-        var value: T? = null
-        for (i in index until str.length) {
-            node = node?.getNode(str[i])
-            if (node == null) {
-                return Pair(value, i - index)
-            }
-            val nodeValue = node.getValue()
-            if (nodeValue != null) {
-                value = nodeValue as T?
-            }
-        }
-        return Pair(value, str.length - index)
-    }
-
     @Suppress("UNCHECKED_CAST")
     fun getWith(parser: ExpressionParser): T? {
         var node: Node? = root

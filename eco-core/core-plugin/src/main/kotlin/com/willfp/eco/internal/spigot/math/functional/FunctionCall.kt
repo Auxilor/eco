@@ -7,18 +7,14 @@ class FunctionCall(
     private val function: Function,
     private val values: Array<Value>
 ) : Value {
-    private val numbers = DoubleArray(values.size)
-
     fun getFunction(): Function = function
     fun getValues(): Array<Value> = values
 
     override fun getType() = TokenType.FUNCTION_CALL
 
     override fun getValue(variableValues: DoubleArray): Double {
-        for (i in values.indices) {
-            numbers[i] = values[i].getValue(variableValues)
-        }
-        return function.call(numbers)
+        val args = DoubleArray(values.size) { values[it].getValue(variableValues) }
+        return function.call(args)
     }
 
     override fun getClone(): Value = FunctionCall(function, values)

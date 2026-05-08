@@ -36,7 +36,7 @@ class ExpressionEnv {
     }
 
     private fun checkName(name: String?) {
-        if (name == null || name.isEmpty()) {
+        if (name.isNullOrEmpty()) {
             throw IllegalArgumentException("Identifier cannot be empty or null")
         }
     }
@@ -45,11 +45,6 @@ class ExpressionEnv {
         val name = function.getName()
         checkName(name)
         leadingOperators.set(name, function)
-        return this
-    }
-
-    fun addFunctions(vararg functions: Function): ExpressionEnv {
-        for (function in functions) addFunction(function)
         return this
     }
 

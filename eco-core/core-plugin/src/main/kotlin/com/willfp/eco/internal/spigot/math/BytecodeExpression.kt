@@ -14,12 +14,14 @@ import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan
+import kotlin.math.cbrt
 import kotlin.math.ceil
 import kotlin.math.cos
 import kotlin.math.cosh
 import kotlin.math.floor
 import kotlin.math.ln
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sinh
 import kotlin.math.sqrt
@@ -64,12 +66,12 @@ class BytecodeExpression private constructor(
                 OP_ACOS -> stack[sp] = acos(stack[sp])
                 OP_ATAN -> stack[sp] = atan(stack[sp])
                 OP_ABS -> stack[sp] = abs(stack[sp])
-                OP_ROUND -> stack[sp] = Math.round(stack[sp]).toDouble()
+                OP_ROUND -> stack[sp] = stack[sp].roundToInt().toDouble()
                 OP_FLOOR -> stack[sp] = floor(stack[sp])
                 OP_CEIL -> stack[sp] = ceil(stack[sp])
                 OP_LOG -> stack[sp] = ln(stack[sp])
                 OP_SQRT -> stack[sp] = sqrt(stack[sp])
-                OP_CBRT -> stack[sp] = Math.cbrt(stack[sp])
+                OP_CBRT -> stack[sp] = cbrt(stack[sp])
                 OP_RAND -> stack[sp] = ThreadLocalRandom.current().nextDouble() * stack[sp]
                 OP_GT -> { sp--; stack[sp] = if (stack[sp] > stack[sp + 1]) 1.0 else 0.0 }
                 OP_LT -> { sp--; stack[sp] = if (stack[sp] < stack[sp + 1]) 1.0 else 0.0 }

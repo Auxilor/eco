@@ -7,5 +7,5 @@ data class Variable(val index: Int) : Value {
     override fun getType() = TokenType.VARIABLE
     override fun getValue(variableValues: DoubleArray) = variableValues[index]
     override fun getClone() = Variable(index)
-    override fun toString() = "\$${index + 1}"
+    override fun toString() = $$"$$${index + 1}"
 }
