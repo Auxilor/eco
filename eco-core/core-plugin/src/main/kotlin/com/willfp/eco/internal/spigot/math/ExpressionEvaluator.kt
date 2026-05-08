@@ -83,7 +83,7 @@ class ExpressionEvaluator(
             for (v in values) {
                 arr[i++] = v.fastToDoubleOrNull() ?: 0.0
             }
-            runCatching { prepared.compiled.evaluate(arr) }.getOrNull()
+            runCatching { prepared.compiled.evaluate(*arr) }.getOrNull()
         }
 
         val validated = if (result?.isFinite() == true) result else null
