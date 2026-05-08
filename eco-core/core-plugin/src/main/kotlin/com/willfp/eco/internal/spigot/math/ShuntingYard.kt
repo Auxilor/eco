@@ -11,11 +11,18 @@ class ShuntingYard {
     private val stack = ArrayDeque<Value>()
 
     fun addOperator(operator: BinaryOperator) {
-        while (operators.isNotEmpty() && operator.getPriority() <= operators.last().getPriority()) {
+        while (operators.isNotEmpty() && shouldPopOperator(operator, operators.last())) {
             createOperation()
         }
         operators.addLast(operator)
     }
+
+    private fun shouldPopOperator(incoming: BinaryOperator, top: BinaryOperator): Boolean =
+        if (incoming.isRightAssociative()) {
+            incoming.getPriority() < top.getPriority()
+        } else {
+            incoming.getPriority() <= top.getPriority()
+        }
 
     fun addValue(value: Value) {
         stack.addLast(value)

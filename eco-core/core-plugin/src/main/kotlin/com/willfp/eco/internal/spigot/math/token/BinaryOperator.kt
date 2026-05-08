@@ -31,5 +31,6 @@ enum class BinaryOperator(
     fun getSymbol() = symbol
     fun getOperation() = operation
     fun getPriority() = priority
+    fun isRightAssociative() = this == EXPONENT || this == SCIENTIFIC_NOTATION
     override fun toString() = symbol
 }
