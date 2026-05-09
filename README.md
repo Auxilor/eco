@@ -40,7 +40,7 @@ eco comes packed with all the tools you need in your plugins:
 - Complete GUI API with pre-made components available from [ecomponent](https://github.com/Auxilor/ecomponent)
 - Over 30 native integrations for other plugins
 - First-class custom item support with lookup strings
-- Math expression parsing via [Crunch](https://github.com/Redempt/Crunch)
+- Math expression parsing (native inbuilt implementation)
 - Particle lookups
 - Complete Placeholder API
 - Price system, supporting economy plugins, XP, Items, etc.

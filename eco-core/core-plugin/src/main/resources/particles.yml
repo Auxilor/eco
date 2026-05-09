@@ -1,0 +1,258 @@
+# Bundled particle preset library. Loaded at Eco startup under namespace `eco:`.
+# Users may override any of these by defining an entry with the same name in
+# their own plugin's particles.yml.
+
+point:
+  parameters:
+    child: flame
+  type: composite
+  children:
+    - $child
+
+line:
+  parameters:
+    from_x: 0
+    from_y: 0
+    from_z: 0
+    to_x: 1
+    to_y: 0
+    to_z: 0
+    points: 10
+    child: flame
+  type: iterate
+  count: $points
+  vars:
+    p: "{{i / max(1, n - 1)}}"
+  offset_x: "{{$from_x + ($to_x - $from_x) * p}}"
+  offset_y: "{{$from_y + ($to_y - $from_y) * p}}"
+  offset_z: "{{$from_z + ($to_z - $from_z) * p}}"
+  child: $child
+
+circle:
+  parameters:
+    radius: 1
+    points: 16
+    child: flame
+  type: iterate
+  count: $points
+  vars:
+    angle: "{{2 * pi * i / n}}"
+  offset_x: "{{$radius * cos(angle)}}"
+  offset_y: 0
+  offset_z: "{{$radius * sin(angle)}}"
+  child: $child
+
+circle_x:
+  parameters:
+    radius: 1
+    points: 16
+    child: flame
+  type: iterate
+  count: $points
+  vars:
+    angle: "{{2 * pi * i / n}}"
+  offset_x: 0
+  offset_y: "{{$radius * cos(angle)}}"
+  offset_z: "{{$radius * sin(angle)}}"
+  child: $child
+
+circle_z:
+  parameters:
+    radius: 1
+    points: 16
+    child: flame
+  type: iterate
+  count: $points
+  vars:
+    angle: "{{2 * pi * i / n}}"
+  offset_x: "{{$radius * cos(angle)}}"
+  offset_y: "{{$radius * sin(angle)}}"
+  offset_z: 0
+  child: $child
+
+arc:
+  parameters:
+    radius: 1
+    start_deg: 0
+    end_deg: 180
+    points: 8
+    child: flame
+  type: iterate
+  count: $points
+  vars:
+    progress: "{{i / max(1, n - 1)}}"
+    angle: "{{($start_deg + ($end_deg - $start_deg) * progress) * pi / 180}}"
+  offset_x: "{{$radius * cos(angle)}}"
+  offset_y: 0
+  offset_z: "{{$radius * sin(angle)}}"
+  child: $child
+
+square:
+  parameters:
+    size: 1
+    points: 16
+    interval: 20
+    child: flame
+  type: tick
+  interval: $interval
+  duration: -1
+  child:
+    type: iterate
+    count: $points
+    vars:
+      per_side: "{{n / 4}}"
+      side: "{{floor(4 * i / n)}}"
+      side_pos: "{{(i % per_side) / per_side}}"
+      sx: "{{$size}}"
+    offset_x: "{{(side == 0) * (-sx + 2 * sx * side_pos) + (side == 1) * sx + (side == 2) * (sx - 2 * sx * side_pos) + (side == 3) * (-sx)}}"
+    offset_y: 0
+    offset_z: "{{(side == 0) * (-sx) + (side == 1) * (-sx + 2 * sx * side_pos) + (side == 2) * sx + (side == 3) * (sx - 2 * sx * side_pos)}}"
+    child: $child
+
+sphere:
+  parameters:
+    radius: 1
+    points: 64
+    interval: 20
+    child: flame
+  type: tick
+  interval: $interval
+  duration: -1
+  child:
+    type: iterate
+    count: $points
+    vars:
+      phi: "{{acos(1 - 2 * i / n)}}"
+      theta: "{{pi * (1 + sqrt(5)) * i}}"
+    offset_x: "{{$radius * sin(phi) * cos(theta)}}"
+    offset_y: "{{$radius * cos(phi)}}"
+    offset_z: "{{$radius * sin(phi) * sin(theta)}}"
+    child: $child
+
+helix:
+  parameters:
+    radius: 1
+    height: 2
+    turns: 2
+    points: 32
+    child: flame
+  type: iterate
+  count: $points
+  vars:
+    p: "{{i / max(1, n - 1)}}"
+    angle: "{{2 * pi * $turns * p}}"
+  offset_x: "{{$radius * cos(angle)}}"
+  offset_y: "{{$height * p}}"
+  offset_z: "{{$radius * sin(angle)}}"
+  child: $child
+
+orbit:
+  parameters:
+    radius: 1
+    height: 0
+    spirals_per_second: 0.5
+    child: flame
+  type: tick
+  interval: 1
+  duration: -1
+  vars:
+    angle: "{{2 * pi * $spirals_per_second * t / 20}}"
+  offset_x: "{{$radius * cos(angle)}}"
+  offset_y: $height
+  offset_z: "{{$radius * sin(angle)}}"
+  child: $child
+
+spiral:
+  parameters:
+    radius: 1
+    height: 1
+    spirals_per_second: 0.5
+    rises_per_second: 0.25
+    child: flame
+  type: tick
+  interval: 1
+  duration: -1
+  vars:
+    angle: "{{2 * pi * $spirals_per_second * t / 20}}"
+    rise: "{{2 * pi * $rises_per_second * t / 20}}"
+  offset_x: "{{$radius * sin(angle)}}"
+  offset_y: "{{-$height * cos(rise)}}"
+  offset_z: "{{$radius * cos(angle)}}"
+  child: $child
+
+double_spiral:
+  parameters:
+    radius: 1
+    height: 1
+    spirals_per_second: 0.5
+    rises_per_second: 0.25
+    child: flame
+  type: tick
+  interval: 1
+  duration: -1
+  vars:
+    angle: "{{2 * pi * $spirals_per_second * t / 20}}"
+    rise: "{{2 * pi * $rises_per_second * t / 20}}"
+    flip: "{{1 - 2 * (t % 2)}}"
+  offset_x: "{{flip * $radius * sin(angle)}}"
+  offset_y: "{{-$height * cos(rise)}}"
+  offset_z: "{{flip * $radius * cos(angle)}}"
+  child: $child
+
+twirl:
+  parameters:
+    small_radius: 0.5
+    large_radius: 2
+    start_height: 0
+    end_height: 2
+    spirals_per_second: 1
+    ticks: 40
+    child: flame
+  type: tick
+  interval: 1
+  duration: -1
+  vars:
+    cycle_t: "{{t % $ticks}}"
+    p: "{{cycle_t / $ticks}}"
+    radius: "{{$small_radius + ($large_radius - $small_radius) * p}}"
+    height: "{{$start_height + ($end_height - $start_height) * p}}"
+    angle: "{{2 * pi * $spirals_per_second * t / 20}}"
+    flip: "{{1 - 2 * (t % 2)}}"
+  offset_x: "{{flip * radius * sin(angle)}}"
+  offset_y: "{{height}}"
+  offset_z: "{{flip * radius * cos(angle)}}"
+  child: $child
+
+tilted_rings:
+  parameters:
+    radius: 1
+    spirals_per_second: 0.5
+    x_offset: 0.4
+    y_offset: 0.4
+    child: flame
+  type: tick
+  interval: 1
+  duration: -1
+  vars:
+    angle: "{{2 * pi * $spirals_per_second * t / 20}}"
+    pick: "{{t % 2}}"
+  child:
+    type: composite
+    children:
+      - type: iterate
+        count: 16
+        vars:
+          point_angle: "{{2 * pi * i / n + angle}}"
+          active_xz: "{{1 - pick}}"
+        offset_x: "{{active_xz * $radius * cos(point_angle)}}"
+        offset_y: "{{active_xz * $y_offset}}"
+        offset_z: "{{active_xz * $radius * sin(point_angle)}}"
+        child: $child
+      - type: iterate
+        count: 16
+        vars:
+          point_angle: "{{2 * pi * i / n + angle}}"
+        offset_x: "{{pick * $x_offset}}"
+        offset_y: "{{pick * $radius * cos(point_angle)}}"
+        offset_z: "{{pick * $radius * sin(point_angle)}}"
+        child: $child
