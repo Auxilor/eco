@@ -147,8 +147,10 @@ class PlaceholderParser {
 
         val lookup = PlaceholderLookup(args, plugin, injections)
 
-        val placeholder = placeholderLookupCache.get(lookup) {
-            it.findMatchingPlaceholder()
+        val placeholder = if (injections.isNullOrEmpty()) {
+            placeholderLookupCache.get(lookup) { it.findMatchingPlaceholder() }
+        } else {
+            lookup.findMatchingPlaceholder()
         }
 
         return placeholder?.getValue(args, context)
