@@ -134,18 +134,17 @@ allprojects {
         testRuntimeOnly("org.junit.platform:junit-platform-launcher:2.0.3")
         testImplementation("io.mockk:mockk-jvm:1.13.17")
 
-        // Adventure
-        implementation("net.kyori:adventure-api:5.0.1") {
+        // Adventure (provided at runtime via Paper library loader)
+        compileOnly("net.kyori:adventure-api:5.0.1") {
             exclude("com.github.ben-manes.caffeine", "caffeine")
         }
-        implementation("net.kyori:adventure-text-serializer-gson:5.0.1") {
-            exclude("com.google.code.gson", "gson") // Prevent shading into the jar
+        compileOnly("net.kyori:adventure-text-serializer-gson:5.0.1") {
+            exclude("com.google.code.gson", "gson")
         }
-        implementation("net.kyori:adventure-text-serializer-legacy:5.0.1")
+        compileOnly("net.kyori:adventure-text-serializer-legacy:5.0.1")
 
         // Other
-        implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
-        implementation("org.apache.maven:maven-artifact:3.9.15")
+        compileOnly("com.github.ben-manes.caffeine:caffeine:3.2.3")
     }
 
     tasks.withType<JavaCompile> {
@@ -212,26 +211,9 @@ tasks {
         exclude("META-INF/**")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        relocate("org.bstats", "com.willfp.eco.libs.bstats")
         relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
-        relocate("org.apache.maven", "com.willfp.eco.libs.maven")
-        relocate("org.checkerframework", "com.willfp.eco.libs.checkerframework")
-        relocate("org.intellij", "com.willfp.eco.libs.intellij")
+relocate("org.intellij", "com.willfp.eco.libs.intellij")
         relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
-        //relocate("org.jetbrains.exposed", "com.willfp.eco.libs.exposed")
-        relocate("javax.annotation", "com.willfp.eco.libs.annotation")
-        relocate("com.google.errorprone", "com.willfp.eco.libs.errorprone")
-        relocate("com.google.j2objc", "com.willfp.eco.libs.j2objc")
-        relocate("com.google.thirdparty", "com.willfp.eco.libs.google.thirdparty")
-        relocate("com.google.protobuf", "com.willfp.eco.libs.google.protobuf") // No I don't know either
-        relocate("google.protobuf", "com.willfp.eco.libs.protobuf") // Still don't know
-        relocate("com.zaxxer.hikari", "com.willfp.eco.libs.hikari")
-        //relocate("com.mysql", "com.willfp.eco.libs.mysql")
-        relocate("com.mongodb", "com.willfp.eco.libs.mongodb")
-        relocate("org.bson", "com.willfp.eco.libs.bson")
-        relocate("org.reactivestreams", "com.willfp.eco.libs.reactivestreams")
-        relocate("reactor.", "com.willfp.eco.libs.reactor.") // Dot in name to be safe
-        relocate("com.moandjiezana.toml", "com.willfp.eco.libs.toml")
         relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
 
         relocate("kotlin", "com.willfp.eco.libs.kotlin") {

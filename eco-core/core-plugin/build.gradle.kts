@@ -4,22 +4,22 @@ version = rootProject.version
 dependencies {
     compileOnly(project(":eco-core:core-backend"))
 
-    // Libraries
-    implementation("com.mysql:mysql-connector-j:9.6.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.12")
-    implementation("org.jetbrains.exposed:exposed-core:1.2.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
-    implementation("com.zaxxer:HikariCP:7.0.2")
-    implementation("net.kyori:adventure-platform-bukkit:4.4.1")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
-    implementation("io.hotmoka:toml4j:0.7.3") {
+    // Libraries (provided at runtime via Paper library loader)
+    compileOnly("com.mysql:mysql-connector-j:9.6.0")
+    compileOnly("org.mariadb.jdbc:mariadb-java-client:2.7.12")
+    compileOnly("org.jetbrains.exposed:exposed-core:1.2.0")
+    compileOnly("org.jetbrains.exposed:exposed-jdbc:1.2.0")
+    compileOnly("com.zaxxer:HikariCP:7.0.2")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
+    compileOnly("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
+    compileOnly("io.hotmoka:toml4j:0.7.3") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
     implementation("com.willfp:ModelEngineBridge:1.3.0")
 
     // Included in spigot jar
-    compileOnly("com.google.code.gson:gson:2.8.8")
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("com.google.code.gson:gson:2.8.9")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("me.libraryaddict.disguises:libsdisguises:11.0.14")
@@ -73,8 +73,6 @@ dependencies {
 tasks {
     shadowJar {
         minimize {
-            exclude(dependency("org.jetbrains.exposed:.*:.*"))
-            exclude(dependency("org.mariadb.jdbc:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }
