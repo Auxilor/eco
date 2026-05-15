@@ -138,7 +138,7 @@ public final class Recipes {
             ShapelessCraftingRecipe.Builder builder = ShapelessCraftingRecipe.builder(plugin, key)
                     .setOutput(output);
 
-            if (permission != null) {
+            if (permission != null && !permission.isBlank()) {
                 builder.setPermission(permission);
             }
 
@@ -175,7 +175,7 @@ public final class Recipes {
             ShapedCraftingRecipe.Builder builder = ShapedCraftingRecipe.builder(plugin, key)
                     .setOutput(output);
 
-            if (permission != null) {
+            if (permission != null && !permission.isBlank()) {
                 builder.setPermission(permission);
             }
 
