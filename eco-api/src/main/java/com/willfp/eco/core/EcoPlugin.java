@@ -450,17 +450,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.getScheduler().runLater(this::afterLoad, 2);
 
         if (this.isSupportingExtensions()) {
-            this.getExtensionLoader().loadExtensions();
-
-            if (!this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
-                List<String> loadedExtensions = this.getExtensionLoader().getLoadedExtensions().stream().map(
-                        extension -> extension.getName() + " v" + extension.getVersion()
-                ).toList();
-
-                this.getLogger().info(
-                        "Loaded extensions: " +
-                                String.join(", ", loadedExtensions)
-                );
+            for (Extension extension : this.getExtensionLoader().getLoadedExtensions()) {
+                extension.enable();
             }
         }
 
@@ -533,6 +524,21 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     @Override
     public final void onLoad() {
         super.onLoad();
+
+        if (this.isSupportingExtensions()) {
+            this.getExtensionLoader().loadExtensions();
+            if (!this.getExtensionLoader().getLoadedExtensions().isEmpty()) {
+                List<String> loadedExtensions = this.getExtensionLoader().getLoadedExtensions().stream().map(
+                        extension -> extension.getName() + " v" + extension.getVersion()
+                ).toList();
+
+                this.getLogger().info(
+                        "Loaded extensions: " +
+                                String.join(", ", loadedExtensions)
+                );
+            }
+
+        }
 
         this.handleLifecycle(this.onLoad, this::handleLoad);
     }
