@@ -15,7 +15,7 @@ dependencies {
     compileOnly("io.hotmoka:toml4j:0.7.3") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    implementation("com.willfp:ModelEngineBridge:1.3.0")
+    implementation("com.willfp:ModelEngineBridge:1.4.0")
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.9")
