@@ -68,8 +68,8 @@ dependencies {
     // Libraries (provided at runtime via Paper library loader)
     compileOnly("com.mysql:mysql-connector-j:9.6.0")
     compileOnly("org.mariadb.jdbc:mariadb-java-client:2.7.12")
-    compileOnly("org.jetbrains.exposed:exposed-core:1.2.0")
-    compileOnly("org.jetbrains.exposed:exposed-jdbc:1.2.0")
+    implementation("org.jetbrains.exposed:exposed-core:1.2.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
     compileOnly("com.zaxxer:HikariCP:7.0.2")
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
     compileOnly("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
@@ -134,6 +134,7 @@ dependencies {
 tasks {
     shadowJar {
         minimize {
+            exclude(dependency("org.jetbrains.exposed:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }

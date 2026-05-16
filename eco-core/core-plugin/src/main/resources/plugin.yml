@@ -69,8 +69,6 @@ softdepend:
 libraries:
   - com.mysql:mysql-connector-j:9.6.0
   - org.mariadb.jdbc:mariadb-java-client:2.7.12
-  - org.jetbrains.exposed:exposed-core:1.2.0
-  - org.jetbrains.exposed:exposed-jdbc:1.2.0
   - com.zaxxer:HikariCP:7.0.2
   - net.kyori:adventure-platform-bukkit:4.4.1
   - org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2
