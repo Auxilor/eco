@@ -15,9 +15,18 @@ import com.willfp.eco.libs.bstats.charts.SingleLineChart
 object MetricHandler {
     fun createMetrics(plugin: EcoPlugin) {
         val metrics = Metrics(plugin, plugin.bStatsId)
+
         for (chart in plugin.customCharts) {
             metrics.addCustomChart(chart.toBStatsChart())
         }
+
+        metrics.addCustomChart(
+            AdvancedPie("integrations_active") {
+                plugin.loadedIntegrations
+                    .associateWith { 1 }
+                    .ifEmpty { null }
+            }
+        )
     }
 
     private fun EcoMetricsChart.toBStatsChart(): CustomChart = when (this) {
