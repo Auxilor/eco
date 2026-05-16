@@ -2,6 +2,10 @@ package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.bstats.EcoMetricsChart
+import com.willfp.eco.core.integrations.anticheat.AnticheatManager
+import com.willfp.eco.core.integrations.antigrief.AntigriefManager
+import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.blocks.Blocks
@@ -390,4 +394,30 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun giveExpAndApplyMending(player: Player, amount: Int, applyMending: Boolean) {
         getProxy(PlayerHandlerProxy::class.java).giveExpAndApplyMending(player, amount, applyMending)
     }
+
+    override fun getCustomCharts() = listOf(
+        EcoMetricsChart.SimplePie("data_handler") { profileHandler.defaultHandler.id },
+        EcoMetricsChart.SingleLine("loaded_eco_plugins") {
+            loadedEcoPlugins.values.distinct().size
+        },
+        EcoMetricsChart.SingleLine("loaded_extensions") {
+            loadedEcoPlugins.values.distinct()
+                .sumOf { it.extensionLoader.getLoadedExtensions().size }
+        },
+        EcoMetricsChart.AdvancedPie("antigrief_integrations") {
+            AntigriefManager.getRegisteredIntegrations()
+                .associate { it.pluginName to 1 }
+                .ifEmpty { null }
+        },
+        EcoMetricsChart.AdvancedPie("custom_item_integrations") {
+            CustomItemsManager.getRegisteredIntegrations()
+                .associate { it.pluginName to 1 }
+                .ifEmpty { null }
+        },
+        EcoMetricsChart.AdvancedPie("anticheat_integrations") {
+            AnticheatManager.getRegisteredIntegrations()
+                .associate { it.pluginName to 1 }
+                .ifEmpty { null }
+        }
+    )
 }
