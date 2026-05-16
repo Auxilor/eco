@@ -2,6 +2,8 @@ package com.willfp.eco.core.integrations.anticheat;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.integrations.IntegrationRegistry;
+import java.util.HashSet;
+import java.util.Set;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,15 @@ public final class AnticheatManager {
      */
     public static void unexemptPlayer(@NotNull final Player player) {
         REGISTRY.forEachSafely(anticheat -> anticheat.unexempt(player));
+    }
+
+    /**
+     * Get all registered anticheat integrations.
+     *
+     * @return The integrations.
+     */
+    public static Set<AnticheatIntegration> getRegisteredIntegrations() {
+        return new HashSet<>(REGISTRY.values());
     }
 
     private AnticheatManager() {

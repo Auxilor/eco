@@ -14,6 +14,7 @@ import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
+import com.willfp.eco.core.bstats.EcoMetricsChart;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
@@ -1052,6 +1053,17 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public int getBStatsId() {
         return this.getProps().getBStatsId();
+    }
+
+    /**
+     * Get custom bStats charts to submit alongside standard metrics.
+     * Override to add plugin-specific charts.
+     *
+     * @return The charts.
+     */
+    @NotNull
+    public List<EcoMetricsChart> getCustomCharts() {
+        return Collections.emptyList();
     }
 
     /**
