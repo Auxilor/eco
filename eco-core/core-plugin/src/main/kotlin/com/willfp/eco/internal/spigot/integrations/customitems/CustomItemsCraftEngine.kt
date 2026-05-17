@@ -46,7 +46,7 @@ class CustomItemsCraftEngine(
             val id = Key.of(namespace, value)
             val item = CraftEngineItems.byId(id) ?: return null
             val namespacedKey = namespacedKeyOf("craftengine", key.lowercase().replace(":", "__"))
-            val stack = item.buildItemStack()
+            val stack = item.buildBukkitItem()
 
             return CustomItem(
                 namespacedKey,
