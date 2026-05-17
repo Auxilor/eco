@@ -19,7 +19,9 @@ object PlayerHealthPatch: Listener {
     fun handlePlayerJoin(event: PlayerJoinEvent) {
         if (Eco.get().ecoPlugin.configYml.getBool("enable-health-fix")) {
             Eco.get().ecoPlugin.scheduler.runLater(5L) {
-                event.player.health = event.player.savedHealth
+                if (!event.player.isDead) {
+                    event.player.health = event.player.savedHealth
+                }
             }
         }
     }
