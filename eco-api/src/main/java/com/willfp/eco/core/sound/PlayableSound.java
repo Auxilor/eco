@@ -45,6 +45,15 @@ public record PlayableSound(@NotNull Sound sound,
         this(sound, pitch, 1.0, true, SoundCategory.MASTER);
     }
 
+    /**
+     * Create a sound with a fixed pitch.
+     *
+     * @param sound    The sound.
+     * @param pitch    The pitch.
+     * @param volume   The volume.
+     * @param enabled  If the sound is enabled.
+     * @param category The sound category.
+     */
     public PlayableSound(@NotNull final Sound sound,
                          final double pitch,
                          final double volume,
