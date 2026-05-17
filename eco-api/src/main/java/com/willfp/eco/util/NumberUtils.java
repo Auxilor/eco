@@ -25,6 +25,11 @@ public final class NumberUtils {
      */
     private static final TreeMap<Integer, String> NUMERALS = new TreeMap<>();
 
+    /**
+     * Epsilon.
+     */
+    private static final double EPSILON = 1e-6;
+
     static {
         NUMERALS.put(1000, "M");
         NUMERALS.put(900, "CM");
@@ -127,6 +132,10 @@ public final class NumberUtils {
      */
     public static int randInt(final int min,
                               final int max) {
+        if (min == max) {
+            return min;
+        }
+
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
@@ -139,7 +148,14 @@ public final class NumberUtils {
      */
     public static double randFloat(final double min,
                                    final double max) {
-        return ThreadLocalRandom.current().nextDouble(min, max);
+        if (Math.abs(min - max) < EPSILON) {
+            return min;
+        }
+
+        double tMin = Math.min(min, max);
+        double tMax = Math.max(min, max);
+
+        return ThreadLocalRandom.current().nextDouble(tMin, tMax);
     }
 
     /**
