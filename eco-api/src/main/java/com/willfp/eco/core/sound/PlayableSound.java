@@ -2,8 +2,11 @@ package com.willfp.eco.core.sound;
 
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
+import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.SoundUtils;
+
 import java.util.Objects;
+
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -16,13 +19,15 @@ import org.jetbrains.annotations.Nullable;
  * A sound that can be played at a location.
  *
  * @param sound    The sound.
- * @param pitch    The pitch.
+ * @param minPitch The minimum pitch.
+ * @param maxPitch The maximum pitch.
  * @param volume   The volume.
  * @param enabled  Whether the sound is enabled.
  * @param category The sound category.
  */
 public record PlayableSound(@NotNull Sound sound,
-                            double pitch,
+                            double minPitch,
+                            double maxPitch,
                             double volume,
                             boolean enabled,
                             @NotNull SoundCategory category) {
@@ -41,12 +46,31 @@ public record PlayableSound(@NotNull Sound sound,
     }
 
     /**
+     * Create a sound with a fixed pitch.
+     *
+     * @param sound    The sound.
+     * @param pitch    The pitch.
+     * @param volume   The volume.
+     * @param enabled  If the sound is enabled.
+     * @param category The sound category.
+     */
+    public PlayableSound(@NotNull final Sound sound,
+                         final double pitch,
+                         final double volume,
+                         final boolean enabled,
+                         @NotNull SoundCategory category) {
+        this(sound, pitch, pitch, volume, enabled, category);
+    }
+
+    /**
      * Play the sound to a player if enabled.
      *
      * @param player The player.
      */
     public void playTo(@NotNull final Player player) {
         if (!enabled) return;
+
+        double pitch = NumberUtils.randFloat(minPitch, maxPitch);
         player.playSound(player.getLocation(), sound, category, (float) volume, (float) pitch);
     }
 
@@ -59,6 +83,7 @@ public record PlayableSound(@NotNull Sound sound,
         if (!enabled) return;
         World world = location.getWorld();
         if (world != null) {
+            double pitch = NumberUtils.randFloat(minPitch, maxPitch);
             world.playSound(location, sound, category, (float) volume, (float) pitch);
         }
     }
@@ -85,7 +110,25 @@ public record PlayableSound(@NotNull Sound sound,
             Sound sound = SoundUtils.getSound(config.getString("sound"));
             if (sound == null) return null;
 
-            double pitch = Objects.requireNonNullElse(config.getDoubleOrNull("pitch"), 1.0);
+            double minPitch = 1.0;
+            double maxPitch = 1.0;
+
+            String pitchString = config.getStringOrNull("pitch");
+            if (pitchString != null && pitchString.contains("..")) {
+                String[] parts = pitchString.split("\\.\\.", 2);
+                try {
+                    minPitch = Double.parseDouble(parts[0]);
+                    maxPitch = Double.parseDouble(parts[1]);
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    minPitch = 1.0;
+                    maxPitch = 1.0;
+                }
+            } else {
+                double pitch = Objects.requireNonNullElse(config.getDoubleOrNull("pitch"), 1.0);
+                minPitch = pitch;
+                maxPitch = pitch;
+            }
+
             double volume = Objects.requireNonNullElse(config.getDoubleOrNull("volume"), 1.0);
             boolean enabled = Objects.requireNonNullElse(config.getBoolOrNull("enabled"), true);
 
@@ -101,7 +144,7 @@ public record PlayableSound(@NotNull Sound sound,
                 }
             }
 
-            return new PlayableSound(sound, pitch, volume, enabled, category);
+            return new PlayableSound(sound, minPitch, maxPitch, volume, enabled, category);
         }
     }
 }
