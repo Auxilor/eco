@@ -124,6 +124,7 @@ import com.willfp.eco.internal.items.ArgParserTexture
 import com.willfp.eco.internal.items.ArgParserTooltipStyle
 import com.willfp.eco.internal.items.ArgParserTrim
 import com.willfp.eco.internal.items.ArgParserUnbreakable
+import com.willfp.eco.internal.items.ArgParserUnenchantable
 import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
@@ -142,6 +143,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListener
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerHealthPatch
+import com.willfp.eco.internal.spigot.eventlisteners.UnenchantablePatch
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
@@ -252,6 +254,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserTooltipStyle)
         Items.registerArgParser(ArgParserTrim)
         Items.registerArgParser(ArgParserAttribute)
+        Items.registerArgParser(ArgParserUnenchantable)
 
         Blocks.registerArgParser(BlockArgParserAgeable)
         Blocks.registerArgParser(BlockArgParserAnaloguePowerable)
@@ -582,7 +585,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             PlayerBlockListener(this),
             ServerLocking,
             AutocrafterPatch,
-            PlayerHealthPatch
+            PlayerHealthPatch,
+            UnenchantablePatch
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {
