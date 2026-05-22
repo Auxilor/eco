@@ -147,8 +147,10 @@ class PlaceholderParser {
 
         val lookup = PlaceholderLookup(args, plugin, injections)
 
-        val placeholder = placeholderLookupCache.get(lookup) {
-            it.findMatchingPlaceholder()
+        val placeholder = if (injections.isNullOrEmpty()) {
+            placeholderLookupCache.get(lookup) { it.findMatchingPlaceholder() }
+        } else {
+            lookup.findMatchingPlaceholder()
         }
 
         return placeholder?.getValue(args, context)
@@ -163,21 +165,22 @@ class PlaceholderParser {
         var lastAppendPosition = 0
 
         for (matchResult in placeholderRegex.findAll(text)) {
-            val placeholder = matchResult.groups[1]?.value ?: ""
+            val match = matchResult.value
+            val placeholder = match.substring(1, match.length - 1)
 
             val injectableResult = doGetResult(null, placeholder, injections, context)
 
-            val parts = placeholder.split("_", limit = 2)
+            val underscoreIndex = placeholder.indexOf('_')
 
             var result: String? = null
 
             if (injectableResult != null) {
                 result = injectableResult
-            } else if (parts.size == 2) {
-                val plugin = EcoPlugin.getPlugin(parts[0])
+            } else if (underscoreIndex != -1) {
+                val plugin = EcoPlugin.getPlugin(placeholder.substring(0, underscoreIndex))
 
                 if (plugin != null) {
-                    result = doGetResult(plugin, parts[1], null, context)
+                    result = doGetResult(plugin, placeholder.substring(underscoreIndex + 1), null, context)
                 }
             }
 
@@ -219,13 +222,13 @@ class PlaceholderParser {
             return injectableResult
         }
 
-        val parts = placeholder.split("_", limit = 2)
+        val underscoreIndex = placeholder.indexOf('_')
 
-        if (parts.size == 2) {
-            val plugin = EcoPlugin.getPlugin(parts[0])
+        if (underscoreIndex != -1) {
+            val plugin = EcoPlugin.getPlugin(placeholder.substring(0, underscoreIndex))
 
             if (plugin != null) {
-                return doGetResult(plugin, parts[1], null, context)
+                return doGetResult(plugin, placeholder.substring(underscoreIndex + 1), null, context)
             }
         }
 

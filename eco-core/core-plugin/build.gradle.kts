@@ -1,26 +1,86 @@
 group = "com.willfp"
 version = rootProject.version
 
+val bStatsVersion = "v3.2.1"
+val bStatsTargetPackage = "com.willfp.eco.libs.bstats"
+val bStatsGeneratedDir = layout.buildDirectory.dir("generated/sources/bstats")
+
+val vendorBStats by tasks.registering {
+    group = "vendor"
+    description = "Vendors bStats $bStatsVersion source under $bStatsTargetPackage"
+
+    inputs.property("bStatsVersion", bStatsVersion)
+    outputs.dir(bStatsGeneratedDir)
+
+    doLast {
+        val attribution = """
+            /*
+             * Sourced from bStats (https://bstats.org), MIT License.
+             * https://github.com/Bastian/bStats-Metrics
+             * Vendored under $bStatsTargetPackage to avoid classpath conflicts.
+             */
+        """.trimIndent() + "\n"
+
+        val cloneDir = temporaryDir.resolve("bstats-metrics")
+        cloneDir.deleteRecursively()
+
+        val clone = ProcessBuilder(
+            "git", "clone", "--depth", "1", "--branch", bStatsVersion,
+            "https://github.com/Bastian/bStats-Metrics.git",
+            cloneDir.absolutePath
+        ).redirectErrorStream(true).start()
+        val cloneOutput = clone.inputStream.bufferedReader().readText()
+        check(clone.waitFor() == 0) { "Failed to clone bStats-Metrics at $bStatsVersion:\n$cloneOutput" }
+
+        val outDir = bStatsGeneratedDir.get().asFile
+        outDir.deleteRecursively()
+
+        listOf("base", "bukkit").forEach { module ->
+            val javaRoot = cloneDir.resolve("$module/src/main/java")
+            val bStatsRoot = javaRoot.resolve("org/bstats")
+            bStatsRoot.walkTopDown()
+                .filter { it.isFile && it.extension == "java" }
+                .forEach { file ->
+                    val rel = file.relativeTo(bStatsRoot)
+                    val outFile = outDir.resolve("com/willfp/eco/libs/bstats/$rel")
+                    outFile.parentFile.mkdirs()
+                    outFile.writeText(
+                        attribution + file.readText().replace("org.bstats", bStatsTargetPackage)
+                    )
+                }
+        }
+
+        cloneDir.deleteRecursively()
+    }
+}
+
+sourceSets.main {
+    java.srcDir(bStatsGeneratedDir)
+}
+
+tasks.compileJava { dependsOn(vendorBStats) }
+tasks.compileKotlin { dependsOn(vendorBStats) }
+tasks.sourcesJar { dependsOn(vendorBStats) }
+
 dependencies {
     compileOnly(project(":eco-core:core-backend"))
 
-    // Libraries
-    implementation("com.github.Redempt:Crunch:1.0.0")
-    implementation("com.mysql:mysql-connector-j:9.6.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:2.7.12")
+    // Libraries (provided at runtime via Paper library loader)
+    compileOnly("com.mysql:mysql-connector-j:9.6.0")
+    compileOnly("org.mariadb.jdbc:mariadb-java-client:2.7.12")
     implementation("org.jetbrains.exposed:exposed-core:1.2.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
-    implementation("com.zaxxer:HikariCP:7.0.2")
-    implementation("net.kyori:adventure-platform-bukkit:4.4.1")
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
-    implementation("io.hotmoka:toml4j:0.7.3") {
+    compileOnly("com.zaxxer:HikariCP:7.0.2")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
+    compileOnly("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
+    compileOnly("io.hotmoka:toml4j:0.7.3") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    implementation("com.willfp:ModelEngineBridge:1.3.0")
+    implementation("com.willfp:ModelEngineBridge:1.4.0")
 
     // Included in spigot jar
-    compileOnly("com.google.code.gson:gson:2.8.8")
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("com.google.code.gson:gson:2.8.9")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("me.libraryaddict.disguises:libsdisguises:11.0.14")
@@ -37,8 +97,8 @@ dependencies {
     compileOnly("com.nexomc:nexo:1.19.1") {
         exclude(group = "*", module = "*")
     }
-    compileOnly("net.momirealms:craft-engine-core:0.0.66")
-    compileOnly("net.momirealms:craft-engine-bukkit:0.0.66")
+    compileOnly("net.momirealms:craft-engine-core:26.5")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.5")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
     compileOnly("net.essentialsx:EssentialsX:2.21.2") {
@@ -61,8 +121,8 @@ dependencies {
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("de.oliver:FancyHolograms:2.9.1")
-    compileOnly("su.nightexpress.coinsengine:CoinsEngine:2.7.0")
-    compileOnly("su.nightexpress.nightcore:main:2.14.1")
+    compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
+    compileOnly("su.nightexpress.nightcore:main:2.15.3")
     compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
     compileOnly("dev.kitteh:factions:4.4.0")
 
@@ -75,7 +135,6 @@ tasks {
     shadowJar {
         minimize {
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
-            exclude(dependency("org.mariadb.jdbc:.*:.*"))
             exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }

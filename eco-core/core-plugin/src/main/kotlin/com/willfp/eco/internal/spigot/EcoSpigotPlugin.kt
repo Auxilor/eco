@@ -545,7 +545,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     }
                 }
             },
-            IntegrationLoader("CoinsEngine") {
+            IntegrationLoader("ExcellentEconomy") {
                 val rsp = Bukkit.getServer().servicesManager.getRegistration(ExcellentEconomyAPI::class.java)
                 if (rsp != null) {
                     val api = rsp.provider

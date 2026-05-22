@@ -3,9 +3,11 @@ package com.willfp.eco.core.placeholder;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.PatternUtils;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,9 +16,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PlayerlessPlaceholder implements RegistrablePlaceholder {
     /**
+     * The raw identifier.
+     */
+    private final String rawIdentifier;
+
+    /**
      * The arguments pattern.
      */
-    private final Pattern pattern;
+    @Nullable
+    private volatile Pattern pattern = null;
 
     /**
      * The function to retrieve the output of the arguments.
@@ -39,7 +47,7 @@ public final class PlayerlessPlaceholder implements RegistrablePlaceholder {
                                  @NotNull final String identifier,
                                  @NotNull final Supplier<@Nullable String> function) {
         this.plugin = plugin;
-        this.pattern = PatternUtils.compileLiteral(identifier);
+        this.rawIdentifier = identifier;
         this.function = function;
     }
 
@@ -72,7 +80,19 @@ public final class PlayerlessPlaceholder implements RegistrablePlaceholder {
     @NotNull
     @Override
     public Pattern getPattern() {
-        return this.pattern;
+        Pattern result = this.pattern;
+
+        if (result == null) {
+            synchronized (this) {
+                result = this.pattern;
+                if (result == null) {
+                    result = PatternUtils.compileLiteral(this.rawIdentifier);
+                    this.pattern = result;
+                }
+            }
+        }
+
+        return result;
     }
 
     @Override

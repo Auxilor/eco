@@ -63,5 +63,17 @@ softdepend:
   - RoyaleEconomy
   - FancyHolograms
   - CraftEngine
-  - CoinsEngine
+  - ExcellentEconomy
   - ExcellentShop
+
+libraries:
+  - com.mysql:mysql-connector-j:9.6.0
+  - org.mariadb.jdbc:mariadb-java-client:2.7.12
+  - com.zaxxer:HikariCP:7.0.2
+  - net.kyori:adventure-platform-bukkit:4.4.1
+  - org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2
+  - io.hotmoka:toml4j:0.7.3
+  - net.kyori:adventure-api:5.0.1
+  - net.kyori:adventure-text-serializer-gson:5.0.1
+  - net.kyori:adventure-text-serializer-legacy:5.0.1
+  - com.github.ben-manes.caffeine:caffeine:3.2.3

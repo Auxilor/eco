@@ -22,9 +22,19 @@ public final class PlaceholderManager {
     private static final Map<EcoPlugin, Map<String, Placeholder>> REGISTERED_PLACEHOLDERS = new ConcurrentHashMap<>();
 
     /**
+     * Cached immutable snapshots of registered placeholders per plugin.
+     */
+    private static final ConcurrentHashMap<EcoPlugin, Collection<Placeholder>> PLACEHOLDER_SNAPSHOT_CACHE = new ConcurrentHashMap<>();
+
+    /**
      * All registered arguments integrations.
      */
     private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = new HashSet<>();
+
+    /**
+     * Cached immutable snapshot of registered integrations.
+     */
+    private static volatile Set<PlaceholderIntegration> cachedIntegrations = null;
 
     /**
      * The default PlaceholderAPI pattern; brought in for compatibility.
@@ -60,6 +70,7 @@ public final class PlaceholderManager {
     public static void addIntegration(@NotNull final PlaceholderIntegration integration) {
         integration.registerIntegration();
         REGISTERED_INTEGRATIONS.add(integration);
+        cachedIntegrations = null;
     }
 
     /**
@@ -88,6 +99,7 @@ public final class PlaceholderManager {
                 k -> Collections.synchronizedMap(new LinkedHashMap<>())
         );
         pluginPlaceholders.put(placeholder.getPattern().pattern(), placeholder);
+        PLACEHOLDER_SNAPSHOT_CACHE.remove(placeholder.getPlugin());
     }
 
     /**
@@ -248,7 +260,12 @@ public final class PlaceholderManager {
      * @return The integrations.
      */
     public static Set<PlaceholderIntegration> getRegisteredIntegrations() {
-        return Set.copyOf(REGISTERED_INTEGRATIONS);
+        Set<PlaceholderIntegration> cached = cachedIntegrations;
+        if (cached == null) {
+            cached = Set.copyOf(REGISTERED_INTEGRATIONS);
+            cachedIntegrations = cached;
+        }
+        return cached;
     }
 
     /**
@@ -258,13 +275,49 @@ public final class PlaceholderManager {
      * @return The placeholders.
      */
     public static Collection<Placeholder> getRegisteredPlaceholders(@NotNull final EcoPlugin plugin) {
+        return PLACEHOLDER_SNAPSHOT_CACHE.computeIfAbsent(plugin, p -> {
+            Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(p);
+            if (pluginPlaceholders == null) {
+                return Collections.emptyList();
+            }
+            synchronized (pluginPlaceholders) {
+                return List.copyOf(pluginPlaceholders.values());
+            }
+        });
+    }
+
+    /**
+     * Look up a registered placeholder by direct map key, then fall back to regex scan.
+     *
+     * @param plugin The plugin.
+     * @param args   The placeholder args to match.
+     * @return The matching placeholder, or null.
+     */
+    @Nullable
+    public static Placeholder getRegisteredPlaceholder(@NotNull final EcoPlugin plugin,
+                                                       @NotNull final String args) {
         Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(plugin);
         if (pluginPlaceholders == null) {
-            return Collections.emptyList();
+            return null;
         }
+
+        Placeholder direct = pluginPlaceholders.get(args);
+        if (direct != null) {
+            return direct;
+        }
+
         synchronized (pluginPlaceholders) {
-            return List.copyOf(pluginPlaceholders.values());
+            for (Placeholder placeholder : pluginPlaceholders.values()) {
+                java.util.regex.Pattern pattern = placeholder.getPattern();
+                if ((pattern.flags() & java.util.regex.Pattern.LITERAL) == 0) {
+                    if (pattern.matcher(args).matches()) {
+                        return placeholder;
+                    }
+                }
+            }
         }
+
+        return null;
     }
 
     private PlaceholderManager() {

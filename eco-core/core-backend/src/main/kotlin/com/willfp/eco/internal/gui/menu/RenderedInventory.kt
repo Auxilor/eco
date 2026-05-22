@@ -1,7 +1,6 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.events.CaptiveItemChangeEvent
-import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.openMenu
@@ -50,14 +49,12 @@ class RenderedInventory(
         val totalSlots = rows * columns
         val newCaptive = mutableMapOf<GUIPosition, ItemStack>()
 
-        val slotCache = arrayOfNulls<Slot>(totalSlots)
         val captiveFlags = BooleanArray(totalSlots)
 
         var bukkit = 0
         for (row in (1..rows)) {
             for (column in (1..columns)) {
                 val slot = menu.getSlot(row, column, player)
-                slotCache[bukkit] = slot
 
                 if (slot.isCaptive(player, menu)) {
                     captiveFlags[bukkit] = true
@@ -106,9 +103,13 @@ class RenderedInventory(
         menu.runOnRender(player)
 
         if (captiveChanged) {
-            for (i in 0 until totalSlots) {
-                if (!captiveFlags[i]) {
-                    inventory.setItem(i, slotCache[i]!!.getItemStack(player))
+            var i = 0
+            for (row in (1..rows)) {
+                for (column in (1..columns)) {
+                    if (!captiveFlags[i]) {
+                        inventory.setItem(i, menu.getSlot(row, column, player).getItemStack(player))
+                    }
+                    i++
                 }
             }
         }

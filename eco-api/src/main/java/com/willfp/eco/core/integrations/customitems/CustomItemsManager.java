@@ -1,6 +1,8 @@
 package com.willfp.eco.core.integrations.customitems;
 
 import com.willfp.eco.core.integrations.IntegrationRegistry;
+import java.util.HashSet;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,6 +39,15 @@ public final class CustomItemsManager {
      */
     public static void registerProviders() {
         REGISTRY.forEachSafely(CustomItemsIntegration::registerProvider);
+    }
+
+    /**
+     * Get all registered custom item integrations.
+     *
+     * @return The integrations.
+     */
+    public static Set<CustomItemsIntegration> getRegisteredIntegrations() {
+        return new HashSet<>(REGISTRY.values());
     }
 
     private CustomItemsManager() {

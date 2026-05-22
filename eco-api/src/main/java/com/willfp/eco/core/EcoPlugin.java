@@ -14,10 +14,12 @@ import com.willfp.eco.core.extensions.ExtensionLoader;
 import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
+import com.willfp.eco.core.bstats.EcoMetricsChart;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
+import com.willfp.eco.core.price.Prices;
 import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.registry.Registry;
 import com.willfp.eco.core.scheduling.Scheduler;
@@ -421,7 +423,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.loadedIntegrations.removeIf(pl -> pl.equalsIgnoreCase(this.getName()));
 
         if (!this.getLoadedIntegrations().isEmpty()) {
-            this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+            this.getLogger().info("Loaded integrations (" + this.getLoadedIntegrations().size() + "): "
+                    + String.join(", ", this.getLoadedIntegrations()));
         }
 
         Prerequisite.update();
@@ -453,6 +456,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             for (Extension extension : this.getExtensionLoader().getLoadedExtensions()) {
                 extension.enable();
             }
+        }
+
+        if (!Prices.allLoadedFactories().isEmpty()) {
+            this.getLogger().info(
+                    "Loaded price factories (" + Prices.allLoadedFactories().size() + "): "
+                            + String.join(", ", Prices.allLoadedFactories())
+            );
         }
 
         this.handleLifecycle(this.onEnable, this::handleEnable);
@@ -1058,6 +1068,17 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      */
     public int getBStatsId() {
         return this.getProps().getBStatsId();
+    }
+
+    /**
+     * Get custom bStats charts to submit alongside standard metrics.
+     * Override to add plugin-specific charts.
+     *
+     * @return The charts.
+     */
+    @NotNull
+    public List<EcoMetricsChart> getCustomCharts() {
+        return Collections.emptyList();
     }
 
     /**
