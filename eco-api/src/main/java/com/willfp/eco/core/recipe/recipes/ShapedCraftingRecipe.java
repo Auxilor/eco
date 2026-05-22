@@ -53,17 +53,29 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
      */
     private final String permission;
 
+    /**
+     * Whether this recipe also fires inside the vanilla Crafter block.
+     */
+    private final boolean supportCrafter;
+
     private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
                                  @NotNull final String key,
                                  @NotNull final List<TestableItem> parts,
                                  @NotNull final ItemStack output,
-                                 @Nullable final String permission) {
+                                 @Nullable final String permission,
+                                 final boolean supportCrafter) {
         this.plugin = plugin;
         this.parts = parts;
         this.key = plugin.getNamespacedKeyFactory().create(key);
         this.displayedKey = plugin.getNamespacedKeyFactory().create(key + "_displayed");
         this.output = output;
         this.permission = permission;
+        this.supportCrafter = supportCrafter;
+    }
+
+    @Override
+    public boolean isSupportCrafter() {
+        return this.supportCrafter;
     }
 
     @Override
@@ -148,6 +160,28 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
         }
 
         Recipes.scheduleBukkitRecipeRegistration(shapedRecipe);
+
+        if (this.supportCrafter) {
+            NamespacedKey crafterKey = new NamespacedKey(
+                    this.getKey().getNamespace(),
+                    this.getKey().getKey() + "_crafter"
+            );
+            Recipes.scheduleBukkitRecipeRemoval(crafterKey);
+
+            ShapedRecipe crafterRecipe = new ShapedRecipe(crafterKey, this.getOutput());
+            crafterRecipe.shape("012", "345", "678");
+            for (int i = 0; i < 9; i++) {
+                if (parts.get(i) instanceof EmptyTestableItem) {
+                    continue;
+                }
+                char c = String.valueOf(i).toCharArray()[0];
+                crafterRecipe.setIngredient(
+                        c,
+                        new RecipeChoice.ExactChoice(parts.get(i).getItem().clone())
+                );
+            }
+            Recipes.scheduleBukkitRecipeRegistration(crafterRecipe);
+        }
     }
 
     /**
@@ -246,6 +280,11 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
         private String permission = null;
 
         /**
+         * Whether the recipe also fires in the vanilla Crafter block.
+         */
+        private boolean supportCrafter = false;
+
+        /**
          * The key of the recipe.
          */
         private final String key;
@@ -316,6 +355,23 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
         }
 
         /**
+         * Set whether the recipe also fires in the vanilla Crafter block.
+         * <p>
+         * When true, {@link ShapedCraftingRecipe#register()} additionally
+         * registers a Bukkit {@link ShapedRecipe} at the key
+         * {@code <namespace>:<key>_crafter} with {@link RecipeChoice.ExactChoice}
+         * ingredients so the Crafter can match it; {@code AutocrafterPatch}
+         * will not cancel events fired for these recipes.
+         *
+         * @param supportCrafter Whether to enable Crafter support.
+         * @return The builder.
+         */
+        public Builder setSupportCrafter(final boolean supportCrafter) {
+            this.supportCrafter = supportCrafter;
+            return this;
+        }
+
+        /**
          * Check if recipe parts are all air.
          *
          * @return If recipe parts are all air.
@@ -341,7 +397,7 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
                 }
             }
 
-            return new ShapedCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission);
+            return new ShapedCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission, supportCrafter);
         }
     }
 }

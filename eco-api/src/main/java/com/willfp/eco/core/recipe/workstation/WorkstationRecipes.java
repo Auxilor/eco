@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -50,6 +51,24 @@ public final class WorkstationRecipes {
      * cancelled. Set via {@link #registerBrewCancelHook(Consumer)}.
      */
     @Nullable private static Consumer<Location> brewCancelHook = null;
+
+    /**
+     * Callback fired when a custom brew completes (ingredient consumed, result set).
+     * Allows plugins to handle ghost mode and effects for packet-intercepted brews.
+     */
+    @FunctionalInterface
+    public interface BrewCompletedCallback {
+        /**
+         * Called when a custom brew completes.
+         *
+         * @param location     The brewing stand location.
+         * @param recipe       The recipe that completed.
+         * @param matchedSlots The base slots (0–2) that received the result.
+         */
+        void onBrewCompleted(@NotNull Location location, @NotNull BrewingRecipe recipe, @NotNull List<Integer> matchedSlots);
+    }
+
+    @Nullable private static BrewCompletedCallback brewCompletedCallback = null;
 
     private WorkstationRecipes() {}
 
@@ -162,6 +181,29 @@ public final class WorkstationRecipes {
      */
     public static void cancelPendingBrew(@NotNull Location location) {
         if (brewCancelHook != null) brewCancelHook.accept(location);
+    }
+
+    /**
+     * Register a hook called when a custom brew completes (items placed, ingredient consumed).
+     * Called on the main server thread, before client receives inventory updates.
+     *
+     * @param callback The callback.
+     */
+    public static void registerBrewCompletedHook(@NotNull BrewCompletedCallback callback) {
+        brewCompletedCallback = callback;
+    }
+
+    /**
+     * Fire the brew-completed hook. Called by the internal brewing packet handler after placing result items.
+     *
+     * @param location     The brewing stand location.
+     * @param recipe       The recipe that completed.
+     * @param matchedSlots The base slots (0–2) that received the result.
+     */
+    public static void fireBrewCompleted(@NotNull Location location,
+                                         @NotNull BrewingRecipe recipe,
+                                         @NotNull List<Integer> matchedSlots) {
+        if (brewCompletedCallback != null) brewCompletedCallback.onBrewCompleted(location, recipe, matchedSlots);
     }
 
     /**

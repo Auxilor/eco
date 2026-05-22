@@ -116,6 +116,7 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener {
 
             val item = recipe.output?.clone() ?: return@Runnable
             matchedSlots.forEach { brewer.setItem(it, item.clone()) }
+            WorkstationRecipes.fireBrewCompleted(loc, recipe, matchedSlots)
         }, brewTime.toLong())
     }
 

@@ -19,6 +19,8 @@ public abstract class WorkstationRecipe {
     @Nullable private final String permission;
 
     /**
+     * Constructs a new workstation recipe.
+     *
      * @param key        Unique identifier for this recipe.
      * @param output     The item produced by this recipe, or null for recipes
      *                   that do not produce a fixed output item.
