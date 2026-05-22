@@ -101,7 +101,7 @@ allprojects {
         // CraftEngine
         maven("https://repo.momirealms.net/releases/")
 
-        // CoinsEngine
+        // ExcellentEconomy and ExcellentShop
         maven("https://repo.nightexpressdev.com/releases")
 
         //Towny

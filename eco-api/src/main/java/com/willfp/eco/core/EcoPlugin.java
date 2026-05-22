@@ -19,6 +19,7 @@ import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
 import com.willfp.eco.core.proxy.ProxyFactory;
+import com.willfp.eco.core.price.Prices;
 import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.registry.Registry;
 import com.willfp.eco.core.scheduling.Scheduler;
@@ -422,7 +423,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.loadedIntegrations.removeIf(pl -> pl.equalsIgnoreCase(this.getName()));
 
         if (!this.getLoadedIntegrations().isEmpty()) {
-            this.getLogger().info("Loaded integrations: " + String.join(", ", this.getLoadedIntegrations()));
+            this.getLogger().info("Loaded integrations (" + this.getLoadedIntegrations().size() + "): "
+                    + String.join(", ", this.getLoadedIntegrations()));
         }
 
         Prerequisite.update();
@@ -459,10 +461,17 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
                 ).toList();
 
                 this.getLogger().info(
-                        "Loaded extensions: " +
-                                String.join(", ", loadedExtensions)
+                        "Loaded extensions (" + loadedExtensions.size() + "): "
+                               + String.join(", ", loadedExtensions)
                 );
             }
+        }
+
+        if (!Prices.allLoadedFactories().isEmpty()) {
+            this.getLogger().info(
+                    "Loaded price factories (" + Prices.allLoadedFactories().size() + "): "
+                            + String.join(", ", Prices.allLoadedFactories())
+            );
         }
 
         this.handleLifecycle(this.onEnable, this::handleEnable);
