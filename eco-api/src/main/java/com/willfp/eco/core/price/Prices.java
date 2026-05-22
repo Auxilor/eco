@@ -40,7 +40,15 @@ public final class Prices {
      */
     public static void registerPriceFactory(@NotNull final PriceFactory factory) {
         for (String name : factory.getNames()) {
-            FACTORIES.put(name.toLowerCase(), factory);
+            String key = name.toLowerCase();
+            PriceFactory existing = FACTORIES.get(key);
+            if (existing != null && existing != factory) {
+                throw new IllegalStateException(String.format(
+                        "A price factory is already registered under the name '%s' (%s). Cannot register %s.",
+                        key, existing.getClass().getName(), factory.getClass().getName()
+                ));
+            }
+            FACTORIES.put(key, factory);
         }
     }
 
