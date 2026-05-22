@@ -14,8 +14,11 @@ import com.willfp.eco.core.recipe.recipes.ShapedCraftingRecipe;
 import com.willfp.eco.core.recipe.recipes.ShapelessCraftingRecipe;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
@@ -274,6 +277,70 @@ public final class Recipes {
             forceResendRecipeUpdates();
             Eco.get().getEcoPlugin().getLogger().info("Forced resend of recipe updates to clients after batching period.");
             lastScheduledRegistration = 0L;
+        }
+    }
+
+    /**
+     * Cancel a {@link CraftItemEvent} that matched a vanilla recipe and
+     * manually deliver a custom output instead. Use when an eco recipe
+     * shares its shape/material with a vanilla recipe and Bukkit picked the
+     * vanilla one (e.g. a custom iron sword colliding with the vanilla iron
+     * pickaxe shape): the event fires with {@code event.getRecipe()} pointing
+     * at the vanilla recipe, so vanilla would deliver the wrong item.
+     *
+     * <p>This method:
+     * <ol>
+     *   <li>Cancels the event so vanilla does not deliver or consume.</li>
+     *   <li>Decrements every non-empty crafting matrix slot by one.</li>
+     *   <li>Places {@code item} on the player's cursor (or stacks onto the
+     *       existing cursor item where possible), shift-click delivers via
+     *       {@code player.getInventory().addItem(item)} with any overflow
+     *       dropped at the player's feet.</li>
+     * </ol>
+     *
+     * <p>Single-iteration: even for a shift-click this only consumes one grid
+     * worth of ingredients and delivers the {@code item} stack as supplied.
+     *
+     * @param event The CraftItemEvent to take over.
+     * @param item  The item stack to deliver to the player.
+     */
+    public static void takeOverCraftItem(@NotNull final CraftItemEvent event,
+                                         @NotNull final ItemStack item) {
+        event.setCancelled(true);
+
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        for (int i = 0; i < matrix.length; i++) {
+            ItemStack stack = matrix[i];
+            if (stack == null || stack.getType().isAir()) {
+                continue;
+            }
+            if (stack.getAmount() <= 1) {
+                matrix[i] = null;
+            } else {
+                stack.setAmount(stack.getAmount() - 1);
+            }
+        }
+        event.getInventory().setMatrix(matrix);
+
+        HumanEntity player = event.getWhoClicked();
+
+        if (event.isShiftClick()) {
+            Map<Integer, ItemStack> overflow = player.getInventory().addItem(item);
+            overflow.values().forEach(drop ->
+                    player.getWorld().dropItemNaturally(player.getLocation(), drop));
+            return;
+        }
+
+        ItemStack cursor = event.getCursor();
+        if (cursor == null || cursor.getType().isAir()) {
+            player.setItemOnCursor(item);
+        } else if (cursor.isSimilar(item) && cursor.getAmount() + item.getAmount() <= item.getMaxStackSize()) {
+            cursor.setAmount(cursor.getAmount() + item.getAmount());
+            player.setItemOnCursor(cursor);
+        } else {
+            Map<Integer, ItemStack> overflow = player.getInventory().addItem(item);
+            overflow.values().forEach(drop ->
+                    player.getWorld().dropItemNaturally(player.getLocation(), drop));
         }
     }
 
