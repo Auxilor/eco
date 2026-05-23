@@ -24,6 +24,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
     private static final int DEFAULT_MIN_LEVEL = 0;
     private static final double DEFAULT_CHANCE = 1.0;
     private static final boolean DEFAULT_WANDERING_TRADER = false;
+    private static final int DEFAULT_VILLAGER_XP = 0;
 
     private final TestableItem input1;
     @Nullable private final TestableItem input2;
@@ -33,6 +34,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
     private final int minLevel;
     private final double chance;
     private final boolean wanderingTrader;
+    private final int villagerXp;
 
     private VillagerRecipe(@NotNull NamespacedKey key,
                            @Nullable ItemStack output,
@@ -44,7 +46,8 @@ public final class VillagerRecipe extends WorkstationRecipe {
                            @Nullable Villager.Profession profession,
                            int minLevel,
                            double chance,
-                           boolean wanderingTrader) {
+                           boolean wanderingTrader,
+                           int villagerXp) {
         super(key, output, permission);
         this.input1 = input1;
         this.input2 = input2;
@@ -54,6 +57,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
         this.minLevel = minLevel;
         this.chance = chance;
         this.wanderingTrader = wanderingTrader;
+        this.villagerXp = villagerXp;
     }
 
     /**
@@ -133,6 +137,15 @@ public final class VillagerRecipe extends WorkstationRecipe {
         return wanderingTrader;
     }
 
+    /**
+     * Get the XP awarded to the villager when this trade is completed.
+     *
+     * @return XP amount. {@code 0} means no XP is awarded.
+     */
+    public int getVillagerXp() {
+        return villagerXp;
+    }
+
     @Override
     public void register() {
         WorkstationRecipes.register(this);
@@ -167,6 +180,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
         private int minLevel = DEFAULT_MIN_LEVEL;
         private double chance = DEFAULT_CHANCE;
         private boolean wanderingTrader = DEFAULT_WANDERING_TRADER;
+        private int villagerXp = DEFAULT_VILLAGER_XP;
         @Nullable private String permission;
 
         private Builder(@NotNull NamespacedKey key,
@@ -274,6 +288,18 @@ public final class VillagerRecipe extends WorkstationRecipe {
         }
 
         /**
+         * Set the XP awarded to the villager on trade completion.
+         *
+         * @param villagerXp XP amount. Defaults to {@value DEFAULT_VILLAGER_XP}.
+         * @return This builder.
+         */
+        @NotNull
+        public Builder villagerXp(int villagerXp) {
+            this.villagerXp = villagerXp;
+            return this;
+        }
+
+        /**
          * Build the {@link VillagerRecipe}.
          *
          * @return The constructed recipe.
@@ -281,7 +307,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
         @NotNull
         public VillagerRecipe build() {
             return new VillagerRecipe(key, output, permission, input1, input2,
-                    input1Display, input2Display, profession, minLevel, chance, wanderingTrader);
+                    input1Display, input2Display, profession, minLevel, chance, wanderingTrader, villagerXp);
         }
     }
 }
