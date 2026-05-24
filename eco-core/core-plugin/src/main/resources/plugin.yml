@@ -63,7 +63,7 @@ softdepend:
   - RoyaleEconomy
   - FancyHolograms
   - CraftEngine
-  - CoinsEngine
+  - ExcellentEconomy
   - ExcellentShop
 
 libraries:
