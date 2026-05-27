@@ -121,6 +121,7 @@ dependencies {
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("de.oliver:FancyHolograms:2.9.1")
+    compileOnly("de.oliver:FancyNpcs:2.9.2")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
     compileOnly("su.nightexpress.nightcore:main:2.15.3")
     compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
