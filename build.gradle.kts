@@ -93,7 +93,7 @@ allprojects {
         maven("https://repo.william278.net/releases")
 
         // FancyHolograms
-        maven("https://repo.fancyplugins.de/releases")
+        maven("https://repo.fancyinnovations.com/releases")
 
         // Nexo
         maven("https://repo.nexomc.com/releases")
