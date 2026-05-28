@@ -1,4 +1,4 @@
----
+﻿---
 title: Sound Configs
 sidebar_position: 9
 ---
@@ -45,6 +45,6 @@ Sometimes you might choose to disable the config sound and use an effect to play
 We can use the Boosters plugin as an example here. In the config.yml, you can configure a sound to play when a booster is activated, but this would apply to all boosters. <br/>
 If you wanted a specific sound to play for the "1.5x Sell Booster", you could instead add a `play_sound` effect to the `activation-effects` section of the booster config, and this sound would only play when that specific booster is activated.
 
-:::noteCustom Sounds
+:::note Custom Sounds
 Currently we only support Bukkit sounds, but we are looking into adding support for custom sounds in the future.
 :::
