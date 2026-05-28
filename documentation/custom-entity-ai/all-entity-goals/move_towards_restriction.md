@@ -1,4 +1,4 @@
-# `minecraft:move_towards_restriction`
+# minecraft:move_towards_restriction
 
 Move towards restriction
 

@@ -1,4 +1,4 @@
-# `minecraft:ocelot_attack`
+# minecraft:ocelot_attack
 
 Attack like an ocelot
 

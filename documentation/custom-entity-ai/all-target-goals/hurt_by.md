@@ -1,4 +1,4 @@
-# `minecraft:hurt_by`
+# minecraft:hurt_by
 
 Allows an entity to react when hit by a set target
 

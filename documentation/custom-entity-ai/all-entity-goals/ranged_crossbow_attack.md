@@ -1,4 +1,4 @@
-# `minecraft:ranged_crossbow_attack`
+# minecraft:ranged_crossbow_attack
 
 Perform a ranged crossbow attack, can only be applied to mobs that have crossbow attacks
 

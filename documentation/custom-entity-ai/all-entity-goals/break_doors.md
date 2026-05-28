@@ -1,4 +1,4 @@
-# `minecraft:break_doors`
+# minecraft:break_doors
 
 Allows an entity to break down doors
 

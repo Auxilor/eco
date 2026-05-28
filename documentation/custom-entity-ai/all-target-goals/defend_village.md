@@ -1,4 +1,4 @@
-# `minecraft:defend_village`
+# minecraft:defend_village
 
 Defend a village
 

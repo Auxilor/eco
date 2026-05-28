@@ -1,4 +1,4 @@
-# `minecraft:move_back_to_village`
+# minecraft:move_back_to_village
 
 Allows an entity to navigate and search for a nearby village
 

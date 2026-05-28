@@ -1,4 +1,4 @@
-# `minecraft:tempt`
+# minecraft:tempt
 
 Allows an entity to be tempted by an item
 

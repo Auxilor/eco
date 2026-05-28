@@ -1,4 +1,4 @@
-# `minecraft:move_through_village`
+# minecraft:move_through_village
 
 Allows the entity to create paths around the village
 

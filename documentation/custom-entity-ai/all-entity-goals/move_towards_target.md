@@ -1,4 +1,4 @@
-# `minecraft:move_towards_target`
+# minecraft:move_towards_target
 
 Move towards target
 

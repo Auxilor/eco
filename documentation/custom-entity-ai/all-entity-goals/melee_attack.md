@@ -1,4 +1,4 @@
-# `minecraft:melee_attack`
+# minecraft:melee_attack
 
 Allows entities to make close combat melee attacks
 

@@ -1,4 +1,4 @@
-# `minecraft:ranged_attack`
+# minecraft:ranged_attack
 
 Perform a ranged attack, can only be applied to mobs that have ranged attacks
 

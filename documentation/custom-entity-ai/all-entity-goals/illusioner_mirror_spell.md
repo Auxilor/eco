@@ -1,4 +1,4 @@
-# `minecraft:illusioner_mirror_spell`
+# minecraft:illusioner_mirror_spell
 
 Allows an illusioner to perform the mirror spell
 

@@ -1,4 +1,4 @@
-# `minecraft:follow_boats`
+# minecraft:follow_boats
 
 Allows an entity to follow boats in water
 

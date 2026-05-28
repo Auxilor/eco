@@ -1,4 +1,4 @@
-# `minecraft:open_doors`
+# minecraft:open_doors
 
 Allows an entity to open doors
 

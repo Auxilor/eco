@@ -1,4 +1,4 @@
-# `minecraft:reset_universal_anger`
+# minecraft:reset_universal_anger
 
 Try to reset universal anger
 

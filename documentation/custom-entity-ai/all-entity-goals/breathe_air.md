@@ -1,4 +1,4 @@
-# `minecraft:breathe_air`
+# minecraft:breathe_air
 
 Allows an entity to breathe air
 

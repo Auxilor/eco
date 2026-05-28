@@ -1,4 +1,4 @@
-# `minecraft:avoid_entity`
+# minecraft:avoid_entity
 
 Avoids an entity
 

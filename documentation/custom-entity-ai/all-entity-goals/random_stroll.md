@@ -1,4 +1,4 @@
-# `minecraft:random_stroll`
+# minecraft:random_stroll
 
 Allows an entity to choose a random direction to walk towards
 

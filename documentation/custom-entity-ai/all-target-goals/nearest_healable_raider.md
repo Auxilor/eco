@@ -1,4 +1,4 @@
-# `minecraft:nearest_healable_raider`
+# minecraft:nearest_healable_raider
 
 Target nearest healable raider. Can only be applied to raiders
 

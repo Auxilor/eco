@@ -1,4 +1,4 @@
-# `minecraft:eat_grass`
+# minecraft:eat_grass
 
 Allows an entity to eat grass
 

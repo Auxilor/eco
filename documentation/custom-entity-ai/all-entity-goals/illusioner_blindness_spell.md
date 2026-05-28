@@ -1,4 +1,4 @@
-# `minecraft:illusioner_blindness_spell`
+# minecraft:illusioner_blindness_spell
 
 Allows an illusioner to perform the blindness spell
 

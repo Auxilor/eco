@@ -1,4 +1,4 @@
-# `minecraft:random_swimming`
+# minecraft:random_swimming
 
 Allows an entity to swim to a random point in water
 

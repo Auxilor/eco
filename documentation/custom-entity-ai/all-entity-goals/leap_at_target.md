@@ -1,4 +1,4 @@
-# `minecraft:leap_at_target`
+# minecraft:leap_at_target
 
 Allows an entity to jump towards a target
 

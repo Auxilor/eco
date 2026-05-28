@@ -1,4 +1,5 @@
 ﻿# `ecomobs:random_teleport`
+
 :::info Requires:
 EcoMobs
 :::

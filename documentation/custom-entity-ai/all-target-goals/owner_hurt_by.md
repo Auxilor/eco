@@ -1,4 +1,4 @@
-# `minecraft:owner_hurt_by`
+# minecraft:owner_hurt_by
 
 Target who the owner was hurt by. Can only be applied to tameable mobs
 

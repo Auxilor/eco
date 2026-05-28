@@ -1,4 +1,4 @@
-# `minecraft:use_item`
+# minecraft:use_item
 
 Allows an entity to use an item
 

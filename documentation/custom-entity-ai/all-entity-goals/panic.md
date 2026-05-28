@@ -1,4 +1,4 @@
-# `minecraft:panic`
+# minecraft:panic
 
 Allows an entity to react when it receives damage
 

@@ -1,4 +1,4 @@
-# `minecraft:flee_sun`
+# minecraft:flee_sun
 
 Will make an entity actively avoid sunlight
 

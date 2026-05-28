@@ -1,4 +1,4 @@
-# `minecraft:interact`
+# minecraft:interact
 
 Allows an entity to interact with other mobs
 

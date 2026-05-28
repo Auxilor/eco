@@ -1,4 +1,4 @@
-# `minecraft:float`
+# minecraft:float
 
 Allows an entity to float in water
 

@@ -1,4 +1,4 @@
-# `minecraft:look_at_player`
+# minecraft:look_at_player
 
 Allows an entity to jump towards a target
 

@@ -1,4 +1,4 @@
-# `minecraft:try_find_water`
+# minecraft:try_find_water
 
 Allows an entity to move to water when on land
 

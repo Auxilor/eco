@@ -1,4 +1,4 @@
-# `minecraft:restrict_sun`
+# minecraft:restrict_sun
 
 Allows an entity to avoid direct sunlight
 

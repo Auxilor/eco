@@ -1,4 +1,4 @@
-# `minecraft:water_avoiding_random_flying`
+# minecraft:water_avoiding_random_flying
 
 Fly randomly while avoiding water
 

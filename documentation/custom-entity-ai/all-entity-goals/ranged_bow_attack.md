@@ -1,4 +1,4 @@
-# `minecraft:ranged_bow_attack`
+# minecraft:ranged_bow_attack
 
 Perform a ranged bow attack, can only be applied to mobs that have bow attacks
 

@@ -1,4 +1,4 @@
-# `minecraft:stroll_through_village`
+# minecraft:stroll_through_village
 
 Allows the entity to create paths around the village
 

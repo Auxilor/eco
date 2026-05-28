@@ -1,4 +1,4 @@
-# `minecraft:nearest_attackable_witch`
+# minecraft:nearest_attackable_witch
 
 Allows an entity to attack the closest witch within a given subset of specific target types. Can only be applied to raiders
 

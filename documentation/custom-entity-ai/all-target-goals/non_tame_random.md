@@ -1,4 +1,4 @@
-# `minecraft:non_tame_random`
+# minecraft:non_tame_random
 
 Target a random non-tame entity
 

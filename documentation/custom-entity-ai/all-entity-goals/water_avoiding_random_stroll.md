@@ -1,4 +1,4 @@
-# `minecraft:water_avoiding_random_stroll`
+# minecraft:water_avoiding_random_stroll
 
 Stroll randomly while avoiding water
 

@@ -1,4 +1,4 @@
-# `minecraft:breed`
+# minecraft:breed
 
 Allows an entity to breed
 

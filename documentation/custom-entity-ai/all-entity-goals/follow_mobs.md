@@ -1,4 +1,4 @@
-# `minecraft:follow_mobs`
+# minecraft:follow_mobs
 
 Allows an entity to follow and gather around all types of mobs, both hostile and neutral mobs
 

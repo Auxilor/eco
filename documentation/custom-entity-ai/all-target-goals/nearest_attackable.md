@@ -1,4 +1,4 @@
-# `minecraft:nearest_attackable`
+# minecraft:nearest_attackable
 
 Allows an entity to attack the closest target within a given subset of specific target types
 

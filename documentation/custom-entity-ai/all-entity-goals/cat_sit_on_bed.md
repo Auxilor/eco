@@ -1,4 +1,4 @@
-# `minecraft:cat_lie_on_bed`
+# minecraft:cat_lie_on_bed
 
 Allows a cat to sit on a bed
 
