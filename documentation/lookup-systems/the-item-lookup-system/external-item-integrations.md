@@ -1,4 +1,4 @@
----
+﻿---
 title: External Item Integrations
 slug: /the-item-lookup-system/external-item-integrations
 sidebar_position: 1
@@ -22,7 +22,7 @@ To use external items within The Item Lookup System, you need to use the relevan
 | Oraxen          | `oraxen:<id>`                                                                                                              |
 | Nexo            | `nexo:<id>`                                                                                                                |
 
-:::tipOther Plugins
+:::tip Other Plugins
 Remember, you can use NBT data for any other items where there is not direct plugin integration. Check out our [NBT converter](https://plugins.auxilor.io/the-item-lookup-system/nbt-string-creator).
 :::
 

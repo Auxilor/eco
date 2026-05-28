@@ -1,4 +1,4 @@
----
+﻿---
 title: Crafting Recipes
 slug: /the-item-lookup-system/recipes
 sidebar_position: 1
@@ -79,7 +79,7 @@ recipe:
   - "netherite_ingot"
   ```
 
-:::tipInvisible Recipe Results
+:::tip Invisible Recipe Results
 When using non-vanilla custom items in crafting recipes, the result may sometimes appear invisible. <br/>
 Although it looks like the recipe is broken and produces no result, clicking the result slot will still give you the correct item.
 
@@ -87,13 +87,13 @@ To fix this, open `/plugins/eco/config.yml` and find the `enforce-preparing-reci
 :::
 
 
-:::noteCreating Multiple Recipes
+:::note Creating Multiple Recipes
 Creating multiple recipes for one item is not supported in the current config structure.
 
 However, if you own EcoItems, you can easily create more custom recipes, you can read about that [here](https://plugins.auxilor.io/ecoitems/additional-configuration-options#how-to-add-additional-recipes).
 :::
 
-:::warningRecipe Book
+:::warning Recipe Book
 There is a display issue where only vanilla items are shown in the recipe book, and heads use the default texture. However, the recipes still work correctly.
 This is a Minecraft/Server limitation due to how custom items are handled. There were events of servers crashing and corrupting chunks when displaying custom items in recipes.
 
