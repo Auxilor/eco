@@ -1,5 +1,6 @@
 ---
 title: "AI Goals"
+sidebar_position: 6
 ---
 
 ## What are AI goals?
