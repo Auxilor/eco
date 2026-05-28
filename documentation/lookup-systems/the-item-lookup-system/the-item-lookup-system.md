@@ -1,6 +1,5 @@
 ---
 title: The Item Lookup System
-slug: /the-item-lookup-system
 sidebar_position: 3
 ---
 

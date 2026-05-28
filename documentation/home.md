@@ -1,6 +1,5 @@
 ---
 title: Information (Read First)
-slug: /
 sidebar_position: 0
 ---
 
