@@ -18,14 +18,16 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A sound that can be played at a location.
  *
- * @param sound    The sound.
- * @param minPitch The minimum pitch.
- * @param maxPitch The maximum pitch.
- * @param volume   The volume.
- * @param enabled  Whether the sound is enabled.
- * @param category The sound category.
+ * @param sound       The sound or null if custom.
+ * @param customSound The custom sound name.
+ * @param minPitch    The minimum pitch.
+ * @param maxPitch    The maximum pitch.
+ * @param volume      The volume.
+ * @param enabled     Whether the sound is enabled.
+ * @param category    The sound category.
  */
-public record PlayableSound(@NotNull Sound sound,
+public record PlayableSound(@Nullable Sound sound,
+                            @Nullable String customSound,
                             double minPitch,
                             double maxPitch,
                             double volume,
@@ -59,7 +61,26 @@ public record PlayableSound(@NotNull Sound sound,
                          final double volume,
                          final boolean enabled,
                          @NotNull SoundCategory category) {
-        this(sound, pitch, pitch, volume, enabled, category);
+        this(sound, null, pitch, pitch, volume, enabled, category);
+    }
+
+    /**
+     * Create a sound with a variable pitch.
+     *
+     * @param sound    The sound.
+     * @param minPitch The minimum pitch.
+     * @param maxPitch The maximum pitch.
+     * @param volume   The volume.
+     * @param enabled  If the sound is enabled.
+     * @param category The sound category.
+     */
+    public PlayableSound(@NotNull final Sound sound,
+                         final double minPitch,
+                         final double maxPitch,
+                         final double volume,
+                         final boolean enabled,
+                         @NotNull SoundCategory category) {
+        this(sound, null, minPitch, maxPitch, volume, enabled, category);
     }
 
     /**
@@ -71,7 +92,13 @@ public record PlayableSound(@NotNull Sound sound,
         if (!enabled) return;
 
         double pitch = NumberUtils.randFloat(minPitch, maxPitch);
-        player.playSound(player.getLocation(), sound, category, (float) volume, (float) pitch);
+
+        if (customSound != null) {
+            player.playSound(player.getLocation(), customSound, category, (float) volume, (float) pitch);
+        }
+        if (sound != null) {
+            player.playSound(player.getLocation(), sound, category, (float) volume, (float) pitch);
+        }
     }
 
     /**
@@ -84,7 +111,13 @@ public record PlayableSound(@NotNull Sound sound,
         World world = location.getWorld();
         if (world != null) {
             double pitch = NumberUtils.randFloat(minPitch, maxPitch);
-            world.playSound(location, sound, category, (float) volume, (float) pitch);
+
+            if (customSound != null) {
+                world.playSound(location, customSound, category, (float) volume, (float) pitch);
+            }
+            if (sound != null) {
+                world.playSound(location, sound, category, (float) volume, (float) pitch);
+            }
         }
     }
 
@@ -107,8 +140,8 @@ public record PlayableSound(@NotNull Sound sound,
         public @Nullable PlayableSound deserialize(@NotNull final Config config) {
             if (!config.has("sound")) return null;
 
-            Sound sound = SoundUtils.getSound(config.getString("sound"));
-            if (sound == null) return null;
+            String soundKey = config.getString("sound");
+            Sound sound = SoundUtils.getSound(soundKey);
 
             double minPitch = 1.0;
             double maxPitch = 1.0;
@@ -144,7 +177,9 @@ public record PlayableSound(@NotNull Sound sound,
                 }
             }
 
-            return new PlayableSound(sound, minPitch, maxPitch, volume, enabled, category);
+            return sound == null ?
+                    new PlayableSound(null, soundKey, minPitch, maxPitch, volume, enabled, category)
+                    : new PlayableSound(sound, null, minPitch, maxPitch, volume, enabled, category);
         }
     }
 }
