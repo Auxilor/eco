@@ -1,8 +1,6 @@
 package com.willfp.eco.util;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.cache.EcoCache;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -15,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -75,36 +73,36 @@ public final class StringUtils {
     /**
      * String format cache.
      */
-    private static final LoadingCache<String, String> STRING_FORMAT_CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.SECONDS)
+    private static final EcoCache<String, String> STRING_FORMAT_CACHE = EcoCache.<String, String>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
             .build(StringUtils::processFormatting);
 
     /**
      * Json -> Component Cache.
      */
-    private static final Cache<String, Component> JSON_TO_COMPONENT = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.SECONDS)
+    private static final EcoCache<String, Component> JSON_TO_COMPONENT = EcoCache.<String, Component>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
             .build();
 
     /**
      * Component -> Json Cache.
      */
-    private static final Cache<Component, String> COMPONENT_TO_JSON = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.SECONDS)
+    private static final EcoCache<Component, String> COMPONENT_TO_JSON = EcoCache.<Component, String>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
             .build();
 
     /**
      * Legacy -> Component Cache.
      */
-    private static final Cache<String, Component> LEGACY_TO_COMPONENT = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.SECONDS)
+    private static final EcoCache<String, Component> LEGACY_TO_COMPONENT = EcoCache.<String, Component>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
             .build();
 
     /**
      * Component -> Legacy Cache.
      */
-    private static final Cache<Component, String> COMPONENT_TO_LEGACY = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.SECONDS)
+    private static final EcoCache<Component, String> COMPONENT_TO_LEGACY = EcoCache.<Component, String>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
             .build();
 
     /**
@@ -131,10 +129,8 @@ public final class StringUtils {
     /**
      * Regex map for splitting values.
      */
-    private static final LoadingCache<String, Pattern> SPACE_AROUND_CHARACTER = Caffeine.newBuilder()
-            .build(
-                    character -> Pattern.compile("( " + Pattern.quote(character) + " )")
-            );
+    private static final EcoCache<String, Pattern> SPACE_AROUND_CHARACTER = EcoCache.<String, Pattern>builder()
+            .build(character -> Pattern.compile("( " + Pattern.quote(character) + " )"));
 
     /**
      * Format a list of strings.

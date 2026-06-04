@@ -144,7 +144,7 @@ allprojects {
         compileOnly("net.kyori:adventure-text-serializer-legacy:5.0.1")
 
         // Other
-        compileOnly("com.github.ben-manes.caffeine:caffeine:3.2.3")
+        implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
     }
 
     tasks.withType<JavaCompile> {
@@ -215,14 +215,14 @@ tasks {
 relocate("org.intellij", "com.willfp.eco.libs.intellij")
         relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
         relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
+        relocate("com.github.benmanes.caffeine", "com.willfp.eco.libs.caffeine")
 
         relocate("kotlin", "com.willfp.eco.libs.kotlin") {
             exclude("kotlin.kotlin_builtins")
         }
 
         /*
-        Caffeine is not shaded so that it can be accessed directly by eco plugins.
-        Also, not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
+        Not relocating adventure, because it's a pain in the ass, and it doesn't *seem* to be causing loader constraint violations.
          */
     }
 }
