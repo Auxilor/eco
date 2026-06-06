@@ -1,7 +1,6 @@
 package com.willfp.eco.core.items;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.cache.EcoCache;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.items.args.LookupArgParser;
@@ -12,7 +11,7 @@ import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.bukkit.Material;
@@ -36,25 +35,23 @@ public final class Items {
     /**
      * Cached custom item lookups, using {@link HashedItem}.
      */
-    private static final LoadingCache<HashedItem, Optional<TestableItem>> CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.MINUTES)
-            .build(
-                    key -> {
-                        if (!key.getItem().hasItemMeta()) {
-                            return Optional.empty();
-                        }
+    private static final EcoCache<HashedItem, Optional<TestableItem>> CACHE = EcoCache.<HashedItem, Optional<TestableItem>>builder()
+            .expireAfterAccess(Duration.ofMinutes(10))
+            .build(key -> {
+                if (!key.getItem().hasItemMeta()) {
+                    return Optional.empty();
+                }
 
-                        TestableItem match = null;
-                        for (TestableItem item : REGISTRY.values()) {
-                            if (item.shouldMarkAsCustom() && item.matches(key.getItem())) {
-                                match = item;
-                                break;
-                            }
-                        }
-
-                        return Optional.ofNullable(match);
+                TestableItem match = null;
+                for (TestableItem item : REGISTRY.values()) {
+                    if (item.shouldMarkAsCustom() && item.matches(key.getItem())) {
+                        match = item;
+                        break;
                     }
-            );
+                }
+
+                return Optional.ofNullable(match);
+            });
 
     /**
      * All item providers.

@@ -1,9 +1,8 @@
 package com.willfp.eco.util;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.willfp.eco.core.Eco;
-import java.util.concurrent.TimeUnit;
+import com.willfp.eco.core.cache.EcoCache;
+import java.time.Duration;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +13,8 @@ public final class PatternUtils {
     /**
      * Cache of compiled literal patterns.
      */
-    private static final Cache<String, Pattern> LITERAL_PATTERN_CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(Eco.get().getEcoPlugin().getConfigYml().getInt("literal-cache-ttl"), TimeUnit.MINUTES)
+    private static final EcoCache<String, Pattern> LITERAL_PATTERN_CACHE = EcoCache.<String, Pattern>builder()
+            .expireAfterAccess(Duration.ofMinutes(Eco.get().getEcoPlugin().getConfigYml().getInt("literal-cache-ttl")))
             .build();
 
     /**
