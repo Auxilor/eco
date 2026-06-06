@@ -59,7 +59,6 @@ object PlayerHealthPatch: Listener {
 							}
 						}
 
-						Eco.get().ecoPlugin.logger.info("[HEALTH-FIX] Detected MAX_HEALTH change from $oldMax to $currentMax for ${event.player.name}. Setting health to $newHealth")
 						event.player.health = newHealth
 					}
 				} catch (ex: Exception) {
