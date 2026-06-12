@@ -9,6 +9,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.scheduler.BukkitTask
 import kotlin.math.min
 
 object PlayerHealthPatch: Listener {
@@ -20,19 +21,19 @@ object PlayerHealthPatch: Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     fun handlePlayerJoin(event: PlayerJoinEvent) {
 		if (Eco.get().ecoPlugin.configYml.getBool("enable-health-fix")) {
-			// Start a short repeating task to detect attribute changes as soon as they are applied.
-			// Keep it active for a fixed window so multiple delayed changes to MAX_HEALTH attribute can be handled.
-			val initialMax = event.player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
-			val previousMax = initialMax
+			val fixDuration = Eco.get().ecoPlugin.configYml.getInt("health-fix-duration", 3)
 
-			// Run every tick for up to 100 ticks (~5s).
-			var repeatingTask: org.bukkit.scheduler.BukkitTask? = null
+			val previousMax = event.player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
+
+			// Run every tick for up to user defined duration in config.
+			var repeatingTask: BukkitTask? = null
 			var ticksRan = 0
 			repeatingTask = Eco.get().ecoPlugin.scheduler.runTimer({
 				try {
 					ticksRan++
-					// 100 ticks = 5 sec
-					if (ticksRan >= 100) {
+
+					// 3 sec = 60 tick (as 1 sec = 20 tick)
+					if (ticksRan >= fixDuration * 20) {
 						repeatingTask?.cancel()
 						return@runTimer
 					}
@@ -42,29 +43,37 @@ object PlayerHealthPatch: Listener {
 					val currentMax = event.player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
 					if (currentMax != previousMax) {
 						// Max health changed.
-						val oldMax = previousMax
 						val currentHealth = event.player.health
-
-						val newHealth = if (oldMax <= 0.0) {
-							// Fallback: set to current max or saved health
-							min(event.player.savedHealth, currentMax)
-						} else {
-							// If player was at (or very near) full health before the change, top them up to the new max.
-							if (currentHealth >= oldMax - 0.0001) {
-								min(event.player.savedHealth, currentMax)
-							} else {
-								// Otherwise, preserve the same percentage of health.
-								val pct = currentHealth / oldMax
-								min(currentMax * pct, currentMax)
-							}
-						}
+						val savedHealth = event.player.savedHealth
+						// Get new health based on logic checks
+						val newHealth = getNewHealth(currentHealth, savedHealth, currentMax, previousMax)
 
 						event.player.health = newHealth
 					}
 				} catch (ex: Exception) {
-					Eco.get().ecoPlugin.logger.warning("[HEALTH-FIX] Exception while monitoring health attribute: ${ex.message}")
+					Eco.get().ecoPlugin.logger.warning("Exception while monitoring health attribute: ${ex.message}")
 				}
 			}, 1L, 1L)
+		}
+	}
+
+	fun getNewHealth(currentHealth : Double,
+					 savedHealth : Double,
+					 currentMax : Double,
+					 previousMax : Double
+					): Double {
+
+		if (previousMax <= 0.0) {
+			// Fallback: set to current max or saved health
+			return min(savedHealth, currentMax)
+		}
+
+		if (currentHealth >= previousMax) {
+			return min(savedHealth, currentMax)
+		} else {
+			// Otherwise, preserve the same percentage of health.
+			val percent = currentHealth / previousMax
+			return min(currentMax * percent, currentMax)
 		}
 	}
 }
