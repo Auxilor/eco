@@ -111,3 +111,7 @@ enforce-preparing-recipes: false
 # If enabled, eco will save the health of players when they log out and restore it when they log back in
 # as a workaround for player health being reset to 20 on login.
 enable-health-fix: true
+
+# The duration (in seconds) during which the health fix will be applied
+# Requires enable-health-fix to be true.
+health-fix-duration: 3
