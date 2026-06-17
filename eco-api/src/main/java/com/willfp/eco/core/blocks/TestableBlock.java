@@ -38,4 +38,16 @@ public interface TestableBlock extends Testable<Block> {
     default boolean shouldMarkAsCustom() {
         return true;
     }
+
+    /**
+     * The hardness of this block as defined by the custom block plugin, or -1 if unknown.
+     * <p>
+     * A return value of -1 means fall back to {@link org.bukkit.block.Block#getType()}'s
+     * {@link org.bukkit.Material#getHardness()} for hardness comparisons.
+     *
+     * @return The hardness, or -1 if not provided.
+     */
+    default float hardness() {
+        return -1f;
+    }
 }
