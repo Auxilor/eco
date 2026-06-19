@@ -100,6 +100,7 @@ import com.willfp.eco.internal.entities.EntityArgParserNoAI
 import com.willfp.eco.internal.entities.EntityArgParserScale
 import com.willfp.eco.internal.entities.EntityArgParserSilent
 import com.willfp.eco.internal.entities.EntityArgParserSize
+import com.willfp.eco.internal.entities.EntityArgParserTamed
 import com.willfp.eco.internal.entities.EntityArgParserSpawnReinforcements
 import com.willfp.eco.internal.entities.EntityArgParserSpeed
 import com.willfp.eco.internal.items.ArgParserAttribute
@@ -323,6 +324,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserSpeed)
         Entities.registerArgParser(EntityArgParserBaby)
         Entities.registerArgParser(EntityArgParserAdult)
+        Entities.registerArgParser(EntityArgParserTamed)
         Entities.registerArgParser(EntityArgParserCharged)
         Entities.registerArgParser(EntityArgParserExplosionRadius)
         Entities.registerArgParser(EntityArgParserSilent)
