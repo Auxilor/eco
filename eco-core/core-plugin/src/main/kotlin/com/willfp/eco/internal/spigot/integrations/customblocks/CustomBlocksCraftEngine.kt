@@ -46,6 +46,7 @@ class CustomBlocksCraftEngine(
             val id = Key.of(namespace, value)
             val blockId = CraftEngineBlocks.byId(id) ?: return null
             val namespacedKey = namespacedKeyOf("craftengine", key.lowercase().replace(":", "__"))
+            val hardness = blockId.defaultState().settings().hardness()
 
             return CustomBlock(
                 namespacedKey,
@@ -59,7 +60,8 @@ class CustomBlocksCraftEngine(
                 { location ->
                     CraftEngineBlocks.place(location, id, true)
                     location.block
-                }
+                },
+                hardness
             )
         }
 
