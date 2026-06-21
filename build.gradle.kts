@@ -230,3 +230,26 @@ relocate("org.intellij", "com.willfp.eco.libs.intellij")
 
 group = "com.willfp"
 version = findProperty("version")!!
+
+publishing {
+    publications {
+        create<MavenPublication>("shadow") {
+            artifactId = rootProject.name
+            artifact(tasks.named("shadowJar"))
+        }
+    }
+    repositories {
+        maven {
+            name = "AuxilorPrivate"
+            url = uri("https://repo.auxilor.io/repository/maven-private/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
+}
+
+tasks.register("publishToAuxilor") {
+    dependsOn(tasks.named("publishShadowPublicationToAuxilorPrivateRepository"))
+}
