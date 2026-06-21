@@ -27,4 +27,4 @@ jobs:
         run: |
           echo "New version: ${NEW_VERSION}"
           echo "Github username: ${GITHUB_ACTOR}"
-          ./gradlew -Pversion=${NEW_VERSION} publish
+          ./gradlew -Pversion=${NEW_VERSION} publishToAuxilor
