@@ -21,19 +21,23 @@ object PlayerHealthPatch: Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     fun handlePlayerJoin(event: PlayerJoinEvent) {
 		if (Eco.get().ecoPlugin.configYml.getBool("enable-health-fix")) {
-			val fixDuration = Eco.get().ecoPlugin.configYml.getInt("health-fix-duration", 3)
+			var fixDuration = Eco.get().ecoPlugin.configYml.getInt("health-fix-duration", 3)
+			if (fixDuration <= 0) fixDuration = 3
 
-			val previousMax = event.player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
+			var fixInterval = Eco.get().ecoPlugin.configYml.getInt("health-fix-interval", 1)
+			if (fixInterval <= 0) fixInterval = 1
+			else if (fixInterval > fixDuration) fixInterval = fixDuration
+
+			// ceil fix for int
+			var timesToRun = (fixDuration + fixInterval - 1) / fixInterval
+
+			var previousMax = event.player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
 
 			// Run every tick for up to user defined duration in config.
 			var repeatingTask: BukkitTask? = null
-			var ticksRan = 0
 			repeatingTask = Eco.get().ecoPlugin.scheduler.runTimer({
 				try {
-					ticksRan++
-
-					// 3 sec = 60 tick (as 1 sec = 20 tick)
-					if (ticksRan >= fixDuration * 20) {
+					if (timesToRun <= 0) {
 						repeatingTask?.cancel()
 						return@runTimer
 					}
@@ -49,11 +53,16 @@ object PlayerHealthPatch: Listener {
 						val newHealth = getNewHealth(currentHealth, savedHealth, currentMax, previousMax)
 
 						event.player.health = newHealth
+
+						previousMax = currentMax
 					}
 				} catch (ex: Exception) {
 					Eco.get().ecoPlugin.logger.warning("Exception while monitoring health attribute: ${ex.message}")
+				} finally {
+					timesToRun--;
 				}
-			}, 1L, 1L)
+
+			}, 1L, fixInterval * 20L)
 		}
 	}
 

@@ -115,3 +115,6 @@ enable-health-fix: true
 # The duration (in seconds) during which the health fix will be applied
 # Requires enable-health-fix to be true.
 health-fix-duration: 3
+
+# The interval (in seconds) at which the health fix will be applied during the duration
+health-fix-interval: 1
