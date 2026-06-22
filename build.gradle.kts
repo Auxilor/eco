@@ -231,10 +231,21 @@ relocate("org.intellij", "com.willfp.eco.libs.intellij")
 group = "com.willfp"
 version = findProperty("version")!!
 
+java {
+    withJavadocJar()
+}
+
 publishing {
     publications {
-        create<MavenPublication>("shadow") {
+        // maven-private: only the shaded 'all' jar
+        create<MavenPublication>("private") {
             artifactId = rootProject.name
+            artifact(tasks.named("shadowJar"))
+        }
+        // maven-releases + GitHub: full set (none, all, sources, javadoc)
+        create<MavenPublication>("release") {
+            artifactId = rootProject.name
+            from(components["java"])
             artifact(tasks.named("shadowJar"))
         }
     }
@@ -247,13 +258,38 @@ publishing {
                 password = System.getenv("MAVEN_PASSWORD")
             }
         }
+        maven {
+            name = "AuxilorReleases"
+            url = uri("https://repo.auxilor.io/repository/maven-releases/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Auxilor/eco")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 
-tasks.named("generatePomFileForShadowPublication") {
+// POM generation must run after clean (compileJava dependsOn clean)
+tasks.matching { it.name.startsWith("generatePomFileFor") }.configureEach {
     mustRunAfter(tasks.named("clean"))
 }
 
 tasks.register("publishToAuxilor") {
-    dependsOn(tasks.named("publishShadowPublicationToAuxilorPrivateRepository"))
+    dependsOn(
+        // Root plugin
+        "publishPrivatePublicationToAuxilorPrivateRepository",
+        "publishReleasePublicationToAuxilorReleasesRepository",
+        "publishReleasePublicationToGitHubPackagesRepository",
+        // eco-api
+        ":eco-api:publishShadowPublicationToAuxilorRepository",
+        ":eco-api:publishShadowPublicationToGitHubPackagesRepository",
+    )
 }
