@@ -250,6 +250,10 @@ publishing {
     }
 }
 
+tasks.named("generatePomFileForShadowPublication") {
+    mustRunAfter(tasks.named("clean"))
+}
+
 tasks.register("publishToAuxilor") {
     dependsOn(tasks.named("publishShadowPublicationToAuxilorPrivateRepository"))
 }
