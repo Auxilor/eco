@@ -3,7 +3,7 @@ package com.willfp.eco.core.gui.page;
 import com.willfp.eco.core.gui.GUIComponent;
 import com.willfp.eco.core.gui.menu.Menu;
 import com.willfp.eco.core.gui.slot.Slot;
-import com.willfp.eco.core.sound.PlayableSound;
+import com.willfp.eco.core.sound.AbstractPlayableSound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -42,7 +42,7 @@ public final class PageChanger implements GUIComponent {
     /**
      * The sound played when the page turns, or null for silent.
      */
-    private final PlayableSound sound;
+    private final AbstractPlayableSound<?> sound;
 
     /**
      * Create a new page change button.
@@ -58,7 +58,7 @@ public final class PageChanger implements GUIComponent {
     private PageChanger(@NotNull final Direction direction,
                         @NotNull final ItemStack activeItem,
                         @Nullable final ItemStack inactiveItem,
-                        @Nullable final PlayableSound sound) {
+                        @Nullable final AbstractPlayableSound<?> sound) {
         this.direction = direction;
         this.activeItem = activeItem;
         this.inactiveItem = inactiveItem;
@@ -213,7 +213,7 @@ public final class PageChanger implements GUIComponent {
         /**
          * The sound.
          */
-        private PlayableSound sound = null;
+        private AbstractPlayableSound<?> sound = null;
 
         private Builder(@NotNull final Direction direction) {
             this.direction = direction;
@@ -248,7 +248,7 @@ public final class PageChanger implements GUIComponent {
          * @param sound The sound, or null for silent.
          * @return The builder.
          */
-        public Builder sound(@Nullable final PlayableSound sound) {
+        public Builder sound(@Nullable final AbstractPlayableSound<?> sound) {
             this.sound = sound;
             return this;
         }
