@@ -1,7 +1,10 @@
 name: Publish release
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
 jobs:
   publish-release:
     runs-on: ubuntu-latest
@@ -23,8 +26,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
-          NEW_VERSION: ${{ github.event.release.tag_name }}
+          NEW_VERSION: ${{ github.event.inputs.version }}
         run: |
           echo "New version: ${NEW_VERSION}"
           echo "Github username: ${GITHUB_ACTOR}"
-          ./gradlew -Pversion=${NEW_VERSION} publish
+          ./gradlew -Pversion=${NEW_VERSION} publishToAuxilor

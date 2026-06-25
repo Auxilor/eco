@@ -10,6 +10,8 @@ import com.willfp.eco.util.namespacedKeyOf
 import io.th0rgal.oraxen.api.OraxenBlocks
 import io.th0rgal.oraxen.api.OraxenItems
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent
+import io.th0rgal.oraxen.mechanics.provided.gameplay.noteblock.NoteBlockMechanic
+import io.th0rgal.oraxen.mechanics.provided.gameplay.stringblock.StringBlockMechanic
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -32,7 +34,6 @@ class CustomBlocksOraxen(
 
     private class OraxenProvider : BlockProvider("oraxen") {
         override fun provideForKey(key: String): TestableBlock? {
-            // The key
             if (!OraxenBlocks.isOraxenBlock(key)) {
                 return null
             }
@@ -40,6 +41,15 @@ class CustomBlocksOraxen(
             val item = OraxenItems.getItemById(key) ?: return null
             val id = OraxenItems.getIdByItem(item)
             val namespacedKey = namespacedKeyOf("oraxen", id)
+
+            val blockData = OraxenBlocks.getOraxenBlockData(id)
+            val hardness: Float = if (blockData != null) {
+                when (val mechanic = OraxenBlocks.getOraxenBlock(blockData)) {
+                    is NoteBlockMechanic -> if (mechanic.hasHardness()) mechanic.hardness.toFloat() else -1f
+                    is StringBlockMechanic -> if (mechanic.hasHardness()) mechanic.hardness.toFloat() else -1f
+                    else -> -1f
+                }
+            } else -1f
 
             return CustomBlock(
                 namespacedKey,
@@ -50,7 +60,8 @@ class CustomBlocksOraxen(
                 { location ->
                     OraxenBlocks.place(id, location)
                     location.block
-                }
+                },
+                hardness
             )
         }
     }
