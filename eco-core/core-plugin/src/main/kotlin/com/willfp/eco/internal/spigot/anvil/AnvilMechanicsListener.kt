@@ -135,7 +135,7 @@ class AnvilMechanicsListener(
 
             var cost = baseRepairCost + price
             if (baseRepairCost == -price) cost = price
-            if (cost <= 0) return@run
+            if (cost <= 0) cost = 1
 
             val leftEnchants = left?.fast()?.getEnchants(true) ?: emptyMap()
             val outEnchants = outItem.fast().getEnchants(true)
