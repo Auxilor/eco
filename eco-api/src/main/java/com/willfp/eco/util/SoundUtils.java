@@ -1,6 +1,7 @@
 package com.willfp.eco.util;
 
 import java.lang.reflect.Field;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
@@ -19,8 +20,11 @@ public final class SoundUtils {
      */
     @Nullable
     public static Sound getSound(@NotNull final String name) {
+        NamespacedKey key = name.contains(":") ? NamespacedKeyUtils.fromString(name.toLowerCase()) : NamespacedKey.minecraft(name.toLowerCase());
+
         // First try from registry (preferred)
-        Sound fromRegistry = Registry.SOUNDS.get(NamespacedKey.minecraft(name.toLowerCase()));
+        Sound fromRegistry = Registry.SOUNDS.get(key);
+
         if (fromRegistry != null) {
             return fromRegistry;
         }
