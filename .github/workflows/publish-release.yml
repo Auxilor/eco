@@ -19,6 +19,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Publish artifact
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
