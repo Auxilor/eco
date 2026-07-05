@@ -5,10 +5,10 @@ sidebar_position: 3
 
 ## What are Prices?
 
-Lots of servers have lots of different types of economies. Maybe you have a standard vault economy, maybe you have an item-based economy, maybe you're using [points](https://plugins.auxilor.io/effects/points), or something else entirely.
+Lots of servers have lots of different types of economies. Maybe you have a standard vault economy, maybe you have an item-based economy, maybe you're using [points](https://hub.auxilor.io/wiki/libreforge/points), or something else entirely.
 
 To simplify this, there's a unified way to handle all of this: the price system.
-For price values, you can use [math](https://plugins.auxilor.io/all-plugins/math) to create adaptive/versatile pricing systems.
+For price values, you can use [math](https://hub.auxilor.io/wiki/eco/math) to create adaptive/versatile pricing systems.
 
 ## Types
 Below are the different Price types you can use.
@@ -18,22 +18,22 @@ Below are the different Price types you can use.
 | Standard Economy                                                     | `$`, `coins`                                                                         |
 | XP Points                                                            | `xp`, `exp`, `experience`                                                            |
 | XP Levels                                                            | `l`, `levels`, `xplevels`                                                            |
-| [Points](https://plugins.auxilor.io/effects/points)                  | `<point_id>`, eg `souls`                                                             |
-| [Magic](https://plugins.auxilor.io/ecoskills/how-to-configure-magic) | `<magic_id>`, eg `mana`                                                              |
+| [Points](https://hub.auxilor.io/wiki/libreforge/points)                  | `<point_id>`, eg `souls`                                                             |
+| [Magic](https://hub.auxilor.io/wiki/ecoskills/how-to-configure-magic) | `<magic_id>`, eg `mana`                                                              |
 | Player Points (External)                                             | `p_points`, `player_points`                                                          |
-| [EcoBits](https://plugins.auxilor.io/ecobits)                        | `<ecobits_id>`                                                                       |
+| [EcoBits](https://hub.auxilor.io/wiki/ecobits/ecobits)                        | `<ecobits_id>`                                                                       |
 | UltraEconomy (External)                                              | `<currency_id>`                                                                      |
 | ExcellentEconomy (External)                                          | `<currency_id>`                                                                      |
-| [Items](https://plugins.auxilor.io/the-item-lookup-system)           | Use the [item-lookup-system](https://plugins.auxilor.io/the-item-lookup-system) here |
+| [Items](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system)           | Use the [item-lookup-system](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system) here |
 
 ## Effects System
 Prices are seamlessly integrated into the effects system. Below, you'll find a list of all available effects and conditions.
 
 | Effect/Condition   | Type      | Link                                                                       |
 |--------------------|-----------|----------------------------------------------------------------------------|
-| `give_price`       | Effect    | [Link](https://plugins.auxilor.io/effects/all-effects/give_price)          |
-| `pay_price`        | Effect    | [Link](https://plugins.auxilor.io/effects/all-effects/pay_price)           |
-| `can_afford_price` | Condition | [Link](https://plugins.auxilor.io/effects/all-conditions/can_afford_price) |
+| `give_price`       | Effect    | [Link](https://hub.auxilor.io/wiki/libreforge/give_price?category=effects)          |
+| `pay_price`        | Effect    | [Link](https://hub.auxilor.io/wiki/libreforge/pay_price?category=effects)           |
+| `can_afford_price` | Condition | [Link](https://hub.auxilor.io/wiki/libreforge/can_afford_price?category=conditions) |
 
 ## Display Names
 

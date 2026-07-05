@@ -15,9 +15,9 @@ In each string is the key for an item. A key looks one of a few ways
 
 - A vanilla minecraft material ID: (e.g. `golden_apple`)
 - An item from another eco plugin: (e.g. `ecoitems:packmaster_tear`) 
-- An item from an external plugin: (e.g. `oraxen:alumite_pickaxe`), See [External Integrations](https://plugins.auxilor.io/the-item-lookup-system/external-item-integrations) for more info
+- An item from an external plugin: (e.g. `oraxen:alumite_pickaxe`), See [External Integrations](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-external-item-integrations) for more info
 - An item tag: (e.g. `#talismans:talisman` or `#items_axes`)
-- An exact item NBT tag: (e.g. `{id:"stone",Count:3,tag:{Name:"your name"}}`), see [here](https://plugins.auxilor.io/the-item-lookup-system/nbt-string-creator) for more info on NBT.
+- An exact item NBT tag: (e.g. `{id:"stone",Count:3,tag:{Name:"your name"}}`), see [here](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-external-item-integrations#using-external-items-within-item-lookup) for more info on NBT.
 
 #### Extra syntax
 
@@ -39,7 +39,7 @@ default configs for performance reasons.
 
 Item tags are groups of items. A list of vanilla tags can be found [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Tag.html), and you can use them with `#tag`, e.g. `#items_pickaxes`. These are especially useful in filters and recipes where you may use the same lists of items in different places.
 
-You can create your own tags in [tags.yml](https://plugins.auxilor.io/the-item-lookup-system#item-tags) too, use `#libreforge:<tag_id>` to reference these.
+You can create your own tags in [tags.yml](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system#item-tags) too, use `#libreforge:<tag_id>` to reference these.
 ```yaml
 tags:
   - id: example_tag # The ID, used in the item-lookup-system.
@@ -64,7 +64,7 @@ tags:
 
 ### Using items from third-party plugins
 
-Visit the [External Item Integrations](https://plugins.auxilor.io/the-item-lookup-system/external-item-integrations) page for more information on how to use items from third-party plugins.
+Visit the [External Item Integrations](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-external-item-integrations) page for more information on how to use items from third-party plugins.
 
 ## Potions & Fireworks
 - **Potion Builder:** You can create potions to use in your item section with `potion_effect:<potion_type>:<level>:<duration>`. <br/>
@@ -136,5 +136,5 @@ So, let's say you have an EcoMobs mob, and you want it to drop a rare custom wea
 
 ## Using eco plugin items in other plugins
 
-Visit the [External Item Integrations](https://plugins.auxilor.io/the-item-lookup-system/external-item-integrations) page for more information on how to use items within third-party plugins.
+Visit the [External Item Integrations](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-external-item-integrations) page for more information on how to use items within third-party plugins.
 

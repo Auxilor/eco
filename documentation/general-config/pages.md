@@ -16,7 +16,7 @@ Patterns use a simple format:
 `a-z` is the remaining 26 items.
 In total you could display 35 different items as "filler" items in your GUI.
 
-A mask is the items to be shown in the pattern layout, these work from the top down. You can use the [Item Lookup System](https://plugins.auxilor.io/the-item-lookup-system) here to add custom items, apply names or any other of the options.
+A mask is the items to be shown in the pattern layout, these work from the top down. You can use the [Item Lookup System](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system) here to add custom items, apply names or any other of the options.
 The first item in the list will represent `1` in the pattern, the second item in the list is `2`, etc..
 
 ### Example Page Config
