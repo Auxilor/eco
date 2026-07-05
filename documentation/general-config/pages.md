@@ -43,7 +43,7 @@ This example has a surrounding layer of `gray_stained_glass_pane` and a center s
 When configuring a GUI in a plugin, you might stumble across this:
 
 ```yaml
-# Custom GUI slots; see here for a how-to: https://plugins.auxilor.io/all-plugins/pages#custom-gui-slots
+# Custom GUI slots; see here for a how-to: https://hub.auxilor.io/wiki/eco/pages#custom-gui-slots
 custom-slots: []
 ```
 
