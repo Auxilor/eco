@@ -388,6 +388,26 @@ public final class Blocks {
     }
 
     /**
+     * Get the effective hardness of a block, preferring the value reported by
+     * the custom block plugin when available.
+     * <p>
+     * Falls back to {@link org.bukkit.Material#getHardness()} when no custom
+     * hardness is registered (e.g. vanilla blocks or plugins that don't expose it).
+     *
+     * @param block The block.
+     * @return The hardness, or the vanilla material hardness as a fallback.
+     */
+    public static float hardness(@Nullable final Block block) {
+        if (block == null) {
+            return -1f;
+        }
+
+        TestableBlock testable = getBlock(block);
+        float custom = testable.hardness();
+        return custom >= 0 ? custom : block.getType().getHardness();
+    }
+
+    /**
      * Get if a block is empty.
      *
      * @param block The block.
@@ -457,7 +477,7 @@ public final class Blocks {
 
     static {
         for (Material material : Material.values()) {
-            if (!material.isBlock()) continue; // skip not blocks
+            if (!material.isBlock()) continue;
 
             FRIENDLY_MATERIAL_NAMES.put(material.name().toLowerCase(), material);
 

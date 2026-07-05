@@ -68,6 +68,10 @@ class EcoMenu(
         // Show the inventory to the player
         player.openInventory(inventory)
 
+        // The inventory is now the player's open top inventory, so substitute
+        // any page placeholders in the title for the initial page.
+        rendered.refreshDynamicTitle()
+
         // Stop forcing the menu to be open, as Player#openInventory#topInventory is now the menu
         player.removeForcedRenderedInventory()
 

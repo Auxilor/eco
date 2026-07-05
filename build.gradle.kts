@@ -26,6 +26,7 @@ dependencies {
     implementation(project(path = ":eco-core:core-nms:v1_21_10", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v1_21_11", configuration = "reobf"))
     implementation(project(path = ":eco-core:core-nms:v26_1_2", configuration = "shadow"))
+    implementation(project(path = ":eco-core:core-nms:v26_2", configuration = "shadow"))
 }
 
 allprojects {
@@ -93,7 +94,7 @@ allprojects {
         maven("https://repo.william278.net/releases")
 
         // FancyHolograms
-        maven("https://repo.fancyplugins.de/releases")
+        maven("https://repo.fancyinnovations.com/releases")
 
         // Nexo
         maven("https://repo.nexomc.com/releases")
@@ -229,3 +230,66 @@ relocate("org.intellij", "com.willfp.eco.libs.intellij")
 
 group = "com.willfp"
 version = findProperty("version")!!
+
+java {
+    withJavadocJar()
+}
+
+publishing {
+    publications {
+        // maven-private: only the shaded 'all' jar
+        create<MavenPublication>("private") {
+            artifactId = rootProject.name
+            artifact(tasks.named("shadowJar"))
+        }
+        // maven-releases + GitHub: full set (none, all, sources, javadoc)
+        create<MavenPublication>("release") {
+            artifactId = rootProject.name
+            from(components["java"])
+            artifact(tasks.named("shadowJar"))
+        }
+    }
+    repositories {
+        maven {
+            name = "AuxilorPrivate"
+            url = uri("https://repo.auxilor.io/repository/maven-private/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+        maven {
+            name = "AuxilorReleases"
+            url = uri("https://repo.auxilor.io/repository/maven-releases/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
+            }
+        }
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Auxilor/eco")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+
+// POM generation must run after clean (compileJava dependsOn clean)
+tasks.matching { it.name.startsWith("generatePomFileFor") }.configureEach {
+    mustRunAfter(tasks.named("clean"))
+}
+
+tasks.register("publishToAuxilor") {
+    dependsOn(
+        // Root plugin
+        "publishPrivatePublicationToAuxilorPrivateRepository",
+        "publishReleasePublicationToAuxilorReleasesRepository",
+        "publishReleasePublicationToGitHubPackagesRepository",
+        // eco-api
+        ":eco-api:publishShadowPublicationToAuxilorRepository",
+        ":eco-api:publishShadowPublicationToGitHubPackagesRepository",
+    )
+}

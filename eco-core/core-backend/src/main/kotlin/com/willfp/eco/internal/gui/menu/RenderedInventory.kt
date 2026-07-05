@@ -11,6 +11,8 @@ import org.bukkit.inventory.ItemStack
 
 private val emptyTestableItem = EmptyTestableItem()
 
+private const val RENDERED_TITLE_KEY = "eco:rendered_title"
+
 private val trackedForceRendered = mutableMapOf<UUID, RenderedInventory>()
 
 fun Player.removeForcedRenderedInventory() {
@@ -102,6 +104,8 @@ class RenderedInventory(
 
         menu.runOnRender(player)
 
+        refreshDynamicTitle()
+
         if (captiveChanged) {
             var i = 0
             for (row in (1..rows)) {
@@ -113,6 +117,32 @@ class RenderedInventory(
                 }
             }
         }
+    }
+
+    fun refreshDynamicTitle() {
+        val template = menu.getTitle()
+
+        if (!template.contains("%page%") && !template.contains("%max_page%")) {
+            return
+        }
+
+        val resolved = template
+            .replace("%page%", menu.getPage(player).toString())
+            .replace("%max_page%", menu.getMaxPage(player).toString())
+
+        if (state[RENDERED_TITLE_KEY] == resolved) {
+            return
+        }
+
+        // Skip the first render inside open(), before this inventory becomes the
+        // player's open top inventory. setTitle would target the wrong view.
+        if (player.openInventory.topInventory !== inventory) {
+            return
+        }
+
+        @Suppress("DEPRECATION")
+        player.openInventory.setTitle(resolved)
+        state[RENDERED_TITLE_KEY] = resolved
     }
 
     fun renderDefaultCaptiveItems() {

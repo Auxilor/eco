@@ -32,7 +32,6 @@ class CustomBlocksNexo(
 
     private class NexoProvider : BlockProvider("nexo") {
         override fun provideForKey(key: String): TestableBlock? {
-            // The key
             if (!NexoBlocks.isCustomBlock(key)) {
                 return null
             }
@@ -40,6 +39,8 @@ class CustomBlocksNexo(
             val item = NexoItems.itemFromId(key) ?: return null
             val id = NexoItems.idFromItem(item)
             val namespacedKey = namespacedKeyOf("nexo", id.toString())
+
+            val hardness = NexoBlocks.customBlockMechanic(id.toString())?.breakable?.hardness?.toFloat() ?: -1f
 
             return CustomBlock(
                 namespacedKey,
@@ -50,7 +51,8 @@ class CustomBlocksNexo(
                 { location ->
                     NexoBlocks.place(id, location)
                     location.block
-                }
+                },
+                hardness
             )
         }
     }
