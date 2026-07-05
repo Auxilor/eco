@@ -1,7 +1,6 @@
 ---
 title: The Entity Lookup System
-slug: /the-entity-lookup-system
-sidebar_position: 1.3
+sidebar_position: 4
 ---
 
 ## What is the Entity Lookup System?

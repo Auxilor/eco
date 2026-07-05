@@ -1,7 +1,6 @@
 ﻿---
 title: Crafting Recipes
-slug: /the-item-lookup-system/recipes
-sidebar_position: 1
+sidebar_position: 3
 ---
 Anywhere that you configure items for players in eco plugins, you can use the Item Lookup System to add crafting recipes for them. 
 

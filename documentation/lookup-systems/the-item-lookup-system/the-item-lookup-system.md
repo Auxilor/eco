@@ -1,6 +1,6 @@
 ---
 title: The Item Lookup System
-sidebar_position: 3
+sidebar_position: 1
 ---
 
 ## What is the Item Lookup System?

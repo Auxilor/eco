@@ -1,6 +1,6 @@
 ---
-title: The Price System
-sidebar_position: 7
+title: The Price Lookup System
+sidebar_position: 3
 ---
 
 ## What are Prices?
@@ -13,24 +13,24 @@ For price values, you can use [math](https://plugins.auxilor.io/all-plugins/math
 ## Types
 Below are the different Price types you can use.
 
-| Type                                                                   | Alisases                                                                                         |
-|------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
-| Standard Economy                                                       | `$`, `coins`                                                                                     |
-| XP Points                                                              | `xp`, `exp`, `experience`                                                                        |
-| XP Levels                                                              | `l`, `levels`, `xplevels`                                                                        |
-| [Points](https://plugins.auxilor.io/effects/points)                    | `<point_id>`, eg `souls`                                                                         |
-| [Magic](https://plugins.auxilor.io/ecoskills/how-to-configure-magic)   | `<magic_id>`, eg `mana`                                                                           |
-| Player Points (External)                                               | `p_points`, `player_points`                                                                      |
-| [EcoBits](https://plugins.auxilor.io/ecobits)                          | `<ecobits_id>`                                                                                   |
-| UltraEconomy (External)                                                | `<currency_id>`                                                                                  |
-| ExcellentEconomy (External)                                            | `<currency_id>`                                                                                  |
-| [Items](https://plugins.auxilor.io/the-item-lookup-system) | Use the [item-lookup-system](https://plugins.auxilor.io/the-item-lookup-system) here |
+| Type                                                                 | Alisases                                                                             |
+|----------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| Standard Economy                                                     | `$`, `coins`                                                                         |
+| XP Points                                                            | `xp`, `exp`, `experience`                                                            |
+| XP Levels                                                            | `l`, `levels`, `xplevels`                                                            |
+| [Points](https://plugins.auxilor.io/effects/points)                  | `<point_id>`, eg `souls`                                                             |
+| [Magic](https://plugins.auxilor.io/ecoskills/how-to-configure-magic) | `<magic_id>`, eg `mana`                                                              |
+| Player Points (External)                                             | `p_points`, `player_points`                                                          |
+| [EcoBits](https://plugins.auxilor.io/ecobits)                        | `<ecobits_id>`                                                                       |
+| UltraEconomy (External)                                              | `<currency_id>`                                                                      |
+| ExcellentEconomy (External)                                          | `<currency_id>`                                                                      |
+| [Items](https://plugins.auxilor.io/the-item-lookup-system)           | Use the [item-lookup-system](https://plugins.auxilor.io/the-item-lookup-system) here |
 
 ## Effects System
 Prices are seamlessly integrated into the effects system. Below, you'll find a list of all available effects and conditions.
 
 | Effect/Condition   | Type      | Link                                                                       |
-| ------------------ | --------- | -------------------------------------------------------------------------- |
+|--------------------|-----------|----------------------------------------------------------------------------|
 | `give_price`       | Effect    | [Link](https://plugins.auxilor.io/effects/all-effects/give_price)          |
 | `pay_price`        | Effect    | [Link](https://plugins.auxilor.io/effects/all-effects/pay_price)           |
 | `can_afford_price` | Condition | [Link](https://plugins.auxilor.io/effects/all-conditions/can_afford_price) |

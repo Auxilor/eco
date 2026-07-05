@@ -1,6 +1,5 @@
 ---
 title: The Block Lookup System
-slug: /the-block-lookup-system
 sidebar_position: 2
 ---
 
