@@ -1,7 +1,6 @@
 ﻿---
 title: Crafting Recipes
-slug: /the-item-lookup-system/recipes
-sidebar_position: 1
+sidebar_position: 3
 ---
 Anywhere that you configure items for players in eco plugins, you can use the Item Lookup System to add crafting recipes for them. 
 
@@ -90,7 +89,7 @@ To fix this, open `/plugins/eco/config.yml` and find the `enforce-preparing-reci
 :::note Creating Multiple Recipes
 Creating multiple recipes for one item is not supported in the current config structure.
 
-However, if you own EcoItems, you can easily create more custom recipes, you can read about that [here](https://plugins.auxilor.io/ecoitems/additional-configuration-options#how-to-add-additional-recipes).
+However, if you own EcoItems, you can easily create more custom recipes, you can read about that [here](https://hub.auxilor.io/wiki/ecoitems/additional-configuration-options-additional-recipes).
 :::
 
 :::warning Recipe Book

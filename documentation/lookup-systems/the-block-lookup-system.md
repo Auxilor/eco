@@ -1,6 +1,5 @@
 ---
 title: The Block Lookup System
-slug: /the-block-lookup-system
 sidebar_position: 2
 ---
 
@@ -15,7 +14,7 @@ Anywhere you need to use blocks, you can use this system. To look up a block, yo
 In each string is the key for a block. A key looks one of a few ways
 
 - A vanilla minecraft material ID: (e.g. `stone`)
-- A block from an external plugin: (e.g. `nexo:ruby_ore`), See [External Integrations](https://plugins.auxilor.io/the-item-lookup-system/external-item-integrations) for more info
+- A block from an external plugin: (e.g. `nexo:ruby_ore`), See [External Integrations](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-external-item-integrations) for more info
 - A block tag: (e.g. `#logs` or `#wool`)
 
 #### Extra syntax
@@ -34,7 +33,7 @@ If you want custom blocks to be accepted, place a `*` at the start, so `"oak_log
 
 Block tags are groups of blocks. A list of vanilla tags can be found [here](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Tag.html), and you can use them with `#tag`, e.g. `#logs`. These are especially useful in filters and conditions where you may use the same lists of blocks in different places.
 
-You can create your own tags in [tags.yml](https://plugins.auxilor.io/the-item-lookup-system#item-tags) too, use `#libreforge:<tag_id>` to reference these.
+You can create your own tags in [tags.yml](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system#item-tags) too, use `#libreforge:<tag_id>` to reference these.
 
 ### Using blocks from third-party plugins
 

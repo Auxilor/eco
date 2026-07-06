@@ -8,7 +8,7 @@ sidebar_position: 1
 Compatibility is a huge part of eco plugins, so we natively integrate with a large range of third-party plugins. These integrations are built directly into eco — no extra configuration needed. Just install the supported plugin alongside eco and everything will work automatically.
 
 :::tip Don't see your plugin?
-If a plugin isn't listed here, it doesn't necessarily mean it's incompatible — it just means there isn't a direct integration yet. Feel free to **request support** on the [Discord](https://discord.gg/ZcwpSsE)!
+If a plugin isn't listed here, it doesn't necessarily mean it's incompatible — it just means there isn't a direct integration yet. Feel free to **request support** on the [Discord](https://hub.auxilor.io/discord)!
 :::
 
 ---
@@ -55,7 +55,7 @@ Use custom mobs and entities from these plugins inside eco conditions, triggers,
 
 ### Integration into the Item Lookup System
 
-Items from these plugins can be used anywhere eco accepts an [Item Lookup](https://plugins.auxilor.io/the-item-lookup-system) — in recipes, loot tables, GUIs, and more.
+Items from these plugins can be used anywhere eco accepts an [Item Lookup](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system) — in recipes, loot tables, GUIs, and more.
 
 | Plugin | Plugin |
 | --- | --- |
@@ -146,7 +146,7 @@ General-purpose integrations.
 
 ## ⚡ Effects System
 
-These plugins provide **triggers and conditions** for the [Effects System](https://https://plugins.auxilor.io/effects/configuring-an-effect) only — allowing you to create powerful custom gameplay mechanics.
+These plugins provide **triggers and conditions** for the [Effects System](https://hub.auxilor.io/wiki/libreforge/configuring-an-effect) only — allowing you to create powerful custom gameplay mechanics.
 
 | Plugin | Plugin |
 | --- | --- |

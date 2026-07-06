@@ -1,7 +1,6 @@
 ---
 title: The Particle Lookup System
-slug: /the-particle-lookup-system
-sidebar_position: 1.4
+sidebar_position: 5
 ---
 
 ## What is the Particle Lookup System?
