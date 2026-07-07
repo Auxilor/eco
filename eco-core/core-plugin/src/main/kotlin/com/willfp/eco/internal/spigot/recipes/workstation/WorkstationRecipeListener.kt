@@ -216,6 +216,8 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
                     meta.persistentDataContainer.set(tradeNsKey, PersistentDataType.STRING, vr.key.key)
                 }
                 val mr = MerchantRecipe(resultItem, Int.MAX_VALUE)
+                mr.villagerExperience = vr.villagerXp
+                mr.setExperienceReward(vr.villagerXp > 0)
                 mr.addIngredient(vr.input1Display ?: vr.input1.item ?: return@forEach)
                 vr.input2?.let { inp2 -> mr.addIngredient(vr.input2Display ?: inp2.item ?: return@let) }
                 existing.add(mr)
