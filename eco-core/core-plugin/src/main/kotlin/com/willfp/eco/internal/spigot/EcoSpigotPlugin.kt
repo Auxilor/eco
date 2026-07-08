@@ -133,6 +133,7 @@ import com.willfp.eco.internal.particle.ParticleFactoryRGB
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
+import com.willfp.eco.internal.spigot.anvil.AnvilMechanicsListener
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
@@ -579,6 +580,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
+            AnvilMechanicsListener(this),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
             CraftingRecipeListener(this),
