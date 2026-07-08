@@ -191,37 +191,52 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
                 }
             }
 
-        val tradeNsKey = NamespacedKey("recipebook", "trade_key")
-        val existing = merchant.recipes.toMutableList()
-
-        existing.removeIf { mr ->
-            val tradeKey = mr.result.itemMeta
-                ?.persistentDataContainer
-                ?.get(tradeNsKey, PersistentDataType.STRING)
-                ?: return@removeIf false
-            val recipe = WorkstationRecipes.getByKey(NamespacedKey("recipebook", tradeKey))
-                ?: return@removeIf true
-            filteredRecipes.none { it.key == recipe.key }
+        fun VillagerRecipe.matchesExisting(merchantRecipe: MerchantRecipe): Boolean {
+            val ingredients = merchantRecipe.ingredients
+            if (ingredients.isEmpty() || !input1.matches(ingredients[0])) return false
+            val secondInput = input2
+            return if (secondInput != null) ingredients.size > 1 && secondInput.matches(ingredients[1])
+                   else ingredients.size <= 1
         }
 
-        filteredRecipes.forEach { vr ->
-            val alreadyAdded = existing.any { mr ->
-                val tag = mr.result.itemMeta?.persistentDataContainer
-                    ?.get(tradeNsKey, PersistentDataType.STRING)
-                if (tag != null) tag == vr.key.key else mr.result.isSimilar(vr.output)
-            }
-            if (!alreadyAdded) {
-                val resultItem = (vr.output ?: return@forEach).clone()
-                resultItem.itemMeta = resultItem.itemMeta?.also { meta ->
-                    meta.persistentDataContainer.set(tradeNsKey, PersistentDataType.STRING, vr.key.key)
+        val existing = merchant.recipes.toMutableList()
+
+        existing.removeIf { merchantRecipe ->
+            val matched = WorkstationRecipes.getAll(VillagerRecipe::class.java)
+                .firstOrNull { it.matchesExisting(merchantRecipe) } ?: return@removeIf false
+            filteredRecipes.none { it.key == matched.key }
+        }
+
+        filteredRecipes.forEach { villagerRecipe ->
+            val resultItem = (villagerRecipe.output ?: return@forEach).clone()
+            val matchIndex = existing.indexOfFirst { merchantRecipe -> villagerRecipe.matchesExisting(merchantRecipe) }
+
+            if (matchIndex >= 0) {
+                // Villagers persist their trades (and the result ItemStack's full NBT) to disk,
+                // so a trade added by an older plugin version - e.g. one that used to stamp a
+                // PDC tag onto the result - keeps that stale item forever unless we rebuild the
+                // entry here. MerchantRecipe has no setResult, so preserve the trade's economy
+                // state and swap in a fresh result item whenever it no longer matches.
+                val old = existing[matchIndex]
+                if (!old.result.isSimilar(resultItem)) {
+                    val refreshed = MerchantRecipe(
+                        resultItem, old.uses, old.maxUses, old.hasExperienceReward(),
+                        old.villagerExperience, old.priceMultiplier, old.demand, old.specialPrice
+                    )
+                    refreshed.ingredients = old.ingredients
+                    existing[matchIndex] = refreshed
                 }
-                val mr = MerchantRecipe(resultItem, Int.MAX_VALUE)
-                mr.villagerExperience = vr.villagerXp
-                mr.setExperienceReward(vr.villagerXp > 0)
-                mr.addIngredient(vr.input1Display ?: vr.input1.item ?: return@forEach)
-                vr.input2?.let { inp2 -> mr.addIngredient(vr.input2Display ?: inp2.item ?: return@let) }
-                existing.add(mr)
+                return@forEach
             }
+
+            val merchantRecipe = MerchantRecipe(resultItem, Int.MAX_VALUE)
+            merchantRecipe.villagerExperience = villagerRecipe.villagerXp
+            merchantRecipe.setExperienceReward(villagerRecipe.villagerXp > 0)
+            merchantRecipe.addIngredient((villagerRecipe.input1Display ?: villagerRecipe.input1.item ?: return@forEach).clone())
+            villagerRecipe.input2?.let { secondInput ->
+                merchantRecipe.addIngredient((villagerRecipe.input2Display ?: secondInput.item ?: return@let).clone())
+            }
+            existing.add(merchantRecipe)
         }
         merchant.recipes = existing
     }
