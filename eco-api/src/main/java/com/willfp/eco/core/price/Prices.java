@@ -53,6 +53,29 @@ public final class Prices {
     }
 
     /**
+     * Unregister a price factory by exact instance.
+     * <p>
+     * Only removes a name mapping if it currently points to this exact factory,
+     * so it cannot evict a different factory that owns the same name.
+     *
+     * @param factory The factory to unregister.
+     */
+    public static void unregisterPriceFactory(@NotNull final PriceFactory factory) {
+        for (String name : factory.getNames()) {
+            FACTORIES.remove(name.toLowerCase(), factory);
+        }
+    }
+
+    /**
+     * Unregister whatever price factory is registered under a name.
+     *
+     * @param name The name to unregister.
+     */
+    public static void unregisterPriceFactory(@NotNull final String name) {
+        FACTORIES.remove(name.toLowerCase());
+    }
+
+    /**
      * Create price from an expression (representing the value),
      * and a price name.
      * <p>
