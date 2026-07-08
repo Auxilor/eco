@@ -6,6 +6,8 @@ import com.willfp.eco.core.anvil.AnvilHandlers
 import com.willfp.eco.core.anvil.AnvilSettings
 import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.proxy.ProxyConstants
+import com.willfp.eco.core.recipe.workstation.AnvilRecipe
+import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepair
 import com.willfp.eco.internal.spigot.proxies.OpenInventoryProxy
 import com.willfp.eco.util.StringUtils
@@ -41,8 +43,8 @@ class AnvilMechanicsListener(
     private val anvilGuiClass: Class<*>? = try {
         Class.forName(
             "net.wesjd.anvilgui.version.Wrapper" +
-                ProxyConstants.NMS_VERSION.substring(1) +
-                "\$AnvilContainer"
+                    ProxyConstants.NMS_VERSION.substring(1) +
+                    "\$AnvilContainer"
         )
     } catch (_: ClassNotFoundException) {
         null
@@ -87,13 +89,30 @@ class AnvilMechanicsListener(
         val handler = AnvilHandlers.handler() ?: return
         val settings = AnvilHandlers.settings() ?: return
 
-        val player = event.viewers.getOrNull(0) as? Player ?: return
+        val leftItem = event.inventory.getItem(0)
+        val rightItem = event.inventory.getItem(1)
+        val viewer = event.viewers.getOrNull(0) as? Player
+
+        // A matching custom AnvilRecipe (WorkstationRecipeListener, lower priority) has already
+        // set event.result. Defer to it entirely, clearing any stale preview-generation state
+        // from prior vanilla-merge use, so the enchant-merge shell doesn't clobber it and the
+        // result-click guard stays inert.
+        val hasCustomRecipe = WorkstationRecipes.getAll(AnvilRecipe::class.java).any {
+            it.base.matches(leftItem) && (it.material == null || it.material!!.matches(rightItem))
+        }
+        if (hasCustomRecipe) {
+            viewer?.uniqueId?.let {
+                latestPreviewGeneration.remove(it)
+                renderedPreviewGeneration.remove(it)
+            }
+            return
+        }
+
+        val player = viewer ?: return
         val generation = (latestPreviewGeneration[player.uniqueId] ?: 0) + 1
         latestPreviewGeneration[player.uniqueId] = generation
         renderedPreviewGeneration.remove(player.uniqueId)
 
-        val leftItem = event.inventory.getItem(0)
-        val rightItem = event.inventory.getItem(1)
         if (handler.isBlocked(leftItem, rightItem)) {
             event.result = null
             event.inventory.setItem(2, null)
