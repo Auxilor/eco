@@ -236,6 +236,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     abstract val profileHandler: ProfileHandler
     protected var bukkitAudiences: BukkitAudiences? = null
 
+    private val brewingPacketHandler = BrewingPacketHandler(this)
+
     init {
         Items.registerArgParser(ArgParserEnchantment)
         Items.registerArgParser(ArgParserColor)
@@ -586,6 +588,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             CraftingRecipeListener(this),
             StackedRecipeListener(this),
             WorkstationRecipeListener(this),
+            brewingPacketHandler,
             GUIListener(this),
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
@@ -610,6 +613,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
     override fun loadPacketListeners(): List<PacketListener> {
         return this.getProxy(PacketHandlerProxy::class.java).getPacketListeners(this) +
-            listOf(BrewingPacketHandler(this), GrindstonePacketHandler(this))
+            listOf(brewingPacketHandler, GrindstonePacketHandler(this))
     }
 }

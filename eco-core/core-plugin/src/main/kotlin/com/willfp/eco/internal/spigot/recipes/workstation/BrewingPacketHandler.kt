@@ -7,17 +7,40 @@ import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 
-class BrewingPacketHandler(private val plugin: Plugin) : PacketListener {
+class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listener {
 
     private val pendingBrews = mutableMapOf<Location, BukkitTask>()
     private val progressTasks = mutableMapOf<Location, BukkitTask>()
 
     init {
         WorkstationRecipes.registerBrewCancelHook { cancelBrew(it) }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onShiftClickIngredient(event: InventoryClickEvent) {
+        if (event.inventory.type != InventoryType.BREWING) return
+        if (!event.isShiftClick) return
+        val player = event.whoClicked as? Player ?: return
+        val location = event.inventory.location ?: return
+        if (location in pendingBrews) return
+        Bukkit.getScheduler().runTask(plugin, Runnable {
+            val brewer = (location.block.state as? org.bukkit.block.BrewingStand)?.inventory ?: return@Runnable
+            val ingredient = brewer.ingredient ?: return@Runnable
+            val recipe = WorkstationRecipes.getAll(BrewingRecipe::class.java)
+                .firstOrNull {
+                    it.ingredient.matches(ingredient) &&
+                    (0..2).any { slot -> it.base.matches(brewer.getItem(slot)) }
+                } ?: return@Runnable
+            scheduleBrew(location, recipe, player)
+        })
     }
 
     override fun onReceive(event: PacketEvent) {
