@@ -5,9 +5,7 @@ import com.willfp.eco.core.anvil.AnvilHandler
 import com.willfp.eco.core.anvil.AnvilHandlers
 import com.willfp.eco.core.anvil.AnvilSettings
 import com.willfp.eco.core.fast.fast
-import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepair
-import com.willfp.eco.internal.spigot.proxies.OpenInventoryProxy
 import com.willfp.eco.util.StringUtils
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -28,36 +26,32 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.min
 
+/** Outcome of an anvil merge: null [result]/[xp] fields aren't set unless a merge succeeded. */
 private data class AnvilResult(val result: ItemStack?, val xp: Int?)
 
+/** Sentinel [AnvilResult] returned by [AnvilMechanicsListener.doMerge] when no valid merge exists. */
 private val FAIL = AnvilResult(null, null)
 
+/**
+ * Drives the eco anvil shell: replaces vanilla's result-slot preview with one computed via
+ * [AnvilHandlers], and blocks stale previews from being taken once a newer merge is pending.
+ */
 class AnvilMechanicsListener(
     private val plugin: EcoPlugin
 ) : Listener {
+    /** Per-player counter bumped on every [onAnvilPrepare], used to invalidate in-flight previews. */
     private val latestPreviewGeneration = mutableMapOf<UUID, Int>()
+
+    /** Per-player generation of the preview actually rendered into the result slot. */
     private val renderedPreviewGeneration = mutableMapOf<UUID, Int>()
 
-    private val anvilGuiClass: Class<*>? = try {
-        Class.forName(
-            "net.wesjd.anvilgui.version.Wrapper" +
-                ProxyConstants.NMS_VERSION.substring(1) +
-                "\$AnvilContainer"
-        )
-    } catch (_: ClassNotFoundException) {
-        null
-    }
-
-    private fun openMenuClass(player: Player): Class<*> =
-        plugin.getProxy(OpenInventoryProxy::class.java).getOpenInventory(player)::class.java
-
+    /** Prevents taking a stale preview result before its async computation has finished rendering. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onAnvilResultClick(event: InventoryClickEvent) {
         if (AnvilHandlers.handler() == null) return
         val player = event.whoClicked as? Player ?: return
         val inventory = event.view.topInventory as? AnvilInventory ?: return
         if (event.rawSlot != 2) return
-        if (openMenuClass(player) == anvilGuiClass) return
 
         val latestGeneration = latestPreviewGeneration[player.uniqueId] ?: return
         val renderedGeneration = renderedPreviewGeneration[player.uniqueId]
@@ -68,6 +62,7 @@ class AnvilMechanicsListener(
         inventory.setItem(2, null)
     }
 
+    /** Clears preview-tracking state for the player when they close the anvil. */
     @EventHandler
     fun onAnvilClose(event: InventoryCloseEvent) {
         val player = event.player as? Player ?: return
@@ -75,12 +70,18 @@ class AnvilMechanicsListener(
         renderedPreviewGeneration.remove(player.uniqueId)
     }
 
+    /** Clears preview-tracking state for the player when they disconnect. */
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         latestPreviewGeneration.remove(event.player.uniqueId)
         renderedPreviewGeneration.remove(event.player.uniqueId)
     }
 
+    /**
+     * Suppresses vanilla's anvil result, then asynchronously computes the eco merge result
+     * via [doMerge] and renders it into the result slot if it's still the latest preview
+     * requested for the player (guards against overlapping edits producing stale previews).
+     */
     @Suppress("UnstableApiUsage")
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onAnvilPrepare(event: PrepareAnvilEvent) {
@@ -99,8 +100,6 @@ class AnvilMechanicsListener(
             event.inventory.setItem(2, null)
             return
         }
-
-        if (openMenuClass(player) == anvilGuiClass) return
 
         val baseRepairCost = event.view.repairCost
         event.result = null
@@ -161,6 +160,11 @@ class AnvilMechanicsListener(
         }
     }
 
+    /**
+     * Computes the eco anvil merge of [left] (result item) and [right] (sacrifice/material)
+     * per [handler]/[settings], applying rename, unit-repair, enchant-merge and durability-merge
+     * rules. Returns [FAIL] if the inputs can't be merged (e.g. empty left, incompatible right).
+     */
     private fun doMerge(
         left: ItemStack?,
         right: ItemStack?,

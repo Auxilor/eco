@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.anvil
 import org.bukkit.Material
 import org.bukkit.Tag
 
+/** Vanilla-style "unit repair" material table (e.g. iron ingot repairs iron tools/armor). */
 object AnvilRepair {
     private val repair: MutableMap<Collection<Material>, Collection<Material>> = buildBaseMap()
 
@@ -22,6 +23,7 @@ object AnvilRepair {
         return false
     }
 
+    /** Builds the base repair-unit map for materials present on all supported versions. */
     private fun buildBaseMap(): MutableMap<Collection<Material>, Collection<Material>> =
         mutableMapOf(
             Tag.PLANKS.values to listOf(
@@ -57,6 +59,7 @@ object AnvilRepair {
             listOf(Material.PHANTOM_MEMBRANE) to listOf(Material.ELYTRA)
         )
 
+    /** Adds spear (post-1.21.9) and copper tool/armor repair units when those materials exist. */
     private fun addSpearAndCopperMaterials() {
         repair[Tag.PLANKS.values] = repair[Tag.PLANKS.values]!! + getMaterialIfExists("WOODEN_SPEAR").toList()
 
@@ -85,12 +88,14 @@ object AnvilRepair {
         repair[listOf(Material.NETHERITE_INGOT)] = repair[listOf(Material.NETHERITE_INGOT)]!! + getMaterialIfExists("NETHERITE_SPEAR").toList()
     }
 
+    /** [name] as a single-element list if the [Material] exists on this server version, else empty. */
     private fun getMaterialIfExists(name: String): List<Material> = try {
         listOf(Material.valueOf(name))
     } catch (_: IllegalArgumentException) {
         emptyList()
     }
 
+    /** Whether this server version has spear items (added in 1.21.9). */
     private fun hasSpears(): Boolean = try {
         Material.valueOf("IRON_SPEAR")
         true
