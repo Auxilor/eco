@@ -79,7 +79,7 @@ public interface CraftingRecipe {
      *
      * @return True if the recipe supports the Crafter block.
      */
-    default boolean isSupportCrafter() {
+    default boolean isCrafterSupported() {
         return false;
     }
 }

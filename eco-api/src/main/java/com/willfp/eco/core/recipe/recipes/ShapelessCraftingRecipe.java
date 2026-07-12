@@ -57,26 +57,26 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
     /**
      * Whether this recipe also fires inside the vanilla Crafter block.
      */
-    private final boolean supportCrafter;
+    private final boolean crafterSupported;
 
     private ShapelessCraftingRecipe(@NotNull final EcoPlugin plugin,
                                     @NotNull final String key,
                                     @NotNull final List<TestableItem> parts,
                                     @NotNull final ItemStack output,
                                     @Nullable final String permission,
-                                    final boolean supportCrafter) {
+                                    final boolean crafterSupported) {
         this.plugin = plugin;
         this.parts = parts;
         this.key = plugin.getNamespacedKeyFactory().create(key);
         this.displayedKey = plugin.getNamespacedKeyFactory().create(key + "_displayed");
         this.output = output;
         this.permission = permission;
-        this.supportCrafter = supportCrafter;
+        this.crafterSupported = crafterSupported;
     }
 
     @Override
-    public boolean isSupportCrafter() {
-        return this.supportCrafter;
+    public boolean isCrafterSupported() {
+        return this.crafterSupported;
     }
 
     /**
@@ -168,7 +168,7 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
 
         Recipes.scheduleBukkitRecipeRegistration(shapelessRecipe);
 
-        if (this.supportCrafter) {
+        if (this.crafterSupported) {
             NamespacedKey crafterKey = new NamespacedKey(
                     this.getKey().getNamespace(),
                     this.getKey().getKey() + "_crafter"
@@ -284,7 +284,7 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
         /**
          * Whether the recipe also fires in the vanilla Crafter block.
          */
-        private boolean supportCrafter = false;
+        private boolean crafterSupported = false;
 
         /**
          * The key of the recipe.
@@ -350,11 +350,11 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
          * ingredients so the Crafter can match it; {@code AutocrafterPatch}
          * will not cancel events fired for these recipes.
          *
-         * @param supportCrafter Whether to enable Crafter support.
+         * @param crafterSupported Whether to enable Crafter support.
          * @return The builder.
          */
-        public Builder setSupportCrafter(final boolean supportCrafter) {
-            this.supportCrafter = supportCrafter;
+        public Builder setCrafterSupported(final boolean crafterSupported) {
+            this.crafterSupported = crafterSupported;
             return this;
         }
 
@@ -378,7 +378,7 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
          * @return The built recipe.
          */
         public ShapelessCraftingRecipe build() {
-            return new ShapelessCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission, supportCrafter);
+            return new ShapelessCraftingRecipe(plugin, key.toLowerCase(), recipeParts, output, permission, crafterSupported);
         }
     }
 

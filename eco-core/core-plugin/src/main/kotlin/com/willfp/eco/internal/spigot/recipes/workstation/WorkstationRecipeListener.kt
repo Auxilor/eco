@@ -37,7 +37,7 @@ import java.util.UUID
 
 class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
 
-    // ── Furnace smelting ──────────────────────────────────────────────────
+    // Furnace smelting
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onSmelt(event: FurnaceSmeltEvent) {
@@ -47,7 +47,7 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         event.result = recipe.output?.clone() ?: return
     }
 
-    // ── Campfire cooking ──────────────────────────────────────────────────
+    // Campfire cooking
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onCampfire(event: BlockCookEvent) {
@@ -57,7 +57,7 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         event.result = recipe.output?.clone() ?: return
     }
 
-    // ── Brewing stand ─────────────────────────────────────────────────────
+    // Brewing stand
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onBrew(event: BrewEvent) {
@@ -75,40 +75,40 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
 
         event.isCancelled = true
 
-        val ing = ingredientSlot.clone()
-        if (ing.amount <= 1) brewer.ingredient = null
-        else { ing.amount--; brewer.ingredient = ing }
+        val ingredient = ingredientSlot.clone()
+        if (ingredient.amount <= 1) brewer.ingredient = null
+        else { ingredient.amount--; brewer.ingredient = ingredient }
 
         val item = recipe.output?.clone() ?: return
         matchedSlots.forEach { brewer.setItem(it, item.clone()) }
     }
 
-    // ── Grindstone ────────────────────────────────────────────────────────
+    // Grindstone
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPrepareGrindstone(event: PrepareGrindstoneEvent) {
         val player = event.view.player as? Player ?: return
-        val inv = event.inventory
+        val inventory = event.inventory
         val recipe = WorkstationRecipes.getAll(GrindstoneRecipe::class.java)
             .firstOrNull {
-                it.item1.matches(inv.getItem(0)) &&
-                (it.item2 == null || it.item2!!.matches(inv.getItem(1)))
+                it.item1.matches(inventory.getItem(0)) &&
+                (it.item2 == null || it.item2!!.matches(inventory.getItem(1)))
             } ?: return
         event.result = recipe.output?.clone()
         WorkstationRecipes.setPendingRecipe(player.uniqueId, recipe)
         plugin.server.scheduler.runTask(plugin, Runnable { player.updateInventory() })
     }
 
-    // ── Anvil ─────────────────────────────────────────────────────────────
+    // Anvil
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onPrepareAnvil(event: PrepareAnvilEvent) {
         val player = event.view.player as? Player ?: return
-        val inv = event.inventory
+        val inventory = event.inventory
         val recipe = WorkstationRecipes.getAll(AnvilRecipe::class.java)
             .firstOrNull {
-                it.base.matches(inv.getItem(0)) &&
-                (it.material == null || it.material!!.matches(inv.getItem(1)))
+                it.base.matches(inventory.getItem(0)) &&
+                (it.material == null || it.material!!.matches(inventory.getItem(1)))
             } ?: return
 
         val result = recipe.output?.clone() ?: return
@@ -122,22 +122,22 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         WorkstationRecipes.setPendingRecipe(player.uniqueId, recipe)
     }
 
-    // ── Smithing table ────────────────────────────────────────────────────
+    // Smithing table
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onSmithingCraft(event: CraftItemEvent) {
         if (event.view.topInventory !is SmithingInventory) return
-        val inv = event.view.topInventory
+        val inventory = event.view.topInventory
         WorkstationRecipes.getAll(SmithingRecipe::class.java)
             .firstOrNull {
-                it.template.matches(inv.getItem(0)) &&
-                it.base.matches(inv.getItem(1)) &&
-                it.addition.matches(inv.getItem(2))
+                it.template.matches(inventory.getItem(0)) &&
+                it.base.matches(inventory.getItem(1)) &&
+                it.addition.matches(inventory.getItem(2))
             } ?: return
         // Vanilla result already set by Bukkit recipe registration; nothing more to do.
     }
 
-    // ── Stonecutter ───────────────────────────────────────────────────────
+    // Stonecutter
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onStonecutterCraft(event: CraftItemEvent) {
@@ -147,7 +147,7 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         // Vanilla result already set by Bukkit recipe registration; nothing more to do.
     }
 
-    // ── Crafter block ─────────────────────────────────────────────────────
+    // Crafter block
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onCrafterCraft(event: CrafterCraftEvent) {
@@ -159,7 +159,7 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         // Vanilla delivers item; nothing more to do.
     }
 
-    // ── Villager / merchant ───────────────────────────────────────────────
+    // Villager / merchant
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onMerchantOpen(event: InventoryOpenEvent) {
@@ -169,23 +169,23 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         val isWanderingTrader = merchant is org.bukkit.entity.WanderingTrader
 
         val filteredRecipes = WorkstationRecipes.getAll(VillagerRecipe::class.java)
-            .filter { vr ->
+            .filter { villagerRecipe ->
                 if (isWanderingTrader) {
-                    if (!vr.isWanderingTrader) return@filter false
+                    if (!villagerRecipe.isWanderingTrader) return@filter false
                 } else {
-                    if (vr.isWanderingTrader) return@filter false
-                    if (vr.profession != null || vr.minLevel > 0) {
-                        val v = merchant as? org.bukkit.entity.Villager ?: return@filter false
-                        if (vr.profession != null && v.profession != vr.profession) return@filter false
-                        if (vr.minLevel > 0 && v.villagerLevel < vr.minLevel) return@filter false
+                    if (villagerRecipe.isWanderingTrader) return@filter false
+                    if (villagerRecipe.profession != null || villagerRecipe.minLevel > 0) {
+                        val villager = merchant as? org.bukkit.entity.Villager ?: return@filter false
+                        if (villagerRecipe.profession != null && villager.profession != villagerRecipe.profession) return@filter false
+                        if (villagerRecipe.minLevel > 0 && villager.villagerLevel < villagerRecipe.minLevel) return@filter false
                     }
                 }
-                val pdcKey = NamespacedKey("recipebook", "vr_${vr.key.key}")
+                val pdcKey = NamespacedKey("recipebook", "vr_${villagerRecipe.key.key}")
                 val pdc = merchant.persistentDataContainer
                 if (pdc.has(pdcKey, PersistentDataType.BYTE)) {
                     pdc.get(pdcKey, PersistentDataType.BYTE) == 1.toByte()
                 } else {
-                    val include = vr.chance >= 1.0 || Math.random() <= vr.chance
+                    val include = villagerRecipe.chance >= 1.0 || Math.random() <= villagerRecipe.chance
                     pdc.set(pdcKey, PersistentDataType.BYTE, if (include) 1.toByte() else 0.toByte())
                     include
                 }
@@ -241,13 +241,13 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         merchant.recipes = existing
     }
 
-    // ── Result slot click (grindstone / anvil / merchant) ─────────────────
+    // Result slot click (grindstone / anvil / merchant)
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onResultClick(event: InventoryClickEvent) {
         val player = event.whoClicked as? Player ?: return
-        val inv = event.inventory
-        val isResultSlot = when (inv.type) {
+        val inventory = event.inventory
+        val isResultSlot = when (inventory.type) {
             InventoryType.GRINDSTONE,
             InventoryType.ANVIL -> event.rawSlot == 2
             InventoryType.MERCHANT -> event.rawSlot == 2

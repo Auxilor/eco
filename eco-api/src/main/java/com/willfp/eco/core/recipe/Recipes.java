@@ -160,7 +160,7 @@ public final class Recipes {
 
             if (!hasValid) {
                 plugin.getLogger().warning("Shapeless recipe " + plugin.getID() + ":" + key +
-                        " has no valid ingredients — not registered.");
+                        " has no valid ingredients - not registered.");
                 return null;
             }
 
@@ -171,7 +171,7 @@ public final class Recipes {
             // Shaped: exactly 9 positions
             if (recipeStrings.size() != 9) {
                 plugin.getLogger().warning("Shaped recipe " + plugin.getID() + ":" + key +
-                        " has " + recipeStrings.size() + " ingredients — expected exactly 9.");
+                        " has " + recipeStrings.size() + " ingredients - expected exactly 9.");
                 return null;
             }
 
@@ -188,7 +188,7 @@ public final class Recipes {
 
             if (builder.isAir()) {
                 plugin.getLogger().warning("Shaped recipe " + plugin.getID() + ":" + key +
-                        " consists only of air or invalid items — not registered.");
+                        " consists only of air or invalid items - not registered.");
                 return null;
             }
 

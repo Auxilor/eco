@@ -256,12 +256,12 @@ class AnvilMechanicsListener(
             for (storedEnchant in leftMeta.storedEnchants.keys.toSet()) {
                 leftMeta.removeStoredEnchant(storedEnchant)
             }
-            for ((enchant, lvl) in outEnchants) leftMeta.addStoredEnchant(enchant, lvl, true)
+            for ((enchant, level) in outEnchants) leftMeta.addStoredEnchant(enchant, level, true)
         } else {
             for (storedEnchant in leftMeta.enchants.keys.toSet()) {
                 leftMeta.removeEnchant(storedEnchant)
             }
-            for ((enchant, lvl) in outEnchants) leftMeta.addEnchant(enchant, lvl, true)
+            for ((enchant, level) in outEnchants) leftMeta.addEnchant(enchant, level, true)
         }
 
         left.itemMeta = leftMeta

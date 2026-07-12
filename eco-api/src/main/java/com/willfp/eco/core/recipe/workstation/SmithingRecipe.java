@@ -31,15 +31,15 @@ public final class SmithingRecipe extends WorkstationRecipe {
     private final TestableItem addition;
     @Nullable private final ItemStack additionDisplay;
 
-    private SmithingRecipe(@NotNull NamespacedKey key,
-                           @Nullable ItemStack output,
-                           @Nullable String permission,
-                           @NotNull TestableItem template,
-                           @Nullable ItemStack templateDisplay,
-                           @NotNull TestableItem base,
-                           @Nullable ItemStack baseDisplay,
-                           @NotNull TestableItem addition,
-                           @Nullable ItemStack additionDisplay) {
+    private SmithingRecipe(@NotNull final NamespacedKey key,
+                           @Nullable final ItemStack output,
+                           @Nullable final String permission,
+                           @NotNull final TestableItem template,
+                           @Nullable final ItemStack templateDisplay,
+                           @NotNull final TestableItem base,
+                           @Nullable final ItemStack baseDisplay,
+                           @NotNull final TestableItem addition,
+                           @Nullable final ItemStack additionDisplay) {
         super(key, output, permission);
         this.template = template;
         this.templateDisplay = templateDisplay;
@@ -138,7 +138,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key, @Nullable ItemStack output) {
+    public static Builder builder(@NotNull final NamespacedKey key, @Nullable final ItemStack output) {
         return new Builder(key, output);
     }
 
@@ -159,7 +159,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
         private TestableItem addition;
         @Nullable private ItemStack additionDisplay;
 
-        private Builder(@NotNull NamespacedKey key, @Nullable ItemStack output) {
+        private Builder(@NotNull final NamespacedKey key, @Nullable final ItemStack output) {
             this.key = key;
             this.output = output;
         }
@@ -172,7 +172,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder template(@NotNull TestableItem template, @Nullable ItemStack templateDisplay) {
+        public Builder template(@NotNull final TestableItem template, @Nullable final ItemStack templateDisplay) {
             this.template = template;
             this.templateDisplay = templateDisplay;
             return this;
@@ -186,7 +186,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder base(@NotNull TestableItem base, @Nullable ItemStack baseDisplay) {
+        public Builder base(@NotNull final TestableItem base, @Nullable final ItemStack baseDisplay) {
             this.base = base;
             this.baseDisplay = baseDisplay;
             return this;
@@ -200,7 +200,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder addition(@NotNull TestableItem addition, @Nullable ItemStack additionDisplay) {
+        public Builder addition(@NotNull final TestableItem addition, @Nullable final ItemStack additionDisplay) {
             this.addition = addition;
             this.additionDisplay = additionDisplay;
             return this;
@@ -213,7 +213,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }

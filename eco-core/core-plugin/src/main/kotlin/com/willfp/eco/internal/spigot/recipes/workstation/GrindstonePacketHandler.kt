@@ -41,14 +41,14 @@ class GrindstonePacketHandler(private val plugin: Plugin) : PacketListener {
         event.isCancelled = true
 
         Bukkit.getScheduler().runTask(plugin, Runnable {
-            val topInv = player.openInventory.topInventory
-            if (topInv.type != InventoryType.GRINDSTONE) return@Runnable
+            val topInventory = player.openInventory.topInventory
+            if (topInventory.type != InventoryType.GRINDSTONE) return@Runnable
 
-            val current = topInv.getItem(slotNum)
+            val current = topInventory.getItem(slotNum)
             if (current != null && !current.type.isAir) return@Runnable
 
             val toPlace = cursor.clone().apply { amount = 1 }
-            topInv.setItem(slotNum, toPlace)
+            topInventory.setItem(slotNum, toPlace)
             if (cursor.amount <= 1) player.setItemOnCursor(null)
             else cursor.amount--
             player.updateInventory()

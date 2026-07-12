@@ -1,6 +1,9 @@
 package com.willfp.eco.core.recipe.workstation;
 
 import com.willfp.eco.core.items.TestableItem;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -9,13 +12,10 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A custom crafter (auto-crafter) recipe.
  * <p>
- * Wraps a 3×3 grid of up to nine ingredient slots. Each slot is defined by a
+ * Wraps a 3x3 grid of up to nine ingredient slots. Each slot is defined by a
  * {@link com.willfp.eco.core.items.TestableItem} predicate (for match logic) and
  * a display {@link ItemStack} (registered with Bukkit as an
  * {@link RecipeChoice.ExactChoice} so the crafter UI shows the correct icon).
@@ -31,12 +31,12 @@ public final class CrafterRecipe extends WorkstationRecipe {
     private final List<ItemStack> partDisplays;
     private final boolean shapeless;
 
-    private CrafterRecipe(@NotNull NamespacedKey key,
-                          @Nullable ItemStack output,
-                          @Nullable String permission,
-                          @NotNull List<TestableItem> parts,
-                          @NotNull List<ItemStack> partDisplays,
-                          boolean shapeless) {
+    private CrafterRecipe(@NotNull final NamespacedKey key,
+                          @Nullable final ItemStack output,
+                          @Nullable final String permission,
+                          @NotNull final List<TestableItem> parts,
+                          @NotNull final List<ItemStack> partDisplays,
+                          final boolean shapeless) {
         super(key, output, permission);
         this.parts = parts;
         this.partDisplays = partDisplays;
@@ -44,7 +44,7 @@ public final class CrafterRecipe extends WorkstationRecipe {
     }
 
     /**
-     * Get the ingredient predicates for all nine crafter slots (indices 0–8,
+     * Get the ingredient predicates for all nine crafter slots (indices 0-8,
      * left-to-right, top-to-bottom). Null entries represent empty slots.
      *
      * @return The parts list.
@@ -89,7 +89,7 @@ public final class CrafterRecipe extends WorkstationRecipe {
         NamespacedKey key = getKey();
         NamespacedKey crafterKey = new NamespacedKey(key.getNamespace(), key.getKey() + "_crafter");
 
-        ShapedRecipe bukkit = new ShapedRecipe(crafterKey, getOutput());
+        ShapedRecipe shapedRecipe = new ShapedRecipe(crafterKey, getOutput());
 
         // Map non-null slots to chars A-I
         char[] slotChars = new char[9];
@@ -105,16 +105,16 @@ public final class CrafterRecipe extends WorkstationRecipe {
         String row0 = "" + slotChars[0] + slotChars[1] + slotChars[2];
         String row1 = "" + slotChars[3] + slotChars[4] + slotChars[5];
         String row2 = "" + slotChars[6] + slotChars[7] + slotChars[8];
-        bukkit.shape(row0, row1, row2);
+        shapedRecipe.shape(row0, row1, row2);
 
         for (int i = 0; i < 9; i++) {
             if (parts.get(i) != null && partDisplays.get(i) != null) {
-                char c = slotChars[i];
-                bukkit.setIngredient(c, new RecipeChoice.ExactChoice(partDisplays.get(i).clone()));
+                char slotChar = slotChars[i];
+                shapedRecipe.setIngredient(slotChar, new RecipeChoice.ExactChoice(partDisplays.get(i).clone()));
             }
         }
 
-        Bukkit.addRecipe(bukkit);
+        Bukkit.addRecipe(shapedRecipe);
         WorkstationRecipes.trackBukkitKey(crafterKey);
     }
 
@@ -126,8 +126,8 @@ public final class CrafterRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output) {
         return new Builder(key, output);
     }
 
@@ -138,12 +138,12 @@ public final class CrafterRecipe extends WorkstationRecipe {
         private final NamespacedKey key;
         private final ItemStack output;
         @Nullable private String permission;
-        private List<TestableItem> parts = new ArrayList<>(java.util.Arrays.asList(new TestableItem[9]));
-        private List<ItemStack> partDisplays = new ArrayList<>(java.util.Arrays.asList(new ItemStack[9]));
+        private List<TestableItem> parts = new ArrayList<>(Arrays.asList(new TestableItem[9]));
+        private List<ItemStack> partDisplays = new ArrayList<>(Arrays.asList(new ItemStack[9]));
         private boolean shapeless = false;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output) {
             this.key = key;
             this.output = output;
         }
@@ -158,7 +158,7 @@ public final class CrafterRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder parts(@NotNull List<TestableItem> parts, @NotNull List<ItemStack> displays) {
+        public Builder parts(@NotNull final List<TestableItem> parts, @NotNull final List<ItemStack> displays) {
             this.parts = parts;
             this.partDisplays = displays;
             return this;
@@ -171,7 +171,7 @@ public final class CrafterRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder shapeless(boolean shapeless) {
+        public Builder shapeless(final boolean shapeless) {
             this.shapeless = shapeless;
             return this;
         }
@@ -183,7 +183,7 @@ public final class CrafterRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }

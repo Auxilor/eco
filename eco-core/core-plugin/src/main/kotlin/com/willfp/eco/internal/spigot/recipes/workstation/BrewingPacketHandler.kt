@@ -63,15 +63,15 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
                 .firstOrNull { it.ingredient.matches(cursor) } ?: return
             event.isCancelled = true
             Bukkit.getScheduler().runTask(plugin, Runnable {
-                val topInv = player.openInventory.topInventory
-                if (topInv.type != InventoryType.BREWING) return@Runnable
+                val topInventory = player.openInventory.topInventory
+                if (topInventory.type != InventoryType.BREWING) return@Runnable
                 val toPlace = cursor.clone().apply { amount = 1 }
-                topInv.setItem(3, toPlace)
+                topInventory.setItem(3, toPlace)
                 if (cursor.amount <= 1) player.setItemOnCursor(null)
                 else cursor.amount--
                 player.updateInventory()
-                val loc = topInv.location?.block?.location ?: return@Runnable
-                scheduleBrew(loc, recipe, player)
+                val location = topInventory.location?.block?.location ?: return@Runnable
+                scheduleBrew(location, recipe, player)
             })
         } else if (slotNum in 0..2) {
             val matches = WorkstationRecipes.getAll(BrewingRecipe::class.java)
@@ -79,12 +79,12 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
             if (!matches) return
             event.isCancelled = true
             Bukkit.getScheduler().runTask(plugin, Runnable {
-                val topInv = player.openInventory.topInventory
-                if (topInv.type != InventoryType.BREWING) return@Runnable
-                val current = topInv.getItem(slotNum)
+                val topInventory = player.openInventory.topInventory
+                if (topInventory.type != InventoryType.BREWING) return@Runnable
+                val current = topInventory.getItem(slotNum)
                 if (current != null && !current.type.isAir) return@Runnable
                 val toPlace = cursor.clone().apply { amount = 1 }
-                topInv.setItem(slotNum, toPlace)
+                topInventory.setItem(slotNum, toPlace)
                 if (cursor.amount <= 1) player.setItemOnCursor(null)
                 else cursor.amount--
                 player.updateInventory()
@@ -97,8 +97,8 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
         progressTasks.remove(location)?.cancel()
     }
 
-    private fun scheduleBrew(loc: Location, recipe: BrewingRecipe, animPlayer: Player? = null) {
-        cancelBrew(loc)
+    private fun scheduleBrew(location: Location, recipe: BrewingRecipe, animPlayer: Player? = null) {
+        cancelBrew(location)
 
         val brewTime = recipe.brewTime
         val player = animPlayer
@@ -112,20 +112,20 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
                 step++
                 if (step > totalSteps || player.openInventory.topInventory.type != InventoryType.BREWING) {
                     progressTask?.cancel()
-                    progressTasks.remove(loc)
+                    progressTasks.remove(location)
                     return@Runnable
                 }
                 val normalized = (400 * (totalSteps - step) / totalSteps).coerceAtLeast(0)
                 sendBrewDataPacket(player, containerId, normalized)
             }, 0L, 10L)
-            progressTasks[loc] = progressTask!!
+            progressTasks[location] = progressTask!!
         }
 
-        pendingBrews[loc] = Bukkit.getScheduler().runTaskLater(plugin, Runnable {
-            pendingBrews.remove(loc)
-            progressTasks.remove(loc)?.cancel()
+        pendingBrews[location] = Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+            pendingBrews.remove(location)
+            progressTasks.remove(location)?.cancel()
 
-            val state = loc.block.state as? org.bukkit.block.BrewingStand ?: return@Runnable
+            val state = location.block.state as? org.bukkit.block.BrewingStand ?: return@Runnable
             val brewer = state.inventory
             val ingredient = brewer.ingredient ?: return@Runnable
             if (!recipe.ingredient.matches(ingredient)) return@Runnable
@@ -133,17 +133,17 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
             val matchedSlots = (0..2).filter { recipe.base.matches(brewer.getItem(it)) }
             if (matchedSlots.isEmpty()) return@Runnable
 
-            val ing = ingredient.clone()
-            if (ing.amount <= 1) brewer.ingredient = null
-            else { ing.amount--; brewer.ingredient = ing }
+            val remainingIngredient = ingredient.clone()
+            if (remainingIngredient.amount <= 1) brewer.ingredient = null
+            else { remainingIngredient.amount--; brewer.ingredient = remainingIngredient }
 
             val item = recipe.output?.clone() ?: return@Runnable
             matchedSlots.forEach { brewer.setItem(it, item.clone()) }
-            WorkstationRecipes.fireBrewCompleted(loc, recipe, matchedSlots)
+            WorkstationRecipes.fireBrewCompleted(location, recipe, matchedSlots)
         }, brewTime.toLong())
     }
 
-    // ── NMS helpers ──────────────────────────────────────────────────────
+    // NMS helpers
 
     private fun getContainerId(player: Player): Int =
         runCatching {
@@ -162,21 +162,21 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
 
     private fun sendBrewDataPacket(player: Player, containerId: Int, value: Int) {
         runCatching {
-            val cls = Class.forName(
+            val packetClass = Class.forName(
                 "net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket"
             )
-            val packet = cls
+            val packet = packetClass
                 .getDeclaredConstructor(Int::class.java, Int::class.java, Int::class.java)
                 .newInstance(containerId, 0, value)
             val nmsPlayer = player.javaClass.getMethod("getHandle").invoke(player)
-            val conn = generateSequence(nmsPlayer.javaClass) { it.superclass }
+            val connection = generateSequence(nmsPlayer.javaClass) { it.superclass }
                 .flatMap { it.declaredFields.asSequence() }
                 .first { it.name == "connection" }
                 .apply { isAccessible = true }
                 .get(nmsPlayer)
-            conn.javaClass.methods
+            connection.javaClass.methods
                 .first { it.name == "send" && it.parameterCount == 1 }
-                .invoke(conn, packet)
+                .invoke(connection, packet)
         }
     }
 }

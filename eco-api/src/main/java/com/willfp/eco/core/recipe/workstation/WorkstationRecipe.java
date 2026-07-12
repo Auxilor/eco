@@ -27,9 +27,9 @@ public abstract class WorkstationRecipe {
      * @param permission Permission node required to use this recipe, or null
      *                   if no permission is required.
      */
-    protected WorkstationRecipe(@NotNull NamespacedKey key,
-                                @Nullable ItemStack output,
-                                @Nullable String permission) {
+    protected WorkstationRecipe(@NotNull final NamespacedKey key,
+                                @Nullable final ItemStack output,
+                                @Nullable final String permission) {
         this.key = key;
         this.output = output;
         this.permission = permission;
@@ -40,21 +40,30 @@ public abstract class WorkstationRecipe {
      *
      * @return The key.
      */
-    @NotNull public NamespacedKey getKey() { return key; }
+    @NotNull
+    public NamespacedKey getKey() {
+        return key;
+    }
 
     /**
      * Get the output item produced by this recipe.
      *
      * @return The output, or null if this recipe has no fixed output.
      */
-    @Nullable public ItemStack getOutput() { return output; }
+    @Nullable
+    public ItemStack getOutput() {
+        return output;
+    }
 
     /**
      * Get the permission required to use this recipe.
      *
      * @return The permission node, or null if no permission is required.
      */
-    @Nullable public String getPermission() { return permission; }
+    @Nullable
+    public String getPermission() {
+        return permission;
+    }
 
     /**
      * Register this recipe with {@link WorkstationRecipes} and, where

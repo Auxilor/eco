@@ -213,13 +213,13 @@ import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
 import com.willfp.eco.internal.spigot.recipes.StackedRecipeListener
-import com.willfp.eco.internal.spigot.recipes.workstation.BrewingPacketHandler
-import com.willfp.eco.internal.spigot.recipes.workstation.GrindstonePacketHandler
-import com.willfp.eco.internal.spigot.recipes.workstation.WorkstationRecipeListener
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInComplex
 import com.willfp.eco.internal.spigot.recipes.listeners.ComplexInVanilla
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapedCraftingRecipeStackHandler
 import com.willfp.eco.internal.spigot.recipes.stackhandlers.ShapelessCraftingRecipeStackHandler
+import com.willfp.eco.internal.spigot.recipes.workstation.BrewingPacketHandler
+import com.willfp.eco.internal.spigot.recipes.workstation.GrindstonePacketHandler
+import com.willfp.eco.internal.spigot.recipes.workstation.WorkstationRecipeListener
 import com.willfp.eco.util.ClassUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
 import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler

@@ -36,18 +36,18 @@ public final class VillagerRecipe extends WorkstationRecipe {
     private final boolean wanderingTrader;
     private final int villagerXp;
 
-    private VillagerRecipe(@NotNull NamespacedKey key,
-                           @Nullable ItemStack output,
-                           @Nullable String permission,
-                           @NotNull TestableItem input1,
-                           @Nullable TestableItem input2,
-                           @Nullable ItemStack input1Display,
-                           @Nullable ItemStack input2Display,
-                           @Nullable Villager.Profession profession,
-                           int minLevel,
-                           double chance,
-                           boolean wanderingTrader,
-                           int villagerXp) {
+    private VillagerRecipe(@NotNull final NamespacedKey key,
+                           @Nullable final ItemStack output,
+                           @Nullable final String permission,
+                           @NotNull final TestableItem input1,
+                           @Nullable final TestableItem input2,
+                           @Nullable final ItemStack input1Display,
+                           @Nullable final ItemStack input2Display,
+                           @Nullable final Villager.Profession profession,
+                           final int minLevel,
+                           final double chance,
+                           final boolean wanderingTrader,
+                           final int villagerXp) {
         super(key, output, permission);
         this.input1 = input1;
         this.input2 = input2;
@@ -113,7 +113,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
     /**
      * Get the minimum villager level required for this trade to appear.
      *
-     * @return Minimum level (1–5). {@code 0} means no restriction.
+     * @return Minimum level (1-5). {@code 0} means no restriction.
      */
     public int getMinLevel() {
         return minLevel;
@@ -160,9 +160,9 @@ public final class VillagerRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output,
-                                  @NotNull TestableItem input1) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output,
+                                  @NotNull final TestableItem input1) {
         return new Builder(key, output, input1);
     }
 
@@ -183,9 +183,9 @@ public final class VillagerRecipe extends WorkstationRecipe {
         private int villagerXp = DEFAULT_VILLAGER_XP;
         @Nullable private String permission;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @NotNull TestableItem input1) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @NotNull final TestableItem input1) {
             this.key = key;
             this.output = output;
             this.input1 = input1;
@@ -198,7 +198,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder input2(@Nullable TestableItem input2) {
+        public Builder input2(@Nullable final TestableItem input2) {
             this.input2 = input2;
             return this;
         }
@@ -210,7 +210,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder input1Display(@Nullable ItemStack input1Display) {
+        public Builder input1Display(@Nullable final ItemStack input1Display) {
             this.input1Display = input1Display;
             return this;
         }
@@ -222,7 +222,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder input2Display(@Nullable ItemStack input2Display) {
+        public Builder input2Display(@Nullable final ItemStack input2Display) {
             this.input2Display = input2Display;
             return this;
         }
@@ -234,7 +234,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder profession(@Nullable Villager.Profession profession) {
+        public Builder profession(@Nullable final Villager.Profession profession) {
             this.profession = profession;
             return this;
         }
@@ -242,11 +242,11 @@ public final class VillagerRecipe extends WorkstationRecipe {
         /**
          * Set the minimum villager level required for this trade.
          *
-         * @param minLevel Minimum level (1–5). Defaults to {@value DEFAULT_MIN_LEVEL} (no restriction).
+         * @param minLevel Minimum level (1-5). Defaults to {@value DEFAULT_MIN_LEVEL} (no restriction).
          * @return This builder.
          */
         @NotNull
-        public Builder minLevel(int minLevel) {
+        public Builder minLevel(final int minLevel) {
             this.minLevel = minLevel;
             return this;
         }
@@ -258,7 +258,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder chance(double chance) {
+        public Builder chance(final double chance) {
             this.chance = chance;
             return this;
         }
@@ -270,7 +270,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder wanderingTrader(boolean wanderingTrader) {
+        public Builder wanderingTrader(final boolean wanderingTrader) {
             this.wanderingTrader = wanderingTrader;
             return this;
         }
@@ -282,7 +282,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }
@@ -294,7 +294,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder villagerXp(int villagerXp) {
+        public Builder villagerXp(final int villagerXp) {
             this.villagerXp = villagerXp;
             return this;
         }

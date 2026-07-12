@@ -3,11 +3,10 @@ package com.willfp.eco.core.recipe.workstation;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.bukkit.Location;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -63,9 +62,9 @@ public final class WorkstationRecipes {
          *
          * @param location     The brewing stand location.
          * @param recipe       The recipe that completed.
-         * @param matchedSlots The base slots (0–2) that received the result.
+         * @param matchedSlots The base slots (0-2) that received the result.
          */
-        void onBrewCompleted(@NotNull Location location, @NotNull BrewingRecipe recipe, @NotNull List<Integer> matchedSlots);
+        void onBrewCompleted(@NotNull final Location location, @NotNull final BrewingRecipe recipe, @NotNull final List<Integer> matchedSlots);
     }
 
     @Nullable private static BrewCompletedCallback brewCompletedCallback = null;
@@ -77,7 +76,7 @@ public final class WorkstationRecipes {
      *
      * @param recipe The recipe to register.
      */
-    public static void register(@NotNull WorkstationRecipe recipe) {
+    public static void register(@NotNull final WorkstationRecipe recipe) {
         recipes.put(recipe.getKey(), recipe);
     }
 
@@ -86,7 +85,7 @@ public final class WorkstationRecipes {
      *
      * @param key The Bukkit recipe key to track.
      */
-    public static void trackBukkitKey(@NotNull NamespacedKey key) {
+    public static void trackBukkitKey(@NotNull final NamespacedKey key) {
         trackedBukkitKeys.add(key);
     }
 
@@ -97,7 +96,7 @@ public final class WorkstationRecipes {
      * @return The recipe, or null if not found.
      */
     @Nullable
-    public static WorkstationRecipe getByKey(@NotNull NamespacedKey key) {
+    public static WorkstationRecipe getByKey(@NotNull final NamespacedKey key) {
         return recipes.get(key);
     }
 
@@ -120,7 +119,7 @@ public final class WorkstationRecipes {
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    public static <T extends WorkstationRecipe> Collection<T> getAll(@NotNull Class<T> type) {
+    public static <T extends WorkstationRecipe> Collection<T> getAll(@NotNull final Class<T> type) {
         return recipes.values().stream()
                 .filter(type::isInstance)
                 .map(r -> (T) r)
@@ -136,7 +135,7 @@ public final class WorkstationRecipes {
      * @param playerId The player's UUID.
      * @param recipe   The recipe to store as pending.
      */
-    public static void setPendingRecipe(@NotNull UUID playerId, @NotNull WorkstationRecipe recipe) {
+    public static void setPendingRecipe(@NotNull final UUID playerId, @NotNull final WorkstationRecipe recipe) {
         pendingRecipes.put(playerId, recipe);
     }
 
@@ -147,7 +146,7 @@ public final class WorkstationRecipes {
      * @return The pending recipe, or null if none is stored.
      */
     @Nullable
-    public static WorkstationRecipe getPendingRecipe(@NotNull UUID playerId) {
+    public static WorkstationRecipe getPendingRecipe(@NotNull final UUID playerId) {
         return pendingRecipes.get(playerId);
     }
 
@@ -156,7 +155,7 @@ public final class WorkstationRecipes {
      *
      * @param playerId The player's UUID.
      */
-    public static void clearPendingRecipe(@NotNull UUID playerId) {
+    public static void clearPendingRecipe(@NotNull final UUID playerId) {
         pendingRecipes.remove(playerId);
     }
 
@@ -168,7 +167,7 @@ public final class WorkstationRecipes {
      *
      * @param hook Consumer that accepts the brewing-stand {@link Location} to cancel.
      */
-    public static void registerBrewCancelHook(@NotNull Consumer<Location> hook) {
+    public static void registerBrewCancelHook(@NotNull final Consumer<Location> hook) {
         brewCancelHook = hook;
     }
 
@@ -179,7 +178,7 @@ public final class WorkstationRecipes {
      *
      * @param location The location of the brewing stand to cancel.
      */
-    public static void cancelPendingBrew(@NotNull Location location) {
+    public static void cancelPendingBrew(@NotNull final Location location) {
         if (brewCancelHook != null) brewCancelHook.accept(location);
     }
 
@@ -189,7 +188,7 @@ public final class WorkstationRecipes {
      *
      * @param callback The callback.
      */
-    public static void registerBrewCompletedHook(@NotNull BrewCompletedCallback callback) {
+    public static void registerBrewCompletedHook(@NotNull final BrewCompletedCallback callback) {
         brewCompletedCallback = callback;
     }
 
@@ -198,11 +197,11 @@ public final class WorkstationRecipes {
      *
      * @param location     The brewing stand location.
      * @param recipe       The recipe that completed.
-     * @param matchedSlots The base slots (0–2) that received the result.
+     * @param matchedSlots The base slots (0-2) that received the result.
      */
-    public static void fireBrewCompleted(@NotNull Location location,
-                                         @NotNull BrewingRecipe recipe,
-                                         @NotNull List<Integer> matchedSlots) {
+    public static void fireBrewCompleted(@NotNull final Location location,
+                                         @NotNull final BrewingRecipe recipe,
+                                         @NotNull final List<Integer> matchedSlots) {
         if (brewCompletedCallback != null) brewCompletedCallback.onBrewCompleted(location, recipe, matchedSlots);
     }
 
@@ -213,7 +212,10 @@ public final class WorkstationRecipes {
      */
     public static void clear() {
         trackedBukkitKeys.forEach(key -> {
-            try { Bukkit.removeRecipe(key); } catch (Exception ignored) {}
+            try {
+                Bukkit.removeRecipe(key);
+            } catch (Exception ignored) {
+            }
         });
         trackedBukkitKeys.clear();
         recipes.clear();

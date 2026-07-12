@@ -19,11 +19,11 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
     private final TestableItem item1;
     @Nullable private final TestableItem item2;
 
-    private GrindstoneRecipe(@NotNull NamespacedKey key,
-                             @Nullable ItemStack output,
-                             @Nullable String permission,
-                             @NotNull TestableItem item1,
-                             @Nullable TestableItem item2) {
+    private GrindstoneRecipe(@NotNull final NamespacedKey key,
+                             @Nullable final ItemStack output,
+                             @Nullable final String permission,
+                             @NotNull final TestableItem item1,
+                             @Nullable final TestableItem item2) {
         super(key, output, permission);
         this.item1 = item1;
         this.item2 = item2;
@@ -63,9 +63,9 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output,
-                                  @NotNull TestableItem item1) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output,
+                                  @NotNull final TestableItem item1) {
         return new Builder(key, output, item1);
     }
 
@@ -79,9 +79,9 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
         @Nullable private TestableItem item2;
         @Nullable private String permission;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @NotNull TestableItem item1) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @NotNull final TestableItem item1) {
             this.key = key;
             this.output = output;
             this.item1 = item1;
@@ -94,7 +94,7 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder item2(@Nullable TestableItem item2) {
+        public Builder item2(@Nullable final TestableItem item2) {
             this.item2 = item2;
             return this;
         }
@@ -106,7 +106,7 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }

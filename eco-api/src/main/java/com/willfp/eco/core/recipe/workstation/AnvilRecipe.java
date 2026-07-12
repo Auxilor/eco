@@ -24,13 +24,13 @@ public final class AnvilRecipe extends WorkstationRecipe {
     @Nullable private final String resultName;
     private final int repairCost;
 
-    private AnvilRecipe(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @Nullable String permission,
-                        @NotNull TestableItem base,
-                        @Nullable TestableItem material,
-                        @Nullable String resultName,
-                        int repairCost) {
+    private AnvilRecipe(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @Nullable final String permission,
+                        @NotNull final TestableItem base,
+                        @Nullable final TestableItem material,
+                        @Nullable final String resultName,
+                        final int repairCost) {
         super(key, output, permission);
         this.base = base;
         this.material = material;
@@ -91,9 +91,9 @@ public final class AnvilRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output,
-                                  @NotNull TestableItem base) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output,
+                                  @NotNull final TestableItem base) {
         return new Builder(key, output, base);
     }
 
@@ -109,9 +109,9 @@ public final class AnvilRecipe extends WorkstationRecipe {
         private int repairCost = DEFAULT_REPAIR_COST;
         @Nullable private String permission;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @NotNull TestableItem base) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @NotNull final TestableItem base) {
             this.key = key;
             this.output = output;
             this.base = base;
@@ -124,7 +124,7 @@ public final class AnvilRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder material(@Nullable TestableItem material) {
+        public Builder material(@Nullable final TestableItem material) {
             this.material = material;
             return this;
         }
@@ -136,7 +136,7 @@ public final class AnvilRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder resultName(@Nullable String resultName) {
+        public Builder resultName(@Nullable final String resultName) {
             this.resultName = resultName;
             return this;
         }
@@ -148,7 +148,7 @@ public final class AnvilRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder repairCost(int repairCost) {
+        public Builder repairCost(final int repairCost) {
             this.repairCost = repairCost;
             return this;
         }
@@ -160,7 +160,7 @@ public final class AnvilRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }

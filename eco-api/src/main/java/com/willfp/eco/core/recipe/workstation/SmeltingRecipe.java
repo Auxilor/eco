@@ -3,12 +3,12 @@ package com.willfp.eco.core.recipe.workstation;
 import com.willfp.eco.core.items.TestableItem;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-import org.bukkit.inventory.recipe.CookingBookCategory;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.CampfireRecipe;
+import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.SmokingRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * <p>Default cook times per type:
  * <ul>
- *   <li>{@link SmeltingType#FURNACE} — 200 ticks</li>
- *   <li>{@link SmeltingType#BLAST_FURNACE} / {@link SmeltingType#SMOKER} — 100 ticks</li>
- *   <li>{@link SmeltingType#CAMPFIRE} — 600 ticks</li>
+ *   <li>{@link SmeltingType#FURNACE} - 200 ticks</li>
+ *   <li>{@link SmeltingType#BLAST_FURNACE} / {@link SmeltingType#SMOKER} - 100 ticks</li>
+ *   <li>{@link SmeltingType#CAMPFIRE} - 600 ticks</li>
  * </ul>
  * Pass a non-negative value to {@link Builder#cookTime(int)} to override the default.
  *
@@ -44,14 +44,14 @@ public final class SmeltingRecipe extends WorkstationRecipe {
     private final int cookTime;
     private final float experience;
 
-    private SmeltingRecipe(@NotNull NamespacedKey key,
-                           @Nullable ItemStack output,
-                           @Nullable String permission,
-                           @NotNull TestableItem input,
-                           @Nullable ItemStack inputDisplay,
-                           @NotNull SmeltingType smeltingType,
-                           int cookTime,
-                           float experience) {
+    private SmeltingRecipe(@NotNull final NamespacedKey key,
+                           @Nullable final ItemStack output,
+                           @Nullable final String permission,
+                           @NotNull final TestableItem input,
+                           @Nullable final ItemStack inputDisplay,
+                           @NotNull final SmeltingType smeltingType,
+                           final int cookTime,
+                           final float experience) {
         super(key, output, permission);
         this.input = input;
         this.inputDisplay = inputDisplay;
@@ -140,7 +140,7 @@ public final class SmeltingRecipe extends WorkstationRecipe {
         NamespacedKey key = getKey();
         ItemStack output = getOutput();
 
-        org.bukkit.inventory.CookingRecipe<?> bukkitRecipe = switch (smeltingType) {
+        CookingRecipe<?> bukkitRecipe = switch (smeltingType) {
             case FURNACE -> new FurnaceRecipe(key, output, ingredient, experience, time);
             case BLAST_FURNACE -> new BlastingRecipe(key, output, ingredient, experience, time);
             case SMOKER -> new SmokingRecipe(key, output, ingredient, experience, time);
@@ -161,10 +161,10 @@ public final class SmeltingRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output,
-                                  @NotNull TestableItem input,
-                                  @NotNull SmeltingType smeltingType) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output,
+                                  @NotNull final TestableItem input,
+                                  @NotNull final SmeltingType smeltingType) {
         return new Builder(key, output, input, smeltingType);
     }
 
@@ -181,10 +181,10 @@ public final class SmeltingRecipe extends WorkstationRecipe {
         private int cookTime = -1;
         private float experience = 0f;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @NotNull TestableItem input,
-                        @NotNull SmeltingType smeltingType) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @NotNull final TestableItem input,
+                        @NotNull final SmeltingType smeltingType) {
             this.key = key;
             this.output = output;
             this.input = input;
@@ -199,7 +199,7 @@ public final class SmeltingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder cookTime(int cookTime) {
+        public Builder cookTime(final int cookTime) {
             this.cookTime = cookTime;
             return this;
         }
@@ -211,7 +211,7 @@ public final class SmeltingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder experience(float experience) {
+        public Builder experience(final float experience) {
             this.experience = experience;
             return this;
         }
@@ -226,7 +226,7 @@ public final class SmeltingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder inputDisplay(@NotNull ItemStack inputDisplay) {
+        public Builder inputDisplay(@NotNull final ItemStack inputDisplay) {
             this.inputDisplay = inputDisplay;
             return this;
         }
@@ -238,7 +238,7 @@ public final class SmeltingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }

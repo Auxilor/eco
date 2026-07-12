@@ -22,11 +22,11 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
     private final TestableItem input;
     @Nullable private final ItemStack inputDisplay;
 
-    private StonecuttingRecipe(@NotNull NamespacedKey key,
-                               @Nullable ItemStack output,
-                               @Nullable String permission,
-                               @NotNull TestableItem input,
-                               @Nullable ItemStack inputDisplay) {
+    private StonecuttingRecipe(@NotNull final NamespacedKey key,
+                               @Nullable final ItemStack output,
+                               @Nullable final String permission,
+                               @NotNull final TestableItem input,
+                               @Nullable final ItemStack inputDisplay) {
         super(key, output, permission);
         this.input = input;
         this.inputDisplay = inputDisplay;
@@ -83,9 +83,9 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output,
-                                  @NotNull TestableItem input) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output,
+                                  @NotNull final TestableItem input) {
         return new Builder(key, output, input);
     }
 
@@ -99,9 +99,9 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
         @Nullable private ItemStack inputDisplay;
         @Nullable private String permission;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @NotNull TestableItem input) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @NotNull final TestableItem input) {
             this.key = key;
             this.output = output;
             this.input = input;
@@ -116,7 +116,7 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder inputDisplay(@NotNull ItemStack inputDisplay) {
+        public Builder inputDisplay(@NotNull final ItemStack inputDisplay) {
             this.inputDisplay = inputDisplay;
             return this;
         }
@@ -128,7 +128,7 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }

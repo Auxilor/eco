@@ -25,7 +25,7 @@ object AutocrafterPatch : Listener {
             key
         }
         val recipe = Recipes.getRecipe(lookupKey)
-        if (recipe != null && recipe.isSupportCrafter) {
+        if (recipe != null && recipe.isCrafterSupported) {
             return
         }
 

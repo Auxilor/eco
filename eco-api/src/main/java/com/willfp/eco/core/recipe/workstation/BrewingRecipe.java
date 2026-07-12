@@ -22,12 +22,12 @@ public final class BrewingRecipe extends WorkstationRecipe {
     private final TestableItem ingredient;
     private final int brewTime;
 
-    private BrewingRecipe(@NotNull NamespacedKey key,
-                          @Nullable ItemStack output,
-                          @Nullable String permission,
-                          @NotNull TestableItem base,
-                          @NotNull TestableItem ingredient,
-                          int brewTime) {
+    private BrewingRecipe(@NotNull final NamespacedKey key,
+                          @Nullable final ItemStack output,
+                          @Nullable final String permission,
+                          @NotNull final TestableItem base,
+                          @NotNull final TestableItem ingredient,
+                          final int brewTime) {
         super(key, output, permission);
         this.base = base;
         this.ingredient = ingredient;
@@ -78,10 +78,10 @@ public final class BrewingRecipe extends WorkstationRecipe {
      * @return A new builder.
      */
     @NotNull
-    public static Builder builder(@NotNull NamespacedKey key,
-                                  @Nullable ItemStack output,
-                                  @NotNull TestableItem base,
-                                  @NotNull TestableItem ingredient) {
+    public static Builder builder(@NotNull final NamespacedKey key,
+                                  @Nullable final ItemStack output,
+                                  @NotNull final TestableItem base,
+                                  @NotNull final TestableItem ingredient) {
         return new Builder(key, output, base, ingredient);
     }
 
@@ -96,10 +96,10 @@ public final class BrewingRecipe extends WorkstationRecipe {
         @Nullable private String permission;
         private int brewTime = DEFAULT_BREW_TIME;
 
-        private Builder(@NotNull NamespacedKey key,
-                        @Nullable ItemStack output,
-                        @NotNull TestableItem base,
-                        @NotNull TestableItem ingredient) {
+        private Builder(@NotNull final NamespacedKey key,
+                        @Nullable final ItemStack output,
+                        @NotNull final TestableItem base,
+                        @NotNull final TestableItem ingredient) {
             this.key = key;
             this.output = output;
             this.base = base;
@@ -113,7 +113,7 @@ public final class BrewingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder brewTime(int brewTime) {
+        public Builder brewTime(final int brewTime) {
             this.brewTime = brewTime;
             return this;
         }
@@ -125,7 +125,7 @@ public final class BrewingRecipe extends WorkstationRecipe {
          * @return This builder.
          */
         @NotNull
-        public Builder permission(@NotNull String permission) {
+        public Builder permission(@NotNull final String permission) {
             this.permission = permission;
             return this;
         }
