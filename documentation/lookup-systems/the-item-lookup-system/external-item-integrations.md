@@ -1,7 +1,6 @@
 ﻿---
 title: External Item Integrations
-slug: /the-item-lookup-system/external-item-integrations
-sidebar_position: 1
+sidebar_position: 2
 ---
 The Item Lookup System allows you to use custom items from other plugins, inside of your eco plugins.
 
@@ -12,18 +11,25 @@ To use external items within The Item Lookup System, you need to use the relevan
 
 | Plugin          | Lookup Key                                                                                                                 |
 |-----------------|----------------------------------------------------------------------------------------------------------------------------|
+| CraftEngine     | `craftengine:<namespace>__<key>` CraftEngine items are namespaced. **There is a double underscore! `__`**                  |
 | CustomCrafting  | `customcrafting:<id>`                                                                                                      |
 | Denizen         | `denizen:<id>`                                                                                                             |
 | ExecutableItems | `executableitems:<id>`                                                                                                     |
 | HeadDatabase    | `headdb:<id>`                                                                                                              |
 | ItemBridge      | `itembridge:saved__<id>` for items you've saved.<br/>`itembridge:<prefix>__<id>` for plugin items supported in ItemBridge. |
 | ItemsAdder      | `itemsadder:<namespace>__<key>` ItemsAdder items are namespaced, example below. **There is a double underscore! `__`**     |
-| CraftEngine     | `craftengine:<namespace>__<key>` CraftEngine items are namespaced. **There is a double underscore! `__`**                  |
-| Oraxen          | `oraxen:<id>`                                                                                                              |
+| MythicMobs      | `mythicmobs:<id>`                                                                                                          |
 | Nexo            | `nexo:<id>`                                                                                                                |
+| Oraxen          | `oraxen:<id>`                                                                                                              |
 
 :::tip Other Plugins
-Remember, you can use NBT data for any other items where there is not direct plugin integration. Check out our [NBT converter](https://plugins.auxilor.io/the-item-lookup-system/nbt-string-creator).
+Using NBT data can be a great way to use items from any other plugin within eco, even where there is no direct integration. When configuring items in YAML files, you need to escape NBT strings to prevent syntax errors.
+
+The simplest way to do this is to use the libreforge command to get the NBT data of an item in a slot.
+
+Once the command is run, you can click-to-copy the chat output, and paste into your configs. The NBT string will be properly escaped for use in YAML files, so you don't have to worry about syntax errors.
+
+Command: `/libreforge getitemdata <player> <slot>`
 :::
 
 #### ItemsAdder Usage

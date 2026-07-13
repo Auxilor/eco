@@ -37,17 +37,12 @@ publishing {
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
-    }
-
-    publishing {
-        repositories {
-            maven {
-                name = "Auxilor"
-                url = uri("https://repo.auxilor.io/repository/maven-releases/")
-                credentials {
-                    username = System.getenv("MAVEN_USERNAME")
-                    password = System.getenv("MAVEN_PASSWORD")
-                }
+        maven {
+            name = "Auxilor"
+            url = uri("https://repo.auxilor.io/repository/maven-releases/")
+            credentials {
+                username = System.getenv("MAVEN_USERNAME")
+                password = System.getenv("MAVEN_PASSWORD")
             }
         }
     }

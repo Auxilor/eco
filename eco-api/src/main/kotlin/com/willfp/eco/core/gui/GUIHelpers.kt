@@ -6,12 +6,17 @@ import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuEvent
 import com.willfp.eco.core.gui.menu.MenuEventHandler
+import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.page.Page
 import com.willfp.eco.core.gui.page.PageBuilder
+import com.willfp.eco.core.gui.page.PageChanger
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
+import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
+import com.willfp.eco.core.sound.PlayableSound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -190,6 +195,78 @@ inline fun <reified T : MenuEvent> MenuBuilder.onEvent(crossinline handler: (Pla
 /** @see MenuBuilder.onBuild */
 fun MenuBuilder.onBuild(action: (Menu) -> Unit): MenuBuilder =
     this.onBuild { action(it) }
+
+/**
+ * Add a page changer button placed directly from a config section.
+ *
+ * Reads the combined-lookup shape: `basePath.item` for the active button and the
+ * optional `basePath.item-inactive` for the first or last page. The location is
+ * read tolerantly as `basePath.location.row` / `basePath.location.column`,
+ * falling back to a flat `basePath.row` / `basePath.column`. If no active item is
+ * configured the changer is not added, so a missing button stays hidden rather
+ * than rendering a broken item.
+ *
+ * @param config The config holding the button section.
+ * @param basePath The path of the button section.
+ * @param direction The direction.
+ * @param sound The page turn sound, or null for silent.
+ * @param layer The layer, defaults to [MenuLayer.TOP].
+ * @return The builder.
+ */
+fun MenuBuilder.addPageChanger(
+    config: Config,
+    basePath: String,
+    direction: PageChanger.Direction,
+    sound: PlayableSound?,
+    layer: Int = MenuLayer.TOP
+): MenuBuilder {
+    val active = config.getStringOrNull("$basePath.item")
+        ?.let { Items.lookup(it).item }
+        ?: return this
+
+    val inactive = config.getStringOrNull("$basePath.item-inactive")
+        ?.let { Items.lookup(it).item }
+
+    val row = config.getIntOrNull("$basePath.location.row") ?: config.getInt("$basePath.row")
+    val column = config.getIntOrNull("$basePath.location.column") ?: config.getInt("$basePath.column")
+
+    return addPageChanger(direction, active, inactive, sound, row, column, layer)
+}
+
+/**
+ * Add a page changer button from prebuilt items.
+ *
+ * Use this when the button items are built by the plugin (for example a split
+ * active and inactive config shape with separate name and lore). The behaviour
+ * matches the config overload: a null inactive item hides the button on the
+ * first or last page.
+ *
+ * @param direction The direction.
+ * @param active The active item.
+ * @param inactive The inactive item, or null to hide on the first or last page.
+ * @param sound The page turn sound, or null for silent.
+ * @param row The row.
+ * @param column The column.
+ * @param layer The layer, defaults to [MenuLayer.TOP].
+ * @return The builder.
+ */
+fun MenuBuilder.addPageChanger(
+    direction: PageChanger.Direction,
+    active: ItemStack,
+    inactive: ItemStack?,
+    sound: PlayableSound?,
+    row: Int,
+    column: Int,
+    layer: Int = MenuLayer.TOP
+): MenuBuilder {
+    val changer = PageChanger.builder(direction)
+        .active(active)
+        .inactive(inactive)
+        .sound(sound)
+        .build()
+
+    return addComponent(layer, row, column, changer)
+}
 
 /** Kotlin builder for menus. */
 fun menu(

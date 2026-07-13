@@ -35,7 +35,30 @@ public class CustomBlock implements TestableBlock {
     private final Function<Location, Block> provider;
 
     /**
+     * The hardness as defined by the custom block plugin, or -1 if unknown.
+     */
+    private final float hardness;
+
+    /**
      * Create a new custom block.
+     *
+     * @param key      The block key.
+     * @param test     The test.
+     * @param provider The provider to spawn the block.
+     * @param hardness The hardness, or -1 if not provided by the plugin.
+     */
+    public CustomBlock(@NotNull final NamespacedKey key,
+                       @NotNull final Predicate<@NotNull Block> test,
+                       @NotNull final Function<Location, Block> provider,
+                       final float hardness) {
+        this.key = key;
+        this.test = test;
+        this.provider = provider;
+        this.hardness = hardness;
+    }
+
+    /**
+     * Create a new custom block with unknown hardness.
      *
      * @param key      The block key.
      * @param test     The test.
@@ -44,9 +67,7 @@ public class CustomBlock implements TestableBlock {
     public CustomBlock(@NotNull final NamespacedKey key,
                        @NotNull final Predicate<@NotNull Block> test,
                        @NotNull final Function<Location, Block> provider) {
-        this.key = key;
-        this.test = test;
-        this.provider = provider;
+        this(key, test, provider, -1f);
     }
 
     @Override
@@ -56,6 +77,11 @@ public class CustomBlock implements TestableBlock {
         }
 
         return test.test(other);
+    }
+
+    @Override
+    public float hardness() {
+        return this.hardness;
     }
 
     @Override

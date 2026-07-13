@@ -10,7 +10,6 @@ load: STARTUP
 loadbefore:
   - Spartan
   - CustomCrafting
-  - Lands
   - EconomyShopGUI
   - EconomyShopGUI-Premium
   - CMI

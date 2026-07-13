@@ -97,8 +97,8 @@ dependencies {
     compileOnly("com.nexomc:nexo:1.19.1") {
         exclude(group = "*", module = "*")
     }
-    compileOnly("net.momirealms:craft-engine-core:26.5")
-    compileOnly("net.momirealms:craft-engine-bukkit:26.5")
+    compileOnly("net.momirealms:craft-engine-core:26.6.2")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.6.2")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
     compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
     compileOnly("net.essentialsx:EssentialsX:2.21.2") {
