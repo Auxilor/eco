@@ -16,7 +16,7 @@ import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
-import com.willfp.eco.core.sound.PlayableSound
+import com.willfp.eco.core.sound.AbstractPlayableSound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -217,7 +217,7 @@ fun MenuBuilder.addPageChanger(
     config: Config,
     basePath: String,
     direction: PageChanger.Direction,
-    sound: PlayableSound?,
+    sound: AbstractPlayableSound<*>?,
     layer: Int = MenuLayer.TOP
 ): MenuBuilder {
     val active = config.getStringOrNull("$basePath.item")
@@ -254,7 +254,7 @@ fun MenuBuilder.addPageChanger(
     direction: PageChanger.Direction,
     active: ItemStack,
     inactive: ItemStack?,
-    sound: PlayableSound?,
+    sound: AbstractPlayableSound<*>?,
     row: Int,
     column: Int,
     layer: Int = MenuLayer.TOP
