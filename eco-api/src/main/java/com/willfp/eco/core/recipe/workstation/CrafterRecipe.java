@@ -1,10 +1,10 @@
 package com.willfp.eco.core.recipe.workstation;
 
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.core.recipe.Recipes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -114,7 +114,7 @@ public final class CrafterRecipe extends WorkstationRecipe {
             }
         }
 
-        Bukkit.addRecipe(shapedRecipe);
+        Recipes.scheduleBukkitRecipeRegistration(shapedRecipe);
         WorkstationRecipes.trackBukkitKey(crafterKey);
     }
 

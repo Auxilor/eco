@@ -21,6 +21,8 @@ public final class AnvilRecipe extends WorkstationRecipe {
 
     private final TestableItem base;
     @Nullable private final TestableItem material;
+    @Nullable private final ItemStack baseDisplay;
+    @Nullable private final ItemStack materialDisplay;
     @Nullable private final String resultName;
     private final int repairCost;
 
@@ -29,11 +31,15 @@ public final class AnvilRecipe extends WorkstationRecipe {
                         @Nullable final String permission,
                         @NotNull final TestableItem base,
                         @Nullable final TestableItem material,
+                        @Nullable final ItemStack baseDisplay,
+                        @Nullable final ItemStack materialDisplay,
                         @Nullable final String resultName,
                         final int repairCost) {
         super(key, output, permission);
         this.base = base;
         this.material = material;
+        this.baseDisplay = baseDisplay;
+        this.materialDisplay = materialDisplay;
         this.resultName = resultName;
         this.repairCost = repairCost;
     }
@@ -56,6 +62,26 @@ public final class AnvilRecipe extends WorkstationRecipe {
     @Nullable
     public TestableItem getMaterial() {
         return material;
+    }
+
+    /**
+     * Get the display item registered for the base slot.
+     *
+     * @return The display item, or null if not set.
+     */
+    @Nullable
+    public ItemStack getBaseDisplay() {
+        return baseDisplay;
+    }
+
+    /**
+     * Get the display item registered for the material slot.
+     *
+     * @return The display item, or null if not set.
+     */
+    @Nullable
+    public ItemStack getMaterialDisplay() {
+        return materialDisplay;
     }
 
     /**
@@ -105,6 +131,8 @@ public final class AnvilRecipe extends WorkstationRecipe {
         private final ItemStack output;
         private final TestableItem base;
         @Nullable private TestableItem material;
+        @Nullable private ItemStack baseDisplay;
+        @Nullable private ItemStack materialDisplay;
         @Nullable private String resultName;
         private int repairCost = DEFAULT_REPAIR_COST;
         @Nullable private String permission;
@@ -126,6 +154,30 @@ public final class AnvilRecipe extends WorkstationRecipe {
         @NotNull
         public Builder material(@Nullable final TestableItem material) {
             this.material = material;
+            return this;
+        }
+
+        /**
+         * Set the display item for the base slot.
+         *
+         * @param baseDisplay The display item.
+         * @return This builder.
+         */
+        @NotNull
+        public Builder baseDisplay(@Nullable final ItemStack baseDisplay) {
+            this.baseDisplay = baseDisplay;
+            return this;
+        }
+
+        /**
+         * Set the display item for the material slot.
+         *
+         * @param materialDisplay The display item.
+         * @return This builder.
+         */
+        @NotNull
+        public Builder materialDisplay(@Nullable final ItemStack materialDisplay) {
+            this.materialDisplay = materialDisplay;
             return this;
         }
 
@@ -172,7 +224,7 @@ public final class AnvilRecipe extends WorkstationRecipe {
          */
         @NotNull
         public AnvilRecipe build() {
-            return new AnvilRecipe(key, output, permission, base, material, resultName, repairCost);
+            return new AnvilRecipe(key, output, permission, base, material, baseDisplay, materialDisplay, resultName, repairCost);
         }
     }
 }

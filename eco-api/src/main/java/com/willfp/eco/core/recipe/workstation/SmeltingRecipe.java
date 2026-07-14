@@ -1,7 +1,7 @@
 package com.willfp.eco.core.recipe.workstation;
 
 import com.willfp.eco.core.items.TestableItem;
-import org.bukkit.Bukkit;
+import com.willfp.eco.core.recipe.Recipes;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.BlastingRecipe;
 import org.bukkit.inventory.CampfireRecipe;
@@ -147,7 +147,7 @@ public final class SmeltingRecipe extends WorkstationRecipe {
             case CAMPFIRE -> new CampfireRecipe(key, output, ingredient, experience, time);
         };
 
-        Bukkit.addRecipe(bukkitRecipe);
+        Recipes.scheduleBukkitRecipeRegistration(bukkitRecipe);
         WorkstationRecipes.trackBukkitKey(key);
     }
 

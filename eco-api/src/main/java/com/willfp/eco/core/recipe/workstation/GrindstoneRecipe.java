@@ -18,15 +18,21 @@ import org.jetbrains.annotations.Nullable;
 public final class GrindstoneRecipe extends WorkstationRecipe {
     private final TestableItem item1;
     @Nullable private final TestableItem item2;
+    @Nullable private final ItemStack item1Display;
+    @Nullable private final ItemStack item2Display;
 
     private GrindstoneRecipe(@NotNull final NamespacedKey key,
                              @Nullable final ItemStack output,
                              @Nullable final String permission,
                              @NotNull final TestableItem item1,
-                             @Nullable final TestableItem item2) {
+                             @Nullable final TestableItem item2,
+                             @Nullable final ItemStack item1Display,
+                             @Nullable final ItemStack item2Display) {
         super(key, output, permission);
         this.item1 = item1;
         this.item2 = item2;
+        this.item1Display = item1Display;
+        this.item2Display = item2Display;
     }
 
     /**
@@ -47,6 +53,26 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
     @Nullable
     public TestableItem getItem2() {
         return item2;
+    }
+
+    /**
+     * Get the display item registered for the first grindstone input slot.
+     *
+     * @return The display item, or null if not set.
+     */
+    @Nullable
+    public ItemStack getItem1Display() {
+        return item1Display;
+    }
+
+    /**
+     * Get the display item registered for the second grindstone input slot.
+     *
+     * @return The display item, or null if not set.
+     */
+    @Nullable
+    public ItemStack getItem2Display() {
+        return item2Display;
     }
 
     @Override
@@ -77,6 +103,8 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
         private final ItemStack output;
         private final TestableItem item1;
         @Nullable private TestableItem item2;
+        @Nullable private ItemStack item1Display;
+        @Nullable private ItemStack item2Display;
         @Nullable private String permission;
 
         private Builder(@NotNull final NamespacedKey key,
@@ -100,6 +128,30 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
         }
 
         /**
+         * Set the display item for the first grindstone input slot.
+         *
+         * @param item1Display The display item.
+         * @return This builder.
+         */
+        @NotNull
+        public Builder item1Display(@Nullable final ItemStack item1Display) {
+            this.item1Display = item1Display;
+            return this;
+        }
+
+        /**
+         * Set the display item for the second grindstone input slot.
+         *
+         * @param item2Display The display item.
+         * @return This builder.
+         */
+        @NotNull
+        public Builder item2Display(@Nullable final ItemStack item2Display) {
+            this.item2Display = item2Display;
+            return this;
+        }
+
+        /**
          * Set the permission required to use this recipe.
          *
          * @param permission The permission node.
@@ -118,7 +170,7 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
          */
         @NotNull
         public GrindstoneRecipe build() {
-            return new GrindstoneRecipe(key, output, permission, item1, item2);
+            return new GrindstoneRecipe(key, output, permission, item1, item2, item1Display, item2Display);
         }
     }
 }

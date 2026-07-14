@@ -1,7 +1,7 @@
 package com.willfp.eco.core.recipe.workstation;
 
 import com.willfp.eco.core.items.TestableItem;
-import org.bukkit.Bukkit;
+import com.willfp.eco.core.recipe.Recipes;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
@@ -126,7 +126,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
                 new RecipeChoice.ExactChoice(additionDisplay)
         );
 
-        Bukkit.addRecipe(bukkitRecipe);
+        Recipes.scheduleBukkitRecipeRegistration(bukkitRecipe);
         WorkstationRecipes.trackBukkitKey(key);
     }
 

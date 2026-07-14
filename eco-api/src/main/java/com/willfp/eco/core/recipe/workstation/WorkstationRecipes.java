@@ -2,7 +2,7 @@ package com.willfp.eco.core.recipe.workstation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.bukkit.Bukkit;
+import com.willfp.eco.core.recipe.Recipes;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
@@ -213,7 +213,7 @@ public final class WorkstationRecipes {
     public static void clear() {
         trackedBukkitKeys.forEach(key -> {
             try {
-                Bukkit.removeRecipe(key);
+                Recipes.scheduleBukkitRecipeRemoval(key);
             } catch (Exception ignored) {
             }
         });
