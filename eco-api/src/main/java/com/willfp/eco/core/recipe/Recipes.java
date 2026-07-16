@@ -1,7 +1,6 @@
 package com.willfp.eco.core.recipe;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.cache.EcoCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.willfp.eco.core.Eco;
@@ -34,11 +33,9 @@ public final class Recipes {
     /**
      * Cached recipes from matrix.
      */
-    private static final LoadingCache<ItemStack[], Optional<CraftingRecipe>> RECIPES_FROM_MATRIX = Caffeine.newBuilder()
-            .maximumSize(2048L)
-            .build(
-                    matrix -> RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst()
-            );
+    private static final EcoCache<ItemStack[], Optional<CraftingRecipe>> RECIPES_FROM_MATRIX = EcoCache.<ItemStack[], Optional<CraftingRecipe>>builder()
+            .maxSize(2048)
+            .build(matrix -> RECIPES.values().stream().filter(recipe -> recipe.test(matrix)).findFirst());
 
     /**
      * Variable representing timestamp at which last recipe was scheduled for registration.

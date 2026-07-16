@@ -1,7 +1,6 @@
 package com.willfp.eco.core.blocks;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.willfp.eco.core.cache.EcoCache;
 import com.willfp.eco.core.blocks.args.BlockArgParseResult;
 import com.willfp.eco.core.blocks.args.BlockArgParser;
 import com.willfp.eco.core.blocks.impl.EmptyTestableBlock;
@@ -14,7 +13,7 @@ import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
@@ -37,21 +36,19 @@ public final class Blocks {
     /**
      * Cached custom block lookups, using {@link HashedBlock}.
      */
-    private static final LoadingCache<HashedBlock, Optional<TestableBlock>> CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.MINUTES)
-            .build(
-                    key -> {
-                        TestableBlock match = null;
-                        for (TestableBlock block : REGISTRY.values()) {
-                            if (block.shouldMarkAsCustom() && block.matches(key.getBlock())) {
-                                match = block;
-                                break;
-                            }
-                        }
-
-                        return Optional.ofNullable(match);
+    private static final EcoCache<HashedBlock, Optional<TestableBlock>> CACHE = EcoCache.<HashedBlock, Optional<TestableBlock>>builder()
+            .expireAfterAccess(Duration.ofMinutes(10))
+            .build(key -> {
+                TestableBlock match = null;
+                for (TestableBlock block : REGISTRY.values()) {
+                    if (block.shouldMarkAsCustom() && block.matches(key.getBlock())) {
+                        match = block;
+                        break;
                     }
-            );
+                }
+
+                return Optional.ofNullable(match);
+            });
 
     /**
      * All block providers.

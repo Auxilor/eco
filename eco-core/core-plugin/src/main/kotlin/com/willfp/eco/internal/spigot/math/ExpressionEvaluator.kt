@@ -1,12 +1,11 @@
 package com.willfp.eco.internal.spigot.math
 
-import com.github.benmanes.caffeine.cache.Cache
-import com.github.benmanes.caffeine.cache.Caffeine
+import com.willfp.eco.core.cache.EcoCache
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.spigot.math.functional.ExpressionEnv
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 import kotlin.math.pow
 
 fun String.fastToDoubleOrNull(): Double? {
@@ -55,8 +54,8 @@ class ExpressionEvaluator(
 ) {
     private val compilationCache = ConcurrentHashMap<String, Any>()
 
-    private val resultCache: Cache<Long, Double> = Caffeine.newBuilder()
-        .expireAfterWrite(resultCacheTtlMs, TimeUnit.MILLISECONDS)
+    private val resultCache: EcoCache<Long, Double> = EcoCache.builder<Long, Double>()
+        .expireAfterWrite(Duration.ofMillis(resultCacheTtlMs))
         .build()
 
     private val threadLocalArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
@@ -70,7 +69,7 @@ class ExpressionEvaluator(
         val prepared = cached as? PreparedExpression ?: return null
 
         val cacheKey = resultCacheKey(expression, context)
-        resultCache.getIfPresent(cacheKey)?.let { return it }
+        resultCache.get(cacheKey)?.let { return it }
 
         val result = if (prepared.placeholderCount == 0) {
             runCatching { prepared.compiled.evaluate() }.getOrNull()
