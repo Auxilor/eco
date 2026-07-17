@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack
 class DragAndDropShellListener : Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onClick(event: InventoryClickEvent) {
-        if (DragAndDropHandlers.all().isEmpty()) return
         if (event.whoClicked.gameMode == GameMode.CREATIVE) return
         if (event.slotType == InventoryType.SlotType.RESULT) return
+        if (DragAndDropHandlers.all().isEmpty()) return
 
         val current = event.currentItem ?: return
         val cursor = event.cursor ?: return
