@@ -5,7 +5,11 @@ import com.willfp.eco.core.anvil.AnvilHandler
 import com.willfp.eco.core.anvil.AnvilHandlers
 import com.willfp.eco.core.anvil.AnvilSettings
 import com.willfp.eco.core.fast.fast
+import com.willfp.eco.core.proxy.ProxyConstants
+import com.willfp.eco.core.recipe.workstation.AnvilRecipe
+import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepair
+import com.willfp.eco.internal.spigot.proxies.OpenInventoryProxy
 import com.willfp.eco.util.StringUtils
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -45,6 +49,19 @@ class AnvilMechanicsListener(
     /** Per-player generation of the preview actually rendered into the result slot. */
     private val renderedPreviewGeneration = mutableMapOf<UUID, Int>()
 
+    private val anvilGuiClass: Class<*>? = try {
+        Class.forName(
+            "net.wesjd.anvilgui.version.Wrapper" +
+                    ProxyConstants.NMS_VERSION.substring(1) +
+                    "\$AnvilContainer"
+        )
+    } catch (_: ClassNotFoundException) {
+        null
+    }
+
+    private fun openMenuClass(player: Player): Class<*> =
+        plugin.getProxy(OpenInventoryProxy::class.java).getOpenInventory(player)::class.java
+
     /** Prevents taking a stale preview result before its async computation has finished rendering. */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     fun onAnvilResultClick(event: InventoryClickEvent) {
@@ -52,6 +69,7 @@ class AnvilMechanicsListener(
         val player = event.whoClicked as? Player ?: return
         val inventory = event.view.topInventory as? AnvilInventory ?: return
         if (event.rawSlot != 2) return
+        if (openMenuClass(player) == anvilGuiClass) return
 
         val latestGeneration = latestPreviewGeneration[player.uniqueId] ?: return
         val renderedGeneration = renderedPreviewGeneration[player.uniqueId]
@@ -88,18 +106,37 @@ class AnvilMechanicsListener(
         val handler = AnvilHandlers.handler() ?: return
         val settings = AnvilHandlers.settings() ?: return
 
-        val player = event.viewers.getOrNull(0) as? Player ?: return
+        val leftItem = event.inventory.getItem(0)
+        val rightItem = event.inventory.getItem(1)
+        val viewer = event.viewers.getOrNull(0) as? Player
+
+        // A matching custom AnvilRecipe (WorkstationRecipeListener, lower priority) has already
+        // set event.result. Defer to it entirely, clearing any stale preview-generation state
+        // from prior vanilla-merge use, so the enchant-merge shell doesn't clobber it and the
+        // result-click guard stays inert.
+        val hasCustomRecipe = WorkstationRecipes.getAll(AnvilRecipe::class.java).any {
+            it.base.matches(leftItem) && (it.material == null || it.material!!.matches(rightItem))
+        }
+        if (hasCustomRecipe) {
+            viewer?.uniqueId?.let {
+                latestPreviewGeneration.remove(it)
+                renderedPreviewGeneration.remove(it)
+            }
+            return
+        }
+
+        val player = viewer ?: return
         val generation = (latestPreviewGeneration[player.uniqueId] ?: 0) + 1
         latestPreviewGeneration[player.uniqueId] = generation
         renderedPreviewGeneration.remove(player.uniqueId)
 
-        val leftItem = event.inventory.getItem(0)
-        val rightItem = event.inventory.getItem(1)
         if (handler.isBlocked(leftItem, rightItem)) {
             event.result = null
             event.inventory.setItem(2, null)
             return
         }
+
+        if (openMenuClass(player) == anvilGuiClass) return
 
         val baseRepairCost = event.view.repairCost
         event.result = null
@@ -241,12 +278,12 @@ class AnvilMechanicsListener(
             for (storedEnchant in leftMeta.storedEnchants.keys.toSet()) {
                 leftMeta.removeStoredEnchant(storedEnchant)
             }
-            for ((enchant, lvl) in outEnchants) leftMeta.addStoredEnchant(enchant, lvl, true)
+            for ((enchant, level) in outEnchants) leftMeta.addStoredEnchant(enchant, level, true)
         } else {
             for (storedEnchant in leftMeta.enchants.keys.toSet()) {
                 leftMeta.removeEnchant(storedEnchant)
             }
-            for ((enchant, lvl) in outEnchants) leftMeta.addEnchant(enchant, lvl, true)
+            for ((enchant, level) in outEnchants) leftMeta.addEnchant(enchant, level, true)
         }
 
         left.itemMeta = leftMeta

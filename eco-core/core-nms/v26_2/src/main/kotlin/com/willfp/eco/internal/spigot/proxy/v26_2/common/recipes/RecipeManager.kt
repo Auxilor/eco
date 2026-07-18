@@ -68,9 +68,9 @@ object RecipeManager {
             when (this) {
                 is BukkitShapedRecipe -> {
                     val craftRecipe = CraftShapedRecipe.fromBukkitRecipe(this)
-                    val ingredients: MutableMap<Char, BukkitRecipeChoice?> = craftRecipe.getChoiceMap().filterKeys { c: Char? -> c != null }.toMutableMap()
+                    val ingredients: MutableMap<Char, BukkitRecipeChoice?> = craftRecipe.getChoiceMap().filterKeys { key: Char? -> key != null }.toMutableMap()
                     val shape: List<String> = replaceUndefinedIngredientsWithEmpty(craftRecipe.shape, ingredients)
-                    ingredients.values.removeIf { obj: BukkitRecipeChoice? -> Objects.isNull(obj) }
+                    ingredients.values.removeIf { choice: BukkitRecipeChoice? -> Objects.isNull(choice) }
                     val recipeConverter: Function<BukkitRecipeChoice?, Ingredient> = Function { bukkit: BukkitRecipeChoice? ->
                         CraftRecipe.toIngredient(bukkit, false)
                     }
@@ -89,10 +89,10 @@ object RecipeManager {
                 }
                 is BukkitShapelessRecipe -> {
                     val craftRecipe = CraftShapelessRecipe.fromBukkitRecipe(this)
-                    val ingred: MutableList<BukkitRecipeChoice> = craftRecipe.getChoiceList()
-                    val data: MutableList<Ingredient> = ArrayList(ingred.size)
-                    for (i in ingred) {
-                        data.add(CraftRecipe.toIngredient(i, true))
+                    val choices: MutableList<BukkitRecipeChoice> = craftRecipe.getChoiceList()
+                    val data: MutableList<Ingredient> = ArrayList(choices.size)
+                    for (choice in choices) {
+                        data.add(CraftRecipe.toIngredient(choice, true))
                     }
                     val recipe = ShapelessRecipe(
                         Recipe.CommonInfo(true),
