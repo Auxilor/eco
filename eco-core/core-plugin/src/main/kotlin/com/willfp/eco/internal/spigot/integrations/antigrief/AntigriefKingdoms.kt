@@ -7,10 +7,10 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.kingdoms.constants.group.Kingdom
 import org.kingdoms.constants.land.Land
-import org.kingdoms.constants.land.location.SimpleChunkLocation
+import org.kingdoms.constants.land.location.SimpleLocation
 import org.kingdoms.constants.player.KingdomPlayer
-import org.kingdoms.managers.PvPManager
 import org.kingdoms.managers.land.BuildingProcessor
+import org.kingdoms.managers.pvp.PvPManager
 
 class AntigriefKingdoms : AntigriefIntegration {
     override fun canBreakBlock(
@@ -22,9 +22,8 @@ class AntigriefKingdoms : AntigriefIntegration {
             return true
         }
         return BuildingProcessor(
-            player,
             kp,
-            SimpleChunkLocation.of(block),
+            SimpleLocation.of(block),
             false
         ).process().isSuccessful
     }
@@ -45,9 +44,8 @@ class AntigriefKingdoms : AntigriefIntegration {
             return true
         }
         return BuildingProcessor(
-            player,
             kp,
-            SimpleChunkLocation.of(block),
+            SimpleLocation.of(block),
             true
         ).process().isSuccessful
     }

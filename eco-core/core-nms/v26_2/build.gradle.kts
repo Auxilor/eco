@@ -19,6 +19,10 @@ tasks {
             "com.willfp.eco.internal.spigot.proxy.v26_2"
         )
 
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/common/recipes/RecipeManager*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/SNBTConverter*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/packet/NewItemsPacketOpenWindowMerchant*.class")
+
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
