@@ -137,6 +137,7 @@ import com.willfp.eco.internal.spigot.anvil.AnvilMechanicsListener
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
+import com.willfp.eco.internal.spigot.dragdrop.DragAndDropShellListener
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.ProfileLoadListener
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
@@ -578,6 +579,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
             AnvilMechanicsListener(this),
+            DragAndDropShellListener(),
             ArmorListener(),
             EntityDeathByEntityListeners(this),
             CraftingRecipeListener(this),
