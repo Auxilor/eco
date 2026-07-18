@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 
-@Suppress("OVERRIDE_DEPRECATION")
 class CustomItemsNexo(
     private val plugin: EcoPlugin
 ) : CustomItemsIntegration, Listener {
@@ -35,12 +34,19 @@ class CustomItemsNexo(
         NexoItems.registerUpdateCallback(
             Key.key("eco:nexo_update"),
             object : UpdateCallback {
-                override fun preUpdate(itemStack: ItemStack): ItemStack? {
-                    return null
-                }
+                override fun preUpdate(itemStack: ItemStack?): ItemStack? {
+                    val ecoArmorNamespacedKey = namespacedKeyOf("ecoarmor", "set")
+                    val ecoItemsNamespacedKey = namespacedKeyOf("ecoitems", "item")
+                    val keys = itemStack?.persistentDataContainer?.keys ?: return super.preUpdate(itemStack)
 
-                override fun postUpdate(itemStack: ItemStack): ItemStack {
-                    return itemStack
+                    if (
+                        keys.contains(ecoArmorNamespacedKey)
+                        || keys.contains(ecoItemsNamespacedKey)
+                    ) {
+                        return null
+                    }
+
+                    return super.preUpdate(itemStack)
                 }
             }
         )
