@@ -3,12 +3,9 @@ package com.willfp.eco.internal.spigot.recipes.workstation
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.workstation.AnvilRecipe
 import com.willfp.eco.core.recipe.workstation.BrewingRecipe
-import com.willfp.eco.core.recipe.workstation.CrafterRecipe
 import com.willfp.eco.core.recipe.workstation.GrindstoneRecipe
 import com.willfp.eco.core.recipe.workstation.SmeltingRecipe
 import com.willfp.eco.core.recipe.workstation.SmeltingType
-import com.willfp.eco.core.recipe.workstation.SmithingRecipe
-import com.willfp.eco.core.recipe.workstation.StonecuttingRecipe
 import com.willfp.eco.core.recipe.workstation.VillagerRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
@@ -19,40 +16,31 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockCookEvent
-import org.bukkit.event.block.CrafterCraftEvent
 import org.bukkit.event.inventory.BrewEvent
-import org.bukkit.event.inventory.CraftItemEvent
+import org.bukkit.event.inventory.FurnaceSmeltEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.inventory.PrepareGrindstoneEvent
-import org.bukkit.event.inventory.FurnaceSmeltEvent
 import org.bukkit.inventory.MerchantInventory
 import org.bukkit.inventory.MerchantRecipe
-import org.bukkit.inventory.SmithingInventory
-import org.bukkit.inventory.StonecutterInventory
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
 
-    // Furnace smelting
+    // Furnace / smoker / blast furnace / campfire cooking
+    //
+    // FurnaceSmeltEvent extends BlockCookEvent but doesn't override getHandlers(), so it
+    // shares BlockCookEvent's HandlerList - registering separate handlers for each type
+    // means both fire for every cook event. Merged into one to avoid that trap.
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun onSmelt(event: FurnaceSmeltEvent) {
+    fun onCook(event: BlockCookEvent) {
+        val isCampfire = event !is FurnaceSmeltEvent
         val recipe = WorkstationRecipes.getAll(SmeltingRecipe::class.java)
-            .firstOrNull { it.smeltingType != SmeltingType.CAMPFIRE && it.input.matches(event.source) }
-            ?: return
-        event.result = recipe.output?.clone() ?: return
-    }
-
-    // Campfire cooking
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun onCampfire(event: BlockCookEvent) {
-        val recipe = WorkstationRecipes.getAll(SmeltingRecipe::class.java)
-            .firstOrNull { it.smeltingType == SmeltingType.CAMPFIRE && it.input.matches(event.source) }
+            .firstOrNull { (it.smeltingType == SmeltingType.CAMPFIRE) == isCampfire && it.input.matches(event.source) }
             ?: return
         event.result = recipe.output?.clone() ?: return
     }
@@ -120,43 +108,6 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         event.result = result
         event.inventory.repairCost = recipe.repairCost
         WorkstationRecipes.setPendingRecipe(player.uniqueId, recipe)
-    }
-
-    // Smithing table
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun onSmithingCraft(event: CraftItemEvent) {
-        if (event.view.topInventory !is SmithingInventory) return
-        val inventory = event.view.topInventory
-        WorkstationRecipes.getAll(SmithingRecipe::class.java)
-            .firstOrNull {
-                it.template.matches(inventory.getItem(0)) &&
-                it.base.matches(inventory.getItem(1)) &&
-                it.addition.matches(inventory.getItem(2))
-            } ?: return
-        // Vanilla result already set by Bukkit recipe registration; nothing more to do.
-    }
-
-    // Stonecutter
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun onStonecutterCraft(event: CraftItemEvent) {
-        if (event.view.topInventory !is StonecutterInventory) return
-        val recipeKey = (event.recipe as? org.bukkit.Keyed)?.key ?: return
-        WorkstationRecipes.getByKey(recipeKey) as? StonecuttingRecipe ?: return
-        // Vanilla result already set by Bukkit recipe registration; nothing more to do.
-    }
-
-    // Crafter block
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    fun onCrafterCraft(event: CrafterCraftEvent) {
-        val recipeKey = (event.recipe as? org.bukkit.Keyed)?.key ?: return
-        val baseKey = if (recipeKey.namespace == "recipebook" && recipeKey.key.endsWith("_crafter"))
-            NamespacedKey("recipebook", recipeKey.key.removeSuffix("_crafter"))
-        else recipeKey
-        WorkstationRecipes.getByKey(baseKey) as? CrafterRecipe ?: return
-        // Vanilla delivers item; nothing more to do.
     }
 
     // Villager / merchant

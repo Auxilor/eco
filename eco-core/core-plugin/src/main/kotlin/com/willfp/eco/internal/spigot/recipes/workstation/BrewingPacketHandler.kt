@@ -1,21 +1,23 @@
 package com.willfp.eco.internal.spigot.recipes.workstation
 
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.recipe.workstation.BrewingRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
+import com.willfp.eco.internal.spigot.proxies.WorkstationPacketProxy
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.block.BrewingStand
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryType
-import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 
-class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listener {
+class BrewingPacketHandler(private val plugin: EcoPlugin) : PacketListener, Listener {
 
     private val pendingBrews = mutableMapOf<Location, BukkitTask>()
     private val progressTasks = mutableMapOf<Location, BukkitTask>()
@@ -32,7 +34,7 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
         val location = event.inventory.location ?: return
         if (location in pendingBrews) return
         Bukkit.getScheduler().runTask(plugin, Runnable {
-            val brewer = (location.block.state as? org.bukkit.block.BrewingStand)?.inventory ?: return@Runnable
+            val brewer = (location.block.state as? BrewingStand)?.inventory ?: return@Runnable
             val ingredient = brewer.ingredient ?: return@Runnable
             val recipe = WorkstationRecipes.getAll(BrewingRecipe::class.java)
                 .firstOrNull {
@@ -44,13 +46,8 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
     }
 
     override fun onReceive(event: PacketEvent) {
-        val packet = event.packet.handle
-        if (!packet.javaClass.name.endsWith("ServerboundContainerClickPacket")) return
-        val slotNum = runCatching {
-            packet.javaClass.getDeclaredField("slotNum").apply { isAccessible = true }.getInt(packet)
-        }.getOrElse {
-            packet.javaClass.methods.firstOrNull { it.name == "getSlotNum" }?.invoke(packet) as? Int
-        } ?: return
+        val slotNum = plugin.getProxy(WorkstationPacketProxy::class.java)
+            .getContainerClickSlot(event.packet) ?: return
 
         val player = event.player
         if (player.openInventory.topInventory.type != InventoryType.BREWING) return
@@ -102,7 +99,8 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
 
         val brewTime = recipe.brewTime
         val player = animPlayer
-        val containerId = if (player != null) getContainerId(player) else -1
+        val nmsPacket = plugin.getProxy(WorkstationPacketProxy::class.java)
+        val containerId = if (player != null) nmsPacket.getOpenContainerId(player) else -1
 
         if (containerId >= 0 && player != null) {
             val totalSteps = (brewTime / 10).coerceAtLeast(1)
@@ -116,7 +114,7 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
                     return@Runnable
                 }
                 val normalized = (400 * (totalSteps - step) / totalSteps).coerceAtLeast(0)
-                sendBrewDataPacket(player, containerId, normalized)
+                nmsPacket.sendContainerDataPacket(player, containerId, normalized)
             }, 0L, 10L)
             progressTasks[location] = progressTask!!
         }
@@ -125,7 +123,7 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
             pendingBrews.remove(location)
             progressTasks.remove(location)?.cancel()
 
-            val state = location.block.state as? org.bukkit.block.BrewingStand ?: return@Runnable
+            val state = location.block.state as? BrewingStand ?: return@Runnable
             val brewer = state.inventory
             val ingredient = brewer.ingredient ?: return@Runnable
             if (!recipe.ingredient.matches(ingredient)) return@Runnable
@@ -143,40 +141,4 @@ class BrewingPacketHandler(private val plugin: Plugin) : PacketListener, Listene
         }, brewTime.toLong())
     }
 
-    // NMS helpers
-
-    private fun getContainerId(player: Player): Int =
-        runCatching {
-            val nmsPlayer = player.javaClass.getMethod("getHandle").invoke(player)
-            val menu = generateSequence(nmsPlayer.javaClass) { it.superclass }
-                .flatMap { it.declaredFields.asSequence() }
-                .first { it.name == "containerMenu" }
-                .apply { isAccessible = true }
-                .get(nmsPlayer)
-            generateSequence(menu.javaClass) { it.superclass }
-                .flatMap { it.declaredFields.asSequence() }
-                .first { it.name == "containerId" }
-                .apply { isAccessible = true }
-                .getInt(menu)
-        }.getOrDefault(-1)
-
-    private fun sendBrewDataPacket(player: Player, containerId: Int, value: Int) {
-        runCatching {
-            val packetClass = Class.forName(
-                "net.minecraft.network.protocol.game.ClientboundContainerSetDataPacket"
-            )
-            val packet = packetClass
-                .getDeclaredConstructor(Int::class.java, Int::class.java, Int::class.java)
-                .newInstance(containerId, 0, value)
-            val nmsPlayer = player.javaClass.getMethod("getHandle").invoke(player)
-            val connection = generateSequence(nmsPlayer.javaClass) { it.superclass }
-                .flatMap { it.declaredFields.asSequence() }
-                .first { it.name == "connection" }
-                .apply { isAccessible = true }
-                .get(nmsPlayer)
-            connection.javaClass.methods
-                .first { it.name == "send" && it.parameterCount == 1 }
-                .invoke(connection, packet)
-        }
-    }
 }

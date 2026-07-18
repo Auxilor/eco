@@ -1,24 +1,19 @@
 package com.willfp.eco.internal.spigot.recipes.workstation
 
+import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.recipe.workstation.GrindstoneRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
+import com.willfp.eco.internal.spigot.proxies.WorkstationPacketProxy
 import org.bukkit.Bukkit
 import org.bukkit.event.inventory.InventoryType
-import org.bukkit.plugin.Plugin
 
-class GrindstonePacketHandler(private val plugin: Plugin) : PacketListener {
+class GrindstonePacketHandler(private val plugin: EcoPlugin) : PacketListener {
 
     override fun onReceive(event: PacketEvent) {
-        val packet = event.packet.handle
-        if (!packet.javaClass.name.endsWith("ServerboundContainerClickPacket")) return
-
-        val slotNum = runCatching {
-            packet.javaClass.getDeclaredField("slotNum").apply { isAccessible = true }.getInt(packet)
-        }.getOrElse {
-            packet.javaClass.methods.firstOrNull { it.name == "getSlotNum" }?.invoke(packet) as? Int
-        } ?: return
+        val slotNum = plugin.getProxy(WorkstationPacketProxy::class.java)
+            .getContainerClickSlot(event.packet) ?: return
 
         if (slotNum != 0 && slotNum != 1) return
 
