@@ -1,7 +1,7 @@
 package com.willfp.eco.internal.placeholder
 
-import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.cache.EcoCache
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.placeholder.InjectablePlaceholder
 import com.willfp.eco.core.placeholder.Placeholder
@@ -9,7 +9,7 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.evaluateExpression
 import com.willfp.eco.util.toNiceString
-import java.util.concurrent.TimeUnit
+import java.time.Duration
 
 /*
 
@@ -24,9 +24,9 @@ class PlaceholderParser {
     private val prettyMathExpressionRegex = Regex("(\\{\\^\\{)(.)+(}})")
     private val mathExpressionRegex = Regex("(\\{\\{)(.)+(}})")
 
-    private val placeholderLookupCache = Caffeine.newBuilder()
-        .expireAfterWrite(1, TimeUnit.SECONDS)
-        .build<PlaceholderLookup, Placeholder?>()
+    private val placeholderLookupCache = EcoCache.builder<PlaceholderLookup, Placeholder?>()
+        .expireAfterWrite(Duration.ofSeconds(1))
+        .build()
 
     fun translatePlacholders(text: String, context: PlaceholderContext): String {
         return translatePlacholders(text, context, context.injectableContext.placeholderInjections)
