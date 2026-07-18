@@ -1,0 +1,58 @@
+[
+  {
+    "units": ["TAG:PLANKS"],
+    "repairable": ["WOODEN_SWORD", "WOODEN_PICKAXE", "WOODEN_AXE", "WOODEN_SHOVEL", "WOODEN_HOE", "SHIELD", "WOODEN_SPEAR"]
+  },
+  {
+    "units": ["LEATHER"],
+    "repairable": ["LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS"]
+  },
+  {
+    "units": ["COBBLESTONE", "COBBLED_DEEPSLATE", "BLACKSTONE"],
+    "repairable": ["STONE_SWORD", "STONE_PICKAXE", "STONE_AXE", "STONE_SHOVEL", "STONE_HOE", "STONE_SPEAR"]
+  },
+  {
+    "units": ["IRON_INGOT"],
+    "repairable": [
+      "IRON_HELMET", "IRON_CHESTPLATE", "IRON_LEGGINGS", "IRON_BOOTS",
+      "CHAINMAIL_HELMET", "CHAINMAIL_CHESTPLATE", "CHAINMAIL_LEGGINGS", "CHAINMAIL_BOOTS",
+      "IRON_SWORD", "IRON_PICKAXE", "IRON_AXE", "IRON_SHOVEL", "IRON_HOE", "IRON_SPEAR"
+    ]
+  },
+  {
+    "units": ["GOLD_INGOT"],
+    "repairable": [
+      "GOLDEN_HELMET", "GOLDEN_CHESTPLATE", "GOLDEN_LEGGINGS", "GOLDEN_BOOTS",
+      "GOLDEN_SWORD", "GOLDEN_PICKAXE", "GOLDEN_AXE", "GOLDEN_SHOVEL", "GOLDEN_HOE", "GOLDEN_SPEAR"
+    ]
+  },
+  {
+    "units": ["DIAMOND"],
+    "repairable": [
+      "DIAMOND_HELMET", "DIAMOND_CHESTPLATE", "DIAMOND_LEGGINGS", "DIAMOND_BOOTS",
+      "DIAMOND_SWORD", "DIAMOND_PICKAXE", "DIAMOND_AXE", "DIAMOND_SHOVEL", "DIAMOND_HOE", "DIAMOND_SPEAR"
+    ]
+  },
+  {
+    "units": ["NETHERITE_INGOT"],
+    "repairable": [
+      "NETHERITE_HELMET", "NETHERITE_CHESTPLATE", "NETHERITE_LEGGINGS", "NETHERITE_BOOTS",
+      "NETHERITE_SWORD", "NETHERITE_PICKAXE", "NETHERITE_AXE", "NETHERITE_SHOVEL", "NETHERITE_HOE", "NETHERITE_SPEAR"
+    ]
+  },
+  {
+    "units": ["TURTLE_SCUTE"],
+    "repairable": ["TURTLE_HELMET"]
+  },
+  {
+    "units": ["PHANTOM_MEMBRANE"],
+    "repairable": ["ELYTRA"]
+  },
+  {
+    "units": ["COPPER_INGOT"],
+    "repairable": [
+      "COPPER_HELMET", "COPPER_CHESTPLATE", "COPPER_LEGGINGS", "COPPER_BOOTS",
+      "COPPER_SWORD", "COPPER_PICKAXE", "COPPER_AXE", "COPPER_SHOVEL", "COPPER_HOE", "COPPER_SPEAR"
+    ]
+  }
+]
