@@ -206,9 +206,40 @@ public final class WorkstationRecipes {
     }
 
     /**
+     * Remove every recipe registered under a namespace, along with the Bukkit
+     * recipes they registered.
+     * <p>
+     * Use this rather than {@link #clear()} when reloading a single plugin: this
+     * registry is shared by every plugin using it, so clearing all of it would
+     * drop other plugins' recipes until they happened to reload as well.
+     *
+     * @param namespace The namespace to clear, which is the owning plugin's id.
+     */
+    public static void clear(@NotNull final String namespace) {
+        trackedBukkitKeys.removeIf(key -> {
+            if (!key.getNamespace().equals(namespace)) {
+                return false;
+            }
+
+            try {
+                Recipes.scheduleBukkitRecipeRemoval(key);
+            } catch (Exception ignored) {
+            }
+
+            return true;
+        });
+
+        recipes.keySet().removeIf(key -> key.getNamespace().equals(namespace));
+        pendingRecipes.values().removeIf(recipe -> recipe.getKey().getNamespace().equals(namespace));
+    }
+
+    /**
      * Remove all tracked Bukkit recipes from the server and clear all internal state.
      * <p>
      * Should be called on plugin disable or full recipe reload to avoid stale registrations.
+     * <p>
+     * This clears recipes belonging to <i>every</i> plugin, so prefer
+     * {@link #clear(String)} when reloading one plugin.
      */
     public static void clear() {
         trackedBukkitKeys.forEach(key -> {
