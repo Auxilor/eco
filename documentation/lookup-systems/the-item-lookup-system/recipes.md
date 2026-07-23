@@ -180,7 +180,7 @@ Shift-clicking only sends an item into a brewing stand's slots if vanilla alread
 
 ## EcoCrafting only
 
-[EcoCrafting](https://plugins.auxilor.io/ecocrafting/how-to-make-a-recipe) adds two workstations that no other plugin has:
+[EcoCrafting](https://hub.auxilor.io/wiki/ecocrafting/how-to-make-a-recipe) adds two workstations that no other plugin has:
 
 - **Villager trading** - inject custom trades into villagers or wandering traders, with a profession, minimum level, appearance chance, and villager XP.
 - **Grindstone** - a one or two slot grindstone recipe.
@@ -190,7 +190,7 @@ It also layers extras onto every recipe type, none of which exist elsewhere: a b
 ## Notes and limitations
 
 :::note One recipe per item
-The config structure gives an item a single recipe. If you need several ways to make the same thing, [EcoCrafting](https://plugins.auxilor.io/ecocrafting/how-to-make-a-recipe) is built for it - its recipes are standalone files, so you can point as many as you like at the same output.
+The config structure gives an item a single recipe. If you need several ways to make the same thing, [EcoCrafting](https://hub.auxilor.io/wiki/ecocrafting/how-to-make-a-recipe) is built for it - its recipes are standalone files, so you can point as many as you like at the same output.
 :::
 
 :::tip Invisible recipe results
@@ -209,6 +209,6 @@ This is a Minecraft/server limitation in how custom items are handled - there we
 
 ## Where to go next
 
-- **EcoItems:** [Workstation Recipes](https://plugins.auxilor.io/ecoitems/additional-configuration-options/workstation-recipes) to craft a custom item at any of the workstations above.
-- **EcoCrafting:** [How to make a Recipe](https://plugins.auxilor.io/ecocrafting/how-to-make-a-recipe) for standalone recipes, villager trades, grindstones, and the recipe book.
-- **Item lookups:** [The Item Lookup System](https://plugins.auxilor.io/the-item-lookup-system) for the ingredient and result syntax.
+- **EcoItems:** [Workstation Recipes](https://hub.auxilor.io/wiki/ecoitems/additional-configuration-options-workstation-recipes) to craft a custom item at any of the workstations above.
+- **EcoCrafting:** [How to make a Recipe](https://hub.auxilor.io/wiki/ecocrafting/how-to-make-a-recipe) for standalone recipes, villager trades, grindstones, and the recipe book.
+- **Item lookups:** [The Item Lookup System](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system) for the ingredient and result syntax.
