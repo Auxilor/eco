@@ -100,7 +100,6 @@ dependencies {
     compileOnly("net.momirealms:craft-engine-core:26.6.2")
     compileOnly("net.momirealms:craft-engine-bukkit:26.6.2")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
-    compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.0")
     compileOnly("net.essentialsx:EssentialsX:2.21.2") {
         exclude(group = "*", module = "*")
     }
@@ -108,7 +107,6 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude(group = "*", module = "*")
     }
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.9")
     compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.6")
     compileOnly("io.lumine:Mythic:5.11.1")
@@ -120,7 +118,6 @@ dependencies {
     compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5.10")
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
-    compileOnly("de.oliver:FancyHolograms:2.9.1")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
     compileOnly("su.nightexpress.nightcore:main:2.15.3")
     compileOnly("su.nightexpress.excellentshop:Core:4.22.0")

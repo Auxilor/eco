@@ -6,6 +6,11 @@ import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
+import com.willfp.eco.core.integrations.hologram.Hologram
+import com.willfp.eco.core.integrations.hologram.HologramOptions
+import com.willfp.eco.internal.spigot.hologram.EcoHologram
+import com.willfp.eco.internal.spigot.hologram.HologramTracker
+import com.willfp.eco.internal.spigot.proxies.HologramProxy
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
 import com.willfp.eco.core.blocks.Blocks
@@ -86,6 +91,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override val dataYml = DataYml(this)
 
     override val profileHandler = ProfileHandler(this)
+
+    val hologramTracker: HologramTracker by lazy { HologramTracker(this) }
 
     init {
         getProxy(CommonsInitializerProxy::class.java).init(this)
@@ -297,6 +304,21 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
+
+    override fun createHologram(location: Location, options: HologramOptions): Hologram {
+        val handle = getProxy(HologramProxy::class.java).createHandle(location, options)
+        return EcoHologram(handle, location, options, hologramTracker)
+    }
+
+    override fun handleEnable() {
+        super.handleEnable()
+        hologramTracker.start()
+    }
+
+    override fun handleDisable() {
+        super.handleDisable()
+        hologramTracker.shutdown()
+    }
 
     override fun createNamespacedKey(namespace: String, key: String) =
         NamespacedKey(namespace, key)

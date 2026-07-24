@@ -14,7 +14,6 @@ import com.willfp.eco.core.integrations.customblocks.CustomBlocksManager
 import com.willfp.eco.core.integrations.customentities.CustomEntitiesManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
 import com.willfp.eco.core.integrations.economy.EconomyManager
-import com.willfp.eco.core.integrations.hologram.HologramManager
 import com.willfp.eco.core.integrations.discord.DiscordManager
 import com.willfp.eco.internal.discord.DiscordIntegrationImpl
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
@@ -193,10 +192,6 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScythe
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
-import com.willfp.eco.internal.spigot.integrations.hologram.HologramCMI
-import com.willfp.eco.internal.spigot.integrations.hologram.HologramDecentHolograms
-import com.willfp.eco.internal.spigot.integrations.hologram.HologramFancyHolograms
-import com.willfp.eco.internal.spigot.integrations.hologram.HologramHolographicDisplays
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
@@ -523,13 +518,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("EconomyShopGUI") { ShopManager.register(ShopEconomyShopGUI()) },
             IntegrationLoader("EconomyShopGUI-Premium") { ShopManager.register(ShopEconomyShopGUI()) },
             IntegrationLoader("ExcellentShop") { ShopManager.register(ShopExcellentShop()) },
-
-            // Hologram
-            IntegrationLoader("HolographicDisplays") { HologramManager.register(HologramHolographicDisplays(this)) },
-            IntegrationLoader("CMI") { HologramManager.register(HologramCMI()) },
-            IntegrationLoader("DecentHolograms") { HologramManager.register(HologramDecentHolograms()) },
-            //IntegrationLoader("GHolo") { HologramManager.register(HologramGHolo()) },
-            IntegrationLoader("FancyHolograms") { HologramManager.register(HologramFancyHolograms()) },
 
             // AFK
             IntegrationLoader("Essentials") { AFKManager.register(AFKIntegrationEssentials()) },
