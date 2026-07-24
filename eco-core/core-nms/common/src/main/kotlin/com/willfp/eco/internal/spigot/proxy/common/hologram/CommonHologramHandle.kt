@@ -6,6 +6,7 @@ import com.willfp.eco.core.integrations.hologram.TextAlignment
 import com.willfp.eco.internal.spigot.proxies.NativeHologramHandle
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import com.willfp.eco.util.StringUtils
+import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
@@ -48,9 +49,9 @@ class CommonHologramHandle private constructor(
         // ClientboundAddEntityPacket(Entity, ServerEntity) reads the entity's real double
         // position; the (Entity, int, BlockPos) overload would floor it to block coordinates.
         // The ServerEntity is a throwaway built purely to produce the positioned packet.
-        val noopBroadcast = Consumer<net.minecraft.network.protocol.Packet<*>> { }
+        val noopBroadcast = Consumer<Packet<*>> { }
         val noopBroadcastWithIgnore =
-            BiConsumer<net.minecraft.network.protocol.Packet<*>, MutableList<java.util.UUID>> { _, _ -> }
+            BiConsumer<Packet<*>, MutableList<java.util.UUID>> { _, _ -> }
         val serverEntity = ServerEntity(
             display.level() as ServerLevel,
             display,
