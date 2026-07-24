@@ -83,16 +83,6 @@ eco integrates with shop plugins for sell prices, sellwands, and more.
 
 ---
 
-## 💬 Holograms
-
-Display holograms (e.g. for crates, bosses) using your preferred hologram plugin.
-
-- CMI
-- DecentHolograms
-- HolographicDisplays
-
----
-
 ## 💰 Economy
 
 eco hooks into economy providers for all money-related features — prices, rewards, and requirements.
