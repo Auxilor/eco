@@ -66,13 +66,15 @@ class HologramTracker(
     /** Bring a single player's view of a single hologram in line with what it should be. */
     private fun reconcile(player: Player, hologram: EcoHologram) {
         val id = hologram.handle.entityId
-        val playerSent = sent.getOrPut(player.uniqueId) { ConcurrentHashMap.newKeySet() }
+        val playerSent = sent.computeIfAbsent(player.uniqueId) { ConcurrentHashMap.newKeySet() }
         val should = shouldShow(player, hologram)
         val currentlySent = playerSent.contains(id)
 
         if (should && !currentlySent) {
+            // spawn() already sends a metadata packet built from the entity's current
+            // (already up to date) entityData, so a follow-up updateData() here would
+            // just resend the same contents a second time.
             hologram.handle.spawn(player)
-            hologram.handle.updateData(player, hologram.currentContents())
             playerSent.add(id)
         } else if (!should && currentlySent) {
             hologram.handle.despawn(player)

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 
 class EcoHologram(
     val handle: NativeHologramHandle,
-    private var loc: Location,
+    location: Location,
     private val options: HologramOptions,
     private val tracker: HologramTracker
 ) : Hologram {
@@ -25,6 +25,11 @@ class EcoHologram(
 
     @Volatile
     private var removed = false
+
+    // Cloned so later mutation of the Location the caller passed in doesn't silently
+    // desync this hologram's position (consistent with setLocation, which also clones).
+    @Volatile
+    private var loc: Location = location.clone()
 
     init {
         tracker.register(this)

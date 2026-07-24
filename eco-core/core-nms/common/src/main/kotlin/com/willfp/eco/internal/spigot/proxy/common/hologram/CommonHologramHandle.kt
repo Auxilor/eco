@@ -10,6 +10,8 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
+import net.minecraft.server.level.ServerEntity
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Display
 import net.minecraft.world.entity.EntityType
@@ -21,6 +23,8 @@ import org.bukkit.entity.Player
 import org.bukkit.util.Transformation
 import org.joml.Quaternionf
 import org.joml.Vector3f
+import java.util.function.BiConsumer
+import java.util.function.Consumer
 
 /**
  * A packet-based `Display.TextDisplay` entity handle, compiled once against
@@ -51,7 +55,26 @@ class CommonHologramHandle private constructor(
 
     override fun spawn(player: Player) {
         val nms = player.toNMS()
-        nms.connection.send(ClientboundAddEntityPacket(display, 0, display.blockPosition()))
+
+        // The (Entity, int, BlockPos) constructor derives the spawn position from a
+        // BlockPos (floored integer coordinates), which renders the hologram up to a
+        // block off from its actual double-precision location. The (Entity, ServerEntity)
+        // constructor instead reads ServerEntity#getPositionBase(), which is seeded from
+        // Entity#trackingPosition() - the entity's real double x/y/z - so we build a
+        // throwaway ServerEntity purely to get the correctly-positioned packet out of it.
+        val noopBroadcast = Consumer<net.minecraft.network.protocol.Packet<*>> { }
+        val noopBroadcastWithIgnore =
+            BiConsumer<net.minecraft.network.protocol.Packet<*>, MutableList<java.util.UUID>> { _, _ -> }
+        val serverEntity = ServerEntity(
+            display.level() as ServerLevel,
+            display,
+            0,
+            false,
+            noopBroadcast,
+            noopBroadcastWithIgnore,
+            emptySet() // Paper's trackedPlayers param; unused for a throwaway, one-shot packet builder
+        )
+        nms.connection.send(ClientboundAddEntityPacket(display, serverEntity))
         sendData(nms)
     }
 
@@ -88,7 +111,9 @@ class CommonHologramHandle private constructor(
 
     companion object {
         fun create(location: Location, options: HologramOptions): CommonHologramHandle {
-            val level = (location.world as CraftWorld).handle
+            val world = location.world
+                ?: throw IllegalArgumentException("Hologram location must have a non-null world")
+            val level = (world as CraftWorld).handle
 
             // The Display.TextDisplay constructor already assigns the entity a fresh,
             // globally unique id from the vanilla entity counter - no separate id
