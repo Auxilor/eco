@@ -6,7 +6,6 @@ import com.willfp.eco.core.integrations.hologram.TextAlignment
 import com.willfp.eco.internal.spigot.proxies.NativeHologramHandle
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import com.willfp.eco.util.StringUtils
-import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
@@ -49,16 +48,16 @@ class CommonHologramHandle private constructor(
         // ClientboundAddEntityPacket(Entity, ServerEntity) reads the entity's real double
         // position; the (Entity, int, BlockPos) overload would floor it to block coordinates.
         // The ServerEntity is a throwaway built purely to produce the positioned packet.
-        val noopBroadcast = Consumer<Packet<*>> { }
-        val noopBroadcastWithIgnore =
-            BiConsumer<Packet<*>, MutableList<java.util.UUID>> { _, _ -> }
+        // No explicit Packet<*> type here - that class lives per-version under net.minecraft,
+        // so naming it in this common module would tie compilation to one version's shape.
+        // Inlined as arguments so Kotlin infers the type from ServerEntity's constructor instead.
         val serverEntity = ServerEntity(
             display.level() as ServerLevel,
             display,
             0,
             false,
-            noopBroadcast,
-            noopBroadcastWithIgnore,
+            Consumer { },
+            BiConsumer { _, _ -> },
             emptySet() // Paper's trackedPlayers param; unused for a throwaway, one-shot packet builder
         )
         nms.connection.send(ClientboundAddEntityPacket(display, serverEntity))
