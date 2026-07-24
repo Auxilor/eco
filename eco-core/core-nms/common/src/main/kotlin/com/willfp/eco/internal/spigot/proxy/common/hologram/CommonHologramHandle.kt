@@ -27,24 +27,13 @@ import java.util.function.BiConsumer
 import java.util.function.Consumer
 
 /**
- * A packet-based `Display.TextDisplay` entity handle, compiled once against
- * mojang mappings and reused (via reobfuscation) by every version module.
+ * Packet-based [Display.TextDisplay] hologram, compiled once against mojang mappings and
+ * reused by every version module via reobfuscation. The entity is bound to a [ServerLevel]
+ * but never added to it - it exists only as packets sent to players.
  *
- * The underlying [Display.TextDisplay] is constructed bound to a [net.minecraft.server.level.ServerLevel]
- * so entity-local NMS logic (position, level-scoped lookups, etc.) works normally,
- * but it is never added to the level - it only ever exists as packet payloads sent
- * to individual players.
- *
- * IMPORTANT: eco reobfuscates this module's compiled classes to Spigot (obfuscated)
- * mappings per Minecraft version at build time. Direct Kotlin references to
- * `net.minecraft.*` members (fields/methods/constructors written literally in source)
- * get rewritten by that reobfuscation pass and stay correct at runtime. Reflection
- * that looks members up *by mojang-mapped name* does NOT get rewritten - at runtime it
- * would search for a field/method name that no longer exists (obfuscated to something
- * like a single letter), throwing NoSuchFieldException/NoSuchMethodException. So all
- * mutable render state below is applied through the stable, never-obfuscated
- * Bukkit/Paper API (`entity.getBukkitEntity()` as `org.bukkit.entity.TextDisplay`)
- * instead of via reflection into NMS internals.
+ * Render state is set through the Bukkit API ([org.bukkit.entity.TextDisplay]), never
+ * reflection: reobfuscation rewrites direct `net.minecraft` references but not reflective
+ * name lookups, so mojang-mapped reflection would break at runtime on obfuscated members.
  */
 class CommonHologramHandle private constructor(
     private val display: Display.TextDisplay
@@ -56,12 +45,9 @@ class CommonHologramHandle private constructor(
     override fun spawn(player: Player) {
         val nms = player.toNMS()
 
-        // The (Entity, int, BlockPos) constructor derives the spawn position from a
-        // BlockPos (floored integer coordinates), which renders the hologram up to a
-        // block off from its actual double-precision location. The (Entity, ServerEntity)
-        // constructor instead reads ServerEntity#getPositionBase(), which is seeded from
-        // Entity#trackingPosition() - the entity's real double x/y/z - so we build a
-        // throwaway ServerEntity purely to get the correctly-positioned packet out of it.
+        // ClientboundAddEntityPacket(Entity, ServerEntity) reads the entity's real double
+        // position; the (Entity, int, BlockPos) overload would floor it to block coordinates.
+        // The ServerEntity is a throwaway built purely to produce the positioned packet.
         val noopBroadcast = Consumer<net.minecraft.network.protocol.Packet<*>> { }
         val noopBroadcastWithIgnore =
             BiConsumer<net.minecraft.network.protocol.Packet<*>, MutableList<java.util.UUID>> { _, _ -> }
@@ -115,9 +101,7 @@ class CommonHologramHandle private constructor(
                 ?: throw IllegalArgumentException("Hologram location must have a non-null world")
             val level = (world as CraftWorld).handle
 
-            // The Display.TextDisplay constructor already assigns the entity a fresh,
-            // globally unique id from the vanilla entity counter - no separate id
-            // allocation is necessary.
+            // The TextDisplay constructor assigns a unique entity id from the vanilla counter.
             val display = Display.TextDisplay(EntityType.TEXT_DISPLAY, level)
             display.setPos(location.x, location.y, location.z)
             display.setYRot(location.yaw)
