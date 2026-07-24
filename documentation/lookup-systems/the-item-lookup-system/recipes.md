@@ -1,16 +1,28 @@
-﻿---
-title: Crafting Recipes
+---
+title: Recipes
 sidebar_position: 3
 ---
-Anywhere that you configure items for players in eco plugins, you can use the Item Lookup System to add crafting recipes for them. 
 
-Because of this, you can make use of all the different modifiers too, such as stack size, enchantments, name, tags, and more, to make your recipes more unique and interesting and fully customisable. 
+Anywhere you configure items for players in eco plugins, you can use the Item Lookup System to give them a recipe. Because recipes are built on lookups, every modifier works inside them too - stack size, enchantments, names, tags, and more - so a recipe can require a very specific item, not just a material.
 
-EcoItems also allows you to add custom crafting recipes for any lookup item, not limited to EcoItems items. This means you can add more recipes for items from other plugins, such as EcoPets or EcoScrolls, or even vanilla items, like Enchanted Golden Apples.
+This page is the reference for every recipe format across eco plugins. Which of them you can actually use depends on the plugin.
 
-Crafting recipes in eco plugins are super easy to configure, and often look something like this:
+## What each plugin supports
 
-# Shaped Recipe Example
+| Recipe | Supported in |
+| --- | --- |
+| **Crafting table** (shaped and shapeless, with permissions) | **Every** eco plugin |
+| Furnace, blast furnace, smoker, campfire | EcoItems and EcoCrafting only |
+| Stonecutter, smithing table, anvil, brewing stand | EcoItems and EcoCrafting only |
+| Villager trading, grindstone | **EcoCrafting only** |
+
+:::info Most plugins are crafting table only
+If you're configuring a recipe in EcoArmor, EcoPets, Talismans, Reforges, EcoScrolls, or any other eco plugin, the crafting table is the only workstation available to you - with `shapeless` and a permission. Everything in [Other workstations](#other-workstations) needs EcoItems or EcoCrafting.
+:::
+
+## Crafting table recipes
+
+A recipe is written as a list of 9 strings: the first three are the top row (left to right), the next three the middle row, and the last three the bottom row. `""` is an empty slot.
 
 ```yaml
 recipe:
@@ -25,47 +37,53 @@ recipe:
   - ""
 ```
 
-While it may look meaningless, this system is straightforward once you understand how it works. A crafting recipe is written as a list of 9 strings, the first three being the top row (left to right),
-the second three being the middle row (left to right), and the last three being the last row (left to right).
+### Shapeless recipes
 
-# Shapeless Recipe Example
+Set `shapeless: true` and the slot positions stop mattering - only the set of ingredients counts. A shapeless recipe is a flat list and can be shorter than 9:
 
 ```yaml
+shapeless: true
 recipe:
   - "diamond"
   - "emerald"
   - "diamond"
 ```
 
-Similar to above, you just create a list of items that you want to be in the crafting grid. The order does not matter for shapeless recipes.
+:::warning `shapeless` is not auto-detected
+A shaped recipe must have **exactly 9** entries. A shorter list without `shapeless: true` is rejected, and a warning is logged on reload telling you how many ingredients it found. If your recipe uses fewer than 9 items, either pad it out to 9 with `""` or set `shapeless: true`.
+:::
 
-# Additional Recipe Options
+### Permissions
 
-When creating recipes, there are a few additional options you can use to customize the recipe further. 
+Set a permission node to require it before a player can craft the item:
 
-## `shapeless: true/false` (Optional - default: false)
-If your shapeless recipe contains less than 9 items (not including air) then you do not need this option, as the plugin will automatically detect it as a shapeless recipe. 
-
-However, if you want to have a shapeless recipe with 9 items, you must set `shapeless: true` to tell the plugin that this is a shapeless recipe and not a shaped one.
-
-## `enabled: true/false`
-In all recipe locations, you can disable crafting. Just set `enabled: false` and the recipe will not be registered.
-
-## `recipe-permission: permission.node` (Optional - default: none)
-If you want to require a permission to craft the item, you can set this option to the permission you want to require. Players without this permission will not be able to craft the item.
-Please note: In some plugins, this may be called `crafting-permission` or something similar, but the functionality is the same. This is because plugins were created at different times and to remain backward compatible. Check the _example.yml for the correct key.
-
-## `recipe-give-amount: 2` (EcoItems only)
-This option allows you to set how many of the item the recipe gives when crafted.
-
-## A Complete Recipe Example
-
-Below is a complete, 9 item, shapeless recipe example with all the options included:
 ```yaml
-enabled: true
+recipe-permission: myplugin.craft.example_item
+```
+
+:::note The key name varies by plugin
+Plugins were written at different times, so this is `permission` in some and `recipe-permission` or `crafting-permission` in others. The behaviour is identical - check the plugin's `_example.yml` for the key it expects.
+:::
+
+### Other options
+
+| Option | What it does |
+| --- | --- |
+| `craftable: true` | Turns the recipe on - see below. |
+| `give-amount: 2` | How many items one craft gives. EcoItems only. |
+| `enabled: false` | Stops the recipe registering. EcoCrafting only. |
+
+### `craftable`
+
+Most eco plugins gate the recipe behind `craftable`, and **won't register it unless you set `craftable: true`**. It sits next to the recipe, so the exact path varies - `craftable` in Talismans, `item.craftable` in EcoScrolls, `stone.craftable` in Reforges, `spawn-egg.craftable` in EcoPets, `shard.craftable` in EcoArmor, and so on. Check the plugin's `_example.yml`.
+
+Setting `craftable: false` always switches a recipe off.
+
+### A complete example
+
+```yaml
 shapeless: true
 recipe-permission: myplugin.craft.example_item
-recipe-give-amount: 2
 recipe:
   - "diamond"
   - "emerald"
@@ -76,26 +94,121 @@ recipe:
   - "netherite_ingot"
   - "gold_ingot"
   - "netherite_ingot"
-  ```
+```
 
-:::tip Invisible Recipe Results
-When using non-vanilla custom items in crafting recipes, the result may sometimes appear invisible. <br/>
-Although it looks like the recipe is broken and produces no result, clicking the result slot will still give you the correct item.
+## Other workstations
 
-To fix this, open `/plugins/eco/config.yml` and find the `enforce-preparing-recipes` option. Set it to "true", then restart your server.
+**EcoItems and EcoCrafting only.** Pick the workstation with `type:`, then add that workstation's ingredient keys. Both plugins use the same keys, so a recipe reads the same in either - they differ only in where the config lives and where the result comes from:
+
+| | EcoItems | EcoCrafting |
+| --- | --- | --- |
+| Where it goes | The item's `item.recipes` section | Its own file in `recipes/<workstation>/` |
+| The result | The item itself | The `output:` key |
+| Permission | `permission:` | `permission:` |
+
+| `type` | Ingredient keys | Extra keys |
+| --- | --- | --- |
+| `crafting_table` *(default)* | `recipe` (9 slots) | `shapeless` |
+| `furnace` | `input` | `experience`, `cook-time` |
+| `blast_furnace` | `input` | `experience`, `cook-time` |
+| `smoker` | `input` | `experience`, `cook-time` |
+| `campfire` | `input` | `experience`, `cook-time` |
+| `stonecutter` | `input` | |
+| `smithing_table` | `template`, `base`, `addition` | |
+| `anvil` | `base`, `material` *(optional)* | `result-name`, `repair-cost` |
+| `brewing_stand` | `base`, `ingredient` | `brew-time` |
+
+### Furnace, blast furnace, smoker, and campfire
+
+One `input` that cooks into the result. `experience` is the XP dropped when it finishes, and `cook-time` is how long it takes in ticks. Leave `cook-time` out to use the vanilla speed for that block: 200 for a furnace, 100 for a blast furnace or smoker, 600 for a campfire.
+
+```yaml
+input: raw_iron
+experience: 0.7
+cook-time: 200
+```
+
+### Stonecutter
+
+One `input`, cut into the result.
+
+```yaml
+input: stone
+```
+
+:::info Multiple outputs
+EcoCrafting can give a stonecutter recipe several outputs, each appearing as its own option in the UI, via an `outputs:` list. EcoItems produces the one item.
 :::
 
+### Smithing table
 
-:::note Creating Multiple Recipes
-Creating multiple recipes for one item is not supported in the current config structure.
+All three slots are required: `template` (left), `base` (middle), and `addition` (right).
 
-However, if you own EcoItems, you can easily create more custom recipes, you can read about that [here](https://hub.auxilor.io/wiki/ecoitems/additional-configuration-options-additional-recipes).
+```yaml
+template: netherite_upgrade_smithing_template
+base: diamond_sword
+addition: netherite_ingot
+```
+
+### Anvil
+
+`base` goes in the left slot. `material` is optional - leave it out and the base alone is enough. `repair-cost` is the level cost in levels.
+
+```yaml
+base: iron_sword
+material: diamond
+repair-cost: 3
+```
+
+:::note `result-name` is EcoCrafting only
+EcoCrafting can rename an anvil result with `result-name`. EcoItems has no use for it - the result is the custom item, which already carries its own name.
 :::
 
-:::warning Recipe Book
-There is a display issue where only vanilla items are shown in the recipe book, and heads use the default texture. However, the recipes still work correctly.
-This is a Minecraft/Server limitation due to how custom items are handled. There were events of servers crashing and corrupting chunks when displaying custom items in recipes.
+### Brewing stand
 
-This may be fixed in a future version if possible.
+`base` is the item in the bottle slots (often an existing potion), and `ingredient` is what goes in the top slot. `brew-time` is in ticks.
+
+```yaml
+base: glass_bottle
+ingredient: nether_wart
+brew-time: 400
+```
+
+:::warning Shift-click into a brewing stand
+Shift-clicking only sends an item into a brewing stand's slots if vanilla already considers it valid there - a potion or bottle, or a vanilla brewing ingredient. A custom `base`/`ingredient` that vanilla doesn't recognise has to be clicked into the slot manually.
 :::
 
+## EcoCrafting only
+
+[EcoCrafting](https://hub.auxilor.io/wiki/ecocrafting/how-to-make-a-recipe) adds two workstations that no other plugin has:
+
+- **Villager trading** - inject custom trades into villagers or wandering traders, with a profession, minimum level, appearance chance, and villager XP.
+- **Grindstone** - a one or two slot grindstone recipe.
+
+It also layers extras onto every recipe type, none of which exist elsewhere: a browsable recipe book GUI with categories, quick-crafting, libreforge `effects` and `conditions`, `price` support, per-player recipe locking and unlocking, `give-result-item: false` to fire effects instead of giving an item, plus `symmetry` and vanilla Crafter support on crafting table recipes.
+
+## Notes and limitations
+
+:::note One recipe per item
+The config structure gives an item a single recipe. If you need several ways to make the same thing, [EcoCrafting](https://hub.auxilor.io/wiki/ecocrafting/how-to-make-a-recipe) is built for it - its recipes are standalone files, so you can point as many as you like at the same output.
+:::
+
+:::tip Invisible recipe results
+When a recipe uses non-vanilla custom items, the result can appear invisible. The recipe isn't broken - clicking the result slot still gives you the correct item.
+
+To fix it, open `/plugins/eco/config.yml`, set `enforce-preparing-recipes` to `true`, and restart your server.
+:::
+
+:::warning Recipe book display
+Only vanilla items show properly in the recipe book, and heads use the default texture. The recipes themselves still work.
+
+This is a Minecraft/server limitation in how custom items are handled - there were cases of servers crashing and corrupting chunks when displaying custom items in recipes. It may be fixed in future if possible.
+:::
+
+<hr/>
+
+## Where to go next
+
+- **EcoItems:** [Workstation Recipes](https://hub.auxilor.io/wiki/ecoitems/additional-configuration-options-workstation-recipes) to craft a custom item at any of the workstations above.
+- **EcoCrafting:** [How to make a Recipe](https://hub.auxilor.io/wiki/ecocrafting/how-to-make-a-recipe) for standalone recipes, villager trades, grindstones, and the recipe book.
+- **Item lookups:** [The Item Lookup System](https://hub.auxilor.io/wiki/eco/the-item-lookup-system-the-item-lookup-system) for the ingredient and result syntax.
