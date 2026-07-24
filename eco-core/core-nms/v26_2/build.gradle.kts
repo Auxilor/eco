@@ -22,6 +22,8 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/common/recipes/RecipeManager*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/SNBTConverter*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/packet/NewItemsPacketOpenWindowMerchant*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/Hologram*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/hologram/V26_1_2HologramHandle*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
