@@ -6,20 +6,20 @@ import com.willfp.eco.core.integrations.hologram.TextAlignment
 import com.willfp.eco.internal.spigot.proxies.NativeHologramHandle
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import com.willfp.eco.util.StringUtils
-import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket
-import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Display
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.PositionMoveRotation
-import net.minecraft.world.phys.Vec3
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.entity.Player
+import org.bukkit.util.Transformation
+import org.joml.Quaternionf
 import org.joml.Vector3f
 
 /**
@@ -30,6 +30,17 @@ import org.joml.Vector3f
  * so entity-local NMS logic (position, level-scoped lookups, etc.) works normally,
  * but it is never added to the level - it only ever exists as packet payloads sent
  * to individual players.
+ *
+ * IMPORTANT: eco reobfuscates this module's compiled classes to Spigot (obfuscated)
+ * mappings per Minecraft version at build time. Direct Kotlin references to
+ * `net.minecraft.*` members (fields/methods/constructors written literally in source)
+ * get rewritten by that reobfuscation pass and stay correct at runtime. Reflection
+ * that looks members up *by mojang-mapped name* does NOT get rewritten - at runtime it
+ * would search for a field/method name that no longer exists (obfuscated to something
+ * like a single letter), throwing NoSuchFieldException/NoSuchMethodException. So all
+ * mutable render state below is applied through the stable, never-obfuscated
+ * Bukkit/Paper API (`entity.getBukkitEntity()` as `org.bukkit.entity.TextDisplay`)
+ * instead of via reflection into NMS internals.
  */
 class CommonHologramHandle private constructor(
     private val display: Display.TextDisplay
@@ -40,7 +51,7 @@ class CommonHologramHandle private constructor(
 
     override fun spawn(player: Player) {
         val nms = player.toNMS()
-        nms.connection.send(buildAddEntityPacket())
+        nms.connection.send(ClientboundAddEntityPacket(display, 0, display.blockPosition()))
         sendData(nms)
     }
 
@@ -68,26 +79,6 @@ class CommonHologramHandle private constructor(
         )
     }
 
-    /**
-     * Because the fake entity is never tracked by a [net.minecraft.server.level.ServerEntity],
-     * the add-entity packet is built directly from the entity's own state rather than via
-     * `ServerEntity`-based helpers.
-     */
-    private fun buildAddEntityPacket(): ClientboundAddEntityPacket =
-        ClientboundAddEntityPacket(
-            display.id,
-            display.uuid,
-            display.getX(),
-            display.getY(),
-            display.getZ(),
-            display.getXRot(),
-            display.getYRot(),
-            EntityType.TEXT_DISPLAY,
-            0,
-            Vec3.ZERO,
-            0.0
-        )
-
     private fun sendData(nms: ServerPlayer) {
         val values = display.entityData.nonDefaultValues
         if (!values.isNullOrEmpty()) {
@@ -99,8 +90,10 @@ class CommonHologramHandle private constructor(
         fun create(location: Location, options: HologramOptions): CommonHologramHandle {
             val level = (location.world as CraftWorld).handle
 
+            // The Display.TextDisplay constructor already assigns the entity a fresh,
+            // globally unique id from the vanilla entity counter - no separate id
+            // allocation is necessary.
             val display = Display.TextDisplay(EntityType.TEXT_DISPLAY, level)
-            display.setId(nextHologramEntityId())
             display.setPos(location.x, location.y, location.z)
             display.setYRot(location.yaw)
             display.setXRot(location.pitch)
@@ -111,88 +104,53 @@ class CommonHologramHandle private constructor(
             return CommonHologramHandle(display)
         }
 
+        private fun bukkitOf(display: Display.TextDisplay): org.bukkit.entity.TextDisplay =
+            display.bukkitEntity as org.bukkit.entity.TextDisplay
+
         private fun applyText(display: Display.TextDisplay, contents: List<String>) {
             val joined = contents.joinToString("\n")
-            val component: Component = StringUtils.toComponent(joined).toNMS()
-            display.entityData.set(TEXT_DISPLAY_TEXT, component)
+            bukkitOf(display).text(StringUtils.toComponent(joined))
         }
 
         private fun applyOptions(display: Display.TextDisplay, options: HologramOptions) {
-            val billboard = when (options.billboard) {
-                Billboard.FIXED -> Display.BillboardConstraints.FIXED
-                Billboard.VERTICAL -> Display.BillboardConstraints.VERTICAL
-                Billboard.HORIZONTAL -> Display.BillboardConstraints.HORIZONTAL
-                Billboard.CENTER -> Display.BillboardConstraints.CENTER
+            val bukkit = bukkitOf(display)
+
+            bukkit.billboard = when (options.billboard) {
+                Billboard.FIXED -> org.bukkit.entity.Display.Billboard.FIXED
+                Billboard.VERTICAL -> org.bukkit.entity.Display.Billboard.VERTICAL
+                Billboard.HORIZONTAL -> org.bukkit.entity.Display.Billboard.HORIZONTAL
+                Billboard.CENTER -> org.bukkit.entity.Display.Billboard.CENTER
             }
-            display.entityData.set(DISPLAY_BILLBOARD_CONSTRAINTS, billboardId(billboard))
-            display.entityData.set(DISPLAY_VIEW_RANGE, options.viewRange)
-            display.entityData.set(DISPLAY_SCALE, Vector3f(options.scale, options.scale, options.scale))
 
-            options.backgroundColor?.let { display.entityData.set(TEXT_DISPLAY_BACKGROUND_COLOR, it) }
-            options.lineWidth?.let { display.entityData.set(TEXT_DISPLAY_LINE_WIDTH, it) }
-            options.textOpacity?.let { display.entityData.set(TEXT_DISPLAY_TEXT_OPACITY, it) }
+            bukkit.viewRange = options.viewRange
 
-            var flags = 0
-            if (options.hasTextShadow()) flags = flags or Display.TextDisplay.FLAG_SHADOW.toInt()
-            if (options.isSeeThrough()) flags = flags or Display.TextDisplay.FLAG_SEE_THROUGH.toInt()
-            if (options.backgroundColor == null) flags = flags or Display.TextDisplay.FLAG_USE_DEFAULT_BACKGROUND.toInt()
-            flags = flags or when (options.alignment) {
-                // Neither alignment bit set means centered - there is no FLAG_ALIGN_CENTER constant.
-                TextAlignment.CENTER -> 0
-                TextAlignment.LEFT -> Display.TextDisplay.FLAG_ALIGN_LEFT.toInt()
-                TextAlignment.RIGHT -> Display.TextDisplay.FLAG_ALIGN_RIGHT.toInt()
+            val scale = options.scale
+            bukkit.transformation = Transformation(
+                Vector3f(0f, 0f, 0f),
+                Quaternionf(),
+                Vector3f(scale, scale, scale),
+                Quaternionf()
+            )
+
+            val backgroundColor = options.backgroundColor
+            if (backgroundColor != null) {
+                bukkit.isDefaultBackground = false
+                bukkit.backgroundColor = Color.fromARGB(backgroundColor)
+            } else {
+                bukkit.isDefaultBackground = true
             }
-            display.entityData.set(TEXT_DISPLAY_STYLE_FLAGS, flags.toByte())
+
+            options.lineWidth?.let { bukkit.lineWidth = it }
+            options.textOpacity?.let { bukkit.textOpacity = it }
+
+            bukkit.isShadowed = options.hasTextShadow()
+            bukkit.isSeeThrough = options.isSeeThrough()
+
+            bukkit.alignment = when (options.alignment) {
+                TextAlignment.CENTER -> org.bukkit.entity.TextDisplay.TextAlignment.CENTER
+                TextAlignment.LEFT -> org.bukkit.entity.TextDisplay.TextAlignment.LEFT
+                TextAlignment.RIGHT -> org.bukkit.entity.TextDisplay.TextAlignment.RIGHT
+            }
         }
-
-        // ---------------------------------------------------------------
-        // Reflective accessor lookups.
-        //
-        // Display / Display.TextDisplay expose their per-field mutators (setText,
-        // setLineWidth, setBackgroundColor, setFlags, setBillboardConstraints,
-        // setViewRange, setTransformation, ...) as *private* instance methods, and
-        // their `EntityDataAccessor` constants as *private static* fields. There is
-        // no public setter surface at all in this mapping, so every value is applied
-        // by writing straight into the entity's `SynchedEntityData` (which itself is
-        // public via `Entity#getEntityData`) using the accessor constants recovered
-        // via reflection here, once, at class-init time.
-        // ---------------------------------------------------------------
-
-        @Suppress("UNCHECKED_CAST")
-        private fun <T> staticAccessor(clazz: Class<*>, name: String): EntityDataAccessor<T> {
-            val field = clazz.getDeclaredField(name)
-            field.isAccessible = true
-            return field.get(null) as EntityDataAccessor<T>
-        }
-
-        private fun billboardId(constraints: Display.BillboardConstraints): Byte {
-            val method = Display.BillboardConstraints::class.java.getDeclaredMethod("getId")
-            method.isAccessible = true
-            return method.invoke(constraints) as Byte
-        }
-
-        private val DISPLAY_BILLBOARD_CONSTRAINTS: EntityDataAccessor<Byte> =
-            staticAccessor(Display::class.java, "DATA_BILLBOARD_RENDER_CONSTRAINTS_ID")
-
-        private val DISPLAY_VIEW_RANGE: EntityDataAccessor<Float> =
-            staticAccessor(Display::class.java, "DATA_VIEW_RANGE_ID")
-
-        private val DISPLAY_SCALE: EntityDataAccessor<Vector3f> =
-            staticAccessor(Display::class.java, "DATA_SCALE_ID")
-
-        private val TEXT_DISPLAY_TEXT: EntityDataAccessor<Component> =
-            staticAccessor(Display.TextDisplay::class.java, "DATA_TEXT_ID")
-
-        private val TEXT_DISPLAY_LINE_WIDTH: EntityDataAccessor<Int> =
-            staticAccessor(Display.TextDisplay::class.java, "DATA_LINE_WIDTH_ID")
-
-        private val TEXT_DISPLAY_BACKGROUND_COLOR: EntityDataAccessor<Int> =
-            staticAccessor(Display.TextDisplay::class.java, "DATA_BACKGROUND_COLOR_ID")
-
-        private val TEXT_DISPLAY_TEXT_OPACITY: EntityDataAccessor<Byte> =
-            staticAccessor(Display.TextDisplay::class.java, "DATA_TEXT_OPACITY_ID")
-
-        private val TEXT_DISPLAY_STYLE_FLAGS: EntityDataAccessor<Byte> =
-            staticAccessor(Display.TextDisplay::class.java, "DATA_STYLE_FLAGS_ID")
     }
 }
