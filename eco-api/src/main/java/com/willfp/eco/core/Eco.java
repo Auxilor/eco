@@ -25,6 +25,8 @@ import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
+import com.willfp.eco.core.integrations.hologram.Hologram;
+import com.willfp.eco.core.integrations.hologram.HologramOptions;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
@@ -411,6 +413,17 @@ public interface Eco {
      */
     @NotNull
     Entity createDummyEntity(@NotNull Location location);
+
+    /**
+     * Create a hologram.
+     *
+     * @param location The location.
+     * @param options  The hologram options.
+     * @return The hologram.
+     */
+    @NotNull
+    Hologram createHologram(@NotNull Location location,
+                            @NotNull HologramOptions options);
 
     /**
      * Create a {@link NamespacedKey} quickly
