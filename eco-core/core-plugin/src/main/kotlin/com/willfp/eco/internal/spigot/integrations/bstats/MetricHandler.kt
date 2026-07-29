@@ -11,6 +11,7 @@ import com.willfp.eco.libs.bstats.charts.MultiLineChart
 import com.willfp.eco.libs.bstats.charts.SimpleBarChart
 import com.willfp.eco.libs.bstats.charts.SimplePie
 import com.willfp.eco.libs.bstats.charts.SingleLineChart
+import java.util.Properties
 
 object MetricHandler {
     fun createMetrics(plugin: EcoPlugin) {
@@ -27,6 +28,25 @@ object MetricHandler {
                     .ifEmpty { null }
             }
         )
+
+        metrics.addCustomChart(
+            SimplePie("platform") {
+                plugin.getPublishPlatform().displayName
+            }
+        )
+    }
+
+    private fun EcoPlugin.getPublishPlatform(): PublishPlatform {
+        val props = Properties()
+
+        val label = try {
+            this.javaClass.getResourceAsStream("/platform")?.use { props.load(it) }
+            props.getProperty("platform")
+        } catch (e: Exception) {
+            null
+        } ?: return PublishPlatform.OTHER
+
+        return PublishPlatform.fromMarkerLabel(label)
     }
 
     private fun EcoMetricsChart.toBStatsChart(): CustomChart = when (this) {
