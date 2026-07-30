@@ -118,3 +118,9 @@ health-fix-duration: 3
 
 # The interval (in seconds) at which the health fix will be applied during the duration
 health-fix-interval: 1
+
+kill-attribution:
+  # How many ticks after a player damages an entity that entity's death is
+  # still credited to them. Covers kills finished by fire, lightning, poison,
+  # and other damage over time. Set to 0 to only credit direct killing blows.
+  window-ticks: 100
