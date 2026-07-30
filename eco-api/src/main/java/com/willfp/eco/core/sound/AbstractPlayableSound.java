@@ -209,26 +209,26 @@ public abstract class AbstractPlayableSound<T> {
             String soundKey = config.getString("sound");
             Sound sound = SoundUtils.getSound(soundKey);
 
-            double minPitch = 1.0;
-            double maxPitch = 1.0;
+            double minPitch;
+            double maxPitch;
 
             String pitchString = config.getStringOrNull("pitch");
             if (pitchString != null && pitchString.contains("..")) {
                 String[] parts = pitchString.split("\\.\\.", 2);
-                try {
-                    minPitch = Double.parseDouble(parts[0]);
-                    maxPitch = Double.parseDouble(parts[1]);
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                if (parts.length == 2) {
+                    minPitch = readRangePart(parts[0], 1.0);
+                    maxPitch = readRangePart(parts[1], 1.0);
+                } else {
                     minPitch = 1.0;
                     maxPitch = 1.0;
                 }
             } else {
-                double pitch = Objects.requireNonNullElse(config.getDoubleOrNull("pitch"), 1.0);
+                double pitch = readNumber(config, "pitch", 1.0);
                 minPitch = pitch;
                 maxPitch = pitch;
             }
 
-            double volume = Objects.requireNonNullElse(config.getDoubleOrNull("volume"), 1.0);
+            double volume = readNumber(config, "volume", 1.0);
             boolean enabled = Objects.requireNonNullElse(config.getBoolOrNull("enabled"), true);
 
             SoundCategory category;
