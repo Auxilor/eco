@@ -1,6 +1,7 @@
 package com.willfp.eco.core.sound;
 
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.SoundUtils;
@@ -170,6 +171,34 @@ public abstract class AbstractPlayableSound<T> {
     @Nullable
     public static AbstractPlayableSound<?> create(@NotNull final Config config) {
         return DESERIALIZER.deserialize(config);
+    }
+
+    static double readNumber(@NotNull final Config config,
+                             @NotNull final String path,
+                             final double fallback) {
+        Double direct = config.getDoubleOrNull(path);
+        if (direct != null) {
+            return direct;
+        }
+
+        String raw = config.getStringOrNull(path);
+        if (raw == null || raw.isBlank()) {
+            return fallback;
+        }
+
+        return readRangePart(raw, fallback);
+    }
+
+    static double readRangePart(@NotNull final String raw,
+                                final double fallback) {
+        String trimmed = raw.trim();
+
+        try {
+            return Double.parseDouble(trimmed);
+        } catch (NumberFormatException ignored) {
+            Double evaluated = NumberUtils.evaluateExpressionOrNull(trimmed, PlaceholderContext.EMPTY);
+            return evaluated != null ? evaluated : fallback;
+        }
     }
 
     private static final class Deserializer implements ConfigDeserializer<AbstractPlayableSound<?>> {
