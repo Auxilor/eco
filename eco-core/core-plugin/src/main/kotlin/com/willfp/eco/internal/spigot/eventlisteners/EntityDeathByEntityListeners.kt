@@ -12,7 +12,13 @@ import org.bukkit.event.entity.EntityDeathEvent
 class EntityDeathByEntityListeners(
     private val plugin: EcoPlugin
 ) : Listener {
-    private val windowTicks = plugin.configYml.getInt("kill-attribution.window-ticks").toLong()
+    private val creditIndirect = plugin.configYml.getBool("kill-attribution.credit-indirect-kills")
+
+    private val windowTicks = if (creditIndirect) {
+        plugin.configYml.getInt("kill-attribution.window-ticks").toLong()
+    } else {
+        LEGACY_WINDOW_TICKS
+    }
 
     private val tracker = LastDamagerTracker(windowTicks) { Bukkit.getCurrentTick().toLong() }
 
@@ -24,11 +30,13 @@ class EntityDeathByEntityListeners(
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDamage(event: EntityDamageByEntityEvent) {
-        if (event.entity !is LivingEntity) {
+        val victim = event.entity as? LivingEntity ?: return
+
+        if (!creditIndirect && victim.health > event.finalDamage) {
             return
         }
 
-        tracker.record(event.entity.uniqueId, event.damager)
+        tracker.record(victim.uniqueId, event.damager)
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -46,5 +54,11 @@ class EntityDeathByEntityListeners(
         builtEvent.deathEvent = event
 
         builtEvent.push()
+    }
+
+    private companion object {
+        // The window eco used before indirect kills were creditable, kept to
+        // stay in step with WildStacker.
+        const val LEGACY_WINDOW_TICKS = 5L
     }
 }
