@@ -118,3 +118,14 @@ health-fix-duration: 3
 
 # The interval (in seconds) at which the health fix will be applied during the duration
 health-fix-interval: 1
+
+kill-attribution:
+  # If a player should be credited for a kill they didn't land the final blow
+  # on, such as one finished by fire, lightning, or poison. Leave this false to
+  # only credit a blow that was lethal at the moment it landed.
+  credit-indirect-kills: false
+
+  # How many ticks after a player damages an entity that entity's death is
+  # still credited to them. Only used when credit-indirect-kills is true.
+  # Fire ticks land 20 ticks apart, so lower values will miss burn kills.
+  window-ticks: 100
