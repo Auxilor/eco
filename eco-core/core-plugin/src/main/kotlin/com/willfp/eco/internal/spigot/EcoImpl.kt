@@ -69,6 +69,7 @@ import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxies.SkullProxy
 import com.willfp.eco.internal.spigot.proxies.TPSProxy
+import com.willfp.eco.internal.spigot.proxies.WaypointHandlerProxy
 import java.net.URLClassLoader
 import java.util.UUID
 import net.kyori.adventure.text.Component
@@ -403,6 +404,12 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun sendPacket(player: Player, packet: Packet) =
         this.getProxy(PacketHandlerProxy::class.java).sendPacket(player, packet)
+
+    override fun showWaypoint(viewer: Player, id: UUID, location: Location, color: Int?) =
+        this.getProxy(WaypointHandlerProxy::class.java).showWaypoint(viewer, id, location, color)
+
+    override fun hideWaypoint(viewer: Player, id: UUID) =
+        this.getProxy(WaypointHandlerProxy::class.java).hideWaypoint(viewer, id)
 
     override fun translatePlaceholders(text: String, context: PlaceholderContext) =
         placeholderParser.translatePlacholders(text, context)

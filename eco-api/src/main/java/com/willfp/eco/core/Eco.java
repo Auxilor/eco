@@ -615,6 +615,28 @@ public interface Eco {
                     @NotNull Packet packet);
 
     /**
+     * Show a waypoint to a player on their locator bar.
+     *
+     * @param viewer   The player to show it to.
+     * @param id       The waypoint ID, used later to hide it.
+     * @param location The waypoint location.
+     * @param color    The packed RGB colour, or null for the default style colour.
+     */
+    void showWaypoint(@NotNull Player viewer,
+                      @NotNull UUID id,
+                      @NotNull Location location,
+                      @Nullable Integer color);
+
+    /**
+     * Hide a waypoint previously shown to a player.
+     *
+     * @param viewer The player.
+     * @param id     The waypoint ID.
+     */
+    void hideWaypoint(@NotNull Player viewer,
+                      @NotNull UUID id);
+
+    /**
      * Translate placeholders in a string.
      *
      * @param text    The text.
