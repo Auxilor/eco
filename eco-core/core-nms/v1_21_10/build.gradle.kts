@@ -30,9 +30,6 @@ tasks {
             "com.willfp.eco.internal.spigot.proxy.v1_21_10.common"
         )
 
-        // 1.21.10 collapsed ServerEntity's Consumer/BiConsumer broadcast params into a
-        // Synchronizer; `common`'s CommonHologramHandle is compiled once against 1.21.8
-        // and can't track that, so this version has its own Hologram/handle instead.
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
