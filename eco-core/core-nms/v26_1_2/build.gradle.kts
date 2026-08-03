@@ -29,6 +29,9 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/CommonsInitializer*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/packet/PacketContainerClick*.class")
+
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
+
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/recipes/RecipeManager*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/CatLieOnBedGoalFactory*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/CatSitOnBedGoalFactory*.class")

@@ -131,8 +131,18 @@ class HologramTracker(
 
     @EventHandler
     fun onRespawn(event: PlayerRespawnEvent) {
-        // Client discards entities on respawn; drop our record so the next tick re-sends.
-        sent.remove(event.player.uniqueId)
+        // Don't just drop the record and assume the client discarded the entities: if a
+        // hologram is unregister()'d in the window between this wipe and the next reconcile
+        // tick, unregister() checks `sent` to decide whether to send a despawn packet, finds
+        // nothing there, and skips it - stranding the entity on the client until relog. Send
+        // the despawn ourselves so removal is never contingent on that race.
+        val player = event.player
+        val ids = sent.remove(player.uniqueId) ?: return
+        for (hologram in holograms) {
+            if (hologram.handle.entityId in ids) {
+                hologram.handle.despawn(player)
+            }
+        }
     }
 
     @EventHandler

@@ -35,9 +35,6 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/CommonsInitializer*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
 
-        // 1.21.11 collapsed ServerEntity's Consumer/BiConsumer broadcast params into a
-        // Synchronizer; `common`'s CommonHologramHandle is compiled once against 1.21.8
-        // and can't track that, so this version has its own Hologram/handle instead.
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
