@@ -31,12 +31,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
-private val unstyledComponent = Component.empty().style {
-    it.color(null).decoration(TextDecoration.ITALIC, false)
-}
-
 private fun Component.unstyled(): Component {
-    return unstyledComponent.append(this)
+    return this.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 }
 
 interface ImplementedFIS : FastItemStack {
