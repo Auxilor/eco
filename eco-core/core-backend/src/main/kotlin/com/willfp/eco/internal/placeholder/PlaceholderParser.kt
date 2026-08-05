@@ -23,6 +23,7 @@ class PlaceholderParser {
     private val placeholderRegex = Regex("%([^% ]+)%")
     private val prettyMathExpressionRegex = Regex("(\\{\\^\\{)(.)+(}})")
     private val mathExpressionRegex = Regex("(\\{\\{)(.)+(}})")
+    private val progressBarExpressionRegex = Regex("(\\{#\\{)(.)+(}})")
 
     private val placeholderLookupCache = EcoCache.builder<PlaceholderLookup, Placeholder?>()
         .expireAfterWrite(Duration.ofSeconds(1))
@@ -58,6 +59,18 @@ class PlaceholderParser {
                 val expression = matchResult.value.substring(2, matchResult.value.length - 2)
                 val result = evaluateExpression(expression, context)
                 acc.replace(matchResult.value, result.toString())
+            }
+
+            if ('#' in processed) {
+                // Evaluate progress bar expressions; the expression must evaluate to a
+                // percentage between 0 and 100, e.g. {#{%libreforge_item_progress_example%}}
+                processed = progressBarExpressionRegex.findAll(processed).fold(processed) { acc, matchResult ->
+                    val expression = matchResult.value.substring(3, matchResult.value.length - 2)
+                    val percentage = evaluateExpression(expression, context)
+                    val progress = (percentage / 100.0).coerceIn(0.0, 1.0)
+                    val bar = StringUtils.createProgressBar('|', 10, progress, "&a", "&a", "&7")
+                    acc.replace(matchResult.value, bar)
+                }
             }
         }
 
