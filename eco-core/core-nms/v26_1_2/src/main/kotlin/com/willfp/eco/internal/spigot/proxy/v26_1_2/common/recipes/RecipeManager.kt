@@ -11,17 +11,20 @@ import net.minecraft.world.item.crafting.RecipeHolder
 import net.minecraft.world.item.crafting.ShapedRecipe
 import net.minecraft.world.item.crafting.ShapedRecipePattern
 import net.minecraft.world.item.crafting.ShapelessRecipe
+import net.minecraft.world.item.crafting.StonecutterRecipe
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.inventory.CraftRecipe
 import org.bukkit.craftbukkit.inventory.CraftShapedRecipe
 import org.bukkit.craftbukkit.inventory.CraftShapelessRecipe
+import org.bukkit.craftbukkit.inventory.CraftStonecuttingRecipe
 import org.bukkit.craftbukkit.util.CraftNamespacedKey
 import org.bukkit.inventory.Recipe as BukkitRecipe
 import org.bukkit.inventory.RecipeChoice as BukkitRecipeChoice
 import org.bukkit.inventory.ShapedRecipe as BukkitShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe as BukkitShapelessRecipe
+import org.bukkit.inventory.StonecuttingRecipe as BukkitStonecuttingRecipe
 import java.util.*
 
 object RecipeManager {
@@ -99,6 +102,18 @@ object RecipeManager {
                         CraftingRecipe.CraftingBookInfo(CraftRecipe.getCategory(this.category), this.group),
                         CraftItemStack.asTemplate(this.result),
                         data
+                    )
+                    return RecipeHolder(
+                        CraftNamespacedKey.toResourceKey(Registries.RECIPE, this.key),
+                        recipe
+                    )
+                }
+                is BukkitStonecuttingRecipe -> {
+                    val craftRecipe = CraftStonecuttingRecipe.fromBukkitRecipe(this)
+                    val recipe = StonecutterRecipe(
+                        Recipe.CommonInfo(true),
+                        CraftRecipe.toIngredient(craftRecipe.inputChoice, true),
+                        CraftItemStack.asTemplate(craftRecipe.result)
                     )
                     return RecipeHolder(
                         CraftNamespacedKey.toResourceKey(Registries.RECIPE, this.key),
