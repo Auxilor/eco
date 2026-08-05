@@ -2,7 +2,6 @@ package com.willfp.eco.core.sound;
 
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
-import com.willfp.eco.core.serialization.ConfigDeserializer;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.SoundUtils;
 
@@ -22,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
  * @param <T> The type of sound source (e.g. {@link Sound} or {@link String} for custom sounds).
  */
 public abstract class AbstractPlayableSound<T> {
-
-    private static final ConfigDeserializer<AbstractPlayableSound<?>> DESERIALIZER = new Deserializer();
 
     private final T source;
     private final double minPitch;
@@ -164,18 +161,37 @@ public abstract class AbstractPlayableSound<T> {
 
     /**
      * Parse a playable sound from config.
+     * <p>
+     * Pitch/volume expressions are evaluated against an empty placeholder context, so
+     * placeholders (e.g. {@code %libreforge_points_example%}) won't resolve; use
+     * {@link #create(Config, PlaceholderContext)} when a context is available.
      *
      * @param config The config.
      * @return The sound, or null if invalid.
      */
     @Nullable
     public static AbstractPlayableSound<?> create(@NotNull final Config config) {
-        return DESERIALIZER.deserialize(config);
+        return create(config, PlaceholderContext.EMPTY);
+    }
+
+    /**
+     * Parse a playable sound from config, evaluating pitch/volume expressions against
+     * the given placeholder context.
+     *
+     * @param config  The config.
+     * @param context The placeholder context to evaluate pitch/volume expressions against.
+     * @return The sound, or null if invalid.
+     */
+    @Nullable
+    public static AbstractPlayableSound<?> create(@NotNull final Config config,
+                                                  @NotNull final PlaceholderContext context) {
+        return deserialize(config, context);
     }
 
     static double readNumber(@NotNull final Config config,
                              @NotNull final String path,
-                             final double fallback) {
+                             final double fallback,
+                             @NotNull final PlaceholderContext context) {
         Double direct = config.getDoubleOrNull(path);
         if (direct != null) {
             return direct;
@@ -186,68 +202,68 @@ public abstract class AbstractPlayableSound<T> {
             return fallback;
         }
 
-        return readRangePart(raw, fallback);
+        return readRangePart(raw, fallback, context);
     }
 
     static double readRangePart(@NotNull final String raw,
-                                final double fallback) {
+                                final double fallback,
+                                @NotNull final PlaceholderContext context) {
         String trimmed = raw.trim();
 
         try {
             return Double.parseDouble(trimmed);
         } catch (NumberFormatException ignored) {
-            Double evaluated = NumberUtils.evaluateExpressionOrNull(trimmed, PlaceholderContext.EMPTY);
+            Double evaluated = NumberUtils.evaluateExpressionOrNull(trimmed, context);
             return evaluated != null ? evaluated : fallback;
         }
     }
 
-    private static final class Deserializer implements ConfigDeserializer<AbstractPlayableSound<?>> {
-        @Override
-        public @Nullable AbstractPlayableSound<?> deserialize(@NotNull final Config config) {
-            if (!config.has("sound")) return null;
+    @Nullable
+    private static AbstractPlayableSound<?> deserialize(@NotNull final Config config,
+                                                         @NotNull final PlaceholderContext context) {
+        if (!config.has("sound")) return null;
 
-            String soundKey = config.getString("sound");
-            Sound sound = SoundUtils.getSound(soundKey);
+        String soundKey = config.getString("sound");
+        Sound sound = SoundUtils.getSound(soundKey);
 
-            double minPitch;
-            double maxPitch;
+        double minPitch;
+        double maxPitch;
 
-            String pitchString = config.getStringOrNull("pitch");
-            if (pitchString != null && pitchString.contains("..")) {
-                String[] parts = pitchString.split("\\.\\.", 2);
-                if (parts.length == 2) {
-                    minPitch = readRangePart(parts[0], 1.0);
-                    maxPitch = readRangePart(parts[1], 1.0);
-                } else {
-                    minPitch = 1.0;
-                    maxPitch = 1.0;
-                }
+        String pitchString = config.getStringOrNull("pitch");
+        if (pitchString != null && pitchString.contains("..")) {
+            String[] parts = pitchString.split("\\.\\.", 2);
+            if (parts.length == 2) {
+                minPitch = readRangePart(parts[0], 1.0, context);
+                maxPitch = readRangePart(parts[1], 1.0, context);
             } else {
-                double pitch = readNumber(config, "pitch", 1.0);
-                minPitch = pitch;
-                maxPitch = pitch;
+                minPitch = 1.0;
+                maxPitch = 1.0;
             }
+        } else {
+            double pitch = readNumber(config, "pitch", 1.0, context);
+            minPitch = pitch;
+            maxPitch = pitch;
+        }
 
-            double volume = readNumber(config, "volume", 1.0);
-            boolean enabled = Objects.requireNonNullElse(config.getBoolOrNull("enabled"), true);
+        double volume = readNumber(config, "volume", 1.0, context);
+        boolean enabled = Objects.requireNonNullElse(config.getBoolOrNull("enabled"), true);
 
-            SoundCategory category;
-            String catString = config.getStringOrNull("category");
-            if (catString == null) {
+        SoundCategory category;
+        String catString = config.getStringOrNull("category");
+        if (catString == null) {
+            category = SoundCategory.MASTER;
+        } else {
+            try {
+                category = SoundCategory.valueOf(catString.toUpperCase());
+            } catch (IllegalArgumentException e) {
                 category = SoundCategory.MASTER;
-            } else {
-                try {
-                    category = SoundCategory.valueOf(catString.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    category = SoundCategory.MASTER;
-                }
             }
+        }
 
-            if (sound != null) {
-                return new PlayableSound(sound, minPitch, maxPitch, volume, enabled, category);
-            } else {
-                return new CustomPlayableSound(soundKey, minPitch, maxPitch, volume, enabled, category);
-            }
+        if (sound != null) {
+            return new PlayableSound(sound, minPitch, maxPitch, volume, enabled, category);
+        } else {
+            return new CustomPlayableSound(soundKey, minPitch, maxPitch, volume, enabled, category);
         }
     }
 }
