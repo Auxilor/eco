@@ -31,7 +31,14 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
+/**
+ * Resets the implicit client-side italic on styled names/lore, without touching bare
+ * (unstyled) components. A bare component must stay bare so it keeps vanilla's compact
+ * string form in the data component NBT, instead of gaining an explicit `italic: false`
+ * that would diverge from vanilla-set names (breaking resource packs keyed off custom_name).
+ */
 private fun Component.unstyled(): Component {
+    if (style().isEmpty) return this
     return this.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 }
 

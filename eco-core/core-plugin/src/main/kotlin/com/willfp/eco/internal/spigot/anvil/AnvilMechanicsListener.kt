@@ -221,7 +221,7 @@ class AnvilMechanicsListener(
 
         if (right == null || right.type == Material.AIR) {
             if (left.fast().displayName == formattedItemName) return FAIL
-            left.fast().displayName = formattedItemName.let { "§o$it" }
+            left.fast().displayName = formattedItemName
             return AnvilResult(left, 0)
         }
 
@@ -247,7 +247,7 @@ class AnvilMechanicsListener(
             }
         }
 
-        left.fast().displayName = formattedItemName.let { "§o$it" }
+        left.fast().displayName = formattedItemName
 
         val leftEnchants = left.fast().getEnchants(true)
         val rightEnchants = right.fast().getEnchants(true)
