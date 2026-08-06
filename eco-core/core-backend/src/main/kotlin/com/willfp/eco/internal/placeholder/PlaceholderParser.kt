@@ -19,7 +19,13 @@ but it's still best to minimise the memory overhead.
 
  */
 
-class PlaceholderParser {
+class PlaceholderParser(
+    private val progressBarCharacter: Char = '|',
+    private val progressBarBars: Int = 10,
+    private val progressBarCompleteFormat: String = "&a",
+    private val progressBarInProgressFormat: String = "&a",
+    private val progressBarIncompleteFormat: String = "&7"
+) {
     private val placeholderRegex = Regex("%([^% ]+)%")
     private val prettyMathExpressionRegex = Regex("(\\{\\^\\{)(.)+(}})")
     private val mathExpressionRegex = Regex("(\\{\\{)(.)+(}})")
@@ -68,7 +74,14 @@ class PlaceholderParser {
                     val expression = matchResult.value.substring(3, matchResult.value.length - 2)
                     val percentage = evaluateExpression(expression, context)
                     val progress = (percentage / 100.0).coerceIn(0.0, 1.0)
-                    val bar = StringUtils.createProgressBar('|', 10, progress, "&a", "&a", "&7")
+                    val bar = StringUtils.createProgressBar(
+                        progressBarCharacter,
+                        progressBarBars,
+                        progress,
+                        progressBarCompleteFormat,
+                        progressBarInProgressFormat,
+                        progressBarIncompleteFormat
+                    )
                     acc.replace(matchResult.value, bar)
                 }
             }

@@ -98,6 +98,23 @@ literal-cache-ttl: 10
 # is primarily used for optimisation and server insights.
 playerflow: true
 
+# Options for the {#{expression}} progress bar placeholder syntax.
+progress-bar:
+  # The character used to draw each section of the bar.
+  character: "|"
+
+  # The number of sections in the bar.
+  bars: 10
+
+  # The color/format applied to completed sections.
+  complete-format: "&a"
+
+  # The color/format applied to the in-progress section.
+  in-progress-format: "&a"
+
+  # The color/format applied to incomplete sections.
+  incomplete-format: "&7"
+
 # If the packet display system should activate on items that have no meta. This is disabled
 # by default for performance reasons, but if you want to use the packet display system on
 # items that have no meta, then you can enable this option.
