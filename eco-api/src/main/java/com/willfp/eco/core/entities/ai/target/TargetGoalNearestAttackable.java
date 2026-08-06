@@ -33,7 +33,7 @@ public record TargetGoalNearestAttackable(
     /**
      * Create a new target goal.
      *
-     * @param targets          The type of entities to attack.
+     * @param targets          The types of entities to attack.
      * @param checkVisibility  If visibility should be checked.
      * @param checkCanNavigate If navigation should be checked.
      * @param reciprocalChance 1 in reciprocalChance chance of not activating on any tick.

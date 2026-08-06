@@ -95,10 +95,10 @@ fun SlotBuilder.setModifier(action: (Player, Menu, item: ItemStack) -> Unit): Sl
 fun SlotBuilder.setUpdater(action: (Player, Menu, item: ItemStack) -> ItemStack): SlotBuilder =
     this.setUpdater { a, b, c -> action(a, b, c) }
 
-/** Kotlin builder for slots. */
+/** Kotlin builder for captive slots. */
 fun captiveSlot(): Slot = Slot.builder().setCaptive().build()
 
-/** Kotlin builder for slots. */
+/** Kotlin builder for captive slots. */
 fun captiveSlot(
     init: SlotBuilder.() -> Unit
 ): Slot {
@@ -169,7 +169,11 @@ fun MenuBuilder.onClose(action: (event: InventoryCloseEvent, Menu) -> Unit): Men
 fun MenuBuilder.onOpen(action: (Player, Menu) -> Unit): MenuBuilder =
     this.onOpen { a, b -> action(a, b) }
 
-/** @see MenuBuilder.modify */
+/**
+ * Run a function to modify the builder.
+ *
+ * @see MenuBuilder.modfiy
+ */
 fun MenuBuilder.modify(modifier: (builder: MenuBuilder) -> Unit): MenuBuilder =
     this.modfiy { modifier(it) }
 
@@ -278,7 +282,7 @@ fun menu(
     return builder.build()
 }
 
-/** Kotlin builder for menus. */
+/** Kotlin builder for dispenser menus. */
 fun dispenserMenu(
     init: MenuBuilder.() -> Unit
 ): Menu {

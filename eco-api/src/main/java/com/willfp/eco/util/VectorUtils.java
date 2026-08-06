@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class VectorUtils {
     /**
-     * Cached circles to prevent many sqrt calls.
+     * Cached circles to prevent many sqrt calls, keyed by radius.
      */
     private static final Map<Integer, Vector[]> CIRCLE_CACHE = new HashMap<>();
 
@@ -37,6 +37,10 @@ public final class VectorUtils {
     /**
      * Only keep largest part of normalised vector.
      * For example: -0.8, 0.01, -0.2 would become -1, 0, 0.
+     * <p>
+     * The result is always a unit vector along a single axis, with the sign of the component that
+     * was kept. If the x or z component has a magnitude greater than one, the y axis is used as
+     * the dominant axis instead.
      *
      * @param vec The vector to simplify.
      * @return The vector, simplified.
@@ -70,8 +74,13 @@ public final class VectorUtils {
 
     /**
      * Get circle as relative vectors.
+     * <p>
+     * The vectors are offsets from the centre and all lie in the horizontal plane, with a y
+     * component of zero. A block is included if the rounded distance from the centre is at most
+     * the radius. Results are cached per radius, and the returned array is the shared cached
+     * instance, so it must not be modified.
      *
-     * @param radius The radius.
+     * @param radius The radius, in blocks.
      * @return An array of {@link Vector}s.
      */
     @NotNull
@@ -107,8 +116,12 @@ public final class VectorUtils {
 
     /**
      * Get square as relative vectors.
+     * <p>
+     * The vectors are offsets from the centre and all lie in the horizontal plane, with a y
+     * component of zero. The square spans from -radius to radius inclusive on both axes, so it
+     * contains (2 * radius + 1)&#178; vectors.
      *
-     * @param radius The radius of the square.
+     * @param radius The radius of the square, in blocks.
      * @return An array of {@link Vector}s.
      */
     @NotNull
@@ -132,8 +145,11 @@ public final class VectorUtils {
 
     /**
      * Get cube as relative vectors.
+     * <p>
+     * The vectors are offsets from the centre, spanning from -radius to radius inclusive on all
+     * three axes, so the cube contains (2 * radius + 1)&#179; vectors.
      *
-     * @param radius The radius of the cube.
+     * @param radius The radius of the cube, in blocks.
      * @return An array of {@link Vector}s.
      */
     @NotNull
@@ -153,6 +169,9 @@ public final class VectorUtils {
 
     /**
      * Get if a vector is a safe velocity.
+     * <p>
+     * A velocity is considered safe if the x, y and z components all have a magnitude of less
+     * than 4.
      *
      * @param vec The vector to check.
      * @return If safe.

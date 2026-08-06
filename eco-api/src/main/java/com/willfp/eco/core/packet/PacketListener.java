@@ -4,10 +4,15 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Listens to packets.
+ * <p>
+ * Register listeners by returning them from
+ * {@link com.willfp.eco.core.EcoPlugin#loadPacketListeners()}.
  */
 public interface PacketListener {
     /**
-     * Called when a handle is sent.
+     * Called when a packet is sent to a player.
+     * <p>
+     * Does nothing by default; override when needed.
      *
      * @param event The event.
      */
@@ -16,7 +21,9 @@ public interface PacketListener {
     }
 
     /**
-     * Called when a handle is received.
+     * Called when a packet is received from a player.
+     * <p>
+     * Does nothing by default; override when needed.
      *
      * @param event The event.
      */
@@ -27,7 +34,7 @@ public interface PacketListener {
     /**
      * Get the priority of the listener.
      *
-     * @return The priority.
+     * @return The priority, {@link PacketPriority#NORMAL} by default.
      */
     default PacketPriority getPriority() {
         return PacketPriority.NORMAL;

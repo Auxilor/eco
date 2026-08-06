@@ -12,12 +12,12 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface CaptiveFilter {
     /**
-     * Get if allowed.
+     * Get if the item is allowed to be placed in the slot.
      *
      * @param player    The player.
      * @param menu      The menu.
-     * @param itemStack The item.
-     * @return If captive.
+     * @param itemStack The item; null if the item is unknown.
+     * @return If the item is allowed.
      */
     boolean isAllowed(@NotNull Player player,
                       @NotNull Menu menu,

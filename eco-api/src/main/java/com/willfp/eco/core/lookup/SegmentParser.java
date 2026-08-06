@@ -9,10 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Parse a key into segments.
+ * <p>
+ * A segment parser splits a lookup key around a pattern (for example {@code and} or
+ * {@code or}), parses each segment with the {@link LookupHandler}, and combines the
+ * results. Parsers must be registered with {@link #register()} to be used by
+ * {@link LookupHandler#parseKey(String)}.
  */
 public abstract class SegmentParser {
     /**
-     * All segment parsers.
+     * All registered segment parsers.
      */
     private static final List<SegmentParser> REGISTERED = new ArrayList<>();
 
@@ -33,7 +38,7 @@ public abstract class SegmentParser {
     /**
      * Register the parser.
      *
-     * @return The parser.
+     * @return This parser, for chaining.
      */
     public SegmentParser register() {
         REGISTERED.add(this);
@@ -42,6 +47,8 @@ public abstract class SegmentParser {
 
     /**
      * Try parse segments from key.
+     * <p>
+     * Only splits if the key contains the pattern surrounded by spaces.
      *
      * @param key     The key.
      * @param handler The handler.
@@ -66,15 +73,15 @@ public abstract class SegmentParser {
      * @param segments The key segments.
      * @param handler  The handler.
      * @param <T>      The object type.
-     * @return The returned object.
+     * @return The object generated from the segments.
      */
     protected abstract <T extends Testable<?>> T handleSegments(@NotNull String[] segments,
                                                                 @NotNull LookupHandler<T> handler);
 
     /**
-     * Get all segment parsers.
+     * Get all registered segment parsers.
      *
-     * @return All parsers.
+     * @return A copy of all registered parsers.
      */
     public static Collection<SegmentParser> values() {
         return new ArrayList<>(REGISTERED);

@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 public interface Profile {
     /**
      * Write a key to persistent data.
+     * <p>
+     * The value is stored in memory immediately and committed to the underlying
+     * data handler asynchronously, so this does not block.
      *
      * @param key   The key.
      * @param value The value.
@@ -21,10 +24,13 @@ public interface Profile {
 
     /**
      * Read a key from persistent data.
+     * <p>
+     * Values are cached in memory once read. The first read of a key may block
+     * while the value is fetched from the underlying data handler.
      *
      * @param key The key.
      * @param <T> The type of the key.
-     * @return The value, or the default value if not found.
+     * @return The value, or {@link PersistentDataKey#getDefaultValue()} if not found.
      */
     <T> @NotNull T read(@NotNull PersistentDataKey<T> key);
 }

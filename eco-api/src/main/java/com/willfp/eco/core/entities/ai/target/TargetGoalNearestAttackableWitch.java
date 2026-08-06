@@ -13,7 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Allows an entity to attack the closest target within a given subset of specific target types.
+ * Allows a raider to attack the closest target within a given subset of specific target types,
+ * using the witch variant of the nearest attackable goal.
  *
  * @param target           The type of entities to attack.
  * @param checkVisibility  If visibility should be checked.

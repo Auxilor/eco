@@ -10,11 +10,19 @@ import org.bukkit.persistence.PersistentDataContainer
 fun ItemStack?.toLookupString(): String =
     Items.toLookupString(this)
 
-/** @see Items.mergeFrom */
+/**
+ * Merge the other ItemStack onto the receiver, returning the receiver.
+ *
+ * @see Items.mergeFrom
+ */
 fun ItemStack.mergeFrom(other: ItemStack): ItemStack =
     Items.mergeFrom(other, this)
 
-/** @see Items.mergeFrom */
+/**
+ * Merge the other ItemMeta onto the receiver, returning the receiver.
+ *
+ * @see Items.mergeFrom
+ */
 fun ItemMeta.mergeFrom(other: ItemMeta): ItemMeta =
     Items.mergeFrom(other, this)
 

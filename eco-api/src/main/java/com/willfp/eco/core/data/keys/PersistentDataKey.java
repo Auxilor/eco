@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A persistent data key is a key with a type that can be stored about an offline player.
+ * <p>
+ * Keys are registered on construction, and two keys are equal if they share the same
+ * {@link NamespacedKey}.
  *
  * @param <T> The type of the data.
  */
@@ -34,7 +37,9 @@ public final class PersistentDataKey<T> {
     private final boolean isLocal;
 
     /**
-     * Create a new Persistent Data Key.
+     * Create a new Persistent Data Key, saved with the server's configured data handler.
+     * <p>
+     * Creating a key automatically registers it, see {@link #values()}.
      *
      * @param key          The key.
      * @param type         The data type.
@@ -48,11 +53,14 @@ public final class PersistentDataKey<T> {
 
     /**
      * Create a new Persistent Data Key.
+     * <p>
+     * Creating a key automatically registers it, see {@link #values()}.
      *
      * @param key          The key.
      * @param type         The data type.
      * @param defaultValue The default value.
-     * @param isLocal        If the key uses local storage.
+     * @param isLocal      If the key uses local storage rather than the server's
+     *                     configured data handler.
      */
     public PersistentDataKey(@NotNull final NamespacedKey key,
                              @NotNull final PersistentDataKeyType<T> type,
@@ -112,7 +120,7 @@ public final class PersistentDataKey<T> {
     }
 
     /**
-     * Get all persistent data keys.
+     * Get all registered persistent data keys.
      *
      * @return The keys.
      */

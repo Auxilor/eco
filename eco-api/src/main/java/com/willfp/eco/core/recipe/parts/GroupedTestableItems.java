@@ -23,6 +23,7 @@ public class GroupedTestableItems implements TestableItem {
      * Create a new group of testable items.
      *
      * @param children The children.
+     * @throws IllegalArgumentException If the collection is empty.
      */
     public GroupedTestableItems(@NotNull final Collection<TestableItem> children) {
         Preconditions.checkArgument(!children.isEmpty(), "Group must have at least one child!");
@@ -34,7 +35,7 @@ public class GroupedTestableItems implements TestableItem {
      * If the item matches any children.
      *
      * @param itemStack The item to test.
-     * @return If the item matches the test of any children..
+     * @return If the item matches the test of any children.
      */
     @Override
     public boolean matches(@Nullable final ItemStack itemStack) {
@@ -76,7 +77,7 @@ public class GroupedTestableItems implements TestableItem {
     /**
      * Get the children.
      *
-     * @return The children.
+     * @return A copy of the children.
      */
     public Collection<TestableItem> getChildren() {
         return new ArrayList<>(children);

@@ -8,7 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Base class for custom slot implementations.
+ * Base class for slots that resolve to a different slot depending on
+ * the player and the menu they are viewing.
+ * <p>
+ * Unlike {@link CustomSlot}, which delegates to a single fixed slot, the
+ * delegate is looked up on every call through {@link #getSlot(Player, Menu)}.
  */
 public abstract class ReactiveSlot implements Slot {
     /**
@@ -19,11 +23,11 @@ public abstract class ReactiveSlot implements Slot {
     }
 
     /**
-     * Get the actual slot to be shown.
+     * Get the actual slot to be shown to a player.
      *
      * @param player The player.
      * @param menu   The menu.
-     * @return The slot.
+     * @return The slot to delegate to.
      */
     @NotNull
     public abstract Slot getSlot(@NotNull final Player player,

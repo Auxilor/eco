@@ -12,9 +12,12 @@ import org.jetbrains.annotations.NotNull;
 public final class EntityUtils {
     /**
      * Set a client-side entity display name.
+     * <p>
+     * The name is sent only to the given player, so other players continue to see the entity's
+     * real display name.
      *
      * @param entity  The entity.
-     * @param player  The player.
+     * @param player  The player to show the display name to.
      * @param name    The display name.
      * @param visible If the display name should be forcibly visible.
      */

@@ -6,10 +6,26 @@ import java.util.Arrays;
 
 /**
  * A minimal class to represent a version with semantic comparison.
+ * <p>
+ * Versions are compared segment by segment, treating missing segments as zero, so that
+ * {@code 1.0} and {@code 1.0.0} are equal. A version with no qualifier is considered greater
+ * than the same version with one, and two qualified versions are compared by the qualifier
+ * lexicographically.
  */
 public class Version implements Comparable<Version> {
+    /**
+     * The version string exactly as it was passed in.
+     */
     private final String raw;
+
+    /**
+     * The numeric segments of the version, with unparseable segments treated as zero.
+     */
     private final int[] parts;
+
+    /**
+     * The qualifier after the first dash, or an empty string if there is none.
+     */
     private final String qualifier;
 
     /**

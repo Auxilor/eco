@@ -11,6 +11,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to handle antigrief integrations.
+ * <p>
+ * Every check requires <em>all</em> registered integrations to allow the action, so if any one
+ * integration denies it, the check fails. If no {@link AntigriefIntegration} is registered,
+ * every check returns true.
  */
 public final class AntigriefManager {
     /**

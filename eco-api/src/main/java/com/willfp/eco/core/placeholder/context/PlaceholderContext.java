@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class PlaceholderContext {
     /**
-     * An empty injectable.
+     * An empty injectable, used when no injectable context is provided.
      */
     private static final PlaceholderInjectable EMPTY_INJECTABLE = new PlaceholderInjectable() {
         @Override
@@ -47,19 +47,19 @@ public class PlaceholderContext {
     );
 
     /**
-     * The player.
+     * The player, or null if the context has no player.
      */
     @Nullable
     private final Player player;
 
     /**
-     * The ItemStack.
+     * The ItemStack, or null if the context has no item.
      */
     @Nullable
     private final ItemStack itemStack;
 
     /**
-     * The PlaceholderInjectable context.
+     * The {@link PlaceholderInjectable} context.
      */
     @NotNull
     private final PlaceholderInjectable injectableContext;
@@ -80,18 +80,18 @@ public class PlaceholderContext {
     /**
      * Create a PlaceholderContext for a player.
      *
-     * @param player The player.
+     * @param player The player, or null for no player.
      */
     public PlaceholderContext(@Nullable final Player player) {
         this(player, null, null, Collections.emptyList());
     }
 
     /**
-     * Constructs a new PlaceholderContext with the given parameters.
+     * Create a new PlaceholderContext with the given parameters.
      *
-     * @param player            The player.
-     * @param itemStack         The ItemStack.
-     * @param injectableContext The PlaceholderInjectable parseContext.
+     * @param player            The player, or null for no player.
+     * @param itemStack         The ItemStack, or null for no item.
+     * @param injectableContext The injectable context, or null for an empty injectable context.
      * @param additionalPlayers The additional players.
      */
     public PlaceholderContext(@Nullable final Player player,
@@ -107,7 +107,7 @@ public class PlaceholderContext {
     /**
      * Get the player.
      *
-     * @return The player.
+     * @return The player, or null if the context has no player.
      */
     @Nullable
     public Player getPlayer() {
@@ -117,7 +117,7 @@ public class PlaceholderContext {
     /**
      * Get the ItemStack.
      *
-     * @return The ItemStack.
+     * @return The ItemStack, or null if the context has no item.
      */
     @Nullable
     public ItemStack getItemStack() {
@@ -157,9 +157,9 @@ public class PlaceholderContext {
     }
 
     /**
-     * Copy with a player.
+     * Copy this context with a different player.
      *
-     * @param player The player.
+     * @param player The player, or null for no player.
      * @return The new context.
      */
     public PlaceholderContext copyWithPlayer(@Nullable final Player player) {
@@ -172,9 +172,9 @@ public class PlaceholderContext {
     }
 
     /**
-     * Copy with an item.
+     * Copy this context with a different item.
      *
-     * @param itemStack The ItemStack.
+     * @param itemStack The ItemStack, or null for no item.
      * @return The new context.
      */
     public PlaceholderContext copyWithItem(@Nullable final ItemStack itemStack) {
@@ -187,7 +187,7 @@ public class PlaceholderContext {
     }
 
     /**
-     * Copy with an extra injectable context.
+     * Copy this context with an extra injectable context, merged with the existing one.
      *
      * @param injectableContext The injectable context to add.
      * @return The new context.
@@ -235,9 +235,9 @@ public class PlaceholderContext {
     }
 
     /**
-     * Create PlaceholderContext of a PlaceholderInjectable parseContext.
+     * Create a PlaceholderContext from a {@link PlaceholderInjectable} context.
      *
-     * @param injectableContext The PlaceholderInjectable parseContext.
+     * @param injectableContext The injectable context.
      * @return The context.
      */
     public static PlaceholderContext of(@NotNull final PlaceholderInjectable injectableContext) {

@@ -21,21 +21,87 @@ import org.jetbrains.annotations.Nullable;
  * <p>Use {@link #builder(NamespacedKey, ItemStack, TestableItem)} to construct instances.
  */
 public final class VillagerRecipe extends WorkstationRecipe {
+    /**
+     * The minimum villager level used when the builder is not given one.
+     */
     private static final int DEFAULT_MIN_LEVEL = 0;
+
+    /**
+     * The appearance chance used when the builder is not given one.
+     */
     private static final double DEFAULT_CHANCE = 1.0;
+
+    /**
+     * The wandering trader flag used when the builder is not given one.
+     */
     private static final boolean DEFAULT_WANDERING_TRADER = false;
+
+    /**
+     * The villager XP reward used when the builder is not given one.
+     */
     private static final int DEFAULT_VILLAGER_XP = 0;
 
+    /**
+     * The primary payment item predicate.
+     */
     private final TestableItem input1;
+
+    /**
+     * The optional secondary payment item predicate.
+     */
     @Nullable private final TestableItem input2;
+
+    /**
+     * The display item for the primary payment slot.
+     */
     @Nullable private final ItemStack input1Display;
+
+    /**
+     * The display item for the secondary payment slot.
+     */
     @Nullable private final ItemStack input2Display;
+
+    /**
+     * The villager profession this trade is restricted to, or null for any.
+     */
     @Nullable private final Villager.Profession profession;
+
+    /**
+     * The minimum villager level required for this trade to appear.
+     */
     private final int minLevel;
+
+    /**
+     * The probability this trade appears on offer refresh.
+     */
     private final double chance;
+
+    /**
+     * Whether this trade targets wandering traders instead of regular villagers.
+     */
     private final boolean wanderingTrader;
+
+    /**
+     * The XP awarded to the villager when this trade is completed.
+     */
     private final int villagerXp;
 
+    /**
+     * Create a new villager trade recipe.
+     *
+     * @param key             Unique recipe identifier.
+     * @param output          The item given to the player, or null.
+     * @param permission      The permission required to use this recipe, or null.
+     * @param input1          The primary payment item predicate.
+     * @param input2          The optional secondary payment item predicate, or null.
+     * @param input1Display   The display item for the primary payment slot, or null.
+     * @param input2Display   The display item for the secondary payment slot, or null.
+     * @param profession      The profession restriction, or null for any profession.
+     * @param minLevel        The minimum villager level.
+     * @param chance          The probability this trade appears on offer refresh.
+     * @param wanderingTrader Whether this trade targets wandering traders.
+     * @param villagerXp      The XP awarded to the villager on trade completion.
+     */
     private VillagerRecipe(@NotNull final NamespacedKey key,
                            @Nullable final ItemStack output,
                            @Nullable final String permission,
@@ -170,19 +236,73 @@ public final class VillagerRecipe extends WorkstationRecipe {
      * Builder for {@link VillagerRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item given to the player, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The primary payment item predicate.
+         */
         private final TestableItem input1;
+
+        /**
+         * The optional secondary payment item predicate.
+         */
         @Nullable private TestableItem input2;
+
+        /**
+         * The display item for the primary payment slot.
+         */
         @Nullable private ItemStack input1Display;
+
+        /**
+         * The display item for the secondary payment slot.
+         */
         @Nullable private ItemStack input2Display;
+
+        /**
+         * The profession restriction.
+         */
         @Nullable private Villager.Profession profession;
+
+        /**
+         * The minimum villager level required for this trade.
+         */
         private int minLevel = DEFAULT_MIN_LEVEL;
+
+        /**
+         * The probability this trade appears on offer refresh.
+         */
         private double chance = DEFAULT_CHANCE;
+
+        /**
+         * Whether this trade targets wandering traders.
+         */
         private boolean wanderingTrader = DEFAULT_WANDERING_TRADER;
+
+        /**
+         * The XP awarded to the villager on trade completion.
+         */
         private int villagerXp = DEFAULT_VILLAGER_XP;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key    Unique recipe identifier.
+         * @param output The item given to the player, or null.
+         * @param input1 The primary payment item predicate.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @NotNull final TestableItem input1) {
@@ -242,7 +362,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
         /**
          * Set the minimum villager level required for this trade.
          *
-         * @param minLevel Minimum level (1-5). Defaults to {@value DEFAULT_MIN_LEVEL} (no restriction).
+         * @param minLevel Minimum level (1-5). Defaults to {@code 0} (no restriction).
          * @return This builder.
          */
         @NotNull
@@ -254,7 +374,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
         /**
          * Set the probability this trade appears on offer refresh.
          *
-         * @param chance Value in {@code [0.0, 1.0]}. Defaults to {@value DEFAULT_CHANCE}.
+         * @param chance Value in {@code [0.0, 1.0]}. Defaults to {@code 1.0}.
          * @return This builder.
          */
         @NotNull
@@ -290,7 +410,7 @@ public final class VillagerRecipe extends WorkstationRecipe {
         /**
          * Set the XP awarded to the villager on trade completion.
          *
-         * @param villagerXp XP amount. Defaults to {@value DEFAULT_VILLAGER_XP}.
+         * @param villagerXp XP amount. Defaults to {@code 0}.
          * @return This builder.
          */
         @NotNull

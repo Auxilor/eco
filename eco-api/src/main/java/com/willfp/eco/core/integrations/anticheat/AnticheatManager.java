@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to handle anticheat integrations.
+ * <p>
+ * If no {@link AnticheatIntegration} is registered, exempting and unexempting players are no-ops.
  */
 public final class AnticheatManager {
     /**
@@ -19,6 +21,9 @@ public final class AnticheatManager {
 
     /**
      * Register a new anticheat.
+     * <p>
+     * If the anticheat is also a {@link Listener}, it is registered as an event listener
+     * against eco's own plugin instance.
      *
      * @param anticheat The anticheat to register.
      */
@@ -41,7 +46,7 @@ public final class AnticheatManager {
     /**
      * Unexempt a player from triggering anticheats.
      *
-     * @param player The player to remove the exemption.
+     * @param player The player to remove the exemption from.
      */
     public static void unexemptPlayer(@NotNull final Player player) {
         REGISTRY.forEachSafely(anticheat -> anticheat.unexempt(player));

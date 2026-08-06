@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface PlaceholderInjectable {
     /**
-     * Inject arguments.
+     * Inject static placeholders.
      *
      * @param placeholders The placeholders.
      */
@@ -17,7 +17,7 @@ public interface PlaceholderInjectable {
     }
 
     /**
-     * Inject arguments.
+     * Inject placeholders.
      *
      * @param placeholders The placeholders.
      */

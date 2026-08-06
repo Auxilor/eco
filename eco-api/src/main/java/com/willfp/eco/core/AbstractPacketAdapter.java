@@ -18,24 +18,24 @@ import org.jetbrains.annotations.NotNull;
 @Deprecated(since = "6.51.0", forRemoval = true)
 public abstract class AbstractPacketAdapter extends PacketAdapter {
     /**
-     * The handle type to listen for.
+     * The packet type to listen for.
      */
     private final PacketType type;
 
     /**
-     * Whether the handle adapter should be registered after the server has loaded.
+     * Whether the packet adapter should be registered after the server has loaded.
      * <p>
      * Useful for monitor priority adapters that <b>must</b> be ran last.
      */
     private final boolean postLoad;
 
     /**
-     * Create a new handle adapter for a specified plugin and type.
+     * Create a new packet adapter for a specified plugin and type.
      *
      * @param plugin   The plugin that ProtocolLib should mark as the owner.
      * @param type     The {@link PacketType} to listen for.
-     * @param priority The priority at which the adapter should be ran on handle send/receive.
-     * @param postLoad If the handle adapter should be registered after the server has loaded.
+     * @param priority The priority at which the adapter should be ran on packet send/receive.
+     * @param postLoad If the packet adapter should be registered after the server has loaded.
      */
     protected AbstractPacketAdapter(@NotNull final EcoPlugin plugin,
                                     @NotNull final PacketType type,
@@ -47,11 +47,12 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * Create a new handle adapter for a specified plugin and type.
+     * Create a new packet adapter for a specified plugin and type, at
+     * {@link ListenerPriority#NORMAL} priority.
      *
      * @param plugin   The plugin that ProtocolLib should mark as the owner.
      * @param type     The {@link PacketType} to listen for.
-     * @param postLoad If the handle adapter should be registered after the server has loaded.
+     * @param postLoad If the packet adapter should be registered after the server has loaded.
      */
     protected AbstractPacketAdapter(@NotNull final EcoPlugin plugin,
                                     @NotNull final PacketType type,
@@ -60,9 +61,11 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * The code that should be executed once the handle has been received.
+     * The code that should be executed once the packet has been received.
+     * <p>
+     * Empty by default; override when needed.
      *
-     * @param packet The handle.
+     * @param packet The packet.
      * @param player The player.
      * @param event  The event.
      */
@@ -73,9 +76,11 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * THe code that should be executed once the handle has been sent.
+     * The code that should be executed once the packet has been sent.
+     * <p>
+     * Empty by default; override when needed.
      *
-     * @param packet The handle.
+     * @param packet The packet.
      * @param player The player.
      * @param event  The event.
      */
@@ -86,7 +91,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * Boilerplate to assert that the handle is of the specified type.
+     * Boilerplate to assert that the packet is of the specified type.
      *
      * @param event The ProtocolLib event.
      */
@@ -104,7 +109,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * Boilerplate to assert that the handle is of the specified type.
+     * Boilerplate to assert that the packet is of the specified type.
      *
      * @param event The ProtocolLib event.
      */
@@ -127,7 +132,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * Register the handle adapter with ProtocolLib.
+     * Register the packet adapter with ProtocolLib, if it is not already registered.
      */
     public final void register() {
         if (!ProtocolLibrary.getProtocolManager().getPacketListeners().contains(this)) {
@@ -136,7 +141,7 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
     }
 
     /**
-     * Get if the handle adapter should be loaded last.
+     * Get if the packet adapter should be registered after the server has loaded.
      *
      * @return If post load.
      */

@@ -9,10 +9,10 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * Stored as a record internally.
  *
- * @param version The extension version.
- * @param name    The extension name.
- * @param author  The extension's author.
- * @param file   The extension's file.
+ * @param version              The extension version.
+ * @param name                 The extension name.
+ * @param author               The extension's author.
+ * @param file                 The extension's jar file.
  * @param minimumPluginVersion The minimum plugin version required for this extension.
  */
 public record ExtensionMetadata(@NotNull String version,
@@ -22,10 +22,13 @@ public record ExtensionMetadata(@NotNull String version,
                                 @NotNull Version minimumPluginVersion) {
     /**
      * Legacy constructor.
+     * <p>
+     * This no longer works and always throws; it exists only for binary compatibility.
      *
      * @param version The extension version.
      * @param name    The extension name.
      * @param author  The extension's author.
+     * @throws UnsupportedOperationException Always.
      * @deprecated Use {@link ExtensionMetadata#ExtensionMetadata(String, String, String, File, Version)} instead.
      */
     @SuppressWarnings("ConstantConditions")

@@ -12,10 +12,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class MenuUtils {
     /**
-     * Convert 0-53 slot to row and column pair.
+     * Convert a zero-based inventory slot to a one-based row and column pair.
+     * <p>
+     * Assumes a menu nine columns wide, so slot 0 maps to row 1, column 1 and slot 53 maps to
+     * row 6, column 9.
      *
-     * @param slot The slot.
-     * @return The pair of row and columns.
+     * @param slot The zero-based slot.
+     * @return The pair of one-based row and one-based column.
      */
     @NotNull
     public static Pair<Integer, Integer> convertSlotToRowColumn(final int slot) {
@@ -23,22 +26,25 @@ public final class MenuUtils {
     }
 
     /**
-     * Convert row and column to 0-53 slot.
+     * Convert a one-based row and column to a zero-based inventory slot.
+     * <p>
+     * Assumes a menu nine columns wide, so row 1, column 1 maps to slot 0 and row 6, column 9
+     * maps to slot 53.
      *
-     * @param row    The row.
-     * @param column The column.
-     * @return The slot.
+     * @param row    The one-based row.
+     * @param column The one-based column.
+     * @return The zero-based slot.
      */
     public static int rowColumnToSlot(final int row, final int column) {
         return rowColumnToSlot(row, column, 9);
     }
 
     /**
-     * Convert 0-53 slot to row and column pair.
+     * Convert a zero-based inventory slot to a one-based row and column pair.
      *
-     * @param slot    The slot.
-     * @param columns The columns.
-     * @return The pair of row and columns.
+     * @param slot    The zero-based slot.
+     * @param columns The number of columns per row in the menu.
+     * @return The pair of one-based row and one-based column.
      */
     @NotNull
     public static Pair<Integer, Integer> convertSlotToRowColumn(final int slot,
@@ -49,12 +55,12 @@ public final class MenuUtils {
     }
 
     /**
-     * Convert row and column to 0-53 slot.
+     * Convert a one-based row and column to a zero-based inventory slot.
      *
-     * @param row     The row.
-     * @param column  The column.
-     * @param columns The columns in the menu.
-     * @return The slot.
+     * @param row     The one-based row.
+     * @param column  The one-based column.
+     * @param columns The number of columns per row in the menu.
+     * @return The zero-based slot.
      */
     public static int rowColumnToSlot(final int row,
                                       final int column,
@@ -66,7 +72,7 @@ public final class MenuUtils {
      * Get a player's open menu.
      *
      * @param player The player.
-     * @return The menu, or null if none open.
+     * @return The menu, or null if the player has no eco {@link Menu} open.
      */
     @Nullable
     public static Menu getOpenMenu(@NotNull final Player player) {

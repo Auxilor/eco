@@ -17,8 +17,8 @@ public interface ExtendedPersistentDataContainer {
      * @param key      The key.
      * @param dataType The data type.
      * @param value    The value.
-     * @param <T>      The type.
-     * @param <Z>      The type.
+     * @param <T>      The primitive type stored in the container.
+     * @param <Z>      The complex type of the value.
      */
     <T, Z> void set(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType, @NotNull Z value);
 
@@ -27,8 +27,8 @@ public interface ExtendedPersistentDataContainer {
      *
      * @param key      The key.
      * @param dataType The data type.
-     * @param <T>      The type.
-     * @param <Z>      The type.
+     * @param <T>      The primitive type stored in the container.
+     * @param <Z>      The complex type of the value.
      * @return If the key is present.
      */
     <T, Z> boolean has(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType);
@@ -38,8 +38,8 @@ public interface ExtendedPersistentDataContainer {
      *
      * @param key      The key.
      * @param dataType The data type.
-     * @param <T>      The type.
-     * @param <Z>      The type.
+     * @param <T>      The primitive type stored in the container.
+     * @param <Z>      The complex type of the value.
      * @return The value, or null if not found.
      */
     @Nullable <T, Z> Z get(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType);
@@ -50,8 +50,8 @@ public interface ExtendedPersistentDataContainer {
      * @param key          The key.
      * @param dataType     The data type.
      * @param defaultValue The default value.
-     * @param <T>          The type.
-     * @param <Z>          The type.
+     * @param <T>          The primitive type stored in the container.
+     * @param <Z>          The complex type of the value.
      * @return The value, or the default if not found.
      */
     @NotNull <T, Z> Z getOrDefault(@NotNull String key, @NotNull PersistentDataType<T, Z> dataType, @NotNull Z defaultValue);
@@ -72,7 +72,7 @@ public interface ExtendedPersistentDataContainer {
     void remove(@NotNull String key);
 
     /**
-     * Get the base PDC.
+     * Get the base PDC that this container wraps.
      *
      * @return The base.
      */
@@ -80,10 +80,10 @@ public interface ExtendedPersistentDataContainer {
     PersistentDataContainer getBase();
 
     /**
-     * Get extension for PersistentDataContainers to add non-namespaced keys.
+     * Get an extension for a {@link PersistentDataContainer} to add non-namespaced keys.
      *
      * @param base The base container.
-     * @return The extended container.
+     * @return The extended container, or the base container itself if it is already extended.
      */
     static ExtendedPersistentDataContainer extend(@NotNull PersistentDataContainer base) {
         if (base instanceof ExtendedPersistentDataContainer) {
@@ -94,7 +94,7 @@ public interface ExtendedPersistentDataContainer {
     }
 
     /**
-     * Create a new extended container.
+     * Create a new, empty extended container.
      *
      * @return The extended container.
      */

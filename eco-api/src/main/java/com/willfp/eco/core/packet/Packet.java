@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a packet.
+ * <p>
+ * The handle is the underlying, version-specific packet object, so it should only be
+ * touched from NMS-aware code (for example a proxy implementation).
  */
 public class Packet {
     /**
@@ -52,7 +55,7 @@ public class Packet {
     }
 
     /**
-     * Send to a player.
+     * Send the packet to a player.
      *
      * @param player The player.
      */

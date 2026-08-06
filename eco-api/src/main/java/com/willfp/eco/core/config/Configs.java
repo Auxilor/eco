@@ -21,8 +21,8 @@ public final class Configs {
     /**
      * Load a Config from a bukkit {@link ConfigurationSection}.
      *
-     * @param config The ConfigurationSection.
-     * @return The config.
+     * @param config The ConfigurationSection, or null.
+     * @return The config, or an empty config if the section is null.
      */
     @NotNull
     public static Config fromBukkit(@Nullable final ConfigurationSection config) {
@@ -34,8 +34,8 @@ public final class Configs {
      * <p>
      * Only for yaml configs.
      *
-     * @param stream The InputStream.
-     * @return The config.
+     * @param stream The InputStream, or null.
+     * @return The config, or an empty config if the stream is null.
      */
     @NotNull
     public static Config fromStream(@Nullable final InputStream stream) {
@@ -45,10 +45,10 @@ public final class Configs {
     }
 
     /**
-     * Load a config from a file.
+     * Load a config from a file, inferring the {@link ConfigType} from the file extension.
      *
-     * @param file The file.
-     * @return The config.
+     * @param file The file, or null.
+     * @return The config, or an empty config if the file is null or has an unrecognised extension.
      */
     @NotNull
     public static Config fromFile(@Nullable final File file) {
@@ -74,9 +74,9 @@ public final class Configs {
     /**
      * Load a config from a file.
      *
-     * @param file The file.
+     * @param file The file, or null.
      * @param type The type.
-     * @return The config.
+     * @return The config, or an empty config if the file is null or could not be read.
      */
     @NotNull
     public static Config fromFile(@Nullable final File file,
@@ -150,6 +150,9 @@ public final class Configs {
         return Eco.get().createConfig(contents, type);
     }
 
+    /**
+     * Utility class, cannot be instantiated.
+     */
     private Configs() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

@@ -7,7 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A merged injectable context.
+ * A {@link PlaceholderInjectable} that merges the injections of two other contexts.
+ * <p>
+ * Placeholders added to this context are stored separately, and are returned after the injections of the base and
+ * additional contexts. Clearing this context also clears both underlying contexts.
  */
 public class MergedInjectableContext implements PlaceholderInjectable {
     /**
@@ -21,7 +24,7 @@ public class MergedInjectableContext implements PlaceholderInjectable {
     private final PlaceholderInjectable additionalContext;
 
     /**
-     * Extra injections.
+     * Extra injections added directly to this context.
      */
     private final Set<InjectablePlaceholder> extraInjections = new HashSet<>();
 

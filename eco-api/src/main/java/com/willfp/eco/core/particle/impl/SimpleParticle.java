@@ -7,7 +7,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Empty (invalid) particle that is spawned when an invalid key is provided.
+ * A particle backed directly by a bukkit {@link Particle}, with no extra data.
  */
 public final class SimpleParticle implements SpawnableParticle {
     /**

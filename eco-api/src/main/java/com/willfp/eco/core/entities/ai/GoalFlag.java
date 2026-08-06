@@ -1,7 +1,7 @@
 package com.willfp.eco.core.entities.ai;
 
 /**
- * Flags for ai goals.
+ * Flags for AI goals, denoting which controls of the mob a goal occupies while running.
  */
 public enum GoalFlag {
     /**

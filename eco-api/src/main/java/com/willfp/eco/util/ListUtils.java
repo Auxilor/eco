@@ -14,7 +14,7 @@ public final class ListUtils {
      * @param rows    The amount of rows.
      * @param columns The amount of columns.
      * @param <T>     The type of the object stored in the list.
-     * @return The list, filled will null objects.
+     * @return The list of rows, each containing columns null elements.
      */
     @NotNull
     public static <T> List<List<T>> create2DList(final int rows,
@@ -55,9 +55,9 @@ public final class ListUtils {
     /**
      * Convert nullable object to either singleton list or empty list.
      *
-     * @param object The object.
+     * @param object The object, may be null.
      * @param <T>    The type of the object.
-     * @return The list.
+     * @return An immutable list containing only the object, or an immutable empty list if it is null.
      */
     @NotNull
     public static <T> List<T> toSingletonList(@Nullable final T object) {
@@ -71,10 +71,11 @@ public final class ListUtils {
     /**
      * Get element from list or return null if out of bounds.
      *
-     * @param list  The list.
-     * @param index The index.
+     * @param list  The list, may be null.
+     * @param index The zero-based index.
      * @param <T>   The type of the list.
-     * @return The found element, or null if out of bounds.
+     * @return The found element, or null if the list is null, the index is out of bounds,
+     *         or the element itself is null.
      */
     @Nullable
     public static <T> T getOrNull(@Nullable final List<T> list,
@@ -89,8 +90,8 @@ public final class ListUtils {
     /**
      * Get if an iterable of strings contains a certain element regardless of case.
      *
-     * @param list    The list.
-     * @param element The element.
+     * @param list    The iterable to search.
+     * @param element The element to look for.
      * @return If contained.
      */
     public static boolean containsIgnoreCase(@NotNull final Iterable<String> list,

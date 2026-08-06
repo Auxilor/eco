@@ -25,18 +25,21 @@ public final class Prices {
     private static final Map<String, PriceFactory> FACTORIES = new ConcurrentHashMap<>();
 
     /**
-     * Returns an immutable snapshot of all loaded price factory names.
+     * Get an immutable snapshot of all loaded price factory names.
+     * <p>
+     * Names are lowercased, as that is how they are keyed on registration.
      *
-     * @return Immutable set containing all loaded factory names
+     * @return An immutable set containing all loaded factory names.
      */
     public static Set<String> allLoadedFactories() {
         return Set.copyOf(FACTORIES.keySet());
     }
 
     /**
-     * Register a new price factory.
+     * Register a new price factory under each of its names.
      *
      * @param factory The factory.
+     * @throws IllegalStateException If a different factory is already registered under one of the names.
      */
     public static void registerPriceFactory(@NotNull final PriceFactory factory) {
         for (String name : factory.getNames()) {
@@ -82,7 +85,7 @@ public final class Prices {
      * Supports items as price names.
      *
      * @param expression The expression for the value.
-     * @param priceName  The price name.
+     * @param priceName  The price name, or null to use the economy price.
      * @return The price, or free if invalid.
      */
     @NotNull
@@ -98,7 +101,7 @@ public final class Prices {
      * Supports items as price names.
      *
      * @param expression The expression for the value.
-     * @param priceName  The price name.
+     * @param priceName  The price name, or null to use the economy price.
      * @param context    The math context to parse the expression.
      * @return The price, or free if invalid.
      * @deprecated Use {@link #create(String, String, PlaceholderContext)} instead.
@@ -119,8 +122,8 @@ public final class Prices {
      * Supports items as price names.
      *
      * @param expression The expression for the value.
-     * @param priceName  The price name.
-     * @param context    The math context to parse the expression.
+     * @param priceName  The price name, or null to use the economy price.
+     * @param context    The placeholder context used to parse the expression.
      * @return The price, or free if invalid.
      */
     @NotNull
@@ -154,6 +157,11 @@ public final class Prices {
         }
     }
 
+    /**
+     * Prices is a utility class and cannot be instantiated.
+     *
+     * @throws UnsupportedOperationException Always.
+     */
     private Prices() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

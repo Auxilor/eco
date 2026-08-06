@@ -18,10 +18,13 @@ public interface ParticleFactory {
     @NotNull List<String> getNames();
 
     /**
-     * Create the particle
+     * Create the particle.
+     * <p>
+     * The key is the part of a lookup string after the colon, e.g. for {@code rgb:00ff00}
+     * the key would be {@code 00ff00}.
      *
      * @param key The key.
-     * @return The particle.
+     * @return The particle, or null if the key is invalid.
      */
     @Nullable SpawnableParticle create(@NotNull String key);
 }

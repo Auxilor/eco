@@ -8,7 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Wrapper class for arguments integrations.
+ * Wrapper interface for placeholder integrations.
+ * <p>
+ * Implemented for placeholder providers such as PlaceholderAPI, so that eco can expose its own
+ * placeholders to them and translate theirs in eco's config values.
+ *
+ * @see PlaceholderManager
  */
 public interface PlaceholderIntegration extends Integration {
     /**
@@ -29,9 +34,11 @@ public interface PlaceholderIntegration extends Integration {
 
     /**
      * Find all placeholders in a given text.
+     * <p>
+     * Returns an empty list unless overridden.
      *
      * @param text The text.
-     * @return The placeholders.
+     * @return The placeholders, including their surrounding delimiters.
      */
     default List<String> findPlaceholdersIn(@NotNull String text) {
         return new ArrayList<>();

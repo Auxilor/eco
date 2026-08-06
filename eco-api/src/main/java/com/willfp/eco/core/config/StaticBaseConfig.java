@@ -6,15 +6,16 @@ import com.willfp.eco.core.config.wrapper.LoadableConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Non-updatable yaml config that exists within a plugin jar.
+ * Non-updatable config that exists within a plugin jar.
  */
 public abstract class StaticBaseConfig extends LoadableConfigWrapper {
     /**
-     * Config implementation for configs present in the plugin's base directory (eg config.yml, lang.yml).
+     * Create a new static base config, for configs present in the plugin's base
+     * directory (eg config.yml, lang.yml).
      * <p>
      * Does not automatically update.
      *
-     * @param configName The name of the config
+     * @param configName The name of the config (excluding extension).
      * @param plugin     The plugin.
      * @param type       The config type.
      */

@@ -17,6 +17,12 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * FastItemStack contains methods to modify and read items faster than in default bukkit.
+ * <p>
+ * A FastItemStack wraps an existing {@link ItemStack} and operates on its underlying NMS handle,
+ * avoiding the cost of creating and applying ItemMeta. Every mutating method writes back to the
+ * wrapped ItemStack immediately, so there is no explicit "save" step; the wrapped stack is the
+ * same instance returned by {@link #unwrap()}. The {@link PersistentDataContainer} returned by
+ * {@link PersistentDataHolder#getPersistentDataContainer()} also writes back on every change.
  */
 public interface FastItemStack extends PersistentDataHolder {
     /**
@@ -31,6 +37,9 @@ public interface FastItemStack extends PersistentDataHolder {
 
     /**
      * Get all enchantments on an item.
+     * <p>
+     * If stored enchantments are accounted for, an enchantment present both normally and stored
+     * is reported at the higher of the two levels.
      *
      * @param checkStored If stored enchantments should be accounted for.
      * @return A map of all enchantments.
@@ -59,58 +68,58 @@ public interface FastItemStack extends PersistentDataHolder {
                             boolean checkStored);
 
     /**
-     * Set the item lore.
+     * Set the item lore, as legacy strings.
      *
-     * @param lore The lore.
+     * @param lore The lore, null to remove the lore.
      */
     void setLore(@Nullable List<String> lore);
 
     /**
-     * Set the item lore.
+     * Set the item lore, as components.
      *
-     * @param lore The lore.
+     * @param lore The lore, null to remove the lore.
      */
     void setLoreComponents(@Nullable List<Component> lore);
 
     /**
-     * Get the item lore.
+     * Get the item lore, as legacy strings.
      *
-     * @return The lore.
+     * @return The lore, empty if the item has no lore.
      */
     List<String> getLore();
 
     /**
-     * Get the item lore.
+     * Get the item lore, as components.
      *
-     * @return The lore.
+     * @return The lore, empty if the item has no lore.
      */
     List<Component> getLoreComponents();
 
     /**
      * Set the item name.
      *
-     * @param name The name.
+     * @param name The name, null to remove the name.
      */
     void setDisplayName(@Nullable Component name);
 
     /**
      * Set the item name.
      *
-     * @param name The name.
+     * @param name The name, null to remove the name.
      */
     void setDisplayName(@Nullable String name);
 
     /**
-     * Get the item display name.
+     * Get the item display name, as a component.
      *
-     * @return The display name.
+     * @return The display name, falling back to the item's default name if none is set.
      */
     Component getDisplayNameComponent();
 
     /**
-     * Get the item display name.
+     * Get the item display name, as a legacy string.
      *
-     * @return The display name.
+     * @return The display name, falling back to the item's default name if none is set.
      */
     String getDisplayName();
 
@@ -129,21 +138,21 @@ public interface FastItemStack extends PersistentDataHolder {
     int getRepairCost();
 
     /**
-     * Add ItemFlags.
+     * Add ItemFlags, hiding the corresponding parts of the tooltip.
      *
      * @param hideFlags The flags.
      */
     void addItemFlags(@NotNull ItemFlag... hideFlags);
 
     /**
-     * Remove ItemFlags.
+     * Remove ItemFlags, showing the corresponding parts of the tooltip again.
      *
      * @param hideFlags The flags.
      */
     void removeItemFlags(@NotNull ItemFlag... hideFlags);
 
     /**
-     * Get the ItemFlags.
+     * Get the ItemFlags currently set on the item.
      *
      * @return The flags.
      */
@@ -163,6 +172,7 @@ public interface FastItemStack extends PersistentDataHolder {
      * The returned PersistentDataContainer will not modify the item until the tag is set.
      *
      * @return The base NBT tag.
+     * @throws UnsupportedOperationException Always, on 1.20.5 and above.
      * @deprecated Items are now component-based.
      */
     @Deprecated(forRemoval = true, since = "6.70.0")
@@ -174,6 +184,7 @@ public interface FastItemStack extends PersistentDataHolder {
      * Set the base NBT tag (Not PublicBukkitValues, the base) from a PersistentDataContainer.
      *
      * @param container The PersistentDataContainer.
+     * @throws UnsupportedOperationException Always, on 1.20.5 and above.
      * @deprecated Items are now component-based.
      */
     @Deprecated(forRemoval = true, since = "6.70.0")
@@ -212,6 +223,8 @@ public interface FastItemStack extends PersistentDataHolder {
 
     /**
      * Get the custom model data.
+     * <p>
+     * Custom model data is no longer integer-based since 1.21.3, so this returns null there.
      *
      * @return The data, or null if none.
      */
@@ -220,6 +233,9 @@ public interface FastItemStack extends PersistentDataHolder {
 
     /**
      * Set the custom model data.
+     * <p>
+     * Custom model data is no longer integer-based since 1.21.3, so only removal (passing null)
+     * has an effect there.
      *
      * @param data The data, null to remove.
      */
@@ -227,6 +243,9 @@ public interface FastItemStack extends PersistentDataHolder {
 
     /**
      * Get the Bukkit ItemStack again.
+     * <p>
+     * This is the same instance that was wrapped, already carrying every change made through
+     * this FastItemStack.
      *
      * @return The ItemStack.
      */
@@ -235,8 +254,10 @@ public interface FastItemStack extends PersistentDataHolder {
 
     /**
      * Wrap an ItemStack to create a FastItemStack.
+     * <p>
+     * The wrapped ItemStack is modified in place by this FastItemStack.
      *
-     * @param itemStack The ItemStack.
+     * @param itemStack The ItemStack, null to wrap a new {@link Material#AIR} stack instead.
      * @return The FastItemStack.
      */
     static FastItemStack wrap(@Nullable final ItemStack itemStack) {

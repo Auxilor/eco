@@ -52,7 +52,7 @@ public interface Slot extends GUIComponent {
      * @param player    The player.
      * @param menu      The menu.
      * @param itemStack The item; use null if the item is unknown.
-     * @return If captive.
+     * @return If the item is allowed.
      */
     default boolean isAllowedCaptive(@NotNull final Player player,
                                      @NotNull final Menu menu,
@@ -130,7 +130,7 @@ public interface Slot extends GUIComponent {
     }
 
     /**
-     * Create a builder for an ItemStack.
+     * Create a builder for an empty (air) ItemStack.
      *
      * @return The builder.
      */
@@ -164,6 +164,7 @@ public interface Slot extends GUIComponent {
      * @param provider The provider.
      * @return The builder.
      * @deprecated This method was written incorrectly, should have been a Player + Menu function.
+     *             Use {@link Slot#builder(SlotProvider)} instead.
      */
     @Deprecated(since = "6.45.0", forRemoval = true)
     static SlotBuilder builder(@NotNull final Function<Player, ItemStack> provider) {

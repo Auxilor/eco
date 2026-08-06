@@ -13,32 +13,34 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A arguments that requires a player.
+ * A placeholder that requires a player.
+ * <p>
+ * If the context has no player, the placeholder resolves to null.
  */
 public final class PlayerPlaceholder implements RegistrablePlaceholder {
     /**
-     * The raw identifier.
+     * The raw identifier, used to lazily compile the pattern.
      */
     private final String rawIdentifier;
 
     /**
-     * The arguments pattern.
+     * The placeholder pattern, lazily initialized from the raw identifier.
      */
     @Nullable
     private volatile Pattern pattern = null;
 
     /**
-     * The function to retrieve the output of the arguments given a player.
+     * The function to retrieve the value of the placeholder for a player.
      */
     private final Function<@NotNull Player, @Nullable String> function;
 
     /**
-     * The plugin for the arguments.
+     * The plugin that owns the placeholder.
      */
     private final EcoPlugin plugin;
 
     /**
-     * Create a new player arguments.
+     * Create a new player placeholder.
      *
      * @param plugin     The plugin.
      * @param identifier The identifier.
@@ -65,10 +67,10 @@ public final class PlayerPlaceholder implements RegistrablePlaceholder {
     }
 
     /**
-     * Get the value of the arguments for a given player.
+     * Get the value of the placeholder for a given player.
      *
      * @param player The player.
-     * @return The value.
+     * @return The value, or an empty string if the function returned null.
      * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
     @Deprecated(since = "6.56.0", forRemoval = true)

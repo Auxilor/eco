@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public interface PlayerProfile extends Profile {
     /**
      * Load a player profile.
+     * <p>
+     * Only the player's UUID is used, so this works for offline players.
      *
      * @param player The player.
      * @return The profile.
@@ -24,6 +26,10 @@ public interface PlayerProfile extends Profile {
 
     /**
      * Load a player profile.
+     * <p>
+     * Loading a profile does not itself read any persistent data; values are only
+     * fetched when {@link Profile#read(com.willfp.eco.core.data.keys.PersistentDataKey)}
+     * is called.
      *
      * @param uuid The player's UUID.
      * @return The profile.

@@ -10,12 +10,40 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Duration;
 import java.util.function.Function;
 
+/**
+ * Implementation of {@link EcoCache} backed by Caffeine.
+ * <p>
+ * This is internal; create caches with {@link EcoCache#builder()} rather than constructing this
+ * directly.
+ *
+ * @param <K> The key type.
+ * @param <V> The value type.
+ */
 public class CaffeineEcoCache<K, V> implements EcoCache<K, V> {
+    /**
+     * The backing Caffeine cache.
+     */
     private final Cache<K, V> cache;
+
+    /**
+     * The backing cache as a {@link LoadingCache}, or null if the cache was built without a loader.
+     */
     @Nullable
     private final LoadingCache<K, V> loadingCache;
 
 
+    /**
+     * Create a new Caffeine-backed cache.
+     *
+     * @param expireAfterWrite  The duration after which entries expire once written, or null for
+     *                          no write expiry.
+     * @param expireAfterAccess The duration after which entries expire once last accessed, or null
+     *                          for no access expiry.
+     * @param maxSize           The approximate maximum number of entries, or a negative value for
+     *                          no size limit.
+     * @param loader            The loader used to compute values for absent keys, or null to leave
+     *                          absent keys unloaded.
+     */
     public CaffeineEcoCache(
         @Nullable Duration expireAfterWrite,
         @Nullable Duration expireAfterAccess,

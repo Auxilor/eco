@@ -13,6 +13,13 @@ import org.jetbrains.annotations.NotNull;
  * Event called when an entity is killed by another entity.
  * <p>
  * Not sure why spigot doesn't have this event normally.
+ * <p>
+ * It is called from an {@link EntityDeathEvent} when the victim was recently damaged by
+ * another entity, so it is not called for deaths with no entity responsible (fall damage,
+ * fire, etc.).
+ * <p>
+ * The event is not cancellable, as the entity has already died. To modify the outcome,
+ * mutate the list returned by {@link #getDrops()} or use {@link #getDeathEvent()}.
  */
 public class EntityDeathByEntityEvent extends Event {
     /**
@@ -48,11 +55,11 @@ public class EntityDeathByEntityEvent extends Event {
     /**
      * Create event based off parameters.
      *
-     * @param victim     The killed entity
-     * @param killer     The killer
-     * @param drops      The item drops
-     * @param xp         The amount of xp to drop
-     * @param deathEvent The associated {@link EntityDeathEvent}
+     * @param victim     The killed entity.
+     * @param killer     The killer.
+     * @param drops      The item drops.
+     * @param xp         The amount of xp to drop.
+     * @param deathEvent The associated {@link EntityDeathEvent}.
      */
     public EntityDeathByEntityEvent(@NotNull final LivingEntity victim,
                                     @NotNull final Entity killer,
@@ -114,6 +121,9 @@ public class EntityDeathByEntityEvent extends Event {
 
     /**
      * Get the drops.
+     * <p>
+     * This is the live drop list of the backing {@link EntityDeathEvent}, so modifying it
+     * modifies what the entity actually drops.
      *
      * @return The drops.
      */
@@ -123,6 +133,9 @@ public class EntityDeathByEntityEvent extends Event {
 
     /**
      * Get the experience dropped.
+     * <p>
+     * This is a snapshot taken when the event was created; to change the dropped experience,
+     * use {@link #getDeathEvent()}.
      *
      * @return The experience.
      */

@@ -7,11 +7,11 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A template class for dynamic placeholders.
+ * A template class for dynamic registrable placeholders, matched against a regex pattern.
  */
 public abstract class DynamicPlaceholder implements RegistrablePlaceholder {
     /**
-     * The plugin.
+     * The plugin that owns the placeholder.
      */
     private final EcoPlugin plugin;
 

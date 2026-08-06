@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface RegistrablePlaceholder extends Placeholder {
     /**
-     * Get the plugin that holds the arguments.
+     * Get the plugin that owns the placeholder.
      *
      * @return The plugin.
      */
@@ -18,9 +18,9 @@ public interface RegistrablePlaceholder extends Placeholder {
     EcoPlugin getPlugin();
 
     /**
-     * Register the arguments.
+     * Register the placeholder with the {@link PlaceholderManager}.
      *
-     * @return The arguments.
+     * @return This placeholder.
      */
     @NotNull
     default RegistrablePlaceholder register() {

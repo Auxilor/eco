@@ -15,7 +15,7 @@ public abstract class CustomItemTag implements ItemTag {
     /**
      * Create a new custom item tag.
      *
-     * @param key         The key.
+     * @param key The key.
      */
     public CustomItemTag(@NotNull final NamespacedKey key) {
         this.key = key;

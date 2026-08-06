@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface MetadataValueFactory {
     /**
-     * Create a metadata value for a given plugin and object.
+     * Create a metadata value owned by this factory's plugin.
      *
      * @param value The object to store in metadata.
      * @return The metadata value.

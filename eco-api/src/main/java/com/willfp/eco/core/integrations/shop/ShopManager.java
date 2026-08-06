@@ -12,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Class to handle shop integrations.
+ * <p>
+ * Sellability is checked against every registered {@link ShopIntegration}, but item values are
+ * taken from a single one. If none is registered, nothing is sellable and every item is free.
  */
 @SuppressWarnings("DeprecatedIsStillUsed")
 public final class ShopManager {
@@ -30,7 +33,7 @@ public final class ShopManager {
     }
 
     /**
-     * Register eco item provider for shop plugins.
+     * Register eco's item provider with every registered shop integration.
      */
     public static void registerEcoProvider() {
         REGISTRY.forEachSafely(ShopIntegration::registerEcoProvider);
@@ -39,9 +42,9 @@ public final class ShopManager {
     /**
      * Get if an item is sellable for a player.
      *
-     * @param itemStack The item.
+     * @param itemStack The item, or null.
      * @param player    The player.
-     * @return If sellable.
+     * @return If sellable. False if the item is null.
      */
     public static boolean isSellable(@Nullable final ItemStack itemStack,
                                      @NotNull final Player player) {
@@ -57,9 +60,9 @@ public final class ShopManager {
      * <p>
      * For example, if you pass in a stack, it will only return the value of <b>one</b> item, not the full stack.
      *
-     * @param itemStack The item.
+     * @param itemStack The item, or null.
      * @param player    The player.
-     * @return The price.
+     * @return The price. A {@link PriceFree} if the item is null or no integration is registered.
      */
     @NotNull
     public static Price getUnitValue(@Nullable final ItemStack itemStack,
@@ -77,9 +80,10 @@ public final class ShopManager {
     /**
      * Get the price of an item.
      *
-     * @param itemStack The item.
-     * @return The price.
-     * @deprecated Use getValue instead. This will always return 0 as prices depend on players.
+     * @param itemStack The item, or null.
+     * @return The price. Always 0, as prices depend on players.
+     * @deprecated Use {@link #getUnitValue(ItemStack, Player)} instead. This will always
+     *             return 0 as prices depend on players.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public static double getItemPrice(@Nullable final ItemStack itemStack) {
@@ -88,11 +92,15 @@ public final class ShopManager {
 
     /**
      * Get the price of an item.
+     * <p>
+     * Unlike {@link #getUnitValue(ItemStack, Player)}, this is the value of the whole stack,
+     * not of a single item.
      *
-     * @param itemStack The item.
-     * @param player    The player.
-     * @return The price.
-     * @deprecated Use getValue instead. Null players / null items will always return 0.
+     * @param itemStack The item, or null.
+     * @param player    The player, or null.
+     * @return The price. 0 if either argument is null.
+     * @deprecated Use {@link #getUnitValue(ItemStack, Player)} instead. Null players / null
+     *             items will always return 0.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public static double getItemPrice(@Nullable final ItemStack itemStack,

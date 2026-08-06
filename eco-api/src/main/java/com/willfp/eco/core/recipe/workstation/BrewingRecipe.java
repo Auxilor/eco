@@ -16,12 +16,36 @@ import org.jetbrains.annotations.Nullable;
  * <p>Use {@link #builder(NamespacedKey, ItemStack, TestableItem, TestableItem)} to construct instances.
  */
 public final class BrewingRecipe extends WorkstationRecipe {
+    /**
+     * The brew time used when the builder is not given one.
+     */
     private static final int DEFAULT_BREW_TIME = 400;
 
+    /**
+     * The required base item, placed in one of the three bottle slots.
+     */
     private final TestableItem base;
+
+    /**
+     * The required ingredient, placed in the top ingredient slot.
+     */
     private final TestableItem ingredient;
+
+    /**
+     * The brew duration in ticks.
+     */
     private final int brewTime;
 
+    /**
+     * Create a new brewing recipe.
+     *
+     * @param key        Unique recipe identifier.
+     * @param output     The item produced, or null.
+     * @param permission The permission required to use this recipe, or null.
+     * @param base       The required base item.
+     * @param ingredient The required ingredient item.
+     * @param brewTime   The brew duration in ticks.
+     */
     private BrewingRecipe(@NotNull final NamespacedKey key,
                           @Nullable final ItemStack output,
                           @Nullable final String permission,
@@ -89,13 +113,44 @@ public final class BrewingRecipe extends WorkstationRecipe {
      * Builder for {@link BrewingRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The required base item.
+         */
         private final TestableItem base;
+
+        /**
+         * The required ingredient item.
+         */
         private final TestableItem ingredient;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
+
+        /**
+         * The brew duration in ticks.
+         */
         private int brewTime = DEFAULT_BREW_TIME;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key        Unique recipe identifier.
+         * @param output     The item produced, or null.
+         * @param base       The required base item.
+         * @param ingredient The required ingredient item.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @NotNull final TestableItem base,
@@ -109,7 +164,7 @@ public final class BrewingRecipe extends WorkstationRecipe {
         /**
          * Set the brew duration.
          *
-         * @param brewTime Duration in ticks. Defaults to {@value DEFAULT_BREW_TIME}.
+         * @param brewTime Duration in ticks. Defaults to {@code 400}.
          * @return This builder.
          */
         @NotNull

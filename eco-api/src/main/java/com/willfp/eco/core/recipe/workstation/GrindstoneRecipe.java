@@ -16,11 +16,37 @@ import org.jetbrains.annotations.Nullable;
  * <p>Use {@link #builder(NamespacedKey, ItemStack, TestableItem)} to construct instances.
  */
 public final class GrindstoneRecipe extends WorkstationRecipe {
+    /**
+     * The required item for the first grindstone input slot.
+     */
     private final TestableItem item1;
+
+    /**
+     * The optional item for the second grindstone input slot.
+     */
     @Nullable private final TestableItem item2;
+
+    /**
+     * The display item for the first grindstone input slot.
+     */
     @Nullable private final ItemStack item1Display;
+
+    /**
+     * The display item for the second grindstone input slot.
+     */
     @Nullable private final ItemStack item2Display;
 
+    /**
+     * Create a new grindstone recipe.
+     *
+     * @param key          Unique recipe identifier.
+     * @param output       The item produced, or null.
+     * @param permission   The permission required to use this recipe, or null.
+     * @param item1        The required first input item.
+     * @param item2        The optional second input item, or null.
+     * @param item1Display The display item for the first input slot, or null.
+     * @param item2Display The display item for the second input slot, or null.
+     */
     private GrindstoneRecipe(@NotNull final NamespacedKey key,
                              @Nullable final ItemStack output,
                              @Nullable final String permission,
@@ -99,14 +125,48 @@ public final class GrindstoneRecipe extends WorkstationRecipe {
      * Builder for {@link GrindstoneRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The required first input item.
+         */
         private final TestableItem item1;
+
+        /**
+         * The optional second input item.
+         */
         @Nullable private TestableItem item2;
+
+        /**
+         * The display item for the first input slot.
+         */
         @Nullable private ItemStack item1Display;
+
+        /**
+         * The display item for the second input slot.
+         */
         @Nullable private ItemStack item2Display;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key    Unique recipe identifier.
+         * @param output The item produced, or null.
+         * @param item1  The required first input item.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @NotNull final TestableItem item1) {

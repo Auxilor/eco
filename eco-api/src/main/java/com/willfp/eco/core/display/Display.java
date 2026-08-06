@@ -26,20 +26,20 @@ public final class Display {
     public static final String PREFIX = "§z";
 
     /**
-     * All registered modules.
+     * All registered modules, keyed by weight and sorted so that lower weights run first.
      */
     private static final Map<Integer, List<DisplayModule>> REGISTERED_MODULES = new TreeMap<>();
 
     /**
-     * The finalize key.
+     * The persistent data key used to mark an item as finalized.
      */
     private static final NamespacedKey FINALIZE_KEY = NamespacedKeyUtils.createEcoKey("finalized");
 
     /**
-     * Display on ItemStacks.
+     * Display on ItemStacks, with no player context.
      *
      * @param itemStack The item.
-     * @return The ItemStack.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack display(@NotNull final ItemStack itemStack) {
         return display(itemStack, null);
@@ -47,10 +47,15 @@ public final class Display {
 
     /**
      * Display on ItemStacks.
+     * <p>
+     * Generates varargs from every registered module, reverts the item, then runs every
+     * module's display in ascending weight order. If the item has no meta and
+     * {@code display-without-meta} is disabled in eco's config, the item is returned
+     * unchanged after reverting.
      *
      * @param itemStack The item.
-     * @param player    The player.
-     * @return The ItemStack.
+     * @param player    The player to display for, or null for no player context.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player) {
@@ -102,10 +107,10 @@ public final class Display {
     }
 
     /**
-     * Display on ItemStacks and then finalize.
+     * Display on ItemStacks and then finalize, with no player context.
      *
      * @param itemStack The item.
-     * @return The ItemStack.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack displayAndFinalize(@NotNull final ItemStack itemStack) {
         return finalize(display(itemStack, null));
@@ -115,8 +120,8 @@ public final class Display {
      * Display on ItemStacks and then finalize.
      *
      * @param itemStack The item.
-     * @param player    The player.
-     * @return The ItemStack.
+     * @param player    The player to display for, or null for no player context.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack displayAndFinalize(@NotNull final ItemStack itemStack,
                                                @Nullable final Player player) {
@@ -125,9 +130,12 @@ public final class Display {
 
     /**
      * Revert on ItemStacks.
+     * <p>
+     * Unfinalizes the item, strips all lore lines starting with {@link #PREFIX}, and then
+     * runs every registered module's revert.
      *
      * @param itemStack The item.
-     * @return The ItemStack.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
         if (Display.isFinalized(itemStack)) {
@@ -151,10 +159,13 @@ public final class Display {
     }
 
     /**
-     * Finalize an ItemStacks.
+     * Finalize an ItemStack, marking it as not needing display again.
+     * <p>
+     * Stackable items (max stack size greater than one) are returned unchanged, as the
+     * finalize marker would prevent them from stacking.
      *
      * @param itemStack The item.
-     * @return The ItemStack.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack finalize(@NotNull final ItemStack itemStack) {
         if (itemStack.getType().getMaxStackSize() > 1) {
@@ -169,10 +180,10 @@ public final class Display {
     }
 
     /**
-     * Unfinalize an ItemStacks.
+     * Unfinalize an ItemStack, removing the finalize marker.
      *
      * @param itemStack The item.
-     * @return The ItemStack.
+     * @return The same ItemStack, modified in place.
      */
     public static ItemStack unfinalize(@NotNull final ItemStack itemStack) {
         FastItemStack.wrap(itemStack)
@@ -196,6 +207,8 @@ public final class Display {
 
     /**
      * Register a new display module.
+     * <p>
+     * Modules are ordered by {@link DisplayModule#getWeight()}, lowest first.
      *
      * @param module The module.
      */
@@ -221,6 +234,9 @@ public final class Display {
         }
     }
 
+    /**
+     * Utility class, cannot be instantiated.
+     */
     private Display() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

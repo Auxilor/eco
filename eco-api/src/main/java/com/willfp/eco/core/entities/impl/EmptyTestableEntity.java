@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Empty entity.
+ * An empty entity: matches nothing, and spawns a {@link com.willfp.eco.core.entities.DummyEntity}.
+ * <p>
+ * Used as the failsafe result of a failed entity lookup.
  */
 public class EmptyTestableEntity implements TestableEntity {
     /**

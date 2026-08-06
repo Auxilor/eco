@@ -11,8 +11,8 @@ import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Mask materials store a set of items which can be accessed by
- * a filler mask.
+ * Mask items store a set of items which can be accessed by
+ * a {@link FillerMask}.
  *
  * @param items The items.
  */
@@ -27,7 +27,10 @@ public record MaskItems(@NotNull TestableItem... items) {
     }
 
     /**
-     * Create MaskItems from a list of item names.
+     * Create {@link MaskItems} from a list of item names.
+     * <p>
+     * Names that do not resolve to an item are skipped. If no names resolve,
+     * the mask items will contain a single black stained glass pane.
      *
      * @param names The names.
      * @return The mask items.

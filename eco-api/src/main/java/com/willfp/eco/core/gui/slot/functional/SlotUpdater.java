@@ -17,7 +17,7 @@ public interface SlotUpdater {
      * @param player   The player.
      * @param menu     The menu.
      * @param previous The previous ItemStack.
-     * @return The new ItemStack.
+     * @return The new ItemStack, or null to show an empty slot.
      */
     @Nullable
     ItemStack update(@NotNull Player player,

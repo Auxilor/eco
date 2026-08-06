@@ -6,7 +6,11 @@ import com.willfp.eco.core.price.Price
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-/** @see ShopManager.getItemPrice * */
+/**
+ * Always zero. Prices depend on the player, so this cannot be resolved from the item alone.
+ *
+ * @see getUnitValue
+ */
 @Deprecated(
     "Prices depend on players, this will always return 0.",
     level = DeprecationLevel.ERROR,
@@ -15,7 +19,11 @@ import org.bukkit.inventory.ItemStack
 val ItemStack.price: Double
     get() = 0.0
 
-/** @see ShopManager.getItemPrice * */
+/**
+ * The total sell value of the whole stack for a player, as a plain number.
+ *
+ * @see ShopManager.getItemPrice
+ */
 @Deprecated(
     "Use the price system instead, prices may not be currencies.",
     ReplaceWith("this.getValue(player)"),

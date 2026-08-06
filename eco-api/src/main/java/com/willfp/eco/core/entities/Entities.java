@@ -42,10 +42,10 @@ public final class Entities {
     private static final EntitiesLookupHandler ENTITIES_LOOKUP_HANDLER = new EntitiesLookupHandler(Entities::doParse);
 
     /**
-     * Register a new custom item.
+     * Register a new custom entity.
      *
-     * @param key  The key of the item.
-     * @param item The item.
+     * @param key  The key of the entity.
+     * @param item The entity.
      */
     public static void registerCustomEntity(@NotNull final NamespacedKey key,
                                             @NotNull final TestableEntity item) {
@@ -184,15 +184,15 @@ public final class Entities {
     }
 
     /**
-     * Get a Testable Entity from an ItemStack.
+     * Get a {@link TestableEntity} from an {@link Entity}.
      * <p>
      * Will search for registered entity first. If there are no matches in the registry,
-     * then it will return a {@link com.willfp.eco.core.entities.impl.SimpleTestableEntity} matching the entity type.
+     * then it will return a {@link SimpleTestableEntity} matching the entity type.
      * <p>
-     * If the entity is not custom and has unknown type, this will return null.
+     * If the entity is null, or is not custom and has an unknown type, this will return null.
      *
-     * @param entity The Entity.
-     * @return The found Testable Entity.
+     * @param entity The entity, which may be null.
+     * @return The found testable entity, or null if none could be created.
      */
     @Nullable
     public static TestableEntity getEntity(@Nullable final Entity entity) {
@@ -214,10 +214,10 @@ public final class Entities {
     }
 
     /**
-     * Get if entity is a custom entity.
+     * Get if an entity is a registered custom entity.
      *
      * @param entity The entity to check.
-     * @return If is custom.
+     * @return If the entity matches any registered custom entity.
      */
     public static boolean isCustomEntity(@NotNull final Entity entity) {
         for (TestableEntity testable : REGISTRY.values()) {
@@ -229,9 +229,9 @@ public final class Entities {
     }
 
     /**
-     * Get all registered custom items.
+     * Get all registered custom entities.
      *
-     * @return A set of all items.
+     * @return A set of all registered custom entities.
      */
     public static Set<TestableEntity> getCustomEntities() {
         return new HashSet<>(REGISTRY.values());

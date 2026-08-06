@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An item with a test to see if any item is that item.
+ * An entity with a test to see if any entity is that entity.
  */
 public interface TestableEntity extends Testable<Entity> {
     /**
-     * If an Entity matches the test.
+     * If an entity matches the test.
      *
-     * @param entity The entity to test.
+     * @param entity The entity to test, which may be null.
      * @return If the entity matches.
      */
     @Override
@@ -22,8 +22,8 @@ public interface TestableEntity extends Testable<Entity> {
     /**
      * Spawn the entity.
      *
-     * @param location The location.
-     * @return The entity.
+     * @param location The location to spawn the entity at.
+     * @return The spawned entity.
      */
     Entity spawn(@NotNull Location location);
 }

@@ -14,7 +14,7 @@ public interface SlotHandler {
      * Performs this operation on the given arguments.
      *
      * @param event The click event.
-     * @param slot  The slot
+     * @param slot  The slot that was clicked.
      * @param menu  The menu.
      */
     void handle(@NotNull InventoryClickEvent event,

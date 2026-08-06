@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to handle GUI detection.
+ * <p>
+ * eco's own menus are always detected via {@link MenuUtils}; registered
+ * {@link GUIDetectionIntegration}s are only consulted if the player does not have an eco menu open.
  */
 public final class GUIDetectionManager {
     /**
@@ -27,7 +30,7 @@ public final class GUIDetectionManager {
      * Get if a player is in a GUI.
      *
      * @param player The player.
-     * @return If the player has a GUI open.
+     * @return If the player has an eco menu open, or any registered integration reports a GUI.
      */
     public static boolean hasGUIOpen(@NotNull final Player player) {
         if (MenuUtils.getOpenMenu(player) != null) {

@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to handle afk integrations.
+ * <p>
+ * If no {@link AFKIntegration} is registered, players are never considered AFK.
  */
 public final class AFKManager {
     /**
@@ -26,7 +28,7 @@ public final class AFKManager {
      * Get if a player is afk.
      *
      * @param player The player.
-     * @return If afk.
+     * @return If any registered integration reports the player as afk.
      */
     public static boolean isAfk(@NotNull final Player player) {
         return REGISTRY.anySafely(integration -> integration.isAfk(player));

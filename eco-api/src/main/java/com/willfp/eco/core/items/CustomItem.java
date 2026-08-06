@@ -33,11 +33,11 @@ public class CustomItem implements TestableItem {
     private final ItemStack item;
 
     /**
-     * Create a new complex recipe part.
+     * Create a new custom item.
      *
      * @param key  The item key.
      * @param test The test.
-     * @param item The example ItemStacks.
+     * @param item The example ItemStack.
      */
     public CustomItem(@NotNull final NamespacedKey key,
                       @NotNull final Predicate<@NotNull ItemStack> test,

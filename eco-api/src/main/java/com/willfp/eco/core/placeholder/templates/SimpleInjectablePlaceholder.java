@@ -8,11 +8,11 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A template class for simple placeholders.
+ * A template class for simple injectable placeholders, matched against a literal identifier.
  */
 public abstract class SimpleInjectablePlaceholder implements InjectablePlaceholder {
     /**
-     * The name of the placeholder.
+     * The identifier of the placeholder.
      */
     private final String identifier;
 
@@ -22,7 +22,7 @@ public abstract class SimpleInjectablePlaceholder implements InjectablePlacehold
     private final Pattern pattern;
 
     /**
-     * The identifier wrapped in %, e.g. "%identifier%".
+     * The identifier wrapped in percent signs, e.g. "%identifier%".
      */
     private final String wrappedIdentifier;
 

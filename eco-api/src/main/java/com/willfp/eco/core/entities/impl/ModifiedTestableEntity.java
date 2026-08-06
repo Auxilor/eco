@@ -10,18 +10,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Existing testable entity with an extra filter.
+ * An existing {@link TestableEntity} with an extra test and a custom spawn provider.
  *
  * @see com.willfp.eco.core.entities.CustomEntity
  */
 public class ModifiedTestableEntity implements TestableEntity {
     /**
-     * The item.
+     * The base entity.
      */
     private final TestableEntity handle;
 
     /**
-     * The amount.
+     * The extra test to apply on top of the base entity's test.
      */
     private final Predicate<Entity> test;
 
@@ -34,7 +34,7 @@ public class ModifiedTestableEntity implements TestableEntity {
      * Create a new modified testable entity.
      *
      * @param entity   The base entity.
-     * @param test     The test.
+     * @param test     The extra test, applied in addition to the base entity's test.
      * @param provider The provider to spawn the entity.
      */
     public ModifiedTestableEntity(@NotNull final TestableEntity entity,
@@ -58,9 +58,9 @@ public class ModifiedTestableEntity implements TestableEntity {
     }
 
     /**
-     * Get the handle.
+     * Get the base entity that this entity modifies.
      *
-     * @return The handle.
+     * @return The base entity.
      */
     public TestableEntity getHandle() {
         return this.handle;

@@ -11,6 +11,11 @@ import org.jetbrains.annotations.NotNull;
  * The armor change event <b>does</b> contain information about the event.
  * <p>
  * Unlike {@link ArmorEquipEvent}, it is called the next tick and contains previous and current armor contents.
+ * <p>
+ * It is called a tick after an {@link ArmorEquipEvent}, by which point the player's inventory
+ * has updated, so {@link #getAfter()} reflects the new armor.
+ * <p>
+ * The event is not cancellable, as the armor has already changed by the time it is called.
  */
 public class ArmorChangeEvent extends PlayerEvent {
     /**
@@ -19,12 +24,12 @@ public class ArmorChangeEvent extends PlayerEvent {
     private static final HandlerList HANDLERS = new HandlerList();
 
     /**
-     * The armor contents before. 0 is helmet, 3 is boots.
+     * The armor contents before, in armor slot order: 0 is boots, 3 is helmet.
      */
     private final List<ItemStack> before;
 
     /**
-     * The armor contents after. 0 is helmet, 3 is boots.
+     * The armor contents after, in armor slot order: 0 is boots, 3 is helmet.
      */
     private final List<ItemStack> after;
 
@@ -32,8 +37,8 @@ public class ArmorChangeEvent extends PlayerEvent {
      * Create a new ArmorChangeEvent.
      *
      * @param player The player.
-     * @param before The armor contents before.
-     * @param after  The armor contents after.
+     * @param before The armor contents before, in armor slot order (0 is boots, 3 is helmet).
+     * @param after  The armor contents after, in armor slot order (0 is boots, 3 is helmet).
      */
     public ArmorChangeEvent(@NotNull final Player player,
                             @NotNull final List<ItemStack> before,
@@ -66,7 +71,7 @@ public class ArmorChangeEvent extends PlayerEvent {
     /**
      * Get the contents before the change.
      *
-     * @return The contents.
+     * @return The contents, in armor slot order (0 is boots, 3 is helmet).
      */
     public List<ItemStack> getBefore() {
         return this.before;
@@ -75,7 +80,7 @@ public class ArmorChangeEvent extends PlayerEvent {
     /**
      * Get the current contents.
      *
-     * @return The contents.
+     * @return The contents, in armor slot order (0 is boots, 3 is helmet).
      */
     public List<ItemStack> getAfter() {
         return this.after;

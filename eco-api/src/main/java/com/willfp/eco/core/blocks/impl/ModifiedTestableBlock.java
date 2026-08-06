@@ -16,12 +16,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ModifiedTestableBlock implements TestableBlock {
     /**
-     * The block.
+     * The base block being modified.
      */
     private final TestableBlock handle;
 
     /**
-     * The data.
+     * The extra test applied on top of the handle.
      */
     private final Predicate<Block> test;
 

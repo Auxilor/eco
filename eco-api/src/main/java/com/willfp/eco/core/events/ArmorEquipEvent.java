@@ -13,6 +13,12 @@ import org.jetbrains.annotations.NotNull;
  * <p>
  * The event is called before the player's inventory actually updates,
  * so you can check a tick later to see the new contents.
+ * <p>
+ * It is triggered by any action that can change a player's armor: inventory clicks and drags,
+ * right-clicking to equip, armor being dispensed onto the player, armor breaking, dying without
+ * keep inventory, joining, and respawning.
+ * <p>
+ * The event is not cancellable.
  *
  * @see ArmorChangeEvent
  */
