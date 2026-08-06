@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param row    The row.
  * @param column The column.
- * @param before The previous item in the slot.
- * @param after  The new item in the slot.
+ * @param before The previous item in the slot, or null if the slot held no captive item.
+ * @param after  The new item in the slot, or null if the slot now holds no captive item.
  */
 public record CaptiveItemChangeEvent(
         int row,

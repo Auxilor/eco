@@ -45,9 +45,9 @@ public final class PageChanger implements GUIComponent {
     private final AbstractPlayableSound<?> sound;
 
     /**
-     * Create a new page change button.
+     * Create a new page change button with no inactive item and no sound.
      *
-     * @param itemStack The ItemStack.
+     * @param itemStack The ItemStack to show while a turn is possible.
      * @param direction The direction.
      */
     public PageChanger(@NotNull final ItemStack itemStack,
@@ -55,6 +55,14 @@ public final class PageChanger implements GUIComponent {
         this(direction, itemStack, null, null);
     }
 
+    /**
+     * Create a new page change button.
+     *
+     * @param direction    The direction.
+     * @param activeItem   The item shown while a turn is possible.
+     * @param inactiveItem The item shown on the first or last page, or null to hide the button.
+     * @param sound        The sound played when the page turns, or null for silent.
+     */
     private PageChanger(@NotNull final Direction direction,
                         @NotNull final ItemStack activeItem,
                         @Nullable final ItemStack inactiveItem,
@@ -123,6 +131,17 @@ public final class PageChanger implements GUIComponent {
                 .build();
     }
 
+    /**
+     * Substitute the page placeholders in an item's display name and lore.
+     * <p>
+     * The item is only cloned if it actually contains a placeholder; otherwise
+     * the passed item is returned unchanged.
+     *
+     * @param item    The item.
+     * @param page    The current page.
+     * @param maxPage The max page.
+     * @return The item with placeholders substituted.
+     */
     private static ItemStack withPagePlaceholders(@NotNull final ItemStack item,
                                                   final int page,
                                                   final int maxPage) {
@@ -170,10 +189,24 @@ public final class PageChanger implements GUIComponent {
         return clone;
     }
 
+    /**
+     * Check whether a string contains a page placeholder.
+     *
+     * @param string The string.
+     * @return If the string contains {@code %page%} or {@code %max_page%}.
+     */
     private static boolean hasTokens(@NotNull final String string) {
         return string.contains("%page%") || string.contains("%max_page%");
     }
 
+    /**
+     * Substitute the page placeholders in a string.
+     *
+     * @param string  The string.
+     * @param page    The current page.
+     * @param maxPage The max page.
+     * @return The substituted string.
+     */
     private static String substitute(@NotNull final String string,
                                      final int page,
                                      final int maxPage) {
@@ -215,6 +248,11 @@ public final class PageChanger implements GUIComponent {
          */
         private AbstractPlayableSound<?> sound = null;
 
+        /**
+         * Create a new builder.
+         *
+         * @param direction The direction.
+         */
         private Builder(@NotNull final Direction direction) {
             this.direction = direction;
         }
@@ -231,8 +269,9 @@ public final class PageChanger implements GUIComponent {
         }
 
         /**
-         * Set the item shown on the first or last page. If null the button is
-         * hidden on that page, which is the default.
+         * Set the item shown on the first or last page.
+         * <p>
+         * If null the button is hidden on that page, which is the default.
          *
          * @param item The item, or null to hide.
          * @return The builder.
@@ -257,6 +296,7 @@ public final class PageChanger implements GUIComponent {
          * Build the page changer.
          *
          * @return The page changer.
+         * @throws IllegalStateException If no active item has been set.
          */
         public PageChanger build() {
             if (this.activeItem == null) {

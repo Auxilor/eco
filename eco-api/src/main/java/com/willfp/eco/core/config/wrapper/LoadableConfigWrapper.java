@@ -7,13 +7,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper to handle the backend loadable yaml config implementations.
+ * Wrapper to handle the backend {@link LoadableConfig} implementations.
  */
 public abstract class LoadableConfigWrapper extends ConfigWrapper<LoadableConfig> implements LoadableConfig {
     /**
-     * Create a config wrapper.
+     * Create a loadable config wrapper.
      *
-     * @param handle The handle.
+     * @param handle The config that is being wrapped.
      */
     protected LoadableConfigWrapper(@NotNull final LoadableConfig handle) {
         super(handle);

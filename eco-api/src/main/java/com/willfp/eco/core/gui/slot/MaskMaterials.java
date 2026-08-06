@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Mask materials store a set of materials which can be accessed by
- * a filler mask.
+ * a {@link FillerMask}.
  *
  * @param materials The materials.
  * @deprecated Use {@link MaskItems} instead.
@@ -14,9 +14,9 @@ import org.jetbrains.annotations.NotNull;
 @Deprecated(since = "6.24.0")
 public record MaskMaterials(@NotNull Material... materials) {
     /**
-     * Convert MaskMaterials to MaskItems.
+     * Convert this to {@link MaskItems}.
      *
-     * @return The MaskItems.
+     * @return The mask items.
      */
     public MaskItems toMaskItems() {
         return new MaskItems(Items.fromMaterials(this.materials()));

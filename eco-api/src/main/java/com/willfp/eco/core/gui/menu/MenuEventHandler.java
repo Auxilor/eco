@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Handles menu events.
  *
- * @param <T> The type of event to handle.x
+ * @param <T> The type of event to handle.
  */
 public abstract class MenuEventHandler<T extends MenuEvent> {
     /**
@@ -38,7 +38,7 @@ public abstract class MenuEventHandler<T extends MenuEvent> {
     /**
      * Get if this handler can handle a certain event.
      *
-     * @param menuEvent The event
+     * @param menuEvent The event.
      * @return If the event can be handled.
      */
     public boolean canHandleEvent(@NotNull final MenuEvent menuEvent) {

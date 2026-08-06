@@ -8,6 +8,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Event called when a player jumps.
+ * <p>
+ * On Paper it is fired from Paper's own jump event; on Spigot the jump is detected from
+ * {@link PlayerMoveEvent} by inspecting the player's upwards velocity.
+ * <p>
+ * All state (cancellation, from, to) is delegated to the {@link PlayerMoveEvent} passed to
+ * the constructor, so cancelling this event only cancels the movement when that event is a
+ * real, live move event, which is the case on Spigot but not on Paper.
  */
 public class PlayerJumpEvent extends PlayerMoveEvent {
     /**

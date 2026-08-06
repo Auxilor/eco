@@ -32,7 +32,9 @@ public class LangYml extends BaseConfig {
     public static final String KEY_NOT_PLAYER = "messages.not-player";
 
     /**
-     * Lang.yml.
+     * Create a new lang.yml.
+     * <p>
+     * Unused keys are never removed on update, so custom messages are preserved.
      *
      * @param plugin The plugin.
      */
@@ -70,28 +72,28 @@ public class LangYml extends BaseConfig {
     /**
      * Get the no permission message.
      *
-     * @return The message.
+     * @return The message, with the prefix prepended.
      */
     public String getNoPermission() {
         return getPrefix() + this.getFormattedString(KEY_NO_PERMISSION);
     }
 
     /**
-     * Get a chat message.
+     * Get a chat message, relative to {@link #KEY_MESSAGES}.
      *
      * @param message The key of the message.
-     * @return The message with a prefix appended.
+     * @return The message, with the prefix prepended.
      */
     public String getMessage(@NotNull final String message) {
         return getMessage(message, StringUtils.FormatOption.WITH_PLACEHOLDERS);
     }
 
     /**
-     * Get a chat message.
+     * Get a chat message, relative to {@link #KEY_MESSAGES}.
      *
      * @param message The key of the message.
-     * @param option  The format options.
-     * @return The message with a prefix appended.
+     * @param option  The format option.
+     * @return The message, with the prefix prepended.
      */
     public String getMessage(@NotNull final String message,
                              @NotNull final StringUtils.FormatOption option) {

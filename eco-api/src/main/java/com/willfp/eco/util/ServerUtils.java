@@ -8,8 +8,10 @@ import com.willfp.eco.core.Eco;
 public final class ServerUtils {
     /**
      * Get the current server TPS.
+     * <p>
+     * The value is capped at 20, so a server running above nominal speed still reports 20.
      *
-     * @return The TPS.
+     * @return The TPS, at most 20.
      */
     public static double getTps() {
         double tps = Eco.get().getTPS();

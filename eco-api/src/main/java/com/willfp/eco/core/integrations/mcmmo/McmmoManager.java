@@ -7,6 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to handle mcmmo integrations.
+ * <p>
+ * If no {@link McmmoIntegration} is registered, the bonus drop count is zero and no event is
+ * considered fake.
  */
 public final class McmmoManager {
     /**
@@ -25,9 +28,12 @@ public final class McmmoManager {
 
     /**
      * Get bonus drop count from block.
+     * <p>
+     * Unlike the other methods here, this iterates the registry directly rather than safely,
+     * summing the bonus drop count reported by every registered integration.
      *
      * @param block The block.
-     * @return The bonus drop count.
+     * @return The total bonus drop count.
      */
     public static int getBonusDropCount(@NotNull final Block block) {
         int finalValue = 0;

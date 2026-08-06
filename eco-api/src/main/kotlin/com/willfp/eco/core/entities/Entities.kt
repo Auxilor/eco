@@ -10,6 +10,10 @@ import org.bukkit.entity.Mob
 val <T : Mob> T.controller: EntityController<T>
     get() = EntityController.getFor(this)
 
-/** @see Entities.matchesAny */
+/**
+ * Check if the entity matches any [TestableEntity] in this collection.
+ *
+ * @see TestableEntity.matches
+ */
 fun Collection<TestableEntity>.matches(entity: Entity): Boolean =
     this.any { it.matches(entity) }

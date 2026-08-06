@@ -13,7 +13,7 @@ fun Block?.toLookupString(): String =
 val Block?.isEmpty: Boolean
     get() = Blocks.isEmpty(this)
 
-/** @see Block.isEmpty */
+/** @see Blocks.isEmpty */
 val Block?.isEcoEmpty: Boolean
     get() = Blocks.isEmpty(this)
 

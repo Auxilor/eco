@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SkullBuilder extends AbstractItemStackBuilder<SkullMeta, SkullBuilder> {
     /**
-     * Create a new EnchantedBookBuilder.
+     * Create a new SkullBuilder.
      */
     public SkullBuilder() {
         super(Material.PLAYER_HEAD);

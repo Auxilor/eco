@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface NamespacedKeyFactory {
     /**
-     * Create an {@link NamespacedKey} associated with an {@link com.willfp.eco.core.EcoPlugin}.
+     * Create a {@link NamespacedKey} in the namespace of this factory's
+     * {@link com.willfp.eco.core.EcoPlugin}.
      *
      * @param key The key in the {@link NamespacedKey}.
      * @return The created {@link NamespacedKey}.

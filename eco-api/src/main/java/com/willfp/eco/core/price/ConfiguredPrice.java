@@ -43,7 +43,8 @@ public final class ConfiguredPrice implements Price {
      * Create a new Configured Price.
      *
      * @param price        The price.
-     * @param formatString The format string.
+     * @param formatString The format string, where <code>%value%</code> and
+     *                     <code>%value_commas%</code> are replaced with the formatted value.
      */
     public ConfiguredPrice(@NotNull final Price price,
                            @NotNull final String formatString) {

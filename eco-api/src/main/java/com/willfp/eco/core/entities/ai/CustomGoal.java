@@ -7,7 +7,7 @@ import org.bukkit.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Base interface for all custom goals.
+ * Base class for all custom goals.
  * <p>
  * Can be used both for entity goals and target goals.
  *
@@ -37,7 +37,8 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
 
     /**
      * Get if the goal can be used.
-     * Will start the goal if this returns true.
+     * <p>
+     * The goal will be started if this returns true.
      *
      * @return If the goal can be used.
      */
@@ -46,9 +47,9 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Tick the goal.
      * <p>
-     * Runs ever tick as long as canUse returns true.
+     * Runs every tick as long as {@link #canContinueToUse()} returns true.
      * <p>
-     * Runs after start().
+     * Runs after {@link #start()}.
      */
     public void tick() {
         // Override when needed.
@@ -57,7 +58,7 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Start the goal.
      * <p>
-     * Runs once canUse() returns true.
+     * Runs once {@link #canUse()} returns true.
      */
     public void start() {
         // Override when needed.
@@ -66,7 +67,7 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Stop the goal.
      * <p>
-     * Runs once canUse() returns false.
+     * Runs once {@link #canContinueToUse()} returns false.
      */
     public void stop() {
         // Override when needed.
@@ -74,6 +75,8 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
 
     /**
      * Get if the goal can continue to be used.
+     * <p>
+     * Defaults to {@link #canUse()}.
      *
      * @return If the goal can continue to be used.
      */
@@ -93,7 +96,7 @@ public abstract class CustomGoal<T extends Mob> implements EntityGoal<T>, Target
     /**
      * Get the goal flags.
      *
-     * @return The flags.
+     * @return A copy of the flags.
      */
     public EnumSet<GoalFlag> getFlags() {
         return EnumSet.copyOf(this.flags);

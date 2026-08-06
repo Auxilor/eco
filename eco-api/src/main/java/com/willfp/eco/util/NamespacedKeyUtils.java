@@ -11,9 +11,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class NamespacedKeyUtils {
     /**
-     * Create a NamespacedKey for eco.
+     * Create a {@link NamespacedKey} in the {@code eco} namespace.
      *
-     * @param string The string.
+     * @param string The key, without a namespace.
      * @return The key.
      */
     @NotNull
@@ -22,7 +22,7 @@ public final class NamespacedKeyUtils {
     }
 
     /**
-     * Create a NamespacedKey with any namespace and key.
+     * Create a {@link NamespacedKey} with any namespace and key.
      *
      * @param namespace The namespace.
      * @param key       The key.
@@ -38,12 +38,15 @@ public final class NamespacedKeyUtils {
     }
 
     /**
-     * Create a NamespacedKey from a string.
+     * Create a {@link NamespacedKey} from a string.
+     * <p>
+     * The string is split around the first colon into a namespace and a key.
      * <p>
      * Preferred over {@link NamespacedKey#fromString(String)} for performance reasons.
      *
-     * @param string The string.
+     * @param string The string, in {@code namespace:key} form.
      * @return The key.
+     * @throws NullPointerException If the string does not contain a colon.
      */
     @NotNull
     public static NamespacedKey fromString(@NotNull final String string) {
@@ -51,12 +54,14 @@ public final class NamespacedKeyUtils {
     }
 
     /**
-     * Create a NamespacedKey from a string.
+     * Create a {@link NamespacedKey} from a string.
+     * <p>
+     * The string is split around the first colon into a namespace and a key.
      * <p>
      * Preferred over {@link NamespacedKey#fromString(String)} for performance reasons.
      *
-     * @param string The string.
-     * @return The key, or null if not a key.
+     * @param string The string, in {@code namespace:key} form.
+     * @return The key, or null if the string does not contain a colon.
      */
     @Nullable
     public static NamespacedKey fromStringOrNull(@NotNull final String string) {

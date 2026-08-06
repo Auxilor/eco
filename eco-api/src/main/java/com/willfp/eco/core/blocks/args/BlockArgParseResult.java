@@ -7,7 +7,7 @@ import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The result of an arg parses.
+ * The result of parsing block lookup arguments.
  *
  * @param test     The test for the block.
  * @param modifier The modifier to apply to the block.

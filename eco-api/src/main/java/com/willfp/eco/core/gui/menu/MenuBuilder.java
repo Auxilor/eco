@@ -27,7 +27,7 @@ public interface MenuBuilder extends PageBuilder {
     /**
      * Get the menu title.
      *
-     * @return The builder.
+     * @return The title, or an empty string if none has been set.
      */
     default String getTitle() {
         return "";
@@ -134,7 +134,7 @@ public interface MenuBuilder extends PageBuilder {
     /**
      * Set the max pages dynamically for a player.
      *
-     * @param pages The max pages.
+     * @param pages The function to get the max pages for a player.
      * @return The builder.
      */
     default MenuBuilder maxPages(@NotNull final Function<Player, Integer> pages) {
@@ -154,7 +154,7 @@ public interface MenuBuilder extends PageBuilder {
     /**
      * Set the default page dynamically for a player.
      *
-     * @param page The default page.
+     * @param page The function to get the default page for a player.
      * @return The builder.
      */
     default MenuBuilder defaultPage(@NotNull final Function<Player, Integer> page) {

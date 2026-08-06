@@ -24,7 +24,7 @@ public final class CustomItemsManager {
     }
 
     /**
-     * Register all the custom items for a specific plugin into eco.
+     * Register the custom items of every registered integration into eco.
      *
      * @see com.willfp.eco.core.items.Items
      */
@@ -33,7 +33,8 @@ public final class CustomItemsManager {
     }
 
     /**
-     * Register all the custom items for a specific plugin into eco.
+     * Register the {@link com.willfp.eco.core.items.provider.ItemProvider}s of every
+     * registered integration into eco.
      *
      * @see com.willfp.eco.core.items.Items
      */

@@ -12,32 +12,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A arguments that cannot be registered, and exists purely in injection.
+ * A placeholder that cannot be registered, and exists purely in injection.
  */
 public final class StaticPlaceholder implements InjectablePlaceholder {
     /**
-     * The name of the arguments.
+     * The identifier, wrapped in percent signs, e.g. "%identifier%".
      */
     private final String identifier;
 
     /**
-     * The raw identifier.
+     * The raw identifier, used to lazily compile the pattern.
      */
     private final String rawIdentifier;
 
     /**
-     * The arguments pattern, lazy initialized.
+     * The placeholder pattern, lazily initialized from the raw identifier.
      */
     @Nullable
     private volatile Pattern pattern = null;
 
     /**
-     * The function to retrieve the output of the arguments.
+     * The function to retrieve the value of the placeholder.
      */
     private final Supplier<@Nullable String> function;
 
     /**
-     * Create a new player arguments.
+     * Create a new static placeholder.
      *
      * @param identifier The identifier.
      * @param function   The function to retrieve the value.
@@ -56,9 +56,9 @@ public final class StaticPlaceholder implements InjectablePlaceholder {
     }
 
     /**
-     * Get the value of the arguments.
+     * Get the value of the placeholder.
      *
-     * @return The value.
+     * @return The value, or an empty string if the supplier returned null.
      * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
     @Deprecated(since = "6.56.0", forRemoval = true)

@@ -7,11 +7,16 @@ import java.io.File
 import java.io.InputStream
 import org.bukkit.configuration.ConfigurationSection
 
-/** Helper class to create configs with a kotlin DSL. */
+/**
+ * Helper class to create configs with a kotlin DSL.
+ *
+ * @param type The config type.
+ */
 class DSLConfig internal constructor(type: ConfigType) : GenericConfig(type) {
     /**
      * Map a key to a value.
      *
+     * @receiver The key.
      * @param value The value.
      */
     infix fun String.to(value: Any?) =
@@ -32,6 +37,7 @@ class DSLConfig internal constructor(type: ConfigType) : GenericConfig(type) {
 /**
  * Helper function to create configs with a kotlin DSL.
  *
+ * @param type The config type, defaulting to [ConfigType.YAML].
  * @param builder The builder.
  * @return The config.
  */

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Target random non-tame entity.
+ * Allows a tameable entity to target a random matching entity, as long as it is not tamed.
  *
  * @param target          The types of entities to heal.
  * @param checkVisibility If visibility should be checked.
@@ -27,7 +27,7 @@ public record TargetGoalNonTameRandom(
     /**
      * Create a new target goal.
      *
-     * @param target          The types of entities to heal.
+     * @param target          The types of entities to target.
      * @param checkVisibility If visibility should be checked.
      */
     public TargetGoalNonTameRandom(@NotNull final TestableEntity target,

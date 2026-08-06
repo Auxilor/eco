@@ -15,11 +15,14 @@ public interface LookupHandler<T extends Testable<?>> {
      * <p>
      * You shouldn't override this method unless you're doing something
      * technically interesting or weird. This is the entry point for all
-     * lookup parsers, parse() is to specify implementation-specific
+     * lookup parsers, {@link #parse(String[])} is to specify implementation-specific
      * parsing.
+     * <p>
+     * Every registered {@link SegmentParser} is tried first; if none of them match, the
+     * key is tokenised and handed to {@link #parse(String[])}.
      *
      * @param key The key.
-     * @return The object.
+     * @return The object, or the failsafe if the key could not be parsed.
      */
     default T parseKey(@NotNull String key) {
         for (SegmentParser parser : SegmentParser.values()) {
@@ -39,13 +42,15 @@ public interface LookupHandler<T extends Testable<?>> {
      * Parse arguments to an object.
      *
      * @param args The arguments.
-     * @return The object.
+     * @return The object, or the failsafe if the arguments could not be parsed.
      */
     @NotNull
     T parse(@NotNull String[] args);
 
     /**
      * Validate an object.
+     * <p>
+     * Should return false for the failsafe object.
      *
      * @param object The object.
      * @return If validated.

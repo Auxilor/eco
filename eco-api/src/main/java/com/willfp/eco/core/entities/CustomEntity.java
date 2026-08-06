@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * <ul>
  *     <li>The key to identify it</li>
  *     <li>The test to check if any entity is this custom entity</li>
- *     <li>The supplier to spawn the custom {@link org.bukkit.entity.Entity}</li>
+ *     <li>The provider to spawn the custom {@link Entity}</li>
  * </ul>
  */
 public class CustomEntity implements TestableEntity {
@@ -25,7 +25,7 @@ public class CustomEntity implements TestableEntity {
     private final NamespacedKey key;
 
     /**
-     * The test for Entities to pass.
+     * The test for entities to pass.
      */
     private final Predicate<@NotNull Entity> test;
 
@@ -66,7 +66,7 @@ public class CustomEntity implements TestableEntity {
     }
 
     /**
-     * Register the entity.
+     * Register the entity in {@link Entities}.
      */
     public void register() {
         Entities.registerCustomEntity(this.getKey(), this);

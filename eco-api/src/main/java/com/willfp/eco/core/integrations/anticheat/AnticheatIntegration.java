@@ -5,7 +5,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper class for anticheat integrations.
+ * Wrapper interface for anticheat integrations.
+ * <p>
+ * Implemented for anticheat plugins such as Spartan, Vulcan, Alice, and AAC, so that eco can
+ * temporarily exempt players from anticheat checks while performing movement or combat that
+ * would otherwise look like cheating.
+ *
+ * @see AnticheatManager
  */
 public interface AnticheatIntegration extends Integration {
     /**

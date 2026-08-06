@@ -8,7 +8,9 @@ import java.util.function.Function;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Handle item lookup strings.
+ * Handle entity lookup strings.
+ *
+ * @see Entities#lookup(String)
  */
 public class EntitiesLookupHandler implements LookupHandler<TestableEntity> {
     /**
@@ -17,9 +19,9 @@ public class EntitiesLookupHandler implements LookupHandler<TestableEntity> {
     private final Function<String[], @NotNull TestableEntity> parser;
 
     /**
-     * Create new lookup handler.
+     * Create a new lookup handler.
      *
-     * @param parser The parser.
+     * @param parser The parser, taking the lookup arguments and producing a testable entity.
      */
     public EntitiesLookupHandler(@NotNull final Function<String[], @NotNull TestableEntity> parser) {
         this.parser = parser;

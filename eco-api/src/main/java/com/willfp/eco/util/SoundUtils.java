@@ -14,8 +14,13 @@ import org.jetbrains.annotations.Nullable;
 public final class SoundUtils {
     /**
      * Get a sound in a version-compatible way.
+     * <p>
+     * The name is first looked up in {@link Registry#SOUNDS} as a {@link NamespacedKey}, using the
+     * {@code minecraft} namespace if the name does not contain a colon. If that fails, the name is
+     * looked up as a legacy {@link Sound} enum constant by reflection, which lets old constant
+     * names such as {@code ENTITY_ITEM_BREAK} keep working.
      *
-     * @param name The name of the sound, case-insensitive.
+     * @param name The name of the sound, case-insensitive, optionally namespaced.
      * @return The sound, or null if not found.
      */
     @Nullable

@@ -69,7 +69,7 @@ public final class PriceItem implements Price {
     /**
      * Create a new item-based price.
      *
-     * @param baseContext The base MathContext.
+     * @param baseContext The base PlaceholderContext.
      * @param function    The function to get the amount of items to remove.
      * @param item        The item.
      */

@@ -13,32 +13,34 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A placeholder that cannot be registered, and exists purely in injection.
+ * A placeholder that requires a player, which cannot be registered and exists purely in injection.
+ * <p>
+ * If the context has no player, the placeholder resolves to null.
  */
 public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     /**
-     * The identifier.
+     * The identifier, wrapped in percent signs, e.g. "%identifier%".
      */
     private final String identifier;
 
     /**
-     * The raw identifier.
+     * The raw identifier, used to lazily compile the pattern.
      */
     private final String rawIdentifier;
 
     /**
-     * The arguments pattern.
+     * The placeholder pattern, lazily initialized from the raw identifier.
      */
     @Nullable
     private volatile Pattern pattern = null;
 
     /**
-     * The function to retrieve the output of the arguments.
+     * The function to retrieve the value of the placeholder for a player.
      */
     private final Function<@NotNull Player, @Nullable String> function;
 
     /**
-     * Create a new player arguments.
+     * Create a new player static placeholder.
      *
      * @param identifier The identifier.
      * @param function   The function to retrieve the value.
@@ -63,10 +65,10 @@ public final class PlayerStaticPlaceholder implements InjectablePlaceholder {
     }
 
     /**
-     * Get the value of the arguments.
+     * Get the value of the placeholder for a given player.
      *
      * @param player The player.
-     * @return The value.
+     * @return The value, or an empty string if the function returned null.
      * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
     @Deprecated(since = "6.56.0", forRemoval = true)

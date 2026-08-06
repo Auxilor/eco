@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class Items {
     /**
-     * All recipe parts.
+     * All registered custom items, keyed by their {@link NamespacedKey}.
      */
     private static final Map<NamespacedKey, TestableItem> REGISTRY = new ConcurrentHashMap<>();
 
@@ -59,7 +59,7 @@ public final class Items {
     private static final Map<String, ItemProvider> PROVIDERS = new ConcurrentHashMap<>();
 
     /**
-     * All recipe parts.
+     * All registered arg parsers, used to parse lookup string modifiers.
      */
     private static final List<LookupArgParser> ARG_PARSERS = new ArrayList<>();
 
@@ -115,7 +115,7 @@ public final class Items {
     /**
      * Remove an item.
      *
-     * @param key The key of the recipe part.
+     * @param key The key of the item.
      */
     public static void removeCustomItem(@NotNull final NamespacedKey key) {
         REGISTRY.remove(key);
@@ -182,6 +182,32 @@ public final class Items {
      * will still work as long as the test passes. This is very important
      * for custom crafting recipes where other plugins may add metadata
      * values or the play may rename the item.
+     * <p>
+     * A lookup string is a set of space-separated tokens, where a quoted
+     * section is treated as a single token (e.g. {@code name:"My Item"}).
+     * The first token selects the base item, and may be any of:
+     * <ul>
+     *     <li>{@code stone} - a vanilla material; underscores may be omitted and a
+     *     trailing {@code s} is accepted, so {@code diamond_sword},
+     *     {@code diamondsword} and {@code diamondswords} all resolve</li>
+     *     <li>{@code *stone} - the same, but matching the material even if the item
+     *     is also a registered custom item</li>
+     *     <li>{@code #tag} - an {@link ItemTag} registered with {@link #registerTag(ItemTag)}</li>
+     *     <li>{@code namespace:key} - a custom item registered under that key, or an item
+     *     resolved on demand from the {@link ItemProvider} registered for that namespace</li>
+     * </ul>
+     * If the second token is an integer, it is used as the stack size. Every remaining
+     * token is passed to the registered {@link LookupArgParser}s as a modifier; these are
+     * conventionally of the form {@code name:value}, for example {@code sharpness:5}.
+     * <p>
+     * Whole lookup strings can be combined with segment separators, which must be
+     * surrounded by spaces: {@code a || b} matches either segment, and {@code a ? b}
+     * resolves to the first segment that produces a valid item.
+     * <p>
+     * The legacy {@code material:amount} and {@code namespace:key:amount} formats are
+     * still supported, but have been superseded by passing the amount as a second token.
+     * <p>
+     * If the lookup string begins with <code>&#123;</code> it is instead parsed as SNBT.
      *
      * @param key The lookup string.
      * @return The testable item, or an {@link EmptyTestableItem}.
@@ -375,7 +401,7 @@ public final class Items {
      * Get if itemStack is a custom item.
      *
      * @param itemStack The itemStack to check.
-     * @return If is recipe.
+     * @return If the item is a custom item.
      */
     public static boolean isCustomItem(@Nullable final ItemStack itemStack) {
         return getCustomItem(itemStack) != null;
@@ -533,7 +559,7 @@ public final class Items {
      *
      * @param itemStack The ItemStack.
      * @param container The base NBT tag.
-     * @return The ItemStack, modified. Not required to use, as this modifies the instance.¬
+     * @return The ItemStack, modified. Not required to use, as this modifies the instance.
      * @deprecated Items are now component-based.
      */
     @NotNull
@@ -632,6 +658,9 @@ public final class Items {
         return TAGS.values();
     }
 
+    /**
+     * Prevent instantiation of this utility class.
+     */
     private Items() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

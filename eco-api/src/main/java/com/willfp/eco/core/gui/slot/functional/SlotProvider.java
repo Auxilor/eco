@@ -16,7 +16,7 @@ public interface SlotProvider {
      *
      * @param player The player.
      * @param menu   The menu.
-     * @return The ItemStack.
+     * @return The ItemStack, or null to show an empty slot.
      */
     @Nullable
     ItemStack provide(@NotNull Player player,

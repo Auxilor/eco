@@ -23,16 +23,47 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class AbstractPlayableSound<T> {
 
+    /**
+     * The deserializer used to read sounds from configs.
+     */
     private static final ConfigDeserializer<AbstractPlayableSound<?>> DESERIALIZER = new Deserializer();
 
+    /**
+     * The sound source.
+     */
     private final T source;
+
+    /**
+     * The minimum pitch.
+     */
     private final double minPitch;
+
+    /**
+     * The maximum pitch.
+     */
     private final double maxPitch;
+
+    /**
+     * The volume.
+     */
     private final double volume;
+
+    /**
+     * If the sound is enabled.
+     */
     private final boolean enabled;
+
+    /**
+     * The sound category.
+     */
     private final SoundCategory category;
 
     /**
+     * Create a new playable sound.
+     * <p>
+     * The pitch is randomised between {@code minPitch} and {@code maxPitch} on each play;
+     * pass the same value for both for a fixed pitch.
+     *
      * @param source   The sound source.
      * @param minPitch The minimum pitch.
      * @param maxPitch The maximum pitch.
@@ -140,6 +171,8 @@ public abstract class AbstractPlayableSound<T> {
 
     /**
      * Play the sound to a player if enabled.
+     * <p>
+     * Does nothing if {@link #enabled()} is false.
      *
      * @param player The player.
      */
@@ -151,6 +184,8 @@ public abstract class AbstractPlayableSound<T> {
 
     /**
      * Play the sound at a location if enabled.
+     * <p>
+     * Does nothing if {@link #enabled()} is false, or if the location has no world.
      *
      * @param location The location.
      */
@@ -164,15 +199,31 @@ public abstract class AbstractPlayableSound<T> {
 
     /**
      * Parse a playable sound from config.
+     * <p>
+     * Reads {@code sound}, {@code pitch} (a number, an expression, or a {@code min..max}
+     * range), {@code volume}, {@code enabled}, and {@code category}. If the sound key
+     * matches a Bukkit {@link Sound} a {@link PlayableSound} is returned, otherwise a
+     * {@link CustomPlayableSound} is returned for the raw key.
      *
      * @param config The config.
-     * @return The sound, or null if invalid.
+     * @return The sound, or null if the config has no {@code sound} key.
      */
     @Nullable
     public static AbstractPlayableSound<?> create(@NotNull final Config config) {
         return DESERIALIZER.deserialize(config);
     }
 
+    /**
+     * Read a number from a config, falling back if it is absent or unparseable.
+     * <p>
+     * Accepts a plain number, or a string containing a number or a placeholder-free
+     * expression.
+     *
+     * @param config   The config.
+     * @param path     The path to read.
+     * @param fallback The value to use if the path is absent or invalid.
+     * @return The number.
+     */
     static double readNumber(@NotNull final Config config,
                              @NotNull final String path,
                              final double fallback) {
@@ -189,6 +240,16 @@ public abstract class AbstractPlayableSound<T> {
         return readRangePart(raw, fallback);
     }
 
+    /**
+     * Read one part of a range as a number.
+     * <p>
+     * Tries to parse the string directly, then falls back to evaluating it as an
+     * expression, then to the fallback value.
+     *
+     * @param raw      The raw string.
+     * @param fallback The value to use if the string is not a number or a valid expression.
+     * @return The number.
+     */
     static double readRangePart(@NotNull final String raw,
                                 final double fallback) {
         String trimmed = raw.trim();
@@ -201,6 +262,9 @@ public abstract class AbstractPlayableSound<T> {
         }
     }
 
+    /**
+     * Deserializes playable sounds from configs.
+     */
     private static final class Deserializer implements ConfigDeserializer<AbstractPlayableSound<?>> {
         @Override
         public @Nullable AbstractPlayableSound<?> deserialize(@NotNull final Config config) {

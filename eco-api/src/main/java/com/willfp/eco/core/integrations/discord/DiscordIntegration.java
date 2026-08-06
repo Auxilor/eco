@@ -7,6 +7,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Integration point for Discord webhooks.
+ * <p>
+ * This does not wrap a third-party plugin: eco ships its own webhook client, which the platform
+ * module registers into {@link DiscordManager}. Only a single implementation is used at a time,
+ * so this is registered through {@link DiscordManager#register(DiscordIntegration)} rather than
+ * an {@link com.willfp.eco.core.integrations.IntegrationRegistry}.
+ *
+ * @see DiscordManager
  */
 public interface DiscordIntegration extends Integration {
     /**

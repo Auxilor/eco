@@ -13,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BaseConfig extends LoadableConfigWrapper {
     /**
      * Create new Base Config.
+     * <p>
+     * Requires a change to save, see {@link #BaseConfig(String, PluginLike, boolean, ConfigType, boolean)}.
      *
-     * @param plugin       The plugin or extension.
      * @param configName   The config name (excluding extension).
+     * @param plugin       The plugin or extension.
      * @param removeUnused If unused sections should be removed.
      * @param type         The config type.
      */
@@ -29,8 +31,8 @@ public abstract class BaseConfig extends LoadableConfigWrapper {
     /**
      * Create new Base Config.
      *
-     * @param plugin               The plugin or extension.
      * @param configName           The config name (excluding extension).
+     * @param plugin               The plugin or extension.
      * @param removeUnused         If unused sections should be removed.
      * @param type                 The config type.
      * @param requiresChangeToSave If changes must be applied to save the config.

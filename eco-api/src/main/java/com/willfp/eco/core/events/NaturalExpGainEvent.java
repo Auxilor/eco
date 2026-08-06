@@ -8,6 +8,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Event similar to {@link PlayerExpChangeEvent}, except it
  * isn't called if the exp is from a bottle.
+ * <p>
+ * It is called whenever a player gains experience from any other source, for example
+ * from mining, smelting, breeding, fishing, or killing entities.
+ * <p>
+ * The event is not cancellable. To change or negate the experience gained, modify the
+ * backing event with {@link #getExpChangeEvent()}.
  */
 public class NaturalExpGainEvent extends Event {
     /**

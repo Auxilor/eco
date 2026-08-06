@@ -42,7 +42,7 @@ public interface Menu {
      *
      * @param row    The row.
      * @param column The column.
-     * @return The row.
+     * @return The slot.
      */
     Slot getSlot(int row,
                  int column);
@@ -54,10 +54,10 @@ public interface Menu {
      *
      * @param row    The row.
      * @param column The column.
-     * @param player The player
+     * @param player The player.
      * @param menu   The menu.
      * @return The slot.
-     * @deprecated Menu shouldn't be a parameter.
+     * @deprecated Menu shouldn't be a parameter. Use {@link Menu#getSlot(int, int, Player)} instead.
      */
     @Deprecated(since = "6.46.0", forRemoval = true)
     default Slot getSlot(final int row,
@@ -74,7 +74,7 @@ public interface Menu {
      *
      * @param row    The row.
      * @param column The column.
-     * @param player The player
+     * @param player The player.
      * @return The slot.
      */
     default Slot getSlot(final int row,
@@ -112,7 +112,7 @@ public interface Menu {
      * @param player The player.
      * @param row    The row.
      * @param column The column.
-     * @return The captive item.
+     * @return The captive item, or null if there is no captive item at the position.
      */
     @Nullable
     default ItemStack getCaptiveItem(@NotNull final Player player,
@@ -140,7 +140,7 @@ public interface Menu {
      * @param player The player.
      * @param key    The key.
      * @param value  The state.
-     * @deprecated Poorly named, use setState instead.
+     * @deprecated Poorly named, use {@link Menu#setState(Player, String, Object)} instead.
      */
     @Deprecated(since = "6.44.0", forRemoval = true)
     default void addState(@NotNull Player player,
@@ -172,7 +172,7 @@ public interface Menu {
      * @param player The player.
      * @param key    The key.
      * @param <T>    The type of state.
-     * @return The value.
+     * @return The value, or null if no state is set for the key.
      */
     @Nullable <T> T getState(@NotNull Player player,
                              @NotNull String key);
@@ -216,7 +216,7 @@ public interface Menu {
      * Get the current page a player is on.
      *
      * @param player The player.
-     * @return The page.
+     * @return The page, or 1 if the player is not on a page.
      */
     default int getPage(@NotNull final Player player) {
         Integer pageState = this.getState(player, Page.PAGE_KEY);
@@ -227,7 +227,7 @@ public interface Menu {
      * Get the max page for a player.
      *
      * @param player The player.
-     * @return The page.
+     * @return The max page, or {@link Integer#MAX_VALUE} if no max page has been set.
      */
     default int getMaxPage(@NotNull final Player player) {
         Integer pageState = this.getState(player, Page.MAX_PAGE_KEY);

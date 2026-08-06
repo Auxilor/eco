@@ -10,26 +10,29 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A arguments that does not require a player and supports dynamic styles.
+ * A placeholder that requires a player, matched against a regex pattern.
+ * <p>
+ * The text matched by the pattern is passed to the function as the arguments. If the context has no player, the
+ * placeholder resolves to null.
  */
 public final class PlayerDynamicPlaceholder implements RegistrablePlaceholder {
     /**
-     * The arguments pattern.
+     * The placeholder pattern.
      */
     private final Pattern pattern;
 
     /**
-     * The function to retrieve the output of the arguments.
+     * The function to retrieve the value of the placeholder from its arguments and a player.
      */
     private final BiFunction<@NotNull String, @NotNull Player, @Nullable String> function;
 
     /**
-     * The plugin for the arguments.
+     * The plugin that owns the placeholder.
      */
     private final EcoPlugin plugin;
 
     /**
-     * Create a new dynamic arguments.
+     * Create a new player dynamic placeholder.
      *
      * @param plugin   The plugin.
      * @param pattern  The pattern.
@@ -56,11 +59,11 @@ public final class PlayerDynamicPlaceholder implements RegistrablePlaceholder {
     }
 
     /**
-     * Get the value of the arguments.
+     * Get the value of the placeholder for a given player.
      *
      * @param args   The args.
      * @param player The player.
-     * @return The value.
+     * @return The value, or an empty string if the function returned null.
      * @deprecated Use {@link #getValue(String, PlaceholderContext)} instead.
      */
     @Deprecated(since = "6.56.0", forRemoval = true)

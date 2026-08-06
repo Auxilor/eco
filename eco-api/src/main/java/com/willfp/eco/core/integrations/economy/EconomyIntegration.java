@@ -6,7 +6,10 @@ import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper class for economy integrations.
+ * Wrapper interface for economy integrations.
+ * <p>
+ * Implemented for economy providers such as Vault, so that eco can read and modify player
+ * balances without depending on them directly.
  * <p>
  * If you're adding your economy to be supported in eco,
  * it's recommended to override the {@link BigDecimal} methods
@@ -39,7 +42,7 @@ public interface EconomyIntegration extends Integration {
      * Get if a player has a certain amount.
      *
      * @param player The player.
-     * @param amount The amount
+     * @param amount The amount.
      * @return If the player has the amount.
      */
     default boolean hasAmount(@NotNull OfflinePlayer player,

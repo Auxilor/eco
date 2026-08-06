@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * Allows an entity to swim in a random point in water.
  *
  * @param speed    The speed at which to move around.
- * @param interval The amount of ticks to wait (on average) between strolling around.
+ * @param interval The amount of ticks to wait (on average) between swimming around.
  */
 public record EntityGoalRandomSwimming(
         double speed,

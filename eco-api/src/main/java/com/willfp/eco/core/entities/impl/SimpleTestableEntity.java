@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Default vanilla entities.
+ * A vanilla entity, matched and spawned purely by its {@link EntityType}.
  */
 public class SimpleTestableEntity implements TestableEntity {
     /**
@@ -20,7 +20,8 @@ public class SimpleTestableEntity implements TestableEntity {
     /**
      * Create a new simple testable entity.
      *
-     * @param type The entity type.
+     * @param type The entity type, which must have a known entity class.
+     * @throws NullPointerException If the type has no entity class.
      */
     public SimpleTestableEntity(@NotNull final EntityType type) {
         this.type = type;
@@ -43,9 +44,9 @@ public class SimpleTestableEntity implements TestableEntity {
     }
 
     /**
-     * Get the type.
+     * Get the entity type.
      *
-     * @return The type.
+     * @return The entity type.
      */
     public EntityType getType() {
         return this.type;

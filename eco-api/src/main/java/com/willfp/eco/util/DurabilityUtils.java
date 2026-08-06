@@ -20,10 +20,18 @@ import org.jetbrains.annotations.NotNull;
 public final class DurabilityUtils {
     /**
      * Damage an item in a player's inventory.
+     * <p>
+     * Fires a {@link PlayerItemDamageEvent} first, and respects both cancellation and any change
+     * the event makes to the damage amount. If the resulting damage reaches the item's maximum
+     * durability then a {@link PlayerItemBreakEvent} is fired, the item is turned into
+     * {@link Material#AIR} and the item break sound is played to the player.
+     * <p>
+     * Does nothing if the item has no meta, is unbreakable, is not {@link Damageable}, or is a
+     * carved pumpkin or player head.
      *
      * @param player The player.
      * @param item   The item to damage.
-     * @param damage The amount of damage to deal.
+     * @param damage The amount of damage to deal, in durability points.
      */
     public static void damageItem(@NotNull final Player player,
                                   @NotNull final ItemStack item,
@@ -67,9 +75,15 @@ public final class DurabilityUtils {
 
     /**
      * Damage an item.
+     * <p>
+     * No events are fired. If the resulting damage reaches the item's maximum durability then the
+     * item is turned into {@link Material#AIR}.
+     * <p>
+     * Does nothing if the item has no meta, is unbreakable, is not {@link Damageable}, or is a
+     * carved pumpkin or player head.
      *
      * @param item   The item to damage.
-     * @param damage The amount of damage to deal.
+     * @param damage The amount of damage to deal, in durability points.
      */
     public static void damageItem(@NotNull final ItemStack item,
                                   final int damage) {
@@ -105,9 +119,15 @@ public final class DurabilityUtils {
 
     /**
      * Damage an item in a player's inventory without breaking it.
+     * <p>
+     * Fires a {@link PlayerItemDamageEvent} first, and respects both cancellation and any change
+     * the event makes to the damage amount. The damage is clamped to one below the item's maximum
+     * durability, so the item is never destroyed.
+     * <p>
+     * Does nothing if the item has no meta, is unbreakable, or is not {@link Damageable}.
      *
      * @param item   The item to damage.
-     * @param damage The amount of damage to deal.
+     * @param damage The amount of damage to deal, in durability points.
      * @param player The player.
      */
     public static void damageItemNoBreak(@NotNull final ItemStack item,
@@ -140,10 +160,14 @@ public final class DurabilityUtils {
     }
 
     /**
-     * Repair an item in a player's inventory.
+     * Repair an item.
+     * <p>
+     * The item's damage is reduced by the given amount, never going below zero. No events are fired.
+     * <p>
+     * Does nothing if the item has no meta, is unbreakable, or is not {@link Damageable}.
      *
-     * @param item   The item to damage.
-     * @param repair The amount of damage to heal.
+     * @param item   The item to repair.
+     * @param repair The amount of damage to heal, in durability points.
      */
     public static void repairItem(@NotNull final ItemStack item,
                                   final int repair) {

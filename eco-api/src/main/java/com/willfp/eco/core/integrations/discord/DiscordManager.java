@@ -4,11 +4,18 @@ import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Simple manager for Discord webhook implementation. Unlike other integrations, Discord webhooks
- * are always available and therefore do not use the IntegrationRegistry. The actual implementation
- * must be registered by the platform module (core-plugin).
+ * Simple manager for Discord webhook implementation.
+ * <p>
+ * Unlike other integrations, Discord webhooks are always available and therefore do not use
+ * {@link com.willfp.eco.core.integrations.IntegrationRegistry}. The actual implementation
+ * must be registered by the platform module (core-plugin) via
+ * {@link #register(DiscordIntegration)}. Until it is, every method here is a no-op that
+ * returns a future already completed with null.
  */
 public final class DiscordManager {
+    /**
+     * The registered implementation, or null if none has been registered yet.
+     */
     private static volatile DiscordIntegration implementation = null;
 
     private DiscordManager() {
@@ -44,6 +51,9 @@ public final class DiscordManager {
 
     /**
      * Execute a Discord webhook with a single file attachment (multipart/form-data).
+     * <p>
+     * If no implementation has been registered via {@link #register(DiscordIntegration)}, this
+     * method returns a completed future with a null value.
      *
      * @param webhookUrl Full webhook URL (including id and token).
      * @param message    The message payload (sent as payload_json part).
@@ -93,6 +103,9 @@ public final class DiscordManager {
     /**
      * Shut down the registered implementation's worker thread, draining any remaining queued
      * requests first. Should be called when the platform plugin is disabled.
+     * <p>
+     * Does nothing if no implementation is registered, or if the registered implementation does
+     * not implement {@link ShutdownAware}.
      */
     public static void shutdown() {
         if (implementation instanceof ShutdownAware) {

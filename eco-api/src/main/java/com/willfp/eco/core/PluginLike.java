@@ -16,7 +16,7 @@ public interface PluginLike {
     /**
      * Get the data folder.
      * <p>
-     * Returns the plugin data folder for a plugin, or the extension's parent plugin's folder
+     * Returns the plugin data folder for a plugin, or the extension's parent plugin's folder.
      *
      * @return The data folder.
      */
@@ -42,7 +42,7 @@ public interface PluginLike {
     /**
      * Get the actual file.
      *
-     * @return The file, i.e. the jar file.
+     * @return The file, i.e. the jar file, or null if the implementation has no backing file.
      */
     @Nullable
     default File getFile() {

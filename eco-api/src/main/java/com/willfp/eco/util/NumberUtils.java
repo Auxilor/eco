@@ -16,17 +16,17 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class NumberUtils {
     /**
-     * Sin lookup table.
+     * Sin lookup table, holding one full period of sine sampled at 65536 points.
      */
     private static final double[] SIN_LOOKUP = new double[65536];
 
     /**
-     * Set of roman numerals to look up.
+     * Set of roman numerals to look up, mapping value to numeral.
      */
     private static final TreeMap<Integer, String> NUMERALS = new TreeMap<>();
 
     /**
-     * Epsilon.
+     * Epsilon, the tolerance used when comparing doubles for equality.
      */
     private static final double EPSILON = 1e-6;
 
@@ -51,10 +51,13 @@ public final class NumberUtils {
     }
 
     /**
-     * Get the sin of a number.
+     * Get the sine of an angle.
+     * <p>
+     * This is an approximation read from a lookup table rather than an exact calculation, so it is
+     * faster but less precise than {@link Math#sin(double)}.
      *
-     * @param a The number.
-     * @return The sin.
+     * @param a The angle, in radians.
+     * @return The approximate sine, between -1 and 1.
      */
     public static double fastSin(final double a) {
         float f = (float) a;
@@ -62,10 +65,13 @@ public final class NumberUtils {
     }
 
     /**
-     * Get the cosine of a number.
+     * Get the cosine of an angle.
+     * <p>
+     * This is an approximation read from a lookup table rather than an exact calculation, so it is
+     * faster but less precise than {@link Math#cos(double)}.
      *
-     * @param a The number.
-     * @return The cosine.
+     * @param a The angle, in radians.
+     * @return The approximate cosine, between -1 and 1.
      */
     public static double fastCos(final double a) {
         float f = (float) a;
@@ -88,9 +94,12 @@ public final class NumberUtils {
 
     /**
      * Get Roman Numeral from number.
+     * <p>
+     * Only numbers from 1 to 4096 inclusive are converted; anything outside that range is returned
+     * as its plain decimal string.
      *
      * @param number The number to convert.
-     * @return The number, converted to a roman numeral.
+     * @return The number, converted to a roman numeral, or its decimal string if out of range.
      */
     @NotNull
     public static String toNumeral(final int number) {
@@ -109,7 +118,8 @@ public final class NumberUtils {
      * Get number from roman numeral.
      *
      * @param numeral The numeral to convert.
-     * @return The number, converted from a roman numeral.
+     * @return The number, converted from a roman numeral, or zero if the string is empty or does
+     *         not start with a recognised numeral.
      */
     public static int fromNumeral(@NotNull final String numeral) {
         if (numeral.isEmpty()) {
@@ -124,11 +134,11 @@ public final class NumberUtils {
     }
 
     /**
-     * Generate random integer in range.
+     * Generate random integer in range, where both bounds are inclusive.
      *
-     * @param min Minimum.
-     * @param max Maximum.
-     * @return Random integer.
+     * @param min Minimum, inclusive.
+     * @param max Maximum, inclusive.
+     * @return Random integer, or min if min and max are equal.
      */
     public static int randInt(final int min,
                               final int max) {
@@ -140,11 +150,13 @@ public final class NumberUtils {
     }
 
     /**
-     * Generate random double in range.
+     * Generate random double in range, where the minimum is inclusive and the maximum exclusive.
+     * <p>
+     * The bounds are ordered internally, so passing them the wrong way round is safe.
      *
-     * @param min Minimum.
-     * @param max Maximum.
-     * @return Random double.
+     * @param min Minimum, inclusive.
+     * @param max Maximum, exclusive.
+     * @return Random double, or min if the two bounds differ by less than 1e-6.
      */
     public static double randFloat(final double min,
                                    final double max) {
@@ -161,10 +173,10 @@ public final class NumberUtils {
     /**
      * Generate random double with a triangular distribution.
      *
-     * @param minimum Minimum.
-     * @param maximum Maximum.
-     * @param peak    Peak.
-     * @return Random double.
+     * @param minimum Minimum, inclusive.
+     * @param maximum Maximum, inclusive.
+     * @param peak    The most likely value, which should lie between the minimum and the maximum.
+     * @return Random double between the minimum and the maximum.
      */
     public static double triangularDistribution(final double minimum,
                                                 final double maximum,
@@ -179,10 +191,10 @@ public final class NumberUtils {
     }
 
     /**
-     * Get Log base 2 of a number.
+     * Get Log base 2 of a number, truncated to an integer.
      *
      * @param a The number.
-     * @return The result.
+     * @return The result, rounded towards zero.
      */
     public static int log2(final int a) {
         return (int) logBase(a, 2);
@@ -202,6 +214,9 @@ public final class NumberUtils {
 
     /**
      * Format double to string.
+     * <p>
+     * The number is rounded to two decimal places, and whole numbers are rendered without any
+     * decimal part, so {@code 12.345} becomes {@code 12.35} and {@code 12.0} becomes {@code 12}.
      *
      * @param toFormat The number to format.
      * @return Formatted.
@@ -215,7 +230,10 @@ public final class NumberUtils {
     }
 
     /**
-     * Format double to string with commas.
+     * Format double to string with comma thousands separators.
+     * <p>
+     * The number is rounded to two decimal places and a trailing {@code .00} is stripped, so
+     * {@code 1234.5} becomes {@code 1,234.50} and {@code 1234.0} becomes {@code 1,234}.
      *
      * @param toFormat The number to format.
      * @return Formatted.
@@ -242,7 +260,7 @@ public final class NumberUtils {
      * Evaluate an expression with respect to a player (for placeholders).
      *
      * @param expression The expression.
-     * @param player     The player.
+     * @param player     The player, or null to evaluate without a player.
      * @return The value of the expression, or zero if invalid.
      */
     public static double evaluateExpression(@NotNull final String expression,
@@ -254,8 +272,8 @@ public final class NumberUtils {
      * Evaluate an expression with respect to a player (for placeholders).
      *
      * @param expression The expression.
-     * @param player     The player.
-     * @param context    The injectableContext placeholders.
+     * @param player     The player, or null to evaluate without a player.
+     * @param context    The injectable context to resolve placeholders against, or null for none.
      * @return The value of the expression, or zero if invalid.
      */
     public static double evaluateExpression(@NotNull final String expression,
@@ -268,8 +286,8 @@ public final class NumberUtils {
      * Evaluate an expression with respect to a player (for placeholders).
      *
      * @param expression        The expression.
-     * @param player            The player.
-     * @param context           The injectableContext placeholders.
+     * @param player            The player, or null to evaluate without a player.
+     * @param context           The injectable context to resolve placeholders against, or null for none.
      * @param additionalPlayers Additional players to parse placeholders for.
      * @return The value of the expression, or zero if invalid.
      */
@@ -323,7 +341,7 @@ public final class NumberUtils {
      *
      * @param expression The expression.
      * @param context    The context.
-     * @return The value of the expression, or zero if invalid.
+     * @return The value of the expression, or null if invalid.
      */
     @Nullable
     public static Double evaluateExpressionOrNull(@NotNull final String expression,

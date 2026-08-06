@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMeta, LeatherArmorBuilder> {
     /**
-     * Create a new ItemStackBuilder.
+     * Create a new LeatherArmorBuilder.
      *
      * @param material The material.
      */
@@ -22,7 +22,7 @@ public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMe
     }
 
     /**
-     * Create a new ItemStackBuilder to modify an existing item.
+     * Create a new LeatherArmorBuilder to modify an existing item.
      *
      * @param base The ItemStack to start with.
      */
@@ -31,7 +31,7 @@ public class LeatherArmorBuilder extends AbstractItemStackBuilder<LeatherArmorMe
     }
 
     /**
-     * Create a new ItemStackBuilder to modify an existing item.
+     * Create a new LeatherArmorBuilder to modify an existing item.
      *
      * @param item The item to start with.
      */

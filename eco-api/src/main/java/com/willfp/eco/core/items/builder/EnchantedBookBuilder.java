@@ -18,7 +18,7 @@ public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentSt
     }
 
     /**
-     * Add an enchantment to the item.
+     * Add a stored enchantment to the book.
      *
      * @param enchantment The enchantment.
      * @param level       The level.
@@ -31,7 +31,7 @@ public class EnchantedBookBuilder extends AbstractItemStackBuilder<EnchantmentSt
     }
 
     /**
-     * Add an enchantment to the item.
+     * Add a stored enchantment to the book.
      *
      * @param enchantment The enchantment.
      * @param level       The level.

@@ -17,7 +17,7 @@ public interface RunnableTask extends Runnable {
     /**
      * Run the task asynchronously.
      *
-     * @return The created {@link BukkitTask}
+     * @return The created {@link BukkitTask}.
      */
     @NotNull BukkitTask runTaskAsynchronously();
 
@@ -25,7 +25,7 @@ public interface RunnableTask extends Runnable {
      * Run the task after a specified number of ticks.
      *
      * @param delay The number of ticks to wait.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link BukkitTask}.
      */
     @NotNull BukkitTask runTaskLater(long delay);
 
@@ -33,7 +33,7 @@ public interface RunnableTask extends Runnable {
      * Run the task asynchronously after a specified number of ticks.
      *
      * @param delay The number of ticks to wait.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link BukkitTask}.
      */
     @NotNull BukkitTask runTaskLaterAsynchronously(long delay);
 
@@ -42,7 +42,7 @@ public interface RunnableTask extends Runnable {
      *
      * @param delay  The delay before the task is first ran (in ticks).
      * @param period The ticks elapsed before the task is ran again.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link BukkitTask}.
      */
     @NotNull BukkitTask runTaskTimer(long delay, long period);
 
@@ -51,7 +51,7 @@ public interface RunnableTask extends Runnable {
      *
      * @param delay  The delay before the task is first ran (in ticks).
      * @param period The ticks elapsed before the task is ran again.
-     * @return The created {@link BukkitTask}
+     * @return The created {@link BukkitTask}.
      */
     @NotNull BukkitTask runTaskTimerAsynchronously(long delay, long period);
 

@@ -15,22 +15,61 @@ import org.jetbrains.annotations.Nullable;
  * Mirrors the three-slot layout of a vanilla smithing table: template (top-left),
  * base (centre), and addition (top-right). Each slot is validated at runtime via
  * a {@link com.willfp.eco.core.items.TestableItem} predicate. When display items
- * are provided for all three slots a {@link SmithingTransformRecipe} is also
- * registered with Bukkit so the recipe appears in the recipe book.
+ * are provided for all three slots, and the recipe has an output, a
+ * {@link SmithingTransformRecipe} is also registered with Bukkit so the recipe appears
+ * in the recipe book.
  *
- * <p>All three slots ({@link Builder#template}, {@link Builder#base},
- * {@link Builder#addition}) must be set before calling {@link Builder#build()}.
+ * <p>All three slots must be set via
+ * {@link Builder#template(TestableItem, ItemStack)},
+ * {@link Builder#base(TestableItem, ItemStack)} and
+ * {@link Builder#addition(TestableItem, ItemStack)} before calling {@link Builder#build()}.
  *
  * <p>Use {@link #builder(NamespacedKey, ItemStack)} to construct instances.
  */
 public final class SmithingRecipe extends WorkstationRecipe {
+    /**
+     * The template item predicate (top-left smithing slot).
+     */
     private final TestableItem template;
+
+    /**
+     * The display item for the template slot.
+     */
     @Nullable private final ItemStack templateDisplay;
+
+    /**
+     * The base item predicate (centre smithing slot).
+     */
     private final TestableItem base;
+
+    /**
+     * The display item for the base slot.
+     */
     @Nullable private final ItemStack baseDisplay;
+
+    /**
+     * The addition item predicate (top-right smithing slot).
+     */
     private final TestableItem addition;
+
+    /**
+     * The display item for the addition slot.
+     */
     @Nullable private final ItemStack additionDisplay;
 
+    /**
+     * Create a new smithing recipe.
+     *
+     * @param key             Unique recipe identifier.
+     * @param output          The item produced, or null.
+     * @param permission      The permission required to use this recipe, or null.
+     * @param template        The template item predicate.
+     * @param templateDisplay The display item for the template slot, or null.
+     * @param base            The base item predicate.
+     * @param baseDisplay     The display item for the base slot, or null.
+     * @param addition        The addition item predicate.
+     * @param additionDisplay The display item for the addition slot, or null.
+     */
     private SmithingRecipe(@NotNull final NamespacedKey key,
                            @Nullable final ItemStack output,
                            @Nullable final String permission,
@@ -145,20 +184,62 @@ public final class SmithingRecipe extends WorkstationRecipe {
     /**
      * Builder for {@link SmithingRecipe}.
      * <p>
-     * All three slots ({@link #template}, {@link #base}, {@link #addition}) must
-     * be configured before calling {@link #build()}.
+     * All three slots must be configured via {@link #template(TestableItem, ItemStack)},
+     * {@link #base(TestableItem, ItemStack)} and {@link #addition(TestableItem, ItemStack)}
+     * before calling {@link #build()}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
+
+        /**
+         * The template item predicate.
+         */
         private TestableItem template;
+
+        /**
+         * The display item for the template slot.
+         */
         @Nullable private ItemStack templateDisplay;
+
+        /**
+         * The base item predicate.
+         */
         private TestableItem base;
+
+        /**
+         * The display item for the base slot.
+         */
         @Nullable private ItemStack baseDisplay;
+
+        /**
+         * The addition item predicate.
+         */
         private TestableItem addition;
+
+        /**
+         * The display item for the addition slot.
+         */
         @Nullable private ItemStack additionDisplay;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key    Unique recipe identifier.
+         * @param output The item produced, or null.
+         */
         private Builder(@NotNull final NamespacedKey key, @Nullable final ItemStack output) {
             this.key = key;
             this.output = output;
@@ -222,7 +303,7 @@ public final class SmithingRecipe extends WorkstationRecipe {
          * Build the {@link SmithingRecipe}.
          *
          * @return The constructed recipe.
-         * @throws IllegalStateException if template, base, or addition have not been set.
+         * @throws IllegalStateException If template, base, or addition have not been set.
          */
         @NotNull
         public SmithingRecipe build() {

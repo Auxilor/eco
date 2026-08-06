@@ -8,7 +8,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper class for antigrief integrations.
+ * Wrapper interface for antigrief, land claim, and combat protection integrations.
+ * <p>
+ * Implemented for plugins such as WorldGuard, GriefPrevention, Towny, Lands, Kingdoms,
+ * BentoBox, SuperiorSkyblock2, and CombatLogX, so that eco can check whether a player is
+ * allowed to perform an action at a given location before doing it on their behalf.
+ * <p>
+ * All methods are permissive by convention: return {@code true} if the action is allowed.
+ *
+ * @see AntigriefManager
  */
 public interface AntigriefIntegration extends Integration {
     /**
@@ -49,6 +57,8 @@ public interface AntigriefIntegration extends Integration {
 
     /**
      * Can player pick up item.
+     * <p>
+     * Defaults to true; override only if the plugin protects item pickup.
      *
      * @param player   The player.
      * @param location The location.

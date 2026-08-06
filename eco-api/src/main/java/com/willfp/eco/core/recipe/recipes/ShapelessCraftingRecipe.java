@@ -21,6 +21,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Shapeless crafting recipe.
+ * <p>
+ * The parts list holds one entry per required ingredient, in no particular order, and
+ * unlike {@link ShapedCraftingRecipe} it is not padded to nine entries. A matrix matches
+ * when every non-empty stack in it consumes a distinct part and no parts are left over.
+ * <p>
+ * Instances are created through {@link #builder(EcoPlugin, String)} and are only live
+ * once {@link #register()} has been called.
  */
 @Beta
 public final class ShapelessCraftingRecipe implements CraftingRecipe {
@@ -59,6 +66,16 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
      */
     private final boolean crafterSupported;
 
+    /**
+     * Create a new shapeless crafting recipe.
+     *
+     * @param plugin           The plugin that owns the recipe.
+     * @param key              The recipe key, namespaced under the plugin's ID.
+     * @param parts            The recipe parts, one per required ingredient.
+     * @param output           The output.
+     * @param permission       The permission required to craft, or null for none.
+     * @param crafterSupported Whether the recipe also fires in the vanilla Crafter block.
+     */
     private ShapelessCraftingRecipe(@NotNull final EcoPlugin plugin,
                                     @NotNull final String key,
                                     @NotNull final List<TestableItem> parts,
@@ -80,7 +97,7 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
     }
 
     /**
-     * Make a new test.
+     * Make a new test, holding a fresh mutable copy of this recipe's parts.
      *
      * @return The test.
      */
@@ -197,6 +214,8 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
 
     /**
      * Create a new recipe builder.
+     * <p>
+     * The key is lowercased and namespaced under the plugin's ID when the recipe is built.
      *
      * @param plugin The plugin that owns the recipe.
      * @param key    The recipe key.
@@ -263,11 +282,11 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
     }
 
     /**
-     * Builder for recipes.
+     * Builder for {@link ShapelessCraftingRecipe}s.
      */
     public static final class Builder {
         /**
-         * The recipe parts.
+         * The recipe parts, in the order they were added.
          */
         private final List<TestableItem> recipeParts = new ArrayList<>();
 
@@ -360,6 +379,8 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
 
         /**
          * Check if recipe parts are all air.
+         * <p>
+         * Returns true if no parts have been added at all.
          *
          * @return If recipe parts are all air.
          */
@@ -374,6 +395,9 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
 
         /**
          * Build the recipe.
+         * <p>
+         * The built recipe is not registered; call
+         * {@link ShapelessCraftingRecipe#register()} on the result.
          *
          * @return The built recipe.
          */
@@ -383,7 +407,10 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
     }
 
     /**
-     * Test for shapeless recipes.
+     * Stateful, single-use test for shapeless recipes.
+     * <p>
+     * Each call to {@link #matchAndRemove(ItemStack)} consumes at most one remaining part,
+     * so a recipe is satisfied when every input has matched and nothing remains.
      */
     public static final class RecipeTest {
         /**
@@ -391,6 +418,11 @@ public final class ShapelessCraftingRecipe implements CraftingRecipe {
          */
         private final List<TestableItem> remaining;
 
+        /**
+         * Create a new test over a copy of the recipe's parts.
+         *
+         * @param recipe The recipe to test against.
+         */
         private RecipeTest(@NotNull final ShapelessCraftingRecipe recipe) {
             this.remaining = new ArrayList<>(recipe.getParts());
         }

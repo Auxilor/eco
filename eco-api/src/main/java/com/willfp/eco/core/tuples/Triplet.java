@@ -32,11 +32,12 @@ public class Triplet<A, B, C> extends Pair<A, B> {
     }
 
     /**
-     * component3 exists to allow a pair to be destructured by kotlin.
-     * The default kotlin pair already has this, however there is no default
-     * pair in java so this exists for parity.
+     * Get the third member of the tuple, allowing the triplet to be destructured by kotlin.
+     * <p>
+     * The default kotlin triple already has this, however there is no default
+     * triple in java so this exists for parity.
      *
-     * @return First.
+     * @return The third member.
      */
     public C component3() {
         return third;
@@ -45,7 +46,7 @@ public class Triplet<A, B, C> extends Pair<A, B> {
     /**
      * Get the third member of the tuple.
      *
-     * @return The third.
+     * @return The third member.
      */
     public @Nullable C getThird() {
         return this.third;

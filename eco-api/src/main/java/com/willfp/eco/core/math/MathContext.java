@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 @Deprecated(since = "6.56.0", forRemoval = true)
 public class MathContext {
     /**
-     * Returns an empty math parseContext.
+     * An empty math context, with no player and no additional players.
      */
     public static final MathContext EMPTY = new MathContext(
             PlaceholderManager.EMPTY_INJECTABLE,
@@ -49,8 +49,8 @@ public class MathContext {
     /**
      * Constructs a new MathContext with the given parameters.
      *
-     * @param injectableContext The PlaceholderInjectable parseContext.
-     * @param player            The player.
+     * @param injectableContext The {@link PlaceholderInjectable} parse context.
+     * @param player            The player, or null if there is no player.
      * @param additionalPlayers The additional players.
      */
     public MathContext(@NotNull PlaceholderInjectable injectableContext,
@@ -89,7 +89,7 @@ public class MathContext {
      * <p>
      * Duplicate method because MathContext used to be a record.
      *
-     * @return The player.
+     * @return The player, or null if there is no player.
      * @deprecated Use {@link #getPlayer()} instead.
      */
     @Deprecated(since = "6.56.0", forRemoval = true)
@@ -101,7 +101,7 @@ public class MathContext {
     /**
      * Returns the player.
      *
-     * @return The player.
+     * @return The player, or null if there is no player.
      */
     @Nullable
     public Player getPlayer() {
@@ -133,7 +133,8 @@ public class MathContext {
     }
 
     /**
-     * Convert to PlaceholderContext.
+     * Convert to a {@link PlaceholderContext}, carrying over the player, injectable context,
+     * and additional players.
      *
      * @return The PlaceholderContext.
      */
@@ -177,9 +178,10 @@ public class MathContext {
     }
 
     /**
-     * Create MathContext of a PlaceholderInjectable parseContext.
+     * Create a MathContext from a {@link PlaceholderInjectable} parse context, with no player
+     * and no additional players.
      *
-     * @param injectableContext The PlaceholderInjectable parseContext.
+     * @param injectableContext The {@link PlaceholderInjectable} parse context.
      * @return The MathContext.
      */
     public static MathContext of(@NotNull final PlaceholderInjectable injectableContext) {
@@ -191,10 +193,11 @@ public class MathContext {
     }
 
     /**
-     * Copy a MathContext with a player.
+     * Copy a MathContext with a different player, keeping its injectable context and
+     * additional players.
      *
-     * @param context The parseContext.
-     * @param player  The player.
+     * @param context The context to copy.
+     * @param player  The player, or null for no player.
      * @return The new MathContext.
      */
     public static MathContext copyWithPlayer(@NotNull final MathContext context,

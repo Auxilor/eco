@@ -7,13 +7,16 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to create holograms.
+ * <p>
+ * Unlike the other classes in this package's siblings, this does not delegate to third-party
+ * plugin integrations: holograms are created by eco itself and are always available.
  */
 public final class HologramManager {
     /**
      * Create a hologram with default options.
      *
      * @param location The location.
-     * @param contents The contents for the hologram.
+     * @param contents The contents for the hologram, one entry per line.
      * @return The hologram.
      */
     @NotNull

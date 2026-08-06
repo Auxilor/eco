@@ -17,11 +17,14 @@ public abstract class Subcommand implements CommandBase {
 
     /**
      * Create subcommand.
+     * <p>
+     * The subcommand still has to be attached to a parent with
+     * {@link CommandBase#addSubcommand(CommandBase)}.
      *
      * @param plugin      The plugin.
      * @param name        The subcommand name.
-     * @param permission  The subcommand permission.
-     * @param playersOnly If the subcommand only works on players.
+     * @param permission  The permission required to execute the subcommand.
+     * @param playersOnly If only players should be able to execute this subcommand.
      */
     protected Subcommand(@NotNull final EcoPlugin plugin,
                          @NotNull final String name,
@@ -31,11 +34,14 @@ public abstract class Subcommand implements CommandBase {
     }
 
     /**
-     * Create subcommand.
+     * Create subcommand, inheriting the permission and players-only state of a parent command.
+     * <p>
+     * This does not attach the subcommand to the parent; use
+     * {@link CommandBase#addSubcommand(CommandBase)} for that.
      *
      * @param plugin The plugin.
      * @param name   The name of the subcommand.
-     * @param parent The parent command.
+     * @param parent The command to inherit the permission and players-only state from.
      */
     protected Subcommand(@NotNull final EcoPlugin plugin,
                          @NotNull final String name,

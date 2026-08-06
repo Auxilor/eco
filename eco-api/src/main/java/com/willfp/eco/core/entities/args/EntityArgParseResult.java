@@ -6,7 +6,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The result of an arg parses.
+ * The result of an arg parse.
  *
  * @param test     The test for the entity.
  * @param modifier The modifier to apply to the entity.

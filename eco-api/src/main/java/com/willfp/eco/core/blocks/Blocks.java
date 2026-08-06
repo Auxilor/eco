@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class Blocks {
     /**
-     * All entities.
+     * All registered custom blocks, keyed by their {@link NamespacedKey}.
      */
     private static final Map<NamespacedKey, TestableBlock> REGISTRY = new ConcurrentHashMap<>();
 
@@ -151,9 +151,31 @@ public final class Blocks {
      * <p>
      * If you want to get a Block instance from this, then just call
      * {@link TestableBlock#place(Location)}.
+     * <p>
+     * A lookup string is a set of space-separated tokens, where a quoted section is
+     * treated as a single token. The first token selects the base block, and may be
+     * any of:
+     * <ul>
+     *     <li>{@code stone} - a vanilla block material; underscores may be omitted and a
+     *     trailing {@code s} is accepted, so {@code oak_log}, {@code oaklog} and
+     *     {@code oaklogs} all resolve</li>
+     *     <li>{@code *stone} - the same, but matching the material even if the block is
+     *     also a registered custom block</li>
+     *     <li>{@code #tag} - a {@link BlockTag} registered with {@link #registerTag(BlockTag)}</li>
+     *     <li>{@code namespace:key} - a custom block registered under that key, or a block
+     *     resolved on demand from the {@link BlockProvider} registered for that namespace</li>
+     * </ul>
+     * Every remaining token is passed to the registered {@link BlockArgParser}s as a
+     * modifier of the block data; these are conventionally of the form {@code name:value},
+     * for example {@code age:3}. Modifiers are only applied when the base block resolved
+     * to a {@link MaterialTestableBlock}. Unlike items, there is no stack size token.
+     * <p>
+     * Whole lookup strings can be combined with segment separators, which must be
+     * surrounded by spaces: {@code a || b} matches either segment, and {@code a ? b}
+     * resolves to the first segment that produces a valid block.
      *
      * @param key The lookup string.
-     * @return The testable block, or an empty testable block if not found.
+     * @return The testable block, or an {@link EmptyTestableBlock} if not found.
      */
     @NotNull
     public static TestableBlock lookup(@NotNull final String key) {
@@ -392,7 +414,7 @@ public final class Blocks {
      * hardness is registered (e.g. vanilla blocks or plugins that don't expose it).
      *
      * @param block The block.
-     * @return The hardness, or the vanilla material hardness as a fallback.
+     * @return The hardness, the vanilla material hardness as a fallback, or -1 if the block is null.
      */
     public static float hardness(@Nullable final Block block) {
         if (block == null) {
@@ -433,7 +455,7 @@ public final class Blocks {
     }
 
     /**
-     * Get all registered custom blocks.
+     * Get if any block matches any of the testable blocks.
      *
      * @param blocks         The blocks.
      * @param testableBlocks The testable blocks.
@@ -468,6 +490,9 @@ public final class Blocks {
         return TAGS.values();
     }
 
+    /**
+     * Prevent instantiation of this utility class.
+     */
     private Blocks() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

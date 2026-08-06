@@ -5,7 +5,16 @@ package com.willfp.eco.core.integrations.economy
 import java.math.BigDecimal
 import org.bukkit.OfflinePlayer
 
-/** @see EconomyManager */
+/**
+ * The player's balance.
+ *
+ * Setting this gives or removes the difference between the current and the new balance;
+ * setting a value of zero or below empties the balance instead.
+ *
+ * @see EconomyManager.getBalance
+ * @see EconomyManager.giveMoney
+ * @see EconomyManager.removeMoney
+ */
 var OfflinePlayer.balance: Double
     get() = EconomyManager.getBalance(this)
     set(value) {
@@ -23,7 +32,17 @@ var OfflinePlayer.balance: Double
         }
     }
 
-/** @see EconomyManager */
+/**
+ * The player's balance as a [BigDecimal], for use with [BigDecimal] arithmetic.
+ *
+ * The getter converts the [Double] balance, so it carries no more precision than [balance];
+ * use [EconomyManager.getExactBalance] directly if full precision is required. Setting this
+ * behaves as [balance] does, but gives and removes exact [BigDecimal] amounts.
+ *
+ * @see EconomyManager.getBalance
+ * @see EconomyManager.giveMoney
+ * @see EconomyManager.removeMoney
+ */
 var OfflinePlayer.exactBalance: BigDecimal
     get() = EconomyManager.getBalance(this).toBigDecimal()
     set(value) {

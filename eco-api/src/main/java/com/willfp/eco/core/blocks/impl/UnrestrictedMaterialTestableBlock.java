@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A testable block for materials regardless of data.
+ * Same as {@link MaterialTestableBlock}, but doesn't filter out custom blocks.
  */
 public class UnrestrictedMaterialTestableBlock extends MaterialTestableBlock {
 

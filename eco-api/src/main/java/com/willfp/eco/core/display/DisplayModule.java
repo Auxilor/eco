@@ -10,10 +10,14 @@ import org.jetbrains.annotations.Nullable;
  * Class for all plugin-specific client-side item display modules.
  * <p>
  * Display modules are called in the netty thread, so make sure they are thread-safe.
+ * <p>
+ * Register modules by returning them from
+ * {@link EcoPlugin#loadDisplayModules()}, or directly with
+ * {@link Display#registerDisplayModule(DisplayModule)}.
  */
 public abstract class DisplayModule {
     /**
-     * The priority of the module.
+     * The weight of the module; modules with a lower weight are displayed first.
      */
     private final int weight;
 
@@ -46,10 +50,12 @@ public abstract class DisplayModule {
     }
 
     /**
-     * Display an item.
+     * Display an item, with no player context.
+     * <p>
+     * Does nothing by default; override when needed.
      *
      * @param itemStack The item.
-     * @param args      Optional args for display.
+     * @param args      The varargs from {@link #generateVarArgs(ItemStack)}.
      */
     public void display(@NotNull final ItemStack itemStack,
                         @NotNull final Object... args) {
@@ -57,11 +63,15 @@ public abstract class DisplayModule {
     }
 
     /**
-     * Display an item.
+     * Display an item for a player.
+     * <p>
+     * Only called when a player was passed into {@link Display#display(ItemStack, Player)}.
+     * <p>
+     * Does nothing by default; override when needed.
      *
      * @param itemStack The item.
-     * @param player    The player.
-     * @param args      Optional args for display.
+     * @param player    The player, or null if there is no player context.
+     * @param args      The varargs from {@link #generateVarArgs(ItemStack)}.
      */
     public void display(@NotNull final ItemStack itemStack,
                         @Nullable final Player player,
@@ -70,12 +80,16 @@ public abstract class DisplayModule {
     }
 
     /**
-     * Display an item.
+     * Display an item for a player, with extra context.
+     * <p>
+     * Only called when a player was passed into {@link Display#display(ItemStack, Player)}.
+     * <p>
+     * Does nothing by default; override when needed.
      *
      * @param itemStack  The item.
-     * @param player     The player.
+     * @param player     The player, or null if there is no player context.
      * @param properties The properties.
-     * @param args       Optional args for display.
+     * @param args       The varargs from {@link #generateVarArgs(ItemStack)}.
      */
     public void display(@NotNull final ItemStack itemStack,
                         @Nullable final Player player,
@@ -85,7 +99,9 @@ public abstract class DisplayModule {
     }
 
     /**
-     * Revert an item.
+     * Revert an item, undoing anything this module added during display.
+     * <p>
+     * Does nothing by default; override when needed.
      *
      * @param itemStack The item.
      */
@@ -95,6 +111,12 @@ public abstract class DisplayModule {
 
     /**
      * Create varargs to pass back to ItemStack after reverting, but before display.
+     * <p>
+     * Called for every module before the item is reverted, and the result is then passed
+     * into this module's display methods. This is how state can be carried across the
+     * revert.
+     * <p>
+     * Returns an empty array by default; override when needed.
      *
      * @param itemStack The itemStack.
      * @return The plugin-specific varargs.
@@ -115,7 +137,7 @@ public abstract class DisplayModule {
     /**
      * Get the display weight.
      *
-     * @return The weight.
+     * @return The weight; modules with a lower weight are displayed first.
      */
     public int getWeight() {
         return this.weight;

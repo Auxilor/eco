@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
  * Use for inline configs to move data around or to add subsections to other configs.
  *
  * @deprecated Poorly named class, makes the config system seem needlessly complicated.
+ * Use the factory methods in {@link Configs} instead.
  */
 @Deprecated(since = "6.44.0", forRemoval = true)
 public class TransientConfig extends ConfigWrapper<Config> {
@@ -44,8 +45,10 @@ public class TransientConfig extends ConfigWrapper<Config> {
 
     /**
      * Create a transient config from an input stream.
+     * <p>
+     * Only for yaml configs.
      *
-     * @param stream The InputStream.
+     * @param stream The InputStream, or null for an empty config.
      */
     public TransientConfig(@Nullable final InputStream stream) {
         super(stream != null ? Eco.get().wrapConfigurationSection(YamlConfiguration.loadConfiguration(
@@ -55,8 +58,10 @@ public class TransientConfig extends ConfigWrapper<Config> {
 
     /**
      * Load a file to a config.
+     * <p>
+     * If the file is null or cannot be read, the config will be empty.
      *
-     * @param file The file.
+     * @param file The file, or null for an empty config.
      * @param type The config type to try read from.
      */
     public TransientConfig(@Nullable final File file,
@@ -66,7 +71,7 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
-     * Create a new empty transient config.
+     * Create a new transient config from a map of values, using {@link ConfigType#YAML}.
      *
      * @param values The values.
      */
@@ -75,7 +80,7 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
-     * Create a new empty transient config.
+     * Create a new transient config from a map of values.
      *
      * @param values The values.
      * @param type   The type.
@@ -86,7 +91,7 @@ public class TransientConfig extends ConfigWrapper<Config> {
     }
 
     /**
-     * Create a new empty transient config.
+     * Create a new empty transient config, using {@link ConfigType#JSON}.
      */
     public TransientConfig() {
         this(new HashMap<>(), ConfigType.JSON);
@@ -106,8 +111,8 @@ public class TransientConfig extends ConfigWrapper<Config> {
     /**
      * Read a file to a string.
      *
-     * @param file The file.
-     * @return The string.
+     * @param file The file, or null.
+     * @return The contents of the file, or an empty string if the file is null or could not be read.
      */
     private static String readFile(@Nullable final File file) {
         if (file == null) {
