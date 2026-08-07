@@ -1,6 +1,7 @@
 package com.willfp.eco.core.sound;
 
 import com.willfp.eco.core.config.interfaces.Config;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -88,5 +89,19 @@ public final class PlayableSound extends AbstractPlayableSound<Sound> {
     @Nullable
     public static AbstractPlayableSound<?> create(@NotNull final Config config) {
         return AbstractPlayableSound.create(config);
+    }
+
+    /**
+     * Parse a playable sound from config, evaluating pitch/volume expressions against
+     * the given placeholder context.
+     *
+     * @param config  The config.
+     * @param context The placeholder context to evaluate pitch/volume expressions against.
+     * @return The sound, or null if invalid.
+     */
+    @Nullable
+    public static AbstractPlayableSound<?> create(@NotNull final Config config,
+                                                  @NotNull final PlaceholderContext context) {
+        return AbstractPlayableSound.create(config, context);
     }
 }

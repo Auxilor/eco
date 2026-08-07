@@ -2,6 +2,7 @@ package com.willfp.eco.core.sound
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -35,7 +36,7 @@ internal class PlayableSoundNumberTests {
     fun `plain number is read directly`() {
         every { config.getDoubleOrNull("pitch") } returns 1.5
 
-        assertEquals(1.5, AbstractPlayableSound.readNumber(config, "pitch", 1.0))
+        assertEquals(1.5, AbstractPlayableSound.readNumber(config, "pitch", 1.0, PlaceholderContext.EMPTY))
     }
 
     @Test
@@ -43,7 +44,7 @@ internal class PlayableSoundNumberTests {
         every { config.getDoubleOrNull("pitch") } returns null
         every { config.getStringOrNull("pitch") } returns "0.5 * 4"
 
-        assertEquals(2.0, AbstractPlayableSound.readNumber(config, "pitch", 1.0))
+        assertEquals(2.0, AbstractPlayableSound.readNumber(config, "pitch", 1.0, PlaceholderContext.EMPTY))
     }
 
     @Test
@@ -51,7 +52,7 @@ internal class PlayableSoundNumberTests {
         every { config.getDoubleOrNull("pitch") } returns null
         every { config.getStringOrNull("pitch") } returns null
 
-        assertEquals(1.0, AbstractPlayableSound.readNumber(config, "pitch", 1.0))
+        assertEquals(1.0, AbstractPlayableSound.readNumber(config, "pitch", 1.0, PlaceholderContext.EMPTY))
     }
 
     @Test
@@ -59,21 +60,21 @@ internal class PlayableSoundNumberTests {
         every { config.getDoubleOrNull("pitch") } returns null
         every { config.getStringOrNull("pitch") } returns "not a number"
 
-        assertEquals(1.0, AbstractPlayableSound.readNumber(config, "pitch", 1.0))
+        assertEquals(1.0, AbstractPlayableSound.readNumber(config, "pitch", 1.0, PlaceholderContext.EMPTY))
     }
 
     @Test
     fun `range part reads a plain number`() {
-        assertEquals(0.5, AbstractPlayableSound.readRangePart("0.5", 1.0))
+        assertEquals(0.5, AbstractPlayableSound.readRangePart("0.5", 1.0, PlaceholderContext.EMPTY))
     }
 
     @Test
     fun `range part evaluates an expression`() {
-        assertEquals(2.0, AbstractPlayableSound.readRangePart("3 - 1", 1.0))
+        assertEquals(2.0, AbstractPlayableSound.readRangePart("3 - 1", 1.0, PlaceholderContext.EMPTY))
     }
 
     @Test
     fun `range part falls back when unevaluable`() {
-        assertEquals(1.0, AbstractPlayableSound.readRangePart("not a number", 1.0))
+        assertEquals(1.0, AbstractPlayableSound.readRangePart("not a number", 1.0, PlaceholderContext.EMPTY))
     }
 }
