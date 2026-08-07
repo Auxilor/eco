@@ -6,6 +6,10 @@ sidebar_position: 6
 Throughout the eco plugins and effects system, you can use math expressions almost anywhere. Most of the time you will use them within effects, such as in chances, cooldowns, levelling and progression, or in multipliers. However, you can also use them in descriptions, lore and messages using the math placeholders: `{{expression}}` and `{^{expression}}` to format the answer nicely.
 
 You can also use placeholders within math. Some eco plugins come with their own numerical placeholders, such as `%level%` which can be used to create scaling effects based on a job, skill, pet or enchantment level. External placeholders are also supported, as long as they provide a numerical result.
+
+## Progress bars
+
+`{#{expression}}` turns a percentage (0-100) into a progress bar, e.g. `{#{%libreforge_item_progress_example%}}` renders a 10-character bar showing how far towards the next level an item is. This works with any percentage-shaped placeholder — item levels, job/pet/collection progress, and so on — not just the built-in ones. Values outside 0-100 are clamped.
 ## Common Syntax
 These are the most commonly used mathematical expressions within eco plugins. To see all math syntaxes available, visit [here](https://github.com/boxbeam/Crunch?tab=readme-ov-file#operations-and-syntax).
 

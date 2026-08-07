@@ -19,10 +19,17 @@ but it's still best to minimise the memory overhead.
 
  */
 
-class PlaceholderParser {
+class PlaceholderParser(
+    private val progressBarCharacter: Char = '|',
+    private val progressBarBars: Int = 10,
+    private val progressBarCompleteFormat: String = "&a",
+    private val progressBarInProgressFormat: String = "&a",
+    private val progressBarIncompleteFormat: String = "&7"
+) {
     private val placeholderRegex = Regex("%([^% ]+)%")
     private val prettyMathExpressionRegex = Regex("(\\{\\^\\{)(.)+(}})")
     private val mathExpressionRegex = Regex("(\\{\\{)(.)+(}})")
+    private val progressBarExpressionRegex = Regex("(\\{#\\{)(.)+(}})")
 
     private val placeholderLookupCache = EcoCache.builder<PlaceholderLookup, Placeholder?>()
         .expireAfterWrite(Duration.ofSeconds(1))
@@ -58,6 +65,25 @@ class PlaceholderParser {
                 val expression = matchResult.value.substring(2, matchResult.value.length - 2)
                 val result = evaluateExpression(expression, context)
                 acc.replace(matchResult.value, result.toString())
+            }
+
+            if ('#' in processed) {
+                // Evaluate progress bar expressions; the expression must evaluate to a
+                // percentage between 0 and 100, e.g. {#{%libreforge_item_progress_example%}}
+                processed = progressBarExpressionRegex.findAll(processed).fold(processed) { acc, matchResult ->
+                    val expression = matchResult.value.substring(3, matchResult.value.length - 2)
+                    val percentage = evaluateExpression(expression, context)
+                    val progress = (percentage / 100.0).coerceIn(0.0, 1.0)
+                    val bar = StringUtils.createProgressBar(
+                        progressBarCharacter,
+                        progressBarBars,
+                        progress,
+                        progressBarCompleteFormat,
+                        progressBarInProgressFormat,
+                        progressBarIncompleteFormat
+                    )
+                    acc.replace(matchResult.value, bar)
+                }
             }
         }
 
