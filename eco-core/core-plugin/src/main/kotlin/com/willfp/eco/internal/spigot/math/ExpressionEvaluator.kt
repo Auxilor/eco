@@ -60,6 +60,26 @@ class ExpressionEvaluator(
 
     private val threadLocalArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
 
+    @Volatile
+    private var hits = 0L
+
+    @Volatile
+    private var writes = 0L
+
+    /** Result cache hits. Instrumentation for tests; not part of any public contract. */
+    internal val cacheHits: Long
+        get() = hits
+
+    /** Result cache writes. Instrumentation for tests; not part of any public contract. */
+    internal val cacheWrites: Long
+        get() = writes
+
+    /** Zero the instrumentation counters. */
+    internal fun resetInstrumentation() {
+        hits = 0L
+        writes = 0L
+    }
+
     private object CompilationFailed
 
     fun evaluate(expression: String, context: PlaceholderContext): Double? {
@@ -68,10 +88,28 @@ class ExpressionEvaluator(
         val cached = compilationCache.getOrPut(expression) { compile(expression) ?: CompilationFailed }
         val prepared = cached as? PreparedExpression ?: return null
 
-        val cacheKey = resultCacheKey(expression, context)
-        resultCache.get(cacheKey)?.let { return it }
+        // Two bypasses, for different reasons:
+        //  - Non-deterministic: caching freezes a single random draw for the whole TTL window.
+        //  - Placeholder-bearing: resolved values are not in the key, so a cached result goes
+        //    stale the moment a placeholder changes. Putting them in the key would require
+        //    resolving first, which is the very cost the cache existed to avoid.
+        if (!prepared.isDeterministic || prepared.placeholderCount > 0) {
+            return validate(evaluateFresh(prepared, context))
+        }
 
-        val result = if (prepared.placeholderCount == 0) {
+        val cacheKey = resultCacheKey(expression, context)
+        resultCache.get(cacheKey)?.let { hits++; return it }
+
+        val validated = validate(evaluateFresh(prepared, context))
+        if (validated != null) {
+            writes++
+            resultCache.put(cacheKey, validated)
+        }
+        return validated
+    }
+
+    private fun evaluateFresh(prepared: PreparedExpression, context: PlaceholderContext): Double? =
+        if (prepared.placeholderCount == 0) {
             runCatching { prepared.compiled.evaluate() }.getOrNull()
         } else {
             val values = placeholderParser.parseIndividualPlaceholders(
@@ -85,12 +123,8 @@ class ExpressionEvaluator(
             runCatching { prepared.compiled.evaluate(*arr) }.getOrNull()
         }
 
-        val validated = if (result?.isFinite() == true) result else null
-        if (validated != null) {
-            resultCache.put(cacheKey, validated)
-        }
-        return validated
-    }
+    private fun validate(result: Double?): Double? =
+        if (result?.isFinite() == true) result else null
 
     private fun compile(expression: String): PreparedExpression? {
         val placeholders = findPlaceholders(expression)
@@ -121,6 +155,7 @@ class ExpressionEvaluator(
         val placeholderNames: List<String>
     ) {
         val placeholderCount = placeholderNames.size
+        val isDeterministic = compiled.isDeterministic()
     }
 
     companion object {
