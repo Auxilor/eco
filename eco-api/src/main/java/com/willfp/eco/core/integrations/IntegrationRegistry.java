@@ -12,6 +12,11 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Registry for integrations.
+ * <p>
+ * All of the {@code Safely} methods run integration code inside a try/catch. If an integration
+ * throws an {@link Exception} or a {@link LinkageError} (typically because the plugin it hooks
+ * into changed its API), the stack trace is logged and the integration is removed from this
+ * registry, so it will not be called again.
  *
  * @param <T> The type of integration.
  */
@@ -40,10 +45,10 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
     }
 
     /**
-     * If any integrations return true, safely.
+     * Get if any integration matches a predicate, safely.
      *
      * @param predicate The predicate to test.
-     * @return If any integrations return true.
+     * @return If any integration returned true. False if the registry is empty.
      */
     public boolean anySafely(@NotNull final Predicate<T> predicate) {
         for (T integration : new HashSet<>(this.values())) {
@@ -56,12 +61,16 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
     }
 
     /**
-     * Get the first integration that returns a value, safely.
+     * Apply a function to the first integration in this registry, safely.
+     * <p>
+     * The registry is unordered, so 'first' only means the first element produced by the
+     * underlying iterator, not the first integration that was registered.
      *
      * @param function     The function to apply.
      * @param defaultValue The default value.
      * @param <R>          The type of value.
-     * @return The first value that returns a value.
+     * @return The result of the function, or the default value if the registry is empty
+     *         or the integration threw.
      */
     @NotNull
     public <R> R firstSafely(@NotNull final Function<T, R> function,
@@ -104,6 +113,8 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
 
     /**
      * Executes a given action safely, catching any exceptions and logging the issue.
+     * <p>
+     * If the action throws, the integration is removed from this registry.
      *
      * @param action       The action to execute.
      * @param integration  The integration to apply the action on.
@@ -126,10 +137,10 @@ public class IntegrationRegistry<T extends Integration> extends Registry<T> {
     }
 
     /**
-     * If all integrations return true, safely.
+     * Get if all integrations match a predicate, safely.
      *
      * @param predicate The predicate to test.
-     * @return If all integrations return true.
+     * @return If all integrations returned true. True if the registry is empty.
      */
     public boolean allSafely(@NotNull final Predicate<T> predicate) {
         return !this.anySafely(predicate.negate());

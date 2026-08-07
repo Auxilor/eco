@@ -5,7 +5,9 @@ import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a packet being sent or received.
+ * Represents a packet being sent to, or received from, a player.
+ * <p>
+ * Cancelling the event stops the packet from being sent or handled.
  */
 public class PacketEvent implements Cancellable {
     /**
@@ -46,7 +48,7 @@ public class PacketEvent implements Cancellable {
     }
 
     /**
-     * Get the player.
+     * Get the player that the packet is being sent to, or received from.
      *
      * @return The player.
      */

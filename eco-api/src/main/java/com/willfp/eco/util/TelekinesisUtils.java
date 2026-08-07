@@ -20,6 +20,8 @@ public final class TelekinesisUtils {
 
     /**
      * Register a new test to check against.
+     * <p>
+     * Registered tests are never removed, and are all consulted by {@link #testPlayer(Player)}.
      *
      * @param test The test to register, where the boolean output is if the player is telekinetic.
      */

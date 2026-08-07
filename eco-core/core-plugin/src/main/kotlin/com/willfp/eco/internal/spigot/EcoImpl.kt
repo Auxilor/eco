@@ -100,7 +100,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     private val keyFactory = SafeInternalNamespacedKeyFactory()
 
-    private val placeholderParser = PlaceholderParser()
+    private val placeholderParser = PlaceholderParser(
+        progressBarCharacter = this.configYml.getString("progress-bar.character").firstOrNull() ?: '|',
+        progressBarBars = this.configYml.getInt("progress-bar.bars"),
+        progressBarCompleteFormat = this.configYml.getString("progress-bar.complete-format"),
+        progressBarInProgressFormat = this.configYml.getString("progress-bar.in-progress-format"),
+        progressBarIncompleteFormat = this.configYml.getString("progress-bar.incomplete-format")
+    )
 
     private val expressionEvaluator = ExpressionEvaluator(
         placeholderParser,

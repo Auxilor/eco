@@ -13,15 +13,18 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Handles persistent data.
+ * <p>
+ * All reads and writes are dispatched to an internal executor, so serializers never
+ * run on the calling thread.
  */
 public abstract class PersistentDataHandler implements Registrable {
     /**
-     * The id.
+     * The id of the handler.
      */
     private final String id;
 
     /**
-     * The executor.
+     * The executor that all reads and writes are dispatched to.
      */
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -46,18 +49,20 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Save to disk.
      * <p>
-     * If write commits to disk, this method does not need to be overridden.
+     * If write commits to disk, this method does not need to be overridden;
+     * the default implementation does nothing.
      * <p>
-     * This method is called asynchronously.
+     * This method is called asynchronously by {@link #save()}, and on the calling
+     * thread by {@link #shutdown()}.
      */
     protected void doSave() {
         // Save to disk
     }
 
     /**
-     * If the handler should autosave.
+     * Get if the handler should autosave.
      *
-     * @return If the handler should autosave.
+     * @return If the handler should autosave. Defaults to true.
      */
     public boolean shouldAutosave() {
         return true;
@@ -65,6 +70,8 @@ public abstract class PersistentDataHandler implements Registrable {
 
     /**
      * Save the data.
+     * <p>
+     * This submits {@link #doSave()} to the executor and returns immediately.
      */
     public final void save() {
         executor.submit(this::doSave);
@@ -72,11 +79,13 @@ public abstract class PersistentDataHandler implements Registrable {
 
     /**
      * Read a key from persistent data.
+     * <p>
+     * The read runs on the executor, but this method blocks until it completes.
      *
-     * @param uuid The uuid.
+     * @param uuid The uuid of the profile to read from.
      * @param key  The key.
      * @param <T>  The type of the key.
-     * @return The value, or null if not found.
+     * @return The value, or null if not found or if the read failed.
      */
     @Nullable
     public final <T> T read(@NotNull final UUID uuid,
@@ -94,8 +103,11 @@ public abstract class PersistentDataHandler implements Registrable {
 
     /**
      * Write a key to persistent data.
+     * <p>
+     * The write is submitted to the executor and this method returns immediately,
+     * without waiting for it to complete.
      *
-     * @param uuid  The uuid.
+     * @param uuid  The uuid of the profile to write to.
      * @param key   The key.
      * @param value The value.
      * @param <T>   The type of the key.
@@ -109,6 +121,9 @@ public abstract class PersistentDataHandler implements Registrable {
 
     /**
      * Serialize profile.
+     * <p>
+     * The keys are read in parallel, but this method blocks until every read has
+     * completed. Keys with no stored value are omitted from the result.
      *
      * @param uuid The uuid to serialize.
      * @param keys The keys to serialize.
@@ -131,8 +146,10 @@ public abstract class PersistentDataHandler implements Registrable {
         return new SerializedProfile(uuid, data);
     }
 
-    /**`
-     * Load profile data.
+    /**
+     * Load profile data, writing every entry of the serialized profile into this handler.
+     * <p>
+     * The writes are submitted asynchronously; use {@link #shutdown()} to await them.
      *
      * @param profile The profile.
      */
@@ -149,6 +166,10 @@ public abstract class PersistentDataHandler implements Registrable {
 
     /**
      * Save and shutdown the handler.
+     * <p>
+     * Calls {@link #doSave()} on the calling thread, then blocks until every submitted
+     * read and write has completed. If the executor has already been shut down, only
+     * the save is performed.
      *
      * @throws InterruptedException If the writes could not be awaited.
      */

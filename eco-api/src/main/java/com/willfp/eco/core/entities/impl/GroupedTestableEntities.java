@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A group of testable entities.
+ * A group of testable entities, matching if any child matches, and spawning a random child.
  *
  * @see com.willfp.eco.core.entities.CustomEntity
  */
@@ -24,7 +24,8 @@ public class GroupedTestableEntities implements TestableEntity {
     /**
      * Create a new group of testable entities.
      *
-     * @param children The children.
+     * @param children The children, which must not be empty.
+     * @throws IllegalArgumentException If the children are empty.
      */
     public GroupedTestableEntities(@NotNull final Collection<TestableEntity> children) {
         Preconditions.checkArgument(!children.isEmpty(), "Group must have at least one child!");
@@ -33,9 +34,9 @@ public class GroupedTestableEntities implements TestableEntity {
     }
 
     /**
-     * If the item matches any children.
+     * If the entity matches any children.
      *
-     * @param entity The entity to test.
+     * @param entity The entity to test, which may be null.
      * @return If the entity matches the test of any children.
      */
     @Override
@@ -59,7 +60,7 @@ public class GroupedTestableEntities implements TestableEntity {
     /**
      * Get the children.
      *
-     * @return The children.
+     * @return A copy of the children.
      */
     public Collection<TestableEntity> getChildren() {
         return new ArrayList<>(children);

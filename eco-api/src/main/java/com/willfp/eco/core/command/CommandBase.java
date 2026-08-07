@@ -27,6 +27,10 @@ public interface CommandBase {
 
     /**
      * Get command permission.
+     * <p>
+     * Players without this permission are sent the no-permission message and the command is
+     * not executed. Non-player senders (e.g. the console) bypass the check on execution, but
+     * the permission is still required for tab completion by any sender.
      *
      * @return The permission.
      */
@@ -34,8 +38,11 @@ public interface CommandBase {
 
     /**
      * If only players can execute the command.
+     * <p>
+     * If true, non-player senders are sent the <code>not-player</code> lang message instead
+     * of the command being executed.
      *
-     * @return If true.
+     * @return If only players can execute the command.
      */
     boolean isPlayersOnly();
 
@@ -58,7 +65,7 @@ public interface CommandBase {
      * Intended for returning the enclosing CommandBase,
      * when this instance is serving as the delegate command base.
      *
-     * @return the wrapping object of this delegate.
+     * @return The wrapping object of this delegate, or this instance if it is not a delegate.
      */
     default @NotNull CommandBase getWrapped() {
         return this;
@@ -67,11 +74,11 @@ public interface CommandBase {
     /**
      * Handle command execution.
      * <p>
-     * This will always be called on command execution.
+     * This will always be called on command execution, for players and for the console alike.
      *
      * @param sender The sender.
-     * @param args   The args.
-     * @throws NotificationException naturally, this is handled as a part of the command system.
+     * @param args   The args, with any matched subcommand names already removed.
+     * @throws NotificationException Naturally; this is handled as a part of the command system.
      */
     default void onExecute(@NotNull final CommandSender sender, @NotNull final List<String> args) throws NotificationException {
         // Do nothing.
@@ -80,11 +87,12 @@ public interface CommandBase {
     /**
      * Handle command execution from players.
      * <p>
-     * This will only be called if the sender is a player.
+     * This will only be called if the sender is a player, and is called in addition to
+     * {@link #onExecute(CommandSender, List)}, not instead of it.
      *
      * @param sender The sender.
-     * @param args   The args.
-     * @throws NotificationException naturally, this is handled as a part of the command system.
+     * @param args   The args, with any matched subcommand names already removed.
+     * @throws NotificationException Naturally; this is handled as a part of the command system.
      */
     default void onExecute(@NotNull final Player sender, @NotNull final List<String> args) throws NotificationException {
         // Do nothing.
@@ -107,7 +115,8 @@ public interface CommandBase {
     /**
      * Handle tab completion.
      * <p>
-     * This will only be called if the sender is a player.
+     * This will only be called if the sender is a player, and is called in addition to
+     * {@link #tabComplete(CommandSender, List)}, not instead of it.
      *
      * @param sender The sender.
      * @param args   The args.
@@ -206,10 +215,10 @@ public interface CommandBase {
      * This is automatically handled with eco, and should not be surrounded by a
      * try/catch block.
      *
-     * @param playerName The player name.
+     * @param playerName The player name, which may be null.
      * @param key        The lang.yml key for the message to be sent.
      * @return Returns the player, definitely not-null.
-     * @throws NotificationException If the player name is invalid.
+     * @throws NotificationException If the player name is null or doesn't match an online player.
      */
     @NotNull
     default Player notifyPlayerRequired(@Nullable final String playerName, @NotNull final String key) throws NotificationException {
@@ -233,10 +242,11 @@ public interface CommandBase {
      * This is automatically handled with eco, and should not be surrounded by a
      * try/catch block.
      *
-     * @param playerName The player name.
+     * @param playerName The player name, which may be null.
      * @param key        The lang.yml key for the message to be sent.
      * @return Returns the offline player, definitely not-null.
-     * @throws NotificationException If the player name is invalid.
+     * @throws NotificationException If the player name is null, or if the player has never
+     *                              played on the server and isn't online.
      */
     @NotNull
     default OfflinePlayer notifyOfflinePlayerRequired(@Nullable final String playerName,

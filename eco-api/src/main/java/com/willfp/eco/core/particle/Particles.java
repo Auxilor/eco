@@ -18,7 +18,10 @@ public final class Particles {
     private static final Map<String, ParticleFactory> FACTORIES = new ConcurrentHashMap<>();
 
     /**
-     * Register a new particle factory.
+     * Register a new particle factory under each of its names.
+     * <p>
+     * Names are stored lowercased, and registering a name that is already taken replaces
+     * the existing factory for that name.
      *
      * @param factory The factory.
      */
@@ -31,7 +34,9 @@ public final class Particles {
     /**
      * Lookup a particle from a string.
      * <p>
-     * A particle string should look like {@code magic}, {@code rgb:00ff00}
+     * A particle string should look like {@code magic} or {@code rgb:00ff00}, i.e. either the
+     * name of a bukkit {@link Particle}, or a registered factory name and a key separated by
+     * a colon.
      *
      * @param key The key.
      * @return The particle, or an {@link EmptyParticle} if invalid.
@@ -76,6 +81,11 @@ public final class Particles {
         return spawnableParticle;
     }
 
+    /**
+     * Particles is a utility class and cannot be instantiated.
+     *
+     * @throws UnsupportedOperationException Always.
+     */
     private Particles() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }

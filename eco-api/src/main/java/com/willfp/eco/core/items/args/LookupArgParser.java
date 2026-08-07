@@ -17,7 +17,8 @@ public interface LookupArgParser {
      *
      * @param args The arguments.
      * @param meta The ItemMeta to modify.
-     * @return The predicate test to apply to the modified item.
+     * @return The predicate test to apply to the modified item, or null if none of the
+     *         arguments applied to this parser.
      */
     @Nullable Predicate<ItemStack> parseArguments(@NotNull String[] args,
                                                   @NotNull ItemMeta meta);

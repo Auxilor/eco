@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for custom slot implementations.
+ * <p>
+ * Implementations must call {@link #init(Slot)} with the slot to delegate to,
+ * otherwise every delegating method will throw {@link IllegalStateException}.
  */
 public abstract class CustomSlot implements Slot {
     /**

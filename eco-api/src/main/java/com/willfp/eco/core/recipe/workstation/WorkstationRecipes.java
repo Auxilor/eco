@@ -67,12 +67,20 @@ public final class WorkstationRecipes {
         void onBrewCompleted(@NotNull final Location location, @NotNull final BrewingRecipe recipe, @NotNull final List<Integer> matchedSlots);
     }
 
+    /**
+     * Optional hook invoked when a custom brew completes.
+     * Set via {@link #registerBrewCompletedHook(BrewCompletedCallback)}.
+     */
     @Nullable private static BrewCompletedCallback brewCompletedCallback = null;
 
+    /**
+     * This class cannot be instantiated.
+     */
     private WorkstationRecipes() {}
 
     /**
-     * Register a workstation recipe.
+     * Register a workstation recipe, replacing any recipe already registered under the
+     * same key.
      *
      * @param recipe The recipe to register.
      */
@@ -115,7 +123,7 @@ public final class WorkstationRecipes {
      *
      * @param type The recipe class to filter by.
      * @param <T>  The recipe type.
-     * @return Unmodifiable collection of matching recipes.
+     * @return A new collection containing the matching recipes.
      */
     @NotNull
     @SuppressWarnings("unchecked")
@@ -206,8 +214,8 @@ public final class WorkstationRecipes {
     }
 
     /**
-     * Remove every recipe registered under a namespace, along with the Bukkit
-     * recipes they registered.
+     * Remove every recipe registered under a namespace, along with the tracked Bukkit
+     * recipes and pending recipes in that namespace.
      * <p>
      * Use this rather than {@link #clear()} when reloading a single plugin: this
      * registry is shared by every plugin using it, so clearing all of it would
@@ -234,7 +242,10 @@ public final class WorkstationRecipes {
     }
 
     /**
-     * Remove all tracked Bukkit recipes from the server and clear all internal state.
+     * Remove all tracked Bukkit recipes from the server and clear the registry, the tracked
+     * Bukkit keys, and all pending recipes.
+     * <p>
+     * The registered brew hooks are left in place.
      * <p>
      * Should be called on plugin disable or full recipe reload to avoid stale registrations.
      * <p>

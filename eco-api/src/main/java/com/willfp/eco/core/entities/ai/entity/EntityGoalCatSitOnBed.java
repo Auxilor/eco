@@ -9,9 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Allows a cat to sit on a bed.
+ * Allows a cat to sit on a block, such as a bed, a chest, or a lit furnace.
  *
- * @param speed The speed at which to move to the bed.
+ * @param speed The speed at which to move to the block.
  */
 public record EntityGoalCatSitOnBed(
         double speed

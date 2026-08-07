@@ -59,8 +59,8 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * <strong>Do not use this in your plugins!</strong> It can and will contain
  * breaking changes between minor versions and even patches, and you will create compatibility
- * issues by. All parts of this have been abstracted into logically named API components that you
- * can use.
+ * issues by depending on it. All parts of this have been abstracted into logically named API
+ * components that you can use instead.
  *
  * @see Eco#get()
  */
@@ -79,7 +79,7 @@ public interface Eco {
     /**
      * Create an event manager.
      *
-     * @param plugin The plugin.F
+     * @param plugin The plugin.
      * @return The event manager.
      */
     @NotNull
@@ -116,7 +116,7 @@ public interface Eco {
      * Create an ExtensionLoader.
      *
      * @param plugin The plugin.
-     * @return The factory.
+     * @return The extension loader.
      */
     @NotNull
     ExtensionLoader createExtensionLoader(@NotNull EcoPlugin plugin);
@@ -174,12 +174,12 @@ public interface Eco {
     /**
      * Create PluginCommandBase implementation of {@link PluginCommand}.
      *
-     * @param parentDelegate the enclosing class of this implementation.
-     * @param plugin         the plugin.
-     * @param name           the name of the command.
-     * @param permission     the permission of the command.
-     * @param playersOnly    if the command is players only.
-     * @return The PluginCommandBase implementation
+     * @param parentDelegate The enclosing class of this implementation.
+     * @param plugin         The plugin.
+     * @param name           The name of the command.
+     * @param permission     The permission of the command.
+     * @param playersOnly    If the command is players only.
+     * @return The PluginCommandBase implementation.
      */
     @NotNull
     PluginCommandBase createPluginCommand(@NotNull PluginCommandBase parentDelegate,
@@ -191,12 +191,12 @@ public interface Eco {
     /**
      * Create CommandBase implementation of {@link com.willfp.eco.core.command.impl.Subcommand Subcommand}.
      *
-     * @param parentDelegate the enclosing class of this implementation.
-     * @param plugin         the plugin.
-     * @param name           the name of the command.
-     * @param permission     the permission of the command.
-     * @param playersOnly    if the command is players only.
-     * @return The CommandBase implementation
+     * @param parentDelegate The enclosing class of this implementation.
+     * @param plugin         The plugin.
+     * @param name           The name of the command.
+     * @param permission     The permission of the command.
+     * @param playersOnly    If the command is players only.
+     * @return The CommandBase implementation.
      */
     @NotNull
     CommandBase createSubcommand(@NotNull CommandBase parentDelegate,
@@ -208,7 +208,7 @@ public interface Eco {
     /**
      * Updatable config.
      *
-     * @param configName            The name of the config
+     * @param configName            The name of the config.
      * @param plugin                The plugin.
      * @param subDirectoryPath      The subdirectory path.
      * @param source                The class that owns the resource.
@@ -231,7 +231,7 @@ public interface Eco {
     /**
      * Loadable config.
      *
-     * @param configName            The name of the config
+     * @param configName            The name of the config.
      * @param plugin                The plugin.
      * @param subDirectoryPath      The subdirectory path.
      * @param source                The class that owns the resource.
@@ -426,7 +426,7 @@ public interface Eco {
                             @NotNull HologramOptions options);
 
     /**
-     * Create a {@link NamespacedKey} quickly
+     * Create a {@link NamespacedKey} quickly.
      * <p>
      * Bypasses the constructor, allowing for the creation of invalid keys, therefore this is
      * considered unsafe and should only be called after the key has been confirmed to be valid.
@@ -558,8 +558,9 @@ public interface Eco {
     Menu getOpenMenu(@NotNull Player player);
 
     /**
-     * Register bukkit recipe without resending recipe packet.
-     * @param recipe the recipe
+     * Register a bukkit recipe without resending the recipe packet.
+     *
+     * @param recipe The recipe.
      */
     void addBukkitRecipeNoResend(Recipe recipe);
 
@@ -570,9 +571,10 @@ public interface Eco {
 
 
     /**
-     * Remove a bukkit recipe without resending recipe packet.
-      * @param key the recipe key
-      * @return if the recipe was successfully removed
+     * Remove a bukkit recipe without resending the recipe packet.
+     *
+     * @param key The recipe key.
+     * @return If the recipe was successfully removed.
      */
     boolean removeBukkitRecipeNoResend(@NotNull NamespacedKey key);
 
@@ -663,7 +665,7 @@ public interface Eco {
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.
      *
-     * @return The instance of eco.
+     * @return The instance of eco, or null if eco has not yet been initialized.
      */
     @ApiStatus.Internal
     static Eco get() {
@@ -684,8 +686,11 @@ public interface Eco {
 
         /**
          * Initialize eco.
+         * <p>
+         * Can only be called once, by the eco implementation itself.
          *
          * @param eco The instance of eco.
+         * @throws IllegalArgumentException If eco has already been initialized.
          */
         @ApiStatus.Internal
         static void set(@NotNull final Eco eco) {
@@ -697,12 +702,15 @@ public interface Eco {
         /**
          * Get eco.
          *
-         * @return eco.
+         * @return The instance of eco, or null if it has not been set yet.
          */
         static Eco get() {
             return eco;
         }
 
+        /**
+         * Utility class, cannot be instantiated.
+         */
         private Instance() {
             throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
         }

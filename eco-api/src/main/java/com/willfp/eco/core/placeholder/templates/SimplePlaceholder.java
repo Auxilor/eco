@@ -9,16 +9,16 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A template class for simple placeholders.
+ * A template class for simple registrable placeholders, matched against a literal identifier.
  */
 public abstract class SimplePlaceholder implements RegistrablePlaceholder {
     /**
-     * The plugin.
+     * The plugin that owns the placeholder.
      */
     private final EcoPlugin plugin;
 
     /**
-     * The name of the placeholder.
+     * The identifier of the placeholder.
      */
     private final String identifier;
 

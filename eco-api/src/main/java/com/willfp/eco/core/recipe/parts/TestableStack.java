@@ -8,23 +8,29 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Stacks of items.
+ * <p>
+ * Wraps another {@link TestableItem} and additionally requires the tested stack to have
+ * at least a given amount.
  */
 public class TestableStack implements TestableItem {
     /**
-     * The item.
+     * The underlying item that must also match.
      */
     private final TestableItem handle;
 
     /**
-     * The amount.
+     * The minimum amount required.
      */
     private final int amount;
 
     /**
      * Create a new testable stack.
      *
-     * @param item   The item.
-     * @param amount The amount.
+     * @param item   The underlying item. Cannot itself be a {@link TestableStack} or an
+     *               {@link EmptyTestableItem}.
+     * @param amount The minimum amount.
+     * @throws IllegalArgumentException If the item is a {@link TestableStack} or an
+     *                                  {@link EmptyTestableItem}.
      */
     public TestableStack(@NotNull final TestableItem item,
                          final int amount) {
@@ -36,10 +42,11 @@ public class TestableStack implements TestableItem {
     }
 
     /**
-     * If the item matches the material.
+     * If the item matches the underlying item and has at least the required amount.
      *
      * @param itemStack The item to test.
-     * @return If the item is of the specified material.
+     * @return If the item is non-null, matches the handle, and has an amount of at least
+     *         {@link #getAmount()}.
      */
     @Override
     public boolean matches(@Nullable final ItemStack itemStack) {
@@ -56,14 +63,14 @@ public class TestableStack implements TestableItem {
     /**
      * Get the handle.
      *
-     * @return The handle.
+     * @return The underlying item.
      */
     public TestableItem getHandle() {
         return this.handle;
     }
 
     /**
-     * Get the amount in the stack.
+     * Get the minimum amount required in the stack.
      *
      * @return The amount.
      */

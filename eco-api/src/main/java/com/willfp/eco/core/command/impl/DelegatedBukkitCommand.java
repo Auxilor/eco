@@ -10,6 +10,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Delegates a bukkit command to an eco command (for registrations).
+ * <p>
+ * This is now a non-functional stub kept only for compatibility: execution and tab completion
+ * do nothing. Register commands with {@link PluginCommand#register()} instead.
  *
  * @deprecated Internal command implementations have been removed from the API.
  */

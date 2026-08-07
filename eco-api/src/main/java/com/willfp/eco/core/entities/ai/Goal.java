@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface Goal<T extends Mob> {
     /**
-     * Add the entity goal to an entity.
+     * Add the goal to an entity.
      * <p>
      * The lower the priority, the higher up the execution order; so
      * priority 0 will execute first. Lower priority (higher number) goals

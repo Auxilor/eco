@@ -26,6 +26,11 @@ public enum ConfigType {
      */
     private final String extension;
 
+    /**
+     * Create a new config type.
+     *
+     * @param extension The file extension, without the leading dot.
+     */
     ConfigType(@NotNull final String extension) {
         this.extension = extension;
     }
@@ -33,7 +38,7 @@ public enum ConfigType {
     /**
      * Get the file extension.
      *
-     * @return The extension.
+     * @return The extension, without the leading dot.
      */
     public String getExtension() {
         return extension;

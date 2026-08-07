@@ -3,9 +3,13 @@ package com.willfp.eco.core.extensions;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * Thrown when an extension jar is malformed and therefore cannot be loaded.
+ * <p>
  * Potential causes include:
- * Missing or invalid extension.yml.
- * Invalid filetype.
+ * <ul>
+ *     <li>Missing or invalid extension.yml.</li>
+ *     <li>Invalid filetype.</li>
+ * </ul>
  */
 public class MalformedExtensionException extends ExtensionLoadException {
     /**

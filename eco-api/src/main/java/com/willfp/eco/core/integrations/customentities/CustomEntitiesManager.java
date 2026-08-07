@@ -22,7 +22,7 @@ public final class CustomEntitiesManager {
     }
 
     /**
-     * Register all the custom entities for a specific plugin into eco.
+     * Register the custom entities of every registered integration into eco.
      *
      * @see com.willfp.eco.core.entities.Entities
      */

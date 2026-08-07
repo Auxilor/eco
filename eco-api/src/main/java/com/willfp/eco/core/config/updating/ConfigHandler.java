@@ -11,6 +11,9 @@ import org.jetbrains.annotations.NotNull;
 public interface ConfigHandler {
     /**
      * Invoke all update methods.
+     *
+     * @deprecated Part of the reflective reload system that has been removed;
+     * this does nothing. Use {@link #updateConfigs()} instead.
      */
     @Deprecated(since = "6.77.2", forRemoval = true)
     default void callUpdate() {
@@ -18,17 +21,20 @@ public interface ConfigHandler {
     }
 
     /**
-     * Save all configs.
+     * Save all registered configs to disk.
      */
     void saveAllConfigs();
 
     /**
-     * Update all updatable configs.
+     * Update all registered configs.
+     * <p>
+     * Updatable configs are updated against their defaults; other loadable configs
+     * are simply reloaded from file.
      */
     void updateConfigs();
 
     /**
-     * Add new config to be saved.
+     * Register a config to be saved and updated by this handler.
      *
      * @param config The config.
      */

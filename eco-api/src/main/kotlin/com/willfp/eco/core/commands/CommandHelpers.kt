@@ -57,6 +57,14 @@ class BuiltSubcommand internal constructor(
     var executor: (CommandSender, List<String>) -> Unit,
     var tabCompleter: (CommandSender, List<String>) -> List<String>,
 ) : Subcommand(plugin, name, permission, playersOnly) {
+    /**
+     * Create a subcommand inheriting the plugin, permission and players only flag from a parent.
+     *
+     * @param parent The parent command.
+     * @param name The command name.
+     * @param executor The command executor.
+     * @param tabCompleter The tab completer.
+     */
     internal constructor(
         parent: CommandBase,
         name: String,
@@ -79,6 +87,7 @@ class BuiltSubcommand internal constructor(
  * @param permission The permission.
  * @param playersOnly If only players should execute the command.
  * @param init The builder.
+ * @return The command.
  */
 fun command(
     plugin: EcoPlugin,
@@ -100,12 +109,13 @@ fun command(
 }
 
 /**
- * Kotlin builder for commands.
+ * Kotlin builder for subcommands, added to the receiver [CommandBase].
  *
  * @param name The command name.
  * @param permission The permission.
  * @param playersOnly If only players should execute the command.
  * @param init The builder.
+ * @return The subcommand.
  */
 fun CommandBase.addSubcommand(
     name: String,
@@ -126,11 +136,12 @@ fun CommandBase.addSubcommand(
 }
 
 /**
- * Kotlin builder for commands. Inherits plugin, permission, players
- * only.
+ * Kotlin builder for subcommands, added to the receiver [CommandBase]. Inherits plugin,
+ * permission, players only.
  *
  * @param name The command name.
  * @param init The builder.
+ * @return The subcommand.
  */
 fun CommandBase.addSubcommand(
     name: String,
@@ -147,27 +158,30 @@ fun CommandBase.addSubcommand(
 }
 
 /**
- * Throws an exception containing a langYml key if obj is null.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
- * automatically handles sending the message to the sender.</p>
- * <br>
- * @param key key of notification message in langYml
- * @return Returns the object given or throws an exception
- * @throws NotificationException exception thrown when null
+ * Throw a [NotificationException] containing a lang.yml key if the receiver is null.
+ *
+ * [PluginCommand] and [Subcommand] automatically catch this in their execution and send the
+ * message to the sender.
+ *
+ * @param key The key of the notification message in lang.yml.
+ * @return The receiver, if it is not null.
+ * @throws NotificationException If the receiver is null.
  */
 fun <T> T.notifyNull(key: String): T {
     return this ?: throw NotificationException(key)
 }
 
 /**
- * Throws an exception containing a langYml key if predicate tests false
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
- * automatically handles sending the message to the sender.</p>
- * <br>
- * @param predicate predicate to test
- * @param key       key of notification message in langYml
- * @param <T>       the generic type of object
- * @return Returns the object given or throws an exception
+ * Throw a [NotificationException] containing a lang.yml key if the predicate tests false
+ * against the receiver.
+ *
+ * [PluginCommand] and [Subcommand] automatically catch this in their execution and send the
+ * message to the sender.
+ *
+ * @param predicate The predicate to test the receiver against.
+ * @param key       The key of the notification message in lang.yml.
+ * @return The receiver, if the predicate passed.
+ * @throws NotificationException If the predicate tests false.
  */
 fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
     predicate.test(this).notifyFalse(key)
@@ -175,39 +189,45 @@ fun <T> T.notifyFalse(predicate: Predicate<T>, key: String): T {
 }
 
 /**
- * Throws an exception containing a langYml key if condition is false.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
- * automatically handles sending the message to the sender.</p>
- * <br>
- * @param key       value in the langYml
- * @return Returns the condition given or throws an exception
- * @throws NotificationException exception thrown when false
+ * Throw a [NotificationException] containing a lang.yml key if the receiver is not true,
+ * i.e. if it is false or null.
+ *
+ * [PluginCommand] and [Subcommand] automatically catch this in their execution and send the
+ * message to the sender.
+ *
+ * @param key The key of the notification message in lang.yml.
+ * @return True, if the receiver was true.
+ * @throws NotificationException If the receiver is false or null.
  */
 fun Boolean?.notifyFalse(key: String): Boolean {
     return if (this == true) true else throw NotificationException(key)
 }
 
 /**
- * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
- * automatically handles sending the message to the sender.</p>
- * <br>
- * @param key        value in the langYml
- * @return Returns the player
- * @throws NotificationException exception thrown when invalid playerName
+ * Look up an online [Player] by the receiver player name, throwing a [NotificationException]
+ * containing a lang.yml key if there is no such player online.
+ *
+ * [PluginCommand] and [Subcommand] automatically catch this in their execution and send the
+ * message to the sender.
+ *
+ * @param key The key of the notification message in lang.yml.
+ * @return The player.
+ * @throws NotificationException If the receiver is null or no player with that name is online.
  */
 fun String?.notifyPlayerRequired(key: String): Player {
     return Bukkit.getPlayer(this ?: "") ?: throw NotificationException(key)
 }
 
 /**
- * Throws an exception containing a langYml key if Bukkit.getPlayer(playerName) is null.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
- * automatically handles sending the message to the sender.</p>
- * <br>
- * @param key        value in the langYml
- * @return Returns the player
- * @throws NotificationException exception thrown when invalid playerName
+ * Look up an [OfflinePlayer] by the receiver player name, throwing a [NotificationException]
+ * containing a lang.yml key if the player has never played before and is not online.
+ *
+ * [PluginCommand] and [Subcommand] automatically catch this in their execution and send the
+ * message to the sender.
+ *
+ * @param key The key of the notification message in lang.yml.
+ * @return The offline player.
+ * @throws NotificationException If no player with that name has ever played on the server.
  */
 fun String?.notifyOfflinePlayerRequired(key: String): OfflinePlayer {
     @Suppress("DEPRECATION")
@@ -221,14 +241,16 @@ fun String?.notifyOfflinePlayerRequired(key: String): OfflinePlayer {
 }
 
 /**
- * Throws an exception containing a langYml key if player doesn't have permission.
- * <p>The {@link CommandBase#onExecute(CommandSender, List) onExecute } in PluginCommand and Subcommand
- * automatically handles sending the message to the sender.</p>
- * <br>
- * @param permission the permission
- * @param key        value in the langYml
- * @return Returns the player
- * @throws NotificationException exception thrown when player doesn't have permission
+ * Throw a [NotificationException] containing a lang.yml key if the receiver player is null or
+ * doesn't have the permission.
+ *
+ * [PluginCommand] and [Subcommand] automatically catch this in their execution and send the
+ * message to the sender.
+ *
+ * @param permission The permission.
+ * @param key        The key of the notification message in lang.yml.
+ * @return The player.
+ * @throws NotificationException If the receiver is null or doesn't have the permission.
  */
 fun Player?.notifyPermissionRequired(permission: String, key: String): Player {
     this ?: throw NotificationException(key)

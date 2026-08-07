@@ -10,23 +10,29 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A map with a default value.
+ * <p>
+ * Getting a key that is absent (or mapped to null) inserts a freshly supplied default value for
+ * that key and returns it, so {@link #get(Object)} never returns null. Getting a null key returns
+ * a default value without inserting anything.
  *
  * @param <K> The key type.
  * @param <V> The value type.
  */
 public class DefaultMap<K, V> implements Map<K, V> {
     /**
-     * The map.
+     * The backing map.
      */
     private final Map<K, V> map;
 
     /**
-     * The default value.
+     * The supplier of the default value, called each time a default is needed.
      */
     private final Supplier<V> defaultValue;
 
     /**
-     * Create a new default map.
+     * Create a new default map, backed by a {@link HashMap}.
+     * <p>
+     * The same default value instance is shared by every key.
      *
      * @param defaultValue The default value.
      */
@@ -35,9 +41,9 @@ public class DefaultMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * Create a new default map.
+     * Create a new default map, backed by a {@link HashMap}.
      *
-     * @param defaultValue The default value.
+     * @param defaultValue The supplier of the default value.
      */
     public DefaultMap(@NotNull final Supplier<V> defaultValue) {
         this(new HashMap<>(), defaultValue);
@@ -46,7 +52,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
     /**
      * Create a new default map.
      *
-     * @param map          The map.
+     * @param map          The backing map.
      * @param defaultValue The default value.
      */
     public DefaultMap(@NotNull final Map<K, V> map,
@@ -57,8 +63,8 @@ public class DefaultMap<K, V> implements Map<K, V> {
     /**
      * Create a new default map.
      *
-     * @param map          The map.
-     * @param defaultValue The default value.
+     * @param map          The backing map.
+     * @param defaultValue The supplier of the default value.
      */
     public DefaultMap(@NotNull final Map<K, V> map,
                       @NotNull final Supplier<V> defaultValue) {

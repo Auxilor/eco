@@ -15,8 +15,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Mask of filler slots.
  * <p>
- * A pattern consists of 1s and 0s, where a 1 is a filler slot,
- * and a 0 isn't.
+ * A pattern consists of digits, where a 0 is an empty slot and any
+ * other digit is a filler slot using the mask item at that index,
+ * so a 1 uses the first mask item, a 2 the second, and so on.
  * <p>
  * For example, creating a filler mask for a single-chest sized menu would look like this:
  * <p>
@@ -29,12 +30,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FillerMask implements GUIComponent {
     /**
-     * Mask.
+     * The mask, indexed by row then column.
      */
     private final List<List<Slot>> mask;
 
     /**
-     * Rows.
+     * The amount of rows in the mask.
      */
     private final int rows;
 
@@ -54,7 +55,7 @@ public class FillerMask implements GUIComponent {
      *
      * @param materials The mask materials.
      * @param pattern   The pattern.
-     * @deprecated Use {@link MaskItems} instead.
+     * @deprecated Use {@link FillerMask#FillerMask(MaskItems, String...)} instead.
      */
     @Deprecated(since = "6.24.0")
     public FillerMask(@NotNull final MaskMaterials materials,
@@ -70,6 +71,7 @@ public class FillerMask implements GUIComponent {
      *
      * @param items   The mask items.
      * @param pattern The pattern.
+     * @throws IllegalArgumentException If any of the mask items is an empty item.
      */
     public FillerMask(@NotNull final MaskItems items,
                       @NotNull final String... pattern) {

@@ -56,6 +56,7 @@ public final class PluginProps {
 
     /**
      * If the plugin uses reflective reload.
+     *
      * @deprecated This option has no effect, reflective reload has been removed.
      */
     @Deprecated(since = "6.77.0", forRemoval = true)
@@ -69,6 +70,9 @@ public final class PluginProps {
 
     /**
      * Create new blank props.
+     * <p>
+     * All props other than the eco api version, which defaults to 6.0.0, are left unset
+     * and must be populated before {@link #validate()} will pass.
      */
     private PluginProps() {
         this.ecoApiVersion = new Version("6.0.0");
@@ -194,7 +198,7 @@ public final class PluginProps {
      * Get an environment variable.
      *
      * @param name The name.
-     * @return The value of the variable.
+     * @return The value of the variable, or null if it has not been set.
      */
     @Nullable
     public String getEnvironmentVariable(@NotNull final String name) {
@@ -213,7 +217,7 @@ public final class PluginProps {
     }
 
     /**
-     * Set if the plugin uses reflective reload.
+     * Get if the plugin uses reflective reload.
      *
      * @return If the plugin uses reflective reload.
      * @deprecated Reflective reload has been removed.
@@ -236,6 +240,8 @@ public final class PluginProps {
 
     /**
      * Ensure that all required props have been set.
+     *
+     * @throws IllegalStateException If any of the required props are missing.
      */
     public void validate() {
         if (
@@ -256,6 +262,7 @@ public final class PluginProps {
      * @param sourceClass The source class.
      * @param <T>         The source type.
      * @return The props.
+     * @throws IllegalArgumentException If no parser has been registered for the source class.
      */
     public static <T> PluginProps parse(@NotNull final T source,
                                         @NotNull final Class<? extends T> sourceClass) {

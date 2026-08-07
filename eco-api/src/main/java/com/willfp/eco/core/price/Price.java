@@ -15,12 +15,15 @@ import org.jetbrains.annotations.NotNull;
  *     <li><code>pay(Player, double)</code></li>
  *     <li><code>giveTo(Player, double)</code></li>
  *     <li><code>getValue(Player, double)</code></li>
- *     <li><code>getMultiplier(Player)</code></li>
  *     <li><code>setMultiplier(Player, double)</code></li>
  * </ul>
  * Otherwise, your implementation will throw {@link NotImplementedError}.
  * <p>
- * Also, getValue() should always return the value with player multipliers applied.
+ * You should also override <code>getMultiplier(Player)</code> if your price supports multipliers;
+ * it does not throw, but returns 1 by default.
+ * <p>
+ * Also, {@link #getValue(Player, double)} should always return the value with player
+ * multipliers applied.
  */
 public interface Price {
     /**
@@ -151,7 +154,7 @@ public interface Price {
      * If the price is backed by a value, get it here.
      *
      * @return The value.
-     * @deprecated Use getValue(Player) instead.
+     * @deprecated Use {@link #getValue(Player)} instead.
      */
     @Deprecated(since = "6.45.0", forRemoval = true)
     default double getValue() {

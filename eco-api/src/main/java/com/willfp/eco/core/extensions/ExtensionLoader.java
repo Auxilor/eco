@@ -19,7 +19,7 @@ public interface ExtensionLoader {
     /**
      * Retrieve a set of all loaded extensions.
      *
-     * @return An {@link Set<Extension>} of all loaded extensions.
+     * @return A {@link Set} of all loaded {@link Extension}s.
      */
     Set<Extension> getLoadedExtensions();
 }

@@ -53,6 +53,37 @@ import org.jetbrains.annotations.Nullable;
  * It is recommended to view the source code for this class to
  * gain a better understanding of how it works.
  * <p>
+ * <b>Lifecycle</b>
+ * <p>
+ * The bukkit lifecycle methods ({@link #onLoad()}, {@link #onEnable()}, {@link #onDisable()})
+ * are final. Subclasses hook into the lifecycle by overriding the {@code handle} methods
+ * instead, or by registering tasks with {@link #onLoad(Runnable)}, {@link #onEnable(Runnable)},
+ * and so on. The order is:
+ * <ol>
+ *     <li>The constructor: props are read (and passed through {@link #mutateProps(PluginProps)}),
+ *     lang.yml and config.yml are created, and the minimum eco version is checked.</li>
+ *     <li>{@link #onLoad()}: extensions are loaded, then {@link #handleLoad()} runs.</li>
+ *     <li>{@link #onEnable()}: the update checker and bStats are started, integrations from
+ *     {@link #loadIntegrationLoaders()} are loaded, {@link Prerequisite}s are updated, listeners
+ *     from {@link #loadListeners()} and {@link #loadPacketListeners()} are registered, commands
+ *     from {@link #loadPluginCommands()} are registered, extensions are enabled, and then
+ *     {@link #handleEnable()} runs.</li>
+ *     <li>One tick later: a preliminary {@link #reload(boolean)} (without cancelling tasks) to
+ *     resolve load order issues.</li>
+ *     <li>Two ticks after enable: {@link #afterLoad()}, which registers the display modules from
+ *     {@link #createDisplayModule()} and {@link #loadDisplayModules()}, runs
+ *     {@link #handleAfterLoad()}, and then performs a full {@link #reload()}.</li>
+ *     <li>{@link #reload()} (whenever called): configs are updated, tasks are cancelled,
+ *     {@link #handleReload()} runs, then {@link #createTasks()} runs, then extensions are
+ *     reloaded.</li>
+ *     <li>{@link #onDisable()}: listeners are unregistered, tasks are cancelled,
+ *     {@link #handleDisable()} runs, extensions are unloaded, and eco cleans up the plugin.</li>
+ * </ol>
+ * <p>
+ * Each lifecycle stage runs the tasks registered at {@link LifecyclePosition#START} first,
+ * then the {@code handle} method, then the tasks registered at {@link LifecyclePosition#END}.
+ * Exceptions thrown by any of them are caught and logged rather than propagated.
+ * <p>
  * <b>IMPORTANT: When reloading a plugin, all runnables / tasks will
  * be cancelled.</b>
  */
@@ -117,6 +148,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * The display module for the plugin.
+     * <p>
+     * Never assigned; retained only so that {@link #getDisplayModule()} keeps compiling.
      *
      * @deprecated Plugins can now have multiple display modules.
      */
@@ -124,7 +157,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     private DisplayModule displayModule;
 
     /**
-     * The display modules for the plugin.
+     * The display modules for the plugin, populated in {@link #afterLoad()}.
      */
     private List<DisplayModule> displayModules = new ArrayList<>();
 
@@ -280,8 +313,14 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Create a new plugin.
+     * <p>
+     * Reads (or generates) the props, passes them through {@link #mutateProps(PluginProps)},
+     * creates the plugin's scheduler, factories, and loaders, then creates lang.yml and
+     * config.yml, and finally checks that the running version of eco is new enough.
      *
      * @param pluginProps The props. If left null, it will read from eco.yml.
+     * @throws OutdatedEcoVersionError If the running version of eco is older than the version
+     *                                 the plugin requires.
      */
     protected EcoPlugin(@Nullable final PluginProps pluginProps) {
         /*
@@ -575,6 +614,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Default code to be executed after the server is up.
+     * <p>
+     * Scheduled automatically two ticks after {@link #onEnable()}. This registers the plugin's
+     * display modules, runs {@link #handleAfterLoad()}, and then performs a full
+     * {@link #reload()}.
      */
     public final void afterLoad() {
         DisplayModule module = createDisplayModule();
@@ -642,6 +685,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Reload the plugin.
+     * <p>
+     * Updates all configs, optionally cancels all running tasks, runs the reload lifecycle
+     * ({@link #handleReload()}), and then reloads all loaded extensions. The
+     * {@link #createTasks()} lifecycle is only run when {@code cancelTasks} is true, as
+     * otherwise the existing tasks are still running.
      *
      * @param cancelTasks If tasks should be cancelled.
      */
@@ -706,7 +754,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * Reload the plugin and return the time taken to reload.
      *
-     * @return The time.
+     * @return The time taken, in milliseconds.
      */
     public final long reloadWithTime() {
         return reloadWithTime(true);
@@ -716,7 +764,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Reload the plugin and return the time taken to reload.
      *
      * @param cancelTasks If tasks should be cancelled.
-     * @return The time.
+     * @return The time taken, in milliseconds.
      */
     public final long reloadWithTime(final boolean cancelTasks) {
         long startTime = System.currentTimeMillis();
@@ -728,6 +776,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Handle lifecycle.
+     * <p>
+     * Runs the {@link LifecyclePosition#START} tasks, then the handler, then the
+     * {@link LifecyclePosition#END} tasks. Exceptions thrown by any of them are logged
+     * rather than propagated.
      *
      * @param tasks   The tasks.
      * @param handler The handler.
@@ -804,6 +856,9 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * The plugin-specific code to create tasks.
      * <p>
+     * Run after {@link #handleReload()}, but only when the reload cancelled the existing
+     * tasks - see {@link #reload(boolean)}.
+     * <p>
      * Override when needed.
      */
     protected void createTasks() {
@@ -812,6 +867,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * The plugin-specific code to be executed after the server is up.
+     * <p>
+     * Run two ticks after enabling, before the first full {@link #reload()}.
      * <p>
      * Override when needed.
      */
@@ -836,6 +893,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * The plugin-specific integrations to be tested and loaded.
+     * <p>
+     * Called once on enable. Each loader is only run if a plugin with a matching name is
+     * present on the server.
+     * <p>
+     * Override when needed.
      *
      * @return A list of integrations.
      */
@@ -845,6 +907,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * The commands to be registered.
+     * <p>
+     * Called once on enable, and each command is registered automatically.
+     * <p>
+     * Override when needed.
      *
      * @return A list of commands.
      */
@@ -854,8 +920,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Packet Listeners to be registered.
+     * <p>
+     * Called once on enable, and each listener is registered with the
+     * {@link EventManager} automatically.
+     * <p>
+     * Override when needed.
      *
-     * @return A list of handle listeners.
+     * @return A list of packet listeners.
      */
     protected List<PacketListener> loadPacketListeners() {
         return new ArrayList<>();
@@ -863,6 +934,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * All listeners to be registered.
+     * <p>
+     * Called once on enable, and each listener is registered with the
+     * {@link EventManager} automatically.
+     * <p>
+     * Override when needed.
      *
      * @return A list of all listeners.
      */
@@ -873,9 +949,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * Useful for custom LangYml implementations.
      * <p>
+     * Called from the constructor.
+     * <p>
      * Override if needed.
      *
-     * @return lang.yml.
+     * @return lang.yml, or null if it could not be loaded, in which case the plugin
+     *         is disabled.
      */
     protected LangYml createLangYml() {
         try {
@@ -892,9 +971,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * Useful for custom ConfigYml implementations.
      * <p>
+     * Called from the constructor.
+     * <p>
      * Override if needed.
      *
-     * @return config.yml.
+     * @return config.yml, or null if it could not be loaded, in which case the plugin
+     *         is disabled.
      */
     protected ConfigYml createConfigYml() {
         try {
@@ -910,8 +992,12 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Create the display module for the plugin.
+     * <p>
+     * Called once, from {@link #afterLoad()}. Any non-null module returned is registered
+     * with {@link Display} and added to {@link #getDisplayModules()}.
      *
-     * @return The display module, or null.
+     * @return The display module, or null if the plugin has none. The default
+     *         implementation always returns null.
      * @deprecated Use {@link #loadDisplayModules()} instead.
      */
     @Nullable
@@ -924,6 +1010,11 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Load display modules.
+     * <p>
+     * Called once, from {@link #afterLoad()}. All returned modules are registered with
+     * {@link Display}.
+     * <p>
+     * Override when needed.
      *
      * @return The display modules.
      */
@@ -959,6 +1050,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * @param proxyClass The proxy class.
      * @param <T>        The proxy type.
      * @return The proxy.
+     * @throws NullPointerException If the plugin has no proxy package configured.
      */
     public final <T> T getProxy(@NotNull final Class<T> proxyClass) {
         Preconditions.checkNotNull(proxyFactory, "Plugin does not support proxies!");
@@ -971,7 +1063,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Does not use eco config system, don't use.
      *
      * @return The bukkit config.
-     * @deprecated Use getConfigYml() instead.
+     * @deprecated Use {@link #getConfigYml()} instead.
      */
     @NotNull
     @Override
@@ -1025,7 +1117,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Get an EcoPlugin by name.
      *
      * @param pluginName The name.
-     * @return The plugin.
+     * @return The plugin, or null if no eco plugin with that name is loaded.
      */
     @Nullable
     public static EcoPlugin getPlugin(@NotNull final String pluginName) {
@@ -1191,8 +1283,10 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
     /**
      * Get the plugin's display module.
+     * <p>
+     * The backing field is no longer populated, so this always returns null.
      *
-     * @return The display module.
+     * @return Always null.
      * @deprecated Use {@link #getDisplayModules()} instead.
      */
     @Nullable
@@ -1204,7 +1298,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * Get the plugin's display modules.
      *
-     * @return The display modules.
+     * @return An immutable copy of the display modules.
      */
     public List<DisplayModule> getDisplayModules() {
         return ImmutableList.copyOf(this.displayModules);
@@ -1231,7 +1325,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
     /**
      * Get the proxy factory.
      *
-     * @return The proxy factory.
+     * @return The proxy factory, or null if the plugin has no proxy package configured.
      */
     @Nullable
     public ProxyFactory getProxyFactory() {

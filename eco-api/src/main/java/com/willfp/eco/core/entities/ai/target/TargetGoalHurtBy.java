@@ -11,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Allows an entity to react when hit by set target.
+ * Allows an entity to target whatever hurt it.
  *
- * @param blacklist The entities not to attack when hurt by.
+ * @param blacklist The entities not to target when hurt by them.
  */
 @SuppressWarnings({"varargs"})
 public record TargetGoalHurtBy(

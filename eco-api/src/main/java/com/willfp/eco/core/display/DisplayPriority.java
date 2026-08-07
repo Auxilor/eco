@@ -2,6 +2,10 @@ package com.willfp.eco.core.display;
 
 /**
  * The priority (order) of display modules.
+ * <p>
+ * Each priority maps onto a weight, and modules are run in ascending weight order, so a
+ * lower weight runs first. Modules that need finer control can pass a raw weight into
+ * {@link DisplayModule#DisplayModule(com.willfp.eco.core.EcoPlugin, int)} instead.
  */
 public enum DisplayPriority {
     /**

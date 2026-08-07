@@ -18,7 +18,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DropQueue {
     /**
-     * The internally used {@link DropQueue}.
+     * The internally used {@link DropQueue}, or null if this is a custom implementation
+     * created through {@link #DropQueue()}.
      */
     private final DropQueue delegate;
 
@@ -35,7 +36,7 @@ public class DropQueue {
      * Create a new DropQueue with no delegate.
      * <p>
      * Call this constructor if you're creating custom DropQueue
-     * implementations.
+     * implementations. All methods on this class become no-ops unless overridden.
      */
     protected DropQueue() {
         this.delegate = null;
@@ -116,7 +117,7 @@ public class DropQueue {
     }
 
     /**
-     * Push the queue.
+     * Push the queue, giving out all queued items and xp.
      */
     public void push() {
         if (delegate == null) {

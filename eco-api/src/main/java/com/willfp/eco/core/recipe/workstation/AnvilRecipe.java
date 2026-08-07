@@ -17,15 +17,54 @@ import org.jetbrains.annotations.Nullable;
  * <p>Use {@link #builder(NamespacedKey, ItemStack, TestableItem)} to construct instances.
  */
 public final class AnvilRecipe extends WorkstationRecipe {
+    /**
+     * The repair cost used when the builder is not given one.
+     */
     private static final int DEFAULT_REPAIR_COST = 1;
 
+    /**
+     * The required base item, placed in the left anvil slot.
+     */
     private final TestableItem base;
+
+    /**
+     * The optional material, placed in the right anvil slot.
+     */
     @Nullable private final TestableItem material;
+
+    /**
+     * The display item for the base slot.
+     */
     @Nullable private final ItemStack baseDisplay;
+
+    /**
+     * The display item for the material slot.
+     */
     @Nullable private final ItemStack materialDisplay;
+
+    /**
+     * The display name applied to the result item.
+     */
     @Nullable private final String resultName;
+
+    /**
+     * The experience level cost of this recipe.
+     */
     private final int repairCost;
 
+    /**
+     * Create a new anvil recipe.
+     *
+     * @param key             Unique recipe identifier.
+     * @param output          The item produced, or null.
+     * @param permission      The permission required to use this recipe, or null.
+     * @param base            The required base item.
+     * @param material        The optional material item, or null.
+     * @param baseDisplay     The display item for the base slot, or null.
+     * @param materialDisplay The display item for the material slot, or null.
+     * @param resultName      The name applied to the result, or null.
+     * @param repairCost      The experience level cost.
+     */
     private AnvilRecipe(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @Nullable final String permission,
@@ -127,16 +166,58 @@ public final class AnvilRecipe extends WorkstationRecipe {
      * Builder for {@link AnvilRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The required base item.
+         */
         private final TestableItem base;
+
+        /**
+         * The optional material item.
+         */
         @Nullable private TestableItem material;
+
+        /**
+         * The display item for the base slot.
+         */
         @Nullable private ItemStack baseDisplay;
+
+        /**
+         * The display item for the material slot.
+         */
         @Nullable private ItemStack materialDisplay;
+
+        /**
+         * The name applied to the result item.
+         */
         @Nullable private String resultName;
+
+        /**
+         * The experience level cost.
+         */
         private int repairCost = DEFAULT_REPAIR_COST;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key    Unique recipe identifier.
+         * @param output The item produced, or null.
+         * @param base   The required base item.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @NotNull final TestableItem base) {
@@ -196,7 +277,7 @@ public final class AnvilRecipe extends WorkstationRecipe {
         /**
          * Set the experience level cost of this recipe.
          *
-         * @param repairCost Cost in levels. Defaults to {@value DEFAULT_REPAIR_COST}.
+         * @param repairCost Cost in levels. Defaults to {@code 1}.
          * @return This builder.
          */
         @NotNull

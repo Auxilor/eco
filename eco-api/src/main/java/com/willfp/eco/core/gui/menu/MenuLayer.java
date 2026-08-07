@@ -19,5 +19,8 @@ public final class MenuLayer {
     /** At the absolute top. */
     public static final int TOP = 4;
 
+    /**
+     * Constants class, cannot be instantiated.
+     */
     private MenuLayer() {}
 }

@@ -20,17 +20,39 @@ import org.jetbrains.annotations.Nullable;
  * a display {@link ItemStack} (registered with Bukkit as an
  * {@link RecipeChoice.ExactChoice} so the crafter UI shows the correct icon).
  * <p>
- * When {@link #register()} is called a Bukkit {@link ShapedRecipe} is also
- * registered under the key {@code <namespace>:<key>_crafter} so the vanilla
- * crafter block can preview and execute the recipe.
+ * When {@link #register()} is called and the recipe has an output, a Bukkit
+ * {@link ShapedRecipe} is also registered under the key
+ * {@code <namespace>:<key>_crafter} so the vanilla crafter block can preview and
+ * execute the recipe. If the output is null, only the eco-side registration happens.
  *
  * <p>Use {@link #builder(NamespacedKey, ItemStack)} to construct instances.
  */
 public final class CrafterRecipe extends WorkstationRecipe {
+    /**
+     * The ingredient predicates for the nine crafter slots, in matrix order.
+     */
     private final List<TestableItem> parts;
+
+    /**
+     * The display items for the nine crafter slots, in matrix order.
+     */
     private final List<ItemStack> partDisplays;
+
+    /**
+     * Whether this recipe is flagged as shapeless.
+     */
     private final boolean shapeless;
 
+    /**
+     * Create a new crafter recipe.
+     *
+     * @param key          Unique recipe identifier.
+     * @param output       The item produced, or null.
+     * @param permission   The permission required to use this recipe, or null.
+     * @param parts        The nine ingredient predicates, in matrix order.
+     * @param partDisplays The nine display items, in matrix order.
+     * @param shapeless    Whether the recipe is flagged as shapeless.
+     */
     private CrafterRecipe(@NotNull final NamespacedKey key,
                           @Nullable final ItemStack output,
                           @Nullable final String permission,
@@ -68,9 +90,11 @@ public final class CrafterRecipe extends WorkstationRecipe {
     }
 
     /**
-     * Whether this recipe is shapeless.
+     * Whether this recipe is flagged as shapeless, meaning ingredients may be placed in
+     * any order.
      * <p>
-     * Shapeless recipes match regardless of the order ingredients are placed.
+     * This is only a flag carried on the recipe for consumers to act on;
+     * {@link #register()} always registers a shaped Bukkit recipe regardless of its value.
      *
      * @return True if shapeless.
      */
@@ -135,13 +159,42 @@ public final class CrafterRecipe extends WorkstationRecipe {
      * Builder for {@link CrafterRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
+
+        /**
+         * The nine ingredient predicates, in matrix order. Defaults to all null.
+         */
         private List<TestableItem> parts = new ArrayList<>(Arrays.asList(new TestableItem[9]));
+
+        /**
+         * The nine display items, in matrix order. Defaults to all null.
+         */
         private List<ItemStack> partDisplays = new ArrayList<>(Arrays.asList(new ItemStack[9]));
+
+        /**
+         * Whether the recipe is flagged as shapeless.
+         */
         private boolean shapeless = false;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key    Unique recipe identifier.
+         * @param output The item produced, or null.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output) {
             this.key = key;
@@ -165,9 +218,12 @@ public final class CrafterRecipe extends WorkstationRecipe {
         }
 
         /**
-         * Set whether this recipe is shapeless.
+         * Set whether this recipe is flagged as shapeless.
+         * <p>
+         * The flag is exposed through {@link CrafterRecipe#isShapeless()}; the Bukkit
+         * recipe registered by {@link CrafterRecipe#register()} is always shaped.
          *
-         * @param shapeless True to match ingredients in any order.
+         * @param shapeless True to flag ingredients as matching in any order.
          * @return This builder.
          */
         @NotNull

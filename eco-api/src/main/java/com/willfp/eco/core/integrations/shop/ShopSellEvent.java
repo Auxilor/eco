@@ -11,6 +11,12 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Unified event for shop plugins to fire in order to have sell multipliers.
+ * <p>
+ * Shop integrations adapt their own plugin's sell event into this one, so that eco plugins can
+ * modify the sell value or multiplier in a single place regardless of which shop plugin is
+ * installed.
+ *
+ * @see ShopIntegration#getSellEventAdapter()
  */
 public class ShopSellEvent extends PlayerEvent {
     /**
@@ -38,9 +44,9 @@ public class ShopSellEvent extends PlayerEvent {
      * Create new shop sell event.
      *
      * @param who   The player.
-     * @param price The price.
-     * @param item  The item.
-     * @deprecated Use the price system instead.
+     * @param price The price, wrapped into a {@link PriceEconomy}.
+     * @param item  The item, or null if the shop plugin does not expose it.
+     * @deprecated Use {@link #ShopSellEvent(Player, Price, ItemStack)} instead.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public ShopSellEvent(@NotNull final Player who,
@@ -50,11 +56,11 @@ public class ShopSellEvent extends PlayerEvent {
     }
 
     /**
-     * Create new shop sell event.
+     * Create new shop sell event with a multiplier of 1.
      *
      * @param who   The player.
      * @param price The price.
-     * @param item  The item.
+     * @param item  The item, or null if the shop plugin does not expose it.
      */
     public ShopSellEvent(@NotNull final Player who,
                          @NotNull final Price price,
@@ -67,7 +73,7 @@ public class ShopSellEvent extends PlayerEvent {
      *
      * @param who        The player.
      * @param price      The price.
-     * @param item       The item.
+     * @param item       The item, or null if the shop plugin does not expose it.
      * @param multiplier The multiplier.
      */
     public ShopSellEvent(@NotNull final Player who,
@@ -83,7 +89,9 @@ public class ShopSellEvent extends PlayerEvent {
     }
 
     /**
-     * Get the value.
+     * Get the sell value.
+     * <p>
+     * This is the raw price; it does not have {@link #getMultiplier()} applied.
      *
      * @return The value.
      */
@@ -93,7 +101,7 @@ public class ShopSellEvent extends PlayerEvent {
     }
 
     /**
-     * Set the value.
+     * Set the sell value.
      *
      * @param price The value.
      */
@@ -104,7 +112,7 @@ public class ShopSellEvent extends PlayerEvent {
     /**
      * Get the item to be sold.
      *
-     * @return The item. Can be null for some plugins, so check hasKnownItem first!
+     * @return The item. Can be null for some plugins, so check {@link #hasKnownItem()} first!
      */
     @Nullable
     public ItemStack getItem() {
@@ -113,7 +121,7 @@ public class ShopSellEvent extends PlayerEvent {
 
     /**
      * Get if the item is known. Some shop plugins are lacking this in their event,
-     * so always check this before getItem(), as getItem() may be null.
+     * so always check this before {@link #getItem()}, as {@link #getItem()} may be null.
      *
      * @return If the item is known.
      */
@@ -142,8 +150,8 @@ public class ShopSellEvent extends PlayerEvent {
     /**
      * Get the price.
      *
-     * @return The price.
-     * @deprecated Use the price system instead.
+     * @return The price, resolved for the player selling.
+     * @deprecated Use {@link #getValue()} instead.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public double getPrice() {
@@ -153,8 +161,8 @@ public class ShopSellEvent extends PlayerEvent {
     /**
      * Set the price.
      *
-     * @param price The price.
-     * @deprecated Use the price system instead.
+     * @param price The price, wrapped into a {@link PriceEconomy}.
+     * @deprecated Use {@link #setValue(Price)} instead.
      */
     @Deprecated(since = "6.47.0", forRemoval = true)
     public void setPrice(final double price) {

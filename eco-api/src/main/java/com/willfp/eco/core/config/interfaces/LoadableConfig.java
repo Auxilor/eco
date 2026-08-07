@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface LoadableConfig extends Config {
     /**
-     * Create the file.
+     * Create the file on disk if it does not already exist.
      */
     void createFile();
 
@@ -30,6 +30,10 @@ public interface LoadableConfig extends Config {
 
     /**
      * Save the config asynchronously.
+     * <p>
+     * The default implementation spawns a raw thread and swallows any {@link IOException}
+     * by printing its stack trace; it exists purely for backwards compatibility with
+     * legacy {@link Config} implementations. eco's own implementations override this.
      */
     default void saveAsync() {
         // This default implementation exists purely for backwards compatibility
@@ -60,6 +64,8 @@ public interface LoadableConfig extends Config {
 
     /**
      * Convert the config to a bukkit {@link YamlConfiguration}.
+     *
+     * @return The bukkit config.
      */
     @NotNull
     YamlConfiguration toBukkit();

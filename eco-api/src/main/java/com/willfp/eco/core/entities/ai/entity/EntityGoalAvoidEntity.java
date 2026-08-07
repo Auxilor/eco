@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * Avoid entities.
  *
  * @param entity    The entity type to avoid.
- * @param distance  The distance to flee to.
+ * @param distance  The distance at which to start avoiding the entity.
  * @param slowSpeed The slow movement speed.
  * @param fastSpeed The fast movement speed.
  */

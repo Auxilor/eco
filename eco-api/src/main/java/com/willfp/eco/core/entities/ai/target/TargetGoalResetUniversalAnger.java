@@ -9,11 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Reset universal anger.
+ * Resets the entity's universal anger, making it forget its current target.
  * <p>
  * Can only be applied to neutral mobs.
  *
- * @param triggerOthers If this should cause other nearby entities to trigger.
+ * @param triggerOthers If nearby mobs of the same type should have their anger reset too.
  */
 public record TargetGoalResetUniversalAnger(
         boolean triggerOthers

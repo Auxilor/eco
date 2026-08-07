@@ -13,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
  */
 public class ModifiedTestableItem implements TestableItem {
     /**
-     * The item.
+     * The underlying item that must also match.
      */
     private final TestableItem handle;
 
     /**
-     * The amount.
+     * The extra filter applied on top of the handle.
      */
     private final Predicate<ItemStack> test;
 
@@ -30,9 +30,9 @@ public class ModifiedTestableItem implements TestableItem {
     /**
      * Create a new modified testable item.
      *
-     * @param item    The item.
-     * @param test    The test.
-     * @param example The example.
+     * @param item    The underlying item that must also match.
+     * @param test    The extra filter applied on top of the underlying item.
+     * @param example The example item returned by {@link #getItem()}.
      */
     public ModifiedTestableItem(@NotNull final TestableItem item,
                                 @NotNull final Predicate<ItemStack> test,
@@ -43,10 +43,10 @@ public class ModifiedTestableItem implements TestableItem {
     }
 
     /**
-     * If the item matches the material.
+     * If the item matches both the underlying item and the extra filter.
      *
      * @param itemStack The item to test.
-     * @return If the item is of the specified material.
+     * @return If the item is non-null, matches the handle, and passes the extra filter.
      */
     @Override
     public boolean matches(@Nullable final ItemStack itemStack) {
@@ -61,7 +61,7 @@ public class ModifiedTestableItem implements TestableItem {
     /**
      * Get the handle.
      *
-     * @return The handle.
+     * @return The underlying item.
      */
     public TestableItem getHandle() {
         return this.handle;
@@ -70,7 +70,7 @@ public class ModifiedTestableItem implements TestableItem {
     /**
      * Get the test.
      *
-     * @return The test.
+     * @return The extra filter.
      */
     public Predicate<ItemStack> getTest() {
         return this.test;

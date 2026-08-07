@@ -14,8 +14,19 @@ import org.jetbrains.annotations.Nullable;
  * themselves with the server via {@link #register()}.
  */
 public abstract class WorkstationRecipe {
+    /**
+     * The unique key of this recipe.
+     */
     private final NamespacedKey key;
+
+    /**
+     * The item produced by this recipe, or null if it has no fixed output.
+     */
     private final ItemStack output;
+
+    /**
+     * The permission required to use this recipe, or null if none is required.
+     */
     @Nullable private final String permission;
 
     /**
@@ -68,6 +79,10 @@ public abstract class WorkstationRecipe {
     /**
      * Register this recipe with {@link WorkstationRecipes} and, where
      * applicable, with the Bukkit recipe system.
+     * <p>
+     * Implementations that back onto Bukkit recipes also call
+     * {@link WorkstationRecipes#trackBukkitKey(NamespacedKey)} so those recipes are
+     * removed again on {@link WorkstationRecipes#clear()}.
      */
     public abstract void register();
 }

@@ -34,22 +34,24 @@ public class Pair<A, B> {
     }
 
     /**
-     * component1 exists to allow a pair to be destructured by kotlin.
+     * Get the first member of the tuple, allowing the pair to be destructured by kotlin.
+     * <p>
      * The default kotlin pair already has this, however there is no default
      * pair in java so this exists for parity.
      *
-     * @return First.
+     * @return The first member.
      */
     public A component1() {
         return first;
     }
 
     /**
-     * component2 exists to allow a pair to be destructured by kotlin.
+     * Get the second member of the tuple, allowing the pair to be destructured by kotlin.
+     * <p>
      * The default kotlin pair already has this, however there is no default
      * pair in java so this exists for parity.
      *
-     * @return First.
+     * @return The second member.
      */
     public B component2() {
         return second;

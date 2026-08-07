@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface TestableItem extends Testable<ItemStack> {
     /**
-     * If an ItemStack matches the recipe part.
+     * If an ItemStack matches this item.
      *
      * @param itemStack The item to test.
      * @return If the item matches.

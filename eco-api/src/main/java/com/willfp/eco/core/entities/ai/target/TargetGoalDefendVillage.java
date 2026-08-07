@@ -8,7 +8,7 @@ import org.bukkit.entity.IronGolem;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Defend village.
+ * Allows an iron golem to defend a village by targeting entities that have attacked its villagers.
  */
 public record TargetGoalDefendVillage(
 ) implements TargetGoal<IronGolem> {

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ProxyError extends Error {
     /**
-     * Thrown if there is an error getting a proxy.
+     * Create a new proxy error, thrown if there is an error getting a proxy.
      *
      * @param message The message to send.
      * @param cause   The cause.

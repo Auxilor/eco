@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A template class for dynamic placeholders.
+ * A template class for dynamic injectable placeholders, matched against a regex pattern.
  */
 public abstract class DynamicInjectablePlaceholder implements InjectablePlaceholder {
 

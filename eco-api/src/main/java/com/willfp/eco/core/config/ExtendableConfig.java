@@ -18,13 +18,13 @@ public abstract class ExtendableConfig extends LoadableConfigWrapper {
     /**
      * Create a new extendable config.
      *
-     * @param configName       The name of the config
+     * @param configName       The name of the config (excluding extension).
      * @param removeUnused     Whether keys not present in the default config should be removed on update.
      * @param plugin           The plugin.
-     * @param updateBlacklist  Substring of keys to not add/remove keys for.
-     * @param subDirectoryPath The subdirectory path.
-     * @param type             The config type.
      * @param source           The class that owns the resource.
+     * @param subDirectoryPath The subdirectory path, relative to the plugin's data folder.
+     * @param type             The config type.
+     * @param updateBlacklist  Substrings of keys to not add/remove keys for.
      */
     protected ExtendableConfig(@NotNull final String configName,
                                final boolean removeUnused,

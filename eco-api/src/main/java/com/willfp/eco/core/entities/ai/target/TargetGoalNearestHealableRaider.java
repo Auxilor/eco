@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Target nearest attackable raider.
+ * Allows a raider to target the nearest raider that it can heal.
  *
  * @param target          The types of entities to heal.
  * @param checkVisibility If visibility should be checked.
@@ -27,7 +27,7 @@ public record TargetGoalNearestHealableRaider(
     /**
      * Create a new target goal.
      *
-     * @param target          The target.
+     * @param target          The types of entities to heal.
      * @param checkVisibility If visibility should be checked.
      */
     public TargetGoalNearestHealableRaider(@NotNull final TestableEntity target,

@@ -11,17 +11,33 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A custom stonecutter recipe.
  * <p>
- * When an {@link #getInputDisplay() inputDisplay} item is provided a Bukkit
- * {@link org.bukkit.inventory.StonecuttingRecipe} is also registered so the
+ * When both an output and an {@link #getInputDisplay() inputDisplay} item are provided,
+ * a Bukkit {@link org.bukkit.inventory.StonecuttingRecipe} is also registered so the
  * recipe appears in the stonecutter UI. The {@link com.willfp.eco.core.items.TestableItem}
  * predicate is evaluated at runtime to support custom item matching.
  *
  * <p>Use {@link #builder(NamespacedKey, ItemStack, TestableItem)} to construct instances.
  */
 public final class StonecuttingRecipe extends WorkstationRecipe {
+    /**
+     * The input item predicate, evaluated at runtime.
+     */
     private final TestableItem input;
+
+    /**
+     * The display item registered with Bukkit, or null if no Bukkit recipe is registered.
+     */
     @Nullable private final ItemStack inputDisplay;
 
+    /**
+     * Create a new stonecutting recipe.
+     *
+     * @param key          Unique recipe identifier.
+     * @param output       The item produced, or null.
+     * @param permission   The permission required to use this recipe, or null.
+     * @param input        The input item predicate.
+     * @param inputDisplay The display item registered with Bukkit, or null.
+     */
     private StonecuttingRecipe(@NotNull final NamespacedKey key,
                                @Nullable final ItemStack output,
                                @Nullable final String permission,
@@ -45,8 +61,8 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
     /**
      * Get the display item registered with Bukkit's stonecutter recipe system.
      * <p>
-     * If null, no Bukkit recipe is registered and the recipe will not appear
-     * in the stonecutter UI.
+     * If null, or if the recipe has no output, no Bukkit recipe is registered and the
+     * recipe will not appear in the stonecutter UI.
      *
      * @return The display item, or null.
      */
@@ -93,12 +109,38 @@ public final class StonecuttingRecipe extends WorkstationRecipe {
      * Builder for {@link StonecuttingRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The input item predicate.
+         */
         private final TestableItem input;
+
+        /**
+         * The display item registered with Bukkit.
+         */
         @Nullable private ItemStack inputDisplay;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key    Unique recipe identifier.
+         * @param output The item produced, or null.
+         * @param input  The input item predicate.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @NotNull final TestableItem input) {

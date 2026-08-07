@@ -14,7 +14,7 @@ public interface EntityArgParser {
      * Parse the arguments.
      *
      * @param args The arguments.
-     * @return The predicate test to apply to the modified entity.
+     * @return The parse result, or null if the arguments are not applicable to this parser.
      */
     @Nullable EntityArgParseResult parseArguments(@NotNull String[] args);
 }

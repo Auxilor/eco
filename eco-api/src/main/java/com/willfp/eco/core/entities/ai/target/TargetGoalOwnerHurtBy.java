@@ -8,7 +8,7 @@ import org.bukkit.entity.Tameable;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Allows an entity to react when the owner is hit by a target.
+ * Allows a tameable entity to target whatever hurt its owner.
  */
 public record TargetGoalOwnerHurtBy(
 ) implements TargetGoal<Tameable> {

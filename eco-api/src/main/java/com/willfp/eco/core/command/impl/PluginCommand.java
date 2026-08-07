@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * command, e.g. {@code /ecoenchants} would be a base command, with each subsequent argument
  * functioning as subcommands.
  * <p>
- * The command will not be registered until register() is called.
+ * The command will not be registered until {@link #register()} is called.
  * <p>
  * The name cannot be the same as an existing command as this will conflict.
  */

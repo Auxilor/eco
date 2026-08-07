@@ -30,6 +30,30 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Utilities / API methods for strings.
+ * <p>
+ * The formatting methods on this class all produce legacy (section sign) coloured text. They apply
+ * the following, in order:
+ * <ol>
+ *     <li>Placeholders of the form <code>%placeholder%</code>, only when a
+ *     {@link PlaceholderContext} is given or the {@link FormatOption#WITH_PLACEHOLDERS} option is
+ *     used. Placeholders are resolved through {@link PlaceholderManager}, so integrations such as
+ *     PlaceholderAPI are honoured.</li>
+ *     <li>MiniMessage tags.</li>
+ *     <li>Legacy colour and formatting codes written with an ampersand, such as
+ *     <code>&amp;a</code> or <code>&amp;l</code>.</li>
+ *     <li>Gradients, written as
+ *     <code>&lt;GRADIENT:RRGGBB&gt;text&lt;/GRADIENT:RRGGBB&gt;</code>. The <code>GRADIENT</code>
+ *     keyword may be abbreviated to <code>G</code> and the hex may be prefixed with
+ *     <code>#</code>, and the equivalent forms
+ *     <code>&lt;G#RRGGBB&gt;text&lt;/G#RRGGBB&gt;</code>,
+ *     <code>&lt;#:RRGGBB&gt;text&lt;/#:RRGGBB&gt;</code>,
+ *     <code>{#:RRGGBB}text{/#:RRGGBB}</code> and
+ *     <code>{#RRGGBB&gt;}text{#RRGGBB&lt;}</code> are also accepted. Formatting codes inside a
+ *     gradient are stripped out and reapplied to every character of it.</li>
+ *     <li>Single hex colours, written as <code>&amp;#RRGGBB</code>,
+ *     <code>{#RRGGBB}</code> or <code>&lt;#RRGGBB&gt;</code>.</li>
+ * </ol>
+ * Formatted strings are cached for ten seconds, so repeatedly formatting the same string is cheap.
  */
 public final class StringUtils {
     /**
@@ -111,7 +135,8 @@ public final class StringUtils {
     private static final String EMPTY_JSON = GSON_COMPONENT_SERIALIZER.serialize(Component.empty());
 
     /**
-     * Color map.
+     * Color map, mapping decoration codes to their {@link ChatColor} equivalents so that
+     * decorations used inside a gradient can be stripped out and reapplied per character.
      */
     private static final Map<String, ChatColor> COLOR_MAP = new ImmutableMap.Builder<String, ChatColor>()
             .put("&l", ChatColor.BOLD)
@@ -127,7 +152,8 @@ public final class StringUtils {
             .build();
 
     /**
-     * Regex map for splitting values.
+     * Regex map for splitting values, caching a pattern that matches the literal separator
+     * surrounded by single spaces.
      */
     private static final EcoCache<String, Pattern> SPACE_AROUND_CHARACTER = EcoCache.<String, Pattern>builder()
             .build(character -> Pattern.compile("( " + Pattern.quote(character) + " )"));
@@ -138,7 +164,7 @@ public final class StringUtils {
      * Converts color codes and placeholders.
      *
      * @param list The messages to format.
-     * @return The message, formatted.
+     * @return A new list of the messages, formatted.
      */
     @NotNull
     public static List<String> formatList(@NotNull final List<String> list) {
@@ -148,11 +174,11 @@ public final class StringUtils {
     /**
      * Format a list of strings.
      * <p>
-     * Coverts color codes and placeholders for a player.
+     * Converts color codes and placeholders for a player.
      *
      * @param list   The messages to format.
-     * @param player The player to translate placeholders with respect to.
-     * @return The message, format.
+     * @param player The player to translate placeholders with respect to, or null for none.
+     * @return A new list of the messages, formatted.
      */
     @NotNull
     public static List<String> formatList(@NotNull final List<String> list,
@@ -167,7 +193,7 @@ public final class StringUtils {
      *
      * @param list   The messages to format.
      * @param option The format option.
-     * @return The message, formatted.
+     * @return A new list of the messages, formatted.
      */
     @NotNull
     public static List<String> formatList(@NotNull final List<String> list,
@@ -178,12 +204,12 @@ public final class StringUtils {
     /**
      * Format a list of strings.
      * <p>
-     * Coverts color codes and placeholders for a player if specified.
+     * Converts color codes, and placeholders if the option asks for them.
      *
      * @param list   The messages to format.
-     * @param player The player to translate placeholders with respect to.
+     * @param player The player to translate placeholders with respect to, or null for none.
      * @param option The options.
-     * @return The message, format.
+     * @return A new list of the messages, formatted.
      */
     @NotNull
     public static List<String> formatList(@NotNull final List<String> list,
@@ -200,11 +226,11 @@ public final class StringUtils {
     /**
      * Format a list of strings.
      * <p>
-     * Coverts color codes and placeholders.
+     * Converts color codes and placeholders.
      *
      * @param list    The messages to format.
-     * @param context The context.
-     * @return The message, format.
+     * @param context The context to translate placeholders with respect to.
+     * @return A new list of the messages, formatted.
      */
     @NotNull
     public static List<String> formatList(@NotNull final List<String> list,
@@ -237,7 +263,7 @@ public final class StringUtils {
      * Converts color codes and placeholders for a player.
      *
      * @param message The message to format.
-     * @param player  The player to translate placeholders with respect to.
+     * @param player  The player to translate placeholders with respect to, or null for none.
      * @return The message, formatted.
      */
     @NotNull
@@ -277,13 +303,13 @@ public final class StringUtils {
     }
 
     /**
-     * Format a string.
+     * Format a string to a component.
      * <p>
      * Converts color codes and placeholders for a player.
      *
      * @param message The message to format.
-     * @param player  The player to translate placeholders with respect to.
-     * @return The message, formatted.
+     * @param player  The player to translate placeholders with respect to, or null for none.
+     * @return The message, formatted, as a component.
      */
     @NotNull
     public static Component formatToComponent(@NotNull final String message,
@@ -310,10 +336,10 @@ public final class StringUtils {
     /**
      * Format a string to a component.
      * <p>
-     * Coverts color codes and placeholders for a player if specified.
+     * Converts color codes, and placeholders if the option asks for them.
      *
      * @param message The message to format.
-     * @param player  The player to translate placeholders with respect to.
+     * @param player  The player to translate placeholders with respect to, or null for none.
      * @param option  The format options.
      * @return The message, formatted, as a component.
      */
@@ -327,10 +353,11 @@ public final class StringUtils {
     /**
      * Format a string.
      * <p>
-     * Coverts color codes and placeholders for a player if specified.
+     * Converts color codes, and placeholders if the option asks for them. With
+     * {@link FormatOption#WITHOUT_PLACEHOLDERS} the player is ignored entirely.
      *
      * @param message The message to format.
-     * @param player  The player to translate placeholders with respect to.
+     * @param player  The player to translate placeholders with respect to, or null for none.
      * @param option  The format options.
      * @return The message, formatted.
      */
@@ -351,7 +378,7 @@ public final class StringUtils {
     /**
      * Format a string to a component.
      * <p>
-     * Converts color codes and placeholders if specified.
+     * Converts color codes and placeholders.
      *
      * @param message The message to translate.
      * @param context The placeholder context.
@@ -367,7 +394,7 @@ public final class StringUtils {
     /**
      * Format a string.
      * <p>
-     * Coverts color codes and placeholders if specified.
+     * Converts color codes and placeholders.
      *
      * @param message The message to format.
      * @param context The context to translate placeholders with respect to.
@@ -489,8 +516,13 @@ public final class StringUtils {
     /**
      * Internal implementation of {@link String#valueOf}.
      * Formats collections and doubles better.
+     * <p>
+     * Doubles are rendered with {@link NumberUtils#format(double)}, and collections are rendered
+     * by converting each element with this method and joining them with {@code ", "}. Null becomes
+     * the literal string {@code "null"}; everything else falls back to
+     * {@link String#valueOf(Object)}.
      *
-     * @param object The object to convert to string.
+     * @param object The object to convert to string, may be null.
      * @return The object stringified.
      */
     @NotNull
@@ -511,7 +543,8 @@ public final class StringUtils {
      *
      * @param string The string to remove the prefix from.
      * @param prefix The substring to remove.
-     * @return The string with the prefix removed.
+     * @return The string with the prefix removed, or the string unchanged if it did not start
+     *         with the prefix.
      */
     @NotNull
     public static String removePrefix(@NotNull final String string,
@@ -525,8 +558,8 @@ public final class StringUtils {
     /**
      * Convert legacy string to JSON.
      *
-     * @param legacy The legacy string.
-     * @return The JSON String.
+     * @param legacy The legacy string, may be null.
+     * @return The JSON String, or the JSON for an empty component if the input is null.
      */
     @NotNull
     public static String legacyToJson(@Nullable final String legacy) {
@@ -536,8 +569,8 @@ public final class StringUtils {
     /**
      * Convert JSON string to legacy.
      *
-     * @param json The JSON string.
-     * @return The legacy string.
+     * @param json The JSON string, may be null.
+     * @return The legacy string, or an empty string if the input is null, empty, or invalid JSON.
      */
     @NotNull
     public static String jsonToLegacy(@Nullable final String json) {
@@ -546,9 +579,13 @@ public final class StringUtils {
 
     /**
      * Convert Component to JSON String.
+     * <p>
+     * The component is wrapped in an empty parent with italics explicitly disabled, so that item
+     * names and lore do not pick up the client's default italic styling.
      *
-     * @param component The Component.
-     * @return The JSON string.
+     * @param component The Component, may be null.
+     * @return The JSON string, or the JSON for an empty component if the input is null or cannot
+     *         be serialized.
      */
     @NotNull
     public static String componentToJson(@Nullable final Component component) {
@@ -572,8 +609,8 @@ public final class StringUtils {
     /**
      * Convert JSON String to Component.
      *
-     * @param json The JSON String.
-     * @return The component.
+     * @param json The JSON String, may be null.
+     * @return The component, or an empty component if the input is null, empty, or invalid JSON.
      */
     @NotNull
     public static Component jsonToComponent(@Nullable final String json) {
@@ -592,9 +629,12 @@ public final class StringUtils {
 
     /**
      * Convert legacy (bukkit) text to Component.
+     * <p>
+     * Section sign colour codes are read, including hex colours written in the
+     * section-x-repeated form.
      *
-     * @param legacy The legacy text.
-     * @return The component.
+     * @param legacy The legacy text, may be null.
+     * @return The component, or an empty component if the input is null.
      */
     @NotNull
     public static Component toComponent(@Nullable final String legacy) {
@@ -603,6 +643,9 @@ public final class StringUtils {
 
     /**
      * Convert Component to legacy (bukkit) text.
+     * <p>
+     * Colours are written as section sign codes, with hex colours written in the
+     * section-x-repeated form.
      *
      * @param component The component.
      * @return The legacy text.
@@ -615,7 +658,9 @@ public final class StringUtils {
     /**
      * Parse string into tokens.
      * <p>
-     * Handles quoted strings for names.
+     * Tokens are separated by spaces, and a double-quoted run is kept as a single token even if it
+     * contains spaces. A quote may be escaped with a backslash. The input is assumed to be
+     * well-formed; an unterminated quote will cause an exception.
      *
      * @param lookup The lookup string.
      * @return An array of tokens to be processed.
@@ -664,10 +709,12 @@ public final class StringUtils {
      * <p>
      * e.g. {@code splitAround("hello ? how are you", "?")} will split, but
      * {@code splitAround("hello? how are you", "?")} will not.
+     * <p>
+     * The separator is matched literally, and the surrounding spaces are consumed along with it.
      *
      * @param input     Input string.
      * @param separator Separator.
-     * @return The split string.
+     * @return The parts of the input either side of each separator.
      */
     @NotNull
     public static String[] splitAround(@NotNull final String input,
@@ -677,14 +724,21 @@ public final class StringUtils {
 
     /**
      * Create progress bar.
+     * <p>
+     * The bar is always exactly the given number of characters long. Unless the bar is completely
+     * full, exactly one character is drawn in the in-progress format, sitting between the complete
+     * and incomplete sections. The three format strings are themselves run through
+     * {@link #format(String)}, so they may contain colour codes in any supported form.
      *
      * @param character        The bar character.
-     * @param bars             The number of bars.
-     * @param progress         The bar progress, between 0 and 1.
+     * @param bars             The number of bars, which must be at least 2.
+     * @param progress         The bar progress, between 0 and 1 inclusive.
      * @param completeFormat   The color of a complete bar section.
      * @param inProgressFormat The color of an in-progress bar section.
      * @param incompleteFormat The color of an incomplete bar section.
      * @return The progress bar.
+     * @throws IllegalArgumentException If the progress is outside 0 to 1, or there are fewer than
+     *                                  2 bars.
      */
     @NotNull
     public static String createProgressBar(final char character,
@@ -729,7 +783,9 @@ public final class StringUtils {
     }
 
     /**
-     * Fast implementation of {@link String#replace(CharSequence, CharSequence)}
+     * Fast implementation of {@link String#replace(CharSequence, CharSequence)}.
+     * <p>
+     * The target is matched literally, and all occurrences are replaced.
      *
      * @param input       The input string.
      * @param target      The target string.
@@ -782,8 +838,8 @@ public final class StringUtils {
      * Line wrap a list of strings while preserving formatting.
      *
      * @param input      The input list.
-     * @param lineLength The length of each line.
-     * @return The wrapped list.
+     * @param lineLength The approximate length of each line.
+     * @return The wrapped lines.
      */
     @NotNull
     public static List<String> lineWrap(@NotNull final List<String> input,
@@ -795,9 +851,9 @@ public final class StringUtils {
      * Line wrap a list of strings while preserving formatting.
      *
      * @param input          The input list.
-     * @param lineLength     The length of each line.
+     * @param lineLength     The approximate length of each line.
      * @param preserveMargin If the string has a margin, add it to the next line.
-     * @return The wrapped list.
+     * @return The wrapped lines.
      */
     @NotNull
     public static List<String> lineWrap(@NotNull final List<String> input,
@@ -811,9 +867,9 @@ public final class StringUtils {
     /**
      * Line wrap a string while preserving formatting.
      *
-     * @param input      The input list.
-     * @param lineLength The length of each line.
-     * @return The wrapped list.
+     * @param input      The input string.
+     * @param lineLength The approximate length of each line.
+     * @return The wrapped lines.
      */
     @NotNull
     public static List<String> lineWrap(@NotNull final String input,
@@ -823,11 +879,15 @@ public final class StringUtils {
 
     /**
      * Line wrap a string while preserving formatting.
+     * <p>
+     * The string is broken at the first whitespace character once the line has exceeded the given
+     * length, so lines are approximately, not exactly, that long. Colours and decorations carry
+     * over across the break. The returned lines are legacy strings.
      *
      * @param input          The input string.
-     * @param lineLength     The length of each line.
+     * @param lineLength     The approximate length of each line.
      * @param preserveMargin If the string has a margin, add it to the start of each line.
-     * @return The wrapped string.
+     * @return The wrapped lines.
      */
     @NotNull
     public static List<String> lineWrap(@NotNull final String input,
@@ -891,6 +951,9 @@ public final class StringUtils {
 
     /**
      * Get a string's margin.
+     * <p>
+     * The margin is the index at which the trimmed content starts, i.e. the number of leading
+     * whitespace characters.
      *
      * @param input The input string.
      * @return The margin.
@@ -901,6 +964,10 @@ public final class StringUtils {
 
     /**
      * Convert a string to title case.
+     * <p>
+     * The string is split on single spaces; the first character of each word is upper-cased and
+     * the rest of it lower-cased. The original spacing, including runs of consecutive spaces, is
+     * preserved.
      *
      * @param string The string to convert.
      * @return The title-cased string.
@@ -932,12 +999,13 @@ public final class StringUtils {
      */
     public enum FormatOption {
         /**
-         * Completely formatted.
+         * Completely formatted: colour codes are translated and placeholders are resolved.
          */
         WITH_PLACEHOLDERS,
 
         /**
-         * Completely formatted without placeholders.
+         * Completely formatted without placeholders: colour codes are translated, but placeholders
+         * are left in the string untouched.
          */
         WITHOUT_PLACEHOLDERS
     }

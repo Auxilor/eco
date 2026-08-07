@@ -22,7 +22,7 @@ public final class CustomBlocksManager {
     }
 
     /**
-     * Register all the custom block for a specific plugin into eco.
+     * Register the custom blocks of every registered integration into eco.
      *
      * @see com.willfp.eco.core.blocks.Blocks
      */
@@ -31,7 +31,8 @@ public final class CustomBlocksManager {
     }
 
     /**
-     * Register all the custom blocks for a specific plugin into eco.
+     * Register the {@link com.willfp.eco.core.blocks.provider.BlockProvider}s of every
+     * registered integration into eco.
      *
      * @see com.willfp.eco.core.blocks.Blocks
      */

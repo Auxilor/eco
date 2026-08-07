@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface InjectablePlaceholder extends Placeholder {
     /**
-     * Get the plugin that holds the arguments.
+     * Get the plugin that owns the placeholder.
      *
-     * @return The plugin.
+     * @return Always null, as injectable placeholders are not owned by a plugin.
      */
     @Nullable
     @Override

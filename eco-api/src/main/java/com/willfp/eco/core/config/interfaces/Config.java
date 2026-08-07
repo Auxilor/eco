@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * All configs implement this interface.
  * <p>
- * Contains all methods that must exist in yaml and json configurations.
+ * Contains all methods that must exist for every {@link ConfigType}, i.e. yaml, json, and toml.
  */
 @SuppressWarnings("unused")
 public interface Config extends Cloneable, PlaceholderInjectable {
@@ -50,10 +50,13 @@ public interface Config extends Cloneable, PlaceholderInjectable {
 
     /**
      * Recurse config keys.
+     * <p>
+     * The default implementation does nothing and returns an empty list; implementations
+     * that support deep keys override this.
      *
-     * @param found The found keys.
-     * @param root  The root.
-     * @return The keys.
+     * @param found The keys that have already been found.
+     * @param root  The path prefix to prepend to any found keys.
+     * @return The keys, prefixed with the root.
      */
     @NotNull
     default List<String> recurseKeys(@NotNull Set<String> found,
@@ -74,7 +77,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * Set an object in config.
      *
      * @param path   The path.
-     * @param object The object.
+     * @param object The object, or null to clear the value at the path.
      */
     void set(@NotNull String path,
              @Nullable Object object);
@@ -122,7 +125,9 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     }
 
     /**
-     * Get a decimal value via a mathematical expression.
+     * Get an integer value via a mathematical expression.
+     * <p>
+     * The expression is evaluated as a decimal and then truncated towards zero.
      *
      * @param path The key to fetch the value from.
      * @return The computed value, or 0 if not found or invalid.
@@ -132,10 +137,12 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     }
 
     /**
-     * Get a decimal value via a mathematical expression.
+     * Get an integer value via a mathematical expression.
+     * <p>
+     * The expression is evaluated as a decimal and then truncated towards zero.
      *
      * @param path   The key to fetch the value from.
-     * @param player The player to evaluate placeholders with respect to.
+     * @param player The player to evaluate placeholders with respect to, or null for no player.
      * @return The computed value, or 0 if not found or invalid.
      */
     default int getIntFromExpression(@NotNull String path,
@@ -144,10 +151,12 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     }
 
     /**
-     * Get a decimal value via a mathematical expression.
+     * Get an integer value via a mathematical expression.
+     * <p>
+     * The expression is evaluated as a decimal and then truncated towards zero.
      *
      * @param path              The key to fetch the value from.
-     * @param player            The player to evaluate placeholders with respect to.
+     * @param player            The player to evaluate placeholders with respect to, or null for no player.
      * @param additionalPlayers The additional players to evaluate placeholders with respect to.
      * @return The computed value, or 0 if not found or invalid.
      */
@@ -158,7 +167,9 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     }
 
     /**
-     * Get a decimal value via a mathematical expression.
+     * Get an integer value via a mathematical expression.
+     * <p>
+     * The expression is evaluated as a decimal and then truncated towards zero.
      *
      * @param path    The key to fetch the value from.
      * @param context The placeholder context.
@@ -352,7 +363,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     /**
      * Get a string from config.
      * <p>
-     * Formatted by default.
+     * Not formatted.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
@@ -505,8 +516,6 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * Get a list of strings from config.
      * <p>
      * Not formatted.
-     * <p>
-     * This will be changed in newer versions to <b>not</b> format by default.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
@@ -553,7 +562,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * Get a decimal value via a mathematical expression.
      *
      * @param path   The key to fetch the value from.
-     * @param player The player to evaluate placeholders with respect to.
+     * @param player The player to evaluate placeholders with respect to, or null for no player.
      * @return The computed value, or 0 if not found or invalid.
      */
     default double getDoubleFromExpression(@NotNull String path,
@@ -565,7 +574,7 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * Get a decimal value via a mathematical expression.
      *
      * @param path              The key to fetch the value from.
-     * @param player            The player to evaluate placeholders with respect to.
+     * @param player            The player to evaluate placeholders with respect to, or null for no player.
      * @param additionalPlayers The additional players to evaluate placeholders with respect to.
      * @return The computed value, or 0 if not found or invalid.
      */
@@ -582,6 +591,10 @@ public interface Config extends Cloneable, PlaceholderInjectable {
 
     /**
      * Get a decimal value via a mathematical expression.
+     * <p>
+     * If the path holds a plain number, that number is returned directly; otherwise the
+     * string at the path is evaluated as an expression, with this config injected into
+     * the placeholder context.
      *
      * @param path    The key to fetch the value from.
      * @param context The placeholder context.
@@ -648,7 +661,8 @@ public interface Config extends Cloneable, PlaceholderInjectable {
      * Get a big decimal from config.
      *
      * @param path The key to fetch the value from.
-     * @return The found value, or 0 if not found.
+     * @return The found value, or {@link BigDecimal#ZERO} if not found.
+     * @throws NumberFormatException If the value at the path is not a valid decimal.
      */
     @NotNull
     default BigDecimal getBigDecimal(@NotNull final String path) {
@@ -657,9 +671,13 @@ public interface Config extends Cloneable, PlaceholderInjectable {
 
     /**
      * Get a big decimal from config.
+     * <p>
+     * The value is read as a string and parsed, so any value that is readable as a
+     * decimal string is supported.
      *
      * @param path The key to fetch the value from.
      * @return The found value, or null if not found.
+     * @throws NumberFormatException If the value at the path is not a valid decimal.
      */
     @Nullable
     default BigDecimal getBigDecimalOrNull(@NotNull final String path) {
@@ -702,6 +720,8 @@ public interface Config extends Cloneable, PlaceholderInjectable {
 
     /**
      * Convert the config to a map of values.
+     * <p>
+     * The default implementation returns an empty map.
      *
      * @return The values.
      */
@@ -710,9 +730,9 @@ public interface Config extends Cloneable, PlaceholderInjectable {
     }
 
     /**
-     * Convert the config to a map of values.
+     * Convert the config to a bukkit {@link ConfigurationSection}.
      *
-     * @return The values.
+     * @return The section, built from {@link #toMap()}.
      */
     default ConfigurationSection toBukkit() {
         YamlConfiguration empty = new YamlConfiguration();

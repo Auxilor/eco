@@ -16,8 +16,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A custom smelting recipe for furnace-type workstations.
  * <p>
- * Supports all four cooking workstations via {@link SmeltingType}. When
- * an {@link #getInputDisplay() inputDisplay} item is provided, a matching
+ * Supports all four cooking workstations via {@link SmeltingType}. When both an output
+ * and an {@link #getInputDisplay() inputDisplay} item are provided, a matching
  * Bukkit cooking recipe is registered so the recipe appears in the recipe book.
  * The {@link com.willfp.eco.core.items.TestableItem} predicate is used at
  * runtime to validate the actual item in the input slot, allowing custom item
@@ -34,16 +34,59 @@ import org.jetbrains.annotations.Nullable;
  * <p>Use {@link #builder(NamespacedKey, ItemStack, TestableItem, SmeltingType)} to construct instances.
  */
 public final class SmeltingRecipe extends WorkstationRecipe {
+    /**
+     * Default cook time, in ticks, for {@link SmeltingType#FURNACE}.
+     */
     private static final int DEFAULT_FURNACE = 200;
+
+    /**
+     * Default cook time, in ticks, for {@link SmeltingType#BLAST_FURNACE} and
+     * {@link SmeltingType#SMOKER}.
+     */
     private static final int DEFAULT_BLAST_SMOKER = 100;
+
+    /**
+     * Default cook time, in ticks, for {@link SmeltingType#CAMPFIRE}.
+     */
     private static final int DEFAULT_CAMPFIRE = 600;
 
+    /**
+     * The input item predicate, evaluated at runtime.
+     */
     private final TestableItem input;
+
+    /**
+     * The display item registered with Bukkit, or null if no Bukkit recipe is registered.
+     */
     @Nullable private final ItemStack inputDisplay;
+
+    /**
+     * The smelting workstation this recipe targets.
+     */
     private final SmeltingType smeltingType;
+
+    /**
+     * The configured cook time in ticks, or {@code -1} to use the type-specific default.
+     */
     private final int cookTime;
+
+    /**
+     * The experience awarded when the recipe completes.
+     */
     private final float experience;
 
+    /**
+     * Create a new smelting recipe.
+     *
+     * @param key          Unique recipe identifier.
+     * @param output       The item produced, or null.
+     * @param permission   The permission required to use this recipe, or null.
+     * @param input        The input item predicate.
+     * @param inputDisplay The display item registered with Bukkit, or null.
+     * @param smeltingType The workstation type.
+     * @param cookTime     The cook time in ticks, or {@code -1} for the type default.
+     * @param experience   The experience awarded on completion.
+     */
     private SmeltingRecipe(@NotNull final NamespacedKey key,
                            @Nullable final ItemStack output,
                            @Nullable final String permission,
@@ -73,8 +116,8 @@ public final class SmeltingRecipe extends WorkstationRecipe {
     /**
      * Get the display item registered with Bukkit's recipe system.
      * <p>
-     * If null, no Bukkit recipe is registered and the recipe will not appear
-     * in the recipe book.
+     * If null, or if the recipe has no output, no Bukkit recipe is registered and the
+     * recipe will not appear in the recipe book.
      *
      * @return The display item, or null.
      */
@@ -96,9 +139,8 @@ public final class SmeltingRecipe extends WorkstationRecipe {
     /**
      * Get the cook time as configured, in ticks.
      * <p>
-     * A value of {@code -1} means the type-specific default will be used
-     * when registering with Bukkit. Use {@link #resolvedCookTime()} for the
-     * effective value.
+     * A value of {@code -1} (or any negative value) means the default for the
+     * recipe's {@link SmeltingType} is used when registering with Bukkit.
      *
      * @return The configured cook time in ticks, or {@code -1} for the default.
      */
@@ -115,6 +157,12 @@ public final class SmeltingRecipe extends WorkstationRecipe {
         return experience;
     }
 
+    /**
+     * Get the effective cook time, falling back to the type-specific default when no
+     * explicit cook time was configured.
+     *
+     * @return The cook time in ticks.
+     */
     private int resolvedCookTime() {
         if (cookTime >= 0) {
             return cookTime;
@@ -172,15 +220,54 @@ public final class SmeltingRecipe extends WorkstationRecipe {
      * Builder for {@link SmeltingRecipe}.
      */
     public static final class Builder {
+        /**
+         * The unique recipe identifier.
+         */
         private final NamespacedKey key;
+
+        /**
+         * The item produced, or null.
+         */
         private final ItemStack output;
+
+        /**
+         * The input item predicate.
+         */
         private final TestableItem input;
+
+        /**
+         * The workstation type.
+         */
         private final SmeltingType smeltingType;
+
+        /**
+         * The display item registered with Bukkit.
+         */
         @Nullable private ItemStack inputDisplay;
+
+        /**
+         * The permission required to use the recipe.
+         */
         @Nullable private String permission;
+
+        /**
+         * The cook time in ticks, or {@code -1} for the type-specific default.
+         */
         private int cookTime = -1;
+
+        /**
+         * The experience awarded on completion.
+         */
         private float experience = 0f;
 
+        /**
+         * Create a new builder.
+         *
+         * @param key          Unique recipe identifier.
+         * @param output       The item produced, or null.
+         * @param input        The input item predicate.
+         * @param smeltingType The workstation type.
+         */
         private Builder(@NotNull final NamespacedKey key,
                         @Nullable final ItemStack output,
                         @NotNull final TestableItem input,

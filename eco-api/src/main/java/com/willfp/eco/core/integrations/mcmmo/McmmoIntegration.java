@@ -6,14 +6,19 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper class for mcmmo integrations.
+ * Wrapper interface for mcMMO integrations.
+ * <p>
+ * Lets eco account for mcMMO's bonus block drops, and ignore the fake events that mcMMO fires
+ * internally (for example when simulating block breaks for abilities).
+ *
+ * @see McmmoManager
  */
 public interface McmmoIntegration extends Integration {
     /**
-     * Get bonus drop count of block.
+     * Get the number of extra drops mcMMO grants for a block.
      *
      * @param block The block.
-     * @return The drop multiplier.
+     * @return The bonus drop count.
      */
     int getBonusDropCount(@NotNull Block block);
 
@@ -21,7 +26,7 @@ public interface McmmoIntegration extends Integration {
      * Get if event is fake.
      *
      * @param event The event.
-     * @return If is fake.
+     * @return If the event is a fake event fired by mcMMO.
      */
     boolean isFake(@NotNull Event event);
 }

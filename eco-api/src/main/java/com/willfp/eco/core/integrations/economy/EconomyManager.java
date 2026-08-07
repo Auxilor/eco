@@ -7,6 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Class to handle economy.
+ * <p>
+ * Only one integration is consulted per call: whichever {@link EconomyIntegration} the registry
+ * yields first. If none is registered, transactions and balance checks fail safe, returning
+ * false and {@link BigDecimal#ZERO} respectively.
  */
 public final class EconomyManager {
     /**
@@ -24,9 +28,9 @@ public final class EconomyManager {
     }
 
     /**
-     * Get if any economy registrations are registered.
+     * Get if any economy integrations are registered.
      *
-     * @return If any economy.
+     * @return If any economy integration is registered.
      */
     public static boolean hasRegistrations() {
         return REGISTRY.isNotEmpty();

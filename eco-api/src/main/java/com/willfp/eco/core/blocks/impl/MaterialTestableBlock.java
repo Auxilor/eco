@@ -19,7 +19,7 @@ public class MaterialTestableBlock implements TestableBlock {
     protected final Material material;
 
     /**
-     * Create a new block data testable block.
+     * Create a new material testable block.
      *
      * @param material The material.
      */
@@ -49,9 +49,9 @@ public class MaterialTestableBlock implements TestableBlock {
     }
 
     /**
-     * Get the block data.
+     * Get the material.
      *
-     * @return The block data.
+     * @return The material.
      */
     public Material getMaterial() {
         return this.material;

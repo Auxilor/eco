@@ -29,7 +29,7 @@ public interface ItemTag {
     /**
      * Get an example item.
      *
-     * @return The example item.
+     * @return The example item, or null if the tag does not provide one.
      */
     @Nullable
     default ItemStack getExampleItem() {

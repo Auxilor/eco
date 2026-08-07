@@ -35,7 +35,7 @@ public interface ItemBuilder {
      *
      * @param enchantment The enchantment.
      * @param level       The level.
-     * @return The builder.r
+     * @return The builder.
      */
     ItemBuilder addEnchantment(@NotNull Enchantment enchantment,
                                int level);

@@ -22,7 +22,11 @@ public interface CraftingRecipe {
     boolean test(@Nullable ItemStack[] matrix);
 
     /**
-     * Register the recipe.
+     * Register the recipe with eco and with the server.
+     * <p>
+     * Adds the recipe to {@link com.willfp.eco.core.recipe.Recipes} and schedules the
+     * corresponding Bukkit recipes (the real recipe, the displayed recipe if displayed
+     * recipes are enabled, and the Crafter recipe if {@link #isCrafterSupported()}).
      */
     void register();
 
@@ -35,7 +39,7 @@ public interface CraftingRecipe {
     List<TestableItem> getParts();
 
     /**
-     * Get the recipe key.
+     * Get the recipe key, namespaced under the ID of the owning plugin.
      *
      * @return The key.
      */
@@ -43,7 +47,8 @@ public interface CraftingRecipe {
     NamespacedKey getKey();
 
     /**
-     * Get the displayed recipe key.
+     * Get the displayed recipe key, which is {@link #getKey()} with a
+     * {@code _displayed} suffix on the key portion.
      *
      * @return The key.
      */
@@ -71,9 +76,10 @@ public interface CraftingRecipe {
     /**
      * Whether this recipe also fires inside the vanilla Crafter block.
      * <p>
-     * When true, {@link #register()} additionally schedules a Bukkit
-     * {@link org.bukkit.inventory.ShapedRecipe} at the key
-     * {@code <namespace>:<key>_crafter} (ExactChoice ingredients) so the
+     * When true, {@link #register()} additionally schedules a Bukkit recipe
+     * (shaped or shapeless, matching the implementation) at the key
+     * {@code <namespace>:<key>_crafter} with
+     * {@link org.bukkit.inventory.RecipeChoice.ExactChoice} ingredients, so the
      * Crafter block can match and auto-craft this recipe; eco's
      * {@code AutocrafterPatch} skips its cancellation for these recipes.
      *

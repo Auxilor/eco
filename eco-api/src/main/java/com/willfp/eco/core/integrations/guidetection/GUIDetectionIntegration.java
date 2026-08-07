@@ -5,7 +5,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Wrapper class for GUI integrations.
+ * Wrapper interface for GUI detection integrations.
+ * <p>
+ * Implemented for plugins that open their own inventory menus, such as DeluxeMenus, so that eco
+ * can tell whether a player is currently looking at a menu rather than at the world.
+ *
+ * @see GUIDetectionManager
  */
 public interface GUIDetectionIntegration extends Integration {
     /**

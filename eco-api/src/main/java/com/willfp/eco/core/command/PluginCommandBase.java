@@ -22,9 +22,12 @@ public interface PluginCommandBase extends CommandBase {
     void unregister();
 
     /**
-     * Get aliases. Leave null if this command is from plugin.yml.
+     * Get the aliases for the command.
+     * <p>
+     * These are only used if the command isn't declared in plugin.yml; if it is, the aliases
+     * from plugin.yml take priority.
      *
-     * @return The aliases.
+     * @return The aliases, empty by default.
      */
     @NotNull
     default List<String> getAliases() {
@@ -32,9 +35,12 @@ public interface PluginCommandBase extends CommandBase {
     }
 
     /**
-     * Get description.
+     * Get the description of the command.
+     * <p>
+     * This is only used if the command isn't declared in plugin.yml; if it is, the description
+     * from plugin.yml takes priority.
      *
-     * @return The description.
+     * @return The description, or null if the command has no description.
      */
     @Nullable
     default String getDescription() {

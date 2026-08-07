@@ -10,7 +10,15 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called on DropQueue push.
+ * Called when a {@link com.willfp.eco.core.drops.DropQueue} is pushed, before any items
+ * or experience are actually given to the player or dropped in the world.
+ * <p>
+ * The event is cancellable: cancelling it discards the entire push, so nothing is dropped
+ * and no experience is given.
+ * <p>
+ * The items and experience can be modified with {@link #setItems(Collection)} and
+ * {@link #setXp(int)}; the values left on the event when all handlers have run are the
+ * ones that get dropped.
  */
 public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     /**
@@ -133,6 +141,7 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
 
     /**
      * Set the xp to be dropped.
+     *
      * @param xp The xp.
      */
     public void setXp(int xp) {
@@ -149,9 +158,13 @@ public class DropQueuePushEvent extends PlayerEvent implements Cancellable {
     }
 
     /**
-     * Get force telekinesis state.
+     * Get if the push is telekinetic, i.e. if the drops go straight into the player's
+     * inventory instead of being dropped in the world.
+     * <p>
+     * This is true if telekinesis was forced on the queue, or if the player passed the
+     * telekinesis test and is allowed to pick items up at the location.
      *
-     * @return The force telekinesis state.
+     * @return The telekinesis state.
      */
     public boolean isTelekinetic() {
         return this.isTelekinetic;

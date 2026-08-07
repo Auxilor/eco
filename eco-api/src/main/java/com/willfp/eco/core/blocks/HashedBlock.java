@@ -23,7 +23,7 @@ public final class HashedBlock {
      * Create new hashed block.
      *
      * @param block The block.
-     * @param hash The hash.
+     * @param hash  The hash.
      */
     private HashedBlock(@NotNull final Block block,
                         final int hash) {

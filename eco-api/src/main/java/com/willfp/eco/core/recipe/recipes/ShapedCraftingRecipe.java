@@ -21,6 +21,13 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Shaped 3x3 crafting recipe.
+ * <p>
+ * The parts list always has exactly nine entries, indexed by
+ * {@link RecipePosition#getIndex()} (0 is the top left of the matrix, 8 the bottom
+ * right). Empty slots are represented by {@link EmptyTestableItem} rather than null.
+ * <p>
+ * Instances are created through {@link #builder(EcoPlugin, String)} and are only
+ * live once {@link #register()} has been called.
  */
 public final class ShapedCraftingRecipe implements CraftingRecipe {
     /**
@@ -58,6 +65,16 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
      */
     private final boolean crafterSupported;
 
+    /**
+     * Create a new shaped crafting recipe.
+     *
+     * @param plugin           The plugin that owns the recipe.
+     * @param key              The recipe key, namespaced under the plugin's ID.
+     * @param parts            The nine recipe parts, in matrix order.
+     * @param output           The output.
+     * @param permission       The permission required to craft, or null for none.
+     * @param crafterSupported Whether the recipe also fires in the vanilla Crafter block.
+     */
     private ShapedCraftingRecipe(@NotNull final EcoPlugin plugin,
                                  @NotNull final String key,
                                  @NotNull final List<TestableItem> parts,
@@ -195,6 +212,8 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
 
     /**
      * Create a new recipe builder.
+     * <p>
+     * The key is lowercased and namespaced under the plugin's ID when the recipe is built.
      *
      * @param plugin The plugin that owns the recipe.
      * @param key    The recipe key.
@@ -261,11 +280,12 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
     }
 
     /**
-     * Builder for recipes.
+     * Builder for {@link ShapedCraftingRecipe}s.
      */
     public static final class Builder {
         /**
-         * The recipe parts.
+         * The nine recipe parts, in matrix order. Unset positions are null until
+         * {@link #build()} replaces them with {@link EmptyTestableItem}s.
          */
         private final List<TestableItem> recipeParts = new ArrayList<>(Arrays.asList(null, null, null, null, null, null, null, null, null)); // Jank
 
@@ -322,7 +342,7 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
         /**
          * Set a recipe part.
          *
-         * @param position The position of the recipe within a crafting matrix.
+         * @param position The index within a crafting matrix, from 0 (top left) to 8 (bottom right).
          * @param part     The part of the recipe.
          * @return The builder.
          */
@@ -373,6 +393,8 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
 
         /**
          * Check if recipe parts are all air.
+         * <p>
+         * Positions that have not been set count as air.
          *
          * @return If recipe parts are all air.
          */
@@ -387,6 +409,10 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
 
         /**
          * Build the recipe.
+         * <p>
+         * Any position that has not been set is filled with an {@link EmptyTestableItem}.
+         * The built recipe is not registered; call {@link ShapedCraftingRecipe#register()}
+         * on the result.
          *
          * @return The built recipe.
          */

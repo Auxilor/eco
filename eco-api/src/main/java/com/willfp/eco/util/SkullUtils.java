@@ -11,9 +11,11 @@ import org.jetbrains.annotations.Nullable;
 public final class SkullUtils {
     /**
      * Set the texture of a skull from base64.
+     * <p>
+     * The meta is modified in place; it must still be applied back to the item afterwards.
      *
      * @param meta   The meta to modify.
-     * @param base64 The base64 texture.
+     * @param base64 The base64 encoded texture value.
      */
     public static void setSkullTexture(@NotNull final SkullMeta meta,
                                        @NotNull final String base64) {
@@ -23,8 +25,8 @@ public final class SkullUtils {
     /**
      * Get the texture of a skull - in base64.
      *
-     * @param meta The meta to modify.
-     * @return The texture, potentially null.
+     * @param meta The meta to read from.
+     * @return The base64 encoded texture value, or null if the skull has no texture.
      */
     @Nullable
     public static String getSkullTexture(@NotNull final SkullMeta meta) {
