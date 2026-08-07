@@ -56,6 +56,7 @@ import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.ExpressionEvaluator
+import com.willfp.eco.internal.spigot.math.api.EcoExpressionEnvironmentBuilder
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
@@ -358,6 +359,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun evaluate(expression: String, context: PlaceholderContext) =
         expressionEvaluator.evaluate(expression, context)
+
+    override fun createExpressionEnvironmentBuilder() =
+        EcoExpressionEnvironmentBuilder()
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu

@@ -1,5 +1,7 @@
 package com.willfp.eco.internal.spigot.math
 
+import com.willfp.eco.core.math.RandomSource
+import com.willfp.eco.internal.spigot.math.functional.BuiltinOpcode
 import com.willfp.eco.internal.spigot.math.functional.Function
 import com.willfp.eco.internal.spigot.math.functional.FunctionCall
 import com.willfp.eco.internal.spigot.math.token.BinaryOperation
@@ -9,7 +11,6 @@ import com.willfp.eco.internal.spigot.math.token.LiteralValue
 import com.willfp.eco.internal.spigot.math.token.UnaryOperation
 import com.willfp.eco.internal.spigot.math.token.UnaryOperator
 import com.willfp.eco.internal.spigot.math.token.Value
-import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
@@ -32,11 +33,15 @@ class BytecodeExpression private constructor(
     private val opcodes: IntArray,
     private val constants: DoubleArray,
     private val functions: Array<Function>,
-    private val stackSize: Int
+    private val stackSize: Int,
+    val isDeterministic: Boolean
 ) {
     private val stack = ThreadLocal.withInitial { DoubleArray(stackSize) }
+    private val argArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
 
-    fun evaluate(vars: DoubleArray): Double {
+    fun evaluate(vars: DoubleArray): Double = evaluate(vars, ThreadLocalRandomSource)
+
+    fun evaluate(vars: DoubleArray, random: RandomSource): Double {
         val stack = this.stack.get()
         val opcodes = this.opcodes
         val constants = this.constants
@@ -72,7 +77,7 @@ class BytecodeExpression private constructor(
                 OP_LOG -> stack[sp] = ln(stack[sp])
                 OP_SQRT -> stack[sp] = sqrt(stack[sp])
                 OP_CBRT -> stack[sp] = cbrt(stack[sp])
-                OP_RAND -> stack[sp] = ThreadLocalRandom.current().nextDouble() * stack[sp]
+                OP_RAND -> stack[sp] = random.nextDouble() * stack[sp]
                 OP_GT -> { sp--; stack[sp] = if (stack[sp] > stack[sp + 1]) 1.0 else 0.0 }
                 OP_LT -> { sp--; stack[sp] = if (stack[sp] < stack[sp + 1]) 1.0 else 0.0 }
                 OP_EQ -> { sp--; stack[sp] = if (stack[sp] == stack[sp + 1]) 1.0 else 0.0 }
@@ -84,13 +89,14 @@ class BytecodeExpression private constructor(
                 OP_CALL -> {
                     val funcIdx = opcodes[ip++]
                     val argCount = opcodes[ip++]
-                    val args = DoubleArray(argCount)
+                    val args = argArrays.get().getOrPut(argCount) { DoubleArray(argCount) }
                     sp -= argCount
                     for (i in 0 until argCount) {
                         args[i] = stack[sp + 1 + i]
                     }
                     stack[++sp] = functions[funcIdx].call(args)
                 }
+                OP_RAND2 -> { sp--; stack[sp] = randomInRange(random, stack[sp], stack[sp + 1]) }
             }
         }
         return stack[0]
@@ -134,6 +140,7 @@ class BytecodeExpression private constructor(
         private const val OP_AND = 34
         private const val OP_OR = 35
         private const val OP_CALL = 36
+        private const val OP_RAND2 = 37
 
         private val EMPTY_VARS = DoubleArray(0)
 
@@ -143,6 +150,7 @@ class BytecodeExpression private constructor(
             val functions = ArrayList<Function>()
             var sp = 0
             var maxSp = 0
+            var deterministic = true
 
             fun pushSp() {
                 sp++
@@ -176,6 +184,9 @@ class BytecodeExpression private constructor(
                     }
                     is UnaryOperation -> {
                         emitValue(v.first)
+                        if (!v.operator.isPure()) {
+                            deterministic = false
+                        }
                         opcodes.add(unaryOpcode(v.operator))
                     }
                     is FunctionCall -> {
@@ -183,12 +194,25 @@ class BytecodeExpression private constructor(
                         for (arg in vals) {
                             emitValue(arg)
                         }
-                        opcodes.add(OP_CALL)
-                        opcodes.add(functions.size)
-                        opcodes.add(vals.size)
-                        functions.add(v.getFunction())
-                        sp -= vals.size
-                        pushSp()
+                        val function = v.getFunction()
+                        if (!function.isDeterministic()) {
+                            deterministic = false
+                        }
+                        when (function.getOpcode()) {
+                            BuiltinOpcode.RANDOM_RANGE -> {
+                                opcodes.add(OP_RAND2)
+                                sp -= vals.size
+                                pushSp()
+                            }
+                            null -> {
+                                opcodes.add(OP_CALL)
+                                opcodes.add(functions.size)
+                                opcodes.add(vals.size)
+                                functions.add(function)
+                                sp -= vals.size
+                                pushSp()
+                            }
+                        }
                     }
                 }
             }
@@ -198,7 +222,8 @@ class BytecodeExpression private constructor(
                 opcodes.toIntArray(),
                 constants.toDoubleArray(),
                 functions.toTypedArray(),
-                maxSp
+                maxSp,
+                deterministic
             )
         }
 

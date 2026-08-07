@@ -28,6 +28,7 @@ import com.willfp.eco.core.gui.slot.functional.SlotProvider;
 import com.willfp.eco.core.integrations.hologram.Hologram;
 import com.willfp.eco.core.integrations.hologram.HologramOptions;
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.core.math.ExpressionEnvironment;
 import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
@@ -547,6 +548,17 @@ public interface Eco {
     @Nullable
     Double evaluate(@NotNull String expression,
                     @NotNull PlaceholderContext context);
+
+    /**
+     * Create a builder for a new expression environment.
+     * <p>
+     * Use this to compile an expression once and evaluate it many times over varying numeric
+     * inputs, without routing through the placeholder pipeline.
+     *
+     * @return The builder.
+     */
+    @NotNull
+    ExpressionEnvironment.Builder createExpressionEnvironmentBuilder();
 
     /**
      * Get the menu a player currently has open.

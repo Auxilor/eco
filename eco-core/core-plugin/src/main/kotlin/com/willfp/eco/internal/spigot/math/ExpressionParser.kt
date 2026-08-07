@@ -95,14 +95,14 @@ class ExpressionParser(val input: String, private val environment: ExpressionEnv
                 }
             }
             is Function -> {
-                val args = parseArgumentList(token.getArgCount())
+                val args = parseArgumentList(token.getArgCount(), token.getMinArgCount())
                 FunctionCall(token, args.getArguments())
             }
             else -> error("Expected leading operation")
         }
     }
 
-    private fun parseArgumentList(args: OptionalInt): ArgumentList {
+    private fun parseArgumentList(args: OptionalInt, minArgs: Int): ArgumentList {
         expectChar('(')
         whitespace()
         val initialCapacity = if (args.isPresent) args.asInt else 0
@@ -110,6 +110,9 @@ class ExpressionParser(val input: String, private val environment: ExpressionEnv
         if (peek() == ')') {
             if (args.isPresent && args.asInt != 0) {
                 error("Expected ${args.asInt} arguments")
+            }
+            if (minArgs > 0) {
+                error("Expected at least $minArgs arguments but got 0")
             }
             advance()
             return ArgumentList(emptyArray())
@@ -124,6 +127,9 @@ class ExpressionParser(val input: String, private val environment: ExpressionEnv
         }
         if (args.isPresent && list.size != args.asInt) {
             error("Expected ${args.asInt} arguments but got ${list.size}")
+        }
+        if (list.size < minArgs) {
+            error("Expected at least $minArgs arguments but got ${list.size}")
         }
         expectChar(')')
         return ArgumentList(list.toTypedArray())

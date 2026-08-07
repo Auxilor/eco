@@ -7,16 +7,14 @@ import com.willfp.eco.internal.spigot.math.token.Constant
 import com.willfp.eco.internal.spigot.math.token.Token
 import com.willfp.eco.internal.spigot.math.token.UnaryOperator
 import com.willfp.eco.internal.spigot.math.token.Value
-import com.willfp.eco.util.randDouble
 import java.util.OptionalInt
 import java.util.function.ToDoubleFunction
-import kotlin.math.max
-import kotlin.math.min
 
 class ExpressionEnv {
     private val binaryOperators: CharTree<BinaryOperator> = CharTree()
     private val leadingOperators: CharTree<Token> = CharTree()
     private val values: CharTree<Value> = CharTree()
+    private val functionNames: MutableSet<String> = LinkedHashSet()
 
     private var varCount = 0
 
@@ -30,9 +28,7 @@ class ExpressionEnv {
         for (constant in Constant.entries) {
             values.set(constant.toString(), constant)
         }
-        addFunction(Function("min", OptionalInt.of(2)) { min(it[0], it[1]) })
-        addFunction(Function("max", OptionalInt.of(2)) { max(it[0], it[1]) })
-        addFunction(Function("random", OptionalInt.of(2)) { randDouble(it[0], it[1]) })
+        registerBuiltins(this)
     }
 
     private fun checkName(name: String?) {
@@ -45,6 +41,7 @@ class ExpressionEnv {
         val name = function.getName()
         checkName(name)
         leadingOperators.set(name, function)
+        functionNames.add(name)
         return this
     }
 
@@ -58,12 +55,12 @@ class ExpressionEnv {
     }
 
     fun addFunction(name: String, argCount: Int, func: ToDoubleFunction<DoubleArray>): ExpressionEnv {
-        addFunction(Function(name, OptionalInt.of(argCount), func))
+        addFunction(Function(name, OptionalInt.of(argCount), function = func))
         return this
     }
 
     fun addFunction(name: String, func: ToDoubleFunction<DoubleArray>): ExpressionEnv {
-        addFunction(Function(name, OptionalInt.empty(), func))
+        addFunction(Function(name, OptionalInt.empty(), function = func))
         return this
     }
 
@@ -71,4 +68,19 @@ class ExpressionEnv {
     fun getBinaryOperators(): CharTree<BinaryOperator> = binaryOperators
     fun getValues(): CharTree<Value> = values
     fun getVariableCount(): Int = varCount
+
+    /** Every function name currently registered, built-in or custom. */
+    fun getFunctionNames(): Set<String> = functionNames
+
+    companion object {
+        /**
+         * Names that can never be used for a custom function: every unary operator symbol and every
+         * constant. Built-in function names are not listed here — read them from a fresh
+         * [ExpressionEnv] with [getFunctionNames].
+         */
+        val RESERVED_NAMES: Set<String> = buildSet {
+            for (operator in UnaryOperator.entries) add(operator.getSymbol())
+            for (constant in Constant.entries) add(constant.toString())
+        }
+    }
 }

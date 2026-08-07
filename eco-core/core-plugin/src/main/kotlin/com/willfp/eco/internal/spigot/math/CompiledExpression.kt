@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.math
 
+import com.willfp.eco.core.math.RandomSource
 import com.willfp.eco.internal.spigot.math.exceptions.ExpressionEvaluationException
 import com.willfp.eco.internal.spigot.math.token.Constant
 import com.willfp.eco.internal.spigot.math.token.LiteralValue
@@ -12,22 +13,31 @@ class CompiledExpression(
     private val isConstant: Boolean = value is LiteralValue || value is Constant
     private val constantValue: Double = if (isConstant) value.getValue(EMPTY_VARS) else 0.0
     private val bytecode: BytecodeExpression? = if (!isConstant) BytecodeExpression.compile(value) else null
+    private val deterministic: Boolean = bytecode?.isDeterministic ?: true
 
-    fun evaluate(vararg values: Double): Double {
+    fun evaluate(vararg values: Double): Double = evaluate(ThreadLocalRandomSource, *values)
+
+    fun evaluate(random: RandomSource, vararg values: Double): Double {
         if (values.size < variableCount) {
             throw ExpressionEvaluationException("Expected $variableCount variable values but got ${values.size}")
         }
         if (isConstant) return constantValue
-        return bytecode!!.evaluate(values)
+        return bytecode!!.evaluate(values, random)
     }
 
-    fun evaluate(): Double {
+    fun evaluate(): Double = evaluate(ThreadLocalRandomSource)
+
+    fun evaluate(random: RandomSource): Double {
         if (variableCount > 0) {
             throw ExpressionEvaluationException("Expected $variableCount variable values")
         }
         if (isConstant) return constantValue
-        return bytecode!!.evaluate(EMPTY_VARS)
+        return bytecode!!.evaluate(EMPTY_VARS, random)
     }
+
+    fun getVariableCount(): Int = variableCount
+
+    fun isDeterministic(): Boolean = deterministic
 
     fun clone(): CompiledExpression = CompiledExpression(value, variableCount)
 
