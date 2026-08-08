@@ -2,49 +2,41 @@ package com.willfp.eco.internal.particle
 
 import com.willfp.eco.core.particle.ParticleFactory
 import com.willfp.eco.core.particle.SpawnableParticle
+import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 
 /**
- * Creates coloured dust particles, e.g. `rgb:00ff00` or `dust:ff0000:3`.
+ * Creates coloured entity effect particles, the swirls used by potion effects,
+ * e.g. `entity_effect:15fe2f`.
  */
-object ParticleFactoryRGB : ParticleFactory {
+object ParticleFactoryEntityEffect : ParticleFactory {
     /**
      * Get the names this factory is registered under.
      *
      * @return The names.
      */
     override fun getNames() = listOf(
-        "color",
-        "rgb",
-        "hex",
-        "dust"
+        "entity_effect"
     )
 
     /**
-     * Create a dust particle from a key formatted as `<color>` or `<color>:<size>`.
+     * Create an entity effect particle from a key formatted as `<color>`.
      *
      * @param key The key.
      * @return The particle, or null if the key is invalid.
      */
     override fun create(key: String): SpawnableParticle? {
-        val parts = key.split(":")
+        val color = key.toParticleColor() ?: return null
 
-        if (parts.size !in 1..2) {
-            return null
-        }
-
-        val color = parts[0].toParticleColor() ?: return null
-        val size = parts.getOrNull(1).toParticleSize() ?: return null
-
-        return SpawnableParticleRGB(Particle.DustOptions(color, size))
+        return SpawnableParticleEntityEffect(color)
     }
 
     /**
-     * A dust particle with a fixed colour and size.
+     * An entity effect particle with a fixed colour.
      */
-    private class SpawnableParticleRGB(
-        private val options: Particle.DustOptions
+    private class SpawnableParticleEntityEffect(
+        private val color: Color
     ) : SpawnableParticle {
         /**
          * Spawn the particle at a location.
@@ -55,7 +47,7 @@ object ParticleFactoryRGB : ParticleFactory {
         override fun spawn(location: Location, amount: Int) {
             val world = location.world ?: return
 
-            world.spawnParticle(Particle.DUST, location, amount, 0.0, 0.0, 0.0, 0.0, options)
+            world.spawnParticle(Particle.ENTITY_EFFECT, location, amount, 0.0, 0.0, 0.0, 0.0, color)
         }
     }
 }

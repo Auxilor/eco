@@ -24,6 +24,15 @@ public final class SimpleParticle implements SpawnableParticle {
         this.particle = particle;
     }
 
+    /**
+     * Spawn the particle at a location.
+     * <p>
+     * Particles that require data which a bare particle name cannot carry are not spawned,
+     * as spawning them without that data would throw.
+     *
+     * @param location The location.
+     * @param amount   The amount to spawn.
+     */
     @Override
     public void spawn(@NotNull final Location location,
                       final int amount) {
@@ -33,10 +42,20 @@ public final class SimpleParticle implements SpawnableParticle {
             return;
         }
 
-        if (particle.getDataType() == Float.class) {
-            world.spawnParticle(particle, location, amount, 0, 0, 0, 1f);
-        } else {
+        Class<?> dataType = particle.getDataType();
+
+        if (dataType == Void.class) {
             world.spawnParticle(particle, location, amount, 0, 0, 0, 0);
+        } else if (dataType == Float.class) {
+            world.spawnParticle(particle, location, amount, 0, 0, 0, 0, 0f);
+        } else if (dataType == Integer.class) {
+            world.spawnParticle(particle, location, amount, 0, 0, 0, 0, 0);
         }
+
+        /*
+        Any other data type requires data that a bare particle name cannot carry, e.g. DUST
+        needs a colour. Spawning it without data throws, so it is skipped here - use a
+        particle factory instead, e.g. dust:00ff00 or dust_transition:ff0000:00ff00.
+         */
     }
 }

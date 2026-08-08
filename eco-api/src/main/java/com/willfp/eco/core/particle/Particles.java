@@ -37,6 +37,9 @@ public final class Particles {
      * A particle string should look like {@code magic} or {@code rgb:00ff00}, i.e. either the
      * name of a bukkit {@link Particle}, or a registered factory name and a key separated by
      * a colon.
+     * <p>
+     * Only the first colon separates the factory name from the key, so a factory is free to
+     * use colons within its own key, e.g. {@code dust:00ff00:2}.
      *
      * @param key The key.
      * @return The particle, or an {@link EmptyParticle} if invalid.
@@ -51,7 +54,7 @@ public final class Particles {
 
         SpawnableParticle spawnableParticle;
 
-        String[] split = args[0].split(":");
+        String[] split = args[0].split(":", 2);
 
         if (split.length == 1) {
             try {
@@ -60,7 +63,7 @@ public final class Particles {
             } catch (IllegalArgumentException e) {
                 spawnableParticle = new EmptyParticle();
             }
-        } else if (split.length == 2) {
+        } else {
             String name = split[0];
             String factoryKey = split[1];
 
@@ -70,8 +73,6 @@ public final class Particles {
             } else {
                 spawnableParticle = factory.create(factoryKey);
             }
-        } else {
-            return new EmptyParticle();
         }
 
         if (spawnableParticle == null || spawnableParticle instanceof EmptyParticle) {
