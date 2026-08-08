@@ -4,6 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetEntityData
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearFrames
 import com.willfp.eco.internal.spigot.proxy.v1_21_8.packet.NewItemsPacketOpenWindowMerchant
@@ -40,6 +41,7 @@ class PacketHandler : PacketHandlerProxy {
             NewItemsPacketOpenWindowMerchant,
             NewItemsPacketSetCreativeSlot,
             PacketSetSlot,
+            PacketSetEntityData,
             NewItemsPacketWindowItems(plugin),
             PacketContainerClick,
             PacketSetCursorItem
