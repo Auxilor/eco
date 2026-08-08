@@ -119,8 +119,8 @@ dependencies {
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
-    compileOnly("su.nightexpress.nightcore:main:2.15.3")
-    compileOnly("su.nightexpress.excellentshop:Core:4.22.0")
+    compileOnly("su.nightexpress.nightcore:main:2.16.4")
+    compileOnly("su.nightexpress.excellentshop:Core:5.1.3")
     compileOnly("dev.kitteh:factions:4.4.0")
 
     compileOnly(fileTree("../../lib") {
