@@ -107,17 +107,12 @@ class ArmorListener : Listener {
             return
         }
         if (e.action == Action.RIGHT_CLICK_AIR || e.action == Action.RIGHT_CLICK_BLOCK) {
+            // Right-clicking armor equips it into an empty slot, and swaps it with the piece
+            // already worn if the slot is occupied, so the armor doesn't have to be air.
             val newArmorType = ArmorType.matchType(e.item)
             if (newArmorType != null) {
-                if (newArmorType == ArmorType.HELMET && isAirOrNull(e.player.inventory.helmet) || newArmorType == ArmorType.CHESTPLATE && isAirOrNull(
-                        e.player.inventory.chestplate
-                    ) || newArmorType == ArmorType.LEGGINGS && isAirOrNull(e.player.inventory.leggings) || newArmorType == ArmorType.BOOTS && isAirOrNull(
-                        e.player.inventory.boots
-                    )
-                ) {
-                    val armorEquipEvent = ArmorEquipEvent(e.player)
-                    Bukkit.getPluginManager().callEvent(armorEquipEvent)
-                }
+                val armorEquipEvent = ArmorEquipEvent(e.player)
+                Bukkit.getPluginManager().callEvent(armorEquipEvent)
             }
         }
     }
