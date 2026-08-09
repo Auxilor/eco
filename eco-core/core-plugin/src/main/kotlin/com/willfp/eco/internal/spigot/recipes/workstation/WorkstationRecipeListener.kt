@@ -112,6 +112,23 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
 
     // Villager / merchant
 
+    // These rolls used to be stored under a "recipebook" namespace, which nothing else in eco
+    // or EcoCrafting looked at - EcoCrafting's stale-key cleanup scans "ecocrafting", so the old
+    // entries were never pruned. Move a villager's existing roll over the first time it's opened
+    // so trades that were already decided stay decided, rather than being re-rolled.
+    private fun migrateLegacyTradeKey(
+        pdc: org.bukkit.persistence.PersistentDataContainer,
+        recipeKey: String,
+        newKey: NamespacedKey
+    ) {
+        val legacyKey = NamespacedKey("recipebook", "vr_$recipeKey")
+        if (!pdc.has(legacyKey, PersistentDataType.BYTE)) return
+        if (!pdc.has(newKey, PersistentDataType.BYTE)) {
+            pdc.get(legacyKey, PersistentDataType.BYTE)?.let { pdc.set(newKey, PersistentDataType.BYTE, it) }
+        }
+        pdc.remove(legacyKey)
+    }
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     fun onMerchantOpen(event: InventoryOpenEvent) {
         if (event.inventory.type != InventoryType.MERCHANT) return
@@ -121,6 +138,11 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
 
         val filteredRecipes = WorkstationRecipes.getAll(VillagerRecipe::class.java)
             .filter { villagerRecipe ->
+                migrateLegacyTradeKey(
+                    merchant.persistentDataContainer,
+                    villagerRecipe.key.key,
+                    NamespacedKey("ecocrafting", "vr_${villagerRecipe.key.key}")
+                )
                 if (isWanderingTrader) {
                     if (!villagerRecipe.isWanderingTrader) return@filter false
                 } else {
