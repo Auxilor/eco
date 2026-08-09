@@ -131,7 +131,7 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
                         if (villagerRecipe.minLevel > 0 && villager.villagerLevel < villagerRecipe.minLevel) return@filter false
                     }
                 }
-                val pdcKey = NamespacedKey("recipebook", "vr_${villagerRecipe.key.key}")
+                val pdcKey = NamespacedKey("ecocrafting", "vr_${villagerRecipe.key.key}")
                 val pdc = merchant.persistentDataContainer
                 if (pdc.has(pdcKey, PersistentDataType.BYTE)) {
                     pdc.get(pdcKey, PersistentDataType.BYTE) == 1.toByte()
