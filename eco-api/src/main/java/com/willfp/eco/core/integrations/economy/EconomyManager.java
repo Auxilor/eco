@@ -1,6 +1,7 @@
 package com.willfp.eco.core.integrations.economy;
 
 import com.willfp.eco.core.integrations.IntegrationRegistry;
+import com.willfp.eco.core.registry.Registry;
 import java.math.BigDecimal;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,15 @@ public final class EconomyManager {
      */
     public static void register(@NotNull final EconomyIntegration integration) {
         REGISTRY.register(integration);
+    }
+
+    /**
+     * Unregister an integration by the name of the plugin it hooks into.
+     *
+     * @param pluginName The plugin name, as passed to {@link EconomyIntegration#getPluginName()}.
+     */
+    public static void unregister(@NotNull final String pluginName) {
+        REGISTRY.remove(Registry.tryFitPattern(pluginName));
     }
 
     /**

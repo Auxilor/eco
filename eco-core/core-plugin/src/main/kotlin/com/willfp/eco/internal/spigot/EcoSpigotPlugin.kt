@@ -191,6 +191,7 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
+import com.willfp.eco.internal.spigot.integrations.economy.EconomyVaultServiceListener
 import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
@@ -525,10 +526,18 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Economy
             IntegrationLoader("Vault") {
-                val rsp = Bukkit.getServer().servicesManager.getRegistration(Economy::class.java)
+                val servicesManager = Bukkit.getServer().servicesManager
+
+                val rsp = servicesManager.getRegistration(Economy::class.java)
                 if (rsp != null) {
                     EconomyManager.register(EconomyVault(rsp.provider))
                 }
+
+                // The actual economy provider (e.g. CMI) may register with Vault after this
+                // plugin has already enabled, since plugin enable order between two plugins
+                // that both merely soft-depend on Vault is not guaranteed. Listen for changes
+                // so a late (or later-replaced) provider is still picked up.
+                Bukkit.getPluginManager().registerEvents(EconomyVaultServiceListener(servicesManager), this)
             },
 
             // Price
