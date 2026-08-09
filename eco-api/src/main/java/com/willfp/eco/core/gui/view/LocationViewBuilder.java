@@ -28,14 +28,14 @@ public interface LocationViewBuilder<V extends InventoryView> extends ViewBuilde
      * Set the location backing the view.
      * <p>
      * The block at the location does not have to match the type of the view; if it doesn't,
-     * the view still behaves as its own type. If no location is set, a virtual view is
-     * created instead.
+     * the view still behaves as its own type. Leave this unset to create a virtual view -
+     * there is no way to unset a location once given.
      *
-     * @param location The location, or null for a virtual view.
+     * @param location The location.
      * @return This builder.
      */
     @NotNull
-    LocationViewBuilder<V> location(@Nullable Location location);
+    LocationViewBuilder<V> location(@NotNull Location location);
 
     /**
      * Set whether the server should check that the player can reach the location.

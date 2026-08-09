@@ -23,7 +23,7 @@ open class EcoViewBuilder<V : InventoryView, B : InventoryViewBuilder<V>>(
     override fun build(player: HumanEntity): V = handle.build(player)
 
     @Suppress("UNCHECKED_CAST")
-    override fun copy(): ViewBuilder<V> = EcoViewBuilder(handle.copy() as B)
+    override fun copy(): ViewBuilder<V> = EcoViewBuilder<V, B>(handle.copy() as B)
 }
 
 class EcoLocationViewBuilder<V : InventoryView>(
@@ -33,7 +33,7 @@ class EcoLocationViewBuilder<V : InventoryView>(
         handle = ViewTitles.apply(handle, title)
     }
 
-    override fun location(location: Location?): LocationViewBuilder<V> = apply {
+    override fun location(location: Location): LocationViewBuilder<V> = apply {
         handle = handle.location(location)
     }
 

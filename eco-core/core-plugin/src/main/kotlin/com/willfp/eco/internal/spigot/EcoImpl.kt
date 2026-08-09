@@ -259,7 +259,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun <V : InventoryView> createViewBuilder(
         type: BukkitMenuType.Typed<V, out InventoryViewBuilder<V>>
-    ): ViewBuilder<V> = EcoViewBuilder(type.builder())
+    ): ViewBuilder<V> = EcoViewBuilder<V, InventoryViewBuilder<V>>(type.builder())
 
     override fun <V : InventoryView> createLocationViewBuilder(
         type: BukkitMenuType.Typed<V, LocationInventoryViewBuilder<V>>
