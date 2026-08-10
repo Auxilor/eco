@@ -169,6 +169,7 @@ import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefIridiumSky
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefKingdoms
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefLands
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefPvPManager
+import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefResidence
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefRPGHorses
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefSuperiorSkyblock2
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefTowny
@@ -468,6 +469,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("Lands") { AntigriefManager.register(AntigriefLands(this)) },
             IntegrationLoader("Kingdoms") { AntigriefManager.register(AntigriefKingdoms()) },
             IntegrationLoader("RPGHorses") { AntigriefManager.register(AntigriefRPGHorses()) },
+            IntegrationLoader("Residence") { AntigriefManager.register(AntigriefResidence()) },
             IntegrationLoader("HuskTowns") { AntigriefManager.register(AntigriefHuskTowns()) },
             IntegrationLoader("HuskClaims") { AntigriefManager.register(AntigriefHuskClaims()) },
             IntegrationLoader("CombatLogX") { AntigriefManager.register(AntigriefCombatLogX()) },
