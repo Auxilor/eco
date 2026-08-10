@@ -48,14 +48,27 @@ class CustomItemsMythicMobs(
 
     private class MythicMobsItemProvider : ItemProvider("mythicmobs") {
         override fun provideForKey(key: String): TestableItem? {
-            val mythicItem = MythicBukkit.inst().getItemManager().getItem(key).orElse(null) ?: return null
+            val itemManager = MythicBukkit.inst().getItemManager()
+
+            /*
+            Item lookup strings are lowercased, but MythicMobs stores its items in a
+            case-sensitive map keyed by the raw ID from the config, so resolve the
+            actual ID before looking the item up.
+             */
+            val id = if (itemManager.getItem(key).isPresent) {
+                key
+            } else {
+                itemManager.itemNames.firstOrNull { it.equals(key, ignoreCase = true) } ?: return null
+            }
+
+            val mythicItem = itemManager.getItem(id).orElse(null) ?: return null
             val itemStack = BukkitAdapter.adapt(mythicItem.generateItemStack(1)) ?: return null
             val namespacedKey = NamespacedKeyUtils.create("mythicmobs", key.lowercase())
             return CustomItem(
                 namespacedKey,
                 { testStack: ItemStack ->
                     val type = MythicBukkit.inst().getItemManager().getMythicTypeFromItem(testStack)
-                    !type.isNullOrBlank() && type.equals(key, ignoreCase = true)
+                    !type.isNullOrBlank() && type.equals(id, ignoreCase = true)
                 },
                 itemStack
             )
