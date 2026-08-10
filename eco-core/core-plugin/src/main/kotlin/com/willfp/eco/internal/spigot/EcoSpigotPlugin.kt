@@ -128,6 +128,8 @@ import com.willfp.eco.internal.items.ArgParserUnenchantable
 import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
+import com.willfp.eco.internal.particle.ParticleFactoryDustTransition
+import com.willfp.eco.internal.particle.ParticleFactoryEntityEffect
 import com.willfp.eco.internal.particle.ParticleFactoryRGB
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
@@ -228,11 +230,28 @@ import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 import su.nightexpress.excellenteconomy.api.ExcellentEconomyAPI
 
+/**
+ * The base eco plugin, containing everything shared between platform implementations.
+ */
 abstract class EcoSpigotPlugin : EcoPlugin() {
+    /**
+     * data.yml, where eco stores its internal data.
+     */
     abstract val dataYml: DataYml
+
+    /**
+     * The handler responsible for loading and saving player profiles.
+     */
     abstract val profileHandler: ProfileHandler
+
+    /**
+     * The adventure audience provider, only present on servers without native adventure support.
+     */
     protected var bukkitAudiences: BukkitAudiences? = null
 
+    /**
+     * The brewing packet handler, registered as both a listener and a packet listener.
+     */
     private val brewingPacketHandler = BrewingPacketHandler(this)
 
     init {
@@ -341,6 +360,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Prices.registerPriceFactory(PriceFactoryXP)
 
         Particles.registerParticleFactory(ParticleFactoryRGB)
+        Particles.registerParticleFactory(ParticleFactoryDustTransition)
+        Particles.registerParticleFactory(ParticleFactoryEntityEffect)
 
         CraftingRecipeListener.registerListener(ComplexInComplex)
         CraftingRecipeListener.registerListener(ComplexInVanilla)
@@ -372,6 +393,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         DiscordManager.register(DiscordIntegrationImpl(this))
     }
 
+    /**
+     * Warn about conflicting plugins, then enable everything that requires a running server.
+     */
     override fun handleEnable() {
         this.logger.info("Scanning for conflicts...")
         val conflicts = ConflictFinder.searchForConflicts(this)
@@ -417,6 +441,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         VanillaEntityTags.register()
     }
 
+    /**
+     * Shut down integrations and flush player data to storage.
+     */
     override fun handleDisable() {
         DiscordManager.shutdown()
         this.logger.info("Saving player data...")
@@ -426,6 +453,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Eco.get().adventure?.close()
     }
 
+    /**
+     * Start the collated runnable, and check recipe batching if no profile migration is pending.
+     */
     override fun createTasks() {
         CollatedRunnable(this)
 
@@ -448,6 +478,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         }
     }
 
+    /**
+     * Register custom content from other plugins, once every plugin has loaded.
+     */
     override fun handleAfterLoad() {
         CustomItemsManager.registerAllItems()
         CustomBlocksManager.registerAllBlocks()
@@ -455,6 +488,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         ShopManager.registerEcoProvider()
     }
 
+    /**
+     * Get the loaders for every plugin eco integrates with.
+     *
+     * @return The integration loaders.
+     */
     override fun loadIntegrationLoaders(): List<IntegrationLoader> {
         return listOf(
             // AntiGrief
@@ -571,6 +609,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         )
     }
 
+    /**
+     * Get the listeners to register, including the paper or spigot specific variants.
+     *
+     * @return The listeners.
+     */
     override fun loadListeners(): List<Listener> {
         val listeners = mutableListOf(
             AnvilMechanicsListener(this),
@@ -603,6 +646,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         return listeners
     }
 
+    /**
+     * Get the packet listeners to register, including those provided by the NMS proxy.
+     *
+     * @return The packet listeners.
+     */
     override fun loadPacketListeners(): List<PacketListener> {
         return this.getProxy(PacketHandlerProxy::class.java).getPacketListeners(this) +
             listOf(brewingPacketHandler, GrindstonePacketHandler(this))
