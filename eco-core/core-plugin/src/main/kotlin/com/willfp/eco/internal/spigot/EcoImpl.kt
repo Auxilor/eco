@@ -22,6 +22,9 @@ import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
+import com.willfp.eco.core.gui.view.LocationViewBuilder
+import com.willfp.eco.core.gui.view.MerchantViewBuilder
+import com.willfp.eco.core.gui.view.ViewBuilder
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
@@ -45,6 +48,9 @@ import com.willfp.eco.internal.gui.MergedStateMenu
 import com.willfp.eco.internal.gui.menu.EcoMenuBuilder
 import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlotBuilder
+import com.willfp.eco.internal.gui.view.EcoLocationViewBuilder
+import com.willfp.eco.internal.gui.view.EcoMerchantViewBuilder
+import com.willfp.eco.internal.gui.view.EcoViewBuilder
 import com.willfp.eco.internal.integrations.PAPIExpansion
 import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.logging.NOOPLogger
@@ -80,8 +86,13 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
+import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
+import org.bukkit.inventory.view.MerchantView
+import org.bukkit.inventory.view.builder.InventoryViewBuilder
+import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder
+import org.bukkit.inventory.MenuType as BukkitMenuType
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 
@@ -245,6 +256,17 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun blendMenuState(base: Menu, additional: Menu) =
         MergedStateMenu(base, additional)
+
+    override fun <V : InventoryView> createViewBuilder(
+        type: BukkitMenuType.Typed<V, out InventoryViewBuilder<V>>
+    ): ViewBuilder<V> = EcoViewBuilder<V, InventoryViewBuilder<V>>(type.builder())
+
+    override fun <V : InventoryView> createLocationViewBuilder(
+        type: BukkitMenuType.Typed<V, LocationInventoryViewBuilder<V>>
+    ): LocationViewBuilder<V> = EcoLocationViewBuilder(type.builder())
+
+    override fun createMerchantViewBuilder(): MerchantViewBuilder<MerchantView> =
+        EcoMerchantViewBuilder(BukkitMenuType.MERCHANT.builder())
 
     override fun clean(plugin: EcoPlugin) {
         // Prevent self-cleaning

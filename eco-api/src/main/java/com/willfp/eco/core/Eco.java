@@ -25,6 +25,9 @@ import com.willfp.eco.core.gui.menu.MenuBuilder;
 import com.willfp.eco.core.gui.menu.MenuType;
 import com.willfp.eco.core.gui.slot.SlotBuilder;
 import com.willfp.eco.core.gui.slot.functional.SlotProvider;
+import com.willfp.eco.core.gui.view.LocationViewBuilder;
+import com.willfp.eco.core.gui.view.MerchantViewBuilder;
+import com.willfp.eco.core.gui.view.ViewBuilder;
 import com.willfp.eco.core.integrations.hologram.Hologram;
 import com.willfp.eco.core.integrations.hologram.HologramOptions;
 import com.willfp.eco.core.items.TestableItem;
@@ -46,8 +49,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.view.MerchantView;
+import org.bukkit.inventory.view.builder.InventoryViewBuilder;
+import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.ApiStatus;
@@ -317,6 +324,38 @@ public interface Eco {
     @NotNull
     Menu blendMenuState(@NotNull Menu base,
                         @NotNull Menu additional);
+
+    /**
+     * Create a view builder.
+     *
+     * @param type The menu type.
+     * @param <V>  The type of view created by the builder.
+     * @return The builder.
+     */
+    @NotNull
+    <V extends InventoryView> ViewBuilder<V> createViewBuilder(
+            @NotNull org.bukkit.inventory.MenuType.Typed<V, ? extends InventoryViewBuilder<V>> type
+    );
+
+    /**
+     * Create a view builder for a menu type backed by a block in the world.
+     *
+     * @param type The menu type.
+     * @param <V>  The type of view created by the builder.
+     * @return The builder.
+     */
+    @NotNull
+    <V extends InventoryView> LocationViewBuilder<V> createLocationViewBuilder(
+            @NotNull org.bukkit.inventory.MenuType.Typed<V, LocationInventoryViewBuilder<V>> type
+    );
+
+    /**
+     * Create a view builder for the merchant (villager trading) menu type.
+     *
+     * @return The builder.
+     */
+    @NotNull
+    MerchantViewBuilder<MerchantView> createMerchantViewBuilder();
 
     /**
      * Clean up ClassLoader (etc.) to allow PlugMan support.
