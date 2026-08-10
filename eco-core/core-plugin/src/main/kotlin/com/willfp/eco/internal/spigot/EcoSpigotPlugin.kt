@@ -152,6 +152,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListener
+import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListenerPaper
 import com.willfp.eco.internal.spigot.gui.GUIListener
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
@@ -638,6 +639,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (Prerequisite.HAS_PAPER.isMet) {
             listeners.add(PlayerJumpListenersPaper())
             listeners.add(NaturalExpGainListenersPaper())
+            listeners.add(ArmorListenerPaper())
         } else {
             listeners.add(PlayerJumpListenersSpigot())
             listeners.add(NaturalExpGainListenersSpigot())
