@@ -8,10 +8,16 @@ import java.util.function.ToDoubleFunction
 class Function(
     private val name: String,
     private val argCount: OptionalInt,
+    private val deterministic: Boolean = true,
+    private val minArgCount: Int = 0,
+    private val opcode: BuiltinOpcode? = null,
     private val function: ToDoubleFunction<DoubleArray>
 ) : Token {
     override fun getType() = TokenType.FUNCTION
     fun getName() = name
     fun getArgCount() = argCount
+    fun getMinArgCount() = minArgCount
+    fun isDeterministic() = deterministic
+    fun getOpcode() = opcode
     fun call(values: DoubleArray) = function.applyAsDouble(values)
 }
