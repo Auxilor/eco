@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.proxy.common.item
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.makePdc
@@ -35,8 +36,27 @@ private val unstyledComponent = Component.empty().style {
     it.color(null).decoration(TextDecoration.ITALIC, false)
 }
 
+/**
+ * Resets the implicit client-side italic on names/lore.
+ *
+ * With `use-vanilla-item-name-format` enabled, this only touches styled (colored/formatted)
+ * components, leaving bare ones untouched so they keep vanilla's compact custom_name format
+ * (needed for resource packs keyed off custom_name, and correct anvil rename behavior).
+ *
+ * With it disabled (default), every component - styled or bare - is wrapped so italics are
+ * always forced off, matching eco's pre-vanilla-accurate-components behavior. This avoids a
+ * regression where bare lore/name lines, which previously never rendered italic, pick up the
+ * client's implicit italic default.
+ */
 private fun Component.unstyled(): Component {
-    return unstyledComponent.append(this)
+    val useVanillaFormat = Eco.get().ecoPlugin.configYml.getBool("use-vanilla-item-name-format")
+
+    if (!useVanillaFormat) {
+        return unstyledComponent.append(this)
+    }
+
+    if (style().isEmpty) return this
+    return this.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)
 }
 
 interface ImplementedFIS : FastItemStack {

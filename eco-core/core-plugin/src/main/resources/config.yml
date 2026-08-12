@@ -56,6 +56,15 @@ conflicts:
 # Disable it if it changes drop mechanics too much for you.
 use-fast-collated-drops: true
 
+# Controls how eco handles italics on custom item names/lore.
+# false (default): every name/lore line is forced non-italic.
+#   Safe choice if your plugins/lore weren't written with vanilla italics in mind.
+# true: matches vanilla exactly. Only colored/formatted lines get italics forced off; plain
+#   lines are left alone, so plain lore renders italic like vanilla lore normally does, and
+#   anvil-renamed items behave like vanilla. Turn this on if you rely on custom_name-based
+#   resource packs, or want correct vanilla behavior over legacy compatibility.
+use-vanilla-item-name-format: false
+
 # Display frames massively optimize PacketWindowItems, however some users have
 # reported display bugs by using it. If you have any problems with it, then you
 # should disable this option.

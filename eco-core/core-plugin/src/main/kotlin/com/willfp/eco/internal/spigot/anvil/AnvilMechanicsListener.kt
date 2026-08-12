@@ -43,6 +43,20 @@ private val FAIL = AnvilResult(null, null)
 class AnvilMechanicsListener(
     private val plugin: EcoPlugin
 ) : Listener {
+    /**
+     * With `use-vanilla-item-name-format` off (default), FastItemStack blanket-forces italics
+     * off on every name/lore component, so a legacy `§o` has to be injected here to keep
+     * anvil-renamed names italic like vanilla. With it on, names are left as bare components
+     * and pick up vanilla's implicit italic automatically, so no injection is needed.
+     */
+    private fun withAnvilRenameItalics(name: String): String {
+        return if (plugin.configYml.getBool("use-vanilla-item-name-format")) {
+            name
+        } else {
+            "§o$name"
+        }
+    }
+
     /** Per-player counter bumped on every [onAnvilPrepare], used to invalidate in-flight previews. */
     private val latestPreviewGeneration = mutableMapOf<UUID, Int>()
 
@@ -218,10 +232,11 @@ class AnvilMechanicsListener(
             @Suppress("DEPRECATION")
             ChatColor.stripColor(itemName)
         }.let { if (it.isNullOrEmpty()) left.fast().displayName else it }
+            .let { withAnvilRenameItalics(it) }
 
         if (right == null || right.type == Material.AIR) {
             if (left.fast().displayName == formattedItemName) return FAIL
-            left.fast().displayName = formattedItemName.let { "§o$it" }
+            left.fast().displayName = formattedItemName
             return AnvilResult(left, 0)
         }
 
@@ -247,7 +262,7 @@ class AnvilMechanicsListener(
             }
         }
 
-        left.fast().displayName = formattedItemName.let { "§o$it" }
+        left.fast().displayName = formattedItemName
 
         val leftEnchants = left.fast().getEnchants(true)
         val rightEnchants = right.fast().getEnchants(true)
