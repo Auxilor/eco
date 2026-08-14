@@ -113,7 +113,7 @@ public final class PlayerUtils {
             updateSavedDisplayName(onlinePlayer);
         }
 
-        PlayerProfile profile = PlayerProfile.load(player);
+        PlayerProfile profile = PlayerProfile.load(player.getUniqueId());
 
         String saved = profile.read(PLAYER_DISPLAY_NAME_KEY);
 
@@ -130,7 +130,7 @@ public final class PlayerUtils {
      * @param player The player.
      */
     public static void updateSavedDisplayName(@NotNull final Player player) {
-        PlayerProfile profile = PlayerProfile.load(player);
+        PlayerProfile profile = PlayerProfile.load(player.getUniqueId());
         profile.write(PLAYER_DISPLAY_NAME_KEY, player.getDisplayName());
     }
 
@@ -145,7 +145,7 @@ public final class PlayerUtils {
             updateSavedName(onlinePlayer);
         }
 
-        PlayerProfile profile = PlayerProfile.load(player);
+        PlayerProfile profile = PlayerProfile.load(player.getUniqueId());
 
         String saved = profile.read(PLAYER_NAME_KEY);
 
@@ -162,7 +162,7 @@ public final class PlayerUtils {
      * @param player The player.
      */
     public static void updateSavedName(@NotNull final Player player) {
-        PlayerProfile profile = PlayerProfile.load(player);
+        PlayerProfile profile = PlayerProfile.load(player.getUniqueId());
         profile.write(PLAYER_NAME_KEY, player.getName());
     }
 
@@ -173,7 +173,7 @@ public final class PlayerUtils {
      * @return The player health.
      */
     public static double getSavedHealth(@NotNull final OfflinePlayer player) {
-        PlayerProfile profile = PlayerProfile.load(player);
+        PlayerProfile profile = PlayerProfile.load(player.getUniqueId());
 
         return profile.read(PLAYER_HEALTH_KEY);
     }
@@ -184,7 +184,7 @@ public final class PlayerUtils {
      * @param player The player.
      */
     public static void saveHealth(@NotNull final Player player) {
-        PlayerProfile profile = PlayerProfile.load(player);
+        PlayerProfile profile = PlayerProfile.load(player.getUniqueId());
         profile.write(PLAYER_HEALTH_KEY, player.getHealth());
     }
 
