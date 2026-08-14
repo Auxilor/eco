@@ -18,6 +18,7 @@ import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.data.PlayerProfileResolver
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.datapack.DatapackContributor
 import com.willfp.eco.core.gui.menu.Menu
@@ -336,6 +337,14 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.getPlayerProfile(uuid)
+
+    private var playerProfileResolver = PlayerProfileResolver { it.uniqueId }
+
+    override fun setPlayerProfileResolver(resolver: PlayerProfileResolver?) {
+        playerProfileResolver = resolver ?: PlayerProfileResolver { it.uniqueId }
+    }
+
+    override fun getPlayerProfileResolver() = playerProfileResolver
 
     override fun createDummyEntity(location: Location): Entity =
         getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
