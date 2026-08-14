@@ -28,9 +28,7 @@ On its own, eco adds very little that your players will see. It provides the sys
 
 ### What server versions are supported?
 
-We currently support 1.21.8 and above.
-
-For Minecraft 26.1, eco 7.5.0+ is required.
+We currently support Paper/Spigot 1.21.8 and above. We do not currently support Folia.
 
 As of June 12th 2026, we have changed our versioning infrastructure to follow the week number of the year, e.g. 2026.1 would be the first week of the year 2026, all plugins align in versioning; making it easier for you to match up dependencies.
 In the rare occassion, if a bug reaches production, we might release a sub-version which will suffix the version with its iteration, e.g. 2026.33.1.
