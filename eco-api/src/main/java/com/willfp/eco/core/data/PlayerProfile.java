@@ -20,7 +20,7 @@ public interface PlayerProfile extends Profile {
      */
     @NotNull
     static PlayerProfile load(@NotNull final OfflinePlayer player) {
-        return load(player.getUniqueId());
+        return load(Eco.get().getPlayerProfileResolver().resolve(player));
     }
 
     /**

@@ -10,6 +10,7 @@ import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.core.config.updating.ConfigHandler;
 import com.willfp.eco.core.data.ExtendedPersistentDataContainer;
 import com.willfp.eco.core.data.PlayerProfile;
+import com.willfp.eco.core.data.PlayerProfileResolver;
 import com.willfp.eco.core.data.ServerProfile;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.drops.DropQueue;
@@ -403,6 +404,21 @@ public interface Eco {
      */
     @NotNull
     ServerProfile getServerProfile();
+
+    /**
+     * Set the resolver used to decide which UUID a player's data is stored against.
+     *
+     * @param resolver The resolver, or null to store data against the player's own UUID.
+     */
+    void setPlayerProfileResolver(@Nullable PlayerProfileResolver resolver);
+
+    /**
+     * Get the resolver used to decide which UUID a player's data is stored against.
+     *
+     * @return The resolver, resolving to the player's own UUID if none has been set.
+     */
+    @NotNull
+    PlayerProfileResolver getPlayerProfileResolver();
 
     /**
      * Create dummy entity - never spawned, exists purely in code.
