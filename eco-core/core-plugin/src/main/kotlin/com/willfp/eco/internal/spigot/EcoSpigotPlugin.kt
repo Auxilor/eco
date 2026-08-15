@@ -224,7 +224,6 @@ import com.willfp.eco.util.ClassUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
 import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.Listener
@@ -566,10 +565,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
             // Economy
             IntegrationLoader("Vault") {
-                val rsp = Bukkit.getServer().servicesManager.getRegistration(Economy::class.java)
-                if (rsp != null) {
-                    EconomyManager.register(EconomyVault(rsp.provider))
-                }
+                EconomyManager.register(EconomyVault())
             },
 
             // Price
