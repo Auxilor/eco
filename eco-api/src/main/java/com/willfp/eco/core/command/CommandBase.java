@@ -1,11 +1,11 @@
 package com.willfp.eco.core.command;
 
 import com.willfp.eco.core.EcoPlugin;
+import com.willfp.eco.core.floodgate.FloodgateService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -228,7 +228,7 @@ public interface CommandBase {
 
         assert playerName != null;
 
-        final Player player = Bukkit.getPlayer(playerName);
+        final Player player = FloodgateService.findOnlinePlayer(playerName);
 
         notifyNull(player, key);
 
@@ -257,7 +257,7 @@ public interface CommandBase {
 
         assert playerName != null;
 
-        @SuppressWarnings("deprecation") final OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+        final OfflinePlayer player = FloodgateService.getOfflinePlayer(playerName);
 
         boolean hasPlayedBefore = player.hasPlayedBefore() || player.isOnline();
 

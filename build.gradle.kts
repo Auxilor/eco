@@ -105,6 +105,9 @@ allprojects {
         // ExcellentEconomy and ExcellentShop
         maven("https://repo.nightexpressdev.com/releases")
 
+        // Floodgate
+        maven("https://repo.opencollab.dev/main/")
+
         //Towny
         maven("https://repo.glaremasters.me/repository/towny/")
 
