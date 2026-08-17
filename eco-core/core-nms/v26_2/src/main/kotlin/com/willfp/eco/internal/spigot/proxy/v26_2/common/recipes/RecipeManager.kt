@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.ShapedRecipe
 import net.minecraft.world.item.crafting.ShapedRecipePattern
 import net.minecraft.world.item.crafting.ShapelessRecipe
 import net.minecraft.world.item.crafting.StonecutterRecipe
-import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.inventory.CraftRecipe
@@ -33,15 +32,13 @@ object RecipeManager {
 
     fun removeRecipeNoResend(recipeKey: NamespacedKey): Boolean {
         val recipeManager = getMinecraftRecipeManager()
-        val toRemove = Bukkit.getRecipe(recipeKey) ?: return false
-        val recipe = toRemove.toNMSEquivalent
-        recipeManager.recipes.removeRecipe(recipe.id)
-        return true
+        return recipeManager.recipes.removeRecipe(CraftNamespacedKey.toResourceKey(Registries.RECIPE, recipeKey))
     }
 
     fun addRecipeNoResend(recipe: BukkitRecipe): Boolean {
         val recipeManager = getMinecraftRecipeManager()
         val toAdd: RecipeHolder<*> = recipe.toNMSEquivalent
+        recipeManager.recipes.removeRecipe(toAdd.id)
         recipeManager.recipes.addRecipe(toAdd)
         return true
     }
