@@ -51,6 +51,18 @@ public final class Blocks {
             });
 
     /**
+     * Locations currently being resolved by {@link #getCustomBlock(Block)}, per thread.
+     * <p>
+     * A registered block that layers a modifier on top of a plain material (e.g. a note
+     * block with a specific instrument) matches via a {@link MaterialTestableBlock} handle,
+     * whose {@link MaterialTestableBlock#matches(Block)} itself calls {@link #isCustomBlock(Block)}
+     * to exclude locations shadowed by a more specific custom block. Without this guard, that
+     * call re-enters the cache computation for the same location, which Caffeine cannot
+     * complete and answers with an unusable result.
+     */
+    private static final ThreadLocal<Set<HashedBlock>> RESOLVING = ThreadLocal.withInitial(HashSet::new);
+
+    /**
      * All block providers.
      */
     private static final Map<String, BlockProvider> PROVIDERS = new ConcurrentHashMap<>();
@@ -343,7 +355,21 @@ public final class Blocks {
             return null;
         }
 
-        return CACHE.get(HashedBlock.of(block)).map(Blocks::getOrWrap).orElse(null);
+        HashedBlock hashed = HashedBlock.of(block);
+        Set<HashedBlock> resolving = RESOLVING.get();
+
+        if (!resolving.add(hashed)) {
+            // Already resolving this location on this thread; this is a re-entrant call
+            // made while testing a candidate for a match, so treat it as unshadowed rather
+            // than recursing into the cache.
+            return null;
+        }
+
+        try {
+            return CACHE.get(hashed).map(Blocks::getOrWrap).orElse(null);
+        } finally {
+            resolving.remove(hashed);
+        }
     }
 
     /**
