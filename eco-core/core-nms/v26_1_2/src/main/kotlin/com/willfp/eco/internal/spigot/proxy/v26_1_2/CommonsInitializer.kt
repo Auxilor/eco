@@ -7,7 +7,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
-import com.willfp.eco.internal.spigot.proxy.common.recipes.RecipeManager
+import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.recipes.RecipeManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer
 import net.minecraft.core.component.DataComponents

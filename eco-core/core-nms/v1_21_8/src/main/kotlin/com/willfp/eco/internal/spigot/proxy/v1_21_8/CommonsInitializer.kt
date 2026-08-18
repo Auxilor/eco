@@ -4,7 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
-import com.willfp.eco.internal.spigot.proxy.common.recipes.RecipeManager
+import com.willfp.eco.internal.spigot.proxy.v1_21_8.common.recipes.RecipeManager
 import java.lang.reflect.Field
 import net.kyori.adventure.text.Component
 import com.google.gson.GsonBuilder

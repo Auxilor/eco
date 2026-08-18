@@ -47,7 +47,6 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/IllusionerBlindnessSpellGoalFactory*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/IllusionerMirrorSpellGoalFactory*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/common/ai/target/DefendVillageGoalFactory*.class")
-        exclude("com/willfp/eco/internal/spigot/proxy/common/recipes/RecipeManager*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }

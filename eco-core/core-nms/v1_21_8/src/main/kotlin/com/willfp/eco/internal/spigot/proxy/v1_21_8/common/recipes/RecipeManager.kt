@@ -1,13 +1,13 @@
-package com.willfp.eco.internal.spigot.proxy.v26_1_2.common.recipes
+package com.willfp.eco.internal.spigot.proxy.v1_21_8.common.recipes
 
 import com.google.common.base.Function
 import com.google.common.collect.Maps
-import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.MinecraftServer
-import net.minecraft.world.item.crafting.CraftingRecipe
 import net.minecraft.world.item.crafting.Ingredient
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeHolder
+import net.minecraft.world.item.crafting.RecipeInput
 import net.minecraft.world.item.crafting.ShapedRecipe
 import net.minecraft.world.item.crafting.ShapedRecipePattern
 import net.minecraft.world.item.crafting.ShapelessRecipe
@@ -18,7 +18,6 @@ import org.bukkit.craftbukkit.inventory.CraftRecipe
 import org.bukkit.craftbukkit.inventory.CraftShapedRecipe
 import org.bukkit.craftbukkit.inventory.CraftShapelessRecipe
 import org.bukkit.craftbukkit.inventory.CraftStonecuttingRecipe
-import org.bukkit.craftbukkit.util.CraftNamespacedKey
 import org.bukkit.inventory.Recipe as BukkitRecipe
 import org.bukkit.inventory.RecipeChoice as BukkitRecipeChoice
 import org.bukkit.inventory.ShapedRecipe as BukkitShapedRecipe
@@ -28,17 +27,21 @@ import java.util.*
 
 object RecipeManager {
 
-    private fun getMinecraftRecipeManager() = MinecraftServer.getServer().resources.managers().recipeManager
+    private fun getMinecraftRecipeManager() = MinecraftServer.getServer().recipeManager
+
+    @Suppress("UNCHECKED_CAST")
+    private fun ResourceKey<Recipe<*>>.asRemovalKey(): ResourceKey<Recipe<RecipeInput>> =
+        this as ResourceKey<Recipe<RecipeInput>>
 
     fun removeRecipeNoResend(recipeKey: NamespacedKey): Boolean {
         val recipeManager = getMinecraftRecipeManager()
-        return recipeManager.recipes.removeRecipe(CraftNamespacedKey.toResourceKey(Registries.RECIPE, recipeKey))
+        return recipeManager.recipes.removeRecipe(CraftRecipe.toMinecraft(recipeKey).asRemovalKey())
     }
 
     fun addRecipeNoResend(recipe: BukkitRecipe): Boolean {
         val recipeManager = getMinecraftRecipeManager()
         val toAdd: RecipeHolder<*> = recipe.toNMSEquivalent
-        recipeManager.recipes.removeRecipe(toAdd.id)
+        recipeManager.recipes.removeRecipe(toAdd.id.asRemovalKey())
         recipeManager.recipes.addRecipe(toAdd)
         return true
     }
@@ -77,13 +80,13 @@ object RecipeManager {
                     val data: Map<Char, Ingredient> = Maps.transformValues(ingredients, recipeConverter)
                     val pattern = ShapedRecipePattern.of(data, shape)
                     val recipe = ShapedRecipe(
-                        Recipe.CommonInfo(true),
-                        CraftingRecipe.CraftingBookInfo(CraftRecipe.getCategory(this.category), this.group),
+                        this.group,
+                        CraftRecipe.getCategory(this.category),
                         pattern,
-                        CraftItemStack.asTemplate(this.result)
+                        CraftItemStack.asNMSCopy(this.result)
                     )
                     return RecipeHolder(
-                        CraftNamespacedKey.toResourceKey(Registries.RECIPE, this.key),
+                        CraftRecipe.toMinecraft(this.key),
                         recipe
                     )
                 }
@@ -95,25 +98,25 @@ object RecipeManager {
                         data.add(CraftRecipe.toIngredient(i, true))
                     }
                     val recipe = ShapelessRecipe(
-                        Recipe.CommonInfo(true),
-                        CraftingRecipe.CraftingBookInfo(CraftRecipe.getCategory(this.category), this.group),
-                        CraftItemStack.asTemplate(this.result),
+                        this.group,
+                        CraftRecipe.getCategory(this.category),
+                        CraftItemStack.asNMSCopy(this.result),
                         data
                     )
                     return RecipeHolder(
-                        CraftNamespacedKey.toResourceKey(Registries.RECIPE, this.key),
+                        CraftRecipe.toMinecraft(this.key),
                         recipe
                     )
                 }
                 is BukkitStonecuttingRecipe -> {
                     val craftRecipe = CraftStonecuttingRecipe.fromBukkitRecipe(this)
                     val recipe = StonecutterRecipe(
-                        Recipe.CommonInfo(true),
+                        this.group,
                         CraftRecipe.toIngredient(craftRecipe.inputChoice, true),
-                        CraftItemStack.asTemplate(craftRecipe.result)
+                        CraftItemStack.asNMSCopy(craftRecipe.result)
                     )
                     return RecipeHolder(
-                        CraftNamespacedKey.toResourceKey(Registries.RECIPE, this.key),
+                        CraftRecipe.toMinecraft(this.key),
                         recipe
                     )
                 }
