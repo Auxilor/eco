@@ -4,6 +4,7 @@ import com.willfp.eco.core.particle.ParticleFactory
 import com.willfp.eco.core.particle.SpawnableParticle
 import org.bukkit.Location
 import org.bukkit.Particle
+import org.bukkit.entity.Player
 
 /**
  * Creates dust particles that fade between two colours, e.g. `dust_transition:ff0000:0000ff`.
@@ -56,6 +57,17 @@ object ParticleFactoryDustTransition : ParticleFactory {
             val world = location.world ?: return
 
             world.spawnParticle(Particle.DUST_COLOR_TRANSITION, location, amount, 0.0, 0.0, 0.0, 0.0, options)
+        }
+
+        /**
+         * Spawn the particle at a location, visible only to a single player.
+         *
+         * @param player The player to spawn the particle for.
+         * @param location The location.
+         * @param amount The amount to spawn.
+         */
+        override fun spawnTo(player: Player, location: Location, amount: Int) {
+            player.spawnParticle(Particle.DUST_COLOR_TRANSITION, location, amount, 0.0, 0.0, 0.0, 0.0, options)
         }
     }
 }
