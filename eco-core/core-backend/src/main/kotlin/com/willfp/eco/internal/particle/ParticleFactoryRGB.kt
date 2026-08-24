@@ -4,6 +4,7 @@ import com.willfp.eco.core.particle.ParticleFactory
 import com.willfp.eco.core.particle.SpawnableParticle
 import org.bukkit.Location
 import org.bukkit.Particle
+import org.bukkit.entity.Player
 
 /**
  * Creates coloured dust particles, e.g. `rgb:00ff00` or `dust:ff0000:3`.
@@ -56,6 +57,17 @@ object ParticleFactoryRGB : ParticleFactory {
             val world = location.world ?: return
 
             world.spawnParticle(Particle.DUST, location, amount, 0.0, 0.0, 0.0, 0.0, options)
+        }
+
+        /**
+         * Spawn the particle at a location, visible only to a single player.
+         *
+         * @param player The player to spawn the particle for.
+         * @param location The location.
+         * @param amount The amount to spawn.
+         */
+        override fun spawnTo(player: Player, location: Location, amount: Int) {
+            player.spawnParticle(Particle.DUST, location, amount, 0.0, 0.0, 0.0, 0.0, options)
         }
     }
 }

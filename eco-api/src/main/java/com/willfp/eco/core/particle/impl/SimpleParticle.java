@@ -4,6 +4,7 @@ import com.willfp.eco.core.particle.SpawnableParticle;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -57,5 +58,29 @@ public final class SimpleParticle implements SpawnableParticle {
         needs a colour. Spawning it without data throws, so it is skipped here - use a
         particle factory instead, e.g. dust:00ff00 or dust_transition:ff0000:00ff00.
          */
+    }
+
+    /**
+     * Spawn the particle at a location, visible only to a single player.
+     * <p>
+     * Skips the same data-carrying particles as {@link #spawn(Location, int)}.
+     *
+     * @param player   The player to spawn the particle for.
+     * @param location The location.
+     * @param amount   The amount to spawn.
+     */
+    @Override
+    public void spawnTo(@NotNull final Player player,
+                        @NotNull final Location location,
+                        final int amount) {
+        Class<?> dataType = particle.getDataType();
+
+        if (dataType == Void.class) {
+            player.spawnParticle(particle, location, amount, 0, 0, 0, 0);
+        } else if (dataType == Float.class) {
+            player.spawnParticle(particle, location, amount, 0, 0, 0, 0, 0f);
+        } else if (dataType == Integer.class) {
+            player.spawnParticle(particle, location, amount, 0, 0, 0, 0, 0);
+        }
     }
 }
