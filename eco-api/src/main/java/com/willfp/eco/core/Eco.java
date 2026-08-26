@@ -36,6 +36,7 @@ import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
+import com.willfp.eco.core.version.Version;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -371,6 +372,16 @@ public interface Eco {
      * @param plugin The plugin.
      */
     void addNewPlugin(@NotNull EcoPlugin plugin);
+
+    /**
+     * Register a plugin that failed to load because it requires a newer version of eco
+     * than the one that is running.
+     *
+     * @param pluginName      The name of the plugin.
+     * @param requiredVersion The version of eco that the plugin requires.
+     */
+    void registerOutdatedPlugin(@NotNull String pluginName,
+                                @NotNull Version requiredVersion);
 
     /**
      * Get plugin by name.

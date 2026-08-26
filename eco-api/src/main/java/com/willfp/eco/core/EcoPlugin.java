@@ -411,6 +411,15 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.getLogger().severe("You must be on at least " + requiredVersion);
             this.getLogger().severe("Download the newest version here:");
             this.getLogger().severe("https://polymart.org/product/773/eco");
+
+            /*
+            Registered with eco before throwing so that eco can decide what to do about the
+            server as a whole: a plugin that fails to load here is still installed, so its
+            items and data are left unregistered for the entire session, which lets other
+            plugins strip or overwrite them.
+             */
+            Eco.get().registerOutdatedPlugin(this.getName(), requiredVersion);
+
             throw new OutdatedEcoVersionError("This plugin requires at least eco version " + requiredVersion + " to run.");
         }
     }
