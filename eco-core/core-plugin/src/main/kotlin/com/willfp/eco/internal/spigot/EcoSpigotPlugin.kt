@@ -225,6 +225,8 @@ import me.TechsCode.UltraEconomy.UltraEconomy
 import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
+import com.willfp.eco.internal.spigot.datapack.DatapackRegistry
+import com.willfp.eco.internal.spigot.proxies.DatapackCodecProxy
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.Listener
@@ -254,6 +256,18 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
      * The brewing packet handler, registered as both a listener and a packet listener.
      */
     private val brewingPacketHandler = BrewingPacketHandler(this)
+
+    /**
+     * Owns every plugin's datapack, and all the timing decisions around them.
+     */
+    val datapackRegistry: DatapackRegistry by lazy {
+        DatapackRegistry(
+            logger = this.logger,
+            dataYml = this.dataYml,
+            saveData = { this.dataYml.save() },
+            proxyProvider = { this.getProxy(DatapackCodecProxy::class.java) }
+        )
+    }
 
     init {
         Items.registerArgParser(ArgParserEnchantment)
@@ -440,6 +454,10 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         VanillaItemTags.register()
         VanillaBlockTags.register()
         VanillaEntityTags.register()
+
+        // Worlds are loaded by now, so anything already published is committed to.
+        this.datapackRegistry.onWorldsLoaded()
+        this.datapackRegistry.handleOrphanedPacks(this.configYml.getBool("datapacks.remove-orphaned"))
     }
 
     /**

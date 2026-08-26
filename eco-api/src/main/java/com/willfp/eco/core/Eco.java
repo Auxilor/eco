@@ -12,6 +12,8 @@ import com.willfp.eco.core.data.ExtendedPersistentDataContainer;
 import com.willfp.eco.core.data.PlayerProfile;
 import com.willfp.eco.core.data.ServerProfile;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
+import com.willfp.eco.core.datapack.DatapackContributor;
+import com.willfp.eco.core.datapack.DatapackHandle;
 import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.core.entities.ai.EntityController;
 import com.willfp.eco.core.events.EventManager;
@@ -598,6 +600,31 @@ public interface Eco {
      */
     @NotNull
     ExpressionEnvironment.Builder createExpressionEnvironmentBuilder();
+
+    /**
+     * Get the datapack handle belonging to a plugin.
+     *
+     * @param plugin The plugin.
+     * @return The handle.
+     */
+    @NotNull
+    DatapackHandle getDatapackHandle(@NotNull EcoPlugin plugin);
+
+    /**
+     * Register a datapack contributor for a plugin.
+     *
+     * @param plugin      The plugin.
+     * @param contributor The contributor.
+     */
+    void registerDatapackContributor(@NotNull EcoPlugin plugin,
+                                     @NotNull DatapackContributor contributor);
+
+    /**
+     * If any plugin has written bootstrap-only datapack content that is not yet live.
+     *
+     * @return If a restart is pending.
+     */
+    boolean isDatapackRestartPending();
 
     /**
      * Get the menu a player currently has open.
