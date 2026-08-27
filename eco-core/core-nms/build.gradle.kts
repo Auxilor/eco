@@ -26,7 +26,7 @@ subprojects {
     pluginManager.withPlugin("io.papermc.paperweight.userdev") {
         val compileClasspath = configurations.named("compileClasspath")
 
-        val checkNmsLinkage = tasks.register<com.willfp.eco.build.NmsLinkageCheckTask>("checkNmsLinkage") {
+        val checkNmsLinkage = tasks.register<com.willfp.eco.gradle.NmsLinkageCheckTask>("checkNmsLinkage") {
             group = "verification"
             description = "Verifies every platform member used by the shaded jar exists on this version."
 
