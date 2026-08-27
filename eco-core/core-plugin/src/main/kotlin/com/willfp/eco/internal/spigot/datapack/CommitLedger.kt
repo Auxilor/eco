@@ -13,7 +13,7 @@ interface LedgerStorage {
 }
 
 /**
- * In-memory storage, for tests and for servers with no writable data file.
+ * In-memory storage, for tests.
  */
 class MemoryLedgerStorage(initial: Map<String, Set<String>> = emptyMap()) : LedgerStorage {
     private var data: Map<String, Set<String>> = initial.mapValues { it.value.toSet() }
@@ -109,17 +109,37 @@ class CommitLedger(
     }
 
     /**
-     * Which of [entries] are committed, and so cannot be removed.
+     * Forget specific tokens, for entries a plugin has stopped emitting.
+     *
+     * A ledger that only ever grows ends up naming entries that left the pack long ago, so a
+     * rebuild prunes what it drops.
      */
-    fun blocking(pluginId: String, entries: Collection<DatapackEntry>): Set<String> {
-        val committed = committed(pluginId)
-        return entries.map { token(it) }.filter { it in committed }.toSet()
+    fun releaseTokens(pluginId: String, tokens: Collection<String>) {
+        if (tokens.isEmpty()) {
+            return
+        }
+
+        synchronized(lock) {
+            val data = storage.read().toMutableMap()
+            val existing = data[pluginId] ?: return
+            val updated = existing - tokens.toSet()
+
+            if (updated == existing) {
+                return
+            }
+
+            if (updated.isEmpty()) {
+                data.remove(pluginId)
+            } else {
+                data[pluginId] = updated
+            }
+
+            storage.write(data)
+        }
     }
 
     /**
      * Forget everything a plugin has committed.
-     *
-     * Only ever called behind an explicit, informed admin action.
      */
     fun release(pluginId: String) {
         synchronized(lock) {
@@ -129,13 +149,6 @@ class CommitLedger(
                 storage.write(data)
             }
         }
-    }
-
-    /**
-     * The plugin IDs with committed entries.
-     */
-    fun plugins(): Set<String> = synchronized(lock) {
-        storage.read().keys.toSet()
     }
 
     companion object {

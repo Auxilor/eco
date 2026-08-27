@@ -64,6 +64,21 @@ internal class PackMcmetaTests {
     }
 
     @Test
+    fun `an unreadable server format declares an open-ended range`() {
+        // Clamping to MIN_FORMAT would read as incompatible on every newer server, and an
+        // incompatible pack is never enabled, so the content would not load at all.
+        val mcmeta = PackMcmeta.generate("TestPlugin (eco)", null)
+        val pack = JsonCanonicaliser.parseStrict(mcmeta).asJsonObject.getAsJsonObject("pack")
+
+        Assertions.assertEquals(PackMcmeta.MIN_FORMAT, pack.get("min_format").asInt)
+        Assertions.assertEquals(Int.MAX_VALUE, pack.get("max_format").asInt)
+        Assertions.assertEquals(
+            Int.MAX_VALUE,
+            pack.getAsJsonObject("supported_formats").get("max_inclusive").asInt
+        )
+    }
+
+    @Test
     fun `generation is deterministic`() {
         Assertions.assertEquals(
             PackMcmeta.generate("A (eco)", PackFormat(94, 1)),

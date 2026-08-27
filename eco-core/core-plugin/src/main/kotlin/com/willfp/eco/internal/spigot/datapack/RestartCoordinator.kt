@@ -25,11 +25,6 @@ class RestartCoordinator(
         get() = pending.isNotEmpty()
 
     /**
-     * The plugins waiting on a restart.
-     */
-    fun pendingPlugins(): Set<String> = pending.toSet()
-
-    /**
      * Whether a specific plugin is waiting on a restart.
      */
     fun isPending(pluginId: String) = pluginId in pending

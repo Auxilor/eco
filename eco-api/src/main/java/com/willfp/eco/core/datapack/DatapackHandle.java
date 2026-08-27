@@ -30,26 +30,20 @@ public interface DatapackHandle {
     /**
      * Remove the whole pack.
      * <p>
-     * Refused if any entry has been committed, i.e. has been part of an
-     * enabled pack on a world that has been loaded. Removing bootstrap-only
-     * content that a world has already generated with corrupts that world.
+     * <strong>This can corrupt worlds.</strong> Removing bootstrap-only
+     * content that a world has already generated with leaves chunks
+     * referencing a biome or dimension ID that no longer resolves, and those
+     * chunks will fail to load.
+     * <p>
+     * Committed entries, i.e. those that have been part of an enabled pack on
+     * a loaded world, are logged before they go, but removal is never refused.
+     * The same content can be dropped by a config edit and a rebuild, so
+     * refusing here would only move the problem somewhere quieter.
      *
      * @return The outcome.
      */
     @NotNull
     InstallResult remove();
-
-    /**
-     * Remove the whole pack, ignoring committed entries.
-     * <p>
-     * <strong>This can corrupt worlds.</strong> Chunks that reference a biome
-     * or dimension ID which no longer resolves will fail to load. Only call
-     * this in response to an explicit, informed admin action.
-     *
-     * @return The outcome.
-     */
-    @NotNull
-    InstallResult forceRemove();
 
     /**
      * If this plugin has written bootstrap-only content that is not yet live.

@@ -146,14 +146,30 @@ internal class EcoDatapackHandleTests {
     }
 
     @Test
-    fun `removal is refused once an entry is committed`() {
+    fun `removal proceeds once an entry is committed, and clears the ledger`() {
         apply { it.put("worldgen/biome", NamespacedKey("test", "swamp"), """{"a": 1}""") }
         ledger.commit("testplugin", published.last())
 
         val result = handle.remove()
 
-        Assertions.assertEquals(InstallResult.Status.FAILED, result.status)
-        Assertions.assertTrue(packDir().isDirectory)
+        Assertions.assertTrue(result.succeeded())
+        Assertions.assertFalse(packDir().exists())
+        Assertions.assertTrue(ledger.committed("testplugin").isEmpty())
+    }
+
+    @Test
+    fun `a rebuild that drops a committed entry stops tracking it`() {
+        apply {
+            it.put("worldgen/biome", NamespacedKey("test", "swamp"), """{"a": 1}""")
+            it.put("worldgen/biome", NamespacedKey("test", "marsh"), """{"a": 1}""")
+        }
+        ledger.commit("testplugin", published.last())
+
+        // The path an admin actually takes: a feature toggled off, so the contributor emits less.
+        apply { it.put("worldgen/biome", NamespacedKey("test", "swamp"), """{"a": 1}""") }
+
+        Assertions.assertFalse(File(packDir(), "data/test/worldgen/biome/marsh.json").exists())
+        Assertions.assertEquals(setOf("worldgen/biome|test:swamp"), ledger.committed("testplugin"))
     }
 
     @Test
@@ -163,16 +179,6 @@ internal class EcoDatapackHandleTests {
 
         Assertions.assertTrue(handle.remove().succeeded())
         Assertions.assertFalse(packDir().exists())
-    }
-
-    @Test
-    fun `force removal overrides the ledger`() {
-        apply { it.put("worldgen/biome", NamespacedKey("test", "swamp"), """{"a": 1}""") }
-        ledger.commit("testplugin", published.last())
-
-        Assertions.assertTrue(handle.forceRemove().succeeded())
-        Assertions.assertFalse(packDir().exists())
-        Assertions.assertTrue(ledger.committed("testplugin").isEmpty())
     }
 
     @Test

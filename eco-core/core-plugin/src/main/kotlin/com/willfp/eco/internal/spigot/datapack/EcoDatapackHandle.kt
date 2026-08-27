@@ -21,7 +21,7 @@ class EcoDatapackHandle(
     private val ledger: CommitLedger,
     private val restartCoordinator: RestartCoordinator,
     private val logger: Logger,
-    private val packFormat: () -> PackFormat,
+    private val packFormat: () -> PackFormat?,
     private val onPublished: (List<DatapackEntry>) -> Unit
 ) : DatapackHandle {
     private val publisher = PackPublisher(packDir)
@@ -51,32 +51,14 @@ class EcoDatapackHandle(
 
             is PublishOutcome.Written -> {
                 onPublished(entries)
+                warnDropped(entries)
                 published(entries)
             }
         }
     }
 
     override fun remove(): InstallResult {
-        val committed = ledger.committed(pluginId)
-
-        if (committed.isNotEmpty()) {
-            return failed(
-                listOf(
-                    "Refusing to remove the $displayName datapack: " +
-                            "${committed.size} entries have already been live on a loaded world.",
-                    "Removing them would leave chunks referencing IDs that no longer resolve.",
-                    "Committed: ${committed.sorted().joinToString(", ")}"
-                )
-            )
-        }
-
-        return doRemove()
-    }
-
-    override fun forceRemove(): InstallResult {
-        logger.warning(
-            "[$displayName] force-removing datapack. Worlds generated with this content may fail to load."
-        )
+        warnCommitted()
 
         val result = doRemove()
 
@@ -98,6 +80,54 @@ class EcoDatapackHandle(
             logger.info("[$displayName] datapack removed")
             InstallResult(InstallResult.Status.READY)
         }
+    }
+
+    /**
+     * Warn about committed entries this publish dropped, and stop tracking them.
+     *
+     * An admin editing config has to be able to shrink a pack, so a rebuild never refuses. Dropping
+     * bootstrap-only content a loaded world has seen still leaves chunks and entities referencing
+     * IDs that no longer resolve, which is worth saying out loud. This is the path that actually
+     * happens: a feature toggled off, or an entry deleted from config.
+     */
+    private fun warnDropped(entries: List<DatapackEntry>) {
+        val current = entries.map { CommitLedger.token(it) }.toSet()
+        val dropped = ledger.committed(pluginId) - current
+
+        if (dropped.isEmpty()) {
+            return
+        }
+
+        logger.warning(
+            "[$displayName] datapack rebuild dropped ${dropped.size} entries that have been live on " +
+                    "a loaded world: ${dropped.sorted().joinToString(", ")}"
+        )
+
+        warnOrphanedIds()
+
+        ledger.releaseTokens(pluginId, dropped)
+    }
+
+    private fun warnCommitted() {
+        val committed = ledger.committed(pluginId)
+
+        if (committed.isEmpty()) {
+            return
+        }
+
+        logger.warning(
+            "[$displayName] removing a datapack holding ${committed.size} entries that have been " +
+                    "live on a loaded world: ${committed.sorted().joinToString(", ")}"
+        )
+
+        warnOrphanedIds()
+    }
+
+    private fun warnOrphanedIds() {
+        logger.warning(
+            "[$displayName] anything generated with them references IDs that will no longer resolve, " +
+                    "and may fail to load after the next restart."
+        )
     }
 
     private fun buildFiles(entries: List<DatapackEntry>): Map<String, ByteArray> {

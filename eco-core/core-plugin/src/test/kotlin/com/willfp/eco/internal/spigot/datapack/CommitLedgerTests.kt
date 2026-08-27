@@ -40,17 +40,26 @@ internal class CommitLedgerTests {
     }
 
     @Test
-    fun `blocking reports only committed entries`() {
+    fun `releasing tokens forgets only those entries`() {
+        val ledger = CommitLedger(MemoryLedgerStorage())
+        val kept = entry("dimension", "void")
+        val dropped = entry("dimension", "old")
+
+        ledger.commit("myplugin", listOf(kept, dropped))
+        ledger.releaseTokens("myplugin", listOf(CommitLedger.token(dropped)))
+
+        Assertions.assertEquals(setOf("dimension|test:void"), ledger.committed("myplugin"))
+    }
+
+    @Test
+    fun `releasing every token clears the plugin`() {
         val ledger = CommitLedger(MemoryLedgerStorage())
         val committed = entry("dimension", "void")
-        val fresh = entry("dimension", "new")
 
         ledger.commit("myplugin", listOf(committed))
+        ledger.releaseTokens("myplugin", listOf(CommitLedger.token(committed)))
 
-        Assertions.assertEquals(
-            setOf("dimension|test:void"),
-            ledger.blocking("myplugin", listOf(committed, fresh))
-        )
+        Assertions.assertTrue(ledger.committed("myplugin").isEmpty())
     }
 
     @Test
@@ -60,8 +69,8 @@ internal class CommitLedgerTests {
         ledger.commit("a", listOf(entry("dimension", "one")))
         ledger.commit("b", listOf(entry("dimension", "two")))
 
-        Assertions.assertEquals(setOf("a", "b"), ledger.plugins())
         Assertions.assertEquals(setOf("dimension|test:one"), ledger.committed("a"))
+        Assertions.assertEquals(setOf("dimension|test:two"), ledger.committed("b"))
     }
 
     @Test

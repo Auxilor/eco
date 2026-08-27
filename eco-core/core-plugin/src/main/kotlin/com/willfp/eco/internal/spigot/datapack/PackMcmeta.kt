@@ -29,10 +29,14 @@ object PackMcmeta {
      * Build a `pack.mcmeta` for a pack.
      *
      * @param description The pack description.
-     * @param current     The format of the running server.
+     * @param current     The format of the running server, or null if it could not be read.
      */
-    fun generate(description: String, current: PackFormat): String {
-        val max = maxOf(current.major, MIN_FORMAT)
+    fun generate(description: String, current: PackFormat?): String {
+        // An undetected format must not clamp the range to MIN_FORMAT: that reads as incompatible on
+        // every newer server, an incompatible pack is not enabled, and the content then never loads
+        // at all. Open-ended is safe here because every entry has already been decoded through the
+        // running server's own codec, so the content is known to be correct for whatever is running.
+        val max = if (current == null) Int.MAX_VALUE else maxOf(current.major, MIN_FORMAT)
 
         val supported = JsonObject().apply {
             addProperty("min_inclusive", MIN_FORMAT)
@@ -87,27 +91,48 @@ object PackMcmeta {
     /**
      * Read the format of the running server, out of the `version.json` bundled in the server jar.
      *
-     * @return The format, or [MIN_FORMAT] if it could not be read.
+     * @return The format, or null if it could not be read.
      */
-    fun currentFormat(logger: Logger): PackFormat {
-        val loader = runCatching { Bukkit.getServer().javaClass.classLoader }.getOrNull()
-            ?: PackMcmeta::class.java.classLoader
-
-        val json = runCatching {
-            loader.getResourceAsStream("version.json")?.use { it.readBytes().toString(Charsets.UTF_8) }
-        }.getOrNull()
-
+    fun currentFormat(logger: Logger): PackFormat? {
+        val json = serverResource("version.json")
         val parsed = json?.let { parseVersionJson(it) }
 
         if (parsed == null) {
             logger.warning(
-                "Could not read the server's data pack format from version.json; " +
-                        "falling back to $MIN_FORMAT. Datapacks may be reported as outdated."
+                "Could not read the server's data pack format from version.json; datapacks will " +
+                        "declare an open-ended format range instead."
             )
 
-            return PackFormat(MIN_FORMAT)
+            return null
         }
 
         return parsed
     }
+
+    private fun serverResource(name: String): String? {
+        for (loader in candidateLoaders()) {
+            val content = runCatching {
+                loader.getResourceAsStream(name)?.use { it.readBytes().toString(Charsets.UTF_8) }
+            }.getOrNull()
+
+            if (content != null) {
+                return content
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * Loaders that might see the server jar's resources, most specific first.
+     *
+     * Reflection rather than a direct reference, so that core-plugin keeps no compile-time
+     * dependency on NMS: only the loader is wanted, never the class.
+     */
+    private fun candidateLoaders(): List<ClassLoader> = listOfNotNull(
+        runCatching { Bukkit.getServer().javaClass.classLoader }.getOrNull(),
+        runCatching { Class.forName("net.minecraft.SharedConstants").classLoader }.getOrNull(),
+        runCatching { ClassLoader.getSystemClassLoader() }.getOrNull(),
+        PackMcmeta::class.java.classLoader
+    ).distinct()
 }

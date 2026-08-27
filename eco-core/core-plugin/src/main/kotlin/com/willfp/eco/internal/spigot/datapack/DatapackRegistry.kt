@@ -5,6 +5,7 @@ import com.willfp.eco.core.LifecyclePosition
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.datapack.DatapackContributor
 import com.willfp.eco.core.datapack.DatapackHandle
+import com.willfp.eco.core.datapack.InstallResult
 import com.willfp.eco.internal.spigot.proxies.DatapackCodecProxy
 import org.bukkit.Bukkit
 import java.io.File
@@ -41,8 +42,6 @@ class DatapackRegistry(
 
     private val contributors = ConcurrentHashMap<String, CopyOnWriteArrayList<DatapackContributor>>()
 
-    private val pendingCommits = ConcurrentHashMap<String, MutableList<DatapackEntry>>()
-
     @Volatile
     private var worldsLoaded = false
 
@@ -63,14 +62,19 @@ class DatapackRegistry(
             restartCoordinator = restartCoordinator,
             logger = logger,
             packFormat = { packFormat },
-            onPublished = { entries -> recordPublished(id, entries) }
+            onPublished = { entries -> ledger.commit(id, entries) }
         )
     }
 
     /**
      * Register a contributor, and rebuild the plugin's pack now.
+     *
+     * A contributor replaces any already-registered contributor of the same class, keeping the
+     * newest instance. Registration runs again every time a plugin enables, and two contributors of
+     * one class emit the same entry paths, which fails the whole publish as a duplicate. A plugin
+     * needing several contributors should use distinct classes, or one contributor that loops.
      */
-    fun register(plugin: EcoPlugin, contributor: DatapackContributor) {
+    fun register(plugin: EcoPlugin, contributor: DatapackContributor): InstallResult {
         val id = idOf(plugin)
         val existing = contributors[id]
 
@@ -81,20 +85,27 @@ class DatapackRegistry(
             // is correct for the next restart, even though the change cannot apply now.
             plugin.onReload(LifecyclePosition.END) { rebuild(plugin) }
         } else {
-            existing.add(contributor)
+            val index = existing.indexOfFirst { it.javaClass == contributor.javaClass }
+
+            if (index == -1) {
+                existing.add(contributor)
+            } else {
+                existing[index] = contributor
+            }
         }
 
-        rebuild(plugin)
+        return rebuild(plugin)
     }
 
     /**
      * Rebuild a plugin's pack from its registered contributors.
      */
-    fun rebuild(plugin: EcoPlugin) {
-        val registered = contributors[idOf(plugin)] ?: return
+    fun rebuild(plugin: EcoPlugin): InstallResult {
+        val registered = contributors[idOf(plugin)]
+            ?: return InstallResult(InstallResult.Status.UNCHANGED)
 
         // Explicit Consumer, because an `apply { }` block here would resolve to kotlin.apply.
-        handle(plugin).apply(Consumer { draft ->
+        val result = handle(plugin).apply(Consumer { draft ->
             for (contributor in registered) {
                 runCatching { contributor.contribute(draft) }.onFailure {
                     logger.warning("[${plugin.name}] datapack contributor threw: ${it.message}")
@@ -107,22 +118,19 @@ class DatapackRegistry(
         if (worldsLoaded) {
             restartCoordinator.announce()
         }
+
+        return result
     }
 
     /**
-     * Called once the server's worlds are loaded.
+     * Called once the server's worlds are loaded, from eco's own enable.
      *
-     * Everything published before this point has now been part of an enabled pack on a loaded
-     * world, so it is committed, and the batched restart warning is worth printing.
+     * Eco enables before anything that depends on it, so this runs before any consumer registers.
+     * It exists for the batched restart warning, and to mark that later rebuilds are reloads rather
+     * than boot.
      */
     fun onWorldsLoaded() {
         worldsLoaded = true
-
-        for ((id, entries) in pendingCommits) {
-            ledger.commit(id, entries)
-        }
-
-        pendingCommits.clear()
 
         restartCoordinator.announce()
     }
@@ -177,15 +185,6 @@ class DatapackRegistry(
         return dir.listFiles().orEmpty()
             .filter { it.isDirectory && it.name.startsWith(PACK_PREFIX) }
             .filter { it.name.removePrefix(PACK_PREFIX) !in installed }
-    }
-
-    private fun recordPublished(id: String, entries: List<DatapackEntry>) {
-        if (worldsLoaded) {
-            ledger.commit(id, entries)
-            return
-        }
-
-        pendingCommits.computeIfAbsent(id) { mutableListOf() }.addAll(entries)
     }
 
     private fun idOf(plugin: EcoPlugin) = plugin.name.lowercase()

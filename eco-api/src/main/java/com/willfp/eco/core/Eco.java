@@ -14,6 +14,7 @@ import com.willfp.eco.core.data.ServerProfile;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.datapack.DatapackContributor;
 import com.willfp.eco.core.datapack.DatapackHandle;
+import com.willfp.eco.core.datapack.InstallResult;
 import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.core.entities.ai.EntityController;
 import com.willfp.eco.core.events.EventManager;
@@ -615,9 +616,11 @@ public interface Eco {
      *
      * @param plugin      The plugin.
      * @param contributor The contributor.
+     * @return The outcome of the rebuild this registration triggered.
      */
-    void registerDatapackContributor(@NotNull EcoPlugin plugin,
-                                     @NotNull DatapackContributor contributor);
+    @NotNull
+    InstallResult registerDatapackContributor(@NotNull EcoPlugin plugin,
+                                              @NotNull DatapackContributor contributor);
 
     /**
      * If any plugin has written bootstrap-only datapack content that is not yet live.

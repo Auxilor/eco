@@ -81,6 +81,5 @@ internal class RestartCoordinatorTests {
         Assertions.assertTrue(coordinator.isPending("a"))
         Assertions.assertFalse(coordinator.isPending("b"))
         Assertions.assertTrue(coordinator.restartPending)
-        Assertions.assertEquals(setOf("a"), coordinator.pendingPlugins())
     }
 }

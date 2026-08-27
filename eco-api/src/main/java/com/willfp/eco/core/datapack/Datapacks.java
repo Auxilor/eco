@@ -44,12 +44,19 @@ public final class Datapacks {
      * owning plugin, so that config changes are re-emitted for the next
      * restart. It must be idempotent, side-effect-free and cheap.
      *
+     * Registering rebuilds the pack immediately, so the returned result says
+     * whether the content this contributor emits is valid and installed. A
+     * consumer migrating off its own pack should wait for
+     * {@link InstallResult#succeeded()} before deleting the old one.
+     *
      * @param plugin      The plugin.
      * @param contributor The contributor.
+     * @return The outcome of the rebuild this registration triggered.
      */
-    public static void register(@NotNull final EcoPlugin plugin,
-                                @NotNull final DatapackContributor contributor) {
-        Eco.get().registerDatapackContributor(plugin, contributor);
+    @NotNull
+    public static InstallResult register(@NotNull final EcoPlugin plugin,
+                                         @NotNull final DatapackContributor contributor) {
+        return Eco.get().registerDatapackContributor(plugin, contributor);
     }
 
     /**
