@@ -162,3 +162,15 @@ kill-attribution:
   # still credited to them. Only used when credit-indirect-kills is true.
   # Fire ticks land 20 ticks apart, so lower values will miss burn kills.
   window-ticks: 100
+
+datapacks:
+  # If datapacks belonging to plugins that are no longer installed should be
+  # deleted on startup. This is the admin override for eco's removal policy:
+  # eco normally refuses to remove datapack content that a loaded world has
+  # already seen, because chunks can reference biome, dimension or damage type
+  # IDs that would then no longer resolve.
+  #
+  # WARNING: enabling this can permanently break existing worlds. Only turn it
+  # on if you know the removed content was never generated with, and take a
+  # backup first.
+  remove-orphaned: false

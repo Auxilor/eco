@@ -19,6 +19,7 @@ import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.datapack.DatapackContributor
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
@@ -395,6 +396,15 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun createExpressionEnvironmentBuilder() =
         EcoExpressionEnvironmentBuilder()
+
+    override fun getDatapackHandle(plugin: EcoPlugin) =
+        datapackRegistry.handle(plugin)
+
+    override fun registerDatapackContributor(plugin: EcoPlugin, contributor: DatapackContributor) =
+        datapackRegistry.register(plugin, contributor)
+
+    override fun isDatapackRestartPending() =
+        datapackRegistry.restartPending
 
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
