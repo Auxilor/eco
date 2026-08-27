@@ -36,7 +36,7 @@ private class EnhancedInteractGoal(
     chance
 ) {
     override fun canUse(): Boolean {
-        return if (mob.random.nextFloat() >= probability) {
+        return if (mob.getRandom().nextFloat() >= probability) {
             false
         } else {
             if (mob.target != null) {

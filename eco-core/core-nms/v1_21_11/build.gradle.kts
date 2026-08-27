@@ -37,6 +37,19 @@ tasks {
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
 
+        // 1.21.11 moved the entity classes these goals use.
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/CatLieOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/CatSitOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/IllusionerBlindnessSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/entity/IllusionerMirrorSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/ai/target/DefendVillageGoalFactory*.class")
+
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatLieOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/CatSitOnBedGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/IllusionerBlindnessSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/entity/IllusionerMirrorSpellGoalFactory*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/common/ai/target/DefendVillageGoalFactory*.class")
+
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }

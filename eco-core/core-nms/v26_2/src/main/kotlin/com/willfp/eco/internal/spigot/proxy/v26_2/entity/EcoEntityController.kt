@@ -1,10 +1,12 @@
-package com.willfp.eco.internal.spigot.proxy.common.ai
+package com.willfp.eco.internal.spigot.proxy.v26_2.entity
 
 import com.willfp.eco.core.entities.ai.CustomGoal
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.entities.ai.EntityGoal
 import com.willfp.eco.core.entities.ai.TargetGoal
-import com.willfp.eco.internal.spigot.proxy.common.toPathfinderMob
+import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.ai.CustomGoalFactory
+import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.ai.getGoalFactory
+import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.toPathfinderMob
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
 import org.bukkit.entity.Mob
@@ -15,7 +17,7 @@ class EcoEntityController<T : Mob>(
     override fun addEntityGoal(priority: Int, goal: EntityGoal<in T>): EntityController<T> {
         val nms = getNms() ?: return this
 
-        nms.goalSelector.addGoal(
+        nms.getGoalSelector().addGoal(
             priority,
             goal.getGoalFactory()?.create(goal, nms) ?: return this
         )
@@ -32,9 +34,9 @@ class EcoEntityController<T : Mob>(
             { goal.getGoalFactory()?.isGoalOfType(it) == true }
         }
 
-        for (wrapped in nms.goalSelector.availableGoals.toSet()) {
+        for (wrapped in nms.getGoalSelector().availableGoals.toSet()) {
             if (predicate(wrapped.goal)) {
-                nms.goalSelector.removeGoal(wrapped.goal)
+                nms.getGoalSelector().removeGoal(wrapped.goal)
             }
         }
 
@@ -43,7 +45,7 @@ class EcoEntityController<T : Mob>(
 
     override fun clearEntityGoals(): EntityController<T> {
         val nms = getNms() ?: return this
-        nms.goalSelector.availableGoals.clear()
+        nms.getGoalSelector().availableGoals.clear()
         return this
     }
 

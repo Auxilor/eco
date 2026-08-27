@@ -24,6 +24,7 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/packet/NewItemsPacketOpenWindowMerchant*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/Hologram*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/hologram/V26_1_2HologramHandle*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_1_2/entity/EcoEntityController*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
