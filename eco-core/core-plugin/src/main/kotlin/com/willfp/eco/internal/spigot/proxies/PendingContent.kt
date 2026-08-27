@@ -1,5 +1,7 @@
 package com.willfp.eco.internal.spigot.proxies
 
+import com.willfp.eco.internal.spigot.datapack.DatapackEntry
+
 /**
  * The entries a publish is about to write, so that codec validation can resolve references to
  * them.
@@ -32,5 +34,28 @@ class PendingContent(
 
     companion object {
         val EMPTY = PendingContent(emptyMap(), emptyMap())
+
+        /**
+         * Splits a draft into the elements and tags it writes.
+         *
+         * One implementation, so that the publish path and the tests agree on what a draft
+         * contributes rather than each deciding for itself.
+         */
+        fun of(entries: Collection<DatapackEntry>): PendingContent {
+            val elements = mutableMapOf<String, MutableSet<String>>()
+            val tags = mutableMapOf<String, MutableSet<String>>()
+
+            for (entry in entries) {
+                val registry = entry.registry.trim('/').lowercase()
+
+                if (registry.startsWith("tags/")) {
+                    tags.getOrPut(registry.removePrefix("tags/")) { mutableSetOf() }.add(entry.referenceId)
+                } else {
+                    elements.getOrPut(registry) { mutableSetOf() }.add(entry.referenceId)
+                }
+            }
+
+            return PendingContent(elements, tags)
+        }
     }
 }

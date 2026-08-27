@@ -156,7 +156,7 @@ class EcoDatapackHandle(
 
         // Entries in one publish may reference each other, so validation has to know what the
         // whole publish writes before it checks any single entry.
-        val pending = pendingContent(entries)
+        val pending = PendingContent.of(entries)
 
         for (entry in entries) {
             if (!seen.add(entry.path)) {
@@ -168,28 +168,6 @@ class EcoDatapackHandle(
         }
 
         return errors
-    }
-
-    /**
-     * What this publish writes, split into registry elements and tags, keyed by the registry
-     * directory a reference to them would resolve against.
-     */
-    private fun pendingContent(entries: List<DatapackEntry>): PendingContent {
-        val elements = mutableMapOf<String, MutableSet<String>>()
-        val tags = mutableMapOf<String, MutableSet<String>>()
-
-        for (entry in entries) {
-            val registry = entry.registry.trim('/').lowercase()
-            val id = "${entry.id.namespace}:${entry.id.key.removeSuffix(".json")}"
-
-            if (registry.startsWith("tags/")) {
-                tags.getOrPut(registry.removePrefix("tags/")) { mutableSetOf() }.add(id)
-            } else {
-                elements.getOrPut(registry) { mutableSetOf() }.add(id)
-            }
-        }
-
-        return PendingContent(elements, tags)
     }
 
     private fun published(entries: List<DatapackEntry>): InstallResult {

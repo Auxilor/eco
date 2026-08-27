@@ -63,11 +63,23 @@ class DatapackCodec : DatapackCodecProxy {
         } catch (e: Throwable) {
             /*
             A placeholder holder for pending content is unbound: a codec that dereferences one
-            during decode, rather than merely resolving it, throws. Falling back to the syntax and
-            path tiers is weaker than a real decode, so it says so out loud rather than reporting a
-            clean pass.
+            during decode, rather than merely resolving it, throws. With nothing pending there is
+            no placeholder to blame, so the throw is the answer and the entry is refused.
+
+            With content pending the entry keeps only its syntax and path checks, because refusing
+            it would fail exactly the publishes this exists to support. That is weaker than a real
+            decode, so it is logged: the alternative is a decode bug that never surfaces.
              */
-            if (pending.isEmpty()) "codec validation threw (${e.message})" else null
+            if (pending.isEmpty()) {
+                "codec validation threw (${e.message})"
+            } else {
+                Bukkit.getLogger().warning(
+                    "[eco] $registryDirPath entry fell back to syntax and path checks only: codec " +
+                        "decode threw while resolving content this publish is writing ($e)"
+                )
+
+                null
+            }
         }
     }
 

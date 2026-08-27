@@ -61,4 +61,15 @@ internal class DatapackEntryTests {
 
         Assertions.assertEquals(1, draft.entries.single().content[0])
     }
+
+    @Test
+    fun `the reference id drops a known extension`() {
+        val nbt = DatapackEntry("structure", NamespacedKey("test", "hut.nbt"), byteArrayOf(1), false)
+        val json = DatapackEntry("worldgen/biome", NamespacedKey("test", "grove.json"), "{}".toByteArray(), true)
+        val bare = DatapackEntry("worldgen/biome", NamespacedKey("test", "grove"), "{}".toByteArray(), true)
+
+        Assertions.assertEquals("test:hut", nbt.referenceId)
+        Assertions.assertEquals("test:grove", json.referenceId)
+        Assertions.assertEquals("test:grove", bare.referenceId)
+    }
 }

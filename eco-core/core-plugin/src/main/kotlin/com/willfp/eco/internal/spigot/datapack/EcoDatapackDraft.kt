@@ -23,10 +23,22 @@ class DatapackEntry(
     /** Whether this entry's content is JSON, and so subject to canonicalisation and codec checks. */
     val isJson: Boolean = path.endsWith(".json")
 
+    /**
+     * How another entry refers to this one: `namespace:key`, with any known file extension
+     * dropped. A reference names the entry, not the file it happens to live in.
+     */
+    val referenceId: String = "${id.namespace}:${withoutExtension(id.key)}"
+
     override fun toString() = "$registry/${id.namespace}:${id.key}"
 
     companion object {
         private val KNOWN_EXTENSIONS = setOf(".json", ".nbt", ".mcfunction", ".snbt")
+
+        private fun withoutExtension(key: String): String {
+            val extension = KNOWN_EXTENSIONS.firstOrNull { key.endsWith(it) } ?: return key
+
+            return key.removeSuffix(extension)
+        }
 
         private fun fileName(registry: String, id: NamespacedKey, isText: Boolean): String {
             val key = id.key

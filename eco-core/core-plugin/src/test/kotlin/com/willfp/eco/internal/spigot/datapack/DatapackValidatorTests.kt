@@ -62,25 +62,6 @@ internal class DatapackValidatorTests {
     private fun entry(registry: String, key: String, content: String, namespace: String = "test") =
         DatapackEntry(registry, NamespacedKey(namespace, key), content.toByteArray(), true)
 
-    /** Mirrors how `EcoDatapackHandle` splits a draft into elements and tags. */
-    private fun pendingFor(entries: List<DatapackEntry>): PendingContent {
-        val elements = mutableMapOf<String, MutableSet<String>>()
-        val tags = mutableMapOf<String, MutableSet<String>>()
-
-        for (entry in entries) {
-            val registry = entry.registry.trim('/').lowercase()
-            val id = "${entry.id.namespace}:${entry.id.key.removeSuffix(".json")}"
-
-            if (registry.startsWith("tags/")) {
-                tags.getOrPut(registry.removePrefix("tags/")) { mutableSetOf() }.add(id)
-            } else {
-                elements.getOrPut(registry) { mutableSetOf() }.add(id)
-            }
-        }
-
-        return PendingContent(elements, tags)
-    }
-
     @Test
     fun `valid content passes`() {
         val validator = DatapackValidator(FakeCodec)
@@ -180,7 +161,7 @@ internal class DatapackValidatorTests {
             entry("worldgen/placed_feature", "my_pf", """{"feature":"test:my_cf"}""")
         )
 
-        Assertions.assertNull(validator.validate(entries[1], pendingFor(entries)))
+        Assertions.assertNull(validator.validate(entries[1], PendingContent.of(entries)))
     }
 
     @Test
@@ -188,7 +169,7 @@ internal class DatapackValidatorTests {
         val validator = DatapackValidator(FakeCodec)
 
         val entries = listOf(entry("worldgen/placed_feature", "my_pf", """{"feature":"test:absent"}"""))
-        val error = validator.validate(entries[0], pendingFor(entries))
+        val error = validator.validate(entries[0], PendingContent.of(entries))
 
         Assertions.assertNotNull(error)
         Assertions.assertTrue(error!!.contains("Failed to get element"), error)
@@ -203,7 +184,7 @@ internal class DatapackValidatorTests {
             entry("worldgen/structure", "my_structure", """{"biomes":"#test:has_probe"}""")
         )
 
-        Assertions.assertNull(validator.validate(entries[1], pendingFor(entries)))
+        Assertions.assertNull(validator.validate(entries[1], PendingContent.of(entries)))
     }
 
     @Test
@@ -211,10 +192,23 @@ internal class DatapackValidatorTests {
         val validator = DatapackValidator(FakeCodec)
 
         val entries = listOf(entry("worldgen/structure", "my_structure", """{"biomes":"#test:absent"}"""))
-        val error = validator.validate(entries[0], pendingFor(entries))
+        val error = validator.validate(entries[0], PendingContent.of(entries))
 
         Assertions.assertNotNull(error)
         Assertions.assertTrue(error!!.contains("Missing tag"), error)
+    }
+
+    @Test
+    fun `an entry written as a file still contributes the bare id`() {
+        val entries = listOf(
+            entry("worldgen/configured_feature", "my_cf.json", """{"type":"minecraft:flower"}"""),
+            entry("worldgen/structure", "my_structure.nbt", "not json")
+        )
+
+        val pending = PendingContent.of(entries)
+
+        Assertions.assertEquals(setOf("test:my_cf"), pending.elementsIn("worldgen/configured_feature"))
+        Assertions.assertEquals(setOf("test:my_structure"), pending.elementsIn("worldgen/structure"))
     }
 
     @Test
