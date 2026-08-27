@@ -631,6 +631,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ProfileLoadListener(this, profileHandler),
             PlayerBlockListener(this),
             ServerLocking,
+            OutdatedPlugins,
             AutocrafterPatch,
             PlayerHealthPatch,
             UnenchantablePatch

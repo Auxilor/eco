@@ -28,6 +28,7 @@ import com.willfp.eco.core.gui.view.ViewBuilder
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.core.version.Version
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
 import com.willfp.eco.internal.command.EcoSubcommand
@@ -310,6 +311,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         loadedEcoPlugins[plugin.name.lowercase()] = plugin
         loadedEcoPlugins[plugin.id] = plugin
     }
+
+    override fun registerOutdatedPlugin(pluginName: String, requiredVersion: Version) =
+        OutdatedPlugins.register(pluginName, requiredVersion)
 
     override fun getLoadedPlugins(): List<String> =
         loadedEcoPlugins.keys.toList()
