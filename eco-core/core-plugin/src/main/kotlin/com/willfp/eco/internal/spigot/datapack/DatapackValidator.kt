@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.datapack
 
 import com.google.gson.JsonSyntaxException
 import com.willfp.eco.internal.spigot.proxies.DatapackCodecProxy
+import com.willfp.eco.internal.spigot.proxies.PendingContent
 import java.util.logging.Logger
 
 /**
@@ -46,9 +47,11 @@ class DatapackValidator(
     }
 
     /**
+     * @param pending What the same publish is writing, so that a reference to it resolves rather
+     *                than failing as not-yet-live. See [PendingContent].
      * @return null if the entry is valid, else a human-readable error.
      */
-    fun validate(entry: DatapackEntry): String? {
+    fun validate(entry: DatapackEntry, pending: PendingContent = PendingContent.EMPTY): String? {
         validateShape(entry)?.let { return it }
 
         if (!entry.isJson) {
@@ -67,7 +70,7 @@ class DatapackValidator(
             return "$entry: malformed JSON (${e.message})"
         }
 
-        return validateCodec(entry, json)
+        return validateCodec(entry, json, pending)
     }
 
     private fun validateShape(entry: DatapackEntry): String? {
@@ -96,7 +99,7 @@ class DatapackValidator(
         return null
     }
 
-    private fun validateCodec(entry: DatapackEntry, json: String): String? {
+    private fun validateCodec(entry: DatapackEntry, json: String, pending: PendingContent): String? {
         val proxy = codec ?: return null
         val registry = entry.registry.trim('/').lowercase()
 
@@ -104,7 +107,7 @@ class DatapackValidator(
             return null
         }
 
-        val error = runCatching { proxy.validate(registry, json) }
+        val error = runCatching { proxy.validate(registry, json, pending) }
             .getOrElse { return "$entry: codec validation threw (${it.message})" }
             ?: return null
 
