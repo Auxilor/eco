@@ -92,6 +92,21 @@ public final class HashedItem {
     }
 
     /**
+     * Hashed item from an item and a precomputed hash.
+     * <p>
+     * Used where the hash identifies a different version of the item to the one being stored,
+     * for example when caching a modified item against the hash of the item it was made from.
+     *
+     * @param item The item.
+     * @param hash The hash.
+     * @return The hashed item.
+     */
+    public static HashedItem of(@NotNull final ItemStack item,
+                                final int hash) {
+        return new HashedItem(item, hash);
+    }
+
+    /**
      * Hashed item from a fast item stack.
      *
      * @param item The item.
