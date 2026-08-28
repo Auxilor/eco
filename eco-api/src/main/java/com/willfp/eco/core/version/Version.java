@@ -68,6 +68,27 @@ public class Version implements Comparable<Version> {
         return thisHasQual ? -1 : 1;
     }
 
+    /**
+     * Whether this version satisfies a minimum required version, ignoring qualifiers.
+     * <p>
+     * Qualifiers are build tags rather than versions behind, so {@code 2026.34-local} and
+     * {@code 2026.34-SNAPSHOT} both satisfy a requirement of {@code 2026.34}.
+     *
+     * @param required The minimum required version.
+     * @return True if this version is at least the required version.
+     */
+    public boolean isAtLeast(@NotNull final Version required) {
+        int maxLen = Math.max(this.parts.length, required.parts.length);
+        for (int i = 0; i < maxLen; i++) {
+            int a = i < this.parts.length ? this.parts[i] : 0;
+            int b = i < required.parts.length ? required.parts[i] : 0;
+            if (a != b) {
+                return a > b;
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
         return raw;

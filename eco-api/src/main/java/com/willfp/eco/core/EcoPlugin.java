@@ -406,7 +406,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             requiredVersion = this.getProps().getEcoApiVersion();
         }
 
-        if (!(runningVersion.compareTo(requiredVersion) > 0 || runningVersion.equals(requiredVersion))) {
+        if (!runningVersion.isAtLeast(requiredVersion)) {
             this.getLogger().severe("You are running an outdated version of eco!");
             this.getLogger().severe("You must be on at least " + requiredVersion);
             this.getLogger().severe("Download the newest version here:");
