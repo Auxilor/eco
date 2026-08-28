@@ -132,13 +132,17 @@ public final class Display {
     /**
      * Revert on ItemStacks.
      * <p>
-     * Unfinalizes the item, strips all lore lines starting with {@link #PREFIX}, and then
-     * runs every registered module's revert.
+     * Unfinalizes the item, strips the display lore, and then runs every registered module's
+     * revert.
      * <p>
-     * Display lines are detected on the components themselves, so lore added by other plugins
-     * is left exactly as it was. With {@code use-legacy-lore-revert} enabled in eco's config,
-     * the lore is instead round-tripped through legacy strings, which discards anything legacy
-     * text can't represent (translatable lines, fonts, hover and click events, sprites).
+     * Display lines are identified on the components themselves, by the shape eco writes them
+     * in - see {@link DisplayLines#isDisplayLine(Component)}. Lore added by other plugins is
+     * left exactly as it was, including lines that happen to start with {@link #PREFIX}.
+     * <p>
+     * With {@code use-legacy-lore-revert} enabled in eco's config, every line starting with
+     * {@link #PREFIX} is stripped instead, and the lore is round-tripped through legacy
+     * strings, which discards anything legacy text can't represent (translatable lines, fonts,
+     * hover and click events, sprites). This is how eco used to work.
      *
      * @param itemStack The item.
      * @return The same ItemStack, modified in place.

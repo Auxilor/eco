@@ -11,45 +11,33 @@ final class DisplayLines {
     /**
      * If a lore line was added by a display module.
      * <p>
-     * Display lines are tagged by prepending {@link Display#PREFIX} to their text content. The
-     * line is flattened before checking, as lore lines are wrapped in an empty parent component
-     * to force italics off, which leaves the tagged text in a child rather than on the line
-     * itself.
+     * Display lines are written by eco through Adventure, so {@link Display#PREFIX} always ends
+     * up at the start of a component that owns the rest of the line: either the whole line as
+     * plain text, or a parent whose children hold the coloured text after the prefix. Lore
+     * lines are also wrapped in an empty parent to force italics off, so that wrapping is
+     * unwrapped before checking.
+     * <p>
+     * Lore written through Bukkit's {@code ItemMeta#setLore(List)} is built by
+     * {@code CraftChatMessage} instead, which splits a legacy string into flat siblings, so a
+     * prefix written that way is a leaf sitting beside the rest of the line rather than owning
+     * it. Those lines belong to whichever plugin wrote them - AdvancedEnchantments writes its
+     * enchantment descriptions as {@code §z}-prefixed legacy strings - and are left alone.
      *
      * @param line The lore line.
      * @return If the line is a display line.
      */
     static boolean isDisplayLine(@NotNull final Component line) {
-        return flatten(line, new StringBuilder()).toString().startsWith(Display.PREFIX);
-    }
+        Component component = line;
 
-    /**
-     * Append the text content of a component and its children, stopping once enough characters
-     * have been collected to test against {@link Display#PREFIX}.
-     *
-     * @param component The component.
-     * @param builder   The builder to append to.
-     * @return The same builder.
-     */
-    private static StringBuilder flatten(@NotNull final Component component,
-                                         @NotNull final StringBuilder builder) {
-        if (builder.length() >= Display.PREFIX.length()) {
-            return builder;
+        // Unwrap the empty parents lore lines are wrapped in to force italics off.
+        while (component instanceof TextComponent textComponent
+                && textComponent.content().isEmpty()
+                && component.children().size() == 1) {
+            component = component.children().get(0);
         }
 
-        if (component instanceof TextComponent textComponent) {
-            builder.append(textComponent.content());
-        }
-
-        for (Component child : component.children()) {
-            if (builder.length() >= Display.PREFIX.length()) {
-                break;
-            }
-
-            flatten(child, builder);
-        }
-
-        return builder;
+        return component instanceof TextComponent textComponent
+                && textComponent.content().startsWith(Display.PREFIX);
     }
 
     /**
