@@ -15,6 +15,7 @@ import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
 import kotlin.math.max
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.component.DataComponents
@@ -52,6 +53,11 @@ private fun Component.unstyled(): Component {
     val useVanillaFormat = Eco.get().ecoPlugin.configYml.getBool("use-vanilla-item-name-format")
 
     if (!useVanillaFormat) {
+        // Already wrapped, don't nest another wrapper around it on every display cycle.
+        if (this is TextComponent && content().isEmpty() && style() == unstyledComponent.style()) {
+            return this
+        }
+
         return unstyledComponent.append(this)
     }
 

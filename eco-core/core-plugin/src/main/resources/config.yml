@@ -65,6 +65,15 @@ use-fast-collated-drops: true
 #   resource packs, or want correct vanilla behavior over legacy compatibility.
 use-vanilla-item-name-format: false
 
+# How eco removes its own client-side lore lines when reverting an item.
+# false (default): lines are matched on the components themselves, so lore added by other
+#   plugins is left untouched.
+# true: the whole lore is round-tripped through legacy text, which is how eco used to work.
+#   This discards anything legacy text can't represent (translatable lines, fonts, hover and
+#   click events, sprites) on lore added by other plugins. Only enable this if you relied on
+#   the old behavior.
+use-legacy-lore-revert: false
+
 # Display frames massively optimize PacketWindowItems, however some users have
 # reported display bugs by using it. If you have any problems with it, then you
 # should disable this option.
