@@ -30,6 +30,7 @@ tasks {
             "com.willfp.eco.internal.spigot.proxy.v1_21_10.common"
         )
 
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/TPS*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
 
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE

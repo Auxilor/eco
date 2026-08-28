@@ -20,4 +20,23 @@ subprojects {
             add("pluginRemapper", "net.fabricmc:tiny-remapper:0.13.1")
         }
     }
+
+    // NMS modules are compiled once and relocated into jars for newer versions, so a member that
+    // Mojang or Paper removed or made less visible only blows up at runtime. Catch it at build time.
+    pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+        val compileClasspath = configurations.named("compileClasspath")
+
+        val checkNmsLinkage = tasks.register<com.willfp.eco.gradle.NmsLinkageCheckTask>("checkNmsLinkage") {
+            group = "verification"
+            description = "Verifies every platform member used by the shaded jar exists on this version."
+
+            jar.set(tasks.named<Jar>("shadowJar").flatMap { it.archiveFile })
+            classpath.from(compileClasspath)
+            report.set(layout.buildDirectory.file("reports/nms-linkage.txt"))
+        }
+
+        tasks.named("check") {
+            dependsOn(checkNmsLinkage)
+        }
+    }
 }
