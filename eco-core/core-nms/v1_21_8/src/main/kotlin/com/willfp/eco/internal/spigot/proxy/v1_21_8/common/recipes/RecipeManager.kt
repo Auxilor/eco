@@ -12,6 +12,8 @@ import net.minecraft.world.item.crafting.ShapedRecipe
 import net.minecraft.world.item.crafting.ShapedRecipePattern
 import net.minecraft.world.item.crafting.ShapelessRecipe
 import net.minecraft.world.item.crafting.StonecutterRecipe
+import org.bukkit.Bukkit
+import org.bukkit.Keyed
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.inventory.CraftRecipe
@@ -40,10 +42,20 @@ object RecipeManager {
 
     fun addRecipeNoResend(recipe: BukkitRecipe): Boolean {
         val recipeManager = getMinecraftRecipeManager()
-        val toAdd: RecipeHolder<*> = recipe.toNMSEquivalent
+        val toAdd: RecipeHolder<*> = recipe.toNMSEquivalent ?: return addRecipeViaBukkit(recipe)
         recipeManager.recipes.removeRecipe(toAdd.id.asRemovalKey())
         recipeManager.recipes.addRecipe(toAdd)
         return true
+    }
+
+    /**
+     * Register a recipe that has no direct NMS conversion here (cooking, smithing, transmute, and
+     * anything else added later). Bukkit's own converter knows all of them, and passing false for
+     * resendRecipes keeps the client update batched with everything else, matching this class.
+     */
+    private fun addRecipeViaBukkit(recipe: BukkitRecipe): Boolean {
+        (recipe as? Keyed)?.key?.let { removeRecipeNoResend(it) }
+        return Bukkit.getServer().addRecipe(recipe, false)
     }
 
     fun reloadRecipes() {
@@ -66,7 +78,7 @@ object RecipeManager {
         return shape.toList()
     }
 
-    private val BukkitRecipe.toNMSEquivalent: RecipeHolder<*>
+    private val BukkitRecipe.toNMSEquivalent: RecipeHolder<*>?
         get() {
             when (this) {
                 is BukkitShapedRecipe -> {
@@ -121,7 +133,8 @@ object RecipeManager {
                     )
                 }
                 else -> {
-                    throw UnsupportedOperationException("Unsupported recipe type: " + this.javaClass.name)
+                    // Handled by Bukkit's converter instead, see addRecipeViaBukkit.
+                    return null
                 }
             }
         }
