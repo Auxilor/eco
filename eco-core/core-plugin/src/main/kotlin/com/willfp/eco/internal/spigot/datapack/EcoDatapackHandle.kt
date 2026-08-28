@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.datapack
 import com.willfp.eco.core.datapack.DatapackDraft
 import com.willfp.eco.core.datapack.DatapackHandle
 import com.willfp.eco.core.datapack.InstallResult
+import com.willfp.eco.internal.spigot.proxies.PendingContent
 import java.io.File
 import java.util.function.Consumer
 import java.util.logging.Logger
@@ -153,13 +154,17 @@ class EcoDatapackHandle(
         val errors = mutableListOf<String>()
         val seen = mutableSetOf<String>()
 
+        // Entries in one publish may reference each other, so validation has to know what the
+        // whole publish writes before it checks any single entry.
+        val pending = PendingContent.of(entries)
+
         for (entry in entries) {
             if (!seen.add(entry.path)) {
                 errors.add("$entry: duplicate entry, two drafts wrote ${entry.path}")
                 continue
             }
 
-            validator.validate(entry)?.let { errors.add(it) }
+            validator.validate(entry, pending)?.let { errors.add(it) }
         }
 
         return errors
