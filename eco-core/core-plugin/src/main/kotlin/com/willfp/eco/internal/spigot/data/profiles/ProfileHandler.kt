@@ -31,6 +31,7 @@ class ProfileHandler(
     val profileWriter = ProfileWriter(plugin, this)
 
     private val loaded = ConcurrentHashMap<UUID, EcoProfile>()
+    private val resolvedProfiles = ConcurrentHashMap<UUID, MutableSet<UUID>>()
 
     fun getPlayerProfile(uuid: UUID): EcoPlayerProfile {
         return loaded.computeIfAbsent(uuid) {
@@ -46,6 +47,29 @@ class ProfileHandler(
 
     fun unloadProfile(uuid: UUID) {
         loaded.remove(uuid)
+    }
+
+    /**
+     * Record that a player's data resolved to [profile], so it can be unloaded when they leave.
+     *
+     * A player can resolve to several profiles over a session, and only the last one is reachable
+     * through the resolver by the time they quit - so the rest have to be remembered here or they
+     * stay in [loaded] for the lifetime of the server.
+     */
+    fun trackResolvedProfile(player: UUID, profile: UUID) {
+        if (player == profile) {
+            return
+        }
+
+        resolvedProfiles.computeIfAbsent(player) { ConcurrentHashMap.newKeySet() }.add(profile)
+    }
+
+    /**
+     * Unload a player's own profile along with every profile they resolved to.
+     */
+    fun unloadPlayer(player: UUID) {
+        loaded.remove(player)
+        resolvedProfiles.remove(player)?.forEach { loaded.remove(it) }
     }
 
     fun save() {

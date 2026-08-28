@@ -101,6 +101,7 @@ import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 
 private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
+private val DEFAULT_PROFILE_RESOLVER = PlayerProfileResolver { it.uniqueId }
 
 @Suppress("UNUSED")
 class EcoImpl : EcoSpigotPlugin(), Eco {
@@ -338,10 +339,21 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.getPlayerProfile(uuid)
 
-    private var playerProfileResolver = PlayerProfileResolver { it.uniqueId }
+    // Read from whichever thread touches player data, so publication has to be guaranteed.
+    @Volatile
+    private var playerProfileResolver = DEFAULT_PROFILE_RESOLVER
 
     override fun setPlayerProfileResolver(resolver: PlayerProfileResolver?) {
-        playerProfileResolver = resolver ?: PlayerProfileResolver { it.uniqueId }
+        playerProfileResolver = if (resolver == null) DEFAULT_PROFILE_RESOLVER else {
+            // Wrapped rather than stored bare so every profile a player resolves to is recorded and
+            // can be unloaded when they leave. Only wrapped when a resolver is actually set, so the
+            // default path stays a plain UUID read.
+            PlayerProfileResolver { player ->
+                val profile = resolver.resolve(player)
+                profileHandler.trackResolvedProfile(player.uniqueId, profile)
+                profile
+            }
+        }
     }
 
     override fun getPlayerProfileResolver() = playerProfileResolver

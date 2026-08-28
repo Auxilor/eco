@@ -1,6 +1,5 @@
 package com.willfp.eco.internal.spigot.data.profiles
 
-import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.PlayerUtils
 import org.bukkit.event.EventHandler
@@ -16,14 +15,12 @@ class ProfileLoadListener(
 ) : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onLogin(event: PlayerLoginEvent) {
-        handler.unloadProfile(event.player.uniqueId)
-        handler.unloadProfile(Eco.get().playerProfileResolver.resolve(event.player))
+        handler.unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onLeave(event: PlayerQuitEvent) {
-        handler.unloadProfile(event.player.uniqueId)
-        handler.unloadProfile(Eco.get().playerProfileResolver.resolve(event.player))
+        handler.unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler
