@@ -22,6 +22,7 @@ import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.particle.Particles
+import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.core.price.Prices
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.internal.blocks.BlockArgParserAgeable
@@ -370,9 +371,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserScale)
         Entities.registerArgParser(EntityArgParserFirework)
 
-        Prices.registerPriceFactory(PriceFactoryEconomy)
-        Prices.registerPriceFactory(PriceFactoryXPLevels)
-        Prices.registerPriceFactory(PriceFactoryXP)
+        Prices.registerDefaultPriceFactory(PriceFactoryEconomy)
+        Prices.registerDefaultPriceFactory(PriceFactoryXPLevels)
+        Prices.registerDefaultPriceFactory(PriceFactoryXP)
 
         Particles.registerParticleFactory(ParticleFactoryRGB)
         Particles.registerParticleFactory(ParticleFactoryDustTransition)
@@ -593,14 +594,14 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             // Price
             IntegrationLoader("UltraEconomy") {
                 for (currency in UltraEconomy.getAPI().currencies) {
-                    Prices.registerPriceFactory(PriceFactoryUltraEconomy(currency))
+                    registerCurrency(PriceFactoryUltraEconomy(currency))
                 }
             },
             IntegrationLoader("PlayerPoints") { Prices.registerPriceFactory(PriceFactoryPlayerPoints()) },
             IntegrationLoader("RoyaleEconomy") {
                 if (!MultiCurrencyHandler.getCurrencies().isNullOrEmpty()) {
                     for (currency in MultiCurrencyHandler.getCurrencies()) {
-                        Prices.registerPriceFactory(PriceFactoryRoyaleEconomy(currency))
+                        registerCurrency(PriceFactoryRoyaleEconomy(currency))
                     }
                 }
             },
@@ -609,7 +610,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 if (rsp != null) {
                     val api = rsp.provider
                     for (currency in api.currencies) {
-                        Prices.registerPriceFactory(PriceFactoryCoinsEngine(api, currency))
+                        registerCurrency(PriceFactoryCoinsEngine(api, currency))
                     }
                 }
             },
@@ -626,6 +627,18 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             },
             IntegrationLoader("ModelEngine") { EntityLookupModelEngine.register() }
         )
+    }
+
+    /**
+     * Register a currency price factory, skipping it if its name is already taken by another
+     * factory, so that one clashing currency doesn't stop the rest from loading.
+     */
+    private fun registerCurrency(factory: PriceFactory) {
+        try {
+            Prices.registerPriceFactory(factory)
+        } catch (e: IllegalStateException) {
+            this.logger.warning(e.message)
+        }
     }
 
     /**

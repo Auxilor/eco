@@ -12,6 +12,7 @@ import com.willfp.eco.util.NumberUtils;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +24,19 @@ public final class Prices {
      * All factories.
      */
     private static final Map<String, PriceFactory> FACTORIES = new ConcurrentHashMap<>();
+
+    /**
+     * The names currently held by built-in (default) factories.
+     * <p>
+     * These can be taken over by a factory registered later, as a currency provided
+     * by another plugin should win over an eco default with the same name.
+     */
+    private static final Set<String> DEFAULT_NAMES = ConcurrentHashMap.newKeySet();
+
+    /**
+     * The logger used to report factories taking over a default name.
+     */
+    private static final Logger LOGGER = Logger.getLogger("eco");
 
     /**
      * Get an immutable snapshot of all loaded price factory names.
@@ -45,13 +59,46 @@ public final class Prices {
         for (String name : factory.getNames()) {
             String key = name.toLowerCase();
             PriceFactory existing = FACTORIES.get(key);
+
             if (existing != null && existing != factory) {
-                throw new IllegalStateException(String.format(
-                        "A price factory is already registered under the name '%s' (%s). Cannot register %s.",
-                        key, existing.getClass().getName(), factory.getClass().getName()
+                // Defaults are placeholders for names nobody else has claimed yet.
+                if (!DEFAULT_NAMES.contains(key)) {
+                    throw new IllegalStateException(String.format(
+                            "A price factory is already registered under the name '%s' (%s). Cannot register %s.",
+                            key, existing.getClass().getName(), factory.getClass().getName()
+                    ));
+                }
+
+                LOGGER.warning(String.format(
+                        "Price factory %s has taken over the name '%s' from the eco default (%s).",
+                        factory.getClass().getName(), key, existing.getClass().getName()
                 ));
             }
+
+            DEFAULT_NAMES.remove(key);
             FACTORIES.put(key, factory);
+        }
+    }
+
+    /**
+     * Register a built-in price factory under each of its names.
+     * <p>
+     * Unlike {@link #registerPriceFactory(PriceFactory)}, the names registered here can later be
+     * taken over by another factory without throwing, and a name already held by a non-default
+     * factory is left alone.
+     *
+     * @param factory The factory.
+     */
+    public static void registerDefaultPriceFactory(@NotNull final PriceFactory factory) {
+        for (String name : factory.getNames()) {
+            String key = name.toLowerCase();
+
+            if (FACTORIES.containsKey(key) && !DEFAULT_NAMES.contains(key)) {
+                continue;
+            }
+
+            FACTORIES.put(key, factory);
+            DEFAULT_NAMES.add(key);
         }
     }
 
@@ -65,7 +112,11 @@ public final class Prices {
      */
     public static void unregisterPriceFactory(@NotNull final PriceFactory factory) {
         for (String name : factory.getNames()) {
-            FACTORIES.remove(name.toLowerCase(), factory);
+            String key = name.toLowerCase();
+
+            if (FACTORIES.remove(key, factory)) {
+                DEFAULT_NAMES.remove(key);
+            }
         }
     }
 
@@ -75,7 +126,10 @@ public final class Prices {
      * @param name The name to unregister.
      */
     public static void unregisterPriceFactory(@NotNull final String name) {
-        FACTORIES.remove(name.toLowerCase());
+        String key = name.toLowerCase();
+
+        FACTORIES.remove(key);
+        DEFAULT_NAMES.remove(key);
     }
 
     /**
