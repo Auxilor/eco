@@ -65,6 +65,18 @@ use-fast-collated-drops: true
 #   resource packs, or want correct vanilla behavior over legacy compatibility.
 use-vanilla-item-name-format: false
 
+# How eco removes its own client-side lore lines when reverting an item.
+# false (default): display lines are matched on the components themselves, by the shape eco
+#   writes them in. Lore added by other plugins is left untouched, including lines that start
+#   with the same prefix eco uses (AdvancedEnchantments writes its enchantment descriptions
+#   this way).
+# true: every line starting with eco's prefix is removed, and the whole lore is round-tripped
+#   through legacy text. This is how eco used to work. It deletes other plugins' lore lines
+#   that share eco's prefix, and discards anything legacy text can't represent (translatable
+#   lines, fonts, hover and click events, sprites). Only enable this if you relied on the old
+#   behavior.
+use-legacy-lore-revert: false
+
 # Display frames massively optimize PacketWindowItems, however some users have
 # reported display bugs by using it. If you have any problems with it, then you
 # should disable this option.

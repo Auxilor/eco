@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.proxy.common.packet.display
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.display.Display
+import com.willfp.eco.core.fast.FastItemStack
 import com.willfp.eco.core.items.HashedItem
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
@@ -58,27 +59,32 @@ open class PacketWindowItems(
         player: Player
     ): MutableList<ItemStack> {
         if (plugin.configYml.getBool("use-display-frame") && windowId == 0) {
+            val lastFrame = player.lastDisplayFrame
+
+            // Hashes of the items as they arrived, before display, so that the next frame can
+            // tell whether the server-side item changed.
+            val hashes = itemStacks.map { FastItemStack.wrap(it).hashCode() }
+
+            for (index in itemStacks.indices) {
+                if (lastFrame.getHash(index.toByte()) == hashes[index]) {
+                    // Unchanged since the last frame, so reuse what was sent last time rather
+                    // than displaying again.
+                    itemStacks[index] = lastFrame.getItem(index.toByte()) ?: itemStacks[index]
+                } else {
+                    Display.display(itemStacks[index], player)
+                }
+            }
+
+            // The frame caches the items that were actually sent, keyed by the hash of the
+            // items they were made from. Caching the pre-display items instead would send them
+            // out undisplayed the next time the slot was unchanged.
             val frameMap = mutableMapOf<Byte, HashedItem>()
 
             for (index in itemStacks.indices) {
-                frameMap[index.toByte()] = HashedItem.of(itemStacks[index])
+                frameMap[index.toByte()] = HashedItem.of(itemStacks[index], hashes[index])
             }
 
-            val newFrame = DisplayFrame(frameMap)
-
-            val lastFrame = player.lastDisplayFrame
-
-            player.lastDisplayFrame = newFrame
-
-            val changes = lastFrame.getChangedSlots(newFrame)
-
-            for (index in changes) {
-                Display.display(itemStacks[index.toInt()], player)
-            }
-
-            for (index in (itemStacks.indices subtract changes.map { it.toInt() }.toSet())) {
-                itemStacks[index] = lastFrame.getItem(index.toByte()) ?: itemStacks[index]
-            }
+            player.lastDisplayFrame = DisplayFrame(frameMap)
         } else {
             itemStacks.forEach { Display.display(it, player) }
         }

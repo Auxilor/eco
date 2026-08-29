@@ -7,20 +7,16 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 data class DisplayFrame(val items: Map<Byte, HashedItem>) {
-    fun getChangedSlots(newFrame: DisplayFrame): List<Byte> {
-        val changes = mutableListOf<Byte>()
-
-        for ((slot, data) in newFrame.items) {
-            if (items[slot]?.hash != data.hash) {
-                changes.add(slot)
-            }
-        }
-
-        return changes
-    }
-
     fun getItem(slot: Byte): ItemStack? {
         return items[slot]?.item
+    }
+
+    /**
+     * The hash of the item the cached item for this slot was made from, or null if the slot
+     * wasn't in this frame.
+     */
+    fun getHash(slot: Byte): Int? {
+        return items[slot]?.hash
     }
 
     companion object {
