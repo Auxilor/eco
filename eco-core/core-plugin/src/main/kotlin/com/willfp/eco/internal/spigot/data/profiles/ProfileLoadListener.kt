@@ -15,12 +15,12 @@ class ProfileLoadListener(
 ) : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onLogin(event: PlayerLoginEvent) {
-        handler.unloadProfile(event.player.uniqueId)
+        handler.unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onLeave(event: PlayerQuitEvent) {
-        handler.unloadProfile(event.player.uniqueId)
+        handler.unloadPlayer(event.player.uniqueId)
     }
 
     @EventHandler
