@@ -1,6 +1,8 @@
 group = "com.willfp"
 version = rootProject.version
 
+val minecraftApiVersion: String by project
+
 val bStatsVersion = "v3.2.1"
 val bStatsTargetPackage = "com.willfp.eco.libs.bstats"
 val bStatsGeneratedDir = layout.buildDirectory.dir("generated/sources/bstats")
@@ -80,7 +82,7 @@ dependencies {
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.9")
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:$minecraftApiVersion-R0.1-SNAPSHOT")
 
     // Plugin dependencies
     compileOnly("me.libraryaddict.disguises:libsdisguises:11.0.14")
