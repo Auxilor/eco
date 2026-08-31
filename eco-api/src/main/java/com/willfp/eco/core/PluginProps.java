@@ -3,6 +3,7 @@ package com.willfp.eco.core;
 import com.willfp.eco.core.version.Version;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ public final class PluginProps {
     /**
      * All registered parsers.
      */
-    private static final Map<Class<?>, PropsParser<?>> REGISTERED_PARSERS = new HashMap<>();
+    private static final Map<Class<?>, PropsParser<?>> REGISTERED_PARSERS = new ConcurrentHashMap<>();
 
     /**
      * The polymart resource ID.

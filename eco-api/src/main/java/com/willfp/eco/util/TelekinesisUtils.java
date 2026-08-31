@@ -1,7 +1,7 @@
 package com.willfp.eco.util;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ public final class TelekinesisUtils {
     /**
      * Set of tests that return if the player is telekinetic.
      */
-    private static final Set<Function<Player, Boolean>> TESTS = new HashSet<>();
+    private static final Set<Function<Player, Boolean>> TESTS = ConcurrentHashMap.newKeySet();
 
     /**
      * Register a new test to check against.

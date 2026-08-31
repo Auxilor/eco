@@ -477,6 +477,9 @@ public interface Eco {
 
     /**
      * Create dummy entity - never spawned, exists purely in code.
+     * <p>
+     * On Folia, the calling thread must own the region containing the location. Call this
+     * from inside a task scheduled on that region.
      *
      * @param location The location.
      * @return The entity.
@@ -486,6 +489,9 @@ public interface Eco {
 
     /**
      * Create a hologram.
+     * <p>
+     * On Folia, the calling thread must own the region containing the location. Call this
+     * from inside a task scheduled on that region.
      *
      * @param location The location.
      * @param options  The hologram options.
@@ -531,6 +537,9 @@ public interface Eco {
 
     /**
      * Create controlled entity from a mob.
+     * <p>
+     * On Folia, the calling thread must own the region containing the entity, and so must
+     * every later call on the returned controller: it mutates the entity's AI goals.
      *
      * @param mob The mob.
      * @param <T> The mob type.
@@ -606,6 +615,26 @@ public interface Eco {
      * @return The TPS.
      */
     double getTPS();
+
+    /**
+     * Get if the thread calling this owns the region containing a location.
+     * <p>
+     * Always true off Folia, where there is one thread and it owns everything. On Folia,
+     * a task may only read or write blocks and entities in a region it owns, so this is
+     * how code decides whether it can act now or must be scheduled.
+     *
+     * @param location The location.
+     * @return If the current thread owns the region.
+     */
+    boolean isOwnedByCurrentRegion(@NotNull Location location);
+
+    /**
+     * Get if the thread calling this owns the region containing an entity.
+     *
+     * @param entity The entity.
+     * @return If the current thread owns the region.
+     */
+    boolean isOwnedByCurrentRegion(@NotNull Entity entity);
 
     /**
      * Evaluate an expression.

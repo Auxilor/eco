@@ -9,6 +9,7 @@ import com.willfp.eco.core.entities.tag.EntityTag;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -29,12 +30,12 @@ public final class Entities {
     /**
      * All entity parsers.
      */
-    private static final List<EntityArgParser> ARG_PARSERS = new ArrayList<>();
+    private static final List<EntityArgParser> ARG_PARSERS = new CopyOnWriteArrayList<>();
 
     /**
      * All tags.
      */
-    private static final Map<String, EntityTag> TAGS = new HashMap<>();
+    private static final Map<String, EntityTag> TAGS = new ConcurrentHashMap<>();
 
     /**
      * The lookup handler.

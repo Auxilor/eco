@@ -5,6 +5,7 @@ import com.willfp.eco.core.data.handlers.DataTypeSerializer;
 import com.willfp.eco.core.data.handlers.PersistentDataHandler;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +21,7 @@ public final class PersistentDataKeyType<T> {
     /**
      * The registered key types.
      */
-    private static final List<PersistentDataKeyType<?>> VALUES = new ArrayList<>();
+    private static final List<PersistentDataKeyType<?>> VALUES = new CopyOnWriteArrayList<>();
 
     /**
      * String.

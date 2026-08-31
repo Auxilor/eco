@@ -1,62 +1,64 @@
 package com.willfp.eco.core.scheduling;
 
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Bukkit Task handler.
+ * A runnable that can submit itself to a {@link Scheduler}.
+ *
+ * @deprecated Use {@link Scheduler} directly. A task that needs to cancel itself can use
+ *         {@link TaskContext#runTimer(java.util.function.Consumer, long, long)}, which
+ *         receives its own {@link EcoTask}. This type has no way to say which region owns
+ *         the data it touches, so it is always scheduled globally.
  */
+@Deprecated(forRemoval = true)
 public interface RunnableTask extends Runnable {
     /**
-     * Run the task.
+     * Run the task on the next tick.
      *
-     * @return The created {@link BukkitTask}.
+     * @return The task handle.
      */
-    @NotNull BukkitTask runTask();
+    @NotNull EcoTask runTask();
 
     /**
-     * Run the task asynchronously.
+     * Run the task off-thread.
      *
-     * @return The created {@link BukkitTask}.
+     * @return The task handle.
      */
-    @NotNull BukkitTask runTaskAsynchronously();
+    @NotNull EcoTask runTaskAsynchronously();
 
     /**
-     * Run the task after a specified number of ticks.
+     * Run the task after a delay.
      *
-     * @param delay The number of ticks to wait.
-     * @return The created {@link BukkitTask}.
+     * @param delay The delay, in ticks.
+     * @return The task handle.
      */
-    @NotNull BukkitTask runTaskLater(long delay);
+    @NotNull EcoTask runTaskLater(long delay);
 
     /**
-     * Run the task asynchronously after a specified number of ticks.
+     * Run the task off-thread after a delay.
      *
-     * @param delay The number of ticks to wait.
-     * @return The created {@link BukkitTask}.
+     * @param delay The delay, in ticks.
+     * @return The task handle.
      */
-    @NotNull BukkitTask runTaskLaterAsynchronously(long delay);
+    @NotNull EcoTask runTaskLaterAsynchronously(long delay);
 
     /**
-     * Run the task repeatedly on a timer.
+     * Run the task repeatedly.
      *
-     * @param delay  The delay before the task is first ran (in ticks).
-     * @param period The ticks elapsed before the task is ran again.
-     * @return The created {@link BukkitTask}.
+     * @param delay  The delay before the first run, in ticks.
+     * @param period The period between runs, in ticks.
+     * @return The task handle.
      */
-    @NotNull BukkitTask runTaskTimer(long delay, long period);
+    @NotNull EcoTask runTaskTimer(long delay,
+                                  long period);
 
     /**
-     * Run the task repeatedly on a timer asynchronously.
+     * Run the task off-thread repeatedly.
      *
-     * @param delay  The delay before the task is first ran (in ticks).
-     * @param period The ticks elapsed before the task is ran again.
-     * @return The created {@link BukkitTask}.
+     * @param delay  The delay before the first run, in ticks.
+     * @param period The period between runs, in ticks.
+     * @return The task handle.
      */
-    @NotNull BukkitTask runTaskTimerAsynchronously(long delay, long period);
-
-    /**
-     * Cancel the task.
-     */
-    void cancel();
+    @NotNull EcoTask runTaskTimerAsynchronously(long delay,
+                                                long period);
 }

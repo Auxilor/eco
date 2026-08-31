@@ -84,7 +84,7 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
             } ?: return
         event.result = recipe.output?.clone()
         WorkstationRecipes.setPendingRecipe(player.uniqueId, recipe)
-        plugin.server.scheduler.runTask(plugin, Runnable { player.updateInventory() })
+        plugin.scheduler.on(player).run { player.updateInventory() }
     }
 
     // Anvil

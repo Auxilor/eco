@@ -156,7 +156,7 @@ class AnvilMechanicsListener(
         event.result = null
         event.inventory.setItem(2, null)
 
-        plugin.scheduler.run {
+        plugin.scheduler.on(player).run {
             if (latestPreviewGeneration[player.uniqueId] != generation) return@run
 
             val left = event.inventory.getItem(0)?.clone()

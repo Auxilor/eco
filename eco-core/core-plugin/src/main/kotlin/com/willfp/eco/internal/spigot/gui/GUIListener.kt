@@ -141,7 +141,7 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         menu.handleClose(event)
 
-        plugin.scheduler.run { MenuHandler.unregisterInventory(event.inventory) }
+        plugin.scheduler.global().run { MenuHandler.unregisterInventory(event.inventory) }
     }
 
     @EventHandler(
@@ -234,6 +234,6 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         val rendered = this.renderedInventory ?: return
 
         rendered.render()
-        plugin.scheduler.run { rendered.render() }
+        plugin.scheduler.on(this).run { rendered.render() }
     }
 }

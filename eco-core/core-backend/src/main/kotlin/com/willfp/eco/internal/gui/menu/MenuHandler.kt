@@ -1,11 +1,13 @@
 package com.willfp.eco.internal.gui.menu
 
 import com.willfp.eco.core.gui.menu.Menu
+import java.util.Collections
 import java.util.WeakHashMap
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 
-private val inventories = WeakHashMap<Inventory, RenderedInventory>()
+private val inventories: MutableMap<Inventory, RenderedInventory> =
+    Collections.synchronizedMap(WeakHashMap())
 
 object MenuHandler {
     fun registerInventory(

@@ -1,38 +1,50 @@
 package com.willfp.eco.internal.scheduling
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.eco.core.scheduling.RunnableTask
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
 
-abstract class EcoRunnableTask(protected val plugin: EcoPlugin) : BukkitRunnable(), RunnableTask {
-    @Synchronized
-    override fun runTask(): BukkitTask {
-        return super.runTask(plugin)
-    }
-
-    @Synchronized
-    override fun runTaskAsynchronously(): BukkitTask {
-        return super.runTaskAsynchronously(plugin)
-    }
-
-    @Synchronized
-    override fun runTaskLater(delay: Long): BukkitTask {
-        return super.runTaskLater(plugin, delay)
-    }
-
-    @Synchronized
-    override fun runTaskLaterAsynchronously(delay: Long): BukkitTask {
-        return super.runTaskLaterAsynchronously(plugin, delay)
-    }
+/**
+ * A [RunnableTask] that submits itself through the plugin's scheduler.
+ *
+ * No longer a `BukkitRunnable`: that type's submit methods throw on Folia, and there is
+ * nothing left that needs it now that [EcoTask] carries cancellation.
+ *
+ * `BukkitRunnable` refused to schedule the same instance twice, throwing
+ * `IllegalStateException`, and synchronised every submit method. Both are reproduced here
+ * so that behaviour on Paper and Spigot is unchanged: a task is submittable exactly once,
+ * including after it has been cancelled, which is what `BukkitRunnable` did.
+ */
+@Suppress("DEPRECATION")
+abstract class EcoRunnableTask(
+    protected val plugin: EcoPlugin
+) : RunnableTask {
+    private var scheduled: EcoTask? = null
 
     @Synchronized
-    override fun runTaskTimer(delay: Long, period: Long): BukkitTask {
-        return super.runTaskTimer(plugin, delay, period)
+    private fun submit(submitter: () -> EcoTask): EcoTask {
+        check(scheduled == null) { "Already scheduled" }
+
+        val task = submitter()
+        scheduled = task
+        return task
     }
 
-    @Synchronized
-    override fun runTaskTimerAsynchronously(delay: Long, period: Long): BukkitTask {
-        return super.runTaskTimerAsynchronously(plugin, delay, period)
-    }
+    override fun runTask(): EcoTask =
+        submit { plugin.scheduler.global().run(this) }
+
+    override fun runTaskAsynchronously(): EcoTask =
+        submit { plugin.scheduler.async().run(this) }
+
+    override fun runTaskLater(delay: Long): EcoTask =
+        submit { plugin.scheduler.global().runLater(this, delay) }
+
+    override fun runTaskLaterAsynchronously(delay: Long): EcoTask =
+        submit { plugin.scheduler.async().runLater(this, delay) }
+
+    override fun runTaskTimer(delay: Long, period: Long): EcoTask =
+        submit { plugin.scheduler.global().runTimer(this, delay, period) }
+
+    override fun runTaskTimerAsynchronously(delay: Long, period: Long): EcoTask =
+        submit { plugin.scheduler.async().runTimer(this, delay, period) }
 }

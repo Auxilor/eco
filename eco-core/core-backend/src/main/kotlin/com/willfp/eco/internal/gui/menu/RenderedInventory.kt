@@ -5,6 +5,7 @@ import com.willfp.eco.core.items.isEcoEmpty
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.util.openMenu
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -13,7 +14,7 @@ private val emptyTestableItem = EmptyTestableItem()
 
 private const val RENDERED_TITLE_KEY = "eco:rendered_title"
 
-private val trackedForceRendered = mutableMapOf<UUID, RenderedInventory>()
+private val trackedForceRendered = ConcurrentHashMap<UUID, RenderedInventory>()
 
 fun Player.removeForcedRenderedInventory() {
     trackedForceRendered.remove(this.uniqueId)

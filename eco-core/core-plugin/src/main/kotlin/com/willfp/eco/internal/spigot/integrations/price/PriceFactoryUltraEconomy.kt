@@ -6,6 +6,7 @@ import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import me.TechsCode.UltraEconomy.UltraEconomy
 import me.TechsCode.UltraEconomy.objects.Account
 import me.TechsCode.UltraEconomy.objects.Currency
@@ -25,7 +26,7 @@ class PriceFactoryUltraEconomy(private val currency: Currency) : PriceFactory {
         private val baseContext: PlaceholderContext,
         private val function: (PlaceholderContext) -> Double
     ) : Price {
-        private val multipliers = mutableMapOf<UUID, Double>()
+        private val multipliers = ConcurrentHashMap<UUID, Double>()
         private val api = UltraEconomy.getAPI()
 
         private val Player.account: Account?

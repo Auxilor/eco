@@ -4,6 +4,7 @@ import com.willfp.eco.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,7 @@ public abstract class SegmentParser {
     /**
      * All registered segment parsers.
      */
-    private static final List<SegmentParser> REGISTERED = new ArrayList<>();
+    private static final List<SegmentParser> REGISTERED = new CopyOnWriteArrayList<>();
 
     /**
      * The pattern to split keys on.

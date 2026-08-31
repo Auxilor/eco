@@ -1,9 +1,9 @@
 package com.willfp.eco.core;
 
 import com.willfp.eco.util.ClassUtils;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public class Prerequisite {
     /**
      * All existing prerequisites are registered on creation.
      */
-    private static final List<Prerequisite> VALUES = new ArrayList<>();
+    private static final List<Prerequisite> VALUES = new CopyOnWriteArrayList<>();
 
     /**
      * Requires the server to be running an implementation of paper.
@@ -25,6 +25,19 @@ public class Prerequisite {
     public static final Prerequisite HAS_PAPER = new Prerequisite(
             () -> ClassUtils.exists("com.destroystokyo.paper.event.block.BeaconEffectEvent"),
             "Requires server to be running paper (or a fork)"
+    );
+
+    /**
+     * Requires the server to be running an implementation of Folia.
+     * <p>
+     * Probed by class name rather than by API, because eco compiles against the Spigot
+     * API and must not name a Folia type. {@code RegionizedServer} is server-side, so it
+     * is absent on Paper, unlike everything under {@code io.papermc.paper.threadedregions}
+     * that ships in the Paper API.
+     */
+    public static final Prerequisite HAS_FOLIA = new Prerequisite(
+            () -> ClassUtils.exists("io.papermc.paper.threadedregions.RegionizedServer"),
+            "Requires server to be running Folia (or a fork)"
     );
 
     /**

@@ -6,6 +6,7 @@ import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import com.willfp.eco.util.toSingletonList
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import me.qKing12.RoyaleEconomy.MultiCurrency.Currency
 import org.bukkit.entity.Player
 
@@ -24,7 +25,7 @@ class PriceFactoryRoyaleEconomy(private val currency: Currency) : PriceFactory {
         private val baseContext: PlaceholderContext,
         private val function: (PlaceholderContext) -> Double
     ) : Price {
-        private val multipliers = mutableMapOf<UUID, Double>()
+        private val multipliers = ConcurrentHashMap<UUID, Double>()
 
         override fun canAfford(player: Player, multiplier: Double): Boolean {
             return currency.getAmount(player.uniqueId.toString()) >= getValue(player, multiplier)

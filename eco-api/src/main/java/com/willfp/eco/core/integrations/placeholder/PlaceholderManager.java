@@ -33,7 +33,7 @@ public final class PlaceholderManager {
     /**
      * All registered placeholder integrations.
      */
-    private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = new HashSet<>();
+    private static final Set<PlaceholderIntegration> REGISTERED_INTEGRATIONS = ConcurrentHashMap.newKeySet();
 
     /**
      * Cached immutable snapshot of registered integrations.

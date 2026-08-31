@@ -11,6 +11,7 @@ import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public final class Items {
     /**
      * All registered arg parsers, used to parse lookup string modifiers.
      */
-    private static final List<LookupArgParser> ARG_PARSERS = new ArrayList<>();
+    private static final List<LookupArgParser> ARG_PARSERS = new CopyOnWriteArrayList<>();
 
     /**
      * The handler.
@@ -76,12 +77,12 @@ public final class Items {
     /**
      * Friendly material names (without underscores, etc.)
      */
-    private static final Map<String, Material> FRIENDLY_MATERIAL_NAMES = new HashMap<>();
+    private static final Map<String, Material> FRIENDLY_MATERIAL_NAMES = new ConcurrentHashMap<>();
 
     /**
      * All tags.
      */
-    private static final Map<String, ItemTag> TAGS = new HashMap<>();
+    private static final Map<String, ItemTag> TAGS = new ConcurrentHashMap<>();
 
     /**
      * Register a new custom item.

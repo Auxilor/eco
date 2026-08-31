@@ -6,6 +6,7 @@ import com.willfp.eco.core.placeholder.PlaceholderInjectable;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public final class NumberUtils {
     /**
      * Set of roman numerals to look up, mapping value to numeral.
      */
-    private static final TreeMap<Integer, String> NUMERALS = new TreeMap<>();
+    private static final ConcurrentSkipListMap<Integer, String> NUMERALS = new ConcurrentSkipListMap<>();
 
     /**
      * Epsilon, the tolerance used when comparing doubles for equality.

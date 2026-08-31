@@ -133,8 +133,16 @@ public abstract class AbstractPacketAdapter extends PacketAdapter {
 
     /**
      * Register the packet adapter with ProtocolLib, if it is not already registered.
+     * <p>
+     * Does nothing on Folia: ProtocolLib has no Folia support. eco itself no longer uses
+     * ProtocolLib, so this only affects plugins still on this deprecated class rather than
+     * {@link com.willfp.eco.core.packet.PacketListener}, which does work on Folia.
      */
     public final void register() {
+        if (FoliaSupport.isUnsupported("AbstractPacketAdapter, the deprecated ProtocolLib API,")) {
+            return;
+        }
+
         if (!ProtocolLibrary.getProtocolManager().getPacketListeners().contains(this)) {
             ProtocolLibrary.getProtocolManager().addPacketListener(this);
         }
