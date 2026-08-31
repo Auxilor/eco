@@ -22,7 +22,6 @@ softdepend:
   - HuskClaims
   - HuskTowns
   - Terra
-  - ProtocolLib
   - WorldGuard
   - GriefPrevention
   - Towny

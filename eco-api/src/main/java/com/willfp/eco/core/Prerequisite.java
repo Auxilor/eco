@@ -41,17 +41,6 @@ public class Prerequisite {
     );
 
     /**
-     * Requires the server to have ProtocolLib installed.
-     *
-     * @deprecated ProtocolLib is no longer used by eco, AbstractPacketAdapter has been marked for removal since 6.77.0.
-     */
-    @Deprecated(since = "6.77.0", forRemoval = true)
-    public static final Prerequisite HAS_PROTOCOLLIB = new Prerequisite(
-            () -> ClassUtils.exists("com.comphenix.protocol.events.PacketAdapter"),
-            "Requires server to have ProtocolLib"
-    );
-
-    /**
      * Requires the server to be running at least 1.21.3.
      *
      * @deprecated eco requires 1.21.4+, this is always true.
