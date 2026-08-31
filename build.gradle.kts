@@ -158,7 +158,14 @@ allprojects {
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
         exclude(group = "net.wesjd", module = "anvilgui")
-        exclude(group = "org.slf4j", module = "slf4j-api")
+
+        // slf4j-api is provided by the server at runtime and must not be bundled, but the test
+        // classpath needs it: mockk cannot subclass EcoPlugin without org.slf4j.Logger, which
+        // Paper's Plugin interface exposes via getSLF4JLogger(). Production configurations are
+        // unaffected.
+        if (!name.startsWith("test")) {
+            exclude(group = "org.slf4j", module = "slf4j-api")
+        }
     }
 
     configurations.testImplementation {
