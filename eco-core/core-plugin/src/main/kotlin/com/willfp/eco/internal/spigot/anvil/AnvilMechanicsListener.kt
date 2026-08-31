@@ -8,7 +8,7 @@ import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.core.recipe.workstation.AnvilRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
-import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepair
+import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepairWith
 import com.willfp.eco.internal.spigot.proxies.OpenInventoryProxy
 import com.willfp.eco.util.StringUtils
 import org.bukkit.ChatColor
@@ -245,7 +245,7 @@ class AnvilMechanicsListener(
         var unitRepairCost = 0
 
         if (left.type != right.type) {
-            if (right.type.canUnitRepair(left.type) && leftMeta is Damageable) {
+            if (left.canUnitRepairWith(right) && leftMeta is Damageable) {
                 val perUnit = ceil(left.type.maxDurability / 4.0).toInt()
                 val max = ceil(leftMeta.damage.toDouble() / perUnit).toInt()
                 val toDeduct = min(max, right.amount)
