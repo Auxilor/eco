@@ -8,6 +8,7 @@ import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import java.util.concurrent.TimeUnit
+import java.util.function.Consumer
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitScheduler
 import org.bukkit.scheduler.BukkitTask
@@ -89,7 +90,7 @@ internal class BukkitTaskContextTests {
                 mockk<BukkitTask>(relaxed = true)
 
         var seen: EcoTask? = null
-        val task = BukkitTaskContext(plugin).runTimer({ seen = it }, 0L, 20L)
+        val task = BukkitTaskContext(plugin).runTimer(Consumer<EcoTask> { seen = it }, 0L, 20L)
         slot.first().run()
 
         Assertions.assertSame(task, seen)

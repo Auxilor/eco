@@ -32,7 +32,7 @@ class BrewingPacketHandler(private val plugin: EcoPlugin) : PacketListener, List
         if (!event.isShiftClick) return
         val player = event.whoClicked as? Player ?: return
         val location = event.inventory.location ?: return
-        if (location in pendingBrews) return
+        if (pendingBrews.containsKey(location)) return
         plugin.scheduler.at(location).run {
             val brewer = (location.block.state as? BrewingStand)?.inventory ?: return@run
             val ingredient = brewer.ingredient ?: return@run

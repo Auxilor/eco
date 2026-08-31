@@ -110,7 +110,7 @@ class HologramTracker(
         // Reconcile every second; cheap relative to network, robust to teleports/mounts.
         refreshTasks[player.uniqueId] = plugin.scheduler.on(player)
             .onRetired { refreshTasks.remove(player.uniqueId) }
-            .runTimer({ refreshFor(player) }, 20L, 20L)
+            .runTimer(Runnable { refreshFor(player) }, 20L, 20L)
     }
 
     fun shutdown() {

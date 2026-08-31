@@ -85,7 +85,7 @@ internal class EcoSchedulerFoliaTests {
         val handle = mockk<ScheduledTask>(relaxed = true)
         every { global.runAtFixedRate(any(), any(), any(), any()) } returns handle
         val scheduler = EcoSchedulerFolia(plugin)
-        scheduler.global().runTimer({ }, 1L, 1L)
+        scheduler.global().runTimer(Runnable { }, 1L, 1L)
 
         scheduler.cancelAll()
 
