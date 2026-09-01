@@ -185,6 +185,20 @@ allprojects {
         setExtendsFrom(listOf(configurations.compileOnly.get(), configurations.implementation.get()))
     }
 
+    listOf(configurations.testCompileClasspath, configurations.testRuntimeClasspath).forEach {
+        it.configure {
+            resolutionStrategy.eachDependency {
+                if (requested.group == "net.kyori" &&
+                    requested.name.startsWith("adventure-") &&
+                    requested.version?.startsWith("5.") == true
+                ) {
+                    useVersion(paperAdventureVersion)
+                    because("paper-api references Adventure 4 types that Adventure 5 removed")
+                }
+            }
+        }
+    }
+
     tasks {
         compileKotlin {
             compilerOptions {
