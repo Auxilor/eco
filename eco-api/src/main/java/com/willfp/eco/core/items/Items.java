@@ -9,6 +9,7 @@ import com.willfp.eco.core.items.tag.ItemTag;
 import com.willfp.eco.core.recipe.parts.*;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
+import net.kyori.adventure.text.Component;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.time.Duration;
@@ -484,6 +485,11 @@ public final class Items {
 
     /**
      * Merge ItemStack onto another ItemStack.
+     * <p>
+     * Lore and the display name are copied as components, so items keep formatting that
+     * legacy text can't represent, and lore lines keep the shape they were written in - which
+     * {@link com.willfp.eco.core.display.Display#revert(ItemStack)} relies on to identify the
+     * lines it added.
      *
      * @param from The ItemStack to merge from.
      * @param to   The ItemStack to merge onto.
@@ -504,11 +510,30 @@ public final class Items {
         to.setItemMeta(newMeta);
         to.setType(from.getType());
         to.setAmount(from.getAmount());
+
+        // The ItemMeta merge copies lore and the display name through legacy strings, as
+        // that's all ItemMeta exposes, so they're copied again here as components.
+        FastItemStack fastFrom = FastItemStack.wrap(from);
+        FastItemStack fastTo = FastItemStack.wrap(to);
+
+        List<Component> lore = fastFrom.getLoreComponents();
+        fastTo.setLoreComponents(lore.isEmpty() ? null : lore);
+
+        if (fromMeta.hasDisplayName()) {
+            fastTo.setDisplayName(fastFrom.getDisplayNameComponent());
+        }
+
         return to;
     }
 
     /**
      * Merge ItemMeta onto other ItemMeta.
+     * <p>
+     * ItemMeta only exposes lore and display names as legacy strings, so both are
+     * round-tripped through legacy text here, which flattens their component tree and
+     * discards anything legacy text can't represent. Use
+     * {@link #mergeFrom(ItemStack, ItemStack)} where the items are available, as that copies
+     * them as components instead.
      *
      * @param from The ItemMeta to merge from.
      * @param to   The ItemMeta to merge onto.

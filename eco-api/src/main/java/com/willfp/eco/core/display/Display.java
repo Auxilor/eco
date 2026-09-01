@@ -87,6 +87,8 @@ public final class Display {
                 original
         );
 
+        List<Component> loreBeforeDisplay = FastItemStack.wrap(itemStack).getLoreComponents();
+
         for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
             for (DisplayModule module : modules) {
                 Object[] varargs = pluginVarArgs.get(module.getPluginName());
@@ -102,6 +104,16 @@ public final class Display {
                     module.display(itemStack, player, properties, varargs);
                 }
             }
+        }
+
+        FastItemStack displayed = FastItemStack.wrap(itemStack);
+        List<Component> deduplicated = DisplayLines.withoutStaleLines(
+                loreBeforeDisplay,
+                displayed.getLoreComponents()
+        );
+
+        if (deduplicated != null) {
+            displayed.setLoreComponents(deduplicated);
         }
 
         return itemStack;
