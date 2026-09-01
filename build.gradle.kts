@@ -185,6 +185,7 @@ allprojects {
         setExtendsFrom(listOf(configurations.compileOnly.get(), configurations.implementation.get()))
     }
 
+    val paperAdventureVersion = "4.20.0"
     listOf(configurations.testCompileClasspath, configurations.testRuntimeClasspath).forEach {
         it.configure {
             resolutionStrategy.eachDependency {
