@@ -84,9 +84,6 @@ allprojects {
         // PlayerPoints
         maven("https://repo.rosewooddev.io/repository/public/")
 
-        // Denizen
-        maven("https://maven.citizensnpcs.co/repo")
-
         // IridiumSkyblock
         maven("https://nexus.iridiumdevelopment.net/repository/maven-releases/")
 
