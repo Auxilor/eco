@@ -7,8 +7,8 @@ import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.NotificationException
 import com.willfp.eco.core.command.impl.PluginCommand
 import com.willfp.eco.core.command.impl.Subcommand
+import com.willfp.eco.core.floodgate.FloodgateService
 import java.util.function.Predicate
-import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -215,7 +215,7 @@ fun Boolean?.notifyFalse(key: String): Boolean {
  * @throws NotificationException If the receiver is null or no player with that name is online.
  */
 fun String?.notifyPlayerRequired(key: String): Player {
-    return Bukkit.getPlayer(this ?: "") ?: throw NotificationException(key)
+    return FloodgateService.findOnlinePlayer(this ?: "") ?: throw NotificationException(key)
 }
 
 /**
@@ -230,8 +230,7 @@ fun String?.notifyPlayerRequired(key: String): Player {
  * @throws NotificationException If no player with that name has ever played on the server.
  */
 fun String?.notifyOfflinePlayerRequired(key: String): OfflinePlayer {
-    @Suppress("DEPRECATION")
-    val player = Bukkit.getOfflinePlayer(this ?: "")
+    val player = FloodgateService.getOfflinePlayer(this ?: "")
 
     if (!player.hasPlayedBefore() && !player.isOnline) {
         throw NotificationException(key)

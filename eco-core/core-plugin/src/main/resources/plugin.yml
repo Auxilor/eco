@@ -60,6 +60,7 @@ softdepend:
   - CraftEngine
   - ExcellentEconomy
   - ExcellentShop
+  - floodgate
 
 libraries:
   - com.mysql:mysql-connector-j:9.6.0
