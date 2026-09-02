@@ -31,6 +31,13 @@ internal class AnvilMathTests {
     }
 
     @Test
+    fun anvilCostSumsPriorWorkRenameAndMerge() {
+        Assertions.assertEquals(1, computeAnvilCost(0, 1, 0), "plain rename")
+        Assertions.assertEquals(5, computeAnvilCost(3, 0, 2), "prior work plus merge")
+        Assertions.assertEquals(0, computeAnvilCost(0, 0, 0), "no work -> free")
+    }
+
+    @Test
     fun mergeLevelRules() {
         Assertions.assertEquals(3, mergeEnchantLevel(2, 2, 5), "equal -> +1")
         Assertions.assertEquals(5, mergeEnchantLevel(5, 5, 5), "equal at max stays")

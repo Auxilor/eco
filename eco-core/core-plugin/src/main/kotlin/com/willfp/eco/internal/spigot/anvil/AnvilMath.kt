@@ -32,6 +32,19 @@ fun computeXpCost(enchantLevelDiff: Int, unitRepairCost: Int, costExponent: Doub
     (enchantLevelDiff.toDouble().pow(costExponent) + unitRepairCost).roundToInt()
 
 /**
+ * Level cost shown in the anvil UI: the prior-work penalties carried by the inputs, plus vanilla's
+ * flat charge for a rename, plus the merge price from [computeXpCost].
+ *
+ * Vanilla prices the merge itself too, so its own cost can't be reused as the base - that charges
+ * twice for the same enchant levels and repair units.
+ *
+ * Examples: priorWork=0, renameCost=1, mergePrice=0 -> 1 (a plain rename).
+ * priorWork=3, renameCost=0, mergePrice=2 -> 5.
+ */
+fun computeAnvilCost(priorWork: Int, renameCost: Int, mergePrice: Int): Int =
+    priorWork + renameCost + mergePrice
+
+/**
  * Per-enchant merge rule for an enchant already present on the target.
  * Equal levels bump by one (capped at [maxLevel]); otherwise take the higher.
  */
