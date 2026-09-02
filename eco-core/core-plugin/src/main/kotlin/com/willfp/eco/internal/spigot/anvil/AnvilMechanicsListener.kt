@@ -8,7 +8,7 @@ import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.core.recipe.workstation.AnvilRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
-import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepair
+import com.willfp.eco.internal.spigot.proxies.AnvilRepairProxy
 import com.willfp.eco.internal.spigot.proxies.OpenInventoryProxy
 import com.willfp.eco.util.StringUtils
 import org.bukkit.ChatColor
@@ -27,8 +27,6 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import java.util.UUID
 import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.min
 
 /** Outcome of an anvil merge: null [result]/[xp] fields aren't set unless a merge succeeded. */
 private data class AnvilResult(val result: ItemStack?, val xp: Int?)
@@ -245,18 +243,16 @@ class AnvilMechanicsListener(
         var unitRepairCost = 0
 
         if (left.type != right.type) {
-            if (right.type.canUnitRepair(left.type) && leftMeta is Damageable) {
-                val perUnit = ceil(left.type.maxDurability / 4.0).toInt()
-                val max = ceil(leftMeta.damage.toDouble() / perUnit).toInt()
-                val toDeduct = min(max, right.amount)
-                unitRepairCost = toDeduct
-                if (toDeduct <= 0) {
-                    return FAIL
-                } else {
-                    val newDamage = leftMeta.damage - toDeduct * perUnit
-                    leftMeta.damage = newDamage.coerceAtLeast(0)
-                    right.amount -= toDeduct
-                }
+            val unitRepair = if (leftMeta is Damageable) {
+                plugin.getProxy(AnvilRepairProxy::class.java).unitRepair(left, right)
+            } else {
+                null
+            }
+
+            if (unitRepair != null && leftMeta is Damageable) {
+                unitRepairCost = unitRepair.units
+                leftMeta.damage = unitRepair.damage
+                right.amount -= unitRepair.units
             } else {
                 if (right.type != Material.ENCHANTED_BOOK) return FAIL
             }
@@ -282,11 +278,10 @@ class AnvilMechanicsListener(
         }
 
         if (leftMeta is Damageable && rightMeta is Damageable && unitRepairCost == 0 && rightMeta !is EnchantmentStorageMeta) {
-            val maxDamage = left.type.maxDurability.toInt()
-            val leftDurability = maxDamage - leftMeta.damage
-            val rightDurability = maxDamage - rightMeta.damage
-            val damage = maxDamage - min(maxDamage, leftDurability + rightDurability)
-            leftMeta.damage = damage.coerceAtLeast(0)
+            val damage = plugin.getProxy(AnvilRepairProxy::class.java).combineRepair(left, right)
+            if (damage != null) {
+                leftMeta.damage = damage
+            }
         }
 
         if (leftMeta is EnchantmentStorageMeta) {
