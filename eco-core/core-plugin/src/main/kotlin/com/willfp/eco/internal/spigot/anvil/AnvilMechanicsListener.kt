@@ -150,7 +150,10 @@ class AnvilMechanicsListener(
 
         if (openMenuClass(player) == anvilGuiClass) return
 
-        val baseRepairCost = event.view.repairCost
+        // Only the prior-work penalties the inputs carry. Vanilla's own view cost also prices the
+        // merge (enchant levels, repair units), which doMerge computes again, so using it as the
+        // base charged twice for the same work.
+        val priorWorkCost = (leftItem?.fast()?.repairCost ?: 0) + (rightItem?.fast()?.repairCost ?: 0)
         event.result = null
         event.inventory.setItem(2, null)
 
@@ -181,8 +184,8 @@ class AnvilMechanicsListener(
             if (oldLeft == null || oldLeft.type != outItem.type) return@run
             if (left == old) return@run
 
-            var cost = baseRepairCost + price
-            if (baseRepairCost == -price) cost = price
+            val renameCost = if (old?.fast()?.displayName != outItem.fast().displayName) 1 else 0
+            val cost = computeAnvilCost(priorWorkCost, renameCost, price)
             if (cost <= 0) return@run
 
             val leftEnchants = left?.fast()?.getEnchants(true) ?: emptyMap()
