@@ -1,5 +1,6 @@
 package com.willfp.eco.core.scheduling
 
+import java.lang.Deprecated
 import java.lang.reflect.Method
 import org.bukkit.scheduler.BukkitTask
 import org.junit.jupiter.api.Assertions
@@ -124,6 +125,10 @@ internal class LegacyDescriptorTests {
         )
     }
 
+    /**
+     * [Deprecated] here is `java.lang.Deprecated`, imported explicitly to shadow Kotlin's
+     * default-imported `kotlin.Deprecated`, which has no `forRemoval`.
+     */
     @Test
     fun `everything the bridge exposes is deprecated for removal`() {
         val deprecated = listOf(
