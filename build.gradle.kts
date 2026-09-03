@@ -132,6 +132,12 @@ allprojects {
         testRuntimeOnly("org.junit.platform:junit-platform-launcher:2.0.3")
         testImplementation("io.mockk:mockk-jvm:1.13.17")
 
+        // mockk cannot subclass EcoPlugin without org.slf4j.Logger, which Paper's Plugin
+        // interface exposes via getSLF4JLogger(). slf4j-api is excluded from the production
+        // configurations below (the server provides it) and that exclusion is inherited by the
+        // test configurations, so it has to be put back explicitly for tests only.
+        testRuntimeOnly("org.slf4j:slf4j-api:2.0.17")
+
         // Adventure (provided at runtime via Paper library loader)
         compileOnly("net.kyori:adventure-api:5.0.1") {
             exclude("com.github.ben-manes.caffeine", "caffeine")
@@ -158,11 +164,40 @@ allprojects {
         exclude(group = "com.darkblade12", module = "particleeffect")
         exclude(group = "com.github.cryptomorin", module = "XSeries")
         exclude(group = "net.wesjd", module = "anvilgui")
+    }
+
+    // slf4j-api is provided by the server and must not be bundled, so it stays excluded from the
+    // production classpaths. It is NOT excluded via configurations.all, because exclude rules are
+    // inherited by extending configurations and testImplementation extends compileOnly and
+    // implementation -- that inherited rule stripped slf4j from the tests even when declared
+    // directly, and mockk cannot subclass EcoPlugin without org.slf4j.Logger, which Paper's Plugin
+    // interface exposes via getSLF4JLogger(). testRuntimeClasspath is a sibling of
+    // runtimeClasspath rather than a child, so excluding here leaves the test side untouched.
+    configurations.compileClasspath {
+        exclude(group = "org.slf4j", module = "slf4j-api")
+    }
+
+    configurations.runtimeClasspath {
         exclude(group = "org.slf4j", module = "slf4j-api")
     }
 
     configurations.testImplementation {
         setExtendsFrom(listOf(configurations.compileOnly.get(), configurations.implementation.get()))
+    }
+
+    val paperAdventureVersion = "4.20.0"
+    listOf(configurations.testCompileClasspath, configurations.testRuntimeClasspath).forEach {
+        it.configure {
+            resolutionStrategy.eachDependency {
+                if (requested.group == "net.kyori" &&
+                    requested.name.startsWith("adventure-") &&
+                    requested.version?.startsWith("5.") == true
+                ) {
+                    useVersion(paperAdventureVersion)
+                    because("paper-api references Adventure 4 types that Adventure 5 removed")
+                }
+            }
+        }
     }
 
     tasks {

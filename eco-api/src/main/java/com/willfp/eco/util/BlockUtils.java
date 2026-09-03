@@ -1,5 +1,6 @@
 package com.willfp.eco.util;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.blocks.TestableBlock;
 import java.util.*;
 import org.bukkit.Chunk;
@@ -17,6 +18,9 @@ public final class BlockUtils {
      * <p>
      * The search is a flood fill starting at the given block, and treats every {@link BlockFace}
      * value as adjacent, so diagonally touching blocks are included in the vein.
+     * <p>
+     * On Folia the search stops at the boundary of the calling thread's region, so a vein
+     * spanning two regions is returned only in part. Off Folia there is no such bound.
      *
      * @param start         The initial block, which is only included if it matches one of the allowed blocks.
      * @param allowedBlocks A list of all valid {@link TestableBlock}s.
@@ -46,6 +50,13 @@ public final class BlockUtils {
 
             for (BlockFace face : BlockFace.values()) {
                 Block adjacentBlock = currentBlock.getRelative(face);
+
+                // On Folia a vein can cross a region boundary, and reading a block in
+                // another region is not allowed. Off Folia this is always owned, so the
+                // fill is unbounded exactly as before.
+                if (!Eco.get().isOwnedByCurrentRegion(adjacentBlock.getLocation())) {
+                    continue;
+                }
 
                 if (!blocks.contains(adjacentBlock) &&
                         allowedBlocks.stream().anyMatch(testableBlock -> testableBlock.matches(adjacentBlock))) {

@@ -4,8 +4,11 @@ import io.mockk.mockk
 import org.bukkit.entity.Entity
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.util.Collections
 import java.util.UUID
+import java.util.concurrent.CountDownLatch
 
 internal class LastDamagerTrackerTests {
     private var tick = 0L
@@ -93,5 +96,55 @@ internal class LastDamagerTrackerTests {
 
         assertNull(tracker.resolve(stale))
         assertEquals(damager, tracker.resolve(fresh))
+    }
+
+    @Test
+    fun `concurrent recording keeps every entry resolvable`() {
+        val tracker = tracker(window = Long.MAX_VALUE)
+        val victims = (1..8).map { (1..500).map { UUID.randomUUID() } }
+        val start = CountDownLatch(1)
+
+        val threads = victims.map { batch ->
+            Thread {
+                start.await()
+                for (victim in batch) {
+                    tracker.record(victim, mockk(relaxed = true))
+                }
+            }
+        }
+
+        threads.forEach { it.start() }
+        start.countDown()
+        threads.forEach { it.join() }
+
+        val missing = victims.flatten().count { tracker.resolve(it) == null }
+        assertEquals(0, missing)
+    }
+
+    @Test
+    fun `purging while recording does not throw`() {
+        val tracker = tracker(window = 0L)
+        val start = CountDownLatch(1)
+
+        val writer = Thread {
+            start.await()
+            repeat(5000) { tracker.record(UUID.randomUUID(), mockk(relaxed = true)) }
+        }
+        val purger = Thread {
+            start.await()
+            repeat(5000) { tracker.purgeExpired() }
+        }
+
+        val failures = Collections.synchronizedList(mutableListOf<Throwable>())
+        writer.setUncaughtExceptionHandler { _, e -> failures.add(e) }
+        purger.setUncaughtExceptionHandler { _, e -> failures.add(e) }
+
+        writer.start()
+        purger.start()
+        start.countDown()
+        writer.join()
+        purger.join()
+
+        assertTrue(failures.isEmpty()) { "threw: ${failures.firstOrNull()}" }
     }
 }

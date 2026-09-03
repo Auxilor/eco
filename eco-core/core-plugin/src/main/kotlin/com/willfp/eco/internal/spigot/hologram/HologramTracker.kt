@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.hologram
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.scheduling.EcoTask
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Bukkit
@@ -20,6 +21,9 @@ class HologramTracker(
 
     // Per-player: hologram entity ids currently sent to that player.
     private val sent: MutableMap<UUID, MutableSet<Int>> = ConcurrentHashMap()
+
+    // Per-player: the recurring reconcile task running on that player's entity scheduler.
+    private val refreshTasks = ConcurrentHashMap<UUID, EcoTask>()
 
     fun register(hologram: EcoHologram) {
         holograms.add(hologram)
@@ -93,15 +97,28 @@ class HologramTracker(
 
     fun start() {
         plugin.eventManager.registerListener(this)
-        // Reconcile every second; cheap relative to network, robust to teleports/mounts.
-        plugin.scheduler.runTimer(20L, 20L) {
-            for (player in Bukkit.getOnlinePlayers()) {
-                refreshFor(player)
-            }
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            startRefreshing(player)
         }
     }
 
+    private fun startRefreshing(player: Player) {
+        val existing = refreshTasks.remove(player.uniqueId)
+        existing?.cancel()
+
+        // Reconcile every second; cheap relative to network, robust to teleports/mounts.
+        refreshTasks[player.uniqueId] = plugin.scheduler.on(player)
+            .onRetired { refreshTasks.remove(player.uniqueId) }
+            .runTimer(Runnable { refreshFor(player) }, 20L, 20L)
+    }
+
     fun shutdown() {
+        for (task in refreshTasks.values) {
+            task.cancel()
+        }
+        refreshTasks.clear()
+
         for (hologram in holograms) {
             val id = hologram.handle.entityId
             for (player in Bukkit.getOnlinePlayers()) {
@@ -117,11 +134,13 @@ class HologramTracker(
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         refreshFor(event.player)
+        startRefreshing(event.player)
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
         sent.remove(event.player.uniqueId)
+        refreshTasks.remove(event.player.uniqueId)?.cancel()
     }
 
     @EventHandler

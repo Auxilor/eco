@@ -84,7 +84,6 @@ dependencies {
 
     // Plugin dependencies
     compileOnly("me.libraryaddict.disguises:libsdisguises:11.0.14")
-    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.15") {
         exclude("*", "*")
     }

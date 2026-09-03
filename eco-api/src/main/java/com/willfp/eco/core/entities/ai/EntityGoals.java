@@ -1,6 +1,7 @@
 package com.willfp.eco.core.entities.ai;
 
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.entities.ai.entity.*;
 import com.willfp.eco.core.serialization.KeyedDeserializer;
@@ -17,7 +18,8 @@ public final class EntityGoals {
     /**
      * All registered deserializers.
      */
-    private static final Map<NamespacedKey, KeyedDeserializer<? extends EntityGoal<?>>> BY_KEY = HashBiMap.create();
+    private static final Map<NamespacedKey, KeyedDeserializer<? extends EntityGoal<?>>> BY_KEY =
+            Maps.synchronizedBiMap(HashBiMap.<NamespacedKey, KeyedDeserializer<? extends EntityGoal<?>>>create());
 
     static {
         register(EntityGoalAvoidEntity.DESERIALIZER);

@@ -13,6 +13,7 @@ import com.willfp.eco.util.NamespacedKeyUtils;
 import com.willfp.eco.util.NumberUtils;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.time.Duration;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public final class Blocks {
     /**
      * All block parsers.
      */
-    private static final List<BlockArgParser> ARG_PARSERS = new ArrayList<>();
+    private static final List<BlockArgParser> ARG_PARSERS = new CopyOnWriteArrayList<>();
 
     /**
      * The lookup handler.
@@ -85,12 +86,12 @@ public final class Blocks {
     /**
      * Friendly material names (without underscores, etc.)
      */
-    private static final Map<String, Material> FRIENDLY_MATERIAL_NAMES = new HashMap<>();
+    private static final Map<String, Material> FRIENDLY_MATERIAL_NAMES = new ConcurrentHashMap<>();
 
     /**
      * All tags.
      */
-    private static final Map<String, BlockTag> TAGS = new HashMap<>();
+    private static final Map<String, BlockTag> TAGS = new ConcurrentHashMap<>();
 
     /**
      * Register a new custom block.

@@ -6,13 +6,13 @@ import com.willfp.eco.core.proxy.ProxyFactory
 import com.willfp.eco.core.proxy.exceptions.ProxyError
 import com.willfp.eco.core.proxy.exceptions.UnsupportedVersionError
 import java.net.URLClassLoader
-import java.util.IdentityHashMap
+import java.util.concurrent.ConcurrentHashMap
 
 class EcoProxyFactory(
     private val plugin: EcoPlugin
 ) : ProxyFactory {
     private val proxyClassLoader: ClassLoader = plugin::class.java.classLoader
-    private val cache: MutableMap<Class<out Any>, Any> = IdentityHashMap()
+    private val cache: MutableMap<Class<out Any>, Any> = ConcurrentHashMap()
 
     override fun <T : Any> getProxy(proxyClass: Class<T>): T {
         try {

@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.eventlisteners
 
 import org.bukkit.entity.Entity
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 class LastDamagerTracker(
     private val windowTicks: Long,
@@ -9,7 +10,7 @@ class LastDamagerTracker(
 ) {
     private data class Record(val damager: Entity, val tick: Long)
 
-    private val records = mutableMapOf<UUID, Record>()
+    private val records = ConcurrentHashMap<UUID, Record>()
 
     fun record(victim: UUID, damager: Entity) {
         records[victim] = Record(damager, clock())
