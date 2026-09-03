@@ -11,12 +11,13 @@ import org.jetbrains.annotations.NotNull;
  *         the data it touches, so it is always scheduled globally.
  */
 @Deprecated(forRemoval = true)
-public interface RunnableTask extends Runnable {
+public interface RunnableTask extends Runnable, LegacyRunnableTask {
     /**
      * Run the task on the next tick.
      *
      * @return The task handle.
      */
+    @Override
     @NotNull EcoTask runTask();
 
     /**
@@ -24,6 +25,7 @@ public interface RunnableTask extends Runnable {
      *
      * @return The task handle.
      */
+    @Override
     @NotNull EcoTask runTaskAsynchronously();
 
     /**
@@ -32,6 +34,7 @@ public interface RunnableTask extends Runnable {
      * @param delay The delay, in ticks.
      * @return The task handle.
      */
+    @Override
     @NotNull EcoTask runTaskLater(long delay);
 
     /**
@@ -40,6 +43,7 @@ public interface RunnableTask extends Runnable {
      * @param delay The delay, in ticks.
      * @return The task handle.
      */
+    @Override
     @NotNull EcoTask runTaskLaterAsynchronously(long delay);
 
     /**
@@ -49,6 +53,7 @@ public interface RunnableTask extends Runnable {
      * @param period The period between runs, in ticks.
      * @return The task handle.
      */
+    @Override
     @NotNull EcoTask runTaskTimer(long delay,
                                   long period);
 
@@ -59,6 +64,7 @@ public interface RunnableTask extends Runnable {
      * @param period The period between runs, in ticks.
      * @return The task handle.
      */
+    @Override
     @NotNull EcoTask runTaskTimerAsynchronously(long delay,
                                                 long period);
 }

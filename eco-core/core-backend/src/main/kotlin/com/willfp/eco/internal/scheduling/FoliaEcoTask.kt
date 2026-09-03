@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.scheduling
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.FoliaSupport
 import com.willfp.eco.core.scheduling.EcoTask
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.function.Consumer
@@ -19,7 +20,8 @@ import org.bukkit.scheduler.BukkitTask
 class FoliaEcoTask(
     private val plugin: EcoPlugin,
     private val repeating: Boolean,
-    private val registry: MutableSet<FoliaEcoTask>
+    private val registry: MutableSet<FoliaEcoTask>,
+    private val sync: Boolean
 ) : EcoTask {
     @Volatile
     private var handle: ScheduledTask? = null
@@ -84,5 +86,24 @@ class FoliaEcoTask(
 
     override fun getPlugin(): EcoPlugin = plugin
 
-    override fun asBukkitTask(): BukkitTask? = null
+    /**
+     * Folia has no task ID space, so there is no ID to return. -1 is the value
+     * [org.bukkit.scheduler.BukkitScheduler.cancelTask] ignores, which makes a caller that
+     * cancels by ID do nothing rather than cancel the wrong task.
+     */
+    @Deprecated("Hold the EcoTask and cancel that instead.")
+    @Suppress("DEPRECATION")
+    override fun getTaskId(): Int {
+        FoliaSupport.isUnsupported("Bukkit task IDs")
+
+        return -1
+    }
+
+    @Deprecated("Ask the context the task was submitted through instead.")
+    @Suppress("DEPRECATION")
+    override fun isSync(): Boolean = sync
+
+    @Deprecated("An EcoTask is already a BukkitTask.")
+    @Suppress("DEPRECATION")
+    override fun asBukkitTask(): BukkitTask = this
 }

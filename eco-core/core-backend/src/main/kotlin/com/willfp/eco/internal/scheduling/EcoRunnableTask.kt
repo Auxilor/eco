@@ -47,4 +47,18 @@ abstract class EcoRunnableTask(
 
     override fun runTaskTimerAsynchronously(delay: Long, period: Long): EcoTask =
         submit { plugin.scheduler.async().runTimer(this, delay, period) }
+
+    /**
+     * Cancel the submitted task.
+     *
+     * `BukkitRunnable.cancel` threw `IllegalStateException` when the runnable had never
+     * been scheduled. This is a no-op instead: the only reason this method still exists is
+     * for jars compiled against eco 6, and throwing at them from a compatibility shim is
+     * worse than doing nothing. Cancelling a task that has been submitted behaves exactly
+     * as it did.
+     */
+    @Synchronized
+    override fun cancel() {
+        scheduled?.cancel()
+    }
 }

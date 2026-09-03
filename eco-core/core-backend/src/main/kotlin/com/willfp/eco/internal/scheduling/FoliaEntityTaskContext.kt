@@ -28,7 +28,7 @@ class FoliaEntityTaskContext(
         repeating: Boolean,
         submitter: (FoliaEcoTask) -> io.papermc.paper.threadedregions.scheduler.ScheduledTask?
     ): EcoTask {
-        val task = FoliaEcoTask(plugin, repeating, registry)
+        val task = FoliaEcoTask(plugin, repeating, registry, true)
         registry.add(task)
 
         val handle = submitter(task)

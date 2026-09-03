@@ -20,8 +20,13 @@ import org.jetbrains.annotations.NotNull;
  *     <li>{@link #on(Entity)} for entities, including players and their inventories.</li>
  *     <li>{@link #async()} for work that touches neither.</li>
  * </ul>
+ * <p>
+ * The methods inherited from {@link LegacyScheduler} are overridden here to return an
+ * {@link EcoTask} rather than a {@link org.bukkit.scheduler.BukkitTask}. That is a
+ * covariant override, so the compiler emits the eco 6 descriptor as a bridge alongside
+ * each one, and plugins compiled against eco 6 keep working without being recompiled.
  */
-public interface Scheduler {
+public interface Scheduler extends LegacyScheduler {
     /**
      * Get the context for tasks with no region affinity.
      *
@@ -80,6 +85,7 @@ public interface Scheduler {
      *         touches. Implicitly global scheduling cannot be made correct on Folia.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runLater(@NotNull final Runnable runnable,
                              final long ticksLater) {
@@ -95,6 +101,7 @@ public interface Scheduler {
      * @deprecated Use {@link #global()}, or a context that owns the data the task touches.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runLater(final long ticksLater,
                              @NotNull final Runnable runnable) {
@@ -111,6 +118,7 @@ public interface Scheduler {
      * @deprecated Use {@link #global()}, or a context that owns the data the task touches.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runTimer(@NotNull final Runnable runnable,
                              final long delay,
@@ -128,6 +136,7 @@ public interface Scheduler {
      * @deprecated Use {@link #global()}, or a context that owns the data the task touches.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runTimer(final long delay,
                              final long repeat,
@@ -145,6 +154,7 @@ public interface Scheduler {
      * @deprecated Use {@link #async()}.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runAsyncTimer(@NotNull final Runnable runnable,
                                   final long delay,
@@ -162,6 +172,7 @@ public interface Scheduler {
      * @deprecated Use {@link #async()}.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runAsyncTimer(final long delay,
                                   final long repeat,
@@ -177,6 +188,7 @@ public interface Scheduler {
      * @deprecated Use {@link #global()}, or a context that owns the data the task touches.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask run(@NotNull final Runnable runnable) {
         return global().run(runnable);
@@ -190,8 +202,46 @@ public interface Scheduler {
      * @deprecated Use {@link #async()}.
      */
     @Deprecated(forRemoval = true)
+    @Override
     @NotNull
     default EcoTask runAsync(@NotNull final Runnable runnable) {
         return async().run(runnable);
+    }
+
+    /**
+     * Schedule a task to run repeatedly, with no region affinity.
+     *
+     * @param runnable The task.
+     * @param delay    The delay before the first run, in ticks.
+     * @param repeat   The period between runs, in ticks.
+     * @return The Bukkit task ID, or -1 on Folia, which has no task ID space.
+     * @deprecated Use {@link #global()}, or a context that owns the data the task
+     *         touches, and cancel the {@link EcoTask} it returns. A task ID is only useful
+     *         to {@link org.bukkit.scheduler.BukkitScheduler#cancelTask(int)}, which does
+     *         nothing on Folia.
+     */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings({"deprecation", "removal"})
+    default int syncRepeating(@NotNull final Runnable runnable,
+                              final long delay,
+                              final long repeat) {
+        return global().runTimer(runnable, delay, repeat).getTaskId();
+    }
+
+    /**
+     * Schedule a task to run repeatedly, with no region affinity.
+     *
+     * @param delay    The delay before the first run, in ticks.
+     * @param repeat   The period between runs, in ticks.
+     * @param runnable The task.
+     * @return The Bukkit task ID, or -1 on Folia, which has no task ID space.
+     * @deprecated Use {@link #global()}, or a context that owns the data the task touches.
+     */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings({"deprecation", "removal"})
+    default int syncRepeating(final long delay,
+                              final long repeat,
+                              @NotNull final Runnable runnable) {
+        return syncRepeating(runnable, delay, repeat);
     }
 }

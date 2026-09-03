@@ -23,7 +23,7 @@ class FoliaRegionTaskContext(
     private val chunkZ: Int
 ) : TaskContext {
     private fun submit(repeating: Boolean, submitter: (FoliaEcoTask) -> Unit): EcoTask {
-        val task = FoliaEcoTask(plugin, repeating, registry)
+        val task = FoliaEcoTask(plugin, repeating, registry, true)
         registry.add(task)
         submitter(task)
         return task

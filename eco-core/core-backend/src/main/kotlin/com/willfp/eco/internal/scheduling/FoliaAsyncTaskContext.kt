@@ -23,7 +23,7 @@ class FoliaAsyncTaskContext(
     private val registry: MutableSet<FoliaEcoTask>
 ) : AsyncTaskContext {
     private fun submit(repeating: Boolean, submitter: (FoliaEcoTask) -> Unit): EcoTask {
-        val task = FoliaEcoTask(plugin, repeating, registry)
+        val task = FoliaEcoTask(plugin, repeating, registry, false)
         registry.add(task)
         submitter(task)
         return task

@@ -13,7 +13,8 @@ import org.bukkit.scheduler.BukkitTask
  */
 class BukkitEcoTask(
     private val plugin: EcoPlugin,
-    private val repeating: Boolean
+    private val repeating: Boolean,
+    private val sync: Boolean
 ) : EcoTask {
     @Volatile
     private var handle: BukkitTask? = null
@@ -45,5 +46,19 @@ class BukkitEcoTask(
 
     override fun getPlugin(): EcoPlugin = plugin
 
-    override fun asBukkitTask(): BukkitTask? = handle
+    /**
+     * The real Bukkit ID once bound. -1 before then, and after a task that was cancelled
+     * before it could be submitted, because there is no ID to report.
+     */
+    @Deprecated("Hold the EcoTask and cancel that instead.")
+    @Suppress("DEPRECATION")
+    override fun getTaskId(): Int = handle?.taskId ?: -1
+
+    @Deprecated("Ask the context the task was submitted through instead.")
+    @Suppress("DEPRECATION")
+    override fun isSync(): Boolean = sync
+
+    @Deprecated("An EcoTask is already a BukkitTask.")
+    @Suppress("DEPRECATION")
+    override fun asBukkitTask(): BukkitTask = this
 }

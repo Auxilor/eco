@@ -17,13 +17,13 @@ class BukkitAsyncTaskContext(
     private val plugin: EcoPlugin
 ) : AsyncTaskContext {
     override fun run(runnable: Runnable): EcoTask {
-        val task = BukkitEcoTask(plugin, false)
+        val task = BukkitEcoTask(plugin, false, false)
         task.bind(Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable))
         return task
     }
 
     override fun runLater(runnable: Runnable, ticksLater: Long): EcoTask {
-        val task = BukkitEcoTask(plugin, false)
+        val task = BukkitEcoTask(plugin, false, false)
         task.bind(Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, ticksLater))
         return task
     }
@@ -32,7 +32,7 @@ class BukkitAsyncTaskContext(
         runLater(runnable, unit.toMillis(delay) / MILLIS_PER_TICK)
 
     override fun runTimer(runnable: Runnable, delay: Long, repeat: Long): EcoTask {
-        val task = BukkitEcoTask(plugin, true)
+        val task = BukkitEcoTask(plugin, true, false)
         task.bind(
             Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, repeat)
         )
@@ -47,7 +47,7 @@ class BukkitAsyncTaskContext(
         )
 
     override fun runTimer(runnable: Consumer<EcoTask>, delay: Long, repeat: Long): EcoTask {
-        val task = BukkitEcoTask(plugin, true)
+        val task = BukkitEcoTask(plugin, true, false)
         task.bind(
             Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(plugin, Runnable { runnable.accept(task) }, delay, repeat)
