@@ -488,7 +488,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         }
 
         // Run preliminary reload to resolve load order issues
-        this.getScheduler().runLater(() -> {
+        this.getScheduler().global().runLater(() -> {
             Logger before = this.getLogger();
             // Temporary silence logger.
             //this.logger = Eco.get().getNOOPLogger();
@@ -498,7 +498,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             //this.logger = before;
         }, 1);
 
-        this.getScheduler().runLater(this::afterLoad, 2);
+        this.getScheduler().global().runLater(this::afterLoad, 2);
 
         if (this.isSupportingExtensions()) {
             for (Extension extension : this.getExtensionLoader().getLoadedExtensions()) {

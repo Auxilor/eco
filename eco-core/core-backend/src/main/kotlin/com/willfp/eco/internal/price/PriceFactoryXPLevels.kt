@@ -5,6 +5,7 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 import org.bukkit.entity.Player
 
@@ -24,7 +25,7 @@ object PriceFactoryXPLevels : PriceFactory {
         private val baseContext: PlaceholderContext,
         private val level: (PlaceholderContext) -> Int
     ) : Price {
-        private val multipliers = mutableMapOf<UUID, Double>()
+        private val multipliers = ConcurrentHashMap<UUID, Double>()
 
         override fun canAfford(player: Player, multiplier: Double) = player.level >= getValue(player, multiplier)
 

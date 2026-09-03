@@ -6,7 +6,6 @@ dependencies {
 
     // Other
     compileOnly("org.spigotmc:spigot-api:$minecraftApiVersion-R0.1-SNAPSHOT")
-    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
 }
 
 group = "com.willfp"

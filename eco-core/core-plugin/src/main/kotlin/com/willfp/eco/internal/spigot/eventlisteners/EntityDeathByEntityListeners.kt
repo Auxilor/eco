@@ -23,7 +23,7 @@ class EntityDeathByEntityListeners(
     private val tracker = LastDamagerTracker(windowTicks) { Bukkit.getCurrentTick().toLong() }
 
     init {
-        plugin.scheduler.runTimer(windowTicks.coerceAtLeast(1), windowTicks.coerceAtLeast(1)) {
+        plugin.scheduler.global().runTimer(windowTicks.coerceAtLeast(1), windowTicks.coerceAtLeast(1)) {
             tracker.purgeExpired()
         }
     }

@@ -2,6 +2,8 @@ package com.willfp.eco.internal.spigot
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.FoliaSupport
+import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
@@ -13,6 +15,7 @@ import com.willfp.eco.internal.spigot.hologram.HologramTracker
 import com.willfp.eco.internal.spigot.proxies.HologramProxy
 import com.willfp.eco.core.PluginLike
 import com.willfp.eco.core.PluginProps
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.blocks.Blocks
 import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
@@ -30,6 +33,7 @@ import com.willfp.eco.core.gui.view.ViewBuilder
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.core.scheduling.Scheduler
 import com.willfp.eco.core.version.Version
 import com.willfp.eco.internal.EcoPropsParser
 import com.willfp.eco.internal.command.EcoPluginCommand
@@ -59,7 +63,8 @@ import com.willfp.eco.internal.logging.EcoLogger
 import com.willfp.eco.internal.logging.NOOPLogger
 import com.willfp.eco.internal.placeholder.PlaceholderParser
 import com.willfp.eco.internal.proxy.EcoProxyFactory
-import com.willfp.eco.internal.scheduling.EcoScheduler
+import com.willfp.eco.internal.scheduling.EcoSchedulerBukkit
+import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
@@ -82,7 +87,9 @@ import com.willfp.eco.internal.spigot.proxies.TPSProxy
 import com.willfp.eco.internal.spigot.proxies.WaypointHandlerProxy
 import java.net.URLClassLoader
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.configuration.ConfigurationSection
@@ -100,7 +107,7 @@ import org.bukkit.inventory.MenuType as BukkitMenuType
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
 
-private val loadedEcoPlugins = mutableMapOf<String, EcoPlugin>()
+private val loadedEcoPlugins = ConcurrentHashMap<String, EcoPlugin>()
 private val DEFAULT_PROFILE_RESOLVER = PlayerProfileResolver { it.uniqueId }
 
 @Suppress("UNUSED")
@@ -130,8 +137,21 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         this.configYml.getInt("math-cache-ttl").toLong()
     )
 
-    override fun createScheduler(plugin: EcoPlugin) =
-        EcoScheduler(plugin)
+    /**
+     * The return type must stay the [Scheduler] interface, and must stay explicit.
+     *
+     * [EcoSchedulerFolia] names Folia types, which are absent on Spigot. The JVM verifier
+     * does not check assignability to an interface, so neither branch forces that class to
+     * be resolved here; it is loaded only when its constructor actually runs, which happens
+     * only on Folia. Narrowing this to a concrete type would make Spigot resolve it at
+     * verification and every Spigot server would die at startup with NoClassDefFoundError.
+     */
+    override fun createScheduler(plugin: EcoPlugin): Scheduler =
+        if (Prerequisite.HAS_FOLIA.isMet) {
+            EcoSchedulerFolia(plugin)
+        } else {
+            EcoSchedulerBukkit(plugin)
+        }
 
     override fun createEventManager(plugin: EcoPlugin) =
         EcoEventManager(plugin)
@@ -358,10 +378,15 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getPlayerProfileResolver() = playerProfileResolver
 
-    override fun createDummyEntity(location: Location): Entity =
-        getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
+    override fun createDummyEntity(location: Location): Entity {
+        warnIfNotOwned(location, "Creating a dummy entity")
+
+        return getProxy(DummyEntityFactoryProxy::class.java).createDummyEntity(location)
+    }
 
     override fun createHologram(location: Location, options: HologramOptions): Hologram {
+        warnIfNotOwned(location, "Creating a hologram")
+
         val handle = getProxy(HologramProxy::class.java).createHandle(location, options)
         return EcoHologram(handle, location, options, hologramTracker)
     }
@@ -382,8 +407,11 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getProps(existing: PluginProps?, plugin: Class<out EcoPlugin>) =
         existing ?: EcoPropsParser.parseForPlugin(plugin)
 
-    override fun <T : Mob> createEntityController(mob: T) =
-        getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
+    override fun <T : Mob> createEntityController(mob: T): EntityController<T> {
+        warnIfNotOwned(mob, "Creating an entity controller")
+
+        return getProxy(EntityControllerFactoryProxy::class.java).createEntityController(mob)
+    }
 
     override fun formatMiniMessage(message: String) =
         getProxy(MiniMessageTranslatorProxy::class.java).format(message)
@@ -412,6 +440,75 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getTPS() =
         getProxy(TPSProxy::class.java).getTPS()
 
+    override fun isOwnedByCurrentRegion(location: Location): Boolean =
+        if (Prerequisite.HAS_FOLIA.isMet) Bukkit.isOwnedByCurrentRegion(location) else true
+
+    override fun isOwnedByCurrentRegion(entity: Entity): Boolean =
+        if (Prerequisite.HAS_FOLIA.isMet) Bukkit.isOwnedByCurrentRegion(entity) else true
+
+    /**
+     * Warn once when a region-bound call is made from a thread that does not own the
+     * region. Does not stop the call: Folia will refuse it and say so far more precisely
+     * than this can, and off Folia there is nothing to warn about.
+     */
+    private fun warnIfNotOwned(location: Location, what: String) {
+        if (isOwnedByCurrentRegion(location)) {
+            return
+        }
+
+        FoliaSupport.isUnsupported("$what from outside its region")
+    }
+
+    /**
+     * Warn once when a region-bound call is made from a thread that does not own the
+     * region containing an entity. See [warnIfNotOwned] for the location overload.
+     */
+    private fun warnIfNotOwned(entity: Entity, what: String) {
+        if (isOwnedByCurrentRegion(entity)) {
+            return
+        }
+
+        FoliaSupport.isUnsupported("$what from outside its region")
+    }
+
+    /**
+     * Warn once when a global-region-bound call is made from a thread that is not the
+     * global region thread. Same idea as [warnIfNotOwned], for calls that belong on the
+     * global region rather than on a location or entity's region. Does not stop the
+     * call: see [warnIfNotOwned] for why.
+     */
+    private fun warnIfNotGlobalRegion(what: String) {
+        if (!Prerequisite.HAS_FOLIA.isMet || Bukkit.isGlobalTickThread()) {
+            return
+        }
+
+        FoliaSupport.isUnsupported("$what from outside the global region")
+    }
+
+    /**
+     * Run on the region owning an entity, now if this thread already owns it.
+     *
+     * Off Folia the ownership check is always true, so this is a direct call.
+     */
+    private inline fun onEntity(entity: Entity, crossinline block: () -> Unit) {
+        if (isOwnedByCurrentRegion(entity)) {
+            block()
+        } else {
+            this.scheduler.on(entity).run { block() }
+        }
+    }
+
+    /**
+     * Run on the global region, now if this thread is already the global region thread.
+     */
+    private inline fun onGlobalRegion(crossinline block: () -> Unit) {
+        if (!Prerequisite.HAS_FOLIA.isMet || Bukkit.isGlobalTickThread()) {
+            block()
+        } else {
+            this.scheduler.global().run { block() }
+        }
+    }
+
     override fun evaluate(expression: String, context: PlaceholderContext) =
         expressionEvaluator.evaluate(expression, context)
 
@@ -430,15 +527,22 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getOpenMenu(player: Player) =
         player.renderedInventory?.menu
 
-    override fun addBukkitRecipeNoResend(recipe: Recipe) {
+    override fun addBukkitRecipeNoResend(recipe: Recipe) = onGlobalRegion {
         this.getProxy(CommonsInitializerProxy::class.java).addBukkitRecipeNoResend(recipe)
     }
 
-    override fun reloadBukkitRecipes() {
+    override fun reloadBukkitRecipes() = onGlobalRegion {
         this.getProxy(CommonsInitializerProxy::class.java).reloadBukkitRecipes()
     }
 
+    // Not routed through onGlobalRegion: this returns a Boolean, and onGlobalRegion's
+    // block is `() -> Unit`, so it cannot carry a result back from a scheduled task
+    // without either blocking the caller or inventing a placeholder return value, neither
+    // of which the task brief specifies. Runs inline, exactly as before, on both Paper
+    // and Folia; warnIfNotGlobalRegion only warns (it never throws or reschedules) when
+    // called off the global region on Folia. See task-19-report.md.
     override fun removeBukkitRecipeNoResend(key: NamespacedKey): Boolean {
+        warnIfNotGlobalRegion("Removing a recipe without resending it")
         return this.getProxy(CommonsInitializerProxy::class.java).removeBukkitRecipeNoResend(key)
     }
 
@@ -450,7 +554,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
             syncDuringBatch = true
             return
         }
-        this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+        onGlobalRegion {
+            this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+        }
     }
 
     override fun beginCommandBatch() {
@@ -462,12 +568,15 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         batchDepth--
         if (batchDepth == 0 && syncDuringBatch) {
             syncDuringBatch = false
-            this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+            onGlobalRegion {
+                this.getProxy(BukkitCommandsProxy::class.java).syncCommands()
+            }
         }
     }
 
-    override fun unregisterCommand(command: PluginCommandBase) =
+    override fun unregisterCommand(command: PluginCommandBase) = onGlobalRegion {
         this.getProxy(BukkitCommandsProxy::class.java).unregisterCommand(command)
+    }
 
     override fun sendPacket(player: Player, packet: Packet) =
         this.getProxy(PacketHandlerProxy::class.java).sendPacket(player, packet)
@@ -488,7 +597,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         this.getProxy(DisplayNameProxy::class.java).setClientsideDisplayName(entity, player, name, visible)
 
     override fun giveExpAndApplyMending(player: Player, amount: Int, applyMending: Boolean) {
-        getProxy(PlayerHandlerProxy::class.java).giveExpAndApplyMending(player, amount, applyMending)
+        onEntity(player) {
+            getProxy(PlayerHandlerProxy::class.java).giveExpAndApplyMending(player, amount, applyMending)
+        }
     }
 
     override fun getCustomCharts() = listOf(

@@ -27,7 +27,7 @@ class ArmorChangeEventListeners(
         }
 
         val before = player.inventory.armorContents.toMutableList()
-        plugin.scheduler.run {
+        plugin.scheduler.on(player).run {
             pending.remove(player.uniqueId)
             val after = player.inventory.armorContents.toMutableList()
             val armorChangeEvent = ArmorChangeEvent(player, before, after)

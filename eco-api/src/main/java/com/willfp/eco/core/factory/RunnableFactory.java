@@ -5,9 +5,11 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Factory to create runnables. Much cleaner syntax than instantiating
- * {@link org.bukkit.scheduler.BukkitRunnable}s.
+ * Factory to create runnables.
+ *
+ * @deprecated Use {@link com.willfp.eco.core.scheduling.Scheduler} directly.
  */
+@Deprecated(forRemoval = true)
 public interface RunnableFactory {
     /**
      * Create a {@link RunnableTask}.

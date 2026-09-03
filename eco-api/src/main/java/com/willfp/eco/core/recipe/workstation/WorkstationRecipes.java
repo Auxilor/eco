@@ -2,6 +2,7 @@ package com.willfp.eco.core.recipe.workstation;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.willfp.eco.core.recipe.Recipes;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -10,12 +11,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -30,20 +30,20 @@ public final class WorkstationRecipes {
     /**
      * All registered workstation recipes, keyed by their {@link NamespacedKey}.
      */
-    private static final BiMap<NamespacedKey, WorkstationRecipe> recipes = HashBiMap.create();
+    private static final BiMap<NamespacedKey, WorkstationRecipe> recipes = Maps.synchronizedBiMap(HashBiMap.create());
 
     /**
      * Bukkit recipe keys registered by workstation recipes that delegate to the
      * Bukkit recipe system. Tracked so they can be removed on {@link #clear()}.
      */
-    private static final Set<NamespacedKey> trackedBukkitKeys = new HashSet<>();
+    private static final Set<NamespacedKey> trackedBukkitKeys = ConcurrentHashMap.newKeySet();
 
     /**
      * Recipes pending confirmation for a specific player, keyed by player UUID.
      * Used by packet-level handlers (e.g. brewing, grindstone) that must
      * associate a detected inventory interaction with a recipe before it completes.
      */
-    private static final Map<UUID, WorkstationRecipe> pendingRecipes = new HashMap<>();
+    private static final Map<UUID, WorkstationRecipe> pendingRecipes = new ConcurrentHashMap<>();
 
     /**
      * Optional hook invoked when a pending brew at a given location must be

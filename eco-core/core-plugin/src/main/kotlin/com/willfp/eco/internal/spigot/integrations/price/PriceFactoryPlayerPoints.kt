@@ -5,6 +5,7 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
 import com.willfp.eco.core.price.Price
 import com.willfp.eco.core.price.PriceFactory
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.roundToInt
 import org.black_ixx.playerpoints.PlayerPoints
 import org.bukkit.entity.Player
@@ -24,7 +25,7 @@ class PriceFactoryPlayerPoints : PriceFactory {
         private val function: (PlaceholderContext) -> Int
     ) : Price {
         private val api = PlayerPoints.getInstance().api
-        private val multipliers = mutableMapOf<UUID, Double>()
+        private val multipliers = ConcurrentHashMap<UUID, Double>()
 
         override fun canAfford(player: Player, multiplier: Double): Boolean {
             return api.look(player.uniqueId) >= getValue(player, multiplier)

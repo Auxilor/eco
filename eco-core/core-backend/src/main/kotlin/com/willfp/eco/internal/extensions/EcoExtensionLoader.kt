@@ -13,12 +13,13 @@ import com.willfp.eco.core.version.Version
 import java.io.File
 import java.io.InputStreamReader
 import java.net.URLClassLoader
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.configuration.file.YamlConfiguration
 
 class EcoExtensionLoader(
     private val plugin: EcoPlugin
 ) : ExtensionLoader {
-    private val extensions = mutableMapOf<Extension, URLClassLoader>()
+    private val extensions = ConcurrentHashMap<Extension, URLClassLoader>()
 
     override fun loadExtensions() {
         val dir = File(this.plugin.dataFolder, "/extensions")

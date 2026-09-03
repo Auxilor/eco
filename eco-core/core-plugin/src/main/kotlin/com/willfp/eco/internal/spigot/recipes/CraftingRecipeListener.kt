@@ -4,6 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.util.namespacedKeyOf
 import org.bukkit.Keyed
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.CraftItemEvent
@@ -35,7 +36,8 @@ class CraftingRecipeListener(val plugin: EcoPlugin) : Listener {
         handlePrepare(event)
 
         if (plugin.configYml.getBool("enforce-preparing-recipes")) {
-            plugin.scheduler.runLater(1) {
+            val player = event.viewers.getOrNull(0) as? Player ?: return
+            plugin.scheduler.on(player).runLater(1) {
                 handlePrepare(event)
             }
         }

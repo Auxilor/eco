@@ -3,7 +3,9 @@ package com.willfp.eco.internal.spigot.data
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.util.BlockUtils
 import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -36,7 +38,7 @@ class PlayerBlockListener(
     fun onBreak(event: BlockBreakEvent) {
         val block = event.block
 
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.at(block.location).run {
             removeKey(block)
         }
     }
@@ -45,53 +47,57 @@ class PlayerBlockListener(
     fun onGrow(event: StructureGrowEvent) {
         val block = event.location.block
 
-        this.plugin.scheduler.run {
+        this.plugin.scheduler.at(block.location).run {
             removeKey(block)
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onExtend(event: BlockPistonExtendEvent) {
-        val locs = mutableListOf<Location>()
-        val toRemove = mutableListOf<Location>()
-
-        for (block in event.blocks) {
-            if (BlockUtils.isPlayerPlaced(block)) {
-                locs.add(block.getRelative(event.direction).location)
-                toRemove.add(block.location)
-            }
-        }
-
-        this.plugin.scheduler.run {
-            for (loc in toRemove) {
-                removeKey(loc)
-            }
-
-            for (loc in locs) {
-                writeKey(loc)
-            }
-        }
+        handlePiston(event.blocks, event.direction)
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onRetract(event: BlockPistonRetractEvent) {
-        val locs = mutableListOf<Location>()
-        val toRemove = mutableListOf<Location>()
+        handlePiston(event.blocks, event.direction)
+    }
 
-        for (block in event.blocks) {
-            if (BlockUtils.isPlayerPlaced(block)) {
-                locs.add(block.getRelative(event.direction).location)
-                toRemove.add(block.location)
+    /**
+     * A piston can push blocks across a chunk, and so across a region, boundary, so work is
+     * batched per chunk rather than per block: a chunk belongs to exactly one region, so one
+     * task per chunk is always region-legal, and it keeps this to roughly one or two tasks
+     * per piston event instead of two per moved block.
+     *
+     * Within a single block's handling, `removeKey(from)` is ordered before `writeKey(to)`
+     * whenever `from` and `to` share a chunk, because both land in that chunk's task in that
+     * order. When a block's move crosses a chunk boundary, the remove and the write land in
+     * two different chunk tasks and that ordering is not guaranteed between them.
+     */
+    private fun handlePiston(blocks: List<Block>, direction: BlockFace) {
+        val chunkOps = LinkedHashMap<Triple<World, Int, Int>, MutableList<Runnable>>()
+
+        for (block in blocks) {
+            if (!BlockUtils.isPlayerPlaced(block)) {
+                continue
             }
+
+            val from = block
+            val to = block.getRelative(direction)
+
+            val fromChunk = Triple(from.world, from.x shr 4, from.z shr 4)
+            val toChunk = Triple(to.world, to.x shr 4, to.z shr 4)
+
+            chunkOps.getOrPut(fromChunk) { mutableListOf() }.add(Runnable { removeKey(from) })
+            chunkOps.getOrPut(toChunk) { mutableListOf() }.add(Runnable { writeKey(to) })
         }
 
-        this.plugin.scheduler.run {
-            for (loc in toRemove) {
-                removeKey(loc)
-            }
+        for ((chunk, ops) in chunkOps) {
+            val (world, chunkX, chunkZ) = chunk
 
-            for (loc in locs) {
-                writeKey(loc)
+            this.plugin.scheduler.at(world, chunkX, chunkZ).run {
+                for (op in ops) {
+                    op.run()
+                }
             }
         }
     }

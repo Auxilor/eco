@@ -6,7 +6,6 @@ import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.core.recipe.workstation.GrindstoneRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import com.willfp.eco.internal.spigot.proxies.WorkstationPacketProxy
-import org.bukkit.Bukkit
 import org.bukkit.event.inventory.InventoryType
 
 class GrindstonePacketHandler(private val plugin: EcoPlugin) : PacketListener {
@@ -35,18 +34,18 @@ class GrindstonePacketHandler(private val plugin: EcoPlugin) : PacketListener {
 
         event.isCancelled = true
 
-        Bukkit.getScheduler().runTask(plugin, Runnable {
+        plugin.scheduler.on(player).run {
             val topInventory = player.openInventory.topInventory
-            if (topInventory.type != InventoryType.GRINDSTONE) return@Runnable
+            if (topInventory.type != InventoryType.GRINDSTONE) return@run
 
             val current = topInventory.getItem(slotNum)
-            if (current != null && !current.type.isAir) return@Runnable
+            if (current != null && !current.type.isAir) return@run
 
             val toPlace = cursor.clone().apply { amount = 1 }
             topInventory.setItem(slotNum, toPlace)
             if (cursor.amount <= 1) player.setItemOnCursor(null)
             else cursor.amount--
             player.updateInventory()
-        })
+        }
     }
 }

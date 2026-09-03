@@ -1,5 +1,7 @@
 package com.willfp.eco.core.gui.slot;
 
+import com.willfp.eco.core.Eco;
+import com.willfp.eco.core.Prerequisite;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
@@ -118,20 +120,35 @@ public class ConfigSlot extends CustomSlot {
     ) {
         /**
          * Dispatch command.
+         * <p>
+         * A GUI click handler runs on the clicking player's region on Folia. Console
+         * dispatch belongs on the global region, so it can only run inline off Folia,
+         * where there is no such thing as a region and every check below is a no-op;
+         * on Folia it is always scheduled, because a click handler is never already
+         * running on the global region thread. Player dispatch belongs on the player's
+         * own region, which is where the click handler is already running, so the
+         * ownership check lets it stay inline there too, with scheduling kept only as
+         * a defensive fallback.
          *
          * @param player The player.
          */
         void dispatch(@NotNull final Player player) {
+            String commandToRun = command().replace("%player%", player.getName());
+
             if (console()) {
-                Bukkit.dispatchCommand(
-                        Bukkit.getConsoleSender(),
-                        command().replace("%player%", player.getName())
-                );
+                if (!Prerequisite.HAS_FOLIA.isMet()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandToRun);
+                } else {
+                    Eco.get().getEcoPlugin().getScheduler().global().run(() ->
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandToRun));
+                }
             } else {
-                Bukkit.dispatchCommand(
-                        player,
-                        command().replace("%player%", player.getName())
-                );
+                if (Eco.get().isOwnedByCurrentRegion(player)) {
+                    Bukkit.dispatchCommand(player, commandToRun);
+                } else {
+                    Eco.get().getEcoPlugin().getScheduler().on(player).run(() ->
+                            Bukkit.dispatchCommand(player, commandToRun));
+                }
             }
         }
     }

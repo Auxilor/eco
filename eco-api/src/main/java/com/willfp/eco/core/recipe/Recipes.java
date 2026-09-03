@@ -3,6 +3,7 @@ package com.willfp.eco.core.recipe;
 import com.willfp.eco.core.cache.EcoCache;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.items.Items;
@@ -36,7 +37,8 @@ public final class Recipes {
     /**
      * Registry of all recipes.
      */
-    private static final BiMap<NamespacedKey, CraftingRecipe> RECIPES = HashBiMap.create();
+    private static final BiMap<NamespacedKey, CraftingRecipe> RECIPES =
+            Maps.synchronizedBiMap(HashBiMap.<NamespacedKey, CraftingRecipe>create());
 
     /**
      * Cached recipes from matrix.

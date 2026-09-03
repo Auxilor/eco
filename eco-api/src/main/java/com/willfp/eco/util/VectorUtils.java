@@ -1,9 +1,9 @@
 package com.willfp.eco.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ public final class VectorUtils {
     /**
      * Cached circles to prevent many sqrt calls, keyed by radius.
      */
-    private static final Map<Integer, Vector[]> CIRCLE_CACHE = new HashMap<>();
+    private static final Map<Integer, Vector[]> CIRCLE_CACHE = new ConcurrentHashMap<>();
 
     /**
      * If vector has all components as finite.

@@ -5,6 +5,7 @@ import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.integrations.guidetection.GUIDetectionManager;
 import com.willfp.eco.util.NamespacedKeyUtils;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -29,7 +30,7 @@ public final class Display {
     /**
      * All registered modules, keyed by weight and sorted so that lower weights run first.
      */
-    private static final Map<Integer, List<DisplayModule>> REGISTERED_MODULES = new TreeMap<>();
+    private static final Map<Integer, List<DisplayModule>> REGISTERED_MODULES = new ConcurrentSkipListMap<>();
 
     /**
      * The persistent data key used to mark an item as finalized.

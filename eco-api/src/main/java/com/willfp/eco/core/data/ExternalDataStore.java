@@ -1,9 +1,9 @@
 package com.willfp.eco.core.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,12 +18,12 @@ public final class ExternalDataStore {
     /**
      * The store.
      */
-    private static final Map<String, Object> DATA = new HashMap<>();
+    private static final Map<String, Object> DATA = new ConcurrentHashMap<>();
 
     /**
      * The store adapters.
      */
-    private static final List<ExternalDataStoreObjectAdapter<?, ?>> STORE_ADAPTERS = new ArrayList<>();
+    private static final List<ExternalDataStoreObjectAdapter<?, ?>> STORE_ADAPTERS = new CopyOnWriteArrayList<>();
 
     /**
      * Put data into the store.

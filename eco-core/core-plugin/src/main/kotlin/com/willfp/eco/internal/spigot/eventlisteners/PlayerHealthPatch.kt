@@ -9,7 +9,6 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.scheduler.BukkitTask
 import kotlin.math.min
 
 object PlayerHealthPatch: Listener {
@@ -34,11 +33,10 @@ object PlayerHealthPatch: Listener {
 			var previousMax = event.player.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
 
 			// Run every tick for up to user defined duration in config.
-			var repeatingTask: BukkitTask? = null
-			repeatingTask = Eco.get().ecoPlugin.scheduler.runTimer({
+			Eco.get().ecoPlugin.scheduler.on(event.player).runTimer({ task ->
 				try {
 					if (timesToRun <= 0) {
-						repeatingTask?.cancel()
+						task.cancel()
 						return@runTimer
 					}
 

@@ -8,7 +8,7 @@ import com.willfp.eco.core.fast.fast
 import com.willfp.eco.core.proxy.ProxyConstants
 import com.willfp.eco.core.recipe.workstation.AnvilRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
-import com.willfp.eco.internal.spigot.anvil.AnvilRepair.canUnitRepair
+import com.willfp.eco.internal.spigot.proxies.AnvilRepairProxy
 import com.willfp.eco.internal.spigot.proxies.OpenInventoryProxy
 import com.willfp.eco.util.StringUtils
 import org.bukkit.ChatColor
@@ -27,8 +27,6 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import java.util.UUID
 import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.min
 
 /** Outcome of an anvil merge: null [result]/[xp] fields aren't set unless a merge succeeded. */
 private data class AnvilResult(val result: ItemStack?, val xp: Int?)
@@ -152,11 +150,14 @@ class AnvilMechanicsListener(
 
         if (openMenuClass(player) == anvilGuiClass) return
 
-        val baseRepairCost = event.view.repairCost
+        // Only the prior-work penalties the inputs carry. Vanilla's own view cost also prices the
+        // merge (enchant levels, repair units), which doMerge computes again, so using it as the
+        // base charged twice for the same work.
+        val priorWorkCost = (leftItem?.fast()?.repairCost ?: 0) + (rightItem?.fast()?.repairCost ?: 0)
         event.result = null
         event.inventory.setItem(2, null)
 
-        plugin.scheduler.run {
+        plugin.scheduler.on(player).run {
             if (latestPreviewGeneration[player.uniqueId] != generation) return@run
 
             val left = event.inventory.getItem(0)?.clone()
@@ -183,8 +184,8 @@ class AnvilMechanicsListener(
             if (oldLeft == null || oldLeft.type != outItem.type) return@run
             if (left == old) return@run
 
-            var cost = baseRepairCost + price
-            if (baseRepairCost == -price) cost = price
+            val renameCost = if (old?.fast()?.displayName != outItem.fast().displayName) 1 else 0
+            val cost = computeAnvilCost(priorWorkCost, renameCost, price)
             if (cost <= 0) return@run
 
             val leftEnchants = left?.fast()?.getEnchants(true) ?: emptyMap()
@@ -245,18 +246,16 @@ class AnvilMechanicsListener(
         var unitRepairCost = 0
 
         if (left.type != right.type) {
-            if (right.type.canUnitRepair(left.type) && leftMeta is Damageable) {
-                val perUnit = ceil(left.type.maxDurability / 4.0).toInt()
-                val max = ceil(leftMeta.damage.toDouble() / perUnit).toInt()
-                val toDeduct = min(max, right.amount)
-                unitRepairCost = toDeduct
-                if (toDeduct <= 0) {
-                    return FAIL
-                } else {
-                    val newDamage = leftMeta.damage - toDeduct * perUnit
-                    leftMeta.damage = newDamage.coerceAtLeast(0)
-                    right.amount -= toDeduct
-                }
+            val unitRepair = if (leftMeta is Damageable) {
+                plugin.getProxy(AnvilRepairProxy::class.java).unitRepair(left, right)
+            } else {
+                null
+            }
+
+            if (unitRepair != null && leftMeta is Damageable) {
+                unitRepairCost = unitRepair.units
+                leftMeta.damage = unitRepair.damage
+                right.amount -= unitRepair.units
             } else {
                 if (right.type != Material.ENCHANTED_BOOK) return FAIL
             }
@@ -282,11 +281,10 @@ class AnvilMechanicsListener(
         }
 
         if (leftMeta is Damageable && rightMeta is Damageable && unitRepairCost == 0 && rightMeta !is EnchantmentStorageMeta) {
-            val maxDamage = left.type.maxDurability.toInt()
-            val leftDurability = maxDamage - leftMeta.damage
-            val rightDurability = maxDamage - rightMeta.damage
-            val damage = maxDamage - min(maxDamage, leftDurability + rightDurability)
-            leftMeta.damage = damage.coerceAtLeast(0)
+            val damage = plugin.getProxy(AnvilRepairProxy::class.java).combineRepair(left, right)
+            if (damage != null) {
+                leftMeta.damage = damage
+            }
         }
 
         if (leftMeta is EnchantmentStorageMeta) {
