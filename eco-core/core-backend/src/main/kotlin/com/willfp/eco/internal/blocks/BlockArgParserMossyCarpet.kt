@@ -5,12 +5,13 @@ import com.willfp.eco.core.blocks.args.BlockArgParser
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.type.MossyCarpet
+import org.bukkit.block.data.type.Wall
 
 object BlockArgParserMossyCarpet : BlockArgParser {
     override fun parseArguments(args: Array<out String>, blockData: BlockData): BlockArgParseResult? {
         if (blockData !is MossyCarpet) return null
 
-        val mossyCarpetHeight = BlockFace.entries.associateWith { MossyCarpet.Height.NONE }.toMutableMap()
+        val mossyCarpetHeight = BlockFace.entries.associateWith { Wall.Height.NONE }.toMutableMap()
         var mossyCarpetBottom: Boolean? = null
 
         for (arg in args) {
@@ -20,7 +21,7 @@ object BlockArgParserMossyCarpet : BlockArgParser {
                     continue
                 }
                 val face = runCatching { BlockFace.valueOf(argSplit[1].uppercase()) }.getOrNull() ?: continue
-                val height = runCatching { MossyCarpet.Height.valueOf(argSplit[2].uppercase()) }.getOrNull() ?: continue
+                val height = runCatching { Wall.Height.valueOf(argSplit[2].uppercase()) }.getOrNull() ?: continue
                 mossyCarpetHeight[face] = height
             } else if (argSplit[0].equals("bottom", true)) {
                 mossyCarpetBottom = true
