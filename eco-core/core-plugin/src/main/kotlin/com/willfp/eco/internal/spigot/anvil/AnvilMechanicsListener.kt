@@ -61,6 +61,25 @@ class AnvilMechanicsListener(
     /** Per-player generation of the preview actually rendered into the result slot. */
     private val renderedPreviewGeneration = mutableMapOf<UUID, Int>()
 
+    /**
+     * The result eco expects to find on the anvil prepare currently being handled: vanilla's own
+     * result up until [onAnvilPrepare] clears it, null after. Anything else means another plugin
+     * claimed the result. Thread-local because Folia fires anvil events on region threads rather
+     * than a single main thread.
+     */
+    private val expectedResult = ThreadLocal<ItemStack?>()
+
+    /**
+     * Snapshots vanilla's result so [onAnvilPrepare] can tell a plain vanilla merge apart from one
+     * another plugin has already claimed. Cloned, so a plugin mutating the result in place is
+     * detected as well as one calling `setResult`. Runs before every other listener, save any also
+     * at [EventPriority.LOWEST] that Bukkit happened to register first.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    fun onAnvilPrepareLowest(event: PrepareAnvilEvent) {
+        expectedResult.set(event.result?.clone())
+    }
+
     private val anvilGuiClass: Class<*>? = try {
         Class.forName(
             "net.wesjd.anvilgui.version.Wrapper" +
@@ -115,6 +134,8 @@ class AnvilMechanicsListener(
     @Suppress("UnstableApiUsage")
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onAnvilPrepare(event: PrepareAnvilEvent) {
+        val expected = expectedResult.get()
+
         val handler = AnvilHandlers.handler() ?: return
         val settings = AnvilHandlers.settings() ?: return
 
@@ -129,7 +150,14 @@ class AnvilMechanicsListener(
         val hasCustomRecipe = WorkstationRecipes.getAll(AnvilRecipe::class.java).any {
             it.base.matches(leftItem) && (it.material == null || it.material!!.matches(rightItem))
         }
-        if (hasCustomRecipe) {
+
+        // Same deal for a third-party plugin that already set its own result: it no longer matches
+        // what vanilla computed, so it belongs to that plugin. Deferring is the only way it can win
+        // - the render below happens in a scheduled task that runs after the event has finished, so
+        // it would otherwise overwrite the plugin's result whatever priority it listened at.
+        val hasForeignResult = event.result != expected
+
+        if (hasCustomRecipe || hasForeignResult) {
             viewer?.uniqueId?.let {
                 latestPreviewGeneration.remove(it)
                 renderedPreviewGeneration.remove(it)
@@ -157,8 +185,20 @@ class AnvilMechanicsListener(
         event.result = null
         event.inventory.setItem(2, null)
 
+        expectedResult.set(null)
+
         plugin.scheduler.on(player).run {
             if (latestPreviewGeneration[player.uniqueId] != generation) return@run
+
+            // The result was cleared above, so anything in it now was put there by another plugin
+            // listening after us - at HIGHEST but registered later, or at MONITOR. Those run once
+            // the event has already passed us, so this is the only place they can be noticed.
+            // Drop the preview state as well, so the result-click guard doesn't cancel taking it.
+            if (event.result != null) {
+                latestPreviewGeneration.remove(player.uniqueId)
+                renderedPreviewGeneration.remove(player.uniqueId)
+                return@run
+            }
 
             val left = event.inventory.getItem(0)?.clone()
             val old = left?.clone()
