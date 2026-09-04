@@ -1,9 +1,11 @@
+val minecraftApiVersion: String by project
+
 dependencies {
     // Adventure
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
 
     // Other
-    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:$minecraftApiVersion-R0.1-SNAPSHOT")
 }
 
 group = "com.willfp"
