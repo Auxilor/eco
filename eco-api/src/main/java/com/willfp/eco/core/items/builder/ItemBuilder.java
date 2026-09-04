@@ -1,6 +1,8 @@
 package com.willfp.eco.core.items.builder;
 
+import com.willfp.eco.core.config.interfaces.Config;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -173,6 +175,31 @@ public interface ItemBuilder {
      * @return The builder.
      */
     ItemBuilder setCustomModelData(@NotNull Supplier<Integer> data);
+
+    /**
+     * Set data components on the item.
+     * <p>
+     * Components use the same format as item components in commands, keyed by
+     * component id (for example <code>minecraft:attribute_modifiers</code>) and
+     * valued with plain objects: maps, lists, strings, numbers, and booleans.
+     * They are applied when the item is built.
+     * <p>
+     * Invalid components are skipped silently; use
+     * {@link com.willfp.eco.core.items.Items#withComponents} to be told which
+     * components failed.
+     *
+     * @param components The components.
+     * @return The builder.
+     */
+    ItemBuilder setComponents(@NotNull Map<String, Object> components);
+
+    /**
+     * Set data components on the item.
+     *
+     * @param components The components, as a config section keyed by component id.
+     * @return The builder.
+     */
+    ItemBuilder setComponents(@NotNull Config components);
 
     /**
      * Build the item.

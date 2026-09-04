@@ -79,3 +79,23 @@ fun Map<String?, Any?>.toConfig(type: ConfigType) = Configs.fromMap(this, type)
 
 /** @see Configs.fromString */
 fun readConfig(contents: String, type: ConfigType) = Configs.fromString(contents, type)
+
+/**
+ * Convert a config section to plain values: nested maps, lists, and scalars.
+ *
+ * Roundtrips through plaintext because wrapper configs (for example
+ * libreforge's separator-ambivalent wrapper) don't implement toMap, and must
+ * not rewrite keys that are meaningful as written, such as component ids.
+ *
+ * @receiver The config.
+ * @return The plain values.
+ */
+fun Config.toPlainValues(): Map<String, Any?> =
+    readConfig(toPlaintext(), ConfigType.YAML).toMap()
+        .mapValues { (_, value) -> value.toPlainValue() }
+
+private fun Any?.toPlainValue(): Any? = when (this) {
+    is Config -> this.toPlainValues()
+    is Iterable<*> -> this.map { it.toPlainValue() }
+    else -> this
+}

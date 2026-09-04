@@ -81,6 +81,7 @@ import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
+import com.willfp.eco.internal.spigot.proxies.ItemComponentsProxy
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxies.SkullProxy
 import com.willfp.eco.internal.spigot.proxies.TPSProxy
@@ -430,6 +431,18 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun testableItemFromSNBT(snbt: String) =
         getProxy(SNBTConverterProxy::class.java).makeSNBTTestable(snbt)
+
+    override fun withComponents(item: ItemStack, components: Map<String, Any>) =
+        getProxy(ItemComponentsProxy::class.java).withComponents(item, components)
+
+    override fun getComponents(item: ItemStack) =
+        getProxy(ItemComponentsProxy::class.java).getComponents(item)
+
+    override fun getComponent(item: ItemStack, key: String) =
+        getProxy(ItemComponentsProxy::class.java).getComponent(item, key)
+
+    override fun removeComponents(item: ItemStack, keys: Collection<String>) =
+        getProxy(ItemComponentsProxy::class.java).removeComponents(item, keys)
 
     override fun getSkullTexture(meta: SkullMeta): String? =
         getProxy(SkullProxy::class.java).getSkullTexture(meta)

@@ -34,6 +34,7 @@ import com.willfp.eco.core.gui.view.MerchantViewBuilder;
 import com.willfp.eco.core.gui.view.ViewBuilder;
 import com.willfp.eco.core.integrations.hologram.Hologram;
 import com.willfp.eco.core.integrations.hologram.HologramOptions;
+import com.willfp.eco.core.items.ItemComponentResult;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.math.ExpressionEnvironment;
 import com.willfp.eco.core.packet.Packet;
@@ -41,6 +42,7 @@ import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.version.Version;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -590,6 +592,61 @@ public interface Eco {
      */
     @NotNull
     TestableItem testableItemFromSNBT(@NotNull String snbt);
+
+    /**
+     * Apply data components to an item.
+     * <p>
+     * Components use the same format as item components in commands, keyed by
+     * component id (for example <code>minecraft:attribute_modifiers</code>) and
+     * valued with plain objects: maps, lists, strings, numbers, and booleans.
+     * <p>
+     * Setting <code>minecraft:attribute_modifiers</code> merges with the base
+     * item's own modifiers rather than replacing them outright: a configured
+     * modifier replaces the default for the same attribute and slot, and any
+     * default it says nothing about is kept. Every other component replaces the
+     * item's value for that component.
+     *
+     * @param item       The item.
+     * @param components The components to apply.
+     * @return The result, holding the new item and any components that failed.
+     */
+    @NotNull
+    ItemComponentResult withComponents(@NotNull ItemStack item,
+                                       @NotNull Map<String, Object> components);
+
+    /**
+     * Get the data components on an item.
+     *
+     * @param item The item.
+     * @return The components, keyed by component id.
+     */
+    @NotNull
+    Map<String, Object> getComponents(@NotNull ItemStack item);
+
+    /**
+     * Get a data component on an item.
+     *
+     * @param item The item.
+     * @param key  The component id, for example <code>minecraft:food</code>.
+     * @return The component value, or null if the item does not have it.
+     */
+    @Nullable
+    Object getComponent(@NotNull ItemStack item,
+                        @NotNull String key);
+
+    /**
+     * Remove data components from an item.
+     * <p>
+     * Removing a component the item does not have does nothing, and unknown
+     * component ids are skipped.
+     *
+     * @param item The item.
+     * @param keys The component ids to remove.
+     * @return A copy of the item without those components.
+     */
+    @NotNull
+    ItemStack removeComponents(@NotNull ItemStack item,
+                               @NotNull Collection<String> keys);
 
     /**
      * Get the texture of a skull.

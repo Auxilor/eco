@@ -64,3 +64,23 @@ fun Collection<TestableItem>.matches(item: ItemStack): Boolean =
 /** @see Items.matchesAny */
 fun Collection<TestableItem>.matches(items: Collection<ItemStack>): Boolean =
     Items.matchesAny(items, this)
+
+/** @see Items.withComponents */
+fun ItemStack.withComponents(components: Map<String, Any?>): ItemComponentResult =
+    Items.withComponents(this, components)
+
+/** @see Items.getComponents */
+val ItemStack.components: Map<String, Any?>
+    get() = Items.getComponents(this)
+
+/** @see Items.getComponent */
+fun ItemStack.getComponent(key: String): Any? =
+    Items.getComponent(this, key)
+
+/** @see Items.removeComponents */
+fun ItemStack.removeComponents(vararg keys: String): ItemStack =
+    Items.removeComponents(this, keys.toList())
+
+/** @see Items.removeComponents */
+fun ItemStack.removeComponents(keys: Collection<String>): ItemStack =
+    Items.removeComponents(this, keys)
