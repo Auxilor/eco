@@ -120,6 +120,9 @@ dependencies {
     compileOnly("su.nightexpress.nightcore:main:2.16.4")
     compileOnly("su.nightexpress.excellentshop:Core:5.1.3")
     compileOnly("dev.kitteh:factions:4.4.0")
+    compileOnly("com.github.Zrips:Residence:6.0.2.3") {
+        exclude(group = "*", module = "*")
+    }
 
     compileOnly(fileTree("../../lib") {
         include("*.jar")

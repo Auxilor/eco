@@ -1,7 +1,9 @@
 package com.willfp.eco.internal.spigot.integrations.antigrief
 
-import com.bekvon.bukkit.residence.api.ResidenceApi
 import com.bekvon.bukkit.residence.containers.Flags
+import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener
+import com.bekvon.bukkit.residence.listeners.ResidenceEntityListener
+import com.bekvon.bukkit.residence.protection.FlagPermissions
 import com.willfp.eco.core.integrations.antigrief.AntigriefIntegration
 import org.bukkit.Location
 import org.bukkit.block.Block
@@ -10,32 +12,25 @@ import org.bukkit.entity.Player
 
 class AntigriefResidence : AntigriefIntegration {
     override fun canBreakBlock(player: Player, block: Block): Boolean {
-        val residence = ResidenceApi.getResidenceManager().getByLoc(block.location) ?: return true
-        return residence.permissions.playerHas(player, Flags.destroy, false)
+        return ResidenceBlockListener.canBreakBlock(player, block, false)
     }
 
     override fun canPlaceBlock(player: Player, block: Block): Boolean {
-        val residence = ResidenceApi.getResidenceManager().getByLoc(block.location) ?: return true
-        return residence.permissions.playerHas(player, Flags.place, false)
+        return ResidenceBlockListener.canPlaceBlock(player, block, false)
     }
 
     override fun canCreateExplosion(player: Player, location: Location): Boolean {
-        val residence = ResidenceApi.getResidenceManager().getByLoc(location) ?: return true
-        return residence.permissions.has(Flags.explode, false)
+        return FlagPermissions.getPerms(location, player)
+            .has(Flags.explode, FlagPermissions.FlagCombo.TrueOrNone)
     }
 
     override fun canInjure(player: Player, victim: LivingEntity): Boolean {
-        val residence = ResidenceApi.getResidenceManager().getByLoc(victim.location) ?: return true
-        return if (victim is Player) {
-            residence.permissions.has(Flags.pvp, false)
-        } else {
-            residence.permissions.playerHas(player, Flags.mobkilling, false)
-        }
+        return ResidenceEntityListener.canDamageEntity(player, victim, false)
     }
 
     override fun canPickupItem(player: Player, location: Location): Boolean {
-        val residence = ResidenceApi.getResidenceManager().getByLoc(location) ?: return true
-        return residence.permissions.playerHas(player, Flags.itempickup, true)
+        return FlagPermissions.getPerms(location, player)
+            .playerHas(player, Flags.itempickup, FlagPermissions.FlagCombo.TrueOrNone)
     }
 
     override fun getPluginName(): String {
