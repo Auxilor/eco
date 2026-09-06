@@ -476,6 +476,32 @@ public interface Eco {
     PlayerProfileResolver getPlayerProfileResolver();
 
     /**
+     * Get every UUID with saved profile data in the server's configured data handler.
+     * <p>
+     * This is a blocking operation and must not be called on the main thread.
+     *
+     * @return The uuids.
+     */
+    @NotNull
+    Set<UUID> getSavedProfileUUIDs();
+
+    /**
+     * Read a key for many profiles at once, bypassing the in-memory profile cache.
+     * <p>
+     * This is a blocking operation and must not be called on the main thread. Unlike
+     * {@link com.willfp.eco.core.data.Profile#read}, it does not load or retain a profile
+     * object per uuid, so it is safe to call across the entire playerbase.
+     *
+     * @param uuids The uuids.
+     * @param key   The key.
+     * @param <T>   The type of the key.
+     * @return The values, keyed by uuid; uuids with no stored value are omitted.
+     */
+    @NotNull
+    <T> Map<UUID, T> readAllProfileValues(@NotNull Set<UUID> uuids,
+                                          @NotNull PersistentDataKey<T> key);
+
+    /**
      * Create dummy entity - never spawned, exists purely in code.
      * <p>
      * On Folia, the calling thread must own the region containing the location. Call this

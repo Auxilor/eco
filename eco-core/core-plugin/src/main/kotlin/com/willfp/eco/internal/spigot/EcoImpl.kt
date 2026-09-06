@@ -68,6 +68,7 @@ import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
+import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.math.ExpressionEvaluator
 import com.willfp.eco.internal.spigot.math.api.EcoExpressionEnvironmentBuilder
@@ -358,6 +359,22 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.getPlayerProfile(uuid)
+
+    override fun getSavedProfileUUIDs(): Set<UUID> =
+        profileHandler.defaultHandler.getSavedUUIDs()
+
+    override fun <T> readAllProfileValues(
+        uuids: Set<UUID>,
+        key: PersistentDataKey<T>
+    ): Map<UUID, T> {
+        val handler = if (key.isSavedLocally) {
+            profileHandler.localHandler
+        } else {
+            profileHandler.defaultHandler
+        }
+
+        return handler.readAll(uuids, key)
+    }
 
     // Read from whichever thread touches player data, so publication has to be guaranteed.
     @Volatile
