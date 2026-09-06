@@ -3,6 +3,7 @@ package com.willfp.eco.core.data.handlers;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.tuples.Pair;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -101,6 +102,37 @@ public abstract class PersistentDataHandler implements Registrable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Read a key for many profiles at once.
+     * <p>
+     * The default implementation reads each UUID individually; handlers backed by a database
+     * should override this with a single query, as it is called on a refresh schedule by the
+     * leaderboard service.
+     * <p>
+     * UUIDs with no stored value are omitted from the result rather than mapped to the key's
+     * default, so callers can tell "absent" from "stored default".
+     *
+     * @param uuids The uuids to read.
+     * @param key   The key.
+     * @param <T>   The type of the key.
+     * @return The values, keyed by uuid.
+     */
+    @NotNull
+    public <T> Map<UUID, T> readAll(@NotNull final Set<UUID> uuids,
+                                    @NotNull final PersistentDataKey<T> key) {
+        Map<UUID, T> values = new HashMap<>();
+
+        for (UUID uuid : uuids) {
+            T value = read(uuid, key);
+
+            if (value != null) {
+                values.put(uuid, value);
+            }
+        }
+
+        return values;
     }
 
     /**

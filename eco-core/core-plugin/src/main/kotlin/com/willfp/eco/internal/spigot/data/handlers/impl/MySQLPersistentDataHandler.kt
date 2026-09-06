@@ -24,6 +24,7 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.ExposedConnectionImpl
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
@@ -145,6 +146,15 @@ class MySQLPersistentDataHandler(
         return savedUUIDs
     }
 
+    @OptIn(ExperimentalUuidApi::class)
+    override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+        @Suppress("UNCHECKED_CAST")
+        val serializer = key.type.getSerializer(this) as MySQLSerializer<Any>
+
+        @Suppress("UNCHECKED_CAST")
+        return serializer.readAll(uuids, key as PersistentDataKey<Any>) as Map<UUID, T>
+    }
+
     private abstract inner class MySQLSerializer<T : Any> : DataTypeSerializer<T>() {
         protected abstract val table: ProfileTable
 
@@ -154,6 +164,8 @@ class MySQLPersistentDataHandler(
                 table.select(table.uuid).map { it[table.uuid] }.toSet()
             }
         }
+
+        abstract fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T>
 
         fun createTable(): MySQLSerializer<T> {
             transaction(database) {
@@ -176,6 +188,21 @@ class MySQLPersistentDataHandler(
 
         abstract fun convertToStored(value: T): S
         abstract fun convertFromStored(value: S): T
+
+        @OptIn(ExperimentalUuidApi::class)
+        override fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+            if (uuids.isEmpty()) {
+                return emptyMap()
+            }
+
+            val profileUUIDs = uuids.map { it.toKotlinUuid() }
+
+            return transaction(database) {
+                table.select(table.uuid, table.value)
+                    .where { (table.uuid inList profileUUIDs) and (table.key eq key.key.toString()) }
+                    .associate { it[table.uuid].toJavaUuid() to convertFromStored(it[table.value]) }
+            }
+        }
 
         @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
@@ -216,6 +243,22 @@ class MySQLPersistentDataHandler(
 
     private abstract inner class MultiValueSerializer<T : Any> : MySQLSerializer<List<T>>() {
         abstract override val table: ListKeyTable<T>
+
+        @OptIn(ExperimentalUuidApi::class)
+        override fun readAll(uuids: Set<UUID>, key: PersistentDataKey<List<T>>): Map<UUID, List<T>> {
+            if (uuids.isEmpty()) {
+                return emptyMap()
+            }
+
+            val profileUUIDs = uuids.map { it.toKotlinUuid() }
+
+            return transaction(database) {
+                table.select(table.uuid, table.index, table.value)
+                    .where { (table.uuid inList profileUUIDs) and (table.key eq key.key.toString()) }
+                    .orderBy(table.index)
+                    .map { it[table.uuid].toJavaUuid() to it[table.value] }
+            }.groupBy({ it.first }, { it.second })
+        }
 
         @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {

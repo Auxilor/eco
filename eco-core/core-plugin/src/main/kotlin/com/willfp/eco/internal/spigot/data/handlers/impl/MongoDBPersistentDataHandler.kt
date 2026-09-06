@@ -156,7 +156,34 @@ class MongoDBPersistentDataHandler(
         }
     }
 
+    override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+        @Suppress("UNCHECKED_CAST")
+        val serializer = key.type.getSerializer(this) as MongoSerializer<Any>
+
+        @Suppress("UNCHECKED_CAST")
+        return serializer.readAll(uuids, key as PersistentDataKey<Any>) as Map<UUID, T>
+    }
+
     private abstract inner class MongoSerializer<T : Any> : DataTypeSerializer<T>() {
+        fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+            if (uuids.isEmpty()) {
+                return emptyMap()
+            }
+
+            val field = key.key.toString()
+
+            return runBlocking {
+                collection.find(Filters.`in`("uuid", uuids.map { it.toString() }))
+                    .projection(Projections.include("uuid", field))
+                    .toList()
+                    .mapNotNull { profile ->
+                        val value = profile[field] ?: return@mapNotNull null
+                        UUID.fromString(profile.getString("uuid").value) to deserialize(value)
+                    }
+                    .toMap()
+            }
+        }
+
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             return runBlocking {
                 val filter = Filters.eq("uuid", uuid.toString())
