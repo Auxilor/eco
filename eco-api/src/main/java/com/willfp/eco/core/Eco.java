@@ -35,12 +35,15 @@ import com.willfp.eco.core.gui.view.ViewBuilder;
 import com.willfp.eco.core.integrations.hologram.Hologram;
 import com.willfp.eco.core.integrations.hologram.HologramOptions;
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.core.leaderboard.Leaderboard;
+import com.willfp.eco.core.leaderboard.LeaderboardValueProvider;
 import com.willfp.eco.core.math.ExpressionEnvironment;
 import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.version.Version;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -500,6 +503,56 @@ public interface Eco {
     @NotNull
     <T> Map<UUID, T> readAllProfileValues(@NotNull Set<UUID> uuids,
                                           @NotNull PersistentDataKey<T> key);
+
+    /**
+     * Register a leaderboard.
+     *
+     * @param plugin   The plugin that owns the leaderboard.
+     * @param id       The ID of the leaderboard, unique within the plugin.
+     * @param provider The provider of the values to rank by.
+     * @return The leaderboard.
+     */
+    @NotNull
+    Leaderboard registerLeaderboard(@NotNull EcoPlugin plugin,
+                                    @NotNull String id,
+                                    @NotNull LeaderboardValueProvider provider);
+
+    /**
+     * Register a leaderboard ranking players by a numeric persistent data key.
+     *
+     * @param plugin The plugin that owns the leaderboard.
+     * @param id     The ID of the leaderboard, unique within the plugin.
+     * @param key    The key to rank by.
+     * @return The leaderboard.
+     */
+    @NotNull
+    Leaderboard registerKeyLeaderboard(@NotNull EcoPlugin plugin,
+                                       @NotNull String id,
+                                       @NotNull PersistentDataKey<?> key);
+
+    /**
+     * Get a leaderboard by its fully qualified ID.
+     *
+     * @param id The ID, as {@code plugin:id}.
+     * @return The leaderboard, or null if none is registered under that ID.
+     */
+    @Nullable
+    Leaderboard getLeaderboard(@NotNull String id);
+
+    /**
+     * Get every registered leaderboard.
+     *
+     * @return The leaderboards.
+     */
+    @NotNull
+    Collection<Leaderboard> getLeaderboards();
+
+    /**
+     * Unregister every leaderboard owned by a plugin.
+     *
+     * @param plugin The plugin.
+     */
+    void unregisterLeaderboards(@NotNull EcoPlugin plugin);
 
     /**
      * Create dummy entity - never spawned, exists purely in code.

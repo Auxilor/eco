@@ -31,6 +31,8 @@ import com.willfp.eco.core.gui.view.LocationViewBuilder
 import com.willfp.eco.core.gui.view.MerchantViewBuilder
 import com.willfp.eco.core.gui.view.ViewBuilder
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.leaderboard.Leaderboard
+import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.core.scheduling.Scheduler
@@ -70,6 +72,8 @@ import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
+import com.willfp.eco.internal.spigot.leaderboard.KeyLeaderboardValueProvider
+import com.willfp.eco.internal.spigot.leaderboard.LeaderboardService
 import com.willfp.eco.internal.spigot.math.ExpressionEvaluator
 import com.willfp.eco.internal.spigot.math.api.EcoExpressionEnvironmentBuilder
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
@@ -118,6 +122,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override val profileHandler = ProfileHandler(this)
 
     val hologramTracker: HologramTracker by lazy { HologramTracker(this) }
+
+    val leaderboardService = LeaderboardService(this)
 
     init {
         getProxy(CommonsInitializerProxy::class.java).init(this)
@@ -375,6 +381,27 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
         return handler.readAll(uuids, key)
     }
+
+    override fun registerLeaderboard(
+        plugin: EcoPlugin,
+        id: String,
+        provider: LeaderboardValueProvider
+    ): Leaderboard = leaderboardService.register(plugin, id, provider)
+
+    override fun registerKeyLeaderboard(
+        plugin: EcoPlugin,
+        id: String,
+        key: PersistentDataKey<*>
+    ): Leaderboard = leaderboardService.register(plugin, id, KeyLeaderboardValueProvider(key))
+
+    override fun getLeaderboard(id: String): Leaderboard? =
+        leaderboardService.get(id)
+
+    override fun getLeaderboards(): Collection<Leaderboard> =
+        leaderboardService.values()
+
+    override fun unregisterLeaderboards(plugin: EcoPlugin) =
+        leaderboardService.unregisterAll(plugin)
 
     // Read from whichever thread touches player data, so publication has to be guaranteed.
     @Volatile
