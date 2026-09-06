@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Handles persistent data.
  * <p>
- * All reads and writes are dispatched to an internal executor, so serializers never
- * run on the calling thread.
+ * Writes are dispatched to an internal, bounded executor; reads run on the calling
+ * thread.
  */
 public abstract class PersistentDataHandler implements Registrable {
     /**
@@ -24,9 +24,19 @@ public abstract class PersistentDataHandler implements Registrable {
     private final String id;
 
     /**
-     * The executor that all reads and writes are dispatched to.
+     * The number of threads to dispatch writes to when the handler doesn't specify one.
      */
-    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private static final int DEFAULT_THREADS = 8;
+
+    /**
+     * The executor that writes are dispatched to.
+     * <p>
+     * This pool is deliberately bounded. An unbounded pool starts a new thread for
+     * every queued task, so a bulk write - a mass reset, a data migration - starts
+     * one thread per key written, all of them then contending for the same handful
+     * of connections.
+     */
+    private final ExecutorService executor;
 
     /**
      * Create a new persistent data handler.
@@ -34,7 +44,20 @@ public abstract class PersistentDataHandler implements Registrable {
      * @param id The id.
      */
     protected PersistentDataHandler(@NotNull final String id) {
+        this(id, DEFAULT_THREADS);
+    }
+
+    /**
+     * Create a new persistent data handler.
+     *
+     * @param id      The id.
+     * @param threads The number of threads to dispatch writes to. Should match the size
+     *                of the underlying connection pool, where there is one.
+     */
+    protected PersistentDataHandler(@NotNull final String id,
+                                    final int threads) {
         this.id = id;
+        this.executor = Executors.newFixedThreadPool(Math.max(1, threads));
     }
 
     /**
@@ -80,7 +103,8 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Read a key from persistent data.
      * <p>
-     * The read runs on the executor, but this method blocks until it completes.
+     * The read runs on the calling thread, and blocks until it completes. Callers that
+     * need it off the main thread have to dispatch it themselves.
      *
      * @param uuid The uuid of the profile to read from.
      * @param key  The key.
@@ -90,12 +114,9 @@ public abstract class PersistentDataHandler implements Registrable {
     @Nullable
     public final <T> T read(@NotNull final UUID uuid,
                             @NotNull final PersistentDataKey<T> key) {
-        DataTypeSerializer<T> serializer = key.getType().getSerializer(this);
-        Future<T> future = executor.submit(() -> serializer.readAsync(uuid, key));
-
         try {
-            return future.get();
-        } catch (InterruptedException | ExecutionException e) {
+            return key.getType().getSerializer(this).readAsync(uuid, key);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

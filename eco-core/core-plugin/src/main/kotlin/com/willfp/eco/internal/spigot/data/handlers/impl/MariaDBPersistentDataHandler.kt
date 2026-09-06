@@ -41,7 +41,7 @@ private const val INDEX_COLUMN_NAME = "listIndex"
 
 class MariaDBPersistentDataHandler(
     config: Config
-) : PersistentDataHandler("mariadb") {
+) : PersistentDataHandler("mariadb", config.getInt("connections")) {
     private val dataSource = HikariDataSource(HikariConfig().apply {
         driverClassName = "org.mariadb.jdbc.Driver"
         username = config.getString("user")

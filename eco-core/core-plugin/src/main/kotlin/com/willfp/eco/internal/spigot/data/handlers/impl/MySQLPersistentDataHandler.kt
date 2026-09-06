@@ -39,7 +39,7 @@ private const val INDEX_COLUMN_NAME = "listIndex"
 
 class MySQLPersistentDataHandler(
     config: Config
-) : PersistentDataHandler("mysql") {
+) : PersistentDataHandler("mysql", config.getInt("connections")) {
     private val dataSource = HikariDataSource(HikariConfig().apply {
         driverClassName = "com.mysql.cj.jdbc.Driver"
         username = config.getString("user")
