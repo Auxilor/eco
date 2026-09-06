@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.data.handlers.impl
 
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.willfp.eco.core.config.Configs
@@ -147,9 +148,11 @@ class MongoDBPersistentDataHandler(
 
     override fun getSavedUUIDs(): Set<UUID> {
         return runBlocking {
-            collection.find().toList().map {
-                UUID.fromString(it.getString("uuid").value)
-            }.toSet()
+            collection.find()
+                .projection(Projections.include("uuid"))
+                .toList()
+                .map { UUID.fromString(it.getString("uuid").value) }
+                .toSet()
         }
     }
 

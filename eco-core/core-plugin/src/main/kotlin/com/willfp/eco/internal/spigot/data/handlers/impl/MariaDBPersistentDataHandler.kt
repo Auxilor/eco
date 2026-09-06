@@ -30,6 +30,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.ExposedConnectionImpl
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.upsert
@@ -152,7 +153,7 @@ class MariaDBPersistentDataHandler(
         @OptIn(ExperimentalUuidApi::class)
         fun getSavedUUIDs(): Set<Uuid> {
             return transaction(database) {
-                table.selectAll().map { it[table.uuid] }.toSet()
+                table.select(table.uuid).map { it[table.uuid] }.toSet()
             }
         }
 

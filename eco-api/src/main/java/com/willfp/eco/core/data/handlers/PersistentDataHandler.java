@@ -40,7 +40,9 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Get all UUIDs with saved data.
      * <p>
-     * This is a blocking operation.
+     * This is a blocking operation, and is called on a refresh schedule by the leaderboard
+     * service, so implementations must project only the UUID column and must not read or
+     * deserialize any stored values.
      *
      * @return All saved UUIDs.
      */
