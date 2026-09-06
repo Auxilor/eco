@@ -33,6 +33,8 @@ import com.willfp.eco.core.gui.view.ViewBuilder
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.leaderboard.Leaderboard
 import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
+import com.willfp.eco.core.leaderboard.PlayerbaseTally
+import com.willfp.eco.core.leaderboard.TallyProvider
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.core.scheduling.Scheduler
@@ -402,6 +404,18 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun unregisterLeaderboards(plugin: EcoPlugin) =
         leaderboardService.unregisterAll(plugin)
+
+    override fun registerTally(
+        plugin: EcoPlugin,
+        id: String,
+        provider: TallyProvider
+    ): PlayerbaseTally = leaderboardService.registerTally(plugin, id, provider)
+
+    override fun getTally(id: String): PlayerbaseTally? =
+        leaderboardService.getTally(id)
+
+    override fun getTallies(): Collection<PlayerbaseTally> =
+        leaderboardService.tallies()
 
     // Read from whichever thread touches player data, so publication has to be guaranteed.
     @Volatile

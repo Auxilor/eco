@@ -37,6 +37,8 @@ import com.willfp.eco.core.integrations.hologram.HologramOptions;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.core.leaderboard.Leaderboard;
 import com.willfp.eco.core.leaderboard.LeaderboardValueProvider;
+import com.willfp.eco.core.leaderboard.PlayerbaseTally;
+import com.willfp.eco.core.leaderboard.TallyProvider;
 import com.willfp.eco.core.math.ExpressionEnvironment;
 import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
@@ -553,6 +555,36 @@ public interface Eco {
      * @param plugin The plugin.
      */
     void unregisterLeaderboards(@NotNull EcoPlugin plugin);
+
+    /**
+     * Register a playerbase tally.
+     *
+     * @param plugin   The plugin that owns the tally.
+     * @param id       The ID of the tally, unique within the plugin.
+     * @param provider The provider of the bucket counts.
+     * @return The tally.
+     */
+    @NotNull
+    PlayerbaseTally registerTally(@NotNull EcoPlugin plugin,
+                                  @NotNull String id,
+                                  @NotNull TallyProvider provider);
+
+    /**
+     * Get a playerbase tally by its fully qualified ID.
+     *
+     * @param id The ID, as {@code plugin:id}.
+     * @return The tally, or null if none is registered under that ID.
+     */
+    @Nullable
+    PlayerbaseTally getTally(@NotNull String id);
+
+    /**
+     * Get every registered playerbase tally.
+     *
+     * @return The tallies.
+     */
+    @NotNull
+    Collection<PlayerbaseTally> getTallies();
 
     /**
      * Create dummy entity - never spawned, exists purely in code.

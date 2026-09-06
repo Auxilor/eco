@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.leaderboard
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
+import com.willfp.eco.core.leaderboard.TallyProvider
 import com.willfp.eco.core.scheduling.EcoTask
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
@@ -19,6 +20,11 @@ class LeaderboardService(
     private val plugin: EcoPlugin
 ) {
     private val leaderboards = ConcurrentHashMap<String, EcoLeaderboard>()
+
+    // Tallies are kept separately from leaderboards because they answer a different question --
+    // how many players are in each bucket, with no ordering -- but they share this service's
+    // executor, schedule and playerbase enumeration.
+    private val tallies = ConcurrentHashMap<String, EcoPlayerbaseTally>()
 
     // Single-threaded on purpose. A refresh is a full-playerbase scan, and running two of them
     // at once would double peak memory and database load for no freshness benefit -- the second
@@ -73,11 +79,33 @@ class LeaderboardService(
         return leaderboard
     }
 
+    /**
+     * Register a playerbase tally, replacing any existing tally with the same qualified ID.
+     */
+    fun registerTally(
+        owner: EcoPlugin,
+        id: String,
+        provider: TallyProvider
+    ): EcoPlayerbaseTally {
+        val qualified = qualify(owner, id)
+        val tally = EcoPlayerbaseTally(qualified, owner, provider, this)
+
+        tallies[qualified] = tally
+
+        return tally
+    }
+
     fun get(id: String): EcoLeaderboard? =
         leaderboards[id]
 
     fun values(): Collection<EcoLeaderboard> =
         leaderboards.values.toList()
+
+    fun getTally(id: String): EcoPlayerbaseTally? =
+        tallies[id]
+
+    fun tallies(): Collection<EcoPlayerbaseTally> =
+        tallies.values.toList()
 
     fun unregisterAll(owner: EcoPlugin) {
         val iterator = leaderboards.entries.iterator()
@@ -90,6 +118,18 @@ class LeaderboardService(
                 // something still holds a reference to keeps its entries alive.
                 leaderboard.clear()
                 iterator.remove()
+            }
+        }
+
+        val tallyIterator = tallies.entries.iterator()
+
+        while (tallyIterator.hasNext()) {
+            val tally = tallyIterator.next().value
+
+            if (tally.plugin.id == owner.id) {
+                // Same reasoning as above: drop the retained counts before removing the tally.
+                tally.clear()
+                tallyIterator.remove()
             }
         }
     }
@@ -142,7 +182,24 @@ class LeaderboardService(
     }
 
     /**
-     * Refresh every registered leaderboard off the main thread.
+     * Refresh a single tally off the main thread.
+     *
+     * Deliberately not covered by the overlap guard, for the same reason as
+     * [refresh]: a manual refresh of one tally should not be dropped because a scheduled sweep
+     * happens to be running.
+     */
+    fun refresh(tally: EcoPlayerbaseTally): CompletableFuture<Void> {
+        if (!enabled) {
+            return CompletableFuture.completedFuture(null)
+        }
+
+        return submit {
+            rebuild(tally, Eco.get().savedProfileUUIDs)
+        } ?: CompletableFuture.completedFuture(null)
+    }
+
+    /**
+     * Refresh every registered leaderboard and tally off the main thread.
      */
     fun refreshAll(): CompletableFuture<Void> {
         if (!enabled) {
@@ -164,6 +221,13 @@ class LeaderboardService(
 
                 for (leaderboard in leaderboards.values) {
                     rebuild(leaderboard, uuids)
+                }
+
+                // Tallies are rebuilt inside the same sweep, from the same uuid set. A tally
+                // must never trigger a second enumeration -- sharing this one is the entire
+                // reason they live on this service rather than on a schedule of their own.
+                for (tally in tallies.values) {
+                    rebuild(tally, uuids)
                 }
             } finally {
                 refreshing.set(false)
@@ -199,6 +263,18 @@ class LeaderboardService(
             // on the server from refreshing, so the failure is logged and the previous snapshot
             // is kept rather than being replaced with an empty one.
             plugin.logger.warning("Failed to refresh leaderboard ${leaderboard.id}: $e")
+            e.printStackTrace()
+        }
+    }
+
+    private fun rebuild(tally: EcoPlayerbaseTally, uuids: Set<UUID>) {
+        try {
+            tally.rebuild(uuids)
+        } catch (e: Exception) {
+            // As with leaderboards: one broken provider must not stop everything else on the
+            // server from refreshing, so the failure is logged and the previous counts are kept
+            // rather than being replaced with empty ones.
+            plugin.logger.warning("Failed to refresh tally ${tally.id}: $e")
             e.printStackTrace()
         }
     }
