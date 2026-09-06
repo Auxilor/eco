@@ -116,4 +116,22 @@ class LeaderboardSnapshotTest {
                 () -> snapshot.getEntries().add(new LeaderboardEntry(4, UNKNOWN, 0.0))
         );
     }
+
+    @Test
+    void mutatingTheSourceCollectionsDoesNotAffectTheSnapshot() {
+        List<LeaderboardEntry> entries = new ArrayList<>();
+        entries.add(new LeaderboardEntry(1, FIRST, 100.0));
+
+        Map<UUID, Integer> ranks = new HashMap<>();
+        ranks.put(FIRST, 1);
+
+        LeaderboardSnapshot snapshot = new LeaderboardSnapshot(entries, ranks, 1, 0L);
+
+        entries.add(new LeaderboardEntry(2, SECOND, 50.0));
+        ranks.put(SECOND, 2);
+
+        Assertions.assertEquals(1, snapshot.getEntries().size());
+        Assertions.assertNull(snapshot.getEntry(2));
+        Assertions.assertNull(snapshot.getRank(SECOND));
+    }
 }

@@ -3,7 +3,6 @@ package com.willfp.eco.core.leaderboard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,6 +46,9 @@ public final class LeaderboardSnapshot {
 
     /**
      * Create a new leaderboard snapshot.
+     * <p>
+     * Both collections are copied, so the caller may retain and mutate the originals without
+     * affecting the snapshot.
      *
      * @param entries        The retained entries, in leaderboard order. May be capped.
      * @param ranks          The rank of every tracked player, one-indexed. Never capped.
@@ -57,8 +59,8 @@ public final class LeaderboardSnapshot {
                                @NotNull final Map<UUID, Integer> ranks,
                                final int trackedPlayers,
                                final long builtAt) {
-        this.entries = Collections.unmodifiableList(entries);
-        this.ranks = Collections.unmodifiableMap(ranks);
+        this.entries = List.copyOf(entries);
+        this.ranks = Map.copyOf(ranks);
         this.trackedPlayers = trackedPlayers;
         this.builtAt = builtAt;
     }
