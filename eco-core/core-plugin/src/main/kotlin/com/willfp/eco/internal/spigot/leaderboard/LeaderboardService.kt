@@ -3,11 +3,14 @@ package com.willfp.eco.internal.spigot.leaderboard
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
+import com.willfp.eco.core.scheduling.EcoTask
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * The registry of every leaderboard on the server, and the executor that rebuilds them.
@@ -25,15 +28,34 @@ class LeaderboardService(
         Thread(runnable, "eco-leaderboards").apply { isDaemon = true }
     }
 
-    // Task 6 replaces these with config reads.
+    // The recurring refresh task, or null when the service is stopped or disabled.
+    @Volatile
+    private var task: EcoTask? = null
+
+    // Guards refreshAll() against overlapping cycles. Set on the caller's thread rather than
+    // inside the executor, so that a cycle which overruns its interval is skipped outright
+    // rather than queued behind the one still running.
+    private val refreshing = AtomicBoolean(false)
+
+    // Every config value is read on access rather than cached, so that /eco reload takes
+    // effect without having to tear the service down and build a new one.
+    val enabled: Boolean
+        get() = plugin.configYml.getBool("leaderboards.enabled")
+
+    val refreshInterval: Long
+        get() = plugin.configYml.getInt("leaderboards.refresh-interval").toLong().coerceAtLeast(1)
+
+    val initialDelay: Long
+        get() = plugin.configYml.getInt("leaderboards.initial-delay").toLong().coerceAtLeast(0)
+
     val exactRankCutoff: Int
-        get() = 0
+        get() = plugin.configYml.getInt("leaderboards.exact-rank-cutoff")
 
     val maxEntries: Int
-        get() = -1
+        get() = plugin.configYml.getInt("leaderboards.max-entries")
 
     val percentDecimalPlaces: Int
-        get() = 1
+        get() = plugin.configYml.getInt("leaderboards.percent-decimal-places")
 
     /**
      * Register a leaderboard, replacing any existing leaderboard with the same qualified ID.
@@ -73,27 +95,101 @@ class LeaderboardService(
     }
 
     /**
-     * Refresh a single leaderboard off the main thread.
+     * Start, or restart, the scheduled refresh.
+     *
+     * Safe to call again at any point: the existing task is always cancelled first, so a
+     * reload that changed the interval takes effect immediately.
      */
-    fun refresh(leaderboard: EcoLeaderboard): CompletableFuture<Void> =
-        CompletableFuture.runAsync({
+    fun start() {
+        stop()
+
+        // No task at all when disabled, so nothing can reach the data handler.
+        if (!enabled) {
+            return
+        }
+
+        task = plugin.scheduler.async().runTimer(
+            Runnable { refreshAll() },
+            initialDelay,
+            refreshInterval,
+            TimeUnit.SECONDS
+        )
+    }
+
+    /**
+     * Cancel the scheduled refresh, if there is one.
+     */
+    fun stop() {
+        task?.cancel()
+        task = null
+    }
+
+    /**
+     * Refresh a single leaderboard off the main thread.
+     *
+     * Deliberately not covered by the overlap guard: this is one leaderboard, not a full
+     * sweep, and a manual refresh should not be silently dropped because a scheduled sweep
+     * happens to be running.
+     */
+    fun refresh(leaderboard: EcoLeaderboard): CompletableFuture<Void> {
+        if (!enabled) {
+            return CompletableFuture.completedFuture(null)
+        }
+
+        return submit {
             rebuild(leaderboard, Eco.get().savedProfileUUIDs)
-        }, executor)
+        } ?: CompletableFuture.completedFuture(null)
+    }
 
     /**
      * Refresh every registered leaderboard off the main thread.
      */
-    fun refreshAll(): CompletableFuture<Void> =
-        CompletableFuture.runAsync({
-            // Enumerated once and shared. Enumerating per leaderboard would multiply an
-            // already-expensive query by the number of skills, jobs and currencies registered
-            // on the server.
-            val uuids = Eco.get().savedProfileUUIDs
+    fun refreshAll(): CompletableFuture<Void> {
+        if (!enabled) {
+            return CompletableFuture.completedFuture(null)
+        }
 
-            for (leaderboard in leaderboards.values) {
-                rebuild(leaderboard, uuids)
+        // A sweep slower than the refresh interval degrades to less-fresh numbers, never to
+        // two concurrent full-playerbase scans.
+        if (!refreshing.compareAndSet(false, true)) {
+            return CompletableFuture.completedFuture(null)
+        }
+
+        val future = submit {
+            try {
+                // Enumerated once and shared. Enumerating per leaderboard would multiply an
+                // already-expensive query by the number of skills, jobs and currencies registered
+                // on the server.
+                val uuids = Eco.get().savedProfileUUIDs
+
+                for (leaderboard in leaderboards.values) {
+                    rebuild(leaderboard, uuids)
+                }
+            } finally {
+                refreshing.set(false)
             }
-        }, executor)
+        }
+
+        if (future == null) {
+            // The executor refused the task, so the body -- and its finally -- never runs, and
+            // nothing else would ever clear the flag.
+            refreshing.set(false)
+            return CompletableFuture.completedFuture(null)
+        }
+
+        return future
+    }
+
+    /**
+     * Submit work to the refresh executor, or null if the executor is shutting down.
+     */
+    private fun submit(action: () -> Unit): CompletableFuture<Void>? =
+        try {
+            CompletableFuture.runAsync(action, executor)
+        } catch (e: RejectedExecutionException) {
+            // Shutting down, or already shut down. Nothing to refresh into.
+            null
+        }
 
     private fun rebuild(leaderboard: EcoLeaderboard, uuids: Set<UUID>) {
         try {
@@ -108,6 +204,8 @@ class LeaderboardService(
     }
 
     fun shutdown() {
+        stop()
+
         executor.shutdown()
 
         try {

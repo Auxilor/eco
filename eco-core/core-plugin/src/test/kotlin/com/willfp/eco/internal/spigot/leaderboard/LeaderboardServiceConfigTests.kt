@@ -1,0 +1,134 @@
+package com.willfp.eco.internal.spigot.leaderboard
+
+import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.config.base.ConfigYml
+import com.willfp.eco.core.scheduling.AsyncTaskContext
+import com.willfp.eco.core.scheduling.EcoTask
+import com.willfp.eco.core.scheduling.Scheduler
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import java.util.concurrent.TimeUnit
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
+/**
+ * Covers the parts of [LeaderboardService] that do not need a running server: the config
+ * reads, the enabled switch, and the start/stop task handling.
+ */
+class LeaderboardServiceConfigTests {
+    private val config = mockk<ConfigYml>()
+    private val async = mockk<AsyncTaskContext>()
+    private val scheduler = mockk<Scheduler>()
+    private val plugin = mockk<EcoPlugin>()
+
+    init {
+        every { plugin.configYml } returns config
+        every { plugin.scheduler } returns scheduler
+        every { scheduler.async() } returns async
+
+        every { config.getBool("leaderboards.enabled") } returns true
+        every { config.getInt("leaderboards.refresh-interval") } returns 60
+        every { config.getInt("leaderboards.initial-delay") } returns 1
+        every { config.getInt("leaderboards.exact-rank-cutoff") } returns 0
+        every { config.getInt("leaderboards.max-entries") } returns -1
+        every { config.getInt("leaderboards.percent-decimal-places") } returns 1
+    }
+
+    private fun service() = LeaderboardService(plugin)
+
+    @Test
+    fun `defaults are read from the config`() {
+        val service = service()
+
+        assertTrue(service.enabled)
+        assertEquals(60L, service.refreshInterval)
+        assertEquals(1L, service.initialDelay)
+        assertEquals(0, service.exactRankCutoff)
+        assertEquals(-1, service.maxEntries)
+        assertEquals(1, service.percentDecimalPlaces)
+    }
+
+    @Test
+    fun `config changes are picked up without restarting the service`() {
+        val service = service()
+
+        every { config.getInt("leaderboards.max-entries") } returns 100
+
+        assertEquals(100, service.maxEntries)
+    }
+
+    @Test
+    fun `a refresh interval below one second is raised to one`() {
+        every { config.getInt("leaderboards.refresh-interval") } returns 0
+
+        assertEquals(1L, service().refreshInterval)
+    }
+
+    @Test
+    fun `a negative initial delay becomes no delay`() {
+        every { config.getInt("leaderboards.initial-delay") } returns -5
+
+        assertEquals(0L, service().initialDelay)
+    }
+
+    @Test
+    fun `starting when disabled schedules nothing`() {
+        every { config.getBool("leaderboards.enabled") } returns false
+
+        service().start()
+
+        verify(exactly = 0) { scheduler.async() }
+    }
+
+    @Test
+    fun `refreshing when disabled never scans the playerbase`() {
+        every { config.getBool("leaderboards.enabled") } returns false
+
+        // Eco.get() is null outside a server, so anything that actually reached the data
+        // handler would complete this future exceptionally rather than returning null.
+        val future = service().refreshAll()
+
+        assertTrue(future.isDone)
+        assertFalse(future.isCompletedExceptionally)
+        assertNull(future.getNow(null))
+    }
+
+    @Test
+    fun `restarting cancels the previous task`() {
+        val first = mockk<EcoTask>(relaxed = true)
+        val second = mockk<EcoTask>(relaxed = true)
+
+        every {
+            async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>())
+        } returnsMany listOf(first, second)
+
+        val service = service()
+
+        service.start()
+        service.start()
+
+        verify(exactly = 1) { first.cancel() }
+        verify(exactly = 0) { second.cancel() }
+
+        service.stop()
+
+        verify(exactly = 1) { second.cancel() }
+    }
+
+    @Test
+    fun `the refresh runs on the async context in seconds`() {
+        every {
+            async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>())
+        } returns mockk(relaxed = true)
+
+        service().start()
+
+        verify(exactly = 1) {
+            async.runTimer(any<Runnable>(), 1L, 60L, TimeUnit.SECONDS)
+        }
+    }
+}

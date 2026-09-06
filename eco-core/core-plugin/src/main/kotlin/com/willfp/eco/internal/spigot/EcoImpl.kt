@@ -438,11 +438,25 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun handleEnable() {
         super.handleEnable()
         hologramTracker.start()
+
+        // profileHandler is constructed with EcoImpl itself, and Eco.Instance is set in the
+        // EcoPlugin constructor, so savedProfileUUIDs is already answerable here. The first
+        // sweep is a second away in any case, well after afterLoad() two ticks in.
+        leaderboardService.start()
+    }
+
+    override fun handleReload() {
+        super.handleReload()
+
+        // Restarted rather than left alone, so a changed refresh-interval (or a leaderboards
+        // section that was just turned on or off) takes effect without a restart.
+        leaderboardService.start()
     }
 
     override fun handleDisable() {
         super.handleDisable()
         hologramTracker.shutdown()
+        leaderboardService.shutdown()
     }
 
     override fun createNamespacedKey(namespace: String, key: String) =

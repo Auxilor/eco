@@ -186,3 +186,36 @@ datapacks:
   # on if you know the removed content was never generated with, and take a
   # backup first.
   remove-orphaned: false
+
+# Leaderboards are built asynchronously, on a schedule, and read from a snapshot.
+# Reading a leaderboard never blocks the server, whatever these values are set to;
+# they only control how fresh the numbers are and how much memory the snapshots use.
+leaderboards:
+  # Set to false to disable every leaderboard on the server. Reads then return
+  # nothing, and no scan is ever performed.
+  enabled: true
+
+  # How often to rebuild every leaderboard, in seconds.
+  # Defaults to 60 to match the per-plugin cache lifetime this replaces, so numbers are
+  # exactly as fresh as they were before. One rebuild reads the whole playerbase once,
+  # so on a very large server raise this rather than lowering it.
+  refresh-interval: 60
+
+  # Wait this many seconds after startup before the first rebuild. Kept short: until the
+  # first rebuild completes, leaderboards rank nobody and placeholders show the same text
+  # they show for an unranked player.
+  initial-delay: 1
+
+  # How many ranked entries to keep per leaderboard, or -1 for no limit.
+  # -1 matches the previous behaviour, where the whole sorted list was kept and %top_N%
+  # worked for any N. Every player's own rank stays available either way, since ranks are
+  # tracked separately from entries.
+  max-entries: -1
+
+  # Ranks up to and including this are shown exactly; beyond it, a percentile band is
+  # shown instead ("top 12.5%"). Defaults to 0 - always exact - because that is what
+  # every plugin did before this service existed.
+  exact-rank-cutoff: 0
+
+  # Decimal places for percentile ranks.
+  percent-decimal-places: 1
