@@ -109,7 +109,7 @@ fun Leaderboard.registerStandardPlaceholders(
     val namePattern = Pattern.compile("${quoted}_top_(\\d+)_name")
     val valuePattern = Pattern.compile("${quoted}_top_(\\d+)_value")
 
-    DynamicPlaceholder(plugin, namePattern) { args ->
+    DynamicPlaceholder(plugin, namePattern, "${prefix}_top_<N>_name") { args ->
         val position = positionIn(namePattern, args) ?: return@DynamicPlaceholder emptyText
 
         // getPlayer resolves an OfflinePlayer, so it is only touched here, where the name is
@@ -117,7 +117,7 @@ fun Leaderboard.registerStandardPlaceholders(
         leaderboard.getTop(position)?.player?.name ?: emptyText
     }.register()
 
-    DynamicPlaceholder(plugin, valuePattern) { args ->
+    DynamicPlaceholder(plugin, valuePattern, "${prefix}_top_<N>_value") { args ->
         val position = positionIn(valuePattern, args) ?: return@DynamicPlaceholder emptyText
         val entry = leaderboard.getTop(position) ?: return@DynamicPlaceholder emptyText
 
@@ -155,7 +155,7 @@ fun PlayerbaseTally.registerStandardPlaceholders(
     val tally = this
     val pattern = Pattern.compile("${Pattern.quote(prefix)}_(.+)_count")
 
-    DynamicPlaceholder(plugin, pattern) { args ->
+    DynamicPlaceholder(plugin, pattern, "${prefix}_<bucket>_count") { args ->
         val matcher = pattern.matcher(args)
 
         if (!matcher.matches()) {
