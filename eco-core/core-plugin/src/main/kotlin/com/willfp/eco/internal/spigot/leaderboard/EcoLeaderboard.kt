@@ -74,11 +74,13 @@ class EcoLeaderboard(
     internal fun sortCached(maxEntries: Int) {
         val values = this.values ?: return
 
-        rebuildFrom(values.snapshot(), maxEntries)
-
-        // Cleared after the sort rather than before it, so a write landing mid-sort leaves the
-        // leaderboard dirty and is picked up by the next tick instead of being lost.
+        // Cleared *before* the values are read, not after. A write landing mid-sort then re-sets
+        // the flag and is published by the next tick; clearing afterwards would wipe that flag and
+        // strand the write until something else happened to change the same leaderboard. The cost
+        // is an occasional redundant sort, which is the right way round to be wrong.
         values.clearDirty()
+
+        rebuildFrom(values.snapshot(), maxEntries)
     }
 
     /** Build a new snapshot. Called only from the refresh executor. */

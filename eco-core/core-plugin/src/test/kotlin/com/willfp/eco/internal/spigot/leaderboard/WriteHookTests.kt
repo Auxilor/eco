@@ -158,4 +158,22 @@ class WriteHookTests {
 
         assertNull(board?.cachedValue(alice))
     }
+
+    @Test
+    fun `a write landing during a sort is published by the next sort, not lost`() {
+        val key = key(default = 0)
+        val service = serviceRanking(key)
+        val board = service.get("test:board")!!
+
+        service.onValueWritten(alice, key, 5)
+        service.sortDirty()
+
+        // Simulates a write landing after the sort read the values but before it finished: the
+        // dirty flag must survive, or the new value is stranded until something else changes.
+        board.values!!.put(alice, 9.0)
+
+        service.sortDirty()
+
+        assertEquals(9.0, board.snapshot.getEntry(1)?.value)
+    }
 }
