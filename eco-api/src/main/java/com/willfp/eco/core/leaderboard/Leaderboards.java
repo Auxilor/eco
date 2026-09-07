@@ -32,7 +32,15 @@ public final class Leaderboards {
     /**
      * Register a leaderboard ranking players by a numeric {@link PersistentDataKey}.
      * <p>
-     * This is the common case. Players with no stored value are left unranked.
+     * This is the common case. A player is ranked only if their stored value is strictly greater
+     * than the key's default -- players with no stored value, and players sitting on the default,
+     * have made no progress and are left unranked. They are excluded from the tracked-player count
+     * too, so percentiles are computed over the progressed population rather than over everyone
+     * who has ever joined the server.
+     * <p>
+     * The default is the threshold rather than zero because defaults are not uniformly zero: a
+     * skill starts at its start level, a job at 1 when unlocked by default, and a currency at
+     * whatever the server configured.
      * <p>
      * The key must be of a numeric type ({@code INT}, {@code DOUBLE} or {@code BIG_DECIMAL}).
      * A key of any other type is rejected here rather than registering a leaderboard that would
