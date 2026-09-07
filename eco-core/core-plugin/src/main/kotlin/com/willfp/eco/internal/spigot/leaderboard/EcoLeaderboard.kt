@@ -53,6 +53,34 @@ class EcoLeaderboard(
     internal val keyProvider: KeyLeaderboardValueProvider?
         get() = provider as? KeyLeaderboardValueProvider
 
+    /**
+     * The cached values this leaderboard sorts, or null if it ranks by a custom provider.
+     *
+     * A custom provider is opaque, so there is nothing to update incrementally and nothing worth
+     * caching: those leaderboards are rebuilt by the reconcile sweep only, exactly as every
+     * leaderboard used to be.
+     */
+    internal val values: PlayerbaseValues? =
+        if (provider is KeyLeaderboardValueProvider) PlayerbaseValues() else null
+
+    /** The cached value for a player, or null if they are unranked. */
+    internal fun cachedValue(uuid: UUID): Double? = values?.snapshot()?.get(uuid)
+
+    /**
+     * Re-sort from the cached values and publish.
+     *
+     * Called only from the refresh executor.
+     */
+    internal fun sortCached(maxEntries: Int) {
+        val values = this.values ?: return
+
+        rebuildFrom(values.snapshot(), maxEntries)
+
+        // Cleared after the sort rather than before it, so a write landing mid-sort leaves the
+        // leaderboard dirty and is picked up by the next tick instead of being lost.
+        values.clearDirty()
+    }
+
     /** Build a new snapshot. Called only from the refresh executor. */
     internal fun rebuild(uuids: Set<UUID>, maxEntries: Int) =
         rebuildFrom(provider.readValues(uuids), maxEntries)
@@ -88,5 +116,6 @@ class EcoLeaderboard(
 
     internal fun clear() {
         snapshot = LeaderboardSnapshot.EMPTY
+        values?.clear()
     }
 }

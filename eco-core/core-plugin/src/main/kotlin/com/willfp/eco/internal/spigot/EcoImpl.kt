@@ -474,6 +474,13 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         super.handleEnable()
         hologramTracker.start()
 
+        // Fed from the writer rather than polled: every value change on this server lands in the
+        // leaderboard caches on the tick it is committed, so the database sweep is only needed to
+        // pick up writes made by something other than this server.
+        profileHandler.profileWriter.onWrite = { uuid, key, value ->
+            leaderboardService.onValueWritten(uuid, key, value)
+        }
+
         // profileHandler is constructed with EcoImpl itself, and Eco.Instance is set in the
         // EcoPlugin constructor, so savedProfileUUIDs is already answerable here. The first
         // sweep is a second away in any case, well after afterLoad() two ticks in.

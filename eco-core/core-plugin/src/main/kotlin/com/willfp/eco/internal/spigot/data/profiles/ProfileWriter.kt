@@ -4,6 +4,7 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.logging.Level
 
 /*
 The profile writer exists as an optimization to batch writes to the database.
@@ -23,6 +24,15 @@ class ProfileWriter(
     private val autosaveInterval = plugin.configYml.getInt("autosave-interval").toLong()
     private val valuesToWrite = ConcurrentHashMap<WriteRequest<*>, Any>()
 
+    /**
+     * Called for every value committed, or null if nothing is listening.
+     *
+     * Runs inside the per-tick drain below, so a listener must not block, do I/O, or throw. This
+     * is how the leaderboard service learns about value changes without polling the database.
+     */
+    @Volatile
+    var onWrite: ((UUID, PersistentDataKey<*>, Any) -> Unit)? = null
+
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         valuesToWrite[WriteRequest(uuid, key)] = value
     }
@@ -40,6 +50,14 @@ class ProfileWriter(
                 // Pass the value to the data handler
                 @Suppress("UNCHECKED_CAST")
                 dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
+
+                // A broken listener must not stop the rest of the queue from being written: the
+                // data itself is already committed above, and losing the drain would lose writes.
+                try {
+                    onWrite?.invoke(request.uuid, request.key, value)
+                } catch (e: Exception) {
+                    plugin.logger.log(Level.WARNING, "Failed to notify a listener of a profile write", e)
+                }
             }
         }
     }

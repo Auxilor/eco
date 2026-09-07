@@ -28,6 +28,11 @@ class LeaderboardService(
     // executor, schedule and playerbase enumeration.
     private val tallies = ConcurrentHashMap<String, EcoPlayerbaseTally>()
 
+    // Ranked keys, mapped to the leaderboards that rank them. Built at registration so that the
+    // write hook -- which runs inside the profile writer's per-tick drain -- does a single map
+    // lookup rather than scanning every leaderboard on the server on every value change.
+    private val byKey = ConcurrentHashMap<PersistentDataKey<*>, MutableSet<EcoLeaderboard>>()
+
     // Single-threaded on purpose. A refresh is a full-playerbase scan, and running two of them
     // at once would double peak memory and database load for no freshness benefit -- the second
     // scan reads the same data the first one just read. Daemon so a stuck refresh can never hold
@@ -76,9 +81,58 @@ class LeaderboardService(
         val qualified = qualify(owner, id)
         val leaderboard = EcoLeaderboard(qualified, owner, provider, this)
 
-        leaderboards[qualified] = leaderboard
+        // Replacing an existing registration must drop the old leaderboard's index entry too,
+        // otherwise a reload leaves it being fed by the write hook forever.
+        leaderboards.put(qualified, leaderboard)?.let { unindex(it) }
+
+        leaderboard.keyProvider?.let {
+            byKey.computeIfAbsent(it.rankedKey) { ConcurrentHashMap.newKeySet() }.add(leaderboard)
+        }
 
         return leaderboard
+    }
+
+    private fun unindex(leaderboard: EcoLeaderboard) {
+        val key = leaderboard.keyProvider?.rankedKey ?: return
+
+        byKey[key]?.let {
+            it.remove(leaderboard)
+
+            if (it.isEmpty()) {
+                byKey.remove(key, it)
+            }
+        }
+    }
+
+    /**
+     * Record a value change against every leaderboard that ranks the written key.
+     *
+     * Called from the profile writer's per-tick drain on the main thread, so this must stay a map
+     * lookup and a put: no I/O, no sorting, no scanning. A key that nothing ranks resolves to a
+     * null lookup and returns immediately, which is the overwhelmingly common case.
+     */
+    fun onValueWritten(uuid: UUID, key: PersistentDataKey<*>, value: Any) {
+        if (!enabled) {
+            return
+        }
+
+        val boards = byKey[key] ?: return
+
+        for (board in boards) {
+            val provider = board.keyProvider ?: continue
+            val values = board.values ?: continue
+
+            // Filtered through the provider so that a single write is subject to exactly the same
+            // no-progress rule as a full read. A player dropping back to the key's default leaves
+            // the leaderboard rather than being stranded at their last ranked value.
+            val ranked = provider.convert(mapOf(uuid to value))[uuid]
+
+            if (ranked == null) {
+                values.remove(uuid)
+            } else {
+                values.put(uuid, ranked)
+            }
+        }
     }
 
     /**
@@ -119,6 +173,7 @@ class LeaderboardService(
                 // Drop the retained snapshot too, otherwise an unregistered leaderboard that
                 // something still holds a reference to keeps its entries alive.
                 leaderboard.clear()
+                unindex(leaderboard)
                 iterator.remove()
             }
         }
