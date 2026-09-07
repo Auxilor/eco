@@ -47,6 +47,10 @@ class LeaderboardServiceConfigTests {
         every { config.getInt("leaderboards.exact-rank-cutoff") } returns 0
         every { config.getInt("leaderboards.max-entries") } returns -1
         every { config.getInt("leaderboards.percent-decimal-places") } returns 1
+        every { config.getInt("leaderboards.sort-interval") } returns 5
+        every { config.getInt("leaderboards.max-reconcile-overlay") } returns 10000
+        every { config.has("leaderboards.reconcile-interval") } returns true
+        every { config.getInt("leaderboards.reconcile-interval") } returns 3600
     }
 
     private fun service() = LeaderboardService(plugin)
@@ -198,37 +202,50 @@ class LeaderboardServiceConfigTests {
     }
 
     @Test
-    fun `restarting cancels the previous task`() {
-        val first = mockk<EcoTask>(relaxed = true)
-        val second = mockk<EcoTask>(relaxed = true)
+    fun `restarting cancels the previous tasks`() {
+        // Two timers per start now -- the sort tick and the reconcile sweep -- so a restart has
+        // two handles to cancel, not one.
+        val firstSort = mockk<EcoTask>(relaxed = true)
+        val firstReconcile = mockk<EcoTask>(relaxed = true)
+        val secondSort = mockk<EcoTask>(relaxed = true)
+        val secondReconcile = mockk<EcoTask>(relaxed = true)
 
         every {
             async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>())
-        } returnsMany listOf(first, second)
+        } returnsMany listOf(firstSort, firstReconcile, secondSort, secondReconcile)
+
+        every { async.runLater(any<Runnable>(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
 
         val service = service()
 
         service.start()
         service.start()
 
-        verify(exactly = 1) { first.cancel() }
-        verify(exactly = 0) { second.cancel() }
+        verify(exactly = 1) { firstSort.cancel() }
+        verify(exactly = 1) { firstReconcile.cancel() }
+        verify(exactly = 0) { secondSort.cancel() }
+        verify(exactly = 0) { secondReconcile.cancel() }
 
         service.stop()
 
-        verify(exactly = 1) { second.cancel() }
+        verify(exactly = 1) { secondSort.cancel() }
+        verify(exactly = 1) { secondReconcile.cancel() }
     }
 
     @Test
-    fun `the refresh runs on the async context in seconds`() {
+    fun `the startup load runs once on the async context in seconds`() {
         every {
             async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>())
         } returns mockk(relaxed = true)
 
+        every { async.runLater(any<Runnable>(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
+
         service().start()
 
+        // One-shot at the initial delay: this is what populates the caches on boot, and on a
+        // server with reconciliation off it is the only database read there ever is.
         verify(exactly = 1) {
-            async.runTimer(any<Runnable>(), 1L, 60L, TimeUnit.SECONDS)
+            async.runLater(any<Runnable>(), 1L, TimeUnit.SECONDS)
         }
     }
 
@@ -323,5 +340,107 @@ class LeaderboardServiceConfigTests {
         } finally {
             unmockkStatic(Eco::class)
         }
+    }
+
+    @Test
+    fun `the reconcile interval falls back to the deprecated refresh interval`() {
+        every { config.has("leaderboards.reconcile-interval") } returns false
+        every { config.getInt("leaderboards.refresh-interval") } returns 120
+
+        assertEquals(120L, service().reconcileInterval)
+    }
+
+    @Test
+    fun `a sort interval below one second is raised to one`() {
+        every { config.getInt("leaderboards.sort-interval") } returns 0
+
+        assertEquals(1L, service().sortInterval)
+    }
+
+    @Test
+    fun `a negative reconcile interval becomes zero rather than going backwards`() {
+        every { config.getInt("leaderboards.reconcile-interval") } returns -5
+
+        assertEquals(0L, service().reconcileInterval)
+    }
+
+    @Test
+    fun `a zero reconcile interval still loads once at startup but schedules no sweep`() {
+        every { config.getInt("leaderboards.reconcile-interval") } returns 0
+        every { async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
+        every { async.runLater(any<Runnable>(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
+
+        service().start()
+
+        // The sort tick, and nothing else recurring.
+        verify(exactly = 1) { async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>()) }
+
+        // The startup load still happens, or the caches would never be populated at all.
+        verify(exactly = 1) { async.runLater(any<Runnable>(), any(), any<TimeUnit>()) }
+    }
+
+    @Test
+    fun `a positive reconcile interval schedules the sweep offset past the startup load`() {
+        every { async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
+        every { async.runLater(any<Runnable>(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
+
+        service().start()
+
+        // Sort tick at the initial delay, reconcile one full interval after it, so the startup
+        // load is not immediately repeated.
+        verify(exactly = 1) { async.runTimer(any<Runnable>(), 1L, 5L, TimeUnit.SECONDS) }
+        verify(exactly = 1) { async.runTimer(any<Runnable>(), 3601L, 3600L, TimeUnit.SECONDS) }
+    }
+
+    @Test
+    fun `only dirty leaderboards are sorted`() {
+        mockkStatic(Eco::class)
+        every { Eco.get() } returns mockk(relaxed = true)
+
+        val key = try {
+            PersistentDataKey(
+                namespacedKeyOf("sorttest", "level"),
+                PersistentDataKeyType.INT,
+                0
+            )
+        } finally {
+            unmockkStatic(Eco::class)
+        }
+
+        val service = service()
+        val board = service.register(plugin, "board", KeyLeaderboardValueProvider(key))
+
+        // Nothing written, so there is nothing to publish.
+        service.sortDirty()
+        assertEquals(0, board.snapshot.trackedPlayers)
+
+        service.onValueWritten(UUID.randomUUID(), key, 5)
+        service.sortDirty()
+
+        assertEquals(1, board.snapshot.trackedPlayers)
+    }
+
+    @Test
+    fun `sorting clears the dirty flag so an unchanged leaderboard is not re-sorted`() {
+        mockkStatic(Eco::class)
+        every { Eco.get() } returns mockk(relaxed = true)
+
+        val key = try {
+            PersistentDataKey(
+                namespacedKeyOf("sorttest", "level_clean"),
+                PersistentDataKeyType.INT,
+                0
+            )
+        } finally {
+            unmockkStatic(Eco::class)
+        }
+
+        val service = service()
+        val board = service.register(plugin, "board", KeyLeaderboardValueProvider(key))
+
+        service.onValueWritten(UUID.randomUUID(), key, 5)
+        service.sortDirty()
+
+        assertFalse(board.values!!.isDirty)
     }
 }

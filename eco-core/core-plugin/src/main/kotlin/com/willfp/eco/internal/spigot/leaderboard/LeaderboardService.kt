@@ -41,9 +41,14 @@ class LeaderboardService(
         Thread(runnable, "eco-leaderboards").apply { isDaemon = true }
     }
 
-    // The recurring refresh task, or null when the service is stopped or disabled.
+    // The recurring reconcile task, or null when the service is stopped, disabled, or running
+    // with reconciliation turned off.
     @Volatile
     private var task: EcoTask? = null
+
+    // The recurring sort task, or null when the service is stopped or disabled.
+    @Volatile
+    private var sortTask: EcoTask? = null
 
     // Guards refreshAll() against overlapping cycles. Set on the caller's thread rather than
     // inside the executor, so that a cycle which overruns its interval is skipped outright
@@ -57,6 +62,32 @@ class LeaderboardService(
 
     val refreshInterval: Long
         get() = plugin.configYml.getInt("leaderboards.refresh-interval").toLong().coerceAtLeast(1)
+
+    /** How often to re-sort leaderboards whose values changed. CPU only, no database reads. */
+    val sortInterval: Long
+        get() = plugin.configYml.getInt("leaderboards.sort-interval").toLong().coerceAtLeast(1)
+
+    /**
+     * How often to re-read every value from the database, or 0 to never.
+     *
+     * Falls back to the deprecated refresh-interval so that a config written before the rename
+     * keeps working without being edited.
+     */
+    val reconcileInterval: Long
+        get() {
+            val key = "leaderboards.reconcile-interval"
+
+            val seconds = if (plugin.configYml.has(key)) {
+                plugin.configYml.getInt(key)
+            } else {
+                plugin.configYml.getInt("leaderboards.refresh-interval")
+            }
+
+            return seconds.toLong().coerceAtLeast(0)
+        }
+
+    val maxOverlay: Int
+        get() = plugin.configYml.getInt("leaderboards.max-reconcile-overlay")
 
     val initialDelay: Long
         get() = plugin.configYml.getInt("leaderboards.initial-delay").toLong().coerceAtLeast(0)
@@ -205,20 +236,68 @@ class LeaderboardService(
             return
         }
 
-        task = plugin.scheduler.async().runTimer(
-            Runnable { refreshAll() },
+        sortTask = plugin.scheduler.async().runTimer(
+            Runnable { sortDirty() },
             initialDelay,
-            refreshInterval,
+            sortInterval,
             TimeUnit.SECONDS
         )
+
+        val reconcileInterval = this.reconcileInterval
+
+        // The startup load, and on a server with reconciliation turned off the only database read
+        // there will ever be. Without it nothing would populate the caches and every leaderboard
+        // would rank nobody for the lifetime of the server.
+        plugin.scheduler.async().runLater(
+            Runnable { refreshAll() },
+            initialDelay,
+            TimeUnit.SECONDS
+        )
+
+        // Zero means the in-memory values are authoritative: nothing else writes to this database,
+        // so after the startup load there is nothing to reconcile against.
+        if (reconcileInterval > 0) {
+            task = plugin.scheduler.async().runTimer(
+                Runnable { refreshAll() },
+                // Offset by one interval so the startup load above is not immediately repeated.
+                initialDelay + reconcileInterval,
+                reconcileInterval,
+                TimeUnit.SECONDS
+            )
+        }
     }
 
     /**
-     * Cancel the scheduled refresh, if there is one.
+     * Cancel the scheduled tasks, if there are any.
      */
     fun stop() {
+        sortTask?.cancel()
+        sortTask = null
         task?.cancel()
         task = null
+    }
+
+    /**
+     * Re-sort and republish every leaderboard whose values changed since the last tick.
+     *
+     * Dirty decides whether a leaderboard is sorted; the schedule decides when. Sorting on every
+     * write would sort every leaderboard on the server on every tick, which is strictly worse than
+     * the fixed-interval rebuild this replaces.
+     */
+    fun sortDirty() {
+        if (!enabled) {
+            return
+        }
+
+        for (leaderboard in leaderboards.values) {
+            val values = leaderboard.values ?: continue
+
+            if (!values.isDirty) {
+                continue
+            }
+
+            rebuild(leaderboard) { it.sortCached(maxEntries) }
+        }
     }
 
     /**

@@ -195,10 +195,28 @@ leaderboards:
   # nothing, and no scan is ever performed.
   enabled: true
 
-  # How often to rebuild every leaderboard, in seconds.
-  # Defaults to 60 to match the per-plugin cache lifetime this replaces, so numbers are
-  # exactly as fresh as they were before. One rebuild reads the whole playerbase once,
-  # so on a very large server raise this rather than lowering it.
+  # How often to re-sort leaderboards whose values changed, in seconds.
+  # Sorting is CPU-only - it reads nothing from the database - so this can be far lower
+  # than the reconcile interval. Values changed on this server land in memory the moment
+  # they are written, so this is how quickly a rank updates after a player earns something.
+  # Do not set it very low on a server with many leaderboards: a sort tick that fires
+  # faster than the sorts complete will queue behind itself.
+  sort-interval: 5
+
+  # How often to re-read every value from the database, in seconds.
+  # Only needed when something other than this server writes to the same database - another
+  # server sharing it, or manual SQL. Values changed on this server are picked up
+  # immediately and never wait for this.
+  # Set to 0 to disable entirely on a single-server setup. The startup load still happens.
+  reconcile-interval: 3600
+
+  # The most players that may be written during one reconcile before its results are thrown
+  # away as superseded. A reconcile that overlaps this many writes is rebuilding from a
+  # database read that is already too stale to be worth merging, and the next one catches up.
+  max-reconcile-overlay: 10000
+
+  # Deprecated: renamed to reconcile-interval, which is honoured instead when it is present.
+  # Left here so an existing config keeps working without being edited.
   refresh-interval: 60
 
   # Wait this many seconds after startup before the first rebuild. Kept short: until the
