@@ -153,6 +153,36 @@ public abstract class PersistentDataHandler implements Registrable {
     }
 
     /**
+     * Read several keys for many profiles at once.
+     * <p>
+     * The default implementation calls {@link #readAll} once per key. Handlers backed by a
+     * database should override this to read every key stored in the same table in one query, as
+     * the leaderboard service calls it with every ranked key on the server at once; reading them
+     * one key at a time makes as many passes over the table as there are leaderboards.
+     * <p>
+     * The contract matches {@link #readAll} exactly, so the two can never disagree: UUIDs with no
+     * stored value for a key are omitted from that key's map rather than mapped to the key's
+     * default, and a list-typed key with no stored entries counts as having no stored value.
+     * Every requested key is present in the returned map, mapping to an empty map if no profile
+     * has a stored value for it.
+     *
+     * @param uuids The uuids to read.
+     * @param keys  The keys to read.
+     * @return The values, keyed by key and then by uuid.
+     */
+    @NotNull
+    public Map<PersistentDataKey<?>, Map<UUID, Object>> readAllKeys(@NotNull final Set<UUID> uuids,
+                                                                    @NotNull final Collection<PersistentDataKey<?>> keys) {
+        Map<PersistentDataKey<?>, Map<UUID, Object>> values = new HashMap<>();
+
+        for (PersistentDataKey<?> key : keys) {
+            values.put(key, new HashMap<>(this.readAll(uuids, key)));
+        }
+
+        return values;
+    }
+
+    /**
      * Write a key to persistent data.
      * <p>
      * The write is submitted to the executor and this method returns immediately,
