@@ -12,6 +12,11 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class Leaderboards {
     /**
+     * The lang key holding the universal "no records" message.
+     */
+    private static final String NO_RECORDS_KEY = "no-leaderboard-records";
+
+    /**
      * Register a leaderboard with a custom value provider.
      * <p>
      * The leaderboard is registered under {@code plugin:id}, so registering the same ID for the
@@ -141,6 +146,28 @@ public final class Leaderboards {
      */
     public static void unregisterAll(@NotNull final EcoPlugin plugin) {
         Eco.get().unregisterLeaderboards(plugin);
+    }
+
+    /**
+     * Get the message to show in place of a leaderboard's entries when it has no records.
+     * <p>
+     * The message comes from eco's own lang.yml, so every plugin shows the same wording without
+     * each of them having to carry a key for it. A plugin that sets {@code no-leaderboard-records}
+     * in its own lang.yml overrides it for that plugin.
+     * <p>
+     * The message is returned unformatted, colour codes and all, so that a caller can put it
+     * through {@code formatEco} alongside the rest of the message it is building.
+     *
+     * @param plugin The plugin showing the message, whose lang.yml may override it.
+     * @return The message.
+     */
+    @NotNull
+    public static String getNoRecordsMessage(@Nullable final EcoPlugin plugin) {
+        if (plugin != null && plugin.getLangYml().has(NO_RECORDS_KEY)) {
+            return plugin.getLangYml().getString(NO_RECORDS_KEY);
+        }
+
+        return Eco.get().getEcoPlugin().getLangYml().getString(NO_RECORDS_KEY);
     }
 
     private Leaderboards() {
