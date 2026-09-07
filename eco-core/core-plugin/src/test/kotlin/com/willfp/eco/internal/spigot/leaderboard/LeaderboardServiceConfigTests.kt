@@ -214,12 +214,21 @@ class LeaderboardServiceConfigTests {
             async.runTimer(any<Runnable>(), any(), any(), any<TimeUnit>())
         } returnsMany listOf(firstSort, firstReconcile, secondSort, secondReconcile)
 
-        every { async.runLater(any<Runnable>(), any(), any<TimeUnit>()) } returns mockk(relaxed = true)
+        val firstStartup = mockk<EcoTask>(relaxed = true)
+        val secondStartup = mockk<EcoTask>(relaxed = true)
+
+        every {
+            async.runLater(any<Runnable>(), any(), any<TimeUnit>())
+        } returnsMany listOf(firstStartup, secondStartup)
 
         val service = service()
 
         service.start()
         service.start()
+
+        // The queued startup load is cancelled too, or a reload would leave a sweep nothing can
+        // stop still waiting to fire.
+        verify(exactly = 1) { firstStartup.cancel() }
 
         verify(exactly = 1) { firstSort.cancel() }
         verify(exactly = 1) { firstReconcile.cancel() }

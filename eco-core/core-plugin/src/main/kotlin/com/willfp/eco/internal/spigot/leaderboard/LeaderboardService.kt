@@ -50,6 +50,11 @@ class LeaderboardService(
     @Volatile
     private var sortTask: EcoTask? = null
 
+    // The one-shot startup load, retained so a reload can cancel it rather than leaving a queued
+    // sweep that nothing can stop.
+    @Volatile
+    private var startupTask: EcoTask? = null
+
     // Guards refreshAll() against overlapping cycles. Set on the caller's thread rather than
     // inside the executor, so that a cycle which overruns its interval is skipped outright
     // rather than queued behind the one still running.
@@ -248,7 +253,7 @@ class LeaderboardService(
         // The startup load, and on a server with reconciliation turned off the only database read
         // there will ever be. Without it nothing would populate the caches and every leaderboard
         // would rank nobody for the lifetime of the server.
-        plugin.scheduler.async().runLater(
+        startupTask = plugin.scheduler.async().runLater(
             Runnable { refreshAll() },
             initialDelay,
             TimeUnit.SECONDS
@@ -273,6 +278,8 @@ class LeaderboardService(
     fun stop() {
         sortTask?.cancel()
         sortTask = null
+        startupTask?.cancel()
+        startupTask = null
         task?.cancel()
         task = null
     }
