@@ -9,6 +9,7 @@ import com.willfp.eco.core.config.readConfig
 import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -145,7 +146,12 @@ class MariaDBPersistentDataHandler(
     override fun getSavedUUIDs(): Set<UUID> {
         val savedUUIDs = mutableSetOf<UUID>()
 
-        for (keyType in PersistentDataKeyType.values()) {
+        // Only the types something has actually registered a key for. Every type has its own
+        // table, so looping all of them scans tables that are guaranteed to be empty -- on a
+        // server using only INT and DOUBLE keys that was four wasted full scans per sweep.
+        val types = KeyRegistry.getRegisteredKeys().mapTo(mutableSetOf()) { it.type }
+
+        for (keyType in types) {
             val serializer = keyType.getSerializer(this) as MariaDBSerializer<*>
             savedUUIDs.addAll(serializer.getSavedUUIDs().map { it.toJavaUuid() })
         }
