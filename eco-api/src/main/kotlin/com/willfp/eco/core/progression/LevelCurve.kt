@@ -3,10 +3,9 @@ package com.willfp.eco.core.progression
 /**
  * How much XP is needed to reach each level.
  *
- * Levels start at 1, so the first requirement is the cost of reaching level 2 - matching the
- * model EcoMinions already uses. This is deliberately not the `listOf(0) + requirements`
- * padding the older plugins used: a zero-cost first level is what let a stray XP grant unlock
- * a job or adopt a pet the player never acquired.
+ * Levels start at 1, so the first requirement is the cost of reaching level 2. This is
+ * deliberately not a `listOf(0) + requirements` padding: a zero-cost first level is what lets
+ * a stray XP grant hand a holder something they never acquired.
  *
  * ## The one invariant everything else rests on
  *
@@ -23,9 +22,9 @@ sealed interface LevelCurve {
     /**
      * A level that is reached for free by any positive XP grant, or null.
      *
-     * Exists solely to preserve EcoJobs' and EcoPets' existing join/adopt flow, where a
-     * player sits at level 0 until their first XP. Applied once, outside the progression
-     * loop - see [LevelCurve.Requirements.freeLevel].
+     * Exists for systems where a holder sits at level 0 until their first XP and the
+     * transition to level 1 is granted rather than bought. Applied once, outside the
+     * progression loop - see [LevelCurve.Requirements.freeLevel].
      */
     val freeLevel: Int?
         get() = null
@@ -41,33 +40,25 @@ sealed interface LevelCurve {
     /**
      * An explicit cost per level. Running off the end of the list ends progression.
      *
-     * ## Start levels differ between plugins, so the offset is explicit
+     * ## The start level is explicit because callers disagree on it
      *
-     * The consuming plugins do not agree on where levelling begins, and each one's config
-     * files are written against its own convention. Getting this wrong does not fail loudly -
-     * it silently shifts every level's cost by one, or stops progression dead at the start
-     * level. So [startLevel] is a required constructor argument with no default:
-     *
-     * | Plugin        | Start level | `requirements[0]` is the cost of reaching |
-     * |---------------|-------------|-------------------------------------------|
-     * | EcoMinions    | 1           | level 2                                   |
-     * | EcoSkills     | 0           | level 1                                   |
-     * | EcoJobs       | 0           | level 2 (see [freeFirstLevel])            |
-     * | EcoPets       | 0           | level 2 (see [freeFirstLevel])            |
-     * | libreforge    | 1           | level 2                                   |
+     * Callers do not agree on where levelling begins, and each one's config files are written
+     * against its own convention. A holder starting at 0 prices `requirements[0]` as the cost
+     * of reaching level 1; one starting at 1 prices it as the cost of reaching level 2, and a
+     * free first level shifts it one further. Getting this wrong does not fail loudly - it
+     * silently shifts every level's cost by one, or stops progression dead at the start level.
+     * So [startLevel] is a required constructor argument with no default.
      *
      * @param requirements       The configured cost list, exactly as written in config.
      * @param startLevel         The level a holder begins at.
      * @param configuredMaxLevel An explicit `max-level`, or null to derive it from the list.
-     * @param freeFirstLevel     Whether reaching `startLevel + 1` costs nothing. EcoJobs and
-     *                           EcoPets both prepend a zero to their requirement list
-     *                           (`listOf(0) + config.getInts(...)`), which makes the first
-     *                           level free. That is load-bearing, not a bug: `joinJob` adds
-     *                           the job to the player's active list without setting a level,
-     *                           so a joined player sits at level 0 and relies on the free
-     *                           transition to reach level 1. Preserve it; the auto-unlock
-     *                           defect it enabled is fixed by an ownership guard at the XP
-     *                           entry point instead.
+     * @param freeFirstLevel     Whether reaching `startLevel + 1` costs nothing. Set this
+     *                           where acquiring the thing being levelled leaves the holder at
+     *                           level 0 and the first transition is granted rather than
+     *                           bought, which a prepended zero in the requirement list used to
+     *                           express. A free first level must never double as an ownership
+     *                           check: guard the XP entry point instead, or a stray grant will
+     *                           promote a holder that never acquired it.
      */
     class Requirements(
         requirements: List<Double>,
@@ -133,10 +124,11 @@ sealed interface LevelCurve {
         override val maxLevel: Int = configuredMaxLevel ?: Int.MAX_VALUE
 
         override fun xpToReach(level: Int): Double {
-            // Bounded by startLevel, not a hardcoded 2. EcoBattlepass's tiers start at 0, so a
-            // `level < 2` guard would price the 0 -> 1 tier at infinity and freeze every pass
-            // at tier 0. The start level is a required argument for the same reason it is on
-            // Requirements: there is no safe default, and getting it wrong fails silently.
+            // Bounded by startLevel, not a hardcoded 2. Where levelling starts at 0, a
+            // `level < 2` guard would price the 0 -> 1 transition at infinity and freeze every
+            // holder at the start level. The start level is a required argument for the same
+            // reason it is on Requirements: there is no safe default, and getting it wrong
+            // fails silently.
             if (level <= startLevel || level > maxLevel) {
                 return Double.POSITIVE_INFINITY
             }
