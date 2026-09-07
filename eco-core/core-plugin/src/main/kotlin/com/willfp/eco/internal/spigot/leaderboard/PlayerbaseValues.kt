@@ -115,6 +115,17 @@ class PlayerbaseValues {
         return true
     }
 
+    /**
+     * Abandon a reconcile without installing anything.
+     *
+     * Used when the database read failed: the values already in memory are the best available, so
+     * they are kept untouched. Without this the overlay would stay open and keep accumulating
+     * every write until the next reconcile happened to close it.
+     */
+    fun abortReconcile() {
+        overlay = null
+    }
+
     fun clear() {
         values.clear()
         overlay = null

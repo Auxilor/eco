@@ -13,6 +13,7 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
 import java.util.UUID
+import java.util.logging.Logger
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -50,6 +51,10 @@ class ReconcileRaceTests {
         every { plugin.id } returns "test"
         every { plugin.scheduler } returns scheduler
         every { scheduler.async() } returns async
+
+        // The failure paths log, and an unstubbed logger on a strict mock throws -- which would
+        // make a test of error handling fail for the wrong reason.
+        every { plugin.logger } returns Logger.getLogger("ReconcileRaceTests")
 
         every { config.getBool("leaderboards.enabled") } returns true
         every { config.getInt("leaderboards.max-entries") } returns -1
@@ -167,5 +172,66 @@ class ReconcileRaceTests {
 
         assertNull(board.cachedValue(alice), "a player on the start level has made no progress")
         assertEquals(1, board.snapshot.trackedPlayers, "and is out of the percentile denominator")
+    }
+
+    @Test
+    fun `a failed read leaves the leaderboard on the values it already had`() {
+        val eco = mockk<Eco>(relaxed = true)
+        every { Eco.get() } returns eco
+
+        val key = PersistentDataKey(
+            namespacedKeyOf("racetest", "level_${counter++}"),
+            PersistentDataKeyType.INT,
+            0
+        )
+
+        val service = LeaderboardService(plugin)
+        val board = service.register(plugin, "board", KeyLeaderboardValueProvider(key))
+
+        every { eco.savedProfileUUIDs } returns setOf(alice)
+        every { eco.readAllProfileValuesForKeys(any(), any()) } returns
+                mapOf<PersistentDataKey<*>, Map<UUID, Any>>(key to mapOf(alice to 5))
+
+        service.refreshAll().join()
+        assertEquals(5.0, board.cachedValue(alice))
+
+        // The database goes away. An empty result is indistinguishable from "nobody has a value",
+        // so a failure must not be allowed to look like one: every leaderboard on the server would
+        // empty at once.
+        every { eco.readAllProfileValuesForKeys(any(), any()) } throws IllegalStateException("connection lost")
+
+        service.refreshAll().join()
+
+        assertEquals(5.0, board.cachedValue(alice), "a failed read must not wipe the cache")
+        assertEquals(1, board.getPosition(alice), "nor the published snapshot")
+    }
+
+    @Test
+    fun `a reconcile abandoned by a failed read does not leak into the next one`() {
+        val eco = mockk<Eco>(relaxed = true)
+        every { Eco.get() } returns eco
+
+        val key = PersistentDataKey(
+            namespacedKeyOf("racetest", "level_${counter++}"),
+            PersistentDataKeyType.INT,
+            0
+        )
+
+        val service = LeaderboardService(plugin)
+        val board = service.register(plugin, "board", KeyLeaderboardValueProvider(key))
+
+        every { eco.savedProfileUUIDs } returns setOf(alice)
+        every { eco.readAllProfileValuesForKeys(any(), any()) } throws IllegalStateException("connection lost")
+
+        service.refreshAll().join()
+
+        // The database comes back. The abandoned reconcile must not still be holding an overlay
+        // open, or this write would be treated as concurrent with a sweep that never finished.
+        every { eco.readAllProfileValuesForKeys(any(), any()) } returns
+                mapOf<PersistentDataKey<*>, Map<UUID, Any>>(key to mapOf(alice to 7))
+
+        service.refreshAll().join()
+
+        assertEquals(7.0, board.cachedValue(alice))
     }
 }

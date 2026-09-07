@@ -7,8 +7,8 @@ import com.willfp.eco.core.config.readConfig
 import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
-import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.math.BigDecimal
@@ -39,7 +39,6 @@ private const val VALUE_COLUMN_NAME = "dataValue"
 private const val UUID_COLUMN_NAME = "profileUUID"
 private const val KEY_COLUMN_NAME = "dataKey"
 private const val INDEX_COLUMN_NAME = "listIndex"
-
 
 class MySQLPersistentDataHandler(
     config: Config

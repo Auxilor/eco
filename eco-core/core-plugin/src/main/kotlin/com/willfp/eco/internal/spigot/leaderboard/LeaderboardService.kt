@@ -336,9 +336,18 @@ class LeaderboardService(
                     val uuids = Eco.get().savedProfileUUIDs
                     val raw = readBatched(listOf(provider.rankedKey), uuids)
 
-                    values.installReconciled(provider.convert(raw[provider.rankedKey].orEmpty()), maxOverlay)
+                    if (raw == null) {
+                        // Logged already. Keep whatever is in memory rather than emptying the
+                        // leaderboard because one read failed.
+                        values.abortReconcile()
+                    } else {
+                        values.installReconciled(
+                            provider.convert(raw[provider.rankedKey].orEmpty()),
+                            maxOverlay
+                        )
 
-                    it.sortCached(maxEntries)
+                        it.sortCached(maxEntries)
+                    }
                 }
             }
         } ?: CompletableFuture.completedFuture(null)
@@ -399,20 +408,30 @@ class LeaderboardService(
                     }
 
                     val raw = readBatched(keys, uuids)
-                    val maxOverlay = this.maxOverlay
 
-                    for (leaderboard in keyed) {
-                        val provider = leaderboard.keyProvider ?: continue
-                        val values = leaderboard.values ?: continue
+                    if (raw == null) {
+                        // The read failed and was logged. Abandon every reconcile rather than
+                        // installing nothing over everything, and leave the leaderboards on the
+                        // values they already had until the next sweep.
+                        for (leaderboard in keyed) {
+                            leaderboard.values?.abortReconcile()
+                        }
+                    } else {
+                        val maxOverlay = this.maxOverlay
 
-                        val reconciled = provider.convert(raw[provider.rankedKey].orEmpty())
+                        for (leaderboard in keyed) {
+                            val provider = leaderboard.keyProvider ?: continue
+                            val values = leaderboard.values ?: continue
 
-                        values.installReconciled(reconciled, maxOverlay)
+                            val reconciled = provider.convert(raw[provider.rankedKey].orEmpty())
+
+                            values.installReconciled(reconciled, maxOverlay)
+                        }
+
+                        // Published immediately rather than waiting for the next sort tick, so the
+                        // startup load and a manual refresh both take effect at once.
+                        sortDirty()
                     }
-
-                    // Published immediately rather than waiting for the next sort tick, so the
-                    // startup load and a manual refresh both take effect at once.
-                    sortDirty()
                 }
 
                 // A custom provider is opaque, so it reads for itself exactly as it always has.
@@ -461,19 +480,25 @@ class LeaderboardService(
     /**
      * Read every ranked key at once, or an empty map if the read fails.
      *
-     * A failed batched read takes every key-backed leaderboard down together, so it is logged here
-     * and each leaderboard keeps its previous snapshot, rather than all of them being replaced
-     * with empty ones on a transient database problem.
+     * A failed batched read would otherwise take every key-backed leaderboard down together, so
+     * the failure is reported to the caller, which abandons the reconcile and leaves every
+     * leaderboard on the values it already had.
+     *
+     * @return The values, or null if the read failed.
      */
     private fun readBatched(
         keys: List<PersistentDataKey<*>>,
         uuids: Set<UUID>
-    ): Map<PersistentDataKey<*>, Map<UUID, Any>> =
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>>? =
         try {
             Eco.get().readAllProfileValuesForKeys(uuids, keys)
         } catch (e: Exception) {
             plugin.logger.log(Level.WARNING, "Failed to read leaderboard values", e)
-            emptyMap()
+
+            // Null rather than an empty map: an empty map is indistinguishable from "nobody has a
+            // stored value", and installing it would wipe every key-backed leaderboard on the
+            // server because one database read happened to fail.
+            null
         }
 
     private fun rebuild(leaderboard: EcoLeaderboard, uuids: Set<UUID>) =
