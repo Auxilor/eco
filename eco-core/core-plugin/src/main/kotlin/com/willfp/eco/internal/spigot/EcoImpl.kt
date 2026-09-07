@@ -384,6 +384,27 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         return handler.readAll(uuids, key)
     }
 
+    override fun readAllProfileValuesForKeys(
+        uuids: Set<UUID>,
+        keys: Collection<PersistentDataKey<*>>
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>> {
+        // Split by storage location: a locally-saved key lives in the YAML handler rather than the
+        // configured one, so batching them together would read the wrong store for half of them.
+        val (local, default) = keys.partition { it.isSavedLocally }
+
+        val values = HashMap<PersistentDataKey<*>, Map<UUID, Any>>(keys.size)
+
+        if (local.isNotEmpty()) {
+            values.putAll(profileHandler.localHandler.readAllKeys(uuids, local))
+        }
+
+        if (default.isNotEmpty()) {
+            values.putAll(profileHandler.defaultHandler.readAllKeys(uuids, default))
+        }
+
+        return values
+    }
+
     override fun registerLeaderboard(
         plugin: EcoPlugin,
         id: String,

@@ -514,6 +514,22 @@ public interface Eco {
                                           @NotNull PersistentDataKey<T> key);
 
     /**
+     * Read several keys for many profiles at once, bypassing the in-memory profile cache.
+     * <p>
+     * Loads and retains nothing, exactly as
+     * {@link #readAllProfileValues(Set, PersistentDataKey)} does, but reads every key stored in
+     * the same table in one query rather than making a separate pass per key. This is a blocking
+     * operation and must not be called on the main thread.
+     *
+     * @param uuids The uuids.
+     * @param keys  The keys.
+     * @return The values, keyed by key and then by uuid; uuids with no stored value are omitted.
+     */
+    @NotNull
+    Map<PersistentDataKey<?>, Map<UUID, Object>> readAllProfileValuesForKeys(@NotNull Set<UUID> uuids,
+                                                                             @NotNull Collection<PersistentDataKey<?>> keys);
+
+    /**
      * Register a leaderboard.
      *
      * @param plugin   The plugin that owns the leaderboard.
