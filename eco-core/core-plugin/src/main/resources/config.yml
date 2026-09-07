@@ -230,6 +230,11 @@ leaderboards:
   # tracked separately from entries.
   max-entries: -1
 
+  # Whether %..._top_<N>_name% shows a player's saved display name - their nickname, as
+  # whatever plugin sets it last stored it - rather than their account name. Both are read
+  # from the eco profile, so an offline player still has a name to show either way.
+  use-display-names: true
+
   # Ranks up to and including this are shown exactly; beyond it, a percentile band is
   # shown instead ("top 12.5%"). Defaults to 0 - always exact - because that is what
   # every plugin did before this service existed.
