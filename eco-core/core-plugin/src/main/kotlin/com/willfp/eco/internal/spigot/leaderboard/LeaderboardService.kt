@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.leaderboard
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
 import com.willfp.eco.core.leaderboard.TallyProvider
 import com.willfp.eco.core.scheduling.EcoTask
@@ -220,7 +221,25 @@ class LeaderboardService(
                 // on the server.
                 val uuids = Eco.get().savedProfileUUIDs
 
-                for (leaderboard in leaderboards.values) {
+                val (keyed, custom) = leaderboards.values.partition { it.keyProvider != null }
+
+                // Every key-backed leaderboard on the server is read in one batched query per
+                // storage type, rather than one query set each. Reading them separately makes as
+                // many passes over the same table as there are skills, jobs and currencies.
+                if (keyed.isNotEmpty()) {
+                    val keys = keyed.mapNotNull { it.keyProvider?.rankedKey }.distinct()
+                    val raw = readBatched(keys, uuids)
+
+                    for (leaderboard in keyed) {
+                        val provider = leaderboard.keyProvider ?: continue
+                        val values = provider.convert(raw[provider.rankedKey].orEmpty())
+
+                        rebuild(leaderboard) { it.rebuildFrom(values, maxEntries) }
+                    }
+                }
+
+                // A custom provider is opaque, so it reads for itself exactly as it always has.
+                for (leaderboard in custom) {
                     rebuild(leaderboard, uuids)
                 }
 
@@ -262,9 +281,30 @@ class LeaderboardService(
             null
         }
 
-    private fun rebuild(leaderboard: EcoLeaderboard, uuids: Set<UUID>) {
+    /**
+     * Read every ranked key at once, or an empty map if the read fails.
+     *
+     * A failed batched read takes every key-backed leaderboard down together, so it is logged here
+     * and each leaderboard keeps its previous snapshot, rather than all of them being replaced
+     * with empty ones on a transient database problem.
+     */
+    private fun readBatched(
+        keys: List<PersistentDataKey<*>>,
+        uuids: Set<UUID>
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>> =
         try {
-            leaderboard.rebuild(uuids, maxEntries)
+            Eco.get().readAllProfileValuesForKeys(uuids, keys)
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed to read leaderboard values", e)
+            emptyMap()
+        }
+
+    private fun rebuild(leaderboard: EcoLeaderboard, uuids: Set<UUID>) =
+        rebuild(leaderboard) { it.rebuild(uuids, maxEntries) }
+
+    private fun rebuild(leaderboard: EcoLeaderboard, action: (EcoLeaderboard) -> Unit) {
+        try {
+            action(leaderboard)
         } catch (e: Exception) {
             // One plugin shipping a broken value provider must not stop every other leaderboard
             // on the server from refreshing, so the failure is logged and the previous snapshot

@@ -43,10 +43,26 @@ class EcoLeaderboard(
 
     override fun refresh(): CompletableFuture<Void> = service.refresh(this)
 
-    /** Build a new snapshot. Called only from the refresh executor. */
-    internal fun rebuild(uuids: Set<UUID>, maxEntries: Int) {
-        val values = provider.readValues(uuids)
+    /**
+     * The key-backed provider, or null if this leaderboard ranks by a custom provider.
+     *
+     * A key-backed leaderboard can have its values read in one batched query alongside every other
+     * key-backed leaderboard on the server, instead of issuing a read of its own. A custom
+     * provider is opaque, so there is nothing to batch and it keeps reading for itself.
+     */
+    internal val keyProvider: KeyLeaderboardValueProvider?
+        get() = provider as? KeyLeaderboardValueProvider
 
+    /** Build a new snapshot. Called only from the refresh executor. */
+    internal fun rebuild(uuids: Set<UUID>, maxEntries: Int) =
+        rebuildFrom(provider.readValues(uuids), maxEntries)
+
+    /**
+     * Build a new snapshot from values that have already been read.
+     *
+     * Called only from the refresh executor.
+     */
+    internal fun rebuildFrom(values: Map<UUID, Double>, maxEntries: Int) {
         // The UUID tiebreak is deliberate: without it, two players on equal values are ordered
         // by whatever the sort happened to do that time, and visibly swap places on every
         // refresh.
