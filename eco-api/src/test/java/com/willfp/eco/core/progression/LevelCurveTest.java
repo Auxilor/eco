@@ -123,4 +123,62 @@ class LevelCurveTest {
         assertEquals(Double.POSITIVE_INFINITY, LevelCurve.None.INSTANCE.xpToReach(2));
         assertEquals(1, LevelCurve.None.INSTANCE.getMaxLevel());
     }
+
+    @Test
+    void parseClampsMaxLevelToRequirementsSize() {
+        // Regression: max-level larger than the list used to reach an unchecked index.
+        LevelCurves.ParsedCurve parsed = LevelCurves.parse(
+                null, List.of(10.0, 20.0), 500, 1, false, (e, l) -> 0.0
+        );
+
+        assertEquals(3, parsed.getCurve().getMaxLevel());
+        assertEquals(1, parsed.getProblems().size());
+        assertTrue(parsed.getProblems().get(0).getMessage().contains("max-level"));
+    }
+
+    @Test
+    void parsePrefersFormulaAndSaysSo() {
+        LevelCurves.ParsedCurve parsed = LevelCurves.parse(
+                "100", List.of(10.0), null, 1, false, (e, l) -> 100.0
+        );
+
+        assertInstanceOf(LevelCurve.Formula.class, parsed.getCurve());
+        assertEquals(1, parsed.getProblems().size());
+    }
+
+    @Test
+    void parseWithNeitherKeyYieldsNoneAndAProblem() {
+        // Previously an IllegalStateException thrown from a hot path.
+        LevelCurves.ParsedCurve parsed = LevelCurves.parse(null, null, null, 1, false, (e, l) -> 0.0);
+
+        assertSame(LevelCurve.None.INSTANCE, parsed.getCurve());
+        assertEquals(1, parsed.getProblems().size());
+    }
+
+    @Test
+    void parseRejectsNonPositiveRequirementEntries() {
+        LevelCurves.ParsedCurve parsed = LevelCurves.parse(
+                null, List.of(10.0, 0.0, 30.0), null, 1, false, (e, l) -> 0.0
+        );
+
+        assertFalse(parsed.getProblems().isEmpty());
+        // The bad entry is unreachable rather than free.
+        assertEquals(Double.POSITIVE_INFINITY, parsed.getCurve().xpToReach(3));
+    }
+
+    @Test
+    void parseNamesTheOffendingLevelInTheCallersOwnNumbering() {
+        // Hardcoding `index + 2` here is right only for a startLevel of 1 with no free level,
+        // and would misname the level in every EcoSkills, EcoJobs and EcoPets warning - which
+        // is worse than no warning, because it sends the owner to the wrong config line.
+        LevelCurves.ParsedCurve skills = LevelCurves.parse(
+                null, List.of(10.0, 0.0), null, 0, false, (e, l) -> 0.0
+        );
+        assertTrue(skills.getProblems().get(0).getMessage().contains("level 2"));
+
+        LevelCurves.ParsedCurve jobs = LevelCurves.parse(
+                null, List.of(10.0, 0.0), null, 0, true, (e, l) -> 0.0
+        );
+        assertTrue(jobs.getProblems().get(0).getMessage().contains("level 3"));
+    }
 }
