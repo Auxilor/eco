@@ -39,6 +39,11 @@ private const val UUID_COLUMN_NAME = "profileUUID"
 private const val KEY_COLUMN_NAME = "dataKey"
 private const val INDEX_COLUMN_NAME = "listIndex"
 
+// MySQL caps a prepared statement at 65535 placeholders, and readAll is called with the entire
+// playerbase by the leaderboard service, so the uuid predicate is split into chunks well below
+// that limit rather than being emitted as one enormous IN (...) list.
+private const val UUID_CHUNK_SIZE = 1000
+
 class MySQLPersistentDataHandler(
     config: Config
 ) : PersistentDataHandler("mysql") {
@@ -196,12 +201,17 @@ class MySQLPersistentDataHandler(
             }
 
             val profileUUIDs = uuids.map { it.toKotlinUuid() }
+            val values = HashMap<UUID, T>(uuids.size)
 
-            return transaction(database) {
-                table.select(table.uuid, table.value)
-                    .where { (table.uuid inList profileUUIDs) and (table.key eq key.key.toString()) }
-                    .associate { it[table.uuid].toJavaUuid() to convertFromStored(it[table.value]) }
+            transaction(database) {
+                for (chunk in profileUUIDs.chunked(UUID_CHUNK_SIZE)) {
+                    table.select(table.uuid, table.value)
+                        .where { (table.uuid inList chunk) and (table.key eq key.key.toString()) }
+                        .forEach { values[it[table.uuid].toJavaUuid()] = convertFromStored(it[table.value]) }
+                }
             }
+
+            return values
         }
 
         @OptIn(ExperimentalUuidApi::class)
@@ -251,13 +261,21 @@ class MySQLPersistentDataHandler(
             }
 
             val profileUUIDs = uuids.map { it.toKotlinUuid() }
+            val rows = ArrayList<Pair<UUID, T>>()
 
-            return transaction(database) {
-                table.select(table.uuid, table.index, table.value)
-                    .where { (table.uuid inList profileUUIDs) and (table.key eq key.key.toString()) }
-                    .orderBy(table.index)
-                    .map { it[table.uuid].toJavaUuid() to it[table.value] }
-            }.groupBy({ it.first }, { it.second })
+            // Every row for a given uuid lands in exactly one chunk, and each chunk is ordered by
+            // index, so grouping the concatenated rows still yields each player's list in index
+            // order.
+            transaction(database) {
+                for (chunk in profileUUIDs.chunked(UUID_CHUNK_SIZE)) {
+                    table.select(table.uuid, table.index, table.value)
+                        .where { (table.uuid inList chunk) and (table.key eq key.key.toString()) }
+                        .orderBy(table.index)
+                        .mapTo(rows) { it[table.uuid].toJavaUuid() to it[table.value] }
+                }
+            }
+
+            return rows.groupBy({ it.first }, { it.second })
         }
 
         @OptIn(ExperimentalUuidApi::class)

@@ -27,12 +27,19 @@ class EcoLeaderboard(
 
     override fun getSnapshot() = snapshot
 
-    override fun getRank(uuid: UUID): LeaderboardRank = LeaderboardRank.of(
-        snapshot.getRank(uuid),
-        snapshot.trackedPlayers,
-        service.exactRankCutoff,
-        service.percentDecimalPlaces
-    )
+    override fun getRank(uuid: UUID): LeaderboardRank {
+        // Read the volatile field once: a refresh landing between two reads would otherwise mix a
+        // rank from one snapshot generation with a tracked-player count from the next, producing
+        // a percentile that can exceed 100% or be wrongly flattering.
+        val snapshot = this.snapshot
+
+        return LeaderboardRank.of(
+            snapshot.getRank(uuid),
+            snapshot.trackedPlayers,
+            service.exactRankCutoff,
+            service.percentDecimalPlaces
+        )
+    }
 
     override fun refresh(): CompletableFuture<Void> = service.refresh(this)
 

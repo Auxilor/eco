@@ -75,7 +75,16 @@ class YamlPersistentDataHandler(
 
         fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
             return uuids.mapNotNull { uuid ->
-                readAsync(uuid, key)?.let { uuid to it }
+                val value = readAsync(uuid, key)
+
+                // List serializers answer with an empty list rather than null for a profile with
+                // no stored entries. The SQL handlers omit such a uuid outright, so it is omitted
+                // here too, otherwise readAll would mean different things per storage backend.
+                if (value == null || (value is Collection<*> && value.isEmpty())) {
+                    null
+                } else {
+                    uuid to value
+                }
             }.toMap()
         }
 

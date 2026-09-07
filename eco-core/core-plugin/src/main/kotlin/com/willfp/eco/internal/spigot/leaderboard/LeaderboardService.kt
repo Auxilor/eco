@@ -12,6 +12,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.logging.Level
 
 /**
  * The registry of every leaderboard on the server, and the executor that rebuilds them.
@@ -229,6 +230,12 @@ class LeaderboardService(
                 for (tally in tallies.values) {
                     rebuild(tally, uuids)
                 }
+            } catch (e: Exception) {
+                // Enumerating the playerbase is the one failure that takes every leaderboard down
+                // at once, and the scheduled task discards the future this runs in, so without
+                // this catch a failed enumeration would freeze every leaderboard on stale data
+                // with nothing logged anywhere.
+                plugin.logger.log(Level.WARNING, "Failed to enumerate the playerbase for the leaderboard refresh", e)
             } finally {
                 refreshing.set(false)
             }

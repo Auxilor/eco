@@ -3,6 +3,7 @@ package com.willfp.eco.core.data.handlers;
 import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.registry.Registrable;
 import com.willfp.eco.core.tuples.Pair;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -112,7 +113,10 @@ public abstract class PersistentDataHandler implements Registrable {
      * leaderboard service.
      * <p>
      * UUIDs with no stored value are omitted from the result rather than mapped to the key's
-     * default, so callers can tell "absent" from "stored default".
+     * default, so callers can tell "absent" from "stored default". For a list-typed key, a UUID
+     * with no stored entries counts as having no stored value and is omitted too, rather than
+     * being mapped to an empty list; every implementation must agree on this, so that readAll
+     * means the same thing regardless of the storage backend.
      *
      * @param uuids The uuids to read.
      * @param key   The key.
@@ -127,9 +131,18 @@ public abstract class PersistentDataHandler implements Registrable {
         for (UUID uuid : uuids) {
             T value = read(uuid, key);
 
-            if (value != null) {
-                values.put(uuid, value);
+            if (value == null) {
+                continue;
             }
+
+            // A list-typed key with no stored entries deserializes to an empty collection rather
+            // than to null, and the database-backed overrides omit such a UUID, so it is omitted
+            // here too.
+            if (value instanceof Collection<?> collection && collection.isEmpty()) {
+                continue;
+            }
+
+            values.put(uuid, value);
         }
 
         return values;
