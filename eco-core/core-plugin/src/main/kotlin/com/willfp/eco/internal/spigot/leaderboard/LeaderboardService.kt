@@ -313,7 +313,27 @@ class LeaderboardService(
         }
 
         return submit {
-            rebuild(leaderboard, Eco.get().savedProfileUUIDs)
+            val provider = leaderboard.keyProvider
+            val values = leaderboard.values
+
+            if (provider == null || values == null) {
+                // A custom provider reads for itself and has no cache to keep in step.
+                rebuild(leaderboard, Eco.get().savedProfileUUIDs)
+            } else {
+                // Routed through the cache rather than sorted directly, otherwise the snapshot
+                // would advance while the cache stayed behind, and the next incremental write
+                // would republish the stale values and undo this refresh.
+                rebuild(leaderboard) {
+                    values.beginReconcile()
+
+                    val uuids = Eco.get().savedProfileUUIDs
+                    val raw = readBatched(listOf(provider.rankedKey), uuids)
+
+                    values.installReconciled(provider.convert(raw[provider.rankedKey].orEmpty()), maxOverlay)
+
+                    it.sortCached(maxEntries)
+                }
+            }
         } ?: CompletableFuture.completedFuture(null)
     }
 
@@ -362,14 +382,30 @@ class LeaderboardService(
                 // many passes over the same table as there are skills, jobs and currencies.
                 if (keyed.isNotEmpty()) {
                     val keys = keyed.mapNotNull { it.keyProvider?.rankedKey }.distinct()
+
+                    // Begun before the read, so that any write landing while the read is in flight
+                    // is recorded and can be re-applied on top of it. A write that lands between
+                    // the read and the install is newer than what the read returned, and a
+                    // wholesale replace would silently revert it.
+                    for (leaderboard in keyed) {
+                        leaderboard.values?.beginReconcile()
+                    }
+
                     val raw = readBatched(keys, uuids)
+                    val maxOverlay = this.maxOverlay
 
                     for (leaderboard in keyed) {
                         val provider = leaderboard.keyProvider ?: continue
-                        val values = provider.convert(raw[provider.rankedKey].orEmpty())
+                        val values = leaderboard.values ?: continue
 
-                        rebuild(leaderboard) { it.rebuildFrom(values, maxEntries) }
+                        val reconciled = provider.convert(raw[provider.rankedKey].orEmpty())
+
+                        values.installReconciled(reconciled, maxOverlay)
                     }
+
+                    // Published immediately rather than waiting for the next sort tick, so the
+                    // startup load and a manual refresh both take effect at once.
+                    sortDirty()
                 }
 
                 // A custom provider is opaque, so it reads for itself exactly as it always has.
