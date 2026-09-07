@@ -6,6 +6,8 @@ import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Executor
+import java.util.logging.Level
 
 /**
  * Run an action over every profile the server has saved data for, off the main thread.
@@ -25,7 +27,12 @@ import java.util.concurrent.CompletableFuture
  * safe; anything touching an entity, world, or inventory is not - hop back with the scheduler
  * for that.
  *
- * @param plugin     The plugin, used for its logger.
+ * The work runs on the plugin's own async scheduler rather than on the common ForkJoinPool.
+ * The pool is sized to `availableProcessors - 1` and is shared with every other library on the
+ * server, so parking one of its threads on blocking database I/O for the length of a whole
+ * playerbase scan would starve everything else using it.
+ *
+ * @param plugin     The plugin, used for its async scheduler and its logger.
  * @param batchSize  How many profiles to process before yielding. 500 is a sane default.
  * @param onProgress Called with (processed, total) after each batch, off the main thread.
  * @param action     The action to run per uuid.
@@ -37,7 +44,7 @@ fun forEachSavedProfile(
     batchSize: Int = 500,
     onProgress: (Int, Int) -> Unit = { _, _ -> },
     action: (UUID) -> Unit
-): CompletableFuture<Void> = CompletableFuture.runAsync {
+): CompletableFuture<Void> = CompletableFuture.runAsync({
     val uuids = Eco.get().savedProfileUUIDs.toList()
 
     for ((index, uuid) in uuids.withIndex()) {
@@ -45,7 +52,7 @@ fun forEachSavedProfile(
             action(uuid)
         } catch (e: Exception) {
             // One bad profile must not abort the whole run, but it must not vanish either.
-            plugin.logger.warning("Failed processing profile $uuid: ${e.message}")
+            plugin.logger.log(Level.WARNING, "Failed processing profile $uuid", e)
         }
 
         if (batchSize > 0 && (index + 1) % batchSize == 0) {
@@ -55,4 +62,4 @@ fun forEachSavedProfile(
     }
 
     onProgress(uuids.size, uuids.size)
-}
+}, Executor { plugin.scheduler.async().run(it) })

@@ -151,7 +151,6 @@ class MySQLPersistentDataHandler(
         return savedUUIDs
     }
 
-    @OptIn(ExperimentalUuidApi::class)
     override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
         @Suppress("UNCHECKED_CAST")
         val serializer = key.type.getSerializer(this) as MySQLSerializer<Any>

@@ -269,8 +269,7 @@ class LeaderboardService(
             // One plugin shipping a broken value provider must not stop every other leaderboard
             // on the server from refreshing, so the failure is logged and the previous snapshot
             // is kept rather than being replaced with an empty one.
-            plugin.logger.warning("Failed to refresh leaderboard ${leaderboard.id}: $e")
-            e.printStackTrace()
+            plugin.logger.log(Level.WARNING, "Failed to refresh leaderboard ${leaderboard.id}", e)
         }
     }
 
@@ -281,8 +280,7 @@ class LeaderboardService(
             // As with leaderboards: one broken provider must not stop everything else on the
             // server from refreshing, so the failure is logged and the previous counts are kept
             // rather than being replaced with empty ones.
-            plugin.logger.warning("Failed to refresh tally ${tally.id}: $e")
-            e.printStackTrace()
+            plugin.logger.log(Level.WARNING, "Failed to refresh tally ${tally.id}", e)
         }
     }
 

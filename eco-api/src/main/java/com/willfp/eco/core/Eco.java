@@ -484,6 +484,13 @@ public interface Eco {
      * Get every UUID with saved profile data in the server's configured data handler.
      * <p>
      * This is a blocking operation and must not be called on the main thread.
+     * <p>
+     * The uuids come from the <b>default</b> handler only, never from the local one. A key
+     * declared as saved locally is read from local storage, so a leaderboard over such a key on
+     * a server with a remote default handler sees an incomplete playerbase: players who exist
+     * only in local storage are never enumerated, and so are never ranked. Unioning both
+     * handlers is deliberately not done, because it would make every refresh pay for two full
+     * enumerations.
      *
      * @return The uuids.
      */
@@ -526,6 +533,7 @@ public interface Eco {
      * @param id     The ID of the leaderboard, unique within the plugin.
      * @param key    The key to rank by.
      * @return The leaderboard.
+     * @throws IllegalArgumentException If the key is of a type that can never yield a number.
      */
     @NotNull
     Leaderboard registerKeyLeaderboard(@NotNull EcoPlugin plugin,

@@ -88,8 +88,13 @@ public interface Leaderboard {
      * <p>
      * The rebuild happens off the main thread. The new snapshot is published when the returned
      * future completes; until then, reads keep answering from the previous snapshot.
+     * <p>
+     * If leaderboards are disabled in the config, or the refresh executor is shutting down, no
+     * refresh happens at all and an already-completed future is returned. A completed future is
+     * therefore not a promise that a new snapshot was published.
      *
-     * @return A future completed once the new snapshot has been published.
+     * @return A future completed once the refresh has finished, whether or not it published a
+     *         new snapshot.
      */
     @NotNull
     CompletableFuture<Void> refresh();

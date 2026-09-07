@@ -43,8 +43,9 @@ public abstract class PersistentDataHandler implements Registrable {
      * Get all UUIDs with saved data.
      * <p>
      * This is a blocking operation, and is called on a refresh schedule by the leaderboard
-     * service, so implementations must project only the UUID column and must not read or
-     * deserialize any stored values.
+     * service, so implementations must not deserialize stored values. A database-backed handler
+     * should project only the UUID column; a handler that already holds its data in memory need
+     * only read the keys.
      *
      * @return All saved UUIDs.
      */
@@ -117,6 +118,9 @@ public abstract class PersistentDataHandler implements Registrable {
      * with no stored entries counts as having no stored value and is omitted too, rather than
      * being mapped to an empty list; every implementation must agree on this, so that readAll
      * means the same thing regardless of the storage backend.
+     * <p>
+     * {@link #read} returns null both for "not found" and for "the read failed", so the default
+     * implementation reports a failed read as an absent UUID.
      *
      * @param uuids The uuids to read.
      * @param key   The key.

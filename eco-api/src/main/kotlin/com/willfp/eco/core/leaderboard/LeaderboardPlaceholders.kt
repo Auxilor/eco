@@ -9,23 +9,6 @@ import com.willfp.eco.core.placeholder.PlayerlessPlaceholder
 import java.math.BigDecimal
 import java.util.regex.Pattern
 
-/** Matches the trailing `_top_<N>_name` / `_top_<N>_value` of a positional placeholder. */
-private val POSITION_ARG = Pattern.compile(".*_top_(\\d+)_(?:name|value)$")
-
-/**
- * Read the position out of the args matched by a positional placeholder, or null if the args
- * carry no parsable position.
- */
-private fun positionOf(args: String): Int? {
-    val matcher = POSITION_ARG.matcher(args)
-
-    if (!matcher.matches()) {
-        return null
-    }
-
-    return matcher.group(1).toIntOrNull()
-}
-
 /**
  * Render a standing as display text: `#3` for an exact rank, `Top 12.5%` for a percentile band,
  * and [emptyText] for an unranked player.
@@ -48,6 +31,20 @@ fun LeaderboardRank.toDisplayString(emptyText: String): String {
     }
 
     return emptyText
+}
+
+/**
+ * Read the position back out of the args a positional placeholder matched, using the same
+ * compiled pattern the placeholder was registered with.
+ */
+private fun positionIn(pattern: Pattern, args: String): Int? {
+    val matcher = pattern.matcher(args)
+
+    if (!matcher.matches()) {
+        return null
+    }
+
+    return matcher.group(1).toIntOrNull()
 }
 
 /**
@@ -107,16 +104,21 @@ fun Leaderboard.registerStandardPlaceholders(
 
     val quoted = Pattern.quote(prefix)
 
-    DynamicPlaceholder(plugin, Pattern.compile("${quoted}_top_(\\d+)_name")) { args ->
-        val position = positionOf(args) ?: return@DynamicPlaceholder emptyText
+    // The position is read back out by re-matching the very pattern the placeholder was
+    // registered with, so there is only ever one parser for these args.
+    val namePattern = Pattern.compile("${quoted}_top_(\\d+)_name")
+    val valuePattern = Pattern.compile("${quoted}_top_(\\d+)_value")
+
+    DynamicPlaceholder(plugin, namePattern) { args ->
+        val position = positionIn(namePattern, args) ?: return@DynamicPlaceholder emptyText
 
         // getPlayer resolves an OfflinePlayer, so it is only touched here, where the name is
         // actually needed. A player the server has never seen has no name.
         leaderboard.getTop(position)?.player?.name ?: emptyText
     }.register()
 
-    DynamicPlaceholder(plugin, Pattern.compile("${quoted}_top_(\\d+)_value")) { args ->
-        val position = positionOf(args) ?: return@DynamicPlaceholder emptyText
+    DynamicPlaceholder(plugin, valuePattern) { args ->
+        val position = positionIn(valuePattern, args) ?: return@DynamicPlaceholder emptyText
         val entry = leaderboard.getTop(position) ?: return@DynamicPlaceholder emptyText
 
         formatValue(entry.value)

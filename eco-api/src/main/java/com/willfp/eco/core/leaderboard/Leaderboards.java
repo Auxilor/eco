@@ -32,13 +32,18 @@ public final class Leaderboards {
     /**
      * Register a leaderboard ranking players by a numeric {@link PersistentDataKey}.
      * <p>
-     * This is the common case. Values that are not numbers are skipped, and players with no
-     * stored value are left unranked.
+     * This is the common case. Players with no stored value are left unranked.
+     * <p>
+     * The key must be of a numeric type ({@code INT}, {@code DOUBLE} or {@code BIG_DECIMAL}).
+     * A key of any other type is rejected here rather than registering a leaderboard that would
+     * query the database on every refresh and rank nobody; rank by something else with
+     * {@link #register(EcoPlugin, String, LeaderboardValueProvider)} instead.
      *
      * @param plugin The plugin that owns the leaderboard.
      * @param id     The ID of the leaderboard, unique within the plugin.
      * @param key    The key to rank by.
      * @return The leaderboard.
+     * @throws IllegalArgumentException If the key is of a type that can never yield a number.
      */
     @NotNull
     public static Leaderboard ofKey(@NotNull final EcoPlugin plugin,

@@ -125,7 +125,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     val hologramTracker: HologramTracker by lazy { HologramTracker(this) }
 
-    val leaderboardService = LeaderboardService(this)
+    private val leaderboardService = LeaderboardService(this)
 
     init {
         getProxy(CommonsInitializerProxy::class.java).init(this)
