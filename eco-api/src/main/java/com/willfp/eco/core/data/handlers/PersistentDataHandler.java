@@ -40,12 +40,17 @@ public abstract class PersistentDataHandler implements Registrable {
     }
 
     /**
-     * Get all UUIDs with saved data.
+     * Get all UUIDs with saved data for a registered key.
      * <p>
      * This is a blocking operation, and is called on a refresh schedule by the leaderboard
      * service, so implementations must not deserialize stored values. A database-backed handler
      * should project only the UUID column; a handler that already holds its data in memory need
      * only read the keys.
+     * <p>
+     * A handler that stores each key type separately may skip the types that no
+     * {@link com.willfp.eco.core.data.keys.PersistentDataKey} is currently registered for, since
+     * nothing can read that data back in any case. A UUID whose only stored data belongs to an
+     * unregistered type is therefore not guaranteed to be returned.
      *
      * @return All saved UUIDs.
      */
