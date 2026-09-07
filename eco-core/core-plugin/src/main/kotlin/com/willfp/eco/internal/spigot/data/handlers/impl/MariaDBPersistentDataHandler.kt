@@ -44,7 +44,7 @@ private const val INDEX_COLUMN_NAME = "listIndex"
 // MariaDB, like MySQL, caps a prepared statement at 65535 placeholders, and readAll is called
 // with the entire playerbase by the leaderboard service, so the uuid predicate is split into
 // chunks well below that limit rather than being emitted as one enormous IN (...) list.
-private const val UUID_CHUNK_SIZE = 1000
+
 
 class MariaDBPersistentDataHandler(
     config: Config
@@ -161,6 +161,27 @@ class MariaDBPersistentDataHandler(
         return serializer.readAll(uuids, key as PersistentDataKey<Any>) as Map<UUID, T>
     }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun readAllKeys(
+        uuids: Set<UUID>,
+        keys: Collection<PersistentDataKey<*>>
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>> {
+        val values = HashMap<PersistentDataKey<*>, Map<UUID, Any>>(keys.size)
+
+        // Grouped by type because each type has its own table; one batched read per table rather
+        // than one per key, which is the whole point of reading this way.
+        for ((type, ofType) in keys.groupBy { it.type }) {
+            val serializer = type.getSerializer(this) as MariaDBSerializer<Any>
+            val byName = serializer.readAllKeys(uuids, ofType as List<PersistentDataKey<Any>>)
+
+            for (key in ofType) {
+                values[key] = byName[key.key.toString()] ?: emptyMap()
+            }
+        }
+
+        return values
+    }
+
     private abstract inner class MariaDBSerializer<T : Any> : DataTypeSerializer<T>() {
         protected abstract val table: ProfileTable
 
@@ -172,6 +193,14 @@ class MariaDBPersistentDataHandler(
         }
 
         abstract fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T>
+
+        /**
+         * Read several keys of this serializer's type in one pass over the table.
+         *
+         * Keyed by the key's string form, matching the KEY column, so the caller can map rows back
+         * to the [PersistentDataKey] that asked for them.
+         */
+        abstract fun readAllKeys(uuids: Set<UUID>, keys: List<PersistentDataKey<T>>): Map<String, Map<UUID, T>>
 
         fun createTable(): MariaDBSerializer<T> {
             transaction(database) {
@@ -208,6 +237,42 @@ class MariaDBPersistentDataHandler(
                     table.select(table.uuid, table.value)
                         .where { (table.uuid inList chunk) and (table.key eq key.key.toString()) }
                         .forEach { values[it[table.uuid].toJavaUuid()] = convertFromStored(it[table.value]) }
+                }
+            }
+
+            return values
+        }
+
+        @OptIn(ExperimentalUuidApi::class)
+        override fun readAllKeys(uuids: Set<UUID>, keys: List<PersistentDataKey<T>>): Map<String, Map<UUID, T>> {
+            if (uuids.isEmpty() || keys.isEmpty()) {
+                return emptyMap()
+            }
+
+            val keyNames = keys.map { it.key.toString() }
+            val (uuidChunk, keyChunk) = chunkSizesFor(keyNames.size)
+
+            val profileUUIDs = uuids.map { it.toKotlinUuid() }
+            val values = HashMap<String, MutableMap<UUID, T>>(keyNames.size)
+
+            // Pre-populated so that a key nobody has stored a value for still reports an empty
+            // map, and so a row carrying an unexpected key is dropped rather than inventing one.
+            for (name in keyNames) {
+                values[name] = HashMap()
+            }
+
+            transaction(database) {
+                for (uuidsInChunk in profileUUIDs.chunked(uuidChunk)) {
+                    for (namesInChunk in keyNames.chunked(keyChunk)) {
+                        table.select(table.uuid, table.key, table.value)
+                            .where { (table.uuid inList uuidsInChunk) and (table.key inList namesInChunk) }
+                            .forEach {
+                                values[it[table.key]]?.put(
+                                    it[table.uuid].toJavaUuid(),
+                                    convertFromStored(it[table.value])
+                                )
+                            }
+                    }
                 }
             }
 
@@ -274,6 +339,15 @@ class MariaDBPersistentDataHandler(
 
             return rows.groupBy({ it.first }, { it.second })
         }
+
+        override fun readAllKeys(
+            uuids: Set<UUID>,
+            keys: List<PersistentDataKey<List<T>>>
+        ): Map<String, Map<UUID, List<T>>> =
+            // List-typed keys are never ranked, so batching them buys nothing and would need a
+            // second query shape that orders by index per key. Delegating keeps this identical to
+            // readAll, which is the contract readAllKeys has to preserve anyway.
+            keys.associate { it.key.toString() to readAll(uuids, it) }
 
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {
             val stored = transaction(database) {
