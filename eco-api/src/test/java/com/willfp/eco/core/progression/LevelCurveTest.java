@@ -119,6 +119,16 @@ class LevelCurveTest {
     }
 
     @Test
+    void formulaCurveWithoutAMaxLevelIsUnbounded() {
+        // EcoSkills relies on this default: with an xp-formula and no max-level, levelling is
+        // uncapped, and termination comes from the requirement guard in LevelProgression
+        // rather than from any ceiling. Covered here because EcoMinions' local curve test
+        // asserted it before that duplicate was deleted in Task 9.
+        assertEquals(Integer.MAX_VALUE, new LevelCurve.Formula("x", 1, null, (e, l) -> 100.0).getMaxLevel());
+        assertEquals(50, new LevelCurve.Formula("x", 1, 50, (e, l) -> 100.0).getMaxLevel());
+    }
+
+    @Test
     void noneCurveNeverAdvances() {
         assertEquals(Double.POSITIVE_INFINITY, LevelCurve.None.INSTANCE.xpToReach(2));
         assertEquals(1, LevelCurve.None.INSTANCE.getMaxLevel());
