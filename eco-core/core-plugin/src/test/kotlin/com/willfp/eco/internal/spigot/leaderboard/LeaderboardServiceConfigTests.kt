@@ -3,11 +3,14 @@ package com.willfp.eco.internal.spigot.leaderboard
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.config.base.ConfigYml
+import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
 import com.willfp.eco.core.leaderboard.TallyProvider
 import com.willfp.eco.core.scheduling.AsyncTaskContext
 import com.willfp.eco.core.scheduling.EcoTask
 import com.willfp.eco.core.scheduling.Scheduler
+import com.willfp.eco.util.namespacedKeyOf
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -226,6 +229,99 @@ class LeaderboardServiceConfigTests {
 
         verify(exactly = 1) {
             async.runTimer(any<Runnable>(), 1L, 60L, TimeUnit.SECONDS)
+        }
+    }
+
+    @Test
+    fun `a sweep reads every key-backed leaderboard in one batched call`() {
+        val eco = mockk<Eco>(relaxed = true)
+        val uuids = setOf(UUID.randomUUID(), UUID.randomUUID())
+
+        mockkStatic(Eco::class)
+
+        try {
+            every { Eco.get() } returns eco
+            every { eco.savedProfileUUIDs } returns uuids
+
+            val batchedCalls = AtomicInteger()
+            val perKeyCalls = AtomicInteger()
+            val batchedKeys = HashSet<PersistentDataKey<*>>()
+
+            every { eco.readAllProfileValuesForKeys(any(), any()) } answers {
+                batchedCalls.incrementAndGet()
+                batchedKeys.addAll(secondArg<Collection<PersistentDataKey<*>>>())
+                emptyMap()
+            }
+
+            every { eco.readAllProfileValues(any(), any<PersistentDataKey<Any>>()) } answers {
+                perKeyCalls.incrementAndGet()
+                emptyMap()
+            }
+
+            val service = service()
+
+            // Three keys, so a per-key read would show up as three calls rather than one.
+            val keys = (1..3).map {
+                PersistentDataKey(
+                    namespacedKeyOf("sweeptest", "key_$it"),
+                    PersistentDataKeyType.INT,
+                    0
+                )
+            }
+
+            for ((index, key) in keys.withIndex()) {
+                service.register(plugin, "board_$index", KeyLeaderboardValueProvider(key))
+            }
+
+            service.refreshAll().join()
+
+            assertEquals(1, batchedCalls.get())
+            assertEquals(0, perKeyCalls.get())
+            assertEquals(keys.toSet(), batchedKeys)
+        } finally {
+            unmockkStatic(Eco::class)
+        }
+    }
+
+    @Test
+    fun `a custom provider leaderboard is still refreshed alongside batched ones`() {
+        val eco = mockk<Eco>(relaxed = true)
+        val uuids = setOf(UUID.randomUUID())
+
+        mockkStatic(Eco::class)
+
+        try {
+            every { Eco.get() } returns eco
+            every { eco.savedProfileUUIDs } returns uuids
+            every { eco.readAllProfileValuesForKeys(any(), any()) } returns emptyMap()
+
+            val service = service()
+            val customCalls = AtomicInteger()
+
+            // A custom provider is opaque, so it cannot be batched -- but it must not be dropped
+            // from the sweep just because the key-backed ones now take a different path.
+            service.register(plugin, "custom", LeaderboardValueProvider {
+                customCalls.incrementAndGet()
+                emptyMap()
+            })
+
+            service.register(
+                plugin,
+                "keyed",
+                KeyLeaderboardValueProvider(
+                    PersistentDataKey(
+                        namespacedKeyOf("sweeptest", "keyed"),
+                        PersistentDataKeyType.INT,
+                        0
+                    )
+                )
+            )
+
+            service.refreshAll().join()
+
+            assertEquals(1, customCalls.get())
+        } finally {
+            unmockkStatic(Eco::class)
         }
     }
 }
