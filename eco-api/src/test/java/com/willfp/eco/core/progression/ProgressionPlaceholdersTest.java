@@ -21,6 +21,16 @@ class ProgressionPlaceholdersTest {
     }
 
     @Test
+    void anExplicitPlusIsAccepted() {
+        // EcoPets' spawn-egg lore allowed `%level_+2%` while every other copy of this regex
+        // only allowed `%level_2%` and `%level_-2%`. The shared pattern is the superset, so
+        // migrating the egg path onto it cannot lose a form that already worked.
+        assertEquals("7", ProgressionPlaceholders.inject("%level_+2%", "level", 5));
+        assertEquals("VII", ProgressionPlaceholders.inject("%level_+2_numeral%", "level", 5));
+        assertEquals("7", ProgressionPlaceholders.resolveOffset("level_+2", "level", 5));
+    }
+
+    @Test
     void offsetDoesNotSwallowTheNumeralName() {
         // `%level_numeral%` must not be read as an offset of "numeral". The offset pattern
         // requires digits, which is what keeps these two apart.

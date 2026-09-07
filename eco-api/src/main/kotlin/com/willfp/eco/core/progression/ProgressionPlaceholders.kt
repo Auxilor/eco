@@ -25,7 +25,7 @@ object ProgressionPlaceholders {
      */
     @JvmStatic
     fun offsetPattern(type: String): Pattern =
-        Pattern.compile("${Pattern.quote(type)}_(-?\\d+)(_numeral)?")
+        Pattern.compile("${Pattern.quote(type)}_([+-]?\\d+)(_numeral)?")
 
     /**
      * Resolve a single offset placeholder, given the text between the `%` delimiters.
@@ -72,7 +72,7 @@ object ProgressionPlaceholders {
 
         val buffer = StringBuilder()
         val delimited = Pattern
-            .compile("%(${Pattern.quote(type)}_-?\\d+(?:_numeral)?)%")
+            .compile("%(${Pattern.quote(type)}_[+-]?\\d+(?:_numeral)?)%")
             .matcher(result)
 
         while (delimited.find()) {
