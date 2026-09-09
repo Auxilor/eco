@@ -40,6 +40,16 @@ internal const val UUID_COLUMN_NAME = "profileUUID"
 internal const val KEY_COLUMN_NAME = "dataKey"
 internal const val INDEX_COLUMN_NAME = "listIndex"
 
+// A dropped write is silent data loss, so the handler waits far longer than the old ~124ms total
+// before giving up. On sqlite busy_timeout already blocks instead of throwing, so reaching the end
+// of this loop means something other than contention is wrong.
+internal const val MAX_WRITE_RETRIES = 10
+internal const val RETRY_BACKOFF_CEILING_MILLIS = 2_000L
+
+internal fun retryBackoffMillis(attempt: Int): Long =
+    if (attempt >= 11) RETRY_BACKOFF_CEILING_MILLIS
+    else minOf(1L shl attempt, RETRY_BACKOFF_CEILING_MILLIS)
+
 /**
  * A persistent data handler backed by a SQL database through Exposed.
  *
@@ -437,15 +447,21 @@ abstract class ExposedPersistentDataHandler(
                 return action()
             } catch (e: Exception) {
                 e.printStackTrace()
-                if (retries > 5) {
-                    logger.log(Level.SEVERE, "Dropped write of ${key.key} for $uuid", e)
+                if (retries > MAX_WRITE_RETRIES) {
+                    logger.log(
+                        Level.SEVERE,
+                        "Gave up writing ${key.key} for $uuid after $MAX_WRITE_RETRIES attempts. " +
+                                "This value has been lost.",
+                        e
+                    )
                     return null
                 }
                 retries++
 
-                // Exponential backoff
+                // Exponential backoff, capped so a long outage does not stall the write executor
+                // on a single value.
                 runBlocking {
-                    delay(1L shl retries)
+                    delay(retryBackoffMillis(retries))
                 }
             }
         }
