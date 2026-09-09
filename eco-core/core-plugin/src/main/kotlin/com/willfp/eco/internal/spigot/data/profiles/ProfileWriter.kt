@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.data.profiles
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Level
@@ -17,7 +18,7 @@ Instead, we only commit the last value that was set every interval (default 1 ti
 
 
 class ProfileWriter(
-    private val plugin: EcoPlugin,
+    private val plugin: EcoSpigotPlugin,
     private val handler: ProfileHandler
 ) {
     private val saveInterval = plugin.configYml.getInt("save-interval").toLong()
@@ -63,10 +64,11 @@ class ProfileWriter(
     }
 
     fun startTickingAutosave() {
+        // The local handler is a database that commits on write and reports that it does not
+        // autosave, so this timer is data.yml's only flush -- for eco's own bookkeeping, which is
+        // all that file still holds.
         plugin.scheduler.global().runTimer(autosaveInterval, autosaveInterval) {
-            if (handler.localHandler.shouldAutosave()) {
-                handler.localHandler.save()
-            }
+            plugin.dataYml.save()
         }
     }
 
