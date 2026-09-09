@@ -5,11 +5,14 @@ import com.willfp.eco.internal.spigot.ServerLocking
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlerFactory
 import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlers
+import com.willfp.eco.internal.spigot.data.handlers.handlersToShutdown
+import com.willfp.eco.internal.spigot.data.handlers.resolveHandlerId
+import com.willfp.eco.internal.spigot.data.handlers.sqliteHandlerFor
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
-import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
+import com.willfp.eco.internal.spigot.data.handlers.impl.SQLitePersistentDataHandler
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoPlayerProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoServerProfile
@@ -22,11 +25,18 @@ const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
 class ProfileHandler(
     private val plugin: EcoSpigotPlugin
 ) {
-    private val handlerId = plugin.configYml.getString("data-handler")
+    private val handlerId = resolveHandlerId(plugin.configYml.getString("data-handler"))
 
-    val localHandler = YamlPersistentDataHandler(plugin)
     val defaultHandler = PersistentDataHandlers[handlerId]?.create(plugin)
         ?: throw IllegalArgumentException("Invalid data handler ($handlerId)")
+
+    // Two Hikari pools over one sqlite file serialize against each other, so a server whose
+    // configured handler is already sqlite shares the instance rather than opening a second pool.
+    val localHandler = if (defaultHandler is SQLitePersistentDataHandler) {
+        defaultHandler
+    } else {
+        sqliteHandlerFor(plugin)
+    }
 
     val profileWriter = ProfileWriter(plugin, this)
 
@@ -73,8 +83,9 @@ class ProfileHandler(
     }
 
     fun save() {
-        localHandler.shutdown()
-        defaultHandler.shutdown()
+        for (handler in handlersToShutdown(localHandler, defaultHandler)) {
+            handler.shutdown()
+        }
     }
 
     fun migrateIfNecessary(): Boolean {
