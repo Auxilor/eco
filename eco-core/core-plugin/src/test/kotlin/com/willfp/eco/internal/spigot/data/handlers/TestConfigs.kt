@@ -10,6 +10,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import org.bukkit.NamespacedKey
 
 /**
  * The CONFIG key type serializes through [com.willfp.eco.core.config.readConfig], which reaches the
@@ -26,6 +27,12 @@ fun stubEcoConfigFactory() {
 
     every { eco.createConfig(any<Map<String, Any>>(), any<ConfigType>()) } answers {
         EcoConfigSection(secondArg(), firstArg<Map<String, Any>>())
+    }
+
+    // A value's stored path and column are built from the key's string form, so a mocked key
+    // would read and write at a path no fixture can be written against.
+    every { eco.createNamespacedKey(any(), any()) } answers {
+        NamespacedKey(firstArg<String>(), secondArg<String>())
     }
 
     // getSavedUUIDs decides which tables to scan from the key registry, which is where the real

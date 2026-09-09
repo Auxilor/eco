@@ -13,6 +13,7 @@ import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMySQLPersistentDa
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.SQLitePersistentDataHandler
+import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoPlayerProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoProfile
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoServerProfile
@@ -21,6 +22,7 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
+const val LOCAL_MIGRATED_KEY = "local-handler-migrated"
 
 class ProfileHandler(
     private val plugin: EcoSpigotPlugin
@@ -89,85 +91,97 @@ class ProfileHandler(
     }
 
     fun migrateIfNecessary(): Boolean {
-        if (!plugin.configYml.getBool("perform-data-migration")) {
-            return false
-        }
-
         // First install
-        if (!plugin.dataYml.has("previous-handler")) {
+        if (plugin.configYml.getBool("perform-data-migration") && !plugin.dataYml.has("previous-handler")) {
             plugin.dataYml.set("previous-handler", defaultHandler.id)
             plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)
+            plugin.dataYml.set(LOCAL_MIGRATED_KEY, true)
             plugin.dataYml.save()
             return false
         }
 
-        val previousHandlerId = plugin.dataYml.getString("previous-handler").lowercase()
-        if (previousHandlerId != defaultHandler.id) {
-            val fromFactory = PersistentDataHandlers[previousHandlerId] ?: return false
-            scheduleMigration(fromFactory)
+        val decision = decideMigration(
+            migrationEnabled = plugin.configYml.getBool("perform-data-migration"),
+            hasPreviousHandler = plugin.dataYml.has("previous-handler"),
+            previousHandlerId = plugin.dataYml.getStringOrNull("previous-handler")?.lowercase(),
+            defaultHandlerId = defaultHandler.id,
+            defaultIsMySQL = defaultHandler is MySQLPersistentDataHandler,
+            defaultIsMongoDB = defaultHandler is MongoDBPersistentDataHandler,
+            legacyMigrated = plugin.dataYml.getBool(LEGACY_MIGRATED_KEY),
+            localMigrated = plugin.dataYml.getBool(LOCAL_MIGRATED_KEY),
+            hasStoredProfiles = plugin.dataYml.getSubsectionOrNull("player")
+                ?.getKeys(false)?.isNotEmpty() == true
+        )
 
-            return true
+        val fromFactory = when (decision.kind) {
+            MigrationKind.NONE -> return false
+            MigrationKind.LEGACY_MYSQL -> {
+                plugin.logger.info("eco has detected a legacy MySQL database. Migrating to new MySQL database...")
+                LegacyMySQLPersistentDataHandler.Factory
+            }
+            MigrationKind.LEGACY_MONGODB -> {
+                plugin.logger.info("eco has detected a legacy MongoDB database. Migrating to new MongoDB database...")
+                LegacyMongoDBPersistentDataHandler.Factory
+            }
+            MigrationKind.DEFAULT_HANDLER, MigrationKind.LOCAL_HANDLER ->
+                factoryFor(decision.fromHandlerId) ?: return false
         }
 
-        if (defaultHandler is MySQLPersistentDataHandler && !plugin.dataYml.getBool(LEGACY_MIGRATED_KEY)) {
-            plugin.logger.info("eco has detected a legacy MySQL database. Migrating to new MySQL database...")
-            scheduleMigration(LegacyMySQLPersistentDataHandler.Factory)
-
-            return true
-        }
-
-        if (defaultHandler is MongoDBPersistentDataHandler && !plugin.dataYml.getBool(LEGACY_MIGRATED_KEY)) {
-            plugin.logger.info("eco has detected a legacy MongoDB database. Migrating to new MongoDB database...")
-            scheduleMigration(LegacyMongoDBPersistentDataHandler.Factory)
-
-            return true
-        }
-
-        return false
+        scheduleMigration(fromFactory, decision.kind)
+        return true
     }
 
-    private fun scheduleMigration(fromFactory: PersistentDataHandlerFactory) {
+    private fun factoryFor(handlerId: String?): PersistentDataHandlerFactory? = when (handlerId) {
+        null -> null
+        // yaml is no longer registered, so the migration reaches its read-only factory directly.
+        "yaml" -> YamlPersistentDataHandler.Factory
+        else -> PersistentDataHandlers[handlerId]
+    }
+
+    private fun scheduleMigration(fromFactory: PersistentDataHandlerFactory, kind: MigrationKind) {
         ServerLocking.lock("Migrating player data! Check console for more information.")
 
         // Run after 5 ticks to allow plugins to load their data keys
         plugin.scheduler.global().runLater(5) {
-            doMigrate(fromFactory)
-
-            plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)
-            plugin.dataYml.save()
+            doMigrate(fromFactory, kind)
         }
     }
 
-    private fun doMigrate(fromFactory: PersistentDataHandlerFactory) {
-        plugin.logger.info("eco has detected a change in data handler")
-        plugin.logger.info("${fromFactory.id} --> ${defaultHandler.id}")
+    private fun doMigrate(fromFactory: PersistentDataHandlerFactory, kind: MigrationKind) {
+        // No backup, no migration: this is the one operation that rewrites every profile at once,
+        // and the server stays locked rather than proceeding without a way back.
+        if (DataYmlBackup.backup(plugin.dataFolder) == null) {
+            plugin.logger.severe("Could not back up data.yml, so the migration has been aborted.")
+            plugin.logger.severe("The server will stay locked. Fix the file permissions and restart.")
+            return
+        }
+
+        // The local handler is the target only when the configured handler is already migrated and
+        // the local keys are what is left behind in data.yml.
+        val toHandler = if (kind == MigrationKind.LOCAL_HANDLER) localHandler else defaultHandler
+
+        plugin.logger.info("eco is migrating player data")
+        plugin.logger.info("${fromFactory.id} --> ${toHandler.id}")
         plugin.logger.info("This will take a while! Players will not be able to join during this time.")
 
-        val fromHandler = fromFactory.create(plugin)
-        val toHandler = defaultHandler
-
-        val keys = KeyRegistry.getRegisteredKeys()
-
-        plugin.logger.info("Keys to migrate: ${keys.map { it.key }.joinToString(", ") }}")
-
-        plugin.logger.info("Loading profile UUIDs from ${fromFactory.id}...")
-        plugin.logger.info("This step may take a while depending on the size of your database.")
-
-        val uuids = fromHandler.getSavedUUIDs()
-
-        plugin.logger.info("Found ${uuids.size} profiles to migrate")
-
-        for ((index, uuid) in uuids.withIndex()) {
-            plugin.logger.info("(${index + 1}/${uuids.size}) Migrating $uuid")
-            val profile = fromHandler.serializeProfile(uuid, keys)
-            toHandler.loadSerializedProfile(profile)
+        val keys = KeyRegistry.getRegisteredKeys().let {
+            // A local migration carries only the keys that route locally; the rest already live in
+            // the configured handler. Every other migration carries the whole registry, which on a
+            // sqlite server is also how the local keys get carried.
+            if (kind == MigrationKind.LOCAL_HANDLER) it.filterTo(mutableSetOf()) { key -> key.isSavedLocally } else it
         }
+
+        migrateProfiles(fromFactory.create(plugin), toHandler, keys, plugin.logger::info)
 
         plugin.logger.info("Profile writes submitted! Waiting for completion...")
         toHandler.shutdown()
 
         plugin.logger.info("Updating previous handler...")
-        plugin.dataYml.set("previous-handler", handlerId)
+        plugin.dataYml.set("previous-handler", defaultHandler.id)
+        plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)
+        // A default-handler migration on a sqlite server carried the local keys in the same pass,
+        // so the local flag is set alongside it rather than firing a second migration next boot.
+        plugin.dataYml.set(LOCAL_MIGRATED_KEY, true)
         plugin.dataYml.save()
         plugin.logger.info("The server will now automatically be restarted...")
 
