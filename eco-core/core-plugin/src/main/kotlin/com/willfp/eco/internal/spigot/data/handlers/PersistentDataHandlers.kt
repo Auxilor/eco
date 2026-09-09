@@ -8,7 +8,6 @@ import com.willfp.eco.internal.spigot.data.handlers.impl.MariaDBPersistentDataHa
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.SQLitePersistentDataHandler
-import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
 import java.io.File
 
 abstract class PersistentDataHandlerFactory(
@@ -19,11 +18,6 @@ abstract class PersistentDataHandlerFactory(
 
 object PersistentDataHandlers: Registry<PersistentDataHandlerFactory>() {
     init {
-        register(object : PersistentDataHandlerFactory("yaml") {
-            override fun create(plugin: EcoSpigotPlugin) =
-                YamlPersistentDataHandler(plugin)
-        })
-
         register(object : PersistentDataHandlerFactory("sqlite") {
             override fun create(plugin: EcoSpigotPlugin) =
                 sqliteHandlerFor(plugin)
