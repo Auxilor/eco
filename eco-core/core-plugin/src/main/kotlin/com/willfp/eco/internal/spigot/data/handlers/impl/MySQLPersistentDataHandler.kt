@@ -250,7 +250,7 @@ class MySQLPersistentDataHandler(
             }
 
             val keyNames = keys.map { it.key.toString() }
-            val (uuidChunk, keyChunk) = chunkSizesFor(keyNames.size)
+            val (uuidChunk, keyChunk) = chunkSizesFor(keyNames.size, MYSQL_PLACEHOLDER_BUDGET)
 
             val profileUUIDs = uuids.map { it.toKotlinUuid() }
             val values = HashMap<String, MutableMap<UUID, T>>(keyNames.size)
