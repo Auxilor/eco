@@ -8,6 +8,7 @@ import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import com.willfp.eco.internal.spigot.data.Bookkeeping
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileExistenceCheck
 import java.math.BigDecimal
@@ -72,6 +73,14 @@ abstract class ExposedPersistentDataHandler(
         Database.connect(dataSource, connectionAutoRegistration = ExposedConnectionImpl())
 
     private val logger = Logger.getLogger("eco")
+
+    /**
+     * eco's own bookkeeping, kept alongside the profiles rather than in a config file.
+     *
+     * Created on first use: only the local handler is ever asked for it, and on a server whose
+     * configured handler is a remote database there is no reason to create the table there too.
+     */
+    val bookkeeping: Bookkeeping by lazy { ExposedBookkeeping(database, prefix) }
 
     /** The column type a plain string value is stored in. */
     protected abstract fun Table.textValueColumn(name: String): Column<String>

@@ -1,7 +1,5 @@
 package com.willfp.eco.internal.spigot.datapack
 
-import com.willfp.eco.core.config.interfaces.Config
-
 /**
  * Where the ledger is persisted.
  */
@@ -22,31 +20,6 @@ class MemoryLedgerStorage(initial: Map<String, Set<String>> = emptyMap()) : Ledg
 
     override fun write(data: Map<String, Set<String>>) {
         this.data = data.mapValues { it.value.toSet() }
-    }
-}
-
-/**
- * Storage backed by a section of one of eco's configs.
- */
-class ConfigLedgerStorage(
-    private val config: Config,
-    private val path: String,
-    private val save: () -> Unit
-) : LedgerStorage {
-    override fun read(): Map<String, Set<String>> {
-        val section = config.getSubsectionOrNull(path) ?: return emptyMap()
-
-        return section.getKeys(false).associateWith { section.getStrings("$it").toSet() }
-    }
-
-    override fun write(data: Map<String, Set<String>>) {
-        config.set(path, null)
-
-        for ((plugin, tokens) in data) {
-            config.set("$path.$plugin", tokens.sorted())
-        }
-
-        save()
     }
 }
 

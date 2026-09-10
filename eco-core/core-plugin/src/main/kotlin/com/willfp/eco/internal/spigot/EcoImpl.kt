@@ -119,7 +119,9 @@ private val DEFAULT_PROFILE_RESOLVER = PlayerProfileResolver { it.uniqueId }
 
 @Suppress("UNUSED")
 class EcoImpl : EcoSpigotPlugin(), Eco {
-    override val dataYml = DataYml(this)
+    // Lazy, because constructing the config recreates data.yml from the jar. A server that has
+    // finished migrating never touches it, and so never grows the file back.
+    override val dataYml: DataYml by lazy { DataYml(this) }
 
     override val profileHandler = ProfileHandler(this)
 

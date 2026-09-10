@@ -12,9 +12,10 @@ import io.mockk.verify
 import org.junit.jupiter.api.Test
 
 /**
- * data.yml no longer holds profile data, but it still holds eco's own bookkeeping -- and the local
- * handler that used to flush it is a database now, which reports that it does not autosave. Without
- * this the timer became a no-op and nothing ever committed the file.
+ * data.yml is written to for exactly as long as a migration is carrying profiles out of it: the
+ * dual-write is what a half-finished copy resumes from on the next boot. Once the migration is
+ * done the file is gone, and saving it on a timer would delete and rewrite -- or recreate -- a file
+ * eco has just retired.
  */
 class AutosaveTests {
     private val config = mockk<ConfigYml>()
@@ -34,14 +35,30 @@ class AutosaveTests {
         every { config.getInt("autosave-interval") } returns 36000
     }
 
-    @Test
-    fun `the autosave timer saves data yml`() {
+    private fun tick(): Runnable {
         val task = slot<Runnable>()
         every { global.runTimer(36000L, 36000L, capture(task)) } returns mockk()
 
         ProfileWriter(plugin, handler).startTickingAutosave()
-        task.captured.run()
+
+        return task.captured
+    }
+
+    @Test
+    fun `the autosave timer saves data yml while a migration is reading it`() {
+        every { handler.liveMigration } returns mockk()
+
+        tick().run()
 
         verify(exactly = 1) { dataYml.save() }
+    }
+
+    @Test
+    fun `the autosave timer leaves a retired data yml alone`() {
+        every { handler.liveMigration } returns null
+
+        tick().run()
+
+        verify(exactly = 0) { dataYml.save() }
     }
 }

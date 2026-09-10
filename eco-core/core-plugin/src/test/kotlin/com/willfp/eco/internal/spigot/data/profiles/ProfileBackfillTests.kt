@@ -64,7 +64,7 @@ class ProfileBackfillTests {
         val file = tempDatabase()
         val target = SQLitePersistentDataHandler(file)
 
-        val written = backfillProfiles(source(), target, setOf(lateKey)) { }
+        val written = backfillProfiles(source(), target, setOf(lateKey), { })
 
         target.shutdown()
 
@@ -87,7 +87,7 @@ class ProfileBackfillTests {
         target.shutdown()
 
         val second = SQLitePersistentDataHandler(file)
-        val written = backfillProfiles(source(), second, setOf(carriedKey)) { }
+        val written = backfillProfiles(source(), second, setOf(carriedKey), { })
         second.shutdown()
 
         assertEquals(0, written)
@@ -105,7 +105,7 @@ class ProfileBackfillTests {
         val file = tempDatabase()
         val target = SQLitePersistentDataHandler(file)
 
-        val written = backfillProfiles(source(), target, setOf(unstoredKey)) { }
+        val written = backfillProfiles(source(), target, setOf(unstoredKey), { })
 
         target.shutdown()
 
@@ -117,5 +117,81 @@ class ProfileBackfillTests {
         } finally {
             reader.shutdown()
         }
+    }
+
+    @Test
+    fun `a backfill smaller than the playerbase carries every profile`() {
+        val file = tempDatabase()
+        val target = SQLitePersistentDataHandler(file)
+
+        // One profile per chunk, so the pass is split rather than held in one map.
+        val written = backfillProfiles(
+            source(),
+            target,
+            setOf(lateKey),
+            { },
+            chunkSize = 1
+        )
+
+        assertEquals(2, written)
+
+        // Read back through a second handler: writes are dispatched to the handler's executor,
+        // and shutting it down is what awaits them.
+        target.shutdown()
+
+        val reader = SQLitePersistentDataHandler(file)
+        try {
+            assertEquals("from data.yml", reader.read(alice, lateKey))
+            assertEquals("bob from data.yml", reader.read(bob, lateKey))
+        } finally {
+            reader.shutdown()
+        }
+    }
+
+    @Test
+    fun `a key the source holds nothing for is never throttled`() {
+        val file = tempDatabase()
+        val target = SQLitePersistentDataHandler(file)
+
+        var pauses = 0
+
+        // One profile per chunk, so a key that did have data would pause between them.
+        backfillProfiles(
+            source(),
+            target,
+            setOf(unstoredKey),
+            { },
+            chunkSize = 1,
+            pause = { pauses++ }
+        )
+
+        target.shutdown()
+
+        // Nothing was read from the database, so there is nothing to throttle. A server with
+        // thousands of registered keys and data.yml values for a handful of them would otherwise
+        // spend the whole backfill asleep.
+        assertEquals(0, pauses)
+    }
+
+    @Test
+    fun `a key with data is throttled between chunks`() {
+        val file = tempDatabase()
+        val target = SQLitePersistentDataHandler(file)
+
+        var pauses = 0
+
+        backfillProfiles(
+            source(),
+            target,
+            setOf(lateKey),
+            { },
+            chunkSize = 1,
+            pause = { pauses++ }
+        )
+
+        target.shutdown()
+
+        // Two profiles, one chunk each, and no pause after the last one.
+        assertEquals(1, pauses)
     }
 }

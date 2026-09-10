@@ -52,14 +52,19 @@ class ProfileWriter(
                 @Suppress("UNCHECKED_CAST")
                 dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
 
-                // A profile part-way out of data.yml has two live stores, so it is written to
-                // both: the copy skips what was written here, and a server that stops mid-copy
-                // resumes from a data.yml that has the value rather than from before it.
+                // Every profile the server writes to during a migration is remembered, so that
+                // verification leaves it alone. A profile part-way out of data.yml also has two
+                // live stores, so it is written to both: the copy skips what was written here,
+                // and a server that stops mid-copy resumes from a data.yml that has the value
+                // rather than from before it.
                 val migration = handler.liveMigration
 
-                if (migration != null && migration.isMigrating(request.uuid)) {
-                    migration.noteLiveWrite(request.uuid, request.key)
-                    handler.dataYmlStore.write(request.uuid, request.key as PersistentDataKey<Any>, value)
+                if (migration != null) {
+                    migration.noteWrite(request.uuid, request.key)
+
+                    if (migration.isMigrating(request.uuid)) {
+                        handler.dataYmlStore.write(request.uuid, request.key, value)
+                    }
                 }
 
                 // A broken listener must not stop the rest of the queue from being written: the
@@ -74,11 +79,15 @@ class ProfileWriter(
     }
 
     fun startTickingAutosave() {
-        // The local handler is a database that commits on write and reports that it does not
-        // autosave, so this timer is data.yml's only flush -- for eco's own bookkeeping, which is
-        // all that file still holds.
+        // data.yml is only ever written to while a migration is carrying profiles out of it: the
+        // dual-write below is what a half-finished copy resumes from on the next boot. Every other
+        // boot has nothing to flush -- eco's own bookkeeping is in the database, and the profiles
+        // are too -- and saving anyway would delete and rewrite the whole file on a timer, which
+        // is what recreated a data.yml an operator had just watched eco retire.
         plugin.scheduler.global().runTimer(autosaveInterval, autosaveInterval) {
-            plugin.dataYml.save()
+            if (handler.liveMigration != null) {
+                plugin.dataYml.save()
+            }
         }
     }
 

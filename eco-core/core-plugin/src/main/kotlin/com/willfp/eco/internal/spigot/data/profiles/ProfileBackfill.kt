@@ -15,28 +15,44 @@ import java.util.UUID
  * A profile that already has a value in [to] is left alone: that value is newer than anything
  * data.yml holds, since data.yml stopped being written to when the migration ran.
  *
+ * A pass is made one chunk of profiles at a time: reading a key for every profile at once means
+ * holding the whole playerbase's values for it in memory, which is the largest thing either this
+ * or the migration ever does. [pause] is called between chunks that reached the target, as the
+ * migration's sweep does -- a key the source holds nothing for never touches the database, and
+ * throttling it would spend the whole pass asleep on a server with thousands of registered keys
+ * and data.yml values for a handful of them.
+ *
  * @return The number of values written.
  */
 fun backfillProfiles(
     from: PersistentDataHandler,
     to: PersistentDataHandler,
     keys: Set<PersistentDataKey<*>>,
-    log: (String) -> Unit
+    log: (String) -> Unit,
+    uuids: Set<UUID> = from.getSavedUUIDs(),
+    chunkSize: Int = DEFAULT_CHUNK_SIZE,
+    pause: () -> Unit = {}
 ): Int {
-    if (keys.isEmpty()) {
+    if (keys.isEmpty() || uuids.isEmpty()) {
         return 0
     }
 
-    val uuids = from.getSavedUUIDs()
-
-    if (uuids.isEmpty()) {
-        return 0
-    }
+    val chunks = uuids.chunked(chunkSize)
 
     var written = 0
 
     for (key in keys) {
-        val forKey = backfillKey(from, to, key, uuids)
+        var forKey = 0
+
+        for ((index, chunk) in chunks.withIndex()) {
+            val result = backfillKey(from, to, key, chunk.toSet())
+
+            forKey += result.written
+
+            if (result.readTarget && index < chunks.size - 1) {
+                pause()
+            }
+        }
 
         if (forKey > 0) {
             log("Backfilled $forKey values for ${key.key} from ${from.id} into ${to.id}")
@@ -48,19 +64,21 @@ fun backfillProfiles(
     return written
 }
 
+private const val DEFAULT_CHUNK_SIZE = 500
+
 @Suppress("UNCHECKED_CAST")
 private fun backfillKey(
     from: PersistentDataHandler,
     to: PersistentDataHandler,
     key: PersistentDataKey<*>,
     uuids: Set<UUID>
-): Int {
+): ChunkResult {
     val typed = key as PersistentDataKey<Any>
 
     val stored = from.readAll(uuids, typed)
 
     if (stored.isEmpty()) {
-        return 0
+        return ChunkResult(0, readTarget = false)
     }
 
     val existing = to.readAll(stored.keys, typed)
@@ -70,5 +88,16 @@ private fun backfillKey(
         to.write(uuid, typed, value)
     }
 
-    return missing.size
+    return ChunkResult(missing.size, readTarget = true)
 }
+
+/**
+ * What one chunk of one key did: how much was written, and whether the target was read at all.
+ *
+ * The second is what the throttle is for. A chunk the source held nothing for is a pass over a
+ * map in memory, and pausing after it throttles nothing.
+ */
+private class ChunkResult(
+    val written: Int,
+    val readTarget: Boolean
+)

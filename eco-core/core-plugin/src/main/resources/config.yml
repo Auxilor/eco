@@ -13,6 +13,12 @@ data-handler: sqlite
 # If data should be migrated automatically when changing data handler.
 perform-data-migration: true
 
+# How many milliseconds to wait between profiles while migrating player data out of data.yml.
+# The migration runs in the background while players are online, and nothing waits on it, so this
+# keeps it from being the heaviest thing on your database. Raise it on a large playerbase, or set
+# it to 0 to migrate as fast as the database allows.
+migration-throttle-ms: 5
+
 mongodb:
   # The full MongoDB connection URL.
   url: ""

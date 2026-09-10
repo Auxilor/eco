@@ -227,6 +227,7 @@ import me.TechsCode.UltraEconomy.UltraEconomy
 import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
+import com.willfp.eco.internal.spigot.datapack.BookkeepingLedgerStorage
 import com.willfp.eco.internal.spigot.datapack.DatapackRegistry
 import com.willfp.eco.internal.spigot.proxies.DatapackCodecProxy
 import org.bukkit.Bukkit
@@ -265,8 +266,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     val datapackRegistry: DatapackRegistry by lazy {
         DatapackRegistry(
             logger = this.logger,
-            dataYml = this.dataYml,
-            saveData = { this.dataYml.save() },
+            ledgerStorage = BookkeepingLedgerStorage(this.profileHandler.bookkeeping),
             proxyProvider = { this.getProxy(DatapackCodecProxy::class.java) }
         )
     }
