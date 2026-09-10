@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap
 const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
 const val LOCAL_MIGRATED_KEY = "local-handler-migrated"
 
+// The keys data.yml has already given up, so a key is only ever backfilled once.
+const val BACKFILLED_KEYS_KEY = "backfilled-keys"
+
 class ProfileHandler(
     private val plugin: EcoSpigotPlugin
 ) {
@@ -131,6 +134,65 @@ class ProfileHandler(
         return true
     }
 
+    /**
+     * Carry the data of any key data.yml still holds and the migration never took.
+     *
+     * The migration takes the keys that are registered at the moment it runs, and a key registers
+     * when something first constructs it - so a plugin that enables late, or is installed after the
+     * migration, leaves its data behind in data.yml. This picks such a key up the first boot it is
+     * registered on, rather than losing it with the plugin that was missing on migration day.
+     */
+    fun backfillIfNecessary() {
+        if (!plugin.configYml.getBool("perform-data-migration")) {
+            return
+        }
+
+        // data.yml is only a source once the migration has left it behind; a server still holding
+        // its profiles there has a migration coming instead.
+        if (plugin.dataYml.getSubsectionOrNull("player")?.getKeys(false).isNullOrEmpty()) {
+            return
+        }
+
+        // Run after 5 ticks to allow plugins to load their data keys, as the migration does, and
+        // off the main thread because every key means a pass over data.yml and the database.
+        plugin.scheduler.global().runLater(5) {
+            plugin.scheduler.runAsync {
+                doBackfill()
+            }
+        }
+    }
+
+    private fun doBackfill() {
+        val alreadyBackfilled = plugin.dataYml.getStrings(BACKFILLED_KEYS_KEY).toSet()
+
+        val keys = KeyRegistry.getRegisteredKeys()
+            .filterNot { it.key.toString() in alreadyBackfilled }
+
+        if (keys.isEmpty()) {
+            return
+        }
+
+        val source = YamlPersistentDataHandler.Factory.create(plugin)
+
+        val written = keys.groupBy { it.isSavedLocally }.entries.sumOf { (isLocal, group) ->
+            backfillProfiles(
+                source,
+                if (isLocal) localHandler else defaultHandler,
+                group.toSet(),
+                plugin.logger::info
+            )
+        }
+
+        // Recorded whether or not anything was written: a key with nothing left for it in data.yml
+        // has nothing to gain from being swept again next boot.
+        plugin.dataYml.set(BACKFILLED_KEYS_KEY, (alreadyBackfilled + keys.map { it.key.toString() }).toList())
+        plugin.dataYml.save()
+
+        if (written > 0) {
+            plugin.logger.info("Backfilled $written values from data.yml for ${keys.size} keys")
+        }
+    }
+
     private fun factoryFor(handlerId: String?): PersistentDataHandlerFactory? = when (handlerId) {
         null -> null
         // yaml is no longer registered, so the migration reaches its read-only factory directly.
@@ -182,6 +244,8 @@ class ProfileHandler(
         // A default-handler migration on a sqlite server carried the local keys in the same pass,
         // so the local flag is set alongside it rather than firing a second migration next boot.
         plugin.dataYml.set(LOCAL_MIGRATED_KEY, true)
+        // Everything carried here is done with data.yml, so the backfill never sweeps it again.
+        plugin.dataYml.set(BACKFILLED_KEYS_KEY, keys.map { it.key.toString() })
         plugin.dataYml.save()
         plugin.logger.info("The server will now automatically be restarted...")
 
