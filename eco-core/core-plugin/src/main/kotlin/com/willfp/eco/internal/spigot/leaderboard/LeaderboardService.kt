@@ -60,6 +60,15 @@ class LeaderboardService(
     // rather than queued behind the one still running.
     private val refreshing = AtomicBoolean(false)
 
+    /**
+     * Whether ranking is on hold, set while profiles are still being carried out of data.yml.
+     *
+     * A playerbase half-way through a migration would rank the profiles that happen to have moved
+     * already above everyone else, so nothing is ranked until every profile is where it belongs.
+     */
+    @Volatile
+    var isPaused: () -> Boolean = { false }
+
     // Every config value is read on access rather than cached, so that /eco reload takes
     // effect without having to tear the service down and build a new one.
     val enabled: Boolean
@@ -315,7 +324,7 @@ class LeaderboardService(
      * happens to be running.
      */
     fun refresh(leaderboard: EcoLeaderboard): CompletableFuture<Void> {
-        if (!enabled) {
+        if (!enabled || isPaused()) {
             return CompletableFuture.completedFuture(null)
         }
 
@@ -361,7 +370,7 @@ class LeaderboardService(
      * happens to be running.
      */
     fun refresh(tally: EcoPlayerbaseTally): CompletableFuture<Void> {
-        if (!enabled) {
+        if (!enabled || isPaused()) {
             return CompletableFuture.completedFuture(null)
         }
 
@@ -374,7 +383,7 @@ class LeaderboardService(
      * Refresh every registered leaderboard and tally off the main thread.
      */
     fun refreshAll(): CompletableFuture<Void> {
-        if (!enabled) {
+        if (!enabled || isPaused()) {
             return CompletableFuture.completedFuture(null)
         }
 

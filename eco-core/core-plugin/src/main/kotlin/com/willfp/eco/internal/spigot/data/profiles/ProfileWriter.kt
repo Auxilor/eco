@@ -52,6 +52,16 @@ class ProfileWriter(
                 @Suppress("UNCHECKED_CAST")
                 dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
 
+                // A profile part-way out of data.yml has two live stores, so it is written to
+                // both: the copy skips what was written here, and a server that stops mid-copy
+                // resumes from a data.yml that has the value rather than from before it.
+                val migration = handler.liveMigration
+
+                if (migration != null && migration.isMigrating(request.uuid)) {
+                    migration.noteLiveWrite(request.uuid, request.key)
+                    handler.dataYmlStore.write(request.uuid, request.key as PersistentDataKey<Any>, value)
+                }
+
                 // A broken listener must not stop the rest of the queue from being written: the
                 // data itself is already committed above, and losing the drain would lose writes.
                 try {

@@ -481,6 +481,12 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
             leaderboardService.onValueWritten(uuid, key, value)
         }
 
+        // Nothing is ranked while profiles are still being carried out of data.yml, and the
+        // caches are loaded once that finishes rather than waiting for the next reconcile - a
+        // server with reconciliation turned off would otherwise rank nobody until it restarted.
+        leaderboardService.isPaused = { profileHandler.liveMigration != null }
+        profileHandler.onLiveMigrationComplete = { leaderboardService.start() }
+
         // profileHandler is constructed with EcoImpl itself, and Eco.Instance is set in the
         // EcoPlugin constructor, so savedProfileUUIDs is already answerable here. The first
         // sweep is a second away in any case, well after afterLoad() two ticks in.

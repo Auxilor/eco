@@ -9,6 +9,7 @@ import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.data.KeyRegistry
+import com.willfp.eco.internal.spigot.data.profiles.ProfileExistenceCheck
 import java.math.BigDecimal
 import java.util.UUID
 import java.util.logging.Level
@@ -66,7 +67,7 @@ abstract class ExposedPersistentDataHandler(
     dataSource: DataSource,
     protected val prefix: String,
     private val placeholderBudget: Int
-) : PersistentDataHandler(id) {
+) : PersistentDataHandler(id), ProfileExistenceCheck {
     protected val database: Database =
         Database.connect(dataSource, connectionAutoRegistration = ExposedConnectionImpl())
 
@@ -173,6 +174,15 @@ abstract class ExposedPersistentDataHandler(
         return savedUUIDs
     }
 
+    override fun hasStoredProfile(uuid: UUID): Boolean {
+        // Every type, not just the registered ones: this answers "has this profile been migrated",
+        // and a profile whose only rows belong to a plugin that is currently uninstalled has been.
+        // Reading it back is a different question, and one the key registry is right to answer.
+        return PersistentDataKeyType.values().any {
+            (it.getSerializer(this) as ExposedSerializer<*>).hasStoredProfile(uuid)
+        }
+    }
+
     override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
         @Suppress("UNCHECKED_CAST")
         val serializer = key.type.getSerializer(this) as ExposedSerializer<Any>
@@ -209,6 +219,16 @@ abstract class ExposedPersistentDataHandler(
         fun getSavedUUIDs(): Set<Uuid> {
             return transaction(database) {
                 table.select(table.uuid).map { it[table.uuid] }.toSet()
+            }
+        }
+
+        @OptIn(ExperimentalUuidApi::class)
+        fun hasStoredProfile(uuid: UUID): Boolean {
+            return transaction(database) {
+                table.select(table.uuid)
+                    .where { table.uuid eq uuid.toKotlinUuid() }
+                    .limit(1)
+                    .any()
             }
         }
 

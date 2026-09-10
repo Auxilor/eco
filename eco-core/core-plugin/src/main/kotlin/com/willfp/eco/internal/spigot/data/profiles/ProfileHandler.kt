@@ -45,6 +45,27 @@ class ProfileHandler(
 
     val profileWriter = ProfileWriter(plugin, this)
 
+    /**
+     * The migration carrying profiles out of data.yml, or null when none is running.
+     *
+     * Read by the writer, which dual-writes for a profile being copied, and by the leaderboard
+     * service, which ranks nobody until the sweep is done rather than ranking half a playerbase.
+     */
+    @Volatile
+    var liveMigration: LiveProfileMigration? = null
+        private set
+
+    /**
+     * Called once the live migration has carried every profile across, or null if nothing cares.
+     */
+    @Volatile
+    var onLiveMigrationComplete: (() -> Unit)? = null
+
+    /**
+     * Writes into data.yml for a profile that is part-way through being carried out of it.
+     */
+    val dataYmlStore = DataYmlProfileStore(plugin.dataYml)
+
     private val loaded = ConcurrentHashMap<UUID, EcoProfile>()
     private val resolvedProfiles = ConcurrentHashMap<UUID, MutableSet<UUID>>()
 
@@ -130,8 +151,95 @@ class ProfileHandler(
                 factoryFor(decision.fromHandlerId) ?: return false
         }
 
+        // data.yml is the one source that can be read while the server runs: it is a file eco owns
+        // and nothing else writes to. Migrating out of it happens live, profile by profile, with no
+        // lock and no restart. The legacy databases keep the locked copy.
+        if (fromFactory == YamlPersistentDataHandler.Factory) {
+            startLiveMigration(decision.kind)
+
+            // The server runs normally either way: the migration needs the writer ticking to
+            // dual-write, and a migration that could not start has touched nothing.
+            return false
+        }
+
         scheduleMigration(fromFactory, decision.kind)
         return true
+    }
+
+    /**
+     * Carry profiles out of data.yml one at a time, while the server runs.
+     *
+     * A profile is copied the first time anything asks for it - on login, or when the background
+     * sweep reaches it - and the target holding a row for a profile is what marks it as done. See
+     * [LiveProfileMigration].
+     *
+     */
+    private fun startLiveMigration(kind: MigrationKind) {
+        // No backup, no migration: the copy leaves data.yml intact, but it is the only copy of the
+        // data until the sweep finishes, and a profile part-way across is written to in both.
+        if (DataYmlBackup.backup(plugin.dataFolder) == null) {
+            plugin.logger.severe("Could not back up data.yml, so the migration has been postponed.")
+            plugin.logger.severe("Fix the file permissions and restart. No data has been touched.")
+            return
+        }
+
+        plugin.logger.info("eco is migrating player data out of data.yml")
+        plugin.logger.info("Players can join throughout: profiles are carried across as they are needed.")
+
+        val source = YamlPersistentDataHandler.Factory.create(plugin)
+
+        val migration = LiveProfileMigration(
+            source,
+            // Read per profile rather than captured, so a key registered by a plugin that enables
+            // late is carried for every profile migrated after it registers.
+            {
+                KeyRegistry.getRegisteredKeys().let {
+                    if (kind == MigrationKind.LOCAL_HANDLER) {
+                        it.filterTo(mutableSetOf()) { key -> key.isSavedLocally }
+                    } else {
+                        it
+                    }
+                }
+            },
+            { if (it.isSavedLocally) localHandler else defaultHandler },
+            plugin.logger::info
+        )
+
+        liveMigration = migration
+
+        // Run after 5 ticks to allow plugins to load their data keys, then off the main thread:
+        // the sweep is a pass over every profile the server has ever seen.
+        plugin.scheduler.global().runLater(5) {
+            plugin.scheduler.runAsync {
+                migration.sweep()
+                finishLiveMigration()
+            }
+        }
+    }
+
+    private fun finishLiveMigration() {
+        liveMigration = null
+
+        plugin.dataYml.set("previous-handler", defaultHandler.id)
+        plugin.dataYml.set(LEGACY_MIGRATED_KEY, true)
+        plugin.dataYml.set(LOCAL_MIGRATED_KEY, true)
+        // Everything carried here is done with data.yml, so the backfill never sweeps it again.
+        plugin.dataYml.set(BACKFILLED_KEYS_KEY, KeyRegistry.getRegisteredKeys().map { it.key.toString() })
+        plugin.dataYml.save()
+
+        plugin.logger.info("Player data migration complete. data.yml is no longer read from.")
+
+        onLiveMigrationComplete?.invoke()
+    }
+
+    /**
+     * Carry [uuid] out of data.yml if a migration is running and has not reached it yet.
+     *
+     * Blocks for the length of one profile copy, so callers on the main thread should expect it to
+     * do nothing at all - which is the case for every profile once the sweep has finished.
+     */
+    fun ensureMigrated(uuid: UUID) {
+        liveMigration?.ensureMigrated(uuid)
     }
 
     /**
@@ -150,6 +258,12 @@ class ProfileHandler(
         // data.yml is only a source once the migration has left it behind; a server still holding
         // its profiles there has a migration coming instead.
         if (plugin.dataYml.getSubsectionOrNull("player")?.getKeys(false).isNullOrEmpty()) {
+            return
+        }
+
+        // A live migration is already carrying whole profiles across, key by key as they are
+        // registered; sweeping the same file at the same time would fight it for no gain.
+        if (liveMigration != null) {
             return
         }
 

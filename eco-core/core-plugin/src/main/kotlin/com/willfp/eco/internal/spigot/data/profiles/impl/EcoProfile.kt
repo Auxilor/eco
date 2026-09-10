@@ -25,6 +25,11 @@ abstract class EcoProfile(
             return this.data[key] as T
         }
 
+        // A profile still in data.yml is carried across before it is read, so a read never sees
+        // half a profile. Players are resolved on login instead, off the main thread; this is the
+        // path for everything else - offline lookups, placeholders, admin commands.
+        handler.ensureMigrated(uuid)
+
         this.data[key] = if (key.isSavedLocally) {
             handler.localHandler.read(uuid, key)
         } else {
