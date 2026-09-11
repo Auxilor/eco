@@ -100,6 +100,22 @@ abstract class ExposedPersistentDataHandler(
         // Do nothing
     }
 
+    /**
+     * Drop an index left behind by an older version of eco, if this database still has it.
+     *
+     * Dropping one is safe by construction: every index listed in [ProfileTable.supersededIndices]
+     * duplicates its table's primary key, which has been part of these tables since they were
+     * introduced, so the uniqueness it enforced outlives it.
+     *
+     * There is no portable spelling. SQLite takes DROP INDEX IF EXISTS against a bare index name,
+     * while MySQL and MariaDB scope index names to their table and are overridden below.
+     */
+    protected open fun dropIndexIfExists(tableName: String, indexName: String) {
+        transaction(database) {
+            exec("DROP INDEX IF EXISTS $indexName")
+        }
+    }
+
     protected fun registerSerializers() {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
             override val table = object : KeyTable<String>("string") {
@@ -254,6 +270,10 @@ abstract class ExposedPersistentDataHandler(
         fun createTable(): ExposedSerializer<T> {
             transaction(database) {
                 SchemaUtils.create(table)
+            }
+
+            for (indexName in table.supersededIndices) {
+                dropIndexIfExists(table.tableName, indexName)
             }
 
             this.afterCreate()
@@ -442,6 +462,14 @@ abstract class ExposedPersistentDataHandler(
     protected abstract inner class ProfileTable(name: String) : Table(prefix + name) {
         @OptIn(ExperimentalUuidApi::class)
         val uuid = uuid(UUID_COLUMN_NAME)
+
+        /**
+         * Indices a previous version of eco created on this table that nothing needs any more.
+         *
+         * Exposed only ever adds, so a table created before they were dropped from the schema
+         * still carries them; [ExposedSerializer.createTable] drops them on startup.
+         */
+        open val supersededIndices: List<String> = emptyList()
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -451,9 +479,9 @@ abstract class ExposedPersistentDataHandler(
 
         override val primaryKey = PrimaryKey(uuid, key)
 
-        init {
-            uniqueIndex(uuid, key)
-        }
+        // The primary key already builds a unique index over exactly these columns, so the
+        // uniqueIndex(uuid, key) that used to live here was a byte-for-byte second copy of it.
+        override val supersededIndices = listOf("${tableName}_${UUID_COLUMN_NAME}_$KEY_COLUMN_NAME")
     }
 
     @OptIn(ExperimentalUuidApi::class)
@@ -464,9 +492,9 @@ abstract class ExposedPersistentDataHandler(
 
         override val primaryKey = PrimaryKey(uuid, key, index)
 
-        init {
-            uniqueIndex(uuid, key, index)
-        }
+        // As in KeyTable: a duplicate of the primary key's own index.
+        override val supersededIndices =
+            listOf("${tableName}_${UUID_COLUMN_NAME}_${KEY_COLUMN_NAME}_$INDEX_COLUMN_NAME")
     }
 
     protected fun <T> withRetries(uuid: UUID, key: PersistentDataKey<*>, action: () -> T): T? {

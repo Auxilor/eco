@@ -4,21 +4,91 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.io.File
 import java.math.BigDecimal
+import java.util.logging.Level
+import java.util.logging.Logger
 import javax.sql.DataSource
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
-class SQLitePersistentDataHandler(
-    databaseFile: File,
-    prefix: String = "eco_"
+class SQLitePersistentDataHandler private constructor(
+    private val dataSource: DataSource,
+    prefix: String
 ) : ExposedPersistentDataHandler(
     "sqlite",
-    dataSourceFor(databaseFile),
+    dataSource,
     prefix,
     SQLITE_PLACEHOLDER_BUDGET
 ) {
+    constructor(databaseFile: File, prefix: String = "eco_") : this(dataSourceFor(databaseFile), prefix)
+
+    private val logger = Logger.getLogger("eco")
+
+    /**
+     * Whether this startup dropped an index, and so left free pages behind.
+     *
+     * Declared above the init block on purpose: registerSerializers() writes it, and a property
+     * declared below would be assigned its initial value again afterwards, erasing the record.
+     */
+    private var droppedIndex = false
+
     init {
         registerSerializers()
+
+        // Only ever true on the first startup after the superseded indices were removed from the
+        // schema; from then on there is nothing left to drop and nothing to reclaim.
+        if (droppedIndex) {
+            vacuum()
+        }
+    }
+
+    /**
+     * Ask sqlite_master first so the handler knows whether anything was actually reclaimed --
+     * DROP INDEX IF EXISTS cannot say, and a VACUUM of a large store is not worth running blind.
+     */
+    override fun dropIndexIfExists(tableName: String, indexName: String) {
+        val existed = transaction(database) {
+            exec("SELECT 1 FROM sqlite_master WHERE type = 'index' AND name = '$indexName'") {
+                it.next()
+            } ?: false
+        }
+
+        if (!existed) {
+            return
+        }
+
+        super.dropIndexIfExists(tableName, indexName)
+        droppedIndex = true
+    }
+
+    /**
+     * Return the pages the dropped indices freed to the filesystem.
+     *
+     * Without this the store keeps its old size and merely reuses the free pages as it grows. It
+     * runs on a raw connection because VACUUM cannot run inside a transaction, and once only, on
+     * a server that is still starting up.
+     */
+    private fun vacuum() {
+        logger.info("Reclaiming space from dropped indices, this may take a moment")
+
+        try {
+            dataSource.connection.use { connection ->
+                val autoCommit = connection.autoCommit
+                connection.autoCommit = true
+
+                try {
+                    connection.createStatement().use { it.execute("VACUUM") }
+                } finally {
+                    connection.autoCommit = autoCommit
+                }
+            }
+
+            logger.info("Reclaimed space from dropped indices")
+        } catch (e: Exception) {
+            // Purely an optimisation: the data is correct either way, so a failure here is not
+            // worth preventing the server from starting over.
+            logger.log(Level.WARNING, "Failed to reclaim space from dropped indices", e)
+        }
     }
 
     // SQLite has no MEDIUMTEXT, and TEXT is unbounded here anyway, so both column kinds collapse
