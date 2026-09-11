@@ -22,7 +22,14 @@ class ProfileWriter(
     private val handler: ProfileHandler
 ) {
     private val saveInterval = plugin.configYml.getInt("save-interval").toLong()
-    private val autosaveInterval = plugin.configYml.getInt("autosave-interval").toLong()
+
+    /*
+    Only a migration carrying profiles out of a legacy data.yml ever writes to that file, so the
+    interval is no longer offered in config.yml -- a server installing eco today has no data.yml
+    and never will. Servers that still have the key configured keep their own value.
+     */
+    private val autosaveInterval =
+        (plugin.configYml.getIntOrNull("autosave-interval") ?: DEFAULT_AUTOSAVE_INTERVAL).toLong()
     private val valuesToWrite = ConcurrentHashMap<WriteRequest<*>, Any>()
 
     /**
@@ -92,6 +99,11 @@ class ProfileWriter(
     }
 
     private data class WriteRequest<T>(val uuid: UUID, val key: PersistentDataKey<T>)
+
+    private companion object {
+        // 30 minutes, the value config.yml shipped while data.yml was still a live store.
+        const val DEFAULT_AUTOSAVE_INTERVAL = 36000
+    }
 }
 
 val PersistentDataKey<*>.isSavedLocally: Boolean

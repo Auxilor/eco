@@ -13,7 +13,7 @@ data-handler: sqlite
 # If data should be migrated automatically when changing data handler.
 perform-data-migration: true
 
-# How many milliseconds to wait between profiles while migrating player data out of data.yml.
+# How many milliseconds to wait between profiles while migrating player data between handlers.
 # The migration runs in the background while players are online, and nothing waits on it, so this
 # keeps it from being the heaviest thing on your database. Raise it on a large playerbase, or set
 # it to 0 to migrate as fast as the database allows.
@@ -54,10 +54,6 @@ sqlite:
 # committed every tick, but you can increase this to be every x ticks, for example 20
 # would be committing once a second.
 save-interval: 1
-
-# How many ticks to wait between autosaves of data.yml, which no longer holds player data
-# but still holds eco's own bookkeeping.
-autosave-interval: 36000 # 30 minutes
 
 # Options to manage the conflict finder
 conflicts:

@@ -32,7 +32,8 @@ class AutosaveTests {
         every { scheduler.global() } returns global
 
         every { config.getInt("save-interval") } returns 1
-        every { config.getInt("autosave-interval") } returns 36000
+        // config.yml no longer ships the key, so the writer's own default is what servers get.
+        every { config.getIntOrNull("autosave-interval") } returns null
     }
 
     private fun tick(): Runnable {
