@@ -50,6 +50,14 @@ class YamlPersistentDataHandler(
             .toSet()
     }
 
+    override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+        @Suppress("UNCHECKED_CAST")
+        val serializer = key.type.getSerializer(this) as YamlSerializer<Any>
+
+        @Suppress("UNCHECKED_CAST")
+        return serializer.readAll(uuids, key as PersistentDataKey<Any>) as Map<UUID, T>
+    }
+
     override fun shouldAutosave(): Boolean {
         return true
     }
@@ -63,6 +71,21 @@ class YamlPersistentDataHandler(
 
         final override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             return read(dataYml, "player.$uuid.${key.key}")
+        }
+
+        fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+            return uuids.mapNotNull { uuid ->
+                val value = readAsync(uuid, key)
+
+                // List serializers answer with an empty list rather than null for a profile with
+                // no stored entries. The SQL handlers omit such a uuid outright, so it is omitted
+                // here too, otherwise readAll would mean different things per storage backend.
+                if (value == null || (value is Collection<*> && value.isEmpty())) {
+                    null
+                } else {
+                    uuid to value
+                }
+            }.toMap()
         }
 
         final override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {

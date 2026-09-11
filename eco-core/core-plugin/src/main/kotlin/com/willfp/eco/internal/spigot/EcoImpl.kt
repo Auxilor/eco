@@ -31,6 +31,10 @@ import com.willfp.eco.core.gui.view.LocationViewBuilder
 import com.willfp.eco.core.gui.view.MerchantViewBuilder
 import com.willfp.eco.core.gui.view.ViewBuilder
 import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.leaderboard.Leaderboard
+import com.willfp.eco.core.leaderboard.LeaderboardValueProvider
+import com.willfp.eco.core.leaderboard.PlayerbaseTally
+import com.willfp.eco.core.leaderboard.TallyProvider
 import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.core.scheduling.Scheduler
@@ -68,7 +72,10 @@ import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
+import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
+import com.willfp.eco.internal.spigot.leaderboard.KeyLeaderboardValueProvider
+import com.willfp.eco.internal.spigot.leaderboard.LeaderboardService
 import com.willfp.eco.internal.spigot.math.ExpressionEvaluator
 import com.willfp.eco.internal.spigot.math.api.EcoExpressionEnvironmentBuilder
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
@@ -117,6 +124,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override val profileHandler = ProfileHandler(this)
 
     val hologramTracker: HologramTracker by lazy { HologramTracker(this) }
+
+    private val leaderboardService = LeaderboardService(this)
 
     init {
         getProxy(CommonsInitializerProxy::class.java).init(this)
@@ -359,6 +368,76 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun loadPlayerProfile(uuid: UUID) =
         profileHandler.getPlayerProfile(uuid)
 
+    override fun getSavedProfileUUIDs(): Set<UUID> =
+        profileHandler.defaultHandler.getSavedUUIDs()
+
+    override fun <T> readAllProfileValues(
+        uuids: Set<UUID>,
+        key: PersistentDataKey<T>
+    ): Map<UUID, T> {
+        val handler = if (key.isSavedLocally) {
+            profileHandler.localHandler
+        } else {
+            profileHandler.defaultHandler
+        }
+
+        return handler.readAll(uuids, key)
+    }
+
+    override fun readAllProfileValuesForKeys(
+        uuids: Set<UUID>,
+        keys: Collection<PersistentDataKey<*>>
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>> {
+        // Split by storage location: a locally-saved key lives in the YAML handler rather than the
+        // configured one, so batching them together would read the wrong store for half of them.
+        val (local, default) = keys.partition { it.isSavedLocally }
+
+        val values = HashMap<PersistentDataKey<*>, Map<UUID, Any>>(keys.size)
+
+        if (local.isNotEmpty()) {
+            values.putAll(profileHandler.localHandler.readAllKeys(uuids, local))
+        }
+
+        if (default.isNotEmpty()) {
+            values.putAll(profileHandler.defaultHandler.readAllKeys(uuids, default))
+        }
+
+        return values
+    }
+
+    override fun registerLeaderboard(
+        plugin: EcoPlugin,
+        id: String,
+        provider: LeaderboardValueProvider
+    ): Leaderboard = leaderboardService.register(plugin, id, provider)
+
+    override fun registerKeyLeaderboard(
+        plugin: EcoPlugin,
+        id: String,
+        key: PersistentDataKey<*>
+    ): Leaderboard = leaderboardService.register(plugin, id, KeyLeaderboardValueProvider(key))
+
+    override fun getLeaderboard(id: String): Leaderboard? =
+        leaderboardService.get(id)
+
+    override fun getLeaderboards(): Collection<Leaderboard> =
+        leaderboardService.values()
+
+    override fun unregisterLeaderboards(plugin: EcoPlugin) =
+        leaderboardService.unregisterAll(plugin)
+
+    override fun registerTally(
+        plugin: EcoPlugin,
+        id: String,
+        provider: TallyProvider
+    ): PlayerbaseTally = leaderboardService.registerTally(plugin, id, provider)
+
+    override fun getTally(id: String): PlayerbaseTally? =
+        leaderboardService.getTally(id)
+
+    override fun getTallies(): Collection<PlayerbaseTally> =
+        leaderboardService.tallies()
+
     // Read from whichever thread touches player data, so publication has to be guaranteed.
     @Volatile
     private var playerProfileResolver = DEFAULT_PROFILE_RESOLVER
@@ -394,11 +473,32 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun handleEnable() {
         super.handleEnable()
         hologramTracker.start()
+
+        // Fed from the writer rather than polled: every value change on this server lands in the
+        // leaderboard caches on the tick it is committed, so the database sweep is only needed to
+        // pick up writes made by something other than this server.
+        profileHandler.profileWriter.onWrite = { uuid, key, value ->
+            leaderboardService.onValueWritten(uuid, key, value)
+        }
+
+        // profileHandler is constructed with EcoImpl itself, and Eco.Instance is set in the
+        // EcoPlugin constructor, so savedProfileUUIDs is already answerable here. The first
+        // sweep is a second away in any case, well after afterLoad() two ticks in.
+        leaderboardService.start()
+    }
+
+    override fun handleReload() {
+        super.handleReload()
+
+        // Restarted rather than left alone, so a changed refresh-interval (or a leaderboards
+        // section that was just turned on or off) takes effect without a restart.
+        leaderboardService.start()
     }
 
     override fun handleDisable() {
         super.handleDisable()
         hologramTracker.shutdown()
+        leaderboardService.shutdown()
     }
 
     override fun createNamespacedKey(namespace: String, key: String) =

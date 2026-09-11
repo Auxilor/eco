@@ -8,6 +8,7 @@ import com.willfp.eco.core.data.handlers.DataTypeSerializer
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
+import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.math.BigDecimal
@@ -24,10 +25,12 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.ExposedConnectionImpl
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.upsert
@@ -136,12 +139,46 @@ class MySQLPersistentDataHandler(
     override fun getSavedUUIDs(): Set<UUID> {
         val savedUUIDs = mutableSetOf<UUID>()
 
-        for (keyType in PersistentDataKeyType.values()) {
+        // Only the types something has actually registered a key for. Every type has its own
+        // table, so looping all of them scans tables that are guaranteed to be empty -- on a
+        // server using only INT and DOUBLE keys that was four wasted full scans per sweep.
+        val types = KeyRegistry.getRegisteredKeys().mapTo(mutableSetOf()) { it.type }
+
+        for (keyType in types) {
             val serializer = keyType.getSerializer(this) as MySQLSerializer<*>
             savedUUIDs.addAll(serializer.getSavedUUIDs().map { it.toJavaUuid() })
         }
 
         return savedUUIDs
+    }
+
+    override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+        @Suppress("UNCHECKED_CAST")
+        val serializer = key.type.getSerializer(this) as MySQLSerializer<Any>
+
+        @Suppress("UNCHECKED_CAST")
+        return serializer.readAll(uuids, key as PersistentDataKey<Any>) as Map<UUID, T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun readAllKeys(
+        uuids: Set<UUID>,
+        keys: Collection<PersistentDataKey<*>>
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>> {
+        val values = HashMap<PersistentDataKey<*>, Map<UUID, Any>>(keys.size)
+
+        // Grouped by type because each type has its own table; one batched read per table rather
+        // than one per key, which is the whole point of reading this way.
+        for ((type, ofType) in keys.groupBy { it.type }) {
+            val serializer = type.getSerializer(this) as MySQLSerializer<Any>
+            val byName = serializer.readAllKeys(uuids, ofType as List<PersistentDataKey<Any>>)
+
+            for (key in ofType) {
+                values[key] = byName[key.key.toString()] ?: emptyMap()
+            }
+        }
+
+        return values
     }
 
     private abstract inner class MySQLSerializer<T : Any> : DataTypeSerializer<T>() {
@@ -150,9 +187,19 @@ class MySQLPersistentDataHandler(
         @OptIn(ExperimentalUuidApi::class)
         fun getSavedUUIDs(): Set<Uuid> {
             return transaction(database) {
-                table.selectAll().map { it[table.uuid] }.toSet()
+                table.select(table.uuid).map { it[table.uuid] }.toSet()
             }
         }
+
+        abstract fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T>
+
+        /**
+         * Read several keys of this serializer's type in one pass over the table.
+         *
+         * Keyed by the key's string form, matching the KEY column, so the caller can map rows back
+         * to the [PersistentDataKey] that asked for them.
+         */
+        abstract fun readAllKeys(uuids: Set<UUID>, keys: List<PersistentDataKey<T>>): Map<String, Map<UUID, T>>
 
         fun createTable(): MySQLSerializer<T> {
             transaction(database) {
@@ -175,6 +222,62 @@ class MySQLPersistentDataHandler(
 
         abstract fun convertToStored(value: T): S
         abstract fun convertFromStored(value: S): T
+
+        @OptIn(ExperimentalUuidApi::class)
+        override fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+            if (uuids.isEmpty()) {
+                return emptyMap()
+            }
+
+            val profileUUIDs = uuids.map { it.toKotlinUuid() }
+            val values = HashMap<UUID, T>(uuids.size)
+
+            transaction(database) {
+                for (chunk in profileUUIDs.chunked(UUID_CHUNK_SIZE)) {
+                    table.select(table.uuid, table.value)
+                        .where { (table.uuid inList chunk) and (table.key eq key.key.toString()) }
+                        .forEach { values[it[table.uuid].toJavaUuid()] = convertFromStored(it[table.value]) }
+                }
+            }
+
+            return values
+        }
+
+        @OptIn(ExperimentalUuidApi::class)
+        override fun readAllKeys(uuids: Set<UUID>, keys: List<PersistentDataKey<T>>): Map<String, Map<UUID, T>> {
+            if (uuids.isEmpty() || keys.isEmpty()) {
+                return emptyMap()
+            }
+
+            val keyNames = keys.map { it.key.toString() }
+            val (uuidChunk, keyChunk) = chunkSizesFor(keyNames.size)
+
+            val profileUUIDs = uuids.map { it.toKotlinUuid() }
+            val values = HashMap<String, MutableMap<UUID, T>>(keyNames.size)
+
+            // Pre-populated so that a key nobody has stored a value for still reports an empty
+            // map, and so a row carrying an unexpected key is dropped rather than inventing one.
+            for (name in keyNames) {
+                values[name] = HashMap()
+            }
+
+            transaction(database) {
+                for (uuidsInChunk in profileUUIDs.chunked(uuidChunk)) {
+                    for (namesInChunk in keyNames.chunked(keyChunk)) {
+                        table.select(table.uuid, table.key, table.value)
+                            .where { (table.uuid inList uuidsInChunk) and (table.key inList namesInChunk) }
+                            .forEach {
+                                values[it[table.key]]?.put(
+                                    it[table.uuid].toJavaUuid(),
+                                    convertFromStored(it[table.value])
+                                )
+                            }
+                    }
+                }
+            }
+
+            return values
+        }
 
         @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
@@ -215,6 +318,39 @@ class MySQLPersistentDataHandler(
 
     private abstract inner class MultiValueSerializer<T : Any> : MySQLSerializer<List<T>>() {
         abstract override val table: ListKeyTable<T>
+
+        @OptIn(ExperimentalUuidApi::class)
+        override fun readAll(uuids: Set<UUID>, key: PersistentDataKey<List<T>>): Map<UUID, List<T>> {
+            if (uuids.isEmpty()) {
+                return emptyMap()
+            }
+
+            val profileUUIDs = uuids.map { it.toKotlinUuid() }
+            val rows = ArrayList<Pair<UUID, T>>()
+
+            // Every row for a given uuid lands in exactly one chunk, and each chunk is ordered by
+            // index, so grouping the concatenated rows still yields each player's list in index
+            // order.
+            transaction(database) {
+                for (chunk in profileUUIDs.chunked(UUID_CHUNK_SIZE)) {
+                    table.select(table.uuid, table.index, table.value)
+                        .where { (table.uuid inList chunk) and (table.key eq key.key.toString()) }
+                        .orderBy(table.index)
+                        .mapTo(rows) { it[table.uuid].toJavaUuid() to it[table.value] }
+                }
+            }
+
+            return rows.groupBy({ it.first }, { it.second })
+        }
+
+        override fun readAllKeys(
+            uuids: Set<UUID>,
+            keys: List<PersistentDataKey<List<T>>>
+        ): Map<String, Map<UUID, List<T>>> =
+            // List-typed keys are never ranked, so batching them buys nothing and would need a
+            // second query shape that orders by index per key. Delegating keeps this identical to
+            // readAll, which is the contract readAllKeys has to preserve anyway.
+            keys.associate { it.key.toString() to readAll(uuids, it) }
 
         @OptIn(ExperimentalUuidApi::class)
         override fun readAsync(uuid: UUID, key: PersistentDataKey<List<T>>): List<T>? {

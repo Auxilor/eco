@@ -35,12 +35,17 @@ import com.willfp.eco.core.gui.view.ViewBuilder;
 import com.willfp.eco.core.integrations.hologram.Hologram;
 import com.willfp.eco.core.integrations.hologram.HologramOptions;
 import com.willfp.eco.core.items.TestableItem;
+import com.willfp.eco.core.leaderboard.Leaderboard;
+import com.willfp.eco.core.leaderboard.LeaderboardValueProvider;
+import com.willfp.eco.core.leaderboard.PlayerbaseTally;
+import com.willfp.eco.core.leaderboard.TallyProvider;
 import com.willfp.eco.core.math.ExpressionEnvironment;
 import com.willfp.eco.core.packet.Packet;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.core.proxy.ProxyFactory;
 import com.willfp.eco.core.scheduling.Scheduler;
 import com.willfp.eco.core.version.Version;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -474,6 +479,136 @@ public interface Eco {
      */
     @NotNull
     PlayerProfileResolver getPlayerProfileResolver();
+
+    /**
+     * Get every UUID with saved profile data in the server's configured data handler.
+     * <p>
+     * This is a blocking operation and must not be called on the main thread.
+     * <p>
+     * The uuids come from the <b>default</b> handler only, never from the local one. A key
+     * declared as saved locally is read from local storage, so a leaderboard over such a key on
+     * a server with a remote default handler sees an incomplete playerbase: players who exist
+     * only in local storage are never enumerated, and so are never ranked. Unioning both
+     * handlers is deliberately not done, because it would make every refresh pay for two full
+     * enumerations.
+     *
+     * @return The uuids.
+     */
+    @NotNull
+    Set<UUID> getSavedProfileUUIDs();
+
+    /**
+     * Read a key for many profiles at once, bypassing the in-memory profile cache.
+     * <p>
+     * This is a blocking operation and must not be called on the main thread. Unlike
+     * {@link com.willfp.eco.core.data.Profile#read}, it does not load or retain a profile
+     * object per uuid, so it is safe to call across the entire playerbase.
+     *
+     * @param uuids The uuids.
+     * @param key   The key.
+     * @param <T>   The type of the key.
+     * @return The values, keyed by uuid; uuids with no stored value are omitted.
+     */
+    @NotNull
+    <T> Map<UUID, T> readAllProfileValues(@NotNull Set<UUID> uuids,
+                                          @NotNull PersistentDataKey<T> key);
+
+    /**
+     * Read several keys for many profiles at once, bypassing the in-memory profile cache.
+     * <p>
+     * Loads and retains nothing, exactly as
+     * {@link #readAllProfileValues(Set, PersistentDataKey)} does, but reads every key stored in
+     * the same table in one query rather than making a separate pass per key. This is a blocking
+     * operation and must not be called on the main thread.
+     *
+     * @param uuids The uuids.
+     * @param keys  The keys.
+     * @return The values, keyed by key and then by uuid; uuids with no stored value are omitted.
+     */
+    @NotNull
+    Map<PersistentDataKey<?>, Map<UUID, Object>> readAllProfileValuesForKeys(@NotNull Set<UUID> uuids,
+                                                                             @NotNull Collection<PersistentDataKey<?>> keys);
+
+    /**
+     * Register a leaderboard.
+     *
+     * @param plugin   The plugin that owns the leaderboard.
+     * @param id       The ID of the leaderboard, unique within the plugin.
+     * @param provider The provider of the values to rank by.
+     * @return The leaderboard.
+     */
+    @NotNull
+    Leaderboard registerLeaderboard(@NotNull EcoPlugin plugin,
+                                    @NotNull String id,
+                                    @NotNull LeaderboardValueProvider provider);
+
+    /**
+     * Register a leaderboard ranking players by a numeric persistent data key.
+     *
+     * @param plugin The plugin that owns the leaderboard.
+     * @param id     The ID of the leaderboard, unique within the plugin.
+     * @param key    The key to rank by.
+     * @return The leaderboard.
+     * @throws IllegalArgumentException If the key is of a type that can never yield a number.
+     */
+    @NotNull
+    Leaderboard registerKeyLeaderboard(@NotNull EcoPlugin plugin,
+                                       @NotNull String id,
+                                       @NotNull PersistentDataKey<?> key);
+
+    /**
+     * Get a leaderboard by its fully qualified ID.
+     *
+     * @param id The ID, as {@code plugin:id}.
+     * @return The leaderboard, or null if none is registered under that ID.
+     */
+    @Nullable
+    Leaderboard getLeaderboard(@NotNull String id);
+
+    /**
+     * Get every registered leaderboard.
+     *
+     * @return The leaderboards.
+     */
+    @NotNull
+    Collection<Leaderboard> getLeaderboards();
+
+    /**
+     * Unregister every leaderboard owned by a plugin.
+     *
+     * @param plugin The plugin.
+     */
+    void unregisterLeaderboards(@NotNull EcoPlugin plugin);
+
+    /**
+     * Register a playerbase tally.
+     *
+     * @param plugin   The plugin that owns the tally.
+     * @param id       The ID of the tally, unique within the plugin.
+     * @param provider The provider of the bucket counts.
+     * @return The tally.
+     */
+    @NotNull
+    PlayerbaseTally registerTally(@NotNull EcoPlugin plugin,
+                                  @NotNull String id,
+                                  @NotNull TallyProvider provider);
+
+    /**
+     * Get a playerbase tally by its fully qualified ID.
+     *
+     * @param id The ID, as {@code plugin:id}.
+     * @return The tally, or null if none is registered under that ID.
+     */
+    @Nullable
+    PlayerbaseTally getTally(@NotNull String id);
+
+    /**
+     * Get every registered playerbase tally.
+     *
+     * @return The tallies.
+     */
+    @NotNull
+    Collection<PlayerbaseTally> getTallies();
 
     /**
      * Create dummy entity - never spawned, exists purely in code.
