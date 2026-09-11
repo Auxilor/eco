@@ -116,6 +116,22 @@ abstract class ExposedPersistentDataHandler(
         }
     }
 
+    /**
+     * Store this table's rows in its primary key rather than beside it, if the dialect can.
+     *
+     * These tables are identified only by (profileUUID, dataKey): nothing reads an implicit row
+     * id, and no column is declared to be one. Where a dialect adds one anyway it pays for it
+     * twice over -- the row lives in one tree keyed by that id, and the primary key becomes a
+     * second tree holding every uuid and key again just to point back at it, so each read seeks
+     * twice and each key is stored twice.
+     *
+     * InnoDB already stores rows in the primary key, so MySQL and MariaDB have nothing to do here
+     * and do not override this; SQLite does.
+     */
+    protected open fun clusterOnPrimaryKey(tableName: String) {
+        // Do nothing
+    }
+
     protected fun registerSerializers() {
         PersistentDataKeyType.STRING.registerSerializer(this, object : DirectStoreSerializer<String>() {
             override val table = object : KeyTable<String>("string") {
@@ -276,7 +292,11 @@ abstract class ExposedPersistentDataHandler(
                 dropIndexIfExists(table.tableName, indexName)
             }
 
+            // Before clustering, so that a dialect which rewrites the table to cluster it picks up
+            // whatever column types afterCreate() widened it to.
             this.afterCreate()
+
+            clusterOnPrimaryKey(table.tableName)
             return this
         }
 

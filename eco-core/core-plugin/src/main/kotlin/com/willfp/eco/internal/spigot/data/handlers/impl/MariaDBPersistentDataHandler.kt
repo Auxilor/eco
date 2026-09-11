@@ -39,20 +39,8 @@ class MariaDBPersistentDataHandler(
         }
     }
 
-    /**
-     * MySQL and MariaDB scope index names to their table, and MySQL has no DROP INDEX IF EXISTS,
-     * so the absent case is handled by letting the statement fail. DDL autocommits here, so a
-     * failure leaves nothing to roll back.
-     */
-    override fun dropIndexIfExists(tableName: String, indexName: String) {
-        try {
-            transaction(database) {
-                exec("ALTER TABLE $tableName DROP INDEX $indexName")
-            }
-        } catch (e: Exception) {
-            // The index is already gone, which is the point.
-        }
-    }
+    override fun dropIndexIfExists(tableName: String, indexName: String) =
+        dropMySqlIndexIfExists(database, tableName, indexName)
 }
 
 private fun dataSourceFor(config: Config): DataSource = HikariDataSource(HikariConfig().apply {
