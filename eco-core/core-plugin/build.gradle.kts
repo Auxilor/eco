@@ -70,6 +70,7 @@ dependencies {
     // Libraries (provided at runtime via Paper library loader)
     compileOnly("com.mysql:mysql-connector-j:9.6.0")
     compileOnly("org.mariadb.jdbc:mariadb-java-client:2.7.12")
+    compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
     implementation("org.jetbrains.exposed:exposed-core:1.2.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
     compileOnly("com.zaxxer:HikariCP:7.0.2")

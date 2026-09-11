@@ -6,13 +6,22 @@ import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.data.keys.PersistentDataKeyType
 import com.willfp.eco.internal.spigot.EcoSpigotPlugin
+import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlerFactory
 import java.math.BigDecimal
 import java.util.UUID
+import java.util.logging.Level
+import java.util.logging.Logger
 
+/**
+ * Reads profile data out of data.yml.
+ *
+ * yaml is no longer a data handler; this exists only as a migration source, so writing through it
+ * throws rather than storing values in a file nothing reads back.
+ */
 class YamlPersistentDataHandler(
-    plugin: EcoSpigotPlugin
+    private val dataYml: Config
 ) : PersistentDataHandler("yaml") {
-    private val dataYml = plugin.dataYml
+    private val logger = Logger.getLogger("eco")
 
     init {
         PersistentDataKeyType.STRING.registerSerializer(this, object : YamlSerializer<String>() {
@@ -45,9 +54,18 @@ class YamlPersistentDataHandler(
     }
 
     override fun getSavedUUIDs(): Set<UUID> {
-        return dataYml.getSubsection("player").getKeys(false)
-            .map { UUID.fromString(it) }
-            .toSet()
+        val section = dataYml.getSubsectionOrNull("player") ?: return emptySet()
+
+        // A hand-edited data.yml can carry a key that is not a uuid, and this is the first call
+        // every migration makes -- so one bad key must not fail the sweep with the server locked.
+        return section.getKeys(false).mapNotNullTo(mutableSetOf()) { key ->
+            try {
+                UUID.fromString(key)
+            } catch (e: IllegalArgumentException) {
+                logger.log(Level.WARNING, "Skipping unparseable profile key in data.yml: $key")
+                null
+            }
+        }
     }
 
     override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
@@ -59,11 +77,9 @@ class YamlPersistentDataHandler(
     }
 
     override fun shouldAutosave(): Boolean {
-        return true
-    }
-
-    override fun doSave() {
-        dataYml.save()
+        // Nothing here writes, so there is nothing to flush. data.yml's own bookkeeping is saved by
+        // the profile writer instead.
+        return false
     }
 
     private abstract inner class YamlSerializer<T: Any>: DataTypeSerializer<T>() {
@@ -89,7 +105,13 @@ class YamlPersistentDataHandler(
         }
 
         final override fun writeAsync(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-            dataYml.set("player.$uuid.${key.key}", value)
+            throw UnsupportedOperationException("The yaml handler is a migration source and cannot be written to")
         }
+    }
+
+    object Factory : PersistentDataHandlerFactory("yaml") {
+        // Deliberately not registered: a config asking for yaml is resolved to sqlite, and this
+        // factory is reached only by the migration code.
+        override fun create(plugin: EcoSpigotPlugin) = YamlPersistentDataHandler(plugin.dataYml)
     }
 }

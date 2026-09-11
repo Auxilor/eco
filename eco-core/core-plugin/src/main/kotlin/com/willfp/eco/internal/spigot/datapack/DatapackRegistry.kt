@@ -2,7 +2,6 @@ package com.willfp.eco.internal.spigot.datapack
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.LifecyclePosition
-import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.datapack.DatapackContributor
 import com.willfp.eco.core.datapack.DatapackHandle
 import com.willfp.eco.core.datapack.InstallResult
@@ -25,12 +24,11 @@ import java.util.logging.Logger
  */
 class DatapackRegistry(
     private val logger: Logger,
-    private val dataYml: Config,
-    private val saveData: () -> Unit,
+    ledgerStorage: LedgerStorage,
     private val proxyProvider: () -> DatapackCodecProxy?,
     private val datapacksDir: () -> File = DatapackLocations::datapacksDir
 ) {
-    private val ledger = CommitLedger(ConfigLedgerStorage(dataYml, LEDGER_PATH, saveData))
+    private val ledger = CommitLedger(ledgerStorage)
 
     private val restartCoordinator = RestartCoordinator(logger)
 
@@ -190,7 +188,6 @@ class DatapackRegistry(
     private fun idOf(plugin: EcoPlugin) = plugin.name.lowercase()
 
     private companion object {
-        const val LEDGER_PATH = "datapacks"
         const val PACK_PREFIX = "eco_"
     }
 }

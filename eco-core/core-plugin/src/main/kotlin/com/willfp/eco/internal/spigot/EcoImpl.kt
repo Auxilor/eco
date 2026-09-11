@@ -119,7 +119,9 @@ private val DEFAULT_PROFILE_RESOLVER = PlayerProfileResolver { it.uniqueId }
 
 @Suppress("UNUSED")
 class EcoImpl : EcoSpigotPlugin(), Eco {
-    override val dataYml = DataYml(this)
+    // Lazy, because constructing the config recreates data.yml from the jar. A server that has
+    // finished migrating never touches it, and so never grows the file back.
+    override val dataYml: DataYml by lazy { DataYml(this) }
 
     override val profileHandler = ProfileHandler(this)
 
@@ -480,6 +482,12 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         profileHandler.profileWriter.onWrite = { uuid, key, value ->
             leaderboardService.onValueWritten(uuid, key, value)
         }
+
+        // Nothing is ranked while profiles are still being carried out of data.yml, and the
+        // caches are loaded once that finishes rather than waiting for the next reconcile - a
+        // server with reconciliation turned off would otherwise rank nobody until it restarted.
+        leaderboardService.isPaused = { profileHandler.liveMigration != null }
+        profileHandler.onLiveMigrationComplete = { leaderboardService.start() }
 
         // profileHandler is constructed with EcoImpl itself, and Eco.Instance is set in the
         // EcoPlugin constructor, so savedProfileUUIDs is already answerable here. The first

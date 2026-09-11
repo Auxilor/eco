@@ -222,10 +222,12 @@ import com.willfp.eco.internal.spigot.recipes.workstation.BrewingPacketHandler
 import com.willfp.eco.internal.spigot.recipes.workstation.GrindstonePacketHandler
 import com.willfp.eco.internal.spigot.recipes.workstation.WorkstationRecipeListener
 import com.willfp.eco.util.ClassUtils
+import com.willfp.eco.util.PlayerUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
 import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
+import com.willfp.eco.internal.spigot.datapack.BookkeepingLedgerStorage
 import com.willfp.eco.internal.spigot.datapack.DatapackRegistry
 import com.willfp.eco.internal.spigot.proxies.DatapackCodecProxy
 import org.bukkit.Bukkit
@@ -264,8 +266,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     val datapackRegistry: DatapackRegistry by lazy {
         DatapackRegistry(
             logger = this.logger,
-            dataYml = this.dataYml,
-            saveData = { this.dataYml.save() },
+            ledgerStorage = BookkeepingLedgerStorage(this.profileHandler.bookkeeping),
             proxyProvider = { this.getProxy(DatapackCodecProxy::class.java) }
         )
     }
@@ -413,6 +414,9 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
      * Warn about conflicting plugins, then enable everything that requires a running server.
      */
     override fun handleEnable() {
+        // Before anything reads the key registry, most importantly profile migration in createTasks.
+        PlayerUtils.registerDataKeys()
+
         this.logger.info("Scanning for conflicts...")
         val conflicts = ConflictFinder.searchForConflicts(this)
         for (conflict in conflicts) {
@@ -482,6 +486,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (!profileHandler.migrateIfNecessary()) {
             profileHandler.profileWriter.startTickingAutosave()
             profileHandler.profileWriter.startTickingSaves()
+            profileHandler.backfillIfNecessary()
         }
 
         this.scheduler.global().runTimer(
