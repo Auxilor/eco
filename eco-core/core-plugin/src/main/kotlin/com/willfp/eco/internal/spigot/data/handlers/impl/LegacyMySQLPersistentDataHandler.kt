@@ -23,7 +23,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 class LegacyMySQLPersistentDataHandler(
     config: Config
-) : PersistentDataHandler("legacy_mysql") {
+) : PersistentDataHandler("legacy_mysql", config.getInt("connections")) {
     private val dataSource = HikariDataSource(HikariConfig().apply {
         driverClassName = "com.mysql.cj.jdbc.Driver"
         username = config.getString("user")
