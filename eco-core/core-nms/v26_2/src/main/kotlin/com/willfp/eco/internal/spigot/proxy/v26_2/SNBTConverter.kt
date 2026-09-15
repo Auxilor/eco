@@ -5,6 +5,7 @@ import com.mojang.serialization.Dynamic
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.asBukkitStack
 import net.minecraft.SharedConstants
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
@@ -52,7 +53,7 @@ class SNBTConverter : SNBTConverterProxy {
                 MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
                 converted
             ).getOrThrow()
-            return CraftItemStack.asCraftMirror(minecraftStack)
+            return minecraftStack.asBukkitStack()
         } catch (_: CommandSyntaxException) {
             return null
         }
@@ -75,7 +76,7 @@ class SNBTConverter : SNBTConverterProxy {
                 MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
                 tag
             ).getOrThrow()
-            return SNBTTestableItem(CraftItemStack.asBukkitCopy(minecraftStack), tag)
+            return SNBTTestableItem(minecraftStack.asBukkitStack(), tag)
         } catch (_: CommandSyntaxException) {
             return EmptyTestableItem()
         }

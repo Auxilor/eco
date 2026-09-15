@@ -32,9 +32,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -44,8 +47,10 @@ import java.util.zip.ZipFile;
  *
  * <p>NMS modules are compiled once against an old version and then relocated into jars for newer
  * versions. That trick breaks silently whenever Mojang or Paper removes a member, or narrows its
- * visibility, and the failure only surfaces at runtime as a {@link NoSuchMethodError},
- * {@link NoSuchFieldError} or {@link IllegalAccessError}. This task turns that into a build failure.
+ * visibility, or adds an abstract method to a type the jar implements, and the failure only
+ * surfaces at runtime as a {@link NoSuchMethodError}, {@link NoSuchFieldError},
+ * {@link IllegalAccessError} or {@link AbstractMethodError}. This task turns that into a build
+ * failure.
  */
 @CacheableTask
 public abstract class NmsLinkageCheckTask extends DefaultTask {
@@ -139,6 +144,49 @@ public abstract class NmsLinkageCheckTask extends DefaultTask {
                         }
                     }
                 }
+            }
+        }
+
+        if ((node.access & (Opcodes.ACC_ABSTRACT | Opcodes.ACC_INTERFACE)) == 0) {
+            checkImplemented(classes, node, problems);
+        }
+    }
+
+    /**
+     * Every abstract method a concrete class inherits from a platform type must be implemented
+     * somewhere in its hierarchy, or calling it throws {@link AbstractMethodError}.
+     */
+    private void checkImplemented(ClassIndex classes, ClassNode node, Set<String> problems) {
+        Map<String, String> abstracts = new TreeMap<>();
+        Set<String> concrete = new HashSet<>();
+
+        for (String current : hierarchy(classes, node.name)) {
+            ClassNode type = current.equals(node.name) ? node : classes.find(current);
+
+            if (type == null) {
+                // An unresolvable link in the hierarchy may be the one implementing it.
+                return;
+            }
+
+            for (MethodNode method : type.methods) {
+                if ((method.access & Opcodes.ACC_STATIC) != 0 || method.name.startsWith("<")) {
+                    continue;
+                }
+
+                String signature = method.name + " " + method.desc;
+
+                if ((method.access & Opcodes.ACC_ABSTRACT) != 0) {
+                    abstracts.putIfAbsent(signature, current);
+                } else {
+                    concrete.add(signature);
+                }
+            }
+        }
+
+        for (Map.Entry<String, String> entry : abstracts.entrySet()) {
+            if (!concrete.contains(entry.getKey()) && isPlatform(entry.getValue())) {
+                problems.add("unimplemented method " + entry.getValue() + "#" + entry.getKey()
+                    + " (referenced by " + node.name + ")");
             }
         }
     }

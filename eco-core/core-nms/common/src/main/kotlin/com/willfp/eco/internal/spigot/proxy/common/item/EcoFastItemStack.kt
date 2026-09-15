@@ -86,6 +86,10 @@ class ContinuallyAppliedPersistentDataContainer(
     override fun readFromBytes(bytes: ByteArray) {
         handle.readFromBytes(bytes)
     }
+
+    // Abstract on PersistentDataContainerView since 1.21.10, which this module doesn't compile
+    // against, so it can't be an override or delegated; without it the call is an AbstractMethodError.
+    fun getSize(): Int = handle.keys.size
 }
 
 class EcoFastItemStack(
