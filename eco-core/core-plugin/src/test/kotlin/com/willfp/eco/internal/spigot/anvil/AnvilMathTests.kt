@@ -28,6 +28,7 @@ internal class AnvilMathTests {
         Assertions.assertEquals(5, computeXpCost(5, 0, 1.0), "linear diff")
         Assertions.assertEquals(7, computeXpCost(5, 2, 1.0), "plus unit repair")
         Assertions.assertEquals(0, computeXpCost(0, 0, 0.95), "no change -> 0")
+        Assertions.assertEquals(2, computeXpCost(0, COMBINE_REPAIR_COST, 0.95), "durability merge only")
     }
 
     @Test
@@ -35,6 +36,7 @@ internal class AnvilMathTests {
         Assertions.assertEquals(1, computeAnvilCost(0, 1, 0), "plain rename")
         Assertions.assertEquals(5, computeAnvilCost(3, 0, 2), "prior work plus merge")
         Assertions.assertEquals(0, computeAnvilCost(0, 0, 0), "no work -> free")
+        Assertions.assertEquals(2, computeAnvilCost(0, 0, computeXpCost(0, COMBINE_REPAIR_COST, 0.95)), "fresh durability merge isn't free")
     }
 
     @Test

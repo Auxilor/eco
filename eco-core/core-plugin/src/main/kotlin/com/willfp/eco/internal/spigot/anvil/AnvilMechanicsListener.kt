@@ -284,6 +284,7 @@ class AnvilMechanicsListener(
         val leftMeta = left.itemMeta
         val rightMeta = right.itemMeta
         var unitRepairCost = 0
+        var combineRepairCost = 0
 
         if (left.type != right.type) {
             val unitRepair = if (leftMeta is Damageable) {
@@ -324,6 +325,7 @@ class AnvilMechanicsListener(
             val damage = plugin.getProxy(AnvilRepairProxy::class.java).combineRepair(left, right)
             if (damage != null) {
                 leftMeta.damage = damage
+                combineRepairCost = COMBINE_REPAIR_COST
             }
         }
 
@@ -342,7 +344,7 @@ class AnvilMechanicsListener(
         left.itemMeta = leftMeta
 
         val enchantLevelDiff = abs(leftEnchants.values.sum() - outEnchants.values.sum())
-        val xpCost = computeXpCost(enchantLevelDiff, unitRepairCost, settings.costExponent)
+        val xpCost = computeXpCost(enchantLevelDiff, unitRepairCost + combineRepairCost, settings.costExponent)
         return AnvilResult(left, xpCost)
     }
 }
