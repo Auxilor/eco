@@ -621,6 +621,66 @@ public final class Items {
     }
 
     /**
+     * Apply data components to an item.
+     * <p>
+     * Components use the same format as item components in commands, keyed by
+     * component id (for example <code>minecraft:attribute_modifiers</code>) and
+     * valued with plain objects: maps, lists, strings, numbers, and booleans.
+     * <p>
+     * Setting <code>minecraft:attribute_modifiers</code> merges with the base
+     * item's own modifiers rather than replacing them outright: a configured
+     * modifier replaces the default for the same attribute and slot, and any
+     * default it says nothing about is kept. Every other component replaces the
+     * item's value for that component.
+     *
+     * @param itemStack  The item.
+     * @param components The components to apply.
+     * @return The result, holding the new item and any components that failed.
+     */
+    @NotNull
+    public static ItemComponentResult withComponents(@NotNull final ItemStack itemStack,
+                                                     @NotNull final Map<String, Object> components) {
+        return Eco.get().withComponents(itemStack, components);
+    }
+
+    /**
+     * Get the data components on an item.
+     *
+     * @param itemStack The item.
+     * @return The components, keyed by component id.
+     */
+    @NotNull
+    public static Map<String, Object> getComponents(@NotNull final ItemStack itemStack) {
+        return Eco.get().getComponents(itemStack);
+    }
+
+    /**
+     * Get a data component on an item.
+     *
+     * @param itemStack The item.
+     * @param key       The component id, for example <code>minecraft:food</code>.
+     * @return The component value, or null if the item does not have it.
+     */
+    @Nullable
+    public static Object getComponent(@NotNull final ItemStack itemStack,
+                                      @NotNull final String key) {
+        return Eco.get().getComponent(itemStack, key);
+    }
+
+    /**
+     * Remove data components from an item.
+     *
+     * @param itemStack The item.
+     * @param keys      The component ids to remove.
+     * @return A copy of the item without those components.
+     */
+    @NotNull
+    public static ItemStack removeComponents(@NotNull final ItemStack itemStack,
+                                             @NotNull final Collection<String> keys) {
+        return Eco.get().removeComponents(itemStack, keys);
+    }
+
+    /**
      * Get if an item is empty.
      *
      * @param itemStack The item.
