@@ -20,13 +20,13 @@ eco respects claim and protection regions from these plugins, preventing exploit
 | Plugin | Plugin |
 | --- | --- |
 | BentoBox | Lands |
-| CombatLogX | PvPManager |
-| DeluxeCombat | Residence |
-| FabledSkyblock | RPGHorses |
-| FactionsUUID | SuperiorSkyblock2 |
-| GriefPrevention | Towny |
-| HuskClaims | WorldGuard |
-| HuskTowns | |
+| CombatLogX | PlotSquared |
+| DeluxeCombat | PvPManager |
+| FabledSkyblock | Residence |
+| FactionsUUID | RPGHorses |
+| GriefPrevention | SuperiorSkyblock2 |
+| HuskClaims | Towny |
+| HuskTowns | WorldGuard |
 | IridiumSkyblock | |
 | Kingdoms | |
 
@@ -179,6 +179,7 @@ These plugins add **effects, conditions, filters, mutators, and triggers** to th
 | ModelEngine | ✅ | | | | |
 | MythicMobs | ✅ | | | | ✅ |
 | NuVotifier | | | ✅ | | ✅ |
+| PlotSquared | | ✅ | ✅ | | ✅ |
 | PyroFishingPro | | | ✅ | | ✅ |
 | Scyther | | | | | ✅ |
 | Shopkeepers | | | | | ✅ |

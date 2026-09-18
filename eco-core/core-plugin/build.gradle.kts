@@ -116,6 +116,12 @@ dependencies {
     compileOnly("com.iridium:IridiumSkyblock:4.1.2")
     compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5.10")
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
+    compileOnly("com.intellectualsites.plotsquared:plotsquared-core:7.6.0") {
+        isTransitive = false
+    }
+    compileOnly("com.intellectualsites.plotsquared:plotsquared-bukkit:7.6.0") {
+        isTransitive = false
+    }
     compileOnly("com.github.jojodmo:ItemBridge:b0054538c1")
     compileOnly("su.nightexpress.excellenteconomy:ExcellentEconomy:2.8.0")
     compileOnly("su.nightexpress.nightcore:main:2.16.4")

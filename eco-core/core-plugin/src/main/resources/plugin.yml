@@ -25,6 +25,7 @@ softdepend:
   - WorldGuard
   - GriefPrevention
   - Towny
+  - PlotSquared
   - FactionsUUID
   - Kingdoms
   - AAC
