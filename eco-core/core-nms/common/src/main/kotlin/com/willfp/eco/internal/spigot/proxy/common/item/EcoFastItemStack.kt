@@ -13,6 +13,8 @@ import com.willfp.eco.internal.spigot.proxy.common.toNMS
 import com.willfp.eco.util.StringUtils
 import com.willfp.eco.util.toComponent
 import com.willfp.eco.util.toLegacy
+import net.minecraft.network.chat.Component as NMSComponent
+import net.minecraft.world.item.ItemStack as NMSItemStack
 import kotlin.math.max
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
@@ -170,8 +172,8 @@ class EcoFastItemStack(
 
     override fun setDisplayName(name: Component?) {
         if (name == null) {
-            handle.set<net.minecraft.network.chat.Component>(DataComponents.ITEM_NAME, null)
-            handle.set<net.minecraft.network.chat.Component>(DataComponents.CUSTOM_NAME, null)
+            handle.set<NMSComponent>(DataComponents.ITEM_NAME, null)
+            handle.set<NMSComponent>(DataComponents.CUSTOM_NAME, null)
         } else {
             handle.set(
                 DataComponents.CUSTOM_NAME,
@@ -192,7 +194,7 @@ class EcoFastItemStack(
 
     override fun getDisplayName(): String = displayNameComponent.toLegacy()
 
-    private fun <T : Any> net.minecraft.world.item.ItemStack.modifyComponent(
+    private fun <T : Any> NMSItemStack.modifyComponent(
         component: DataComponentType<T>,
         modifier: (T) -> T
     ) {
@@ -318,7 +320,7 @@ class EcoFastItemStack(
     }
 
     override fun hashCode(): Int {
-        return net.minecraft.world.item.ItemStack.hashItemAndComponents(handle)
+        return NMSItemStack.hashItemAndComponents(handle)
     }
 
     override fun apply() {

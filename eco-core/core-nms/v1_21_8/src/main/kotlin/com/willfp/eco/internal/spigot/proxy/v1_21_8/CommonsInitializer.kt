@@ -5,6 +5,9 @@ import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
 import com.willfp.eco.internal.spigot.proxy.v1_21_8.common.recipes.RecipeManager
+import net.minecraft.network.chat.Component as NMSComponent
+import net.minecraft.world.entity.LivingEntity as NMSLivingEntity
+import net.minecraft.world.item.ItemStack as NMSItemStack
 import java.lang.reflect.Field
 import net.kyori.adventure.text.Component
 import com.google.gson.GsonBuilder
@@ -86,25 +89,25 @@ class CommonsInitializer : CommonsInitializerProxy {
             return craft.handle as? PathfinderMob
         }
 
-        override fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack {
+        override fun asNMSStack(itemStack: ItemStack): NMSItemStack {
             return if (itemStack !is CraftItemStack) {
                 CraftItemStack.asNMSCopy(itemStack)
             } else {
-                cisHandle[itemStack] as net.minecraft.world.item.ItemStack? ?: CraftItemStack.asNMSCopy(itemStack)
+                cisHandle[itemStack] as NMSItemStack? ?: CraftItemStack.asNMSCopy(itemStack)
             }
         }
 
-        override fun asBukkitStack(itemStack: net.minecraft.world.item.ItemStack): ItemStack {
+        override fun asBukkitStack(itemStack: NMSItemStack): ItemStack {
             return CraftItemStack.asCraftMirror(itemStack)
         }
 
-        override fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack) {
+        override fun mergeIfNeeded(itemStack: ItemStack, nmsStack: NMSItemStack) {
             if (itemStack !is CraftItemStack) {
                 itemStack.itemMeta = CraftItemStack.asCraftMirror(nmsStack).itemMeta
             }
         }
 
-        override fun toBukkitEntity(entity: net.minecraft.world.entity.LivingEntity): LivingEntity? =
+        override fun toBukkitEntity(entity: NMSLivingEntity): LivingEntity? =
             CraftEntity.getEntity(Bukkit.getServer() as CraftServer, entity) as? LivingEntity
 
         override fun makePdc(tag: CompoundTag, base: Boolean): PersistentDataContainer {
@@ -135,7 +138,7 @@ class CommonsInitializer : CommonsInitializerProxy {
         override fun setPdc(
             tag: CompoundTag,
             pdc: PersistentDataContainer?,
-            item: net.minecraft.world.item.ItemStack?
+            item: NMSItemStack?
         ) {
             fun CraftPersistentDataContainer.toTag(): CompoundTag {
                 val compound = CompoundTag()
@@ -185,7 +188,7 @@ class CommonsInitializer : CommonsInitializerProxy {
 
         val gson = GsonBuilder().create()!!
 
-        override fun toNMS(component: Component): net.minecraft.network.chat.Component {
+        override fun toNMS(component: Component): NMSComponent {
             val json = JSONComponentSerializer.json().serialize(component)
             val holderLookupProvider = (Bukkit.getServer() as CraftServer).server.registryAccess()
 
