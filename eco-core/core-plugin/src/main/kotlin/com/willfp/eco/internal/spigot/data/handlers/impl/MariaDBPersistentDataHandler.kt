@@ -15,7 +15,8 @@ class MariaDBPersistentDataHandler(
     "mariadb",
     dataSourceFor(config),
     config.getString("prefix"),
-    MYSQL_PLACEHOLDER_BUDGET
+    MYSQL_PLACEHOLDER_BUDGET,
+    config.getInt("connections") - 1
 ) {
     init {
         registerSerializers()

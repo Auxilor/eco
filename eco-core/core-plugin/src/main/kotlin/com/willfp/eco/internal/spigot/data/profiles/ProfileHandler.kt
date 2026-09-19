@@ -523,10 +523,16 @@ class ProfileHandler(
             if (kind == MigrationKind.LOCAL_HANDLER) it.filterTo(mutableSetOf()) { key -> key.isSavedLocally } else it
         }
 
-        migrateProfiles(fromFactory.create(plugin), toHandler, keys, plugin.logger::info)
+        val fromHandler = fromFactory.create(plugin)
+
+        migrateProfiles(fromHandler, toHandler, keys, plugin.logger::info)
 
         plugin.logger.info("Profile writes submitted! Waiting for completion...")
         toHandler.shutdown()
+
+        // The source handler is only ever built for this migration, and its pool holds fixed
+        // threads that would otherwise keep the JVM alive.
+        fromHandler.shutdown()
 
         plugin.logger.info("Updating previous handler...")
         bookkeeping.set(PREVIOUS_HANDLER_KEY, defaultHandler.id)

@@ -67,8 +67,9 @@ abstract class ExposedPersistentDataHandler(
     id: String,
     dataSource: DataSource,
     protected val prefix: String,
-    private val placeholderBudget: Int
-) : PersistentDataHandler(id), ProfileExistenceCheck {
+    private val placeholderBudget: Int,
+    threads: Int = PersistentDataHandler.DEFAULT_THREADS
+) : PersistentDataHandler(id, threads), ProfileExistenceCheck {
     protected val database: Database =
         Database.connect(dataSource, connectionAutoRegistration = ExposedConnectionImpl())
 
