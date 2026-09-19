@@ -5,6 +5,7 @@ import com.willfp.eco.core.packet.Packet
 import com.willfp.eco.core.packet.sendPacket
 import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
+import net.minecraft.network.chat.Component as NMSComponent
 import java.util.Optional
 import net.kyori.adventure.text.Component
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
@@ -22,7 +23,7 @@ class DisplayName : DisplayNameProxy {
         .filter { it.type == EntityDataAccessor::class.java }
         .toList()[2]
         .apply { isAccessible = true }
-        .get(null) as EntityDataAccessor<Optional<net.minecraft.network.chat.Component>>
+        .get(null) as EntityDataAccessor<Optional<NMSComponent>>
 
     private val customNameVisibleAccessor = Entity::class.java
         .declaredFields

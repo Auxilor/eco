@@ -22,7 +22,9 @@ import net.minecraft.world.entity.PositionMoveRotation
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.craftbukkit.CraftWorld
+import org.bukkit.entity.Display as BukkitDisplay
 import org.bukkit.entity.Player
+import org.bukkit.entity.TextDisplay as BukkitTextDisplay
 import org.bukkit.util.Transformation
 import org.joml.Quaternionf
 import org.joml.Vector3f
@@ -119,8 +121,8 @@ class V26_2HologramHandle private constructor(
             return V26_2HologramHandle(display)
         }
 
-        private fun bukkitOf(display: Display.TextDisplay): org.bukkit.entity.TextDisplay =
-            display.bukkitEntity as org.bukkit.entity.TextDisplay
+        private fun bukkitOf(display: Display.TextDisplay): BukkitTextDisplay =
+            display.bukkitEntity as BukkitTextDisplay
 
         private fun applyText(display: Display.TextDisplay, contents: List<String>) {
             val joined = contents.joinToString("\n")
@@ -131,10 +133,10 @@ class V26_2HologramHandle private constructor(
             val bukkit = bukkitOf(display)
 
             bukkit.billboard = when (options.billboard) {
-                Billboard.FIXED -> org.bukkit.entity.Display.Billboard.FIXED
-                Billboard.VERTICAL -> org.bukkit.entity.Display.Billboard.VERTICAL
-                Billboard.HORIZONTAL -> org.bukkit.entity.Display.Billboard.HORIZONTAL
-                Billboard.CENTER -> org.bukkit.entity.Display.Billboard.CENTER
+                Billboard.FIXED -> BukkitDisplay.Billboard.FIXED
+                Billboard.VERTICAL -> BukkitDisplay.Billboard.VERTICAL
+                Billboard.HORIZONTAL -> BukkitDisplay.Billboard.HORIZONTAL
+                Billboard.CENTER -> BukkitDisplay.Billboard.CENTER
             }
 
             bukkit.viewRange = options.viewRange
@@ -162,9 +164,9 @@ class V26_2HologramHandle private constructor(
             bukkit.isSeeThrough = options.isSeeThrough()
 
             bukkit.alignment = when (options.alignment) {
-                TextAlignment.CENTER -> org.bukkit.entity.TextDisplay.TextAlignment.CENTER
-                TextAlignment.LEFT -> org.bukkit.entity.TextDisplay.TextAlignment.LEFT
-                TextAlignment.RIGHT -> org.bukkit.entity.TextDisplay.TextAlignment.RIGHT
+                TextAlignment.CENTER -> BukkitTextDisplay.TextAlignment.CENTER
+                TextAlignment.LEFT -> BukkitTextDisplay.TextAlignment.LEFT
+                TextAlignment.RIGHT -> BukkitTextDisplay.TextAlignment.RIGHT
             }
         }
     }

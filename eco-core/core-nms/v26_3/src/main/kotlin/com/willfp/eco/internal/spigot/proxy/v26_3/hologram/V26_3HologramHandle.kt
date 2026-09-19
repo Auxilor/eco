@@ -1,10 +1,10 @@
-package com.willfp.eco.internal.spigot.proxy.v1_21_10.hologram
+package com.willfp.eco.internal.spigot.proxy.v26_3.hologram
 
 import com.willfp.eco.core.integrations.hologram.Billboard
 import com.willfp.eco.core.integrations.hologram.HologramOptions
 import com.willfp.eco.core.integrations.hologram.TextAlignment
 import com.willfp.eco.internal.spigot.proxies.NativeHologramHandle
-import com.willfp.eco.internal.spigot.proxy.common.toNMS
+import com.willfp.eco.internal.spigot.proxy.v26_2.common.toNMS
 import com.willfp.eco.util.StringUtils
 import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
@@ -17,7 +17,9 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.Display
 import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.EntityTypes
 import net.minecraft.world.entity.PositionMoveRotation
+import net.minecraft.world.entity.UpdateInterval
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.craftbukkit.CraftWorld
@@ -30,15 +32,11 @@ import org.joml.Vector3f
 import java.util.function.Predicate
 
 /**
- * Packet-based [Display.TextDisplay] hologram for 1.21.10+, where Paper collapsed
- * ServerEntity's separate broadcast Consumer/BiConsumer params into a single
- * [ServerEntity.Synchronizer]. This is a straight copy of the pre-1.21.10
- * `CommonHologramHandle` with only that constructor call updated - the shared
- * `common` module is compiled once against the 1.21.8 mappings and reused
- * as-is by every other version, so it can't track this kind of NMS constructor
- * change; versions where the shape changes need their own copy here instead.
+ * Packet-based [Display.TextDisplay] hologram for 26.3, where ServerEntity's int update
+ * interval became an [UpdateInterval]. Otherwise a straight copy of the 26.2 handle; see
+ * there for why each shape change needs its own copy.
  */
-class V1_21_10HologramHandle private constructor(
+class V26_3HologramHandle private constructor(
     private val display: Display.TextDisplay
 ) : NativeHologramHandle {
 
@@ -62,7 +60,7 @@ class V1_21_10HologramHandle private constructor(
         val serverEntity = ServerEntity(
             display.level() as ServerLevel,
             display,
-            0,
+            UpdateInterval.NEVER,
             false,
             synchronizer,
             emptySet() // Paper's trackedPlayers param; unused for a throwaway, one-shot packet builder
@@ -103,13 +101,13 @@ class V1_21_10HologramHandle private constructor(
     }
 
     companion object {
-        fun create(location: Location, options: HologramOptions): V1_21_10HologramHandle {
+        fun create(location: Location, options: HologramOptions): V26_3HologramHandle {
             val world = location.world
                 ?: throw IllegalArgumentException("Hologram location must have a non-null world")
             val level = (world as CraftWorld).handle
 
             // The TextDisplay constructor assigns a unique entity id from the vanilla counter.
-            val display = Display.TextDisplay(EntityType.TEXT_DISPLAY, level)
+            val display = Display.TextDisplay(EntityTypes.TEXT_DISPLAY, level)
             display.setPos(location.x, location.y, location.z)
             display.setYRot(location.yaw)
             display.setXRot(location.pitch)
@@ -117,7 +115,7 @@ class V1_21_10HologramHandle private constructor(
             applyOptions(display, options)
             applyText(display, options.contents)
 
-            return V1_21_10HologramHandle(display)
+            return V26_3HologramHandle(display)
         }
 
         private fun bukkitOf(display: Display.TextDisplay): BukkitTextDisplay =

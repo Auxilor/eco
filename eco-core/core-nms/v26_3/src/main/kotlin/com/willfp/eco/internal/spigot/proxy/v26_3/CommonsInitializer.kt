@@ -1,13 +1,13 @@
-package com.willfp.eco.internal.spigot.proxy.v26_1_2
+package com.willfp.eco.internal.spigot.proxy.v26_3
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.mojang.serialization.JsonOps
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
-import com.willfp.eco.internal.spigot.proxy.common.CommonsProvider
-import com.willfp.eco.internal.spigot.proxy.common.packet.PacketInjectorListener
-import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.recipes.RecipeManager
+import com.willfp.eco.internal.spigot.proxy.v26_2.common.CommonsProvider
+import com.willfp.eco.internal.spigot.proxy.v26_2.common.packet.PacketInjectorListener
+import com.willfp.eco.internal.spigot.proxy.v26_2.common.recipes.RecipeManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer
 import net.minecraft.core.component.DataComponents
@@ -41,6 +41,10 @@ import org.bukkit.inventory.Recipe
 import org.bukkit.persistence.PersistentDataContainer
 import java.lang.reflect.Field
 
+/**
+ * Same as the 26.1.2 implementation, except 26.3 removed `CraftItemStack.asCraftMirror` in
+ * favour of `asBukkitMirror`.
+ */
 class CommonsInitializer : CommonsInitializerProxy {
     override fun init(plugin: EcoPlugin) {
         CommonsProvider.setIfNeeded(CommonsProviderImpl)
@@ -98,12 +102,12 @@ class CommonsInitializer : CommonsInitializerProxy {
         }
 
         override fun asBukkitStack(itemStack: NMSItemStack): ItemStack {
-            return CraftItemStack.asCraftMirror(itemStack)
+            return CraftItemStack.asBukkitMirror(itemStack)
         }
 
         override fun mergeIfNeeded(itemStack: ItemStack, nmsStack: NMSItemStack) {
             if (itemStack !is CraftItemStack) {
-                itemStack.itemMeta = CraftItemStack.asCraftMirror(nmsStack).itemMeta
+                itemStack.itemMeta = CraftItemStack.asBukkitMirror(nmsStack).itemMeta
             }
         }
 

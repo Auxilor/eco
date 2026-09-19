@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.common.ai
 import com.willfp.eco.core.entities.ai.CustomGoal
 import com.willfp.eco.core.entities.ai.GoalFlag
 import com.willfp.eco.internal.spigot.proxy.common.toBukkitEntity
+import org.bukkit.entity.Mob as BukkitMob
 import java.util.EnumSet
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.entity.ai.goal.Goal
@@ -45,7 +46,7 @@ private fun Collection<GoalFlag>.toNMSFlags(): Collection<Goal.Flag> {
     }
 }
 
-private class NMSCustomGoal<T : org.bukkit.entity.Mob>(
+private class NMSCustomGoal<T : BukkitMob>(
     val customEntityGoal: CustomGoal<T>,
     entity: PathfinderMob
 ) : Goal() {
