@@ -57,17 +57,32 @@ final class ClassIndex implements AutoCloseable {
         ClassNode node = null;
         ZipFile zip = locations.get(internalName);
 
-        if (zip != null) {
-            try (InputStream in = zip.getInputStream(zip.getEntry(internalName + ".class"))) {
+        try (InputStream in = zip != null
+            ? zip.getInputStream(zip.getEntry(internalName + ".class"))
+            : jdkClass(internalName)) {
+            if (in != null) {
                 node = new ClassNode(Opcodes.ASM9);
                 new ClassReader(in).accept(node, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-            } catch (IOException e) {
-                node = null;
             }
+        } catch (IOException e) {
+            node = null;
         }
 
         cache.put(internalName, node);
         return node;
+    }
+
+    /**
+     * JDK classes are not on the compile classpath, but every platform class hierarchy ends in one.
+     * Without them the checker can never prove a member absent, so resolve them from the running JVM.
+     */
+    private InputStream jdkClass(String internalName) {
+        if (!internalName.startsWith("java/") && !internalName.startsWith("javax/")
+            && !internalName.startsWith("jdk/") && !internalName.startsWith("sun/")) {
+            return null;
+        }
+
+        return ClassLoader.getSystemResourceAsStream(internalName + ".class");
     }
 
     boolean isSubclassOf(String child, String parent) {

@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.data.handlers.impl
 
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Projections
 import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.willfp.eco.core.config.Configs
@@ -147,13 +148,97 @@ class MongoDBPersistentDataHandler(
 
     override fun getSavedUUIDs(): Set<UUID> {
         return runBlocking {
-            collection.find().toList().map {
-                UUID.fromString(it.getString("uuid").value)
-            }.toSet()
+            collection.find()
+                .projection(Projections.include("uuid"))
+                .toList()
+                .map { UUID.fromString(it.getString("uuid").value) }
+                .toSet()
         }
     }
 
+    override fun <T> readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+        @Suppress("UNCHECKED_CAST")
+        val serializer = key.type.getSerializer(this) as MongoSerializer<Any>
+
+        @Suppress("UNCHECKED_CAST")
+        return serializer.readAll(uuids, key as PersistentDataKey<Any>) as Map<UUID, T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun readAllKeys(
+        uuids: Set<UUID>,
+        keys: Collection<PersistentDataKey<*>>
+    ): Map<PersistentDataKey<*>, Map<UUID, Any>> {
+        val values = HashMap<PersistentDataKey<*>, Map<UUID, Any>>(keys.size)
+
+        // Every key of a type shares one deserializer, and every key of any type shares one
+        // document per profile, so this is one find per type rather than one per key.
+        for ((type, ofType) in keys.groupBy { it.type }) {
+            val serializer = type.getSerializer(this) as MongoSerializer<Any>
+            val byField = serializer.readAllKeys(uuids, ofType as List<PersistentDataKey<Any>>)
+
+            for (key in ofType) {
+                values[key] = byField[key.key.toString()] ?: emptyMap()
+            }
+        }
+
+        return values
+    }
+
     private abstract inner class MongoSerializer<T : Any> : DataTypeSerializer<T>() {
+        fun readAll(uuids: Set<UUID>, key: PersistentDataKey<T>): Map<UUID, T> {
+            if (uuids.isEmpty()) {
+                return emptyMap()
+            }
+
+            val field = key.key.toString()
+
+            return runBlocking {
+                collection.find(Filters.`in`("uuid", uuids.map { it.toString() }))
+                    .projection(Projections.include("uuid", field))
+                    .toList()
+                    .mapNotNull { profile ->
+                        val value = profile[field] ?: return@mapNotNull null
+                        UUID.fromString(profile.getString("uuid").value) to deserialize(value)
+                    }
+                    .toMap()
+            }
+        }
+
+        fun readAllKeys(uuids: Set<UUID>, keys: List<PersistentDataKey<T>>): Map<String, Map<UUID, T>> {
+            if (uuids.isEmpty() || keys.isEmpty()) {
+                return emptyMap()
+            }
+
+            val fields = keys.map { it.key.toString() }
+            val values = HashMap<String, MutableMap<UUID, T>>(fields.size)
+
+            // Pre-populated so a field nobody has stored still reports an empty map rather than
+            // being absent from the result.
+            for (field in fields) {
+                values[field] = HashMap()
+            }
+
+            return runBlocking {
+                collection.find(Filters.`in`("uuid", uuids.map { it.toString() }))
+                    .projection(Projections.include(listOf("uuid") + fields))
+                    .toList()
+                    .forEach { profile ->
+                        val uuid = UUID.fromString(profile.getString("uuid").value)
+
+                        for (field in fields) {
+                            // An absent field stays absent rather than being defaulted, matching
+                            // readAll and the base contract.
+                            val value = profile[field] ?: continue
+
+                            values[field]?.put(uuid, deserialize(value))
+                        }
+                    }
+
+                values
+            }
+        }
+
         override fun readAsync(uuid: UUID, key: PersistentDataKey<T>): T? {
             return runBlocking {
                 val filter = Filters.eq("uuid", uuid.toString())

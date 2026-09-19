@@ -10,15 +10,18 @@ import com.mojang.serialization.JsonOps
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component as NMSComponent
 import net.minecraft.network.chat.ComponentSerialization
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.PathfinderMob
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack as NMSItemStack
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.entity.LivingEntity as BukkitLivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -31,16 +34,16 @@ private lateinit var impl: CommonsProvider
 fun Mob.toPathfinderMob(): PathfinderMob? =
     impl.toPathfinderMob(this)
 
-fun ItemStack.asNMSStack(): net.minecraft.world.item.ItemStack =
+fun ItemStack.asNMSStack(): NMSItemStack =
     impl.asNMSStack(this)
 
-fun net.minecraft.world.item.ItemStack.asBukkitStack(): ItemStack =
+fun NMSItemStack.asBukkitStack(): ItemStack =
     impl.asBukkitStack(this)
 
-fun ItemStack.mergeIfNeeded(nmsStack: net.minecraft.world.item.ItemStack) =
+fun ItemStack.mergeIfNeeded(nmsStack: NMSItemStack) =
     impl.mergeIfNeeded(this, nmsStack)
 
-fun LivingEntity.toBukkitEntity(): org.bukkit.entity.LivingEntity? =
+fun LivingEntity.toBukkitEntity(): BukkitLivingEntity? =
     impl.toBukkitEntity(this)
 
 fun <T : EntityGoal<*>> T.getVersionSpecificEntityGoalFactory(): EntityGoalFactory<T>? =
@@ -78,16 +81,16 @@ fun Item.toMaterial(): Material =
 fun CompoundTag.makePdc(base: Boolean = false): PersistentDataContainer =
     impl.makePdc(this, base)
 
-fun CompoundTag.setPdc(pdc: PersistentDataContainer?, item: net.minecraft.world.item.ItemStack? = null) =
+fun CompoundTag.setPdc(pdc: PersistentDataContainer?, item: NMSItemStack? = null) =
     impl.setPdc(this, pdc, item)
 
 fun Player.toNMS(): ServerPlayer =
     impl.toNMS(this)
 
-fun Component.toNMS(): net.minecraft.network.chat.Component =
+fun Component.toNMS(): NMSComponent =
     if (Prerequisite.HAS_PAPER.isMet) PaperAdventure.asVanilla(this) else impl.toNMS(this)
 
-fun net.minecraft.network.chat.Component.toAdventure(): Component {
+fun NMSComponent.toAdventure(): Component {
     if (Prerequisite.HAS_PAPER.isMet) {
         return PaperAdventure.asAdventure(this)
     }
@@ -101,17 +104,17 @@ interface CommonsProvider {
 
     fun makePdc(tag: CompoundTag, base: Boolean): PersistentDataContainer
 
-    fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer?, item: net.minecraft.world.item.ItemStack? = null)
+    fun setPdc(tag: CompoundTag, pdc: PersistentDataContainer?, item: NMSItemStack? = null)
 
     fun toPathfinderMob(mob: Mob): PathfinderMob?
 
-    fun asNMSStack(itemStack: ItemStack): net.minecraft.world.item.ItemStack
+    fun asNMSStack(itemStack: ItemStack): NMSItemStack
 
-    fun asBukkitStack(itemStack: net.minecraft.world.item.ItemStack): ItemStack
+    fun asBukkitStack(itemStack: NMSItemStack): ItemStack
 
-    fun mergeIfNeeded(itemStack: ItemStack, nmsStack: net.minecraft.world.item.ItemStack)
+    fun mergeIfNeeded(itemStack: ItemStack, nmsStack: NMSItemStack)
 
-    fun toBukkitEntity(entity: LivingEntity): org.bukkit.entity.LivingEntity?
+    fun toBukkitEntity(entity: LivingEntity): BukkitLivingEntity?
 
     fun <T : EntityGoal<*>> getVersionSpecificEntityGoalFactory(goal: T): EntityGoalFactory<T>? {
         return null
@@ -127,7 +130,7 @@ interface CommonsProvider {
 
     fun toNMS(player: Player): ServerPlayer
 
-    fun toNMS(component: Component): net.minecraft.network.chat.Component
+    fun toNMS(component: Component): NMSComponent
 
     fun addBukkitRecipeNoResend(recipe: Recipe)
 

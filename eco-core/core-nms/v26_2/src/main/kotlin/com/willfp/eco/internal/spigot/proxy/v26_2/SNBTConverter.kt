@@ -5,6 +5,7 @@ import com.mojang.serialization.Dynamic
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
+import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.asBukkitStack
 import net.minecraft.SharedConstants
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtOps
@@ -12,6 +13,7 @@ import net.minecraft.nbt.SnbtPrinterTagVisitor
 import net.minecraft.nbt.TagParser
 import net.minecraft.server.MinecraftServer
 import net.minecraft.util.datafix.fixes.References
+import net.minecraft.world.item.ItemStack as NMSItemStack
 import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.util.CraftMagicNumbers
 import org.bukkit.inventory.ItemStack
@@ -48,18 +50,18 @@ class SNBTConverter : SNBTConverterProxy {
                 dataVersion,
                 SharedConstants.getCurrentVersion().dataVersion().version()
             ).getValue() as CompoundTag?
-            val minecraftStack = net.minecraft.world.item.ItemStack.CODEC.parse(
+            val minecraftStack = NMSItemStack.CODEC.parse(
                 MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
                 converted
             ).getOrThrow()
-            return CraftItemStack.asCraftMirror(minecraftStack)
+            return minecraftStack.asBukkitStack()
         } catch (_: CommandSyntaxException) {
             return null
         }
     }
 
     override fun toSNBT(itemStack: ItemStack): String {
-        val compoundTag = net.minecraft.world.item.ItemStack.CODEC.encodeStart(
+        val compoundTag = NMSItemStack.CODEC.encodeStart(
             MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
             CraftItemStack.asNMSCopy(itemStack)
         ).getOrThrow() as CompoundTag
@@ -71,11 +73,11 @@ class SNBTConverter : SNBTConverterProxy {
         try {
             val tag = parseItemSNBT(snbt) ?: return EmptyTestableItem()
             tag.remove("Count")
-            val minecraftStack = net.minecraft.world.item.ItemStack.CODEC.parse(
+            val minecraftStack = NMSItemStack.CODEC.parse(
                 MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
                 tag
             ).getOrThrow()
-            return SNBTTestableItem(CraftItemStack.asBukkitCopy(minecraftStack), tag)
+            return SNBTTestableItem(minecraftStack.asBukkitStack(), tag)
         } catch (_: CommandSyntaxException) {
             return EmptyTestableItem()
         }
@@ -91,7 +93,7 @@ class SNBTConverter : SNBTConverterProxy {
                 return false
             }
 
-            val nmsTag = net.minecraft.world.item.ItemStack.CODEC.encodeStart(
+            val nmsTag = NMSItemStack.CODEC.encodeStart(
                 MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
                 CraftItemStack.asNMSCopy(itemStack)
             ).getOrThrow() as CompoundTag

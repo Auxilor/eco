@@ -10,4 +10,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
     compileOnly("org.yaml:snakeyaml:2.5")
     compileOnly("io.hotmoka:toml4j:0.7.3")
+
+    // The config tests load and parse real yaml, which is provided by the server at runtime.
+    testImplementation("org.yaml:snakeyaml:2.5")
 }
