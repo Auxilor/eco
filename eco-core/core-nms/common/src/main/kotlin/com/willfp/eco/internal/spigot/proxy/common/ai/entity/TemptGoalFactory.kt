@@ -4,6 +4,7 @@ import com.willfp.eco.core.entities.ai.entity.EntityGoalTempt
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.internal.spigot.proxy.common.ai.EntityGoalFactory
+import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import java.util.EnumSet
 import kotlin.math.abs
 import net.minecraft.world.entity.Entity
@@ -59,7 +60,7 @@ class EnhancedTemptGoal(
     }
 
     private fun shouldFollow(entity: LivingEntity): Boolean {
-        return item.matches(entity.mainHandItem.asBukkitCopy()) || item.matches(entity.offhandItem.asBukkitCopy())
+        return item.matches(entity.mainHandItem.copy().asBukkitStack()) || item.matches(entity.offhandItem.copy().asBukkitStack())
     }
 
     override fun canContinueToUse(): Boolean {

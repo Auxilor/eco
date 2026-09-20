@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
  * Handles data read/write for a {@link com.willfp.eco.core.data.keys.PersistentDataKeyType} for a specific
  * data handler.
  * <p>
- * Both methods are always invoked off the main thread by
- * {@link PersistentDataHandler}, so they may block.
+ * Writes are always invoked on {@link PersistentDataHandler}'s executor; reads are
+ * invoked on whichever thread called for them. Both may block.
  *
  * @param <T> The type of data.
  */
