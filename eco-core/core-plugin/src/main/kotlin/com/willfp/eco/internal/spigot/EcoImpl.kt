@@ -24,6 +24,7 @@ import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.data.PlayerProfileResolver
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.datapack.DatapackContributor
+import com.willfp.eco.core.display.DisplayRecorder
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuType
 import com.willfp.eco.core.gui.slot.functional.SlotProvider
@@ -81,6 +82,7 @@ import com.willfp.eco.internal.spigot.math.api.EcoExpressionEnvironmentBuilder
 import com.willfp.eco.internal.spigot.proxies.BukkitCommandsProxy
 import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
+import com.willfp.eco.internal.spigot.proxies.DisplayRecordsProxy
 import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
@@ -523,6 +525,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun formatMiniMessage(message: String) =
         getProxy(MiniMessageTranslatorProxy::class.java).format(message)
+
+    override fun getDisplayRecorder(): DisplayRecorder =
+        getProxy(DisplayRecordsProxy::class.java)
 
     override fun adaptPdc(container: PersistentDataContainer) =
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).adapt(container)

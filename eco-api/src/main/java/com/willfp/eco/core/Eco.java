@@ -16,6 +16,7 @@ import com.willfp.eco.core.data.keys.PersistentDataKey;
 import com.willfp.eco.core.datapack.DatapackContributor;
 import com.willfp.eco.core.datapack.DatapackHandle;
 import com.willfp.eco.core.datapack.InstallResult;
+import com.willfp.eco.core.display.DisplayRecorder;
 import com.willfp.eco.core.drops.DropQueue;
 import com.willfp.eco.core.entities.ai.EntityController;
 import com.willfp.eco.core.events.EventManager;
@@ -417,6 +418,14 @@ public interface Eco {
      */
     @NotNull
     FastItemStack createFastItemStack(@NotNull ItemStack itemStack);
+
+    /**
+     * Get the display recorder.
+     *
+     * @return The recorder.
+     */
+    @NotNull
+    DisplayRecorder getDisplayRecorder();
 
     /**
      * Register bStats metrics.
