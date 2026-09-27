@@ -15,9 +15,15 @@ final class DisplayLines {
     static final String MARKER = "eco:display";
 
     /**
+     * The legacy prefix eco has always started display lines with. Stored items still carry
+     * it, so it is recognised for good, whatever happens to the legacy prefix.
+     */
+    static final String LEGACY_PREFIX = "§z";
+
+    /**
      * If a lore line was added by a display module.
      * <p>
-     * Display lines are written by eco through Adventure, so {@link Display#PREFIX} always ends
+     * Display lines are written by eco through Adventure, so the legacy prefix always ends
      * up at the start of a component that owns the rest of the line: either the whole line as
      * plain text, or a parent whose children hold the coloured text after the prefix. Lore
      * lines are also wrapped in an empty parent to force italics off, so that wrapping is
@@ -51,7 +57,7 @@ final class DisplayLines {
         }
 
         return component instanceof TextComponent textComponent
-                && textComponent.content().startsWith(Display.PREFIX);
+                && textComponent.content().startsWith(LEGACY_PREFIX);
     }
 
     /**
@@ -61,19 +67,19 @@ final class DisplayLines {
      * the lore is set, as that wrapper is recognised by its style.
      *
      * @param content      The line content.
-     * @param legacyPrefix If {@link Display#PREFIX} should start the line.
+     * @param legacyPrefix If the legacy prefix should start the line.
      * @return The display line.
      */
     @NotNull
     static Component mark(@NotNull final Component content,
                           final boolean legacyPrefix) {
-        return Component.text(legacyPrefix ? Display.PREFIX : "")
+        return Component.text(legacyPrefix ? LEGACY_PREFIX : "")
                 .insertion(MARKER)
                 .append(content);
     }
 
     /**
-     * The content of a line without its marker or {@link Display#PREFIX}.
+     * The content of a line without its marker or the legacy prefix.
      *
      * @param line The line.
      * @return The content.
@@ -90,9 +96,9 @@ final class DisplayLines {
         }
 
         if (component instanceof TextComponent textComponent
-                && (MARKER.equals(textComponent.insertion()) || textComponent.content().startsWith(Display.PREFIX))) {
-            String content = textComponent.content().startsWith(Display.PREFIX)
-                    ? textComponent.content().substring(Display.PREFIX.length())
+                && (MARKER.equals(textComponent.insertion()) || textComponent.content().startsWith(LEGACY_PREFIX))) {
+            String content = textComponent.content().startsWith(LEGACY_PREFIX)
+                    ? textComponent.content().substring(LEGACY_PREFIX.length())
                     : textComponent.content();
 
             return textComponent.content(content).insertion(null);
@@ -101,7 +107,7 @@ final class DisplayLines {
         String legacy = StringUtils.toLegacy(line);
 
         return StringUtils.toComponent(
-                legacy.startsWith(Display.PREFIX) ? legacy.substring(Display.PREFIX.length()) : legacy
+                legacy.startsWith(LEGACY_PREFIX) ? legacy.substring(LEGACY_PREFIX.length()) : legacy
         );
     }
 

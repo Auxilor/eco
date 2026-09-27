@@ -70,7 +70,7 @@ final class DisplayLoreBuilder implements DisplayLore {
     /**
      * The lore to put on the item.
      *
-     * @param legacyPrefix If display lines should start with {@link Display#PREFIX}.
+     * @param legacyPrefix If display lines should start with the legacy prefix.
      * @return The lore.
      */
     @NotNull
@@ -100,7 +100,7 @@ final class DisplayLoreBuilder implements DisplayLore {
     /**
      * Remove display lines that a failed revert left behind as foreign lines.
      * <p>
-     * A foreign line that starts with {@link Display#PREFIX} and reads the same as a display
+     * A foreign line that starts with the legacy prefix and reads the same as a display
      * line is a leftover copy, and one is removed for each display line that matches it. Lines
      * without the prefix belong to other plugins and are never removed.
      */
@@ -124,11 +124,11 @@ final class DisplayLoreBuilder implements DisplayLore {
 
             String legacy = StringUtils.toLegacy(node.component());
 
-            if (!legacy.startsWith(Display.PREFIX)) {
+            if (!legacy.startsWith(DisplayLines.LEGACY_PREFIX)) {
                 continue;
             }
 
-            String content = legacy.substring(Display.PREFIX.length());
+            String content = legacy.substring(DisplayLines.LEGACY_PREFIX.length());
             int remaining = displayCounts.getOrDefault(content, 0);
 
             if (remaining > 0) {

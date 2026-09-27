@@ -63,7 +63,7 @@ final class LegacyLoreMatcher {
         for (int index = 0; index < outputSize; index++) {
             if (aligned[index] != null) {
                 result.add(aligned[index]);
-            } else if (outputLegacy.get(index).startsWith(Display.PREFIX)) {
+            } else if (outputLegacy.get(index).startsWith(DisplayLines.LEGACY_PREFIX)) {
                 result.add(LoreNode.display(DisplayLines.withoutPrefix(output.get(index))));
             } else {
                 result.add(LoreNode.foreign(output.get(index)));

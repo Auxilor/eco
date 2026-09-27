@@ -3,6 +3,7 @@ package com.willfp.eco.core.display;
 import com.willfp.eco.core.EcoPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,7 +70,12 @@ public abstract class DisplayModule {
      *
      * @param itemStack The item.
      * @param args      The varargs from {@link #generateVarArgs(ItemStack)}.
+     * @deprecated Override {@link #display(DisplayContext)} and add lore through
+     * {@link DisplayContext#getLore()}, which keeps other plugins' lore intact. Scheduled for
+     * removal in 2027.39.
      */
+    @Deprecated(since = "2026.39", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "2027.39")
     public void display(@NotNull final ItemStack itemStack,
                         @NotNull final Object... args) {
         // Technically optional.
@@ -85,7 +91,12 @@ public abstract class DisplayModule {
      * @param itemStack The item.
      * @param player    The player, or null if there is no player context.
      * @param args      The varargs from {@link #generateVarArgs(ItemStack)}.
+     * @deprecated Override {@link #display(DisplayContext)} and add lore through
+     * {@link DisplayContext#getLore()}, which keeps other plugins' lore intact. Scheduled for
+     * removal in 2027.39.
      */
+    @Deprecated(since = "2026.39", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "2027.39")
     public void display(@NotNull final ItemStack itemStack,
                         @Nullable final Player player,
                         @NotNull final Object... args) {
@@ -103,7 +114,12 @@ public abstract class DisplayModule {
      * @param player     The player, or null if there is no player context.
      * @param properties The properties.
      * @param args       The varargs from {@link #generateVarArgs(ItemStack)}.
+     * @deprecated Override {@link #display(DisplayContext)} and add lore through
+     * {@link DisplayContext#getLore()}, which keeps other plugins' lore intact. Scheduled for
+     * removal in 2027.39.
      */
+    @Deprecated(since = "2026.39", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "2027.39")
     public void display(@NotNull final ItemStack itemStack,
                         @Nullable final Player player,
                         @NotNull final DisplayProperties properties,
@@ -117,7 +133,12 @@ public abstract class DisplayModule {
      * Does nothing by default; override when needed.
      *
      * @param itemStack The item.
+     * @deprecated Display writes a record of everything it changed onto the item, and revert
+     * restores from it exactly, so modules no longer need to undo their own changes. Until
+     * removal, eco still calls this for items without a record. Scheduled for removal in 2027.39.
      */
+    @Deprecated(since = "2026.39", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "2027.39")
     public void revert(@NotNull final ItemStack itemStack) {
         // Technically optional.
     }

@@ -29,7 +29,14 @@ import org.jetbrains.annotations.Nullable;
 public final class Display {
     /**
      * The prefix for client-side lore lines.
+     *
+     * @deprecated Add display lines through {@link DisplayLore} from
+     * {@link DisplayModule#display(DisplayContext)}, which marks them without text. eco still
+     * recognises lines starting with this prefix on stored items. Scheduled for removal in
+     * 2027.39.
      */
+    @Deprecated(since = "2026.39", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "2027.39")
     public static final String PREFIX = "§z";
 
     /**
@@ -86,6 +93,7 @@ public final class Display {
      *                         search the inventory.
      * @return The same ItemStack, modified in place.
      */
+    @SuppressWarnings("removal")
     @ApiStatus.Internal
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player,
@@ -220,6 +228,7 @@ public final class Display {
      * @param itemStack The item.
      * @return The same ItemStack, modified in place.
      */
+    @SuppressWarnings("removal")
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
         boolean restored = Eco.get().getDisplayRecorder().restore(itemStack);
 
@@ -235,7 +244,7 @@ public final class Display {
 
         if (Eco.get().getEcoPlugin().getConfigYml().getBool("use-legacy-lore-revert")) {
             List<String> lore = new ArrayList<>(fast.getLore());
-            if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(Display.PREFIX))) {
+            if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(DisplayLines.LEGACY_PREFIX))) {
                 fast.setLore(lore);
             }
         } else {
