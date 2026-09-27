@@ -15,6 +15,11 @@ import org.jetbrains.annotations.Nullable;
  */
 final class DisplayLines {
     /**
+     * The insertion eco puts on the component that owns a display line.
+     */
+    static final String MARKER = "eco:display";
+
+    /**
      * If a lore line was added by a display module.
      * <p>
      * Display lines are written by eco through Adventure, so {@link Display#PREFIX} always ends
@@ -28,6 +33,9 @@ final class DisplayLines {
      * prefix written that way is a leaf sitting beside the rest of the line rather than owning
      * it. Those lines belong to whichever plugin wrote them - AdvancedEnchantments writes its
      * enchantment descriptions as {@code §z}-prefixed legacy strings - and are left alone.
+     * <p>
+     * Lines eco renders also carry {@link #MARKER} as their insertion, which survives any
+     * component-level copy and is recognised at any level of wrapping.
      *
      * @param line The lore line.
      * @return If the line is a display line.
@@ -36,14 +44,70 @@ final class DisplayLines {
         Component component = line;
 
         // Unwrap the empty parents lore lines are wrapped in to force italics off.
-        while (component instanceof TextComponent textComponent
+        while (!MARKER.equals(component.insertion())
+                && component instanceof TextComponent textComponent
                 && textComponent.content().isEmpty()
                 && component.children().size() == 1) {
             component = component.children().get(0);
         }
 
+        if (MARKER.equals(component.insertion())) {
+            return true;
+        }
+
         return component instanceof TextComponent textComponent
                 && textComponent.content().startsWith(Display.PREFIX);
+    }
+
+    /**
+     * Mark content as a display line.
+     * <p>
+     * The marker goes on a new owner component rather than on the italic wrapper eco adds when
+     * the lore is set, as that wrapper is recognised by its style.
+     *
+     * @param content      The line content.
+     * @param legacyPrefix If {@link Display#PREFIX} should start the line.
+     * @return The display line.
+     */
+    @NotNull
+    static Component mark(@NotNull final Component content,
+                          final boolean legacyPrefix) {
+        return Component.text(legacyPrefix ? Display.PREFIX : "")
+                .insertion(MARKER)
+                .append(content);
+    }
+
+    /**
+     * The content of a line without its marker or {@link Display#PREFIX}.
+     *
+     * @param line The line.
+     * @return The content.
+     */
+    @NotNull
+    static Component withoutPrefix(@NotNull final Component line) {
+        Component component = line;
+
+        while (!MARKER.equals(component.insertion())
+                && component instanceof TextComponent textComponent
+                && textComponent.content().isEmpty()
+                && component.children().size() == 1) {
+            component = component.children().get(0);
+        }
+
+        if (component instanceof TextComponent textComponent
+                && (MARKER.equals(textComponent.insertion()) || textComponent.content().startsWith(Display.PREFIX))) {
+            String content = textComponent.content().startsWith(Display.PREFIX)
+                    ? textComponent.content().substring(Display.PREFIX.length())
+                    : textComponent.content();
+
+            return textComponent.content(content).insertion(null);
+        }
+
+        String legacy = StringUtils.toLegacy(line);
+
+        return StringUtils.toComponent(
+                legacy.startsWith(Display.PREFIX) ? legacy.substring(Display.PREFIX.length()) : legacy
+        );
     }
 
     /**

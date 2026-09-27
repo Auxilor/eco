@@ -253,6 +253,30 @@ public final class Display {
     }
 
     /**
+     * If a lore line was added by eco's display.
+     *
+     * @param line The lore line.
+     * @return If the line is a display line.
+     */
+    public static boolean isDisplayLine(@NotNull final Component line) {
+        return DisplayLines.isDisplayLine(line);
+    }
+
+    /**
+     * The content of a lore line without eco's marker or {@link #PREFIX}.
+     * <p>
+     * Use this when copying lore from a stored item, which may start with the prefix, into
+     * {@link DisplayLore}.
+     *
+     * @param line The lore line.
+     * @return The content.
+     */
+    @NotNull
+    public static Component stripDisplayMarker(@NotNull final Component line) {
+        return DisplayLines.withoutPrefix(line);
+    }
+
+    /**
      * Utility class, cannot be instantiated.
      */
     private Display() {
