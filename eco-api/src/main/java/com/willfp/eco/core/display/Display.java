@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -35,6 +36,11 @@ public final class Display {
      * All registered modules.
      */
     private static final DisplayModuleRegistry REGISTRY = new DisplayModuleRegistry();
+
+    /**
+     * Increases whenever displayed items may have changed, such as on reload.
+     */
+    private static final AtomicInteger GENERATION = new AtomicInteger();
 
     /**
      * The persistent data key used to mark an item as finalized.
@@ -335,6 +341,24 @@ public final class Display {
     @NotNull
     public static Component stripDisplayMarker(@NotNull final Component line) {
         return DisplayLines.withoutPrefix(line);
+    }
+
+    /**
+     * The current display generation.
+     *
+     * @return The generation.
+     */
+    @ApiStatus.Internal
+    public static int getGeneration() {
+        return GENERATION.get();
+    }
+
+    /**
+     * Mark every cached display as out of date.
+     */
+    @ApiStatus.Internal
+    public static void invalidate() {
+        GENERATION.incrementAndGet();
     }
 
     /**

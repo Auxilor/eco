@@ -428,6 +428,11 @@ public interface Eco {
     DisplayRecorder getDisplayRecorder();
 
     /**
+     * Send displayed items to players again, after a reload.
+     */
+    void requestDisplayRefresh();
+
+    /**
      * Register bStats metrics.
      *
      * @param plugin The plugin.

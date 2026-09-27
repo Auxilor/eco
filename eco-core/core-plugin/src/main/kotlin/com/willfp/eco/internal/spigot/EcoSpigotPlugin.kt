@@ -230,6 +230,7 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import com.willfp.eco.internal.spigot.datapack.BookkeepingLedgerStorage
 import com.willfp.eco.internal.spigot.datapack.DatapackRegistry
+import com.willfp.eco.internal.spigot.display.DisplayRefresher
 import com.willfp.eco.internal.spigot.proxies.DatapackCodecProxy
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -260,6 +261,11 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
      * The brewing packet handler, registered as both a listener and a packet listener.
      */
     private val brewingPacketHandler = BrewingPacketHandler(this)
+
+    /**
+     * Sends displayed items to players again after reloads.
+     */
+    val displayRefresher = DisplayRefresher(this)
 
     /**
      * Owns every plugin's datapack, and all the timing decisions around them.
@@ -501,6 +507,12 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
 
         this.scheduler.global().runTimer(1L, 20L) {
             Recipes.checkBatching()
+        }
+
+        val refreshInterval = this.configYml.getInt("display-refresh-interval").toLong()
+
+        if (refreshInterval > 0) {
+            this.scheduler.global().runTimer(refreshInterval, refreshInterval) { displayRefresher.refresh() }
         }
     }
 

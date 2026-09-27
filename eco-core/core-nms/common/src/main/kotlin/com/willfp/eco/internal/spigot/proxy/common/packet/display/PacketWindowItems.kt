@@ -59,6 +59,7 @@ open class PacketWindowItems(
         player: Player
     ): MutableList<ItemStack> {
         if (plugin.configYml.getBool("use-display-frame") && windowId == 0) {
+            val generation = Display.getGeneration()
             val lastFrame = player.lastDisplayFrame
 
             // Hashes of the items as they arrived, before display, so that the next frame can
@@ -84,7 +85,7 @@ open class PacketWindowItems(
                 frameMap[index.toByte()] = HashedItem.of(itemStacks[index], hashes[index])
             }
 
-            player.lastDisplayFrame = DisplayFrame(frameMap)
+            player.lastDisplayFrame = DisplayFrame(frameMap, generation)
         } else {
             itemStacks.forEach { Display.display(it, player) }
         }

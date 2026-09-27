@@ -529,6 +529,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getDisplayRecorder(): DisplayRecorder =
         getProxy(DisplayRecordsProxy::class.java)
 
+    override fun requestDisplayRefresh() =
+        displayRefresher.request()
+
     override fun adaptPdc(container: PersistentDataContainer) =
         getProxy(ExtendedPersistentDataContainerFactoryProxy::class.java).adapt(container)
 
