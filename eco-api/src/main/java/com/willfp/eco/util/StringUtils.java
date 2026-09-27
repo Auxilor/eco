@@ -21,6 +21,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -100,6 +101,18 @@ public final class StringUtils {
     private static final EcoCache<String, String> STRING_FORMAT_CACHE = EcoCache.<String, String>builder()
             .expireAfterAccess(Duration.ofSeconds(10))
             .build(StringUtils::processFormatting);
+
+    /**
+     * Rich format cache.
+     */
+    private static final EcoCache<String, Component> RICH_FORMAT_CACHE = EcoCache.<String, Component>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
+            .build(StringUtils::processRichFormatting);
+
+    /**
+     * If the server's Adventure can show sprites and player heads in text.
+     */
+    private static final boolean HAS_OBJECT_COMPONENTS = hasClass("net.kyori.adventure.text.ObjectComponent");
 
     /**
      * Json -> Component Cache.
@@ -392,6 +405,35 @@ public final class StringUtils {
     }
 
     /**
+     * Format a string to a component, keeping everything MiniMessage can express.
+     * <p>
+     * Unlike {@link #formatToComponent(String)}, the text never passes through legacy strings,
+     * so sprites, player heads, fonts, translatable text and hover content are kept.
+     * Placeholders are not translated by this overload.
+     *
+     * @param message The message to format.
+     * @return The message, formatted, as a component.
+     */
+    @NotNull
+    public static Component formatToRichComponent(@NotNull final String message) {
+        return RICH_FORMAT_CACHE.get(message);
+    }
+
+    /**
+     * Format a string to a component, keeping everything MiniMessage can express.
+     *
+     * @param message The message to format.
+     * @param context The context to translate placeholders with respect to.
+     * @return The message, formatted, as a component.
+     * @see #formatToRichComponent(String)
+     */
+    @NotNull
+    public static Component formatToRichComponent(@NotNull final String message,
+                                                  @NotNull final PlaceholderContext context) {
+        return RICH_FORMAT_CACHE.get(PlaceholderManager.translatePlaceholders(message, context));
+    }
+
+    /**
      * Format a string.
      * <p>
      * Converts color codes and placeholders.
@@ -419,6 +461,28 @@ public final class StringUtils {
         processedMessage = translateGradients(processedMessage);
         processedMessage = translateHexColorCodes(processedMessage);
         return processedMessage;
+    }
+
+    private static Component processRichFormatting(@NotNull final String message) {
+        String processedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        processedMessage = translateGradients(processedMessage);
+        processedMessage = translateHexColorCodes(processedMessage);
+        processedMessage = LegacyToMiniMessage.convert(processedMessage);
+
+        if (!HAS_OBJECT_COMPONENTS) {
+            processedMessage = LegacyToMiniMessage.stripObjectTags(processedMessage);
+        }
+
+        return MiniMessage.miniMessage().deserialize(processedMessage);
+    }
+
+    private static boolean hasClass(@NotNull final String name) {
+        try {
+            Class.forName(name);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     private static String translateMiniMessage(@NotNull final String message) {

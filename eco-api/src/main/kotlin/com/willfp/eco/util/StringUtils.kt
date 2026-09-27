@@ -144,6 +144,45 @@ fun List<String>.formatEco(
 )
 
 /**
+ * Format this string to a component, keeping everything MiniMessage can express, such as
+ * sprites, player heads, fonts and translatable text. Placeholders are not translated.
+ *
+ * @return The formatted component.
+ * @see StringUtils.formatToRichComponent
+ */
+fun String.formatEcoRich(): Component =
+    StringUtils.formatToRichComponent(this)
+
+/**
+ * Format this string to a component, translating placeholders against a context and keeping
+ * everything MiniMessage can express.
+ *
+ * @param context The context to translate placeholders with respect to.
+ * @return The formatted component.
+ * @see StringUtils.formatToRichComponent
+ */
+fun String.formatEcoRich(context: PlaceholderContext): Component =
+    StringUtils.formatToRichComponent(this, context)
+
+/**
+ * Format these strings to components, keeping everything MiniMessage can express.
+ * Placeholders are not translated.
+ *
+ * @return The formatted components.
+ */
+fun List<String>.formatEcoRich(): List<Component> =
+    this.map { it.formatEcoRich() }
+
+/**
+ * Format these strings to components, translating placeholders against a context.
+ *
+ * @param context The context to translate placeholders with respect to.
+ * @return The formatted components.
+ */
+fun List<String>.formatEcoRich(context: PlaceholderContext): List<Component> =
+    this.map { it.formatEcoRich(context) }
+
+/**
  * Split this string around a separator, but only where the separator is surrounded by spaces.
  *
  * The separator is matched literally, not as a regex. For example, splitting

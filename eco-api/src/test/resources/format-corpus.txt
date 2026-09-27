@@ -1,0 +1,408 @@
+ &6Autosmelt
+ &7Ores are automatically smelted on mine
+&#0047ab&lCOBALT
+&#0047abCobalt Upgrade Crystal
+&1&k!!&r <GRADIENT:00c6ff>&lMYTHIC</GRADIENT:0072ff>&r &1&k!!&r
+&2$5000
+&2&lPlague Scroll
+&2&lTitan Scroll
+&2Bog Wretch&f Spawn Egg
+&2Craftable Pouch
+&2Perm Craft Pouch
+&2Plague
+&2Titan
+&3Height-Based
+&3Sneak Pouch
+&3Weights Pouch
+&4&lLeech Scroll
+&4&lSLAYER SET BONUS
+&4Leech
+&4Nether Pouch
+&4Slayer Boots
+&4Slayer Chestplate
+&4Slayer Elytra
+&4Slayer Helmet
+&4Slayer Leggings
+&5&lANGELIC SET BONUS
+&5&lPhantom Step Scroll
+&5Angelic Boots
+&5Angelic Chestplate
+&5Angelic Elytra
+&5Angelic Helmet
+&5Angelic Leggings
+&5Everything Pouch
+&5Perm-Multiplied
+&5Phantom Step
+&5Voidling&f Spawn Egg
+&5You could win:
+&6&k!!&r <GRADIENT:f79d00>&lEXOTIC</GRADIENT:64f38c>&r &6&k!!&r
+&6&k!!&r <GRADIENT:ffb347>&lANCIENT</GRADIENT:ffcc33>&r &6&k!!&r
+&6&lAutosmelt Scroll
+&6&lExample Scroll
+&6&lLEGENDARY
+&6&lLast Stand Scroll
+&6&lProspector Scroll
+&6Autosmelt
+&6Bundle of Goodies
+&6Ember Fox&f Spawn Egg
+&6Enchanted Steak
+&6Example Scroll
+&6Gold Ingots
+&6Last Stand
+&6Priced Pouch
+&6Prospector
+&6Reroll
+&6Special Effects:
+&6You could win:
+&7&lIRON
+&7A miner's best friend.
+&7A pickaxe made from hardened netherite.
+&7Attack Speed: &c1.5
+&7Blink through the air at will.
+&7Call down lightning to strike
+&7Cobblestone
+&7Damage: &c12❤
+&7Dirt
+&7Each strike drains life from
+&7Fortify your body beyond its
+&7Grants bonus max health on armor.
+&7Iron Upgrade Crystal
+&7It does nothing.
+&7Mine entire ore veins at once.
+&7Mines blocks much faster than a regular netherite pickaxe.
+&7Ores mined are automatically
+&7Pick a kit to get started.
+&7Place an item on the left and
+&7Place an item on the left to
+&7Place on the right of the
+&7Price:
+&7Rarity: &2Common
+&7Rarity: &3Test
+&7Rarity: &3Uncommon
+&7Rarity: &4Rare
+&7Rarity: &5Test
+&7Rarity: &6Legendary
+&7Rarity: &8Broken
+&7Rarity: &9Rare
+&7Rarity: &aCommon
+&7Rarity: &bEpic
+&7Rarity: &cMythic
+&7Rarity: &cRare
+&7Rarity: &dEpic
+&7Rarity: &eUncommon
+&7Rarity: &fCommon
+&7Reforges the item on the left with
+&7Reforges the item on the left, giving
+&7Restores &a12 &7hunger and &a2 &7saturation.
+&7Right-click to dash forward.
+&7Roll: &fchoose
+&7Roll: &fcsgo
+&7Roll: &felimination
+&7Roll: &fencircle
+&7Roll: &finstant
+&7Roll: &fmatch
+&7Roll: &fpick
+&7Roll: &fquantum
+&7Roll: &fslot_machine
+&7The closer to death you are,
+&7The most delicious steak in all the land.
+&7This can be inscribed up to &a10 &7times
+&7This is an example scroll.
+&7This item has been inscribed with
+&7This lore replaces the item's own
+&7When all seems lost, rise up
+&7When inscribed on armor, grants
+&7When inscribed to weapons, grants
+&7You cannot inscribe this item with this!
+&7You cannot reforge this item!
+&7Your strikes carry a virulent
+&7a new ability or effect.
+&7a reforge stone, giving it
+&7a scroll on the right to inscribe it.
+&7boost its stats.
+&7boosts its stats.
+&7grants stat boosts
+&7it a random item modifier that
+&7natural limits.
+&7on an item!
+&7random modifier to the item that
+&7reforge it! Reforging items adds a
+&7reforge menu to apply the
+&7smelted as they drop.
+&7the item on the left, granting it
+&7the more lethal you become.
+&7toxin that rots from within.
+&7with terrifying strength.
+&7your enemies from above.
+&7your enemies, healing you.
+&8&lDEFAULT
+&8&oPlace on the ground to
+&8&oRequires full set to be worn
+&8&oRequires the armor to already have Cobalt tier
+&8&oRequires the armor to already have Diamond tier
+&8&oRequires the armor to already have Iron tier
+&8&oRequires the armor to already have Netherite tier
+&8&oRequires the armor to already have default tier
+&8&oUpgrade with an Upgrade Crystal
+&8&osummon a &2Bog Wretch
+&8&osummon a &5Voidling
+&8&osummon a &bTide Lurker
+&8&osummon a &cNecrotic Soldier
+&8&osummon an &6Ember Fox
+&8&osummon the &8Hollow King
+&8&osummon the &bFrost Warden
+&8Bad Roll Pouch
+&8Become immune to poison damage.
+&8Become immune to wither damage.
+&8Default Upgrade Crystal
+&8Drop this onto &4Slayer Armor
+&8Drop this onto &5Angelic Armor
+&8Drop this onto &bHuntress Armor
+&8Drop this onto &cReaper Armor
+&8Drop this onto an armor piece
+&8Drop this onto an item with /stattrackers
+&8Empty Pouch
+&8Hollow King&f Spawn Egg
+&8Missing Rewards Pouch
+&8Never Wins
+&8Non-GUI Roll Pouch
+&8This item can be reforged!
+&8to display the amount experience you've absorbed
+&8to display the amount of arrows shot
+&8to display the amount of blocks broken
+&8to display the amount of bosses killed
+&8to display the amount of criticals dealt
+&8to display the amount of damage blocked
+&8to display the amount of damage dealt
+&8to display the amount of damage taken while wearing
+&8to display the amount of fish you've caught
+&8to display the amount of headshots you've hit
+&8to display the amount of mobs killed
+&8to display the amount of players killed
+&8to display the amount of times you've jumped
+&8to display the distance flown
+&8to display the distance jumped
+&8to display the distance sprinted
+&8to display the distance travelled while sneaking
+&8to display the distance you've travelled
+&8to make it <GRADIENT:f12711>Advanced</GRADIENT:f5af19>.
+&8to set its tier to:
+&8while wearing a piece of armor
+&8» &#FF0099Has 4096 durability
+&8» &#FF0099Mines blocks faster
+&8» &4Deal 2x damage to bosses
+&8» &7Grants &aRegeneration I &7for &a2 &7seconds.
+&8» &bDeal 1.5x bow damage
+&8» &bDeal 1.75x bow damage
+&8» &bDeal 2.5x trident damage
+&8» &bDeal 3.5x trident damage
+&8» &bNo melee damage penalty
+&8» &dGain 10 more hearts
+&8» &dGet 20 more hearts
+&8» &dPermanent regeneration
+&9&lRARE
+&9Pick Pouch
+&9You could win:
+&a$100
+&a$1000
+&a&lCOMMON
+&a&lLeft Click to Preview
+&a&lRight click to Open
+&a&lYou won!
+&a+$$50 &fFor each mob kill
+&aA Stack of Emeralds
+&aArchery Talisman I
+&aAttack Speed Talisman I
+&aBasic Pouch
+&aBoss Talisman I
+&aExample Talisman I
+&aExperience
+&aExperience Talisman I
+&aImmunity Ring
+&aInscribe Item
+&aInventory Filler
+&aMining Pouch
+&aNecrosis Ring
+&aPoseidon Talisman I
+&aReforge Item
+&aResistance Talisman I
+&aSharpness Talisman I
+&aStack of Emeralds
+&aStrength Talisman I
+&b&k!!&r <GRADIENT:c7f1ff>&lOSMIUM</GRADIENT:5c92ff>&r &b&k!!
+&b&lDIAMOND
+&b&lHUNTRESS SET BONUS
+&b&lLeft Click to Preview
+&b&lRight click to Open
+&bChoose Pouch
+&bDiamond Sword
+&bDiamond Upgrade Crystal
+&bDiamonds
+&bEfficient Pickaxe
+&bEnchanted Cobblestone
+&bEnchanted Diamond
+&bEnchanted Emerald
+&bEnchanted Ender Eye
+&bEnchanted Ender Pearl
+&bEnchanted Iron Ingot
+&bFrost Warden&f Spawn Egg
+&bHuntress Boots
+&bHuntress Chestplate
+&bHuntress Elytra
+&bHuntress Helmet
+&bHuntress Leggings
+&bTide Lurker&f Spawn Egg
+&bUtility
+&c&lBerserker Scroll
+&c&lMYTHIC
+&c&lNETHERITE
+&c&lREAPER SET BONUS
+&cArchery Talisman III
+&cAttack Speed Talisman III
+&cBerserker
+&cBoss Talisman III
+&cCannot Inscribe
+&cClose
+&cCombat
+&cElimination Pouch
+&cError!
+&cHot Potato Book
+&cLimited Pouch
+&cNecrotic Soldier&f Spawn Egg
+&cNetherite Upgrade Crystal
+&cOne-Time Reward
+&cPoseidon Talisman III
+&cReaper Boots
+&cReaper Chestplate
+&cReaper Elytra
+&cReaper Helmet
+&cReaper Leggings
+&cResistance Talisman III
+&cSharpness Talisman III
+&cStrength Talisman III
+&cTwo-Time Reward
+&d&k!!&r <GRADIENT:f953c6>&lMANYULLYN</GRADIENT:b91d73>&r &d&k!!&r
+&d&lEPIC
+&dAnother Pouch!
+&dCommand Reward
+&dMatch Pouch
+&dNesting Pouch
+&e&lStorm Bringer Scroll
+&e&lUNCOMMON
+&eArchery Talisman II
+&eAttack Speed Talisman II
+&eBoss Talisman II
+&eClick to inscribe!
+&eClick to reforge!
+&eCustom Lore Only
+&eExperience Talisman II
+&ePoseidon Talisman II
+&eReforge Item
+&eResistance Talisman II
+&eSharpness Talisman II
+&eSlot Pouch
+&eSteak
+&eStorm Bringer
+&eStrength Talisman II
+&eTracker - Arrows Shot
+&eTracker - Blocks Broken
+&eTracker - Bosses Killed
+&eTracker - Criticals Dealt
+&eTracker - Damage Blocked
+&eTracker - Damage Dealt
+&eTracker - Damage Taken While Wearing
+&eTracker - Distance Flown
+&eTracker - Distance Jumped
+&eTracker - Distance Sneaked
+&eTracker - Distance Sprinted
+&eTracker - Distance Travelled
+&eTracker - Experience Absorbed
+&eTracker - Fish Caught
+&eTracker - Headshots
+&eTracker - Mobs Killed
+&eTracker - Players Killed
+&eTracker - Times Jumped
+&fBack
+&fBlack Wool
+&fBlue Wool
+&fBrown Wool
+&fClick to browse curse enchantments
+&fClick to browse normal enchantments
+&fClick to browse special enchantments
+&fClick to browse spell enchantments
+&fClick to try again for
+&fCyan Wool
+&fGet more at &astore.example.net
+&fGray Wool
+&fGreen Wool
+&fInstant Pouch
+&fIron Ingots
+&fLight Blue Wool
+&fLight Gray Wool
+&fLime Wool
+&fMagenta Wool
+&fNot happy with your item?
+&fOrange Wool
+&fPink Wool
+&fPlace an item in the slot at the top,
+&fPurple Wool
+&fRed Wool
+&fRight click during an envoy to
+&fRight click to call in an envoy!
+&fRight click to open
+&fShift + right click to preview
+&fUse this key to open
+&fWelcome to the server.
+&fWhite Wool
+&fYellow Wool
+&fYou could win:
+&fa chance at something else!
+&fand all the enchantments you can add
+&farea below!
+&fdemonstration crates
+&fthe <g:#56ab2f>Demo Crate</g:#a8e063>
+&fto to this item will show up in the
+&ftrack the nearest crates.
+<GRADIENT:00c6ff>Mythic Upgrade Crystal</GRADIENT:0072ff>
+<GRADIENT:c7f1ff>Osmium upgrade crystal</GRADIENT:5c92ff>
+<GRADIENT:f12711>Advancement Shard:</GRADIENT:f5af19> &4Slayer
+<GRADIENT:f12711>Advancement Shard:</GRADIENT:f5af19> &5Angelic
+<GRADIENT:f12711>Advancement Shard:</GRADIENT:f5af19> &bHuntress
+<GRADIENT:f12711>Advancement Shard:</GRADIENT:f5af19> &cReaper
+<GRADIENT:f79d00>Exotic Upgrade Crystal</GRADIENT:64f38c>
+<GRADIENT:f953c6>Manyullyn Upgrade Crystal</GRADIENT:b91d73>
+<GRADIENT:ffb347>Ancient Upgrade Crystal</GRADIENT:ffcc33>
+<g:#00ffff>Rare Bedrock</g:#00ff00>
+<g:#56ab2f>&lDEMO CRATE</g:#a8e063>
+<g:#56ab2f>Demo Crate</g:#a8e063>
+<g:#56ab2f>Demo Key</g:#a8e063>
+<g:#5a3e36>Netherite Ingot</g:#a38b80>
+<g:#FF0099>HARDENED BONUS</g:#493240>
+<g:#FF0099>Hardened Netherite Pickaxe</g:#493240>
+<g:#f953c6>MITHRIL BONUS</g:#b91d73>
+<g:#f953c6>Mithril Sword</g:#b91d73>
+<gradient:#00B4DB>Prospecting</gradient:#0083B0>
+<gradient:#076585>Pointy</gradient:#ffffff>
+<gradient:#1c92d2>Light</gradient:#f2fcfe>
+<gradient:#1e3c72>Gravitated</gradient:#2a5298>
+<gradient:#373B44>Nautical</gradient:#4286f4>
+<gradient:#4776E6>Acute</gradient:#8E54E9>
+<gradient:#74ebd5>Streamlined</gradient:#ACB6E5>
+<gradient:#AAFFA9>Dynamic</gradient:#11FFBD>
+<gradient:#AAFFA9>Dynamic</gradient:#11FFBD>&7 reforge!
+<gradient:#AAFFA9>Dynamic</gradient:#11FFBD>&f Reforge Stone
+<gradient:#B993D6>Aerobic</gradient:#8CA6DB>
+<gradient:#D1913C>Thin</gradient:#FFD194>
+<gradient:#DBDBDB>Rich</gradient:#F2F2F2>
+<gradient:#DBDBDB>Rich</gradient:#F2F2F2>&7 reforge!
+<gradient:#DBDBDB>Rich</gradient:#F2F2F2>&f Reforge Stone
+<gradient:#ED213A>Strong</gradient:#93291E>
+<gradient:#EFEFBB>Evasive</gradient:#D4D3DD>
+<gradient:#FBD786>Reinforced</gradient:#f7797d>
+<gradient:#a73737>Tough</gradient:#7a2828>
+<gradient:#f12711>Sharp</gradient:#f5af19>
+<gradient:f12711>&lADVANCED BONUS</gradient:f5af19>
+Buy a Demo Crate key here! &astore.example.net
+Buy a key here! &astore.example.net
+diamond_sword sharpness:2 unbreaking:2 name:"&bFrostbrand"
+netherite_sword unbreaking:3 name:"&8Hollow Reaper"
