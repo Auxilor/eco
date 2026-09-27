@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,9 +55,12 @@ public final class Display {
      * Display on ItemStacks.
      * <p>
      * Generates varargs from every registered module, reverts the item, then runs every
-     * module's display in ascending weight order. If the item has no meta and
-     * {@code display-without-meta} is disabled in eco's config, the item is returned
-     * unchanged after reverting.
+     * module's display in ascending weight order, with modules adding lore through
+     * {@link DisplayLore}. If the item has no meta and {@code display-without-meta} is disabled
+     * in eco's config, the item is returned unchanged after reverting.
+     * <p>
+     * A record of everything display changed is written onto the item, so that
+     * {@link #revert(ItemStack)} restores it exactly.
      *
      * @param itemStack The item.
      * @param player    The player to display for, or null for no player context.
@@ -63,7 +68,26 @@ public final class Display {
      */
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player) {
+        return display(itemStack, player, null);
+    }
+
+    /**
+     * Display on ItemStacks, with a faster check for whether the item is in the open inventory.
+     *
+     * @param itemStack        The item.
+     * @param player           The player to display for, or null for no player context.
+     * @param inInventoryCheck Checks if the item is in the player's open inventory, or null to
+     *                         search the inventory.
+     * @return The same ItemStack, modified in place.
+     */
+    @ApiStatus.Internal
+    public static ItemStack display(@NotNull final ItemStack itemStack,
+                                    @Nullable final Player player,
+                                    @Nullable final Predicate<ItemStack> inInventoryCheck) {
         List<DisplayModule> modules = REGISTRY.getModules();
+        DisplayRecorder recorder = Eco.get().getDisplayRecorder();
+        Object snapshot = recorder.snapshot(itemStack);
+        List<Component> serverLore = FastItemStack.wrap(itemStack).getLoreComponents();
         Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();
 
         for (DisplayModule module : modules) {
@@ -79,15 +103,15 @@ public final class Display {
         }
 
         ItemStack original = itemStack.clone();
-        Inventory inventory = player == null ? null : player.getOpenInventory().getTopInventory();
-        boolean inInventory = inventory != null && inventory.contains(original);
-        boolean inGui = player != null && GUIDetectionManager.hasGUIOpen(player);
 
         DisplayProperties properties = new DisplayProperties(
-                inInventory,
-                inGui,
+                isInInventory(original, player, inInventoryCheck),
+                player != null && GUIDetectionManager.hasGUIOpen(player),
                 original
         );
+
+        boolean legacyPrefix = Eco.get().getEcoPlugin().getConfigYml().getBool("display-legacy-prefix-marker");
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(FastItemStack.wrap(itemStack).getLoreComponents());
 
         for (DisplayModule module : modules) {
             Object[] varargs = moduleVarArgs.get(module);
@@ -96,15 +120,55 @@ public final class Display {
                 continue;
             }
 
+            module.display(new EcoDisplayContext(itemStack, player, properties, varargs, lore));
+
+            if (!LegacyDisplayModules.overridesLegacyDisplay(module)) {
+                continue;
+            }
+
+            List<Component> rendered = lore.render(legacyPrefix);
+            FastItemStack.wrap(itemStack).setLoreComponents(rendered);
+
             module.display(itemStack, varargs);
 
             if (player != null) {
                 module.display(itemStack, player, varargs);
                 module.display(itemStack, player, properties, varargs);
             }
+
+            lore = new DisplayLoreBuilder(
+                    LegacyLoreMatcher.match(lore.getNodes(), rendered, FastItemStack.wrap(itemStack).getLoreComponents())
+            );
         }
 
+        lore.removeStaleLines();
+
+        FastItemStack displayed = FastItemStack.wrap(itemStack);
+        List<Component> rendered = lore.render(legacyPrefix);
+
+        if (!rendered.equals(displayed.getLoreComponents())) {
+            displayed.setLoreComponents(rendered);
+        }
+
+        recorder.record(itemStack, snapshot, lore.getDisplayIndices(), !lore.getForeignLines().equals(serverLore));
+
         return itemStack;
+    }
+
+    private static boolean isInInventory(@NotNull final ItemStack original,
+                                         @Nullable final Player player,
+                                         @Nullable final Predicate<ItemStack> inInventoryCheck) {
+        if (player == null) {
+            return false;
+        }
+
+        if (inInventoryCheck != null) {
+            return inInventoryCheck.test(original);
+        }
+
+        Inventory inventory = player.getOpenInventory().getTopInventory();
+
+        return inventory != null && inventory.contains(original);
     }
 
     /**
@@ -135,6 +199,9 @@ public final class Display {
      * Unfinalizes the item, strips the display lore, and then runs every registered module's
      * revert.
      * <p>
+     * An item carrying a display record is restored exactly from it instead, and module reverts
+     * do not run.
+     * <p>
      * Display lines are identified on the components themselves, by the shape eco writes them
      * in - see {@link DisplayLines#isDisplayLine(Component)}. Lore added by other plugins is
      * left exactly as it was, including lines that happen to start with {@link #PREFIX}.
@@ -148,8 +215,14 @@ public final class Display {
      * @return The same ItemStack, modified in place.
      */
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
+        boolean restored = Eco.get().getDisplayRecorder().restore(itemStack);
+
         if (Display.isFinalized(itemStack)) {
             Display.unfinalize(itemStack);
+        }
+
+        if (restored) {
+            return itemStack;
         }
 
         FastItemStack fast = FastItemStack.wrap(itemStack);

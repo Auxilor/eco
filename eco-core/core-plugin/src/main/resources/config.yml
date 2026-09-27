@@ -86,6 +86,19 @@ use-vanilla-item-name-format: false
 #   behavior.
 use-legacy-lore-revert: false
 
+# If eco's lore lines start with its legacy prefix. The prefix is invisible and lets other
+# plugins recognise lines eco added. eco also marks its lines without text, so this can be
+# disabled if another plugin shows or trips over the prefix.
+display-legacy-prefix-marker: true
+
+# If inventories and open GUIs are sent to players again after any eco plugin reloads, so
+# displayed items update straight away instead of the next time the slot changes.
+display-refresh-on-reload: true
+
+# How often, in ticks, inventories are sent to players again so that time-based placeholders in
+# lore stay up to date. 0 disables this.
+display-refresh-interval: 0
+
 # Display frames massively optimize PacketWindowItems, however some users have
 # reported display bugs by using it. If you have any problems with it, then you
 # should disable this option.
