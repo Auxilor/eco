@@ -4,8 +4,10 @@ import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.integrations.guidetection.GUIDetectionManager;
 import com.willfp.eco.util.NamespacedKeyUtils;
-import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -28,9 +30,9 @@ public final class Display {
     public static final String PREFIX = "§z";
 
     /**
-     * All registered modules, keyed by weight and sorted so that lower weights run first.
+     * All registered modules.
      */
-    private static final Map<Integer, List<DisplayModule>> REGISTERED_MODULES = new ConcurrentSkipListMap<>();
+    private static final DisplayModuleRegistry REGISTRY = new DisplayModuleRegistry();
 
     /**
      * The persistent data key used to mark an item as finalized.
@@ -61,12 +63,11 @@ public final class Display {
      */
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player) {
-        Map<String, Object[]> pluginVarArgs = new HashMap<>();
+        List<DisplayModule> modules = REGISTRY.getModules();
+        Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();
 
-        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
-            for (DisplayModule module : modules) {
-                pluginVarArgs.put(module.getPluginName(), module.generateVarArgs(itemStack));
-            }
+        for (DisplayModule module : modules) {
+            moduleVarArgs.put(module, module.generateVarArgs(itemStack));
         }
 
         Display.revert(itemStack);
@@ -90,20 +91,18 @@ public final class Display {
 
         List<Component> loreBeforeDisplay = FastItemStack.wrap(itemStack).getLoreComponents();
 
-        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
-            for (DisplayModule module : modules) {
-                Object[] varargs = pluginVarArgs.get(module.getPluginName());
+        for (DisplayModule module : modules) {
+            Object[] varargs = moduleVarArgs.get(module);
 
-                if (varargs == null) {
-                    continue;
-                }
+            if (varargs == null) {
+                continue;
+            }
 
-                module.display(itemStack, varargs);
+            module.display(itemStack, varargs);
 
-                if (player != null) {
-                    module.display(itemStack, player, varargs);
-                    module.display(itemStack, player, properties, varargs);
-                }
+            if (player != null) {
+                module.display(itemStack, player, varargs);
+                module.display(itemStack, player, properties, varargs);
             }
         }
 
@@ -179,10 +178,8 @@ public final class Display {
             }
         }
 
-        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
-            for (DisplayModule module : modules) {
-                module.revert(itemStack);
-            }
+        for (DisplayModule module : REGISTRY.getModules()) {
+            module.revert(itemStack);
         }
 
         return itemStack;
@@ -243,14 +240,7 @@ public final class Display {
      * @param module The module.
      */
     public static void registerDisplayModule(@NotNull final DisplayModule module) {
-        List<DisplayModule> modules = REGISTERED_MODULES.getOrDefault(
-                module.getWeight(),
-                new ArrayList<>()
-        );
-
-        modules.add(module);
-
-        REGISTERED_MODULES.put(module.getWeight(), modules);
+        REGISTRY.register(module);
     }
 
     /**
@@ -259,9 +249,7 @@ public final class Display {
      * @param module The module.
      */
     public static void unregisterDisplayModule(@NotNull final DisplayModule module) {
-        for (List<DisplayModule> modules : REGISTERED_MODULES.values()) {
-            modules.remove(module);
-        }
+        REGISTRY.unregister(module);
     }
 
     /**
