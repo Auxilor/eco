@@ -89,8 +89,6 @@ public final class Display {
                 original
         );
 
-        List<Component> loreBeforeDisplay = FastItemStack.wrap(itemStack).getLoreComponents();
-
         for (DisplayModule module : modules) {
             Object[] varargs = moduleVarArgs.get(module);
 
@@ -104,16 +102,6 @@ public final class Display {
                 module.display(itemStack, player, varargs);
                 module.display(itemStack, player, properties, varargs);
             }
-        }
-
-        FastItemStack displayed = FastItemStack.wrap(itemStack);
-        List<Component> deduplicated = DisplayLines.withoutStaleLines(
-                loreBeforeDisplay,
-                displayed.getLoreComponents()
-        );
-
-        if (deduplicated != null) {
-            displayed.setLoreComponents(deduplicated);
         }
 
         return itemStack;

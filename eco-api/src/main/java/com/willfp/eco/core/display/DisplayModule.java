@@ -50,6 +50,19 @@ public abstract class DisplayModule {
     }
 
     /**
+     * Display an item.
+     * <p>
+     * Runs before the other display methods. Add lore through {@link DisplayContext#getLore()}
+     * rather than setting it on the item, so that lore from other plugins is left exactly as it
+     * was.
+     *
+     * @param context The display context.
+     */
+    public void display(@NotNull final DisplayContext context) {
+        // Technically optional.
+    }
+
+    /**
      * Display an item, with no player context.
      * <p>
      * Does nothing by default; override when needed.
