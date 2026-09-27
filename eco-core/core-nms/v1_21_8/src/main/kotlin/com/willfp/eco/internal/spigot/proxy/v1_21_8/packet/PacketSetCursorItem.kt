@@ -5,6 +5,7 @@ import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.CursorOriginals
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.DisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.lastDisplayFrame
 import java.util.Objects
@@ -67,7 +68,7 @@ object PacketSetCursorItem : PacketListener {
 
         val displayed = HashedStack.create(packet.contents, cache::getUnchecked)
 
-        PacketContainerClick.map(original, (displayed as HashedStack.ActualItem).hash())
+        CursorOriginals.put(player.uniqueId, (displayed as HashedStack.ActualItem).hash(), original)
 
         player.lastDisplayFrame = DisplayFrame.EMPTY
     }
