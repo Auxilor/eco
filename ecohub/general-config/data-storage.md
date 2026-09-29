@@ -17,10 +17,11 @@ data-handler: sqlite
 | `sqlite` | Local file (`data.db`) | Single servers. The default. | No |
 | `mysql` | SQL database | Networks (BungeeCord/Velocity) | Yes |
 | `mariadb` | SQL database | Networks (BungeeCord/Velocity) | Yes |
+| `postgresql` (or `postgres`) | SQL database | Networks (BungeeCord/Velocity) | Yes |
 | `mongodb` (or `mongo`) | Document database | Networks (BungeeCord/Velocity) | Yes |
 | `redis` | In-memory database, standalone or Sentinel | Networks (BungeeCord/Velocity) | Yes |
 
-If you run one server, keep `sqlite`: there is nothing to set up. If you run a network and want players to keep their data across servers, point every server at the same MySQL, MariaDB, MongoDB or Redis database.
+If you run one server, keep `sqlite`: there is nothing to set up. If you run a network and want players to keep their data across servers, point every server at the same MySQL, MariaDB, PostgreSQL, MongoDB or Redis database.
 
 `yaml` is no longer a storage type. A config that still says `yaml` is treated as `sqlite`, and any data left in `data.yml` is moved across automatically.
 
@@ -53,6 +54,25 @@ mysql:
 
   host: localhost
   port: 3306
+  database: database
+  user: username
+  password: p4ssw0rd
+```
+
+## PostgreSQL
+
+```yaml
+data-handler: postgresql
+
+postgresql:
+  # The table prefix to use for all tables.
+  prefix: "eco_"
+
+  # The maximum number of connections.
+  connections: 10
+
+  host: localhost
+  port: 5432
   database: database
   user: username
   password: p4ssw0rd

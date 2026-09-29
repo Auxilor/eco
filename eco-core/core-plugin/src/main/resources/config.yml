@@ -7,6 +7,7 @@
 # How player/server data is saved:
 # sqlite - Stored in data.db: the default, and the right choice for single-node servers (i.e. no BungeeCord/Velocity)
 # mysql/mariadb - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)
+# postgresql - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 # mongodb - Alternative database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 # redis - In-memory database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 data-handler: sqlite
@@ -66,6 +67,20 @@ mysql:
   # Connection details for MySQL.
   host: localhost
   port: 3306
+  database: database
+  user: username
+  password: p4ssw0rd
+
+postgresql:
+  # The table prefix to use for all tables.
+  prefix: "eco_"
+
+  # The maximum number of PostgreSQL connections.
+  connections: 10
+
+  # Connection details for PostgreSQL.
+  host: localhost
+  port: 5432
   database: database
   user: username
   password: p4ssw0rd
