@@ -7,6 +7,7 @@ import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.data.handlers.impl.MariaDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
+import com.willfp.eco.internal.spigot.data.handlers.impl.RedisPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.SQLitePersistentDataHandler
 import java.io.File
 
@@ -36,6 +37,11 @@ object PersistentDataHandlers: Registry<PersistentDataHandlerFactory>() {
         register(object : PersistentDataHandlerFactory("mongodb") {
             override fun create(plugin: EcoSpigotPlugin) =
                 MongoDBPersistentDataHandler(plugin.configYml.getSubsection("mongodb"))
+        })
+
+        register(object : PersistentDataHandlerFactory("redis") {
+            override fun create(plugin: EcoSpigotPlugin) =
+                RedisPersistentDataHandler.fromConfig(plugin.configYml.getSubsection("redis"))
         })
 
         // Configs should also accept "mongo"

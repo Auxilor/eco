@@ -69,6 +69,7 @@ libraries:
   - com.zaxxer:HikariCP:7.0.2
   - net.kyori:adventure-platform-bukkit:4.4.1
   - org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2
+  - redis.clients:jedis:5.2.0
   - io.hotmoka:toml4j:0.7.3
   - net.kyori:adventure-api:5.0.1
   - net.kyori:adventure-text-serializer-gson:5.0.1

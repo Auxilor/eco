@@ -45,6 +45,13 @@ class ProfileWriter(
         valuesToWrite[WriteRequest(uuid, key)] = value
     }
 
+    /**
+     * Whether a value for [key] is waiting to be committed, and so is newer than the stored one.
+     */
+    fun isPending(uuid: UUID, key: PersistentDataKey<*>): Boolean {
+        return valuesToWrite.containsKey(WriteRequest(uuid, key))
+    }
+
     fun startTickingSaves() {
         plugin.scheduler.global().runTimer(20, saveInterval) {
             val iterator = valuesToWrite.iterator()

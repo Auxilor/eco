@@ -16,6 +16,7 @@ import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistent
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MySQLPersistentDataHandler
+import com.willfp.eco.internal.spigot.data.handlers.impl.RedisPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.SQLitePersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.YamlPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.profiles.impl.EcoPlayerProfile
@@ -25,6 +26,7 @@ import com.willfp.eco.internal.spigot.data.profiles.impl.serverProfileUUID
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.Configs
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
+import com.willfp.eco.core.data.keys.PersistentDataKey
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -137,7 +139,50 @@ class ProfileHandler(
         resolvedProfiles.remove(player)?.forEach { loaded.remove(it) }
     }
 
+    /**
+     * Cross-server sync, or null when it is off.
+     */
+    private var sync: RedisProfileSync? = null
+
+    /**
+     * Start cross-server sync, if it is turned on and the configured handler is Redis.
+     */
+    fun startSyncIfEnabled() {
+        if (!plugin.configYml.getBool("redis.sync")) {
+            return
+        }
+
+        val redis = defaultHandler as? RedisPersistentDataHandler
+
+        if (redis == null) {
+            plugin.logger.warning("redis.sync is enabled, but data-handler is not redis; sync will not run")
+            return
+        }
+
+        val profiles = object : SyncedProfiles {
+            override fun invalidate(uuid: UUID, key: PersistentDataKey<*>) {
+                loaded[uuid]?.invalidate(key)
+            }
+
+            override fun invalidateAllShared() {
+                loaded.values.forEach { it.invalidateShared() }
+            }
+
+            override fun isPending(uuid: UUID, key: PersistentDataKey<*>) =
+                profileWriter.isPending(uuid, key)
+
+            override fun onRemoteWrite(uuid: UUID, key: PersistentDataKey<*>, value: Any) {
+                profileWriter.onWrite?.invoke(uuid, key, value)
+            }
+        }
+
+        sync = RedisProfileSync(redis, getServerProfile().localServerID, profiles, plugin.logger).also { it.start() }
+    }
+
     fun save() {
+        // Before the handler is shut down, so the subscriber's connection is returned to a live pool.
+        sync?.stop()
+
         for (handler in handlersToShutdown(localHandler, defaultHandler)) {
             handler.shutdown()
         }
