@@ -487,6 +487,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         if (!profileHandler.migrateIfNecessary()) {
             profileHandler.profileWriter.startTickingAutosave()
             profileHandler.profileWriter.startTickingSaves()
+            profileHandler.startSyncIfEnabled()
             profileHandler.backfillIfNecessary()
         }
 

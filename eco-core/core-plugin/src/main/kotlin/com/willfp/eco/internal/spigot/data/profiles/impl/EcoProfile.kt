@@ -39,6 +39,21 @@ abstract class EcoProfile(
         return read(key)
     }
 
+    /**
+     * Drop the cached value of [key], so the next read fetches it from the handler again.
+     */
+    fun invalidate(key: PersistentDataKey<*>) {
+        this.data.remove(key)
+    }
+
+    /**
+     * Drop every cached value that is shared with other servers, keeping the ones only this server
+     * stores.
+     */
+    fun invalidateShared() {
+        this.data.keys.removeIf { !it.isSavedLocally }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other !is EcoProfile) {
             return false

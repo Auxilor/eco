@@ -8,6 +8,7 @@
 # sqlite - Stored in data.db: the default, and the right choice for single-node servers (i.e. no BungeeCord/Velocity)
 # mysql/mariadb - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 # mongodb - Alternative database, great option for multi-node servers (i.e. BungeeCord/Velocity)
+# redis - In-memory database, great option for multi-node servers (i.e. BungeeCord/Velocity)
 data-handler: sqlite
 
 # If data should be migrated automatically when changing data handler.
@@ -28,6 +29,32 @@ mongodb:
 
   # The collection to use for player data.
   collection: profiles
+
+redis:
+  # The prefix to use for all keys.
+  prefix: "eco:"
+
+  # The maximum number of Redis connections.
+  connections: 10
+
+  # Connection details for Redis.
+  host: localhost
+  port: 6379
+  database: 0
+  user: "" # Leave blank for password-only auth.
+  password: ""
+  ssl: false
+
+  # Optional: connect through Redis Sentinel for automatic failover.
+  # Leave master blank to connect to host/port directly.
+  sentinel:
+    master: ""
+    nodes: [] # e.g. ["10.0.0.1:26379", "10.0.0.2:26379"]
+    password: "" # Sentinel auth, if different from the data nodes.
+
+  # If cached player data should be refreshed across servers sharing this Redis when it changes.
+  # Every server must use data-handler: redis.
+  sync: false
 
 mysql:
   # The table prefix to use for all tables.
