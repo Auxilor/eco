@@ -112,7 +112,7 @@ public final class StringUtils {
     /**
      * If the server's Adventure can show sprites and player heads in text.
      */
-    private static final boolean HAS_OBJECT_COMPONENTS = hasClass("net.kyori.adventure.text.ObjectComponent");
+    private static final boolean HAS_OBJECT_COMPONENTS = ClassUtils.exists("net.kyori.adventure.text.ObjectComponent");
 
     /**
      * Json -> Component Cache.
@@ -474,15 +474,6 @@ public final class StringUtils {
         }
 
         return MiniMessage.miniMessage().deserialize(processedMessage);
-    }
-
-    private static boolean hasClass(@NotNull final String name) {
-        try {
-            Class.forName(name);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 
     private static String translateMiniMessage(@NotNull final String message) {
