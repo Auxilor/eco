@@ -45,14 +45,14 @@ class DisplayRecords : DisplayRecordsProxy {
             restore.restoreTo(type, before)
         }
 
-        val record = CompoundTag().apply {
-            putIntArray(LINES_KEY, displayLines)
-            put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restore.build()).getOrThrow())
-        }
-
         handle.set(
             DataComponents.CUSTOM_DATA,
-            handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).update { it.put(RECORD_KEY, record) }
+            handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).update {
+                it.put(RECORD_KEY, CompoundTag().apply {
+                    putIntArray(LINES_KEY, displayLines)
+                    put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restore.build()).getOrThrow())
+                })
+            }
         )
 
         itemStack.mergeIfNeeded(handle)
@@ -60,8 +60,8 @@ class DisplayRecords : DisplayRecordsProxy {
 
     override fun restore(itemStack: ItemStack): Boolean {
         val handle = itemStack.asNMSStack()
-        val customData = handle.get(DataComponents.CUSTOM_DATA) ?: return false
-        val record = customData.copyTag().getCompound(RECORD_KEY).orElse(null) ?: return false
+        val customData = handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: return false
+        val record = customData.getCompound(RECORD_KEY).orElse(null) ?: return false
         val displayLines = record.getIntArray(LINES_KEY).orElse(IntArray(0))
         val restore = record.get(RESTORE_KEY)
             ?.let { DataComponentPatch.CODEC.parse(registryOps, it).result().orElse(null) }
@@ -76,7 +76,7 @@ class DisplayRecords : DisplayRecordsProxy {
         val kept = lore.filterIndexed { index, _ -> index !in displayLines }
         handle.set(DataComponents.LORE, ItemLore(kept, kept))
 
-        val withoutRecord = CustomData.of(customData.copyTag().without(RECORD_KEY))
+        val withoutRecord = CustomData.of(customData.without(RECORD_KEY))
 
         if (withoutRecord.isEmpty) {
             handle.remove(DataComponents.CUSTOM_DATA)
