@@ -421,6 +421,10 @@ public final class StringUtils {
 
     /**
      * Format a string to a component, keeping everything MiniMessage can express.
+     * <p>
+     * MiniMessage tags in placeholder values are escaped, so a player can't inject click events
+     * or other tags through a name or any other value they control. Legacy colour codes in
+     * values still apply.
      *
      * @param message The message to format.
      * @param context The context to translate placeholders with respect to.
@@ -430,7 +434,16 @@ public final class StringUtils {
     @NotNull
     public static Component formatToRichComponent(@NotNull final String message,
                                                   @NotNull final PlaceholderContext context) {
-        return RICH_FORMAT_CACHE.get(PlaceholderManager.translatePlaceholders(message, context));
+        String translated = message;
+
+        for (String placeholder : PlaceholderManager.findPlaceholdersIn(message)) {
+            translated = translated.replace(
+                    placeholder,
+                    MiniMessage.miniMessage().escapeTags(PlaceholderManager.translatePlaceholders(placeholder, context))
+            );
+        }
+
+        return RICH_FORMAT_CACHE.get(translated);
     }
 
     /**
