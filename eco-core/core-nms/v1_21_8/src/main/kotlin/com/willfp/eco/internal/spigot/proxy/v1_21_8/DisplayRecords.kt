@@ -53,7 +53,13 @@ class DisplayRecords : DisplayRecordsProxy {
 
     override fun record(itemStack: ItemStack, snapshot: ItemStack, displayLines: IntArray) {
         val handle = itemStack.asNMSStack()
-        val before = snapshot.asNMSStack().components
+        val snapshotHandle = snapshot.asNMSStack()
+
+        if (handle.item != snapshotHandle.item || handle.count != snapshotHandle.count) {
+            return
+        }
+
+        val before = snapshotHandle.components
         val after = handle.components
         val keptLore = if (displayLines.isEmpty()) null else keptLore(before, after, displayLines)
         val restore = DataComponentPatch.builder()

@@ -43,6 +43,9 @@ public interface DisplayRecorder {
 
     /**
      * Write a record of what display changed since a snapshot onto the item.
+     * <p>
+     * No record is written if display changed the item's type or amount, so the item is reverted
+     * by stripping display lines and running module reverts instead.
      *
      * @param itemStack    The displayed item.
      * @param snapshot     A copy of the item taken before display.
