@@ -42,15 +42,7 @@ final class DisplayLines {
      * @return If the line is a display line.
      */
     static boolean isDisplayLine(@NotNull final Component line) {
-        Component component = line;
-
-        // Unwrap the empty parents lore lines are wrapped in to force italics off.
-        while (!MARKER.equals(component.insertion())
-                && component instanceof TextComponent textComponent
-                && textComponent.content().isEmpty()
-                && component.children().size() == 1) {
-            component = component.children().get(0);
-        }
+        Component component = unwrap(line);
 
         if (MARKER.equals(component.insertion())) {
             return true;
@@ -86,6 +78,25 @@ final class DisplayLines {
      */
     @NotNull
     static Component withoutPrefix(@NotNull final Component line) {
+        Component component = unwrap(line);
+
+        if (component instanceof TextComponent textComponent
+                && (MARKER.equals(textComponent.insertion()) || textComponent.content().startsWith(LEGACY_PREFIX))) {
+            return textComponent.content(StringUtils.removePrefix(textComponent.content(), LEGACY_PREFIX)).insertion(null);
+        }
+
+        return StringUtils.toComponent(StringUtils.removePrefix(StringUtils.toLegacy(line), LEGACY_PREFIX));
+    }
+
+    /**
+     * The component that owns a line, inside the empty parents lore lines are wrapped in to force
+     * italics off.
+     *
+     * @param line The line.
+     * @return The owner.
+     */
+    @NotNull
+    private static Component unwrap(@NotNull final Component line) {
         Component component = line;
 
         while (!MARKER.equals(component.insertion())
@@ -95,20 +106,7 @@ final class DisplayLines {
             component = component.children().get(0);
         }
 
-        if (component instanceof TextComponent textComponent
-                && (MARKER.equals(textComponent.insertion()) || textComponent.content().startsWith(LEGACY_PREFIX))) {
-            String content = textComponent.content().startsWith(LEGACY_PREFIX)
-                    ? textComponent.content().substring(LEGACY_PREFIX.length())
-                    : textComponent.content();
-
-            return textComponent.content(content).insertion(null);
-        }
-
-        String legacy = StringUtils.toLegacy(line);
-
-        return StringUtils.toComponent(
-                legacy.startsWith(LEGACY_PREFIX) ? legacy.substring(LEGACY_PREFIX.length()) : legacy
-        );
+        return component;
     }
 
     /**
