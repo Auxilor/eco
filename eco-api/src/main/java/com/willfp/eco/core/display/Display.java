@@ -38,7 +38,7 @@ public final class Display {
      */
     @Deprecated(since = "2026.39", forRemoval = true)
     @ApiStatus.ScheduledForRemoval(inVersion = "2027.39")
-    public static final String PREFIX = "§z";
+    public static final String PREFIX = DisplayLines.LEGACY_PREFIX;
 
     /**
      * All registered modules.
