@@ -67,9 +67,9 @@ public final class Display {
     /**
      * Display on ItemStacks.
      * <p>
-     * Generates varargs from every registered module, reverts the item, then runs every
-     * module's display in ascending weight order, with modules adding lore through
-     * {@link DisplayLore}. Air is returned unchanged. If the item has no meta and
+     * Restores an item that was already displayed, generates varargs from every registered
+     * module, reverts the item, then runs every module's display in ascending weight order, with
+     * modules adding lore through {@link DisplayLore}. Air is returned unchanged. If the item has no meta and
      * {@code display-without-meta} is disabled in eco's config, the item is returned unchanged
      * after reverting.
      * <p>
@@ -105,6 +105,7 @@ public final class Display {
 
         List<DisplayModule> modules = REGISTRY.getModules();
         DisplayRecorder recorder = Eco.get().getDisplayRecorder();
+        recorder.restore(itemStack);
         ItemStack snapshot = itemStack.clone();
         List<Component> serverLore = FastItemStack.wrap(itemStack).getLoreComponents();
         Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();

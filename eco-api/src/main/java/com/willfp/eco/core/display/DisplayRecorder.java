@@ -24,7 +24,8 @@ public interface DisplayRecorder {
                 boolean recordLore);
 
     /**
-     * Restore an item from its record, if it has a valid one.
+     * Restore an item from its record, if it has a valid one. Records written onto an item that
+     * was already displayed are restored too, down to the item before any display.
      *
      * @param itemStack The item.
      * @return If the item was restored.

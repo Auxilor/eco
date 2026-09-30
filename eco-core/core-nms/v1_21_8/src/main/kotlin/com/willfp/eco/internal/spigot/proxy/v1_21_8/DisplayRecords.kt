@@ -59,6 +59,16 @@ class DisplayRecords : DisplayRecordsProxy {
     }
 
     override fun restore(itemStack: ItemStack): Boolean {
+        var restored = false
+
+        while (restoreOnce(itemStack)) {
+            restored = true
+        }
+
+        return restored
+    }
+
+    private fun restoreOnce(itemStack: ItemStack): Boolean {
         val handle = itemStack.asNMSStack()
         val customData = handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: return false
         val record = customData.getCompound(RECORD_KEY).orElse(null) ?: return false
