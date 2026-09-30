@@ -39,6 +39,29 @@ public class LegacyToMiniMessageTest {
     }
 
     @Test
+    public void testLegacyColorResetsMiniMessageTags() {
+        Assertions.assertEquals("<bold><reset><gray>Text</gray>", LegacyToMiniMessage.convert("<bold>§7Text"));
+    }
+
+    @Test
+    public void testClosingTagResetByLegacyCodeIsDropped() {
+        Assertions.assertEquals("<bold><reset><red>A</red>B", LegacyToMiniMessage.convert("<bold>§cA</bold>B"));
+    }
+
+    @Test
+    public void testMiniMessageColorClosesLegacyDecorations() {
+        Assertions.assertEquals("<bold></bold><red>X", LegacyToMiniMessage.convert("§l<red>X"));
+    }
+
+    @Test
+    public void testQuotedArgumentsAreConvertedOnTheirOwn() {
+        Assertions.assertEquals(
+                "<hover:show_text:'<red>Hi</red>'>Hover</hover>",
+                LegacyToMiniMessage.convert("<hover:show_text:'§cHi'>Hover</hover>")
+        );
+    }
+
+    @Test
     public void testUnknownCodesAreKept() {
         Assertions.assertEquals("§zText", LegacyToMiniMessage.convert("§zText"));
     }

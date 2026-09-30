@@ -406,3 +406,17 @@ Buy a Demo Crate key here! &astore.example.net
 Buy a key here! &astore.example.net
 diamond_sword sharpness:2 unbreaking:2 name:"&bFrostbrand"
 netherite_sword unbreaking:3 name:"&8Hollow Reaper"
+<bold>&7Text
+&l<red>X
+<red>A&rB
+<italic>&cRed &lBold
+&c<bold>Red bold
+<gray>Gray &lBold</gray> after
+<green>Green &6Gold
+&l<#ff8800>Orange
+<underlined>Under &r&7Gray
+&l<italic>X</italic>Y
+<bold>&cA</bold>B
+<hover:show_text:'&cHi'>Hover</hover> &7after
+&7<bold>A</bold>B
+<bold>A</bold> &7B
