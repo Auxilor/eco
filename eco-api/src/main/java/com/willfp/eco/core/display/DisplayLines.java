@@ -4,6 +4,7 @@ import com.willfp.eco.util.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Identifies the lore lines added by display modules.
@@ -86,6 +87,39 @@ final class DisplayLines {
         }
 
         return StringUtils.toComponent(StringUtils.removePrefix(StringUtils.toLegacy(line), LEGACY_PREFIX));
+    }
+
+    /**
+     * If a line may start with the legacy prefix when serialised to legacy text, checked on its
+     * first text without serialising it. Lines this returns false for never start with it.
+     *
+     * @param line The line.
+     * @return If the line may start with the legacy prefix.
+     */
+    static boolean mayStartWithLegacyPrefix(@NotNull final Component line) {
+        String text = firstText(line);
+        return text != null && text.startsWith(LEGACY_PREFIX);
+    }
+
+    @Nullable
+    private static String firstText(@NotNull final Component component) {
+        if (!(component instanceof TextComponent textComponent)) {
+            return "";
+        }
+
+        if (!textComponent.content().isEmpty()) {
+            return textComponent.content();
+        }
+
+        for (Component child : component.children()) {
+            String text = firstText(child);
+
+            if (text != null) {
+                return text;
+            }
+        }
+
+        return null;
     }
 
     /**

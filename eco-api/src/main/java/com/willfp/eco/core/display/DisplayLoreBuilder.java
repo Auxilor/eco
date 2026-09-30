@@ -134,6 +134,11 @@ final class DisplayLoreBuilder implements DisplayLore {
      * without the prefix belong to other plugins and are never removed.
      */
     void removeStaleLines() {
+        if (this.nodes.stream().noneMatch(LoreNode::display)
+                || this.nodes.stream().noneMatch(node -> !node.display() && DisplayLines.mayStartWithLegacyPrefix(node.component()))) {
+            return;
+        }
+
         Map<String, Integer> displayCounts = new HashMap<>();
 
         for (LoreNode node : this.nodes) {
@@ -147,7 +152,7 @@ final class DisplayLoreBuilder implements DisplayLore {
         while (iterator.hasNext()) {
             LoreNode node = iterator.next();
 
-            if (node.display()) {
+            if (node.display() || !DisplayLines.mayStartWithLegacyPrefix(node.component())) {
                 continue;
             }
 
