@@ -88,7 +88,8 @@ use-legacy-lore-revert: false
 
 # If eco's lore lines start with its legacy prefix. The prefix is invisible and lets other
 # plugins recognise lines eco added. eco also marks its lines without text, so this can be
-# disabled if another plugin shows or trips over the prefix.
+# disabled if another plugin shows or trips over the prefix. When disabled, eco can't find its
+# lines again after another plugin rebuilds the lore from legacy text, so they can be duplicated.
 display-legacy-prefix-marker: true
 
 # If inventories and open GUIs are sent to players again after any eco plugin reloads, so
