@@ -1,17 +1,116 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_8
 
+import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxies.DisplayRecordsProxy
-import com.willfp.eco.internal.spigot.proxy.common.item.DisplayRecordCodec
-import net.minecraft.world.item.ItemStack as NMSItemStack
+import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
+import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
+import com.willfp.eco.internal.spigot.proxy.common.toAdventure
+import net.minecraft.core.component.DataComponentMap
+import net.minecraft.core.component.DataComponentPatch
+import net.minecraft.core.component.DataComponentType
+import net.minecraft.core.component.DataComponents
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.NbtOps
+import net.minecraft.nbt.Tag
+import net.minecraft.resources.RegistryOps
+import net.minecraft.world.item.component.CustomData
+import net.minecraft.world.item.component.ItemLore
+import org.bukkit.Bukkit
+import org.bukkit.craftbukkit.CraftServer
 import org.bukkit.inventory.ItemStack
 
+private const val RECORD_KEY = "eco_display"
+private const val LINES_KEY = "lines"
+private const val RESTORE_KEY = "restore"
+
+private val registryOps: RegistryOps<Tag>
+    get() = (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
+
 class DisplayRecords : DisplayRecordsProxy {
-    override fun snapshot(itemStack: ItemStack): Any =
-        DisplayRecordCodec.snapshot(itemStack)
+    override fun record(itemStack: ItemStack, snapshot: ItemStack, displayLines: IntArray, recordLore: Boolean) {
+        val handle = itemStack.asNMSStack()
+        val before = snapshot.asNMSStack().components
+        val after = handle.components
+        val restore = DataComponentPatch.builder()
 
-    override fun record(itemStack: ItemStack, snapshot: Any, displayLines: IntArray, recordLore: Boolean) =
-        DisplayRecordCodec.record(itemStack, snapshot as NMSItemStack, displayLines, recordLore)
+        for (type in before.keySet() + after.keySet()) {
+            if (type == DataComponents.LORE && !recordLore) {
+                continue
+            }
 
-    override fun restore(itemStack: ItemStack): Boolean =
-        DisplayRecordCodec.restore(itemStack)
+            if (before.get(type) == after.get(type)) {
+                continue
+            }
+
+            restore.restoreTo(type, before)
+        }
+
+        val record = CompoundTag().apply {
+            putIntArray(LINES_KEY, displayLines)
+            put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restore.build()).getOrThrow())
+        }
+
+        handle.set(
+            DataComponents.CUSTOM_DATA,
+            handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).update { it.put(RECORD_KEY, record) }
+        )
+
+        itemStack.mergeIfNeeded(handle)
+    }
+
+    override fun restore(itemStack: ItemStack): Boolean {
+        val handle = itemStack.asNMSStack()
+        val customData = handle.get(DataComponents.CUSTOM_DATA) ?: return false
+        val record = customData.copyTag().getCompound(RECORD_KEY).orElse(null) ?: return false
+        val displayLines = record.getIntArray(LINES_KEY).orElse(IntArray(0))
+        val restore = record.get(RESTORE_KEY)
+            ?.let { DataComponentPatch.CODEC.parse(registryOps, it).result().orElse(null) }
+            ?: return false
+
+        val lore = handle.getOrDefault(DataComponents.LORE, ItemLore.EMPTY).lines
+
+        if (displayLines.any { it !in lore.indices || !Display.isDisplayLine(lore[it].toAdventure()) }) {
+            return false
+        }
+
+        val kept = lore.filterIndexed { index, _ -> index !in displayLines }
+        handle.set(DataComponents.LORE, ItemLore(kept, kept))
+
+        val withoutRecord = CustomData.of(customData.copyTag().without(RECORD_KEY))
+
+        if (withoutRecord.isEmpty) {
+            handle.remove(DataComponents.CUSTOM_DATA)
+        } else {
+            handle.set(DataComponents.CUSTOM_DATA, withoutRecord)
+        }
+
+        handle.applyComponents(restore)
+        itemStack.mergeIfNeeded(handle)
+
+        return true
+    }
+
+    private fun CompoundTag.without(key: String): CompoundTag =
+        CompoundTag().also { copy ->
+            for (existing in this.keySet()) {
+                if (existing != key) {
+                    copy.put(existing, this.get(existing)!!)
+                }
+            }
+        }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun DataComponentPatch.Builder.restoreTo(
+        type: DataComponentType<*>,
+        before: DataComponentMap
+    ) {
+        val typed = type as DataComponentType<Any>
+        val value = before.get(typed)
+
+        if (value == null) {
+            remove(typed)
+        } else {
+            set(typed, value)
+        }
+    }
 }

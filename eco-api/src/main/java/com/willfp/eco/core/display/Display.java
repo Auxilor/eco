@@ -100,7 +100,7 @@ public final class Display {
                                     @Nullable final Predicate<ItemStack> inInventoryCheck) {
         List<DisplayModule> modules = REGISTRY.getModules();
         DisplayRecorder recorder = Eco.get().getDisplayRecorder();
-        Object snapshot = recorder.snapshot(itemStack);
+        ItemStack snapshot = itemStack.clone();
         List<Component> serverLore = FastItemStack.wrap(itemStack).getLoreComponents();
         Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();
 

@@ -10,25 +10,16 @@ import org.jetbrains.annotations.NotNull;
 @ApiStatus.Internal
 public interface DisplayRecorder {
     /**
-     * Take a snapshot of an item's components before display.
-     *
-     * @param itemStack The item.
-     * @return The snapshot.
-     */
-    @NotNull
-    Object snapshot(@NotNull ItemStack itemStack);
-
-    /**
      * Write a record of what display changed since a snapshot onto the item.
      *
      * @param itemStack    The displayed item.
-     * @param snapshot     The snapshot taken before display.
+     * @param snapshot     A copy of the item taken before display.
      * @param displayLines The positions of display lines in the lore.
      * @param recordLore   If the original lore must be recorded, because lines other than display
      *                     lines changed.
      */
     void record(@NotNull ItemStack itemStack,
-                @NotNull Object snapshot,
+                @NotNull ItemStack snapshot,
                 @NotNull int[] displayLines,
                 boolean recordLore);
 
