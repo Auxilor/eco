@@ -1,13 +1,17 @@
 package com.willfp.eco.internal.spigot.eventlisteners
 
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
-import org.bukkit.Bukkit
+import com.willfp.eco.core.cache.EcoCache
+import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDeathEvent
+import java.time.Duration
+import java.util.UUID
 
 class EntityDeathByEntityListeners(
     private val plugin: EcoPlugin
@@ -20,13 +24,9 @@ class EntityDeathByEntityListeners(
         LEGACY_WINDOW_TICKS
     }
 
-    private val tracker = LastDamagerTracker(windowTicks) { Bukkit.getCurrentTick().toLong() }
-
-    init {
-        plugin.scheduler.global().runTimer(windowTicks.coerceAtLeast(1), windowTicks.coerceAtLeast(1)) {
-            tracker.purgeExpired()
-        }
-    }
+    private val lastDamagers: EcoCache<UUID, UUID> = EcoCache.builder<UUID, UUID>()
+        .expireAfterWrite(Duration.ofMillis(windowTicks.coerceAtLeast(1) * MILLIS_PER_TICK))
+        .build()
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDamage(event: EntityDamageByEntityEvent) {
@@ -36,15 +36,17 @@ class EntityDeathByEntityListeners(
             return
         }
 
-        tracker.record(victim.uniqueId, event.damager)
+        lastDamagers.put(victim.uniqueId, event.damager.uniqueId)
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     fun onEntityDeath(event: EntityDeathEvent) {
         val victim = event.entity
-        val damager = tracker.resolve(victim.uniqueId) ?: return
+        val damagerId = lastDamagers.get(victim.uniqueId) ?: return
 
-        tracker.forget(victim.uniqueId)
+        lastDamagers.invalidate(victim.uniqueId)
+
+        val damager = resolveDamager(victim, damagerId) ?: return
 
         val builtEvent = EntityDeathByEntityBuilder()
         builtEvent.victim = victim
@@ -56,9 +58,15 @@ class EntityDeathByEntityListeners(
         builtEvent.push()
     }
 
+    private fun resolveDamager(victim: LivingEntity, damagerId: UUID): Entity? {
+        val damager = victim.world.getEntity(damagerId) ?: return null
+
+        return if (Eco.get().isOwnedByCurrentRegion(damager)) damager else null
+    }
+
     private companion object {
-        // The window eco used before indirect kills were creditable, kept to
-        // stay in step with WildStacker.
         const val LEGACY_WINDOW_TICKS = 5L
+
+        const val MILLIS_PER_TICK = 50L
     }
 }

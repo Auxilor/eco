@@ -30,6 +30,11 @@ public final class DynamicPlaceholder implements RegistrablePlaceholder {
     private final EcoPlugin plugin;
 
     /**
+     * The pattern in the form shown to users, or null to show the regex itself.
+     */
+    private final String displayPattern;
+
+    /**
      * Create a new dynamic placeholder.
      *
      * @param plugin   The plugin.
@@ -39,8 +44,24 @@ public final class DynamicPlaceholder implements RegistrablePlaceholder {
     public DynamicPlaceholder(@NotNull final EcoPlugin plugin,
                               @NotNull final Pattern pattern,
                               @NotNull final Function<@NotNull String, @Nullable String> function) {
+        this(plugin, pattern, null, function);
+    }
+
+    /**
+     * Create a new dynamic placeholder that advertises itself as something other than its regex.
+     *
+     * @param plugin         The plugin.
+     * @param pattern        The pattern.
+     * @param displayPattern The pattern as shown to users, e.g. {@code mining_top_<N>_name}.
+     * @param function       The function to retrieve the value.
+     */
+    public DynamicPlaceholder(@NotNull final EcoPlugin plugin,
+                              @NotNull final Pattern pattern,
+                              @Nullable final String displayPattern,
+                              @NotNull final Function<@NotNull String, @Nullable String> function) {
         this.plugin = plugin;
         this.pattern = pattern;
+        this.displayPattern = displayPattern;
         this.function = function;
     }
 
@@ -76,6 +97,15 @@ public final class DynamicPlaceholder implements RegistrablePlaceholder {
     @Override
     public Pattern getPattern() {
         return this.pattern;
+    }
+
+    @NotNull
+    @Override
+    public String getDisplayPattern() {
+        return Objects.requireNonNullElseGet(
+                this.displayPattern,
+                RegistrablePlaceholder.super::getDisplayPattern
+        );
     }
 
     @Override

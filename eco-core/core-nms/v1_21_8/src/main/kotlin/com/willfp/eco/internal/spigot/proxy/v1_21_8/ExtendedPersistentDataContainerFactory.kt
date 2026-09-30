@@ -5,7 +5,6 @@ import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFac
 import java.lang.reflect.Field
 import net.minecraft.nbt.Tag
 import org.bukkit.Material
-import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry
 import org.bukkit.inventory.ItemStack
@@ -20,7 +19,7 @@ class ExtendedPersistentDataContainerFactory : ExtendedPersistentDataContainerFa
          Can't grab actual instance since it's in CraftMetaItem (which is package-private)
          And getting it would mean more janky reflection
          */
-        val item = CraftItemStack.asCraftCopy(ItemStack(Material.STONE))
+        val item = ItemStack(Material.STONE)
         val pdc = item.itemMeta!!.persistentDataContainer
 
         // Cross-version compatibility:

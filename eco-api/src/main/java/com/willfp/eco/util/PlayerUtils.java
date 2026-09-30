@@ -98,6 +98,23 @@ public final class PlayerUtils {
     }
 
     /**
+     * Register the data keys that eco itself stores on player profiles.
+     * <p>
+     * Keys register when they are constructed, which for these keys means the first time this
+     * class is used - too late for anything that reads the key registry at startup, such as
+     * profile migration. Calling this on enable brings that forward to a known point.
+     * <p>
+     * Registering a key twice is a no-op, so this is safe to call more than once.
+     */
+    public static void registerDataKeys() {
+        Eco eco = Eco.get();
+
+        eco.registerPersistentKey(PLAYER_NAME_KEY);
+        eco.registerPersistentKey(PLAYER_DISPLAY_NAME_KEY);
+        eco.registerPersistentKey(PLAYER_HEALTH_KEY);
+    }
+
+    /**
      * Get saved display name for an offline player.
      * <p>
      * If the player is online then the saved value is refreshed first.
@@ -115,7 +132,10 @@ public final class PlayerUtils {
         String saved = profile.read(PLAYER_DISPLAY_NAME_KEY);
 
         if (saved.equals(PLAYER_DISPLAY_NAME_KEY.getDefaultValue())) {
-            return player.getName();
+            // Bukkit has no name for a player it has never seen, e.g. a profile migrated in from
+            // another server, so the key's default stands in rather than a null name.
+            String name = player.getName();
+            return name == null ? PLAYER_DISPLAY_NAME_KEY.getDefaultValue() : name;
         }
 
         return saved;
@@ -149,7 +169,10 @@ public final class PlayerUtils {
         String saved = profile.read(PLAYER_NAME_KEY);
 
         if (saved.equals(PLAYER_NAME_KEY.getDefaultValue())) {
-            return player.getName();
+            // Bukkit has no name for a player it has never seen, e.g. a profile migrated in from
+            // another server, so the key's default stands in rather than a null name.
+            String name = player.getName();
+            return name == null ? PLAYER_NAME_KEY.getDefaultValue() : name;
         }
 
         return saved;

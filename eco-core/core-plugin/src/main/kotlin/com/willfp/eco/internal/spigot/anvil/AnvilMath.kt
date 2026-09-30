@@ -5,6 +5,14 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
+/**
+ * Vanilla's flat level charge for merging two damageable items' durability.
+ *
+ * Without it, combining two items with no prior work and no enchants prices at 0 and the
+ * merge is dropped as a no-op.
+ */
+const val COMBINE_REPAIR_COST = 2
+
 /** Treat any value below 1 as effectively unlimited. */
 fun Int.infiniteIfNegative() = if (this < 1) Int.MAX_VALUE else this
 
@@ -22,7 +30,8 @@ fun applyReworkPenalty(repairCost: Int): Int = (repairCost + 1) * 2 - 1
  * XP cost = enchantLevelDiff^costExponent + unitRepairCost, rounded.
  *
  * [enchantLevelDiff] is the total enchant-level sum added/changed by the merge,
- * [unitRepairCost] is the number of repair units (e.g. ingots) consumed, and
+ * [unitRepairCost] is the repair charge: units (e.g. ingots) consumed, or [COMBINE_REPAIR_COST]
+ * for a durability merge, and
  * [costExponent] controls how steeply cost scales with enchant level diff (vanilla uses 1.0).
  *
  * Examples: enchantLevelDiff=2, unitRepairCost=0, costExponent=1.0 -> 2.

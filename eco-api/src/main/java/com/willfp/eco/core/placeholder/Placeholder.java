@@ -53,6 +53,22 @@ public interface Placeholder {
     }
 
     /**
+     * Get the pattern in a form fit to be shown to a user, e.g. in the list of placeholders that
+     * PlaceholderAPI advertises.
+     * <p>
+     * The default implementation returns the regex itself, which reads well enough for a
+     * placeholder whose pattern is a literal. A placeholder matched by a pattern with quoting or
+     * capturing groups in it should override this with a readable template, e.g.
+     * {@code mining_top_<N>_name}.
+     *
+     * @return The display pattern.
+     */
+    @NotNull
+    default String getDisplayPattern() {
+        return this.getPatternString();
+    }
+
+    /**
      * Try to translate all instances of this placeholder in text quickly.
      * <p>
      * The default implementation performs no translation and returns the text unchanged; placeholders that can be

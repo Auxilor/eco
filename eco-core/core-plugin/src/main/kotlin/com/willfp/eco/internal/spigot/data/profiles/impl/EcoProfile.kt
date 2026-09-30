@@ -25,6 +25,11 @@ abstract class EcoProfile(
             return this.data[key] as T
         }
 
+        // A profile still in data.yml is carried across before it is read, so a read never sees
+        // half a profile. Players are resolved on login instead, off the main thread; this is the
+        // path for everything else - offline lookups, placeholders, admin commands.
+        handler.ensureMigrated(uuid)
+
         this.data[key] = if (key.isSavedLocally) {
             handler.localHandler.read(uuid, key)
         } else {
@@ -32,6 +37,21 @@ abstract class EcoProfile(
         } ?: key.defaultValue
 
         return read(key)
+    }
+
+    /**
+     * Drop the cached value of [key], so the next read fetches it from the handler again.
+     */
+    fun invalidate(key: PersistentDataKey<*>) {
+        this.data.remove(key)
+    }
+
+    /**
+     * Drop every cached value that is shared with other servers, keeping the ones only this server
+     * stores.
+     */
+    fun invalidateShared() {
+        this.data.keys.removeIf { !it.isSavedLocally }
     }
 
     override fun equals(other: Any?): Boolean {

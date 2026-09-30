@@ -1,15 +1,15 @@
-package com.willfp.eco.internal.spigot.proxy.v26_2.packet
+package com.willfp.eco.internal.spigot.proxy.v26_1_2.packet
 
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.packet.PacketEvent
 import com.willfp.eco.core.packet.PacketListener
+import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import net.minecraft.core.component.DataComponentExactPredicate
 import net.minecraft.core.component.DataComponentMap
 import net.minecraft.core.component.PatchedDataComponentMap
 import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket
 import net.minecraft.world.item.trading.ItemCost
 import net.minecraft.world.item.trading.MerchantOffers
-import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.entity.Player
 
 object NewItemsPacketOpenWindowMerchant : PacketListener {
@@ -33,7 +33,7 @@ object NewItemsPacketOpenWindowMerchant : PacketListener {
             new.baseCostA = new.baseCostA.displayed(event.player)
             new.costB = new.costB.map { it.displayed(event.player) }
 
-            Display.display(CraftItemStack.asCraftMirror(new.getResult()), event.player)
+            Display.display(new.getResult().asBukkitStack(), event.player)
 
             offers += new
         }
@@ -54,7 +54,7 @@ object NewItemsPacketOpenWindowMerchant : PacketListener {
      */
     private fun ItemCost.displayed(player: Player): ItemCost {
         val displayed = this.itemStack.copy()
-        Display.display(CraftItemStack.asCraftMirror(displayed), player)
+        Display.display(displayed.asBukkitStack(), player)
 
         val components = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, displayed.componentsPatch)
 

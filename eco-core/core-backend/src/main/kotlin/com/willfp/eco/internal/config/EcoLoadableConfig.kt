@@ -13,6 +13,7 @@ import java.nio.ByteBuffer
 import java.nio.channels.AsynchronousFileChannel
 import java.nio.file.Files
 import java.nio.file.StandardOpenOption
+import java.util.logging.Logger
 
 open class EcoLoadableConfig(
     type: ConfigType,
@@ -39,7 +40,20 @@ open class EcoLoadableConfig(
             outDir.mkdirs()
         }
         if (!outFile.exists()) {
-            source.getResourceAsStream(resourcePath)!!.use { inputStream ->
+            // Not every config ships a copy in the jar. data.yml is the one eco owns outright --
+            // nothing reads it until a server has one to migrate out of, so there is nothing to
+            // seed it from. A config that is supposed to have a resource and does not is a broken
+            // build rather than a broken server, so it is logged and left empty instead of
+            // throwing on the way up.
+            val resource = source.getResourceAsStream(resourcePath)
+
+            if (resource == null) {
+                Logger.getLogger("eco").fine("No $resourcePath in the jar, creating $name empty")
+                outFile.createNewFile()
+                return
+            }
+
+            resource.use { inputStream ->
                 FileOutputStream(outFile).use { out ->
                     inputStream.copyTo(out)
                 }
