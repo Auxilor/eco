@@ -69,8 +69,9 @@ public final class Display {
      * <p>
      * Generates varargs from every registered module, reverts the item, then runs every
      * module's display in ascending weight order, with modules adding lore through
-     * {@link DisplayLore}. If the item has no meta and {@code display-without-meta} is disabled
-     * in eco's config, the item is returned unchanged after reverting.
+     * {@link DisplayLore}. Air is returned unchanged. If the item has no meta and
+     * {@code display-without-meta} is disabled in eco's config, the item is returned unchanged
+     * after reverting.
      * <p>
      * A record of everything display changed is written onto the item, so that
      * {@link #revert(ItemStack)} restores it exactly.
@@ -98,6 +99,10 @@ public final class Display {
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player,
                                     @Nullable final Predicate<ItemStack> inInventoryCheck) {
+        if (itemStack.getType().isAir()) {
+            return itemStack;
+        }
+
         List<DisplayModule> modules = REGISTRY.getModules();
         DisplayRecorder recorder = Eco.get().getDisplayRecorder();
         ItemStack snapshot = itemStack.clone();
