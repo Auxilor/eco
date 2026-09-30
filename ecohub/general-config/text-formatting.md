@@ -44,7 +44,8 @@ eco marks its own lore lines so it can find them again. By default it also start
 ```yaml
 # If eco's lore lines start with its legacy prefix. The prefix is invisible and lets other
 # plugins recognise lines eco added. eco also marks its lines without text, so this can be
-# disabled if another plugin shows or trips over the prefix.
+# disabled if another plugin shows or trips over the prefix. When disabled, eco can't find its
+# lines again after another plugin rebuilds the lore from legacy text, so they can be duplicated.
 display-legacy-prefix-marker: true
 ```
 
@@ -57,7 +58,9 @@ When any eco plugin reloads, eco sends every player's inventory and open GUI aga
 display-refresh-on-reload: true
 
 # How often, in ticks, inventories are sent to players again so that time-based placeholders in
-# lore stay up to date. 0 disables this.
+# lore stay up to date. 0 disables this. Players are spread across the interval, but every
+# player's whole inventory is displayed again once per interval, so short intervals cost a lot of
+# performance on busy servers. Keep it at 20 ticks or more.
 display-refresh-interval: 0
 ```
 
