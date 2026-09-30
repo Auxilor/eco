@@ -2,8 +2,11 @@ package com.willfp.eco.util;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Map;
 import java.util.regex.Pattern;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyFormat;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -14,39 +17,6 @@ import org.jetbrains.annotations.NotNull;
  * through untouched.
  */
 final class LegacyToMiniMessage {
-    /**
-     * Legacy colour codes and their MiniMessage tags.
-     */
-    private static final Map<Character, String> COLORS = Map.ofEntries(
-            Map.entry('0', "black"),
-            Map.entry('1', "dark_blue"),
-            Map.entry('2', "dark_green"),
-            Map.entry('3', "dark_aqua"),
-            Map.entry('4', "dark_red"),
-            Map.entry('5', "dark_purple"),
-            Map.entry('6', "gold"),
-            Map.entry('7', "gray"),
-            Map.entry('8', "dark_gray"),
-            Map.entry('9', "blue"),
-            Map.entry('a', "green"),
-            Map.entry('b', "aqua"),
-            Map.entry('c', "red"),
-            Map.entry('d', "light_purple"),
-            Map.entry('e', "yellow"),
-            Map.entry('f', "white")
-    );
-
-    /**
-     * Legacy decoration codes and their MiniMessage tags.
-     */
-    private static final Map<Character, String> DECORATIONS = Map.of(
-            'k', "obfuscated",
-            'l', "bold",
-            'm', "strikethrough",
-            'n', "underlined",
-            'o', "italic"
-    );
-
     /**
      * Sprite and player head tags.
      */
@@ -77,6 +47,7 @@ final class LegacyToMiniMessage {
             }
 
             char code = Character.toLowerCase(legacy.charAt(index + 1));
+            LegacyFormat format = LegacyComponentSerializer.parseChar(code);
 
             if (code == 'x' && isHexSequence(legacy, index)) {
                 closeAll(builder, open);
@@ -89,21 +60,23 @@ final class LegacyToMiniMessage {
                 builder.append('>');
                 open.push("color");
                 index += 14;
-            } else if (COLORS.containsKey(code)) {
-                closeAll(builder, open);
-                builder.append('<').append(COLORS.get(code)).append('>');
-                open.push(COLORS.get(code));
-                index += 2;
-            } else if (DECORATIONS.containsKey(code)) {
-                builder.append('<').append(DECORATIONS.get(code)).append('>');
-                open.push(DECORATIONS.get(code));
-                index += 2;
-            } else if (code == 'r') {
-                closeAll(builder, open);
-                index += 2;
-            } else {
+            } else if (format == null) {
                 builder.append(character);
                 index++;
+            } else if (format.color() instanceof NamedTextColor color) {
+                String tag = NamedTextColor.NAMES.key(color);
+                closeAll(builder, open);
+                builder.append('<').append(tag).append('>');
+                open.push(tag);
+                index += 2;
+            } else if (format.decoration() != null) {
+                String tag = TextDecoration.NAMES.key(format.decoration());
+                builder.append('<').append(tag).append('>');
+                open.push(tag);
+                index += 2;
+            } else {
+                closeAll(builder, open);
+                index += 2;
             }
         }
 
