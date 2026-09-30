@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
@@ -115,15 +116,9 @@ final class DisplayLoreBuilder implements DisplayLore {
      * @return The indices.
      */
     int[] getDisplayIndices() {
-        List<Integer> indices = new ArrayList<>();
-
-        for (int index = 0; index < this.nodes.size(); index++) {
-            if (this.nodes.get(index).display()) {
-                indices.add(index);
-            }
-        }
-
-        return indices.stream().mapToInt(Integer::intValue).toArray();
+        return IntStream.range(0, this.nodes.size())
+                .filter(index -> this.nodes.get(index).display())
+                .toArray();
     }
 
     /**
