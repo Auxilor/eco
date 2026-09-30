@@ -12,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
  * Legacy modules read and write lore as legacy strings, which rebuilds every line. Lines that
  * read the same before and after are matched up by the longest common subsequence of their
  * legacy text, and keep their original component, so formatting that legacy text can't hold
- * survives the module.
+ * survives the module. Lines a module left alone at the start and end are matched first, so
+ * modules that only append or prepend never build the full table.
  */
 final class LegacyLoreMatcher {
     /**
@@ -27,28 +28,57 @@ final class LegacyLoreMatcher {
     static List<LoreNode> match(@NotNull final List<LoreNode> input,
                                 @NotNull final List<Component> renderedInput,
                                 @NotNull final List<Component> output) {
-        List<String> inputLegacy = renderedInput.stream().map(StringUtils::toLegacy).toList();
-        List<String> outputLegacy = output.stream().map(StringUtils::toLegacy).toList();
+        if (renderedInput.equals(output)) {
+            return input;
+        }
 
-        int inputSize = inputLegacy.size();
-        int outputSize = outputLegacy.size();
+        String[] inputLegacy = new String[renderedInput.size()];
+        String[] outputLegacy = new String[output.size()];
+        int inputEnd = inputLegacy.length;
+        int outputEnd = outputLegacy.length;
+        int start = 0;
+
+        while (start < inputEnd && start < outputEnd
+                && legacy(inputLegacy, renderedInput, start).equals(legacy(outputLegacy, output, start))) {
+            start++;
+        }
+
+        while (inputEnd > start && outputEnd > start
+                && legacy(inputLegacy, renderedInput, inputEnd - 1).equals(legacy(outputLegacy, output, outputEnd - 1))) {
+            inputEnd--;
+            outputEnd--;
+        }
+
+        LoreNode[] aligned = new LoreNode[outputLegacy.length];
+
+        for (int index = 0; index < start; index++) {
+            aligned[index] = input.get(index);
+        }
+
+        for (int offset = 0; outputEnd + offset < outputLegacy.length; offset++) {
+            aligned[outputEnd + offset] = input.get(inputEnd + offset);
+        }
+
+        int inputSize = inputEnd - start;
+        int outputSize = outputEnd - start;
         int[][] lengths = new int[inputSize + 1][outputSize + 1];
 
         for (int inputIndex = inputSize - 1; inputIndex >= 0; inputIndex--) {
             for (int outputIndex = outputSize - 1; outputIndex >= 0; outputIndex--) {
-                lengths[inputIndex][outputIndex] = inputLegacy.get(inputIndex).equals(outputLegacy.get(outputIndex))
+                lengths[inputIndex][outputIndex] = legacy(inputLegacy, renderedInput, start + inputIndex)
+                        .equals(legacy(outputLegacy, output, start + outputIndex))
                         ? lengths[inputIndex + 1][outputIndex + 1] + 1
                         : Math.max(lengths[inputIndex + 1][outputIndex], lengths[inputIndex][outputIndex + 1]);
             }
         }
 
-        LoreNode[] aligned = new LoreNode[outputSize];
         int inputIndex = 0;
         int outputIndex = 0;
 
         while (inputIndex < inputSize && outputIndex < outputSize) {
-            if (inputLegacy.get(inputIndex).equals(outputLegacy.get(outputIndex))) {
-                aligned[outputIndex] = input.get(inputIndex);
+            if (legacy(inputLegacy, renderedInput, start + inputIndex)
+                    .equals(legacy(outputLegacy, output, start + outputIndex))) {
+                aligned[start + outputIndex] = input.get(start + inputIndex);
                 inputIndex++;
                 outputIndex++;
             } else if (lengths[inputIndex + 1][outputIndex] >= lengths[inputIndex][outputIndex + 1]) {
@@ -58,12 +88,12 @@ final class LegacyLoreMatcher {
             }
         }
 
-        List<LoreNode> result = new ArrayList<>(outputSize);
+        List<LoreNode> result = new ArrayList<>(outputLegacy.length);
 
-        for (int index = 0; index < outputSize; index++) {
+        for (int index = 0; index < outputLegacy.length; index++) {
             if (aligned[index] != null) {
                 result.add(aligned[index]);
-            } else if (outputLegacy.get(index).startsWith(DisplayLines.LEGACY_PREFIX)) {
+            } else if (legacy(outputLegacy, output, index).startsWith(DisplayLines.LEGACY_PREFIX)) {
                 result.add(LoreNode.display(DisplayLines.withoutPrefix(output.get(index))));
             } else {
                 result.add(LoreNode.foreign(output.get(index)));
@@ -71,6 +101,16 @@ final class LegacyLoreMatcher {
         }
 
         return result;
+    }
+
+    private static String legacy(@NotNull final String[] cache,
+                                 @NotNull final List<Component> lines,
+                                 final int index) {
+        if (cache[index] == null) {
+            cache[index] = StringUtils.toLegacy(lines.get(index));
+        }
+
+        return cache[index];
     }
 
     /**
