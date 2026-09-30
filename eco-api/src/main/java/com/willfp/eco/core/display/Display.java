@@ -225,7 +225,8 @@ public final class Display {
      * revert.
      * <p>
      * An item carrying a display record is restored exactly from it instead, and module reverts
-     * do not run.
+     * do not run. A record that is not valid, such as one not written by this server, is
+     * removed and the item is reverted as if it had none.
      * <p>
      * Display lines are identified on the components themselves, by the shape eco writes them
      * in - see {@link DisplayLines#isDisplayLine(Component)}. Lore added by other plugins is
