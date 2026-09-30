@@ -74,7 +74,7 @@ public final class Display {
      * {@code display-without-meta} is disabled in eco's config, the item is returned unchanged
      * after reverting.
      * <p>
-     * A record of everything display changed is written onto the item, so that
+     * If display changed anything, a record of it is written onto the item, so that
      * {@link #revert(ItemStack)} restores it exactly.
      *
      * @param itemStack The item.

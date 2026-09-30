@@ -27,8 +27,9 @@ private const val LINES_KEY = "lines"
 private const val RESTORE_KEY = "restore"
 private const val PLAIN_LORE_KEY = "plain_lore"
 
-private val registryOps: RegistryOps<Tag>
-    get() = (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
+private val registryOps: RegistryOps<Tag> by lazy {
+    (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
+}
 
 private enum class KeptLore {
     STYLED,
@@ -64,7 +65,7 @@ class DisplayRecords : DisplayRecordsProxy {
         val keptLore = if (displayLines.isEmpty()) null else keptLore(before, after, displayLines)
         val restore = DataComponentPatch.builder()
 
-        for (type in before.keySet() + after.keySet()) {
+        for (type in snapshotHandle.componentsPatch.changedTypes() + handle.componentsPatch.changedTypes()) {
             if (type == DataComponents.LORE && keptLore != null) {
                 continue
             }
@@ -76,12 +77,18 @@ class DisplayRecords : DisplayRecordsProxy {
             restore.restoreTo(type, before)
         }
 
+        val restorePatch = restore.build()
+
+        if (displayLines.isEmpty() && restorePatch.isEmpty) {
+            return
+        }
+
         handle.set(
             DataComponents.CUSTOM_DATA,
             handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).update {
                 it.put(RECORD_KEY, CompoundTag().apply {
                     putIntArray(LINES_KEY, displayLines)
-                    put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restore.build()).getOrThrow())
+                    put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restorePatch).getOrThrow())
 
                     if (keptLore == KeptLore.PLAIN) {
                         putBoolean(PLAIN_LORE_KEY, true)
@@ -105,7 +112,10 @@ class DisplayRecords : DisplayRecordsProxy {
 
     private fun restoreOnce(itemStack: ItemStack): Boolean {
         val handle = itemStack.asNMSStack()
-        val customData = handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: return false
+        val customData = handle.get(DataComponents.CUSTOM_DATA)
+            ?.takeIf { it.contains(RECORD_KEY) }
+            ?.copyTag()
+            ?: return false
         val record = customData.getCompound(RECORD_KEY).orElse(null) ?: return false
         val displayLines = record.getIntArray(LINES_KEY).orElse(IntArray(0))
         val restore = record.get(RESTORE_KEY)
@@ -163,6 +173,9 @@ class DisplayRecords : DisplayRecordsProxy {
             else -> null
         }
     }
+
+    private fun DataComponentPatch.changedTypes(): Set<DataComponentType<*>> =
+        split().let { it.added().keySet() + it.removed() }
 
     @Suppress("UNCHECKED_CAST")
     private fun DataComponentPatch.Builder.restoreTo(
