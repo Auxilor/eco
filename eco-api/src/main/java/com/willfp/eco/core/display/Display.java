@@ -15,6 +15,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -242,16 +243,16 @@ public final class Display {
     @SuppressWarnings("removal")
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
         boolean restored = Eco.get().getDisplayRecorder().restore(itemStack);
+        FastItemStack fast = FastItemStack.wrap(itemStack);
+        PersistentDataContainer container = fast.getPersistentDataContainer();
 
-        if (Display.isFinalized(itemStack)) {
-            Display.unfinalize(itemStack);
+        if (container.has(FINALIZE_KEY, PersistentDataType.INTEGER)) {
+            container.remove(FINALIZE_KEY);
         }
 
         if (restored) {
             return itemStack;
         }
-
-        FastItemStack fast = FastItemStack.wrap(itemStack);
 
         if (Eco.get().getEcoPlugin().getConfigYml().getBool("use-legacy-lore-revert")) {
             List<String> lore = new ArrayList<>(fast.getLore());
