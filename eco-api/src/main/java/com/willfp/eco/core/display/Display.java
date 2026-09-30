@@ -107,7 +107,7 @@ public final class Display {
         DisplayRecorder recorder = Eco.get().getDisplayRecorder();
         recorder.restore(itemStack);
         ItemStack snapshot = itemStack.clone();
-        List<Component> serverLore = FastItemStack.wrap(itemStack).getLoreComponents();
+        List<Component> serverLore = recorder.getLore(itemStack);
         Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();
 
         for (DisplayModule module : modules) {
@@ -131,7 +131,9 @@ public final class Display {
         );
 
         boolean legacyPrefix = Eco.get().getEcoPlugin().getConfigYml().getBool("display-legacy-prefix-marker");
-        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(FastItemStack.wrap(itemStack).getLoreComponents());
+        List<Component> itemLore = recorder.getLore(itemStack);
+        Object itemLoreState = recorder.getLoreState(itemStack);
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(itemLore);
 
         for (DisplayModule module : modules) {
             Object[] varargs = moduleVarArgs.get(module);
@@ -146,8 +148,12 @@ public final class Display {
                 continue;
             }
 
-            List<Component> rendered = lore.render(legacyPrefix);
-            FastItemStack.wrap(itemStack).setLoreComponents(rendered);
+            if (!lore.isSynced() || recorder.getLoreState(itemStack) != itemLoreState) {
+                itemLore = lore.render(legacyPrefix);
+                recorder.setLore(itemStack, itemLore);
+                itemLoreState = recorder.getLoreState(itemStack);
+                lore.markSynced();
+            }
 
             module.display(itemStack, varargs);
 
@@ -156,18 +162,17 @@ public final class Display {
                 module.display(itemStack, player, properties, varargs);
             }
 
-            lore = new DisplayLoreBuilder(
-                    LegacyLoreMatcher.match(lore.getNodes(), rendered, FastItemStack.wrap(itemStack).getLoreComponents())
-            );
+            if (recorder.getLoreState(itemStack) != itemLoreState) {
+                lore = new DisplayLoreBuilder(
+                        LegacyLoreMatcher.match(lore.getNodes(), itemLore, recorder.getLore(itemStack))
+                );
+            }
         }
 
         lore.removeStaleLines();
 
-        FastItemStack displayed = FastItemStack.wrap(itemStack);
-        List<Component> rendered = lore.render(legacyPrefix);
-
-        if (!rendered.equals(displayed.getLoreComponents())) {
-            displayed.setLoreComponents(rendered);
+        if (!lore.isSynced() || recorder.getLoreState(itemStack) != itemLoreState) {
+            recorder.setLore(itemStack, lore.render(legacyPrefix));
         }
 
         recorder.record(itemStack, snapshot, lore.getDisplayIndices(), !lore.getForeignLines().equals(serverLore));

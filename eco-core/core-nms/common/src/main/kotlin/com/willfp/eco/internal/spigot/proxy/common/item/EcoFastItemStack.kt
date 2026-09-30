@@ -51,7 +51,7 @@ private val unstyledComponent = Component.empty().style {
  * regression where bare lore/name lines, which previously never rendered italic, pick up the
  * client's implicit italic default.
  */
-private fun Component.unstyled(): Component {
+fun Component.unstyled(): Component {
     val useVanillaFormat = Eco.get().ecoPlugin.configYml.getBool("use-vanilla-item-name-format")
 
     if (!useVanillaFormat) {

@@ -3,8 +3,11 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_8
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxies.DisplayRecordsProxy
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
+import com.willfp.eco.internal.spigot.proxy.common.item.unstyled
 import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
 import com.willfp.eco.internal.spigot.proxy.common.toAdventure
+import com.willfp.eco.internal.spigot.proxy.common.toNMS
+import net.kyori.adventure.text.Component
 import net.minecraft.core.component.DataComponentMap
 import net.minecraft.core.component.DataComponentPatch
 import net.minecraft.core.component.DataComponentType
@@ -27,6 +30,21 @@ private val registryOps: RegistryOps<Tag>
     get() = (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
 
 class DisplayRecords : DisplayRecordsProxy {
+    override fun getLore(itemStack: ItemStack): List<Component> =
+        itemStack.asNMSStack().getOrDefault(DataComponents.LORE, ItemLore.EMPTY).lines.map { it.toAdventure() }
+
+    override fun getLoreState(itemStack: ItemStack): Any? =
+        itemStack.asNMSStack().get(DataComponents.LORE)
+
+    override fun setLore(itemStack: ItemStack, lore: List<Component>) {
+        val handle = itemStack.asNMSStack()
+        handle.set(
+            DataComponents.LORE,
+            ItemLore(lore.map { line -> (if (Display.isDisplayLine(line)) line.unstyled() else line).toNMS() })
+        )
+        itemStack.mergeIfNeeded(handle)
+    }
+
     override fun record(itemStack: ItemStack, snapshot: ItemStack, displayLines: IntArray, recordLore: Boolean) {
         val handle = itemStack.asNMSStack()
         val before = snapshot.asNMSStack().components

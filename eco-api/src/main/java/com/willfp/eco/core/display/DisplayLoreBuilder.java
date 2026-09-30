@@ -20,6 +20,11 @@ final class DisplayLoreBuilder implements DisplayLore {
     private final List<LoreNode> nodes;
 
     /**
+     * If the rendered lore matches the lore last read from or written to the item.
+     */
+    private boolean synced;
+
+    /**
      * Create a builder from nodes.
      *
      * @param nodes The nodes.
@@ -35,17 +40,41 @@ final class DisplayLoreBuilder implements DisplayLore {
      * @return The builder.
      */
     static DisplayLoreBuilder ofForeign(@NotNull final List<Component> lore) {
-        return new DisplayLoreBuilder(lore.stream().map(LoreNode::foreign).toList());
+        DisplayLoreBuilder builder = new DisplayLoreBuilder(lore.stream().map(LoreNode::foreign).toList());
+        builder.markSynced();
+        return builder;
     }
 
     @Override
     public void prepend(@NotNull final List<? extends ComponentLike> lines) {
-        this.nodes.addAll(0, toNodes(lines));
+        if (!lines.isEmpty()) {
+            this.nodes.addAll(0, toNodes(lines));
+            this.synced = false;
+        }
     }
 
     @Override
     public void append(@NotNull final List<? extends ComponentLike> lines) {
-        this.nodes.addAll(toNodes(lines));
+        if (!lines.isEmpty()) {
+            this.nodes.addAll(toNodes(lines));
+            this.synced = false;
+        }
+    }
+
+    /**
+     * If the rendered lore matches the lore last read from or written to the item.
+     *
+     * @return If synced.
+     */
+    boolean isSynced() {
+        return this.synced;
+    }
+
+    /**
+     * Mark the rendered lore as matching the lore on the item.
+     */
+    void markSynced() {
+        this.synced = true;
     }
 
     @Override
@@ -134,6 +163,7 @@ final class DisplayLoreBuilder implements DisplayLore {
             if (remaining > 0) {
                 iterator.remove();
                 displayCounts.put(content, remaining - 1);
+                this.synced = false;
             }
         }
     }
