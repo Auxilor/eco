@@ -108,7 +108,6 @@ public final class Display {
         DisplayRecorder recorder = Eco.get().getDisplayRecorder();
         recorder.restore(itemStack);
         ItemStack snapshot = itemStack.clone();
-        List<Component> serverLore = recorder.getLore(itemStack);
         Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();
 
         for (DisplayModule module : modules) {
@@ -176,7 +175,7 @@ public final class Display {
             recorder.setLore(itemStack, lore.render(legacyPrefix));
         }
 
-        recorder.record(itemStack, snapshot, lore.getDisplayIndices(), !lore.getForeignLines().equals(serverLore));
+        recorder.record(itemStack, snapshot, lore.getDisplayIndices());
 
         return itemStack;
     }

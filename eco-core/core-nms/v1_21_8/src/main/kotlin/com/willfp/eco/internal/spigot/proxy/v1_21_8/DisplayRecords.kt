@@ -25,9 +25,15 @@ import org.bukkit.inventory.ItemStack
 private const val RECORD_KEY = "eco_display"
 private const val LINES_KEY = "lines"
 private const val RESTORE_KEY = "restore"
+private const val PLAIN_LORE_KEY = "plain_lore"
 
 private val registryOps: RegistryOps<Tag>
     get() = (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
+
+private enum class KeptLore {
+    STYLED,
+    PLAIN
+}
 
 class DisplayRecords : DisplayRecordsProxy {
     override fun getLore(itemStack: ItemStack): List<Component> =
@@ -45,14 +51,15 @@ class DisplayRecords : DisplayRecordsProxy {
         itemStack.mergeIfNeeded(handle)
     }
 
-    override fun record(itemStack: ItemStack, snapshot: ItemStack, displayLines: IntArray, recordLore: Boolean) {
+    override fun record(itemStack: ItemStack, snapshot: ItemStack, displayLines: IntArray) {
         val handle = itemStack.asNMSStack()
         val before = snapshot.asNMSStack().components
         val after = handle.components
+        val keptLore = if (displayLines.isEmpty()) null else keptLore(before, after, displayLines)
         val restore = DataComponentPatch.builder()
 
         for (type in before.keySet() + after.keySet()) {
-            if (type == DataComponents.LORE && !recordLore) {
+            if (type == DataComponents.LORE && keptLore != null) {
                 continue
             }
 
@@ -69,6 +76,10 @@ class DisplayRecords : DisplayRecordsProxy {
                 it.put(RECORD_KEY, CompoundTag().apply {
                     putIntArray(LINES_KEY, displayLines)
                     put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restore.build()).getOrThrow())
+
+                    if (keptLore == KeptLore.PLAIN) {
+                        putBoolean(PLAIN_LORE_KEY, true)
+                    }
                 })
             }
         )
@@ -101,8 +112,13 @@ class DisplayRecords : DisplayRecordsProxy {
             return false
         }
 
-        val kept = lore.filterIndexed { index, _ -> index !in displayLines }
-        handle.set(DataComponents.LORE, ItemLore(kept, kept))
+        if (displayLines.isNotEmpty()) {
+            val kept = lore.filterIndexed { index, _ -> index !in displayLines }
+            handle.set(
+                DataComponents.LORE,
+                if (record.getBooleanOr(PLAIN_LORE_KEY, false)) ItemLore(kept, kept) else ItemLore(kept)
+            )
+        }
 
         val withoutRecord = CustomData.of(customData.without(RECORD_KEY))
 
@@ -126,6 +142,21 @@ class DisplayRecords : DisplayRecordsProxy {
                 }
             }
         }
+
+    private fun keptLore(before: DataComponentMap, after: DataComponentMap, displayLines: IntArray): KeptLore? {
+        val beforeLore = before.get(DataComponents.LORE) ?: ItemLore.EMPTY
+        val afterLines = (after.get(DataComponents.LORE) ?: ItemLore.EMPTY).lines
+
+        if (afterLines.filterIndexed { index, _ -> index !in displayLines } != beforeLore.lines) {
+            return null
+        }
+
+        return when (beforeLore) {
+            ItemLore(beforeLore.lines) -> KeptLore.STYLED
+            ItemLore(beforeLore.lines, beforeLore.lines) -> KeptLore.PLAIN
+            else -> null
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun DataComponentPatch.Builder.restoreTo(

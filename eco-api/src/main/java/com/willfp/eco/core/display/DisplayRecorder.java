@@ -47,13 +47,10 @@ public interface DisplayRecorder {
      * @param itemStack    The displayed item.
      * @param snapshot     A copy of the item taken before display.
      * @param displayLines The positions of display lines in the lore.
-     * @param recordLore   If the original lore must be recorded, because lines other than display
-     *                     lines changed.
      */
     void record(@NotNull ItemStack itemStack,
                 @NotNull ItemStack snapshot,
-                @NotNull int[] displayLines,
-                boolean recordLore);
+                @NotNull int[] displayLines);
 
     /**
      * Restore an item from its record, if it has a valid one. Records written onto an item that
