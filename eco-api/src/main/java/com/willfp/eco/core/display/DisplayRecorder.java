@@ -60,8 +60,9 @@ public interface DisplayRecorder {
      * Restore an item from its record, if it has a valid one. Records written onto an item that
      * was already displayed are restored too, down to the item before any display.
      * <p>
-     * Records are signed with a key held only by this server, so a client can't forge one. A
-     * record that is not valid is removed from the item without restoring anything.
+     * Records are signed and encrypted with keys held only by this server, so a client can't
+     * forge one or read the original values in it. A record that is not valid is removed from
+     * the item without restoring anything.
      *
      * @param itemStack The item.
      * @return If the item was restored.

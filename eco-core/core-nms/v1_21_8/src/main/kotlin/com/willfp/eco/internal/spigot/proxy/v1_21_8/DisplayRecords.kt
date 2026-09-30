@@ -15,7 +15,9 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.BitSet
 import java.util.Optional
+import javax.crypto.Cipher
 import javax.crypto.Mac
+import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import net.kyori.adventure.text.Component
 import net.minecraft.core.component.DataComponentMap
@@ -38,6 +40,8 @@ private const val RECORD_KEY = "eco_display"
 private const val DATA_KEY = "data"
 private const val SIGNATURE_KEY = "signature"
 private const val SIGNATURE_ALGORITHM = "HmacSHA256"
+private const val CIPHER_ALGORITHM = "AES/CTR/NoPadding"
+private const val CIPHER_IV_LENGTH = 16
 private const val LINES_KEY = "lines"
 private const val RESTORE_KEY = "restore"
 private const val PLAIN_LORE_KEY = "plain_lore"
@@ -48,8 +52,14 @@ private val registryOps: RegistryOps<Tag> by lazy {
 
 private val signingKey = SecretKeySpec(ByteArray(32).also { SecureRandom().nextBytes(it) }, SIGNATURE_ALGORITHM)
 
+private val cipherKey = SecretKeySpec(ByteArray(32).also { SecureRandom().nextBytes(it) }, "AES")
+
 private val signers = ThreadLocal.withInitial {
     Mac.getInstance(SIGNATURE_ALGORITHM).apply { init(signingKey) }
+}
+
+private val ciphers = ThreadLocal.withInitial {
+    Cipher.getInstance(CIPHER_ALGORITHM)
 }
 
 private enum class KeptLore {
@@ -107,7 +117,7 @@ class DisplayRecords : DisplayRecordsProxy {
         handle.set(
             DataComponents.CUSTOM_DATA,
             handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).update {
-                it.put(RECORD_KEY, sign(CompoundTag().apply {
+                it.put(RECORD_KEY, seal(CompoundTag().apply {
                     putIntArray(LINES_KEY, displayLines)
                     put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restorePatch).getOrThrow())
 
@@ -137,7 +147,7 @@ class DisplayRecords : DisplayRecordsProxy {
             ?.takeIf { it.contains(RECORD_KEY) }
             ?.copyTag()
             ?: return false
-        val record = customData.getCompound(RECORD_KEY).flatMap { verify(it) }.orElse(null)
+        val record = customData.getCompound(RECORD_KEY).flatMap { open(it) }.orElse(null)
         val withoutRecord = CustomData.of(customData.without(RECORD_KEY))
 
         if (withoutRecord.isEmpty) {
@@ -179,18 +189,25 @@ class DisplayRecords : DisplayRecordsProxy {
         return true
     }
 
-    private fun sign(record: CompoundTag): CompoundTag {
+    private fun seal(record: CompoundTag): CompoundTag {
         val data = ByteArrayOutputStream().also { NbtIo.write(record, DataOutputStream(it)) }.toByteArray()
+        val signature = signers.get().doFinal(data)
 
         return CompoundTag().apply {
-            putByteArray(DATA_KEY, data)
-            putByteArray(SIGNATURE_KEY, signers.get().doFinal(data))
+            putByteArray(DATA_KEY, crypt(signature, data))
+            putByteArray(SIGNATURE_KEY, signature)
         }
     }
 
-    private fun verify(signed: CompoundTag): Optional<CompoundTag> {
-        val data = signed.getByteArray(DATA_KEY).orElse(null) ?: return Optional.empty()
-        val signature = signed.getByteArray(SIGNATURE_KEY).orElse(null) ?: return Optional.empty()
+    private fun open(sealed: CompoundTag): Optional<CompoundTag> {
+        val encrypted = sealed.getByteArray(DATA_KEY).orElse(null) ?: return Optional.empty()
+        val signature = sealed.getByteArray(SIGNATURE_KEY).orElse(null) ?: return Optional.empty()
+
+        if (signature.size < CIPHER_IV_LENGTH) {
+            return Optional.empty()
+        }
+
+        val data = crypt(signature, encrypted)
 
         if (!MessageDigest.isEqual(signature, signers.get().doFinal(data))) {
             return Optional.empty()
@@ -200,6 +217,12 @@ class DisplayRecords : DisplayRecordsProxy {
             .map { Optional.of(it) }
             .getOrDefault(Optional.empty())
     }
+
+    private fun crypt(signature: ByteArray, data: ByteArray): ByteArray =
+        ciphers.get().run {
+            init(Cipher.ENCRYPT_MODE, cipherKey, IvParameterSpec(signature, 0, CIPHER_IV_LENGTH))
+            doFinal(data)
+        }
 
     private fun IntArray.isStrictlyIncreasingWithin(size: Int): Boolean =
         this.size <= size && this.indices.all { index ->
