@@ -60,7 +60,6 @@ public abstract class DisplayModule {
      * @param context The display context.
      */
     public void display(@NotNull final DisplayContext context) {
-        // Technically optional.
     }
 
     /**
