@@ -265,7 +265,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     /**
      * Sends displayed items to players again after reloads.
      */
-    val displayRefresher = DisplayRefresher(this)
+    val displayRefresher = DisplayRefresher(this) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrame(it) }
 
     /**
      * Owns every plugin's datapack, and all the timing decisions around them.
@@ -512,7 +512,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         val refreshInterval = this.configYml.getInt("display-refresh-interval").toLong()
 
         if (refreshInterval > 0) {
-            this.scheduler.global().runTimer(refreshInterval, refreshInterval) { displayRefresher.refresh() }
+            displayRefresher.startPeriodicRefresh(refreshInterval)
         }
     }
 

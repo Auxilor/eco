@@ -38,3 +38,7 @@ var Player.lastDisplayFrame: DisplayFrame
 fun clearFrames() {
     frames.clear()
 }
+
+fun Player.clearDisplayFrame() {
+    frames.remove(this.uniqueId)
+}

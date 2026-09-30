@@ -96,7 +96,9 @@ display-legacy-prefix-marker: true
 display-refresh-on-reload: true
 
 # How often, in ticks, inventories are sent to players again so that time-based placeholders in
-# lore stay up to date. 0 disables this.
+# lore stay up to date. 0 disables this. Players are spread across the interval, but every
+# player's whole inventory is displayed again once per interval, so short intervals cost a lot of
+# performance on busy servers. Keep it at 20 ticks or more.
 display-refresh-interval: 0
 
 # Display frames massively optimize PacketWindowItems, however some users have
