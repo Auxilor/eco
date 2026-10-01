@@ -32,6 +32,7 @@ tasks {
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/PlayerHandler*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/TPS*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/ItemComponents*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/CommonsInitializer*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
 
