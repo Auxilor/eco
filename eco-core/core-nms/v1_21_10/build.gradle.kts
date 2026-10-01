@@ -31,6 +31,7 @@ tasks {
         )
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/TPS*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/ItemComponents*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
         // Superseded by this version's own handle, and no longer links here.
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/common/hologram/CommonHologramHandle*.class")

@@ -21,6 +21,7 @@ tasks {
 
         exclude("com/willfp/eco/internal/spigot/proxy/v26_2/CommonsInitializer*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_2/DatapackCodec*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v26_2/ItemComponents*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_2/Hologram*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_2/hologram/V26_2HologramHandle*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v26_2/common/ai/entity/CatLieOnBedGoalFactory*.class")

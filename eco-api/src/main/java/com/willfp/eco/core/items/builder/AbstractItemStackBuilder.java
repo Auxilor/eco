@@ -1,10 +1,15 @@
 package com.willfp.eco.core.items.builder;
 
 import com.google.common.base.Preconditions;
+import com.willfp.eco.core.config.ConfigExtensions;
+import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.fast.FastItemStack;
+import com.willfp.eco.core.items.Items;
 import com.willfp.eco.core.items.TestableItem;
 import com.willfp.eco.util.StringUtils;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,6 +38,11 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
      * The ItemStack.
      */
     private final ItemStack base;
+
+    /**
+     * The data components to apply when building.
+     */
+    private final Map<String, Object> components = new LinkedHashMap<>();
 
     /**
      * Create a new ItemStackBuilder.
@@ -217,10 +227,26 @@ public abstract class AbstractItemStackBuilder<T extends ItemMeta, U extends Abs
     }
 
     @Override
+    public U setComponents(@NotNull final Map<String, Object> components) {
+        this.components.putAll(components);
+
+        return (U) this;
+    }
+
+    @Override
+    public U setComponents(@NotNull final Config components) {
+        return setComponents(ConfigExtensions.toPlainValues(components));
+    }
+
+    @Override
     public ItemStack build() {
         base.setItemMeta(meta);
 
-        return base;
+        if (components.isEmpty()) {
+            return base;
+        }
+
+        return Items.withComponents(base, components).getItem();
     }
 
     /**
