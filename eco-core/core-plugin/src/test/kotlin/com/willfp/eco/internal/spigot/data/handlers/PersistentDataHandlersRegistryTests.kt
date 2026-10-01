@@ -23,4 +23,11 @@ class PersistentDataHandlersRegistryTests {
             assertNotNull(PersistentDataHandlers[id], "expected $id to stay registered")
         }
     }
+
+    @Test
+    fun `postgresql is a registered handler under both names`() {
+        for (id in listOf("postgresql", "postgres")) {
+            assertNotNull(PersistentDataHandlers[id], "expected $id to be registered")
+        }
+    }
 }

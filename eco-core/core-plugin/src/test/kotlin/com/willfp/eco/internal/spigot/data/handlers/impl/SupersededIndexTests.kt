@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 
 /**
@@ -14,10 +15,14 @@ import org.junit.jupiter.api.io.TempDir
  * which is a second full copy of that index -- on a store of a million rows, a third of the file.
  * The handler drops it on startup, and must do so without touching the rows or the constraint the
  * primary key still enforces.
+ *
+ * The temp directories are never cleaned up: shutting a handler down does not close its connection
+ * pool, so the database file is still open when the test ends, and Windows refuses to delete an
+ * open file -- which JUnit reports as a failure of the test itself.
  */
 class SupersededIndexTests {
     @Test
-    fun `startup drops the index that duplicates the primary key`(@TempDir dir: Path) {
+    fun `startup drops the index that duplicates the primary key`(@TempDir(cleanup = CleanupMode.NEVER) dir: Path) {
         val file = dir.resolve("data.db").toFile()
 
         openRaw(file.absolutePath).use { connection ->
@@ -65,7 +70,7 @@ class SupersededIndexTests {
 
 
     @Test
-    fun `startup rebuilds a rowid table to store its rows in the primary key`(@TempDir dir: Path) {
+    fun `startup rebuilds a rowid table to store its rows in the primary key`(@TempDir(cleanup = CleanupMode.NEVER) dir: Path) {
         val file = dir.resolve("data.db").toFile()
 
         openRaw(file.absolutePath).use { connection ->
@@ -118,7 +123,7 @@ class SupersededIndexTests {
     }
 
     @Test
-    fun `a rebuild that cannot complete leaves the original table alone`(@TempDir dir: Path) {
+    fun `a rebuild that cannot complete leaves the original table alone`(@TempDir(cleanup = CleanupMode.NEVER) dir: Path) {
         val file = dir.resolve("data.db").toFile()
 
         openRaw(file.absolutePath).use { connection ->

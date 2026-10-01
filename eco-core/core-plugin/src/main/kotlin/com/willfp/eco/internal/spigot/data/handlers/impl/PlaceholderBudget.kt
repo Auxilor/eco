@@ -7,6 +7,10 @@ package com.willfp.eco.internal.spigot.data.handlers.impl
 // reintroducing the cap as a runtime failure on somebody's server.
 const val MYSQL_PLACEHOLDER_BUDGET = 60_000
 
+// The PostgreSQL wire protocol counts bind parameters in a 16-bit field, so the JDBC driver caps a
+// statement at 65535 just as MySQL does, and the same margin applies.
+const val POSTGRES_PLACEHOLDER_BUDGET = 60_000
+
 // SQLITE_MAX_VARIABLE_NUMBER is 32766 on 3.32 and later, and 999 on older builds, so the MySQL
 // budget would fail outright here. Halved from the limit rather than shaved, because the number a
 // server actually enforces depends on the sqlite build the driver was compiled against.

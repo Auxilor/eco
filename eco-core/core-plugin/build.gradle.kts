@@ -70,12 +70,15 @@ dependencies {
     // Libraries (provided at runtime via Paper library loader)
     compileOnly("com.mysql:mysql-connector-j:9.6.0")
     compileOnly("org.mariadb.jdbc:mariadb-java-client:2.7.12")
+    compileOnly("org.postgresql:postgresql:42.7.7")
     compileOnly("org.xerial:sqlite-jdbc:3.51.0.0")
     implementation("org.jetbrains.exposed:exposed-core:1.2.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.2.0")
     compileOnly("com.zaxxer:HikariCP:7.0.2")
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
     compileOnly("org.mongodb:mongodb-driver-kotlin-coroutine:5.6.2")
+    compileOnly("redis.clients:jedis:5.2.0")
+    testImplementation("com.github.fppt:jedis-mock:1.1.4")
     compileOnly("io.hotmoka:toml4j:0.7.3") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
