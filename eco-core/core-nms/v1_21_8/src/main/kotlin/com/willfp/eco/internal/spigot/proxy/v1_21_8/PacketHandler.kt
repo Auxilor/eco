@@ -5,6 +5,7 @@ import com.willfp.eco.core.packet.PacketListener
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearDisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearFrames
 import com.willfp.eco.internal.spigot.proxy.v1_21_8.packet.NewItemsPacketOpenWindowMerchant
 import com.willfp.eco.internal.spigot.proxy.v1_21_8.packet.NewItemsPacketSetCreativeSlot
@@ -32,6 +33,10 @@ class PacketHandler : PacketHandlerProxy {
 
     override fun clearDisplayFrames() {
         clearFrames()
+    }
+
+    override fun clearDisplayFrame(player: Player) {
+        player.clearDisplayFrame()
     }
 
     override fun getPacketListeners(plugin: EcoPlugin): List<PacketListener> {

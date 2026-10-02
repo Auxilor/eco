@@ -1,5 +1,6 @@
 package com.willfp.eco.core.display;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -8,92 +9,104 @@ import org.junit.jupiter.api.Test;
 
 public class StaleDisplayLineTest {
     /**
-     * The shape eco writes a display line in, which revert recognises.
+     * A line added by a display module.
      */
-    private static Component ecoLine(final String text) {
-        return Component.empty().append(
-                Component.text(Display.PREFIX).append(Component.text(text, NamedTextColor.GRAY))
-        );
+    private static LoreNode ecoLine(final String text) {
+        return LoreNode.display(Component.text(text, NamedTextColor.GRAY));
     }
 
     /**
-     * The same line after something has round-tripped the lore through legacy strings, which
-     * revert doesn't recognise.
+     * A display line after something has round-tripped the lore through legacy strings, which
+     * revert doesn't recognise, so it is left on the item as a foreign line.
      */
-    private static Component flattenedLine(final String text) {
-        return Component.empty()
-                .append(Component.text(Display.PREFIX))
-                .append(Component.text(text, NamedTextColor.GRAY));
+    private static LoreNode flattenedLine(final String text) {
+        return LoreNode.foreign(
+                Component.empty()
+                        .append(Component.text(Display.PREFIX))
+                        .append(Component.text(text, NamedTextColor.GRAY))
+        );
+    }
+
+    private static List<LoreNode> withoutStaleLines(final LoreNode... nodes) {
+        DisplayLoreBuilder lore = new DisplayLoreBuilder(new ArrayList<>(List.of(nodes)));
+        lore.removeStaleLines();
+        return lore.getNodes();
     }
 
     @Test
     public void testNothingIsRemovedWhenNoLineIsWrittenTwice() {
-        List<Component> before = List.of(Component.text("Foreign lore"));
-        List<Component> after = List.of(Component.text("Foreign lore"), ecoLine("Display line"));
+        LoreNode foreign = LoreNode.foreign(Component.text("Foreign lore"));
+        LoreNode eco = ecoLine("Display line");
 
-        Assertions.assertNull(DisplayLines.withoutStaleLines(before, after));
+        Assertions.assertEquals(List.of(foreign, eco), withoutStaleLines(foreign, eco));
     }
 
     @Test
     public void testStaleLineLeftBehindByRevertIsRemoved() {
-        // The flattened copy survived revert, then the module appended it again.
-        List<Component> before = List.of(flattenedLine("Display line"));
-        List<Component> after = List.of(flattenedLine("Display line"), ecoLine("Display line"));
+        LoreNode eco = ecoLine("Display line");
 
-        List<Component> result = DisplayLines.withoutStaleLines(before, after);
-
-        Assertions.assertEquals(List.of(ecoLine("Display line")), result);
+        Assertions.assertEquals(List.of(eco), withoutStaleLines(flattenedLine("Display line"), eco));
     }
 
     @Test
     public void testEveryStaleLineOfAMultiLineItemIsRemoved() {
-        List<Component> before = List.of(
-                flattenedLine("----------------"),
-                flattenedLine("Talent")
+        LoreNode separator = ecoLine("----------------");
+        LoreNode talent = ecoLine("Talent");
+
+        Assertions.assertEquals(
+                List.of(separator, talent),
+                withoutStaleLines(flattenedLine("----------------"), flattenedLine("Talent"), separator, talent)
         );
-
-        List<Component> after = List.of(
-                flattenedLine("----------------"),
-                flattenedLine("Talent"),
-                ecoLine("----------------"),
-                ecoLine("Talent")
-        );
-
-        List<Component> result = DisplayLines.withoutStaleLines(before, after);
-
-        Assertions.assertEquals(List.of(ecoLine("----------------"), ecoLine("Talent")), result);
     }
 
     @Test
     public void testForeignLoreIsKeptWhenAStaleLineIsRemoved() {
-        Component foreign = Component.text("Enchantment description");
+        LoreNode foreign = LoreNode.foreign(Component.text("Enchantment description"));
+        LoreNode eco = ecoLine("Display line");
 
-        List<Component> before = List.of(foreign, flattenedLine("Display line"));
-        List<Component> after = List.of(foreign, flattenedLine("Display line"), ecoLine("Display line"));
-
-        List<Component> result = DisplayLines.withoutStaleLines(before, after);
-
-        Assertions.assertEquals(List.of(foreign, ecoLine("Display line")), result);
+        Assertions.assertEquals(
+                List.of(foreign, eco),
+                withoutStaleLines(foreign, flattenedLine("Display line"), eco)
+        );
     }
 
     @Test
     public void testOnlyAsManyCopiesAreRemovedAsWereWrittenAgain() {
-        // Two copies were already there, the module wrote one, so one copy is stale.
-        List<Component> before = List.of(flattenedLine("Line"), flattenedLine("Line"));
-        List<Component> after = List.of(
-                flattenedLine("Line"),
-                flattenedLine("Line"),
-                ecoLine("Line")
+        LoreNode kept = flattenedLine("Line");
+        LoreNode eco = ecoLine("Line");
+
+        Assertions.assertEquals(
+                List.of(kept, eco),
+                withoutStaleLines(flattenedLine("Line"), kept, eco)
         );
-
-        List<Component> result = DisplayLines.withoutStaleLines(before, after);
-
-        Assertions.assertEquals(List.of(flattenedLine("Line"), ecoLine("Line")), result);
     }
 
     @Test
     public void testEmptyLoreIsLeftAlone() {
-        Assertions.assertNull(DisplayLines.withoutStaleLines(List.of(), List.of(ecoLine("Line"))));
-        Assertions.assertNull(DisplayLines.withoutStaleLines(List.of(ecoLine("Line")), List.of()));
+        LoreNode eco = ecoLine("Line");
+
+        Assertions.assertEquals(List.of(), withoutStaleLines());
+        Assertions.assertEquals(List.of(eco), withoutStaleLines(eco));
+    }
+
+    @Test
+    public void testAdvancedEnchantmentsLineIsKept() {
+        LoreNode advancedEnchantments = flattenedLine("Chance to harvest in 3x3 area.");
+        LoreNode eco = ecoLine("Display line");
+
+        Assertions.assertEquals(List.of(advancedEnchantments, eco), withoutStaleLines(advancedEnchantments, eco));
+    }
+
+    @Test
+    public void testAdvancedEnchantmentsLineIsNotADisplayLine() {
+        Assertions.assertFalse(DisplayLines.isDisplayLine(flattenedLine("Chance to harvest in 3x3 area.").component()));
+    }
+
+    @Test
+    public void testRepeatedForeignLineWithoutPrefixIsKept() {
+        LoreNode foreign = LoreNode.foreign(Component.text("Line", NamedTextColor.GRAY));
+        LoreNode eco = ecoLine("Line");
+
+        Assertions.assertEquals(List.of(foreign, eco), withoutStaleLines(foreign, eco));
     }
 }

@@ -21,6 +21,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -100,6 +103,25 @@ public final class StringUtils {
     private static final EcoCache<String, String> STRING_FORMAT_CACHE = EcoCache.<String, String>builder()
             .expireAfterAccess(Duration.ofSeconds(10))
             .build(StringUtils::processFormatting);
+
+    /**
+     * Rich MiniMessage cache.
+     */
+    private static final EcoCache<String, String> RICH_MINI_MESSAGE_CACHE = EcoCache.<String, String>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
+            .build(StringUtils::toRichMiniMessage);
+
+    /**
+     * Rich format cache.
+     */
+    private static final EcoCache<String, Component> RICH_FORMAT_CACHE = EcoCache.<String, Component>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
+            .build(message -> MiniMessage.miniMessage().deserialize(RICH_MINI_MESSAGE_CACHE.get(message)));
+
+    /**
+     * If the server's Adventure can show sprites and player heads in text.
+     */
+    private static final boolean HAS_OBJECT_COMPONENTS = ClassUtils.exists("net.kyori.adventure.text.ObjectComponent");
 
     /**
      * Json -> Component Cache.
@@ -392,6 +414,58 @@ public final class StringUtils {
     }
 
     /**
+     * Format a string to a component, keeping everything MiniMessage can express.
+     * <p>
+     * Unlike {@link #formatToComponent(String)}, the text never passes through legacy strings,
+     * so sprites, player heads, fonts, translatable text and hover content are kept.
+     * Placeholders are not translated by this overload.
+     *
+     * @param message The message to format.
+     * @return The message, formatted, as a component.
+     */
+    @NotNull
+    public static Component formatToRichComponent(@NotNull final String message) {
+        return RICH_FORMAT_CACHE.get(message);
+    }
+
+    /**
+     * Format a string to a component, keeping everything MiniMessage can express.
+     * <p>
+     * Placeholder values are inserted as components and never parsed as MiniMessage, so a player
+     * can't inject click events or other tags through a name or any other value they control.
+     * Legacy colour codes in a value apply to that value only.
+     *
+     * @param message The message to format.
+     * @param context The context to translate placeholders with respect to.
+     * @return The message, formatted, as a component.
+     * @see #formatToRichComponent(String)
+     */
+    @NotNull
+    public static Component formatToRichComponent(@NotNull final String message,
+                                                  @NotNull final PlaceholderContext context) {
+        List<String> placeholders = PlaceholderManager.findPlaceholdersIn(message);
+
+        if (placeholders.isEmpty()) {
+            return RICH_FORMAT_CACHE.get(message);
+        }
+
+        String template = message;
+        TagResolver.Builder resolver = TagResolver.builder();
+
+        for (int index = 0; index < placeholders.size(); index++) {
+            String placeholder = placeholders.get(index);
+            String tag = "eco_placeholder_" + index;
+            template = template.replace(placeholder, "<" + tag + "/>");
+            resolver.resolver(Placeholder.component(
+                    tag,
+                    toComponent(translateLegacyCodes(PlaceholderManager.translatePlaceholders(placeholder, context)))
+            ));
+        }
+
+        return MiniMessage.miniMessage().deserialize(RICH_MINI_MESSAGE_CACHE.get(template), resolver.build());
+    }
+
+    /**
      * Format a string.
      * <p>
      * Converts color codes and placeholders.
@@ -415,10 +489,23 @@ public final class StringUtils {
         String processedMessage = message;
         // Run MiniMessage first so it doesn't complain
         processedMessage = translateMiniMessage(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
-        processedMessage = translateGradients(processedMessage);
-        processedMessage = translateHexColorCodes(processedMessage);
+        return translateLegacyCodes(processedMessage);
+    }
+
+    private static String toRichMiniMessage(@NotNull final String message) {
+        String processedMessage = LegacyToMiniMessage.convert(translateLegacyCodes(message));
+
+        if (!HAS_OBJECT_COMPONENTS) {
+            processedMessage = LegacyToMiniMessage.stripObjectTags(processedMessage);
+        }
+
         return processedMessage;
+    }
+
+    private static String translateLegacyCodes(@NotNull final String message) {
+        String processedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        processedMessage = translateGradients(processedMessage);
+        return translateHexColorCodes(processedMessage);
     }
 
     private static String translateMiniMessage(@NotNull final String message) {

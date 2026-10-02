@@ -1,12 +1,13 @@
 package com.willfp.eco.internal.spigot.proxy.common.packet.display.frame
 
+import com.willfp.eco.core.display.Display
 import com.willfp.eco.core.items.HashedItem
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-data class DisplayFrame(val items: Map<Byte, HashedItem>) {
+data class DisplayFrame(val items: Map<Byte, HashedItem>, val generation: Int) {
     fun getItem(slot: Byte): ItemStack? {
         return items[slot]?.item
     }
@@ -20,7 +21,7 @@ data class DisplayFrame(val items: Map<Byte, HashedItem>) {
     }
 
     companion object {
-        val EMPTY = DisplayFrame(emptyMap())
+        val EMPTY = DisplayFrame(emptyMap(), -1)
     }
 }
 
@@ -28,7 +29,7 @@ private val frames = ConcurrentHashMap<UUID, DisplayFrame>()
 
 var Player.lastDisplayFrame: DisplayFrame
     get() {
-        return frames[this.uniqueId] ?: DisplayFrame.EMPTY
+        return frames[this.uniqueId]?.takeIf { it.generation == Display.getGeneration() } ?: DisplayFrame.EMPTY
     }
     set(value) {
         frames[this.uniqueId] = value
@@ -36,4 +37,8 @@ var Player.lastDisplayFrame: DisplayFrame
 
 fun clearFrames() {
     frames.clear()
+}
+
+fun Player.clearDisplayFrame() {
+    frames.remove(this.uniqueId)
 }

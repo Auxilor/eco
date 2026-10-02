@@ -51,7 +51,7 @@ private val unstyledComponent = Component.empty().style {
  * regression where bare lore/name lines, which previously never rendered italic, pick up the
  * client's implicit italic default.
  */
-private fun Component.unstyled(): Component {
+fun Component.unstyled(): Component {
     val useVanillaFormat = Eco.get().ecoPlugin.configYml.getBool("use-vanilla-item-name-format")
 
     if (!useVanillaFormat) {
@@ -99,7 +99,9 @@ class EcoFastItemStack(
 ) : ImplementedFIS {
     private val handle = bukkit.asNMSStack()
 
-    private val pdc = (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc()
+    private val pdcDelegate = lazy { (handle.get(DataComponents.CUSTOM_DATA)?.copyTag() ?: CompoundTag()).makePdc() }
+
+    private val pdc by pdcDelegate
 
     override fun getEnchants(checkStored: Boolean): Map<Enchantment, Int> {
         val enchantments = handle.get(DataComponents.ENCHANTMENTS) ?: ItemEnchantments.EMPTY
@@ -324,15 +326,17 @@ class EcoFastItemStack(
     }
 
     override fun apply() {
-        val customData = handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
-        val updated = customData.update {
-            it.setPdc(pdc)
-        }
+        if (pdcDelegate.isInitialized()) {
+            val customData = handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
+            val updated = customData.update {
+                it.setPdc(pdc)
+            }
 
-        if (updated.isEmpty) {
-            handle.remove(DataComponents.CUSTOM_DATA)
-        } else {
-            handle.set(DataComponents.CUSTOM_DATA, updated)
+            if (updated.isEmpty) {
+                handle.remove(DataComponents.CUSTOM_DATA)
+            } else {
+                handle.set(DataComponents.CUSTOM_DATA, updated)
+            }
         }
 
         bukkit.mergeIfNeeded(handle)

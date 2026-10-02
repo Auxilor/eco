@@ -131,6 +131,7 @@ allprojects {
         testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.3")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher:2.0.3")
+        testImplementation("org.junit.jupiter:junit-jupiter-params:6.0.3")
         testImplementation("io.mockk:mockk-jvm:1.13.17")
 
         // mockk cannot subclass EcoPlugin without org.slf4j.Logger, which Paper's Plugin
@@ -147,6 +148,7 @@ allprojects {
             exclude("com.google.code.gson", "gson")
         }
         compileOnly("net.kyori:adventure-text-serializer-legacy:5.0.1")
+        compileOnly("net.kyori:adventure-text-minimessage:5.0.1")
 
         // Other
         implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
