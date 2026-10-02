@@ -80,6 +80,8 @@ Custom blocks from these plugins are supported by eco, and work with block-based
 | CraftEngine | Nexo |
 | ItemsAdder | Oraxen |
 
+CraftEngine blocks work in the Block Lookup System, but they do not work with drop effects such as telekinesis yet.
+
 ### Integration from eco plugins
 
 - **MythicMobs** — eco items can be used inside MythicMobs configurations (eco → MythicMobs)
@@ -178,6 +180,7 @@ These plugins add **effects, conditions, filters, mutators, and triggers** to th
 | mcMMO | ✅ | ✅ | ✅ | | ✅ |
 | ModelEngine | ✅ | | | | |
 | MythicMobs | ✅ | | | | ✅ |
+| NotBounties | ✅ | ✅ | | | ✅ |
 | NuVotifier | | | ✅ | | ✅ |
 | PlotSquared | | ✅ | ✅ | | ✅ |
 | PyroFishingPro | | | ✅ | | ✅ |
@@ -187,8 +190,10 @@ These plugins add **effects, conditions, filters, mutators, and triggers** to th
 | TAB | | ✅ | | | |
 | TMMobcoins | ✅ | | | | |
 | UltimateMobCoins | ✅ | | | | |
-| Vault | ✅ | | | | |
+| Vault | ✅ | | | | ✅ |
 | WorldGuard | | ✅ | ✅ | | ✅ |
+
+AuraSkills also adds the `mana_cost` argument.
 
 ### Server Software
 
