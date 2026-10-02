@@ -17,17 +17,23 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Converts legacy formatting codes into MiniMessage tags.
  * <p>
- * Legacy colour codes reset every decoration, and a reset code clears everything, so the tags
- * this opens are closed again at those points. Tags that were already MiniMessage are passed
- * through untouched, and are reset at those points too, as legacy formatting always did. A
- * MiniMessage colour tag or closing tag resets the legacy formatting before it, for the same
- * reason.
+ * Legacy colour codes reset every decoration, and a reset code clears every colour and
+ * decoration, so the tags this opens are closed again at those points. Tags that were already
+ * MiniMessage are passed through untouched, and their colours and decorations are reset at those
+ * points too, as legacy formatting always did. Other MiniMessage tags, such as fonts and hover
+ * text, are kept open. A MiniMessage colour tag or closing tag resets the legacy formatting
+ * before it, for the same reason.
  */
 final class LegacyToMiniMessage {
     /**
      * MiniMessage tags that set a colour.
      */
     private static final Set<String> COLOR_TAGS = Set.of("color", "colour", "c", "gradient", "rainbow", "transition", "pride");
+
+    /**
+     * MiniMessage tags that set a decoration, other than the full decoration names.
+     */
+    private static final Set<String> DECORATION_ALIASES = Set.of("b", "i", "em", "u", "st", "obf");
 
     /**
      * MiniMessage tags that never need closing.
@@ -77,8 +83,9 @@ final class LegacyToMiniMessage {
      *
      * @param name The tag name.
      * @param user If the tag was written as MiniMessage, rather than opened for a legacy code.
+     * @param text The tag as written, to open it again after a reset.
      */
-    private record OpenTag(@NotNull String name, boolean user) {
+    private record OpenTag(@NotNull String name, boolean user, @NotNull String text) {
     }
 
     /**
@@ -154,7 +161,7 @@ final class LegacyToMiniMessage {
                     }
 
                     this.builder.append('>');
-                    this.open.push(new OpenTag("color", false));
+                    this.open.push(new OpenTag("color", false, ""));
                     index += 14;
                 } else if (format == null) {
                     this.builder.append(character);
@@ -179,7 +186,7 @@ final class LegacyToMiniMessage {
 
         private void openLegacy(@NotNull final String name) {
             this.builder.append('<').append(name).append('>');
-            this.open.push(new OpenTag(name, false));
+            this.open.push(new OpenTag(name, false, ""));
         }
 
         /**
@@ -212,17 +219,16 @@ final class LegacyToMiniMessage {
                 return end - start + 1;
             }
 
+            boolean opens = !tag.endsWith("/") && !SELF_CLOSING_TAGS.contains(name) && !name.equals("reset");
+
             if (name.equals("reset")) {
                 this.open.clear();
                 this.resetUserTags.clear();
-            } else if (!tag.endsWith("/") && !SELF_CLOSING_TAGS.contains(name)) {
-                if (isColorTag(name)) {
-                    this.closeLegacy();
-                }
-
-                this.open.push(new OpenTag(name, true));
+            } else if (opens && isColorTag(name)) {
+                this.closeLegacy();
             }
 
+            int tagStart = this.builder.length();
             Matcher matcher = QUOTED_ARGUMENT_PATTERN.matcher(tag);
             this.builder.append('<');
 
@@ -235,6 +241,10 @@ final class LegacyToMiniMessage {
             matcher.appendTail(this.builder);
             this.builder.append('>');
 
+            if (opens) {
+                this.open.push(new OpenTag(name, true, this.builder.substring(tagStart)));
+            }
+
             return end - start + 1;
         }
 
@@ -246,7 +256,7 @@ final class LegacyToMiniMessage {
          * @return If the tag was open.
          */
         private boolean closeUser(@NotNull final String name) {
-            if (!this.open.contains(new OpenTag(name, true))) {
+            if (this.open.stream().noneMatch(tag -> tag.user() && tag.name().equals(name))) {
                 return false;
             }
 
@@ -275,7 +285,8 @@ final class LegacyToMiniMessage {
         }
 
         /**
-         * Reset all formatting, as a legacy colour or reset code does.
+         * Reset every colour and decoration, as a legacy colour or reset code does. MiniMessage
+         * tags that set neither are opened again after the reset.
          */
         private void reset() {
             if (this.open.stream().noneMatch(OpenTag::user)) {
@@ -284,14 +295,26 @@ final class LegacyToMiniMessage {
             }
 
             this.builder.append("<reset>");
+            Deque<OpenTag> kept = new ArrayDeque<>();
 
             for (OpenTag tag : this.open) {
-                if (tag.user()) {
+                if (!tag.user()) {
+                    continue;
+                }
+
+                if (isFormatTag(tag.name())) {
                     this.resetUserTags.add(tag.name());
+                } else {
+                    kept.push(tag);
                 }
             }
 
             this.open.clear();
+
+            for (OpenTag tag : kept) {
+                this.builder.append(tag.text());
+                this.open.push(tag);
+            }
         }
 
         private boolean isHexSequence(final int start) {
@@ -307,6 +330,14 @@ final class LegacyToMiniMessage {
             }
 
             return true;
+        }
+
+        private static boolean isFormatTag(@NotNull final String name) {
+            String decoration = name.startsWith("!") ? name.substring(1) : name;
+
+            return isColorTag(name)
+                    || DECORATION_ALIASES.contains(decoration)
+                    || TextDecoration.NAMES.value(decoration) != null;
         }
 
         private static boolean isColorTag(@NotNull final String name) {

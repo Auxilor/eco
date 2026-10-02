@@ -9,54 +9,18 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * The display context eco passes to modules.
+ *
+ * @param itemStack  The item.
+ * @param player     The player, or null for no player context.
+ * @param properties The display properties.
+ * @param varArgs    The module's varargs.
+ * @param lore       The lore.
  */
-final class EcoDisplayContext implements DisplayContext {
-    /**
-     * The item.
-     */
-    private final ItemStack itemStack;
-
-    /**
-     * The player.
-     */
-    private final Player player;
-
-    /**
-     * The display properties.
-     */
-    private final DisplayProperties properties;
-
-    /**
-     * The module's varargs.
-     */
-    private final Object[] varArgs;
-
-    /**
-     * The lore.
-     */
-    private final DisplayLore lore;
-
-    /**
-     * Create a display context.
-     *
-     * @param itemStack  The item.
-     * @param player     The player, or null for no player context.
-     * @param properties The display properties.
-     * @param varArgs    The module's varargs.
-     * @param lore       The lore.
-     */
-    EcoDisplayContext(@NotNull final ItemStack itemStack,
-                      @Nullable final Player player,
-                      @NotNull final DisplayProperties properties,
-                      @NotNull final Object[] varArgs,
-                      @NotNull final DisplayLore lore) {
-        this.itemStack = itemStack;
-        this.player = player;
-        this.properties = properties;
-        this.varArgs = varArgs;
-        this.lore = lore;
-    }
-
+record EcoDisplayContext(@NotNull ItemStack itemStack,
+                         @Nullable Player player,
+                         @NotNull DisplayProperties properties,
+                         @NotNull Object[] varArgs,
+                         @NotNull DisplayLore lore) implements DisplayContext {
     @Override
     @NotNull
     public ItemStack getItemStack() {

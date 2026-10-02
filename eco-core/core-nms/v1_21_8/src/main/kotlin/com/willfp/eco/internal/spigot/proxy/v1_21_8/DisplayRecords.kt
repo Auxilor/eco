@@ -1,7 +1,11 @@
 package com.willfp.eco.internal.spigot.proxy.v1_21_8
 
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.willfp.eco.core.Eco
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxies.DisplayRecordsProxy
+import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
 import com.willfp.eco.internal.spigot.proxy.common.asNMSStack
 import com.willfp.eco.internal.spigot.proxy.common.item.unstyled
 import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
@@ -11,6 +15,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.io.File
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.BitSet
@@ -34,6 +39,7 @@ import net.minecraft.world.item.component.CustomData
 import net.minecraft.world.item.component.ItemLore
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.craftbukkit.inventory.CraftItemStack
 import org.bukkit.inventory.ItemStack
 
 private const val RECORD_KEY = "eco_display"
@@ -42,34 +48,48 @@ private const val SIGNATURE_KEY = "signature"
 private const val SIGNATURE_ALGORITHM = "HmacSHA256"
 private const val CIPHER_ALGORITHM = "AES/CTR/NoPadding"
 private const val CIPHER_IV_LENGTH = 16
+private const val KEY_LENGTH = 32
+private const val KEY_FILE_NAME = "display-keys.dat"
+private const val MAX_RECORD_SIZE = 8192
+private const val SEALED_CACHE_SIZE = 10_000L
 private const val LINES_KEY = "lines"
 private const val RESTORE_KEY = "restore"
 private const val PLAIN_LORE_KEY = "plain_lore"
 
-private val registryOps: RegistryOps<Tag> by lazy {
-    (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
-}
-
-private val signingKey = SecretKeySpec(ByteArray(32).also { SecureRandom().nextBytes(it) }, SIGNATURE_ALGORITHM)
-
-private val cipherKey = SecretKeySpec(ByteArray(32).also { SecureRandom().nextBytes(it) }, "AES")
-
-private val signers = ThreadLocal.withInitial {
-    Mac.getInstance(SIGNATURE_ALGORITHM).apply { init(signingKey) }
-}
-
-private val ciphers = ThreadLocal.withInitial {
-    Cipher.getInstance(CIPHER_ALGORITHM)
-}
+private class RecordKeys(
+    val signing: SecretKeySpec,
+    val cipher: SecretKeySpec
+)
 
 private enum class KeptLore {
     STYLED,
     PLAIN
 }
 
-class DisplayRecords : DisplayRecordsProxy {
-    override fun getLore(itemStack: ItemStack): List<Component> =
-        itemStack.asNMSStack().getOrDefault(DataComponents.LORE, ItemLore.EMPTY).lines.map { it.toAdventure() }
+class DisplayRecords(
+    private val keyFile: File = File(Eco.get().ecoPlugin.dataFolder, KEY_FILE_NAME),
+    registryOps: () -> RegistryOps<Tag> = {
+        (Bukkit.getServer() as CraftServer).server.registryAccess().createSerializationContext(NbtOps.INSTANCE)
+    }
+) : DisplayRecordsProxy {
+    private val registryOps by lazy(registryOps)
+
+    private val keys by lazy { loadKeys() }
+
+    private val signers = ThreadLocal.withInitial {
+        Mac.getInstance(SIGNATURE_ALGORITHM).apply { init(keys.signing) }
+    }
+
+    private val ciphers = ThreadLocal.withInitial {
+        Cipher.getInstance(CIPHER_ALGORITHM)
+    }
+
+    private val sealedRecords: Cache<CompoundTag, Optional<CompoundTag>> = Caffeine.newBuilder()
+        .maximumSize(SEALED_CACHE_SIZE)
+        .build()
+
+    override fun mirror(itemStack: ItemStack): ItemStack =
+        itemStack as? CraftItemStack ?: itemStack.asNMSStack().asBukkitStack()
 
     override fun getLoreState(itemStack: ItemStack): Any? =
         itemStack.asNMSStack().get(DataComponents.LORE)
@@ -91,12 +111,19 @@ class DisplayRecords : DisplayRecordsProxy {
             return
         }
 
+        val beforePatch = snapshotHandle.componentsPatch
+        val afterPatch = handle.componentsPatch
+
+        if (displayLines.isEmpty() && beforePatch == afterPatch) {
+            return
+        }
+
         val before = snapshotHandle.components
         val after = handle.components
         val keptLore = if (displayLines.isEmpty()) null else keptLore(before, after, displayLines)
         val restore = DataComponentPatch.builder()
 
-        for (type in snapshotHandle.componentsPatch.changedTypes() + handle.componentsPatch.changedTypes()) {
+        for (type in beforePatch.changedTypes() + afterPatch.changedTypes()) {
             if (type == DataComponents.LORE && keptLore != null) {
                 continue
             }
@@ -114,17 +141,22 @@ class DisplayRecords : DisplayRecordsProxy {
             return
         }
 
+        val encodedRestore = DataComponentPatch.CODEC.encodeStart(registryOps, restorePatch).result().orElse(null)
+            ?: return
+
+        val sealed = seal(CompoundTag().apply {
+            putIntArray(LINES_KEY, displayLines)
+            put(RESTORE_KEY, encodedRestore)
+
+            if (keptLore == KeptLore.PLAIN) {
+                putBoolean(PLAIN_LORE_KEY, true)
+            }
+        }) ?: return
+
         handle.set(
             DataComponents.CUSTOM_DATA,
             handle.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).update {
-                it.put(RECORD_KEY, seal(CompoundTag().apply {
-                    putIntArray(LINES_KEY, displayLines)
-                    put(RESTORE_KEY, DataComponentPatch.CODEC.encodeStart(registryOps, restorePatch).getOrThrow())
-
-                    if (keptLore == KeptLore.PLAIN) {
-                        putBoolean(PLAIN_LORE_KEY, true)
-                    }
-                }))
+                it.put(RECORD_KEY, sealed)
             }
         )
 
@@ -148,12 +180,13 @@ class DisplayRecords : DisplayRecordsProxy {
             ?.copyTag()
             ?: return false
         val record = customData.getCompound(RECORD_KEY).flatMap { open(it) }.orElse(null)
-        val withoutRecord = CustomData.of(customData.without(RECORD_KEY))
+        // CompoundTag#remove returns a Tag from 26.1, so calling it can't link on every version.
+        customData.keySet().remove(RECORD_KEY)
 
-        if (withoutRecord.isEmpty) {
+        if (customData.isEmpty) {
             handle.remove(DataComponents.CUSTOM_DATA)
         } else {
-            handle.set(DataComponents.CUSTOM_DATA, withoutRecord)
+            handle.set(DataComponents.CUSTOM_DATA, CustomData.of(customData))
         }
 
         val restored = record != null && restoreFrom(handle, record)
@@ -189,21 +222,29 @@ class DisplayRecords : DisplayRecordsProxy {
         return true
     }
 
-    private fun seal(record: CompoundTag): CompoundTag {
+    private fun seal(record: CompoundTag): CompoundTag? =
+        sealedRecords.get(record) { encrypt(it) }.map { it.copy() }.orElse(null)
+
+    private fun encrypt(record: CompoundTag): Optional<CompoundTag> {
         val data = ByteArrayOutputStream().also { NbtIo.write(record, DataOutputStream(it)) }.toByteArray()
+
+        if (data.size > MAX_RECORD_SIZE) {
+            return Optional.empty()
+        }
+
         val signature = signers.get().doFinal(data)
 
-        return CompoundTag().apply {
+        return Optional.of(CompoundTag().apply {
             putByteArray(DATA_KEY, crypt(signature, data))
             putByteArray(SIGNATURE_KEY, signature)
-        }
+        })
     }
 
     private fun open(sealed: CompoundTag): Optional<CompoundTag> {
         val encrypted = sealed.getByteArray(DATA_KEY).orElse(null) ?: return Optional.empty()
         val signature = sealed.getByteArray(SIGNATURE_KEY).orElse(null) ?: return Optional.empty()
 
-        if (signature.size < CIPHER_IV_LENGTH) {
+        if (signature.size < CIPHER_IV_LENGTH || encrypted.size > MAX_RECORD_SIZE) {
             return Optional.empty()
         }
 
@@ -220,9 +261,23 @@ class DisplayRecords : DisplayRecordsProxy {
 
     private fun crypt(signature: ByteArray, data: ByteArray): ByteArray =
         ciphers.get().run {
-            init(Cipher.ENCRYPT_MODE, cipherKey, IvParameterSpec(signature, 0, CIPHER_IV_LENGTH))
+            init(Cipher.ENCRYPT_MODE, keys.cipher, IvParameterSpec(signature, 0, CIPHER_IV_LENGTH))
             doFinal(data)
         }
+
+    private fun loadKeys(): RecordKeys {
+        val bytes = keyFile.takeIf { it.isFile && it.length() == KEY_LENGTH * 2L }?.readBytes()
+            ?: ByteArray(KEY_LENGTH * 2).also {
+                SecureRandom().nextBytes(it)
+                keyFile.parentFile?.mkdirs()
+                keyFile.writeBytes(it)
+            }
+
+        return RecordKeys(
+            SecretKeySpec(bytes, 0, KEY_LENGTH, SIGNATURE_ALGORITHM),
+            SecretKeySpec(bytes, KEY_LENGTH, KEY_LENGTH, "AES")
+        )
+    }
 
     private fun IntArray.isStrictlyIncreasingWithin(size: Int): Boolean =
         this.size <= size && this.indices.all { index ->
@@ -231,15 +286,6 @@ class DisplayRecords : DisplayRecordsProxy {
 
     private fun IntArray.toBitSet(): BitSet =
         BitSet().also { bits -> this.forEach { bits.set(it) } }
-
-    private fun CompoundTag.without(key: String): CompoundTag =
-        CompoundTag().also { copy ->
-            for (existing in this.keySet()) {
-                if (existing != key) {
-                    copy.put(existing, this.get(existing)!!)
-                }
-            }
-        }
 
     private fun keptLore(before: DataComponentMap, after: DataComponentMap, displayLines: IntArray): KeptLore? {
         val beforeLore = before.get(DataComponents.LORE) ?: ItemLore.EMPTY

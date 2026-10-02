@@ -23,6 +23,7 @@ class RichFormatPlaceholderTests {
         every { eco.translatePlaceholders(any(), any()) } answers {
             firstArg<String>()
                 .replace("%nick%", "<click:run_command:'/op me'>&cNick")
+                .replace("%rank%", "&cAdmin")
         }
 
         mockkStatic(Eco::class)
@@ -38,7 +39,7 @@ class RichFormatPlaceholderTests {
         listOf(this) + children().flatMap { it.flatten() }
 
     @Test
-    fun `tags in placeholder values are escaped`() {
+    fun `tags in placeholder values are not parsed`() {
         val component = StringUtils.formatToRichComponent("Hi %nick%", PlaceholderContext.EMPTY)
 
         assertNull(component.flatten().firstNotNullOfOrNull { it.clickEvent() })
@@ -55,6 +56,23 @@ class RichFormatPlaceholderTests {
         assertEquals(
             NamedTextColor.RED,
             component.flatten().firstNotNullOfOrNull { it.color() }
+        )
+    }
+
+    @Test
+    fun `legacy colours in placeholder values stay in the value`() {
+        val component = StringUtils.formatToRichComponent("%rank% <green>Name", PlaceholderContext.EMPTY)
+
+        assertEquals("§cAdmin§r §aName", StringUtils.toLegacy(component))
+    }
+
+    @Test
+    fun `placeholder values take the surrounding style`() {
+        val component = StringUtils.formatToRichComponent("<bold>Hi %nick%", PlaceholderContext.EMPTY)
+
+        assertEquals(
+            "§lHi <click:run_command:'/op me'>§c§lNick",
+            StringUtils.toLegacy(component)
         )
     }
 }

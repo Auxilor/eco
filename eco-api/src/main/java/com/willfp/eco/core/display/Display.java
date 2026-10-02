@@ -95,7 +95,7 @@ public final class Display {
      *                         search the inventory.
      * @return The same ItemStack, modified in place.
      */
-    @SuppressWarnings("removal")
+    @SuppressWarnings("deprecation")
     @ApiStatus.Internal
     public static ItemStack display(@NotNull final ItemStack itemStack,
                                     @Nullable final Player player,
@@ -104,8 +104,28 @@ public final class Display {
             return itemStack;
         }
 
-        List<DisplayModule> modules = REGISTRY.getModules();
         DisplayRecorder recorder = Eco.get().getDisplayRecorder();
+        ItemStack displayed = recorder.mirror(itemStack);
+        displayMirror(displayed, player, inInventoryCheck, recorder);
+
+        if (displayed != itemStack) {
+            if (itemStack.getType() != displayed.getType()) {
+                itemStack.setType(displayed.getType());
+            }
+
+            itemStack.setAmount(displayed.getAmount());
+            itemStack.setItemMeta(displayed.getItemMeta());
+        }
+
+        return itemStack;
+    }
+
+    @SuppressWarnings("removal")
+    private static void displayMirror(@NotNull final ItemStack itemStack,
+                                      @Nullable final Player player,
+                                      @Nullable final Predicate<ItemStack> inInventoryCheck,
+                                      @NotNull final DisplayRecorder recorder) {
+        List<DisplayModule> modules = REGISTRY.getModules();
         recorder.restore(itemStack);
         ItemStack snapshot = itemStack.clone();
         Map<DisplayModule, Object[]> moduleVarArgs = new IdentityHashMap<>();
@@ -118,7 +138,7 @@ public final class Display {
 
         if (!Eco.get().getEcoPlugin().getConfigYml().getBool("display-without-meta")) {
             if (!itemStack.hasItemMeta()) {
-                return itemStack;
+                return;
             }
         }
 
@@ -130,10 +150,12 @@ public final class Display {
                 original
         );
 
-        boolean legacyPrefix = Eco.get().getEcoPlugin().getConfigYml().getBool("display-legacy-prefix-marker");
-        List<Component> itemLore = recorder.getLore(itemStack);
-        Object itemLoreState = recorder.getLoreState(itemStack);
-        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(itemLore);
+        LoreSync sync = new LoreSync(
+                recorder,
+                itemStack,
+                Eco.get().getEcoPlugin().getConfigYml().getBool("display-legacy-prefix-marker")
+        );
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(sync.getLore());
 
         for (DisplayModule module : modules) {
             Object[] varargs = moduleVarArgs.get(module);
@@ -148,12 +170,7 @@ public final class Display {
                 continue;
             }
 
-            if (!lore.isSynced() || recorder.getLoreState(itemStack) != itemLoreState) {
-                itemLore = lore.render(legacyPrefix);
-                recorder.setLore(itemStack, itemLore);
-                itemLoreState = recorder.getLoreState(itemStack);
-                lore.markSynced();
-            }
+            sync.syncLore(lore);
 
             module.display(itemStack, varargs);
 
@@ -162,22 +179,13 @@ public final class Display {
                 module.display(itemStack, player, properties, varargs);
             }
 
-            if (recorder.getLoreState(itemStack) != itemLoreState) {
-                lore = new DisplayLoreBuilder(
-                        LegacyLoreMatcher.match(lore.getNodes(), itemLore, recorder.getLore(itemStack))
-                );
-            }
+            lore = sync.readBack(lore);
         }
 
         lore.removeStaleLines();
-
-        if (!lore.isSynced() || recorder.getLoreState(itemStack) != itemLoreState) {
-            recorder.setLore(itemStack, lore.render(legacyPrefix));
-        }
+        sync.finish(lore);
 
         recorder.record(itemStack, snapshot, lore.getDisplayIndices());
-
-        return itemStack;
     }
 
     private static boolean isInInventory(@NotNull final ItemStack original,
@@ -380,6 +388,133 @@ public final class Display {
     @ApiStatus.Internal
     public static void invalidate() {
         GENERATION.incrementAndGet();
+    }
+
+    /**
+     * Keeps the lore on an item in step with the lore display modules build, so that it is only
+     * written when modules changed it, and only read back when a legacy module changed it. Lore
+     * that legacy modules changed is rendered once, after all modules.
+     */
+    private static final class LoreSync {
+        /**
+         * The display recorder.
+         */
+        private final DisplayRecorder recorder;
+
+        /**
+         * The item.
+         */
+        private final ItemStack itemStack;
+
+        /**
+         * If display lines get the legacy prefix.
+         */
+        private final boolean legacyPrefix;
+
+        /**
+         * The lore last read from or written to the item.
+         */
+        private List<Component> lore;
+
+        /**
+         * The lore state of the item when the lore was last read or written.
+         */
+        private Object loreState;
+
+        /**
+         * If no legacy module changed the lore since it was last rendered.
+         */
+        private boolean rendered = true;
+
+        /**
+         * Create a lore sync, reading the lore on the item.
+         *
+         * @param recorder     The display recorder.
+         * @param itemStack    The item.
+         * @param legacyPrefix If display lines get the legacy prefix.
+         */
+        private LoreSync(@NotNull final DisplayRecorder recorder,
+                         @NotNull final ItemStack itemStack,
+                         final boolean legacyPrefix) {
+            this.recorder = recorder;
+            this.itemStack = itemStack;
+            this.legacyPrefix = legacyPrefix;
+            this.lore = FastItemStack.wrap(itemStack).getLoreComponents();
+            this.loreState = recorder.getLoreState(itemStack);
+        }
+
+        /**
+         * Get the lore last read from or written to the item.
+         *
+         * @return The lore.
+         */
+        @NotNull
+        private List<Component> getLore() {
+            return this.lore;
+        }
+
+        /**
+         * Write the built lore to the item, if it changed since it was last read or written.
+         *
+         * @param builder The lore builder.
+         */
+        private void syncLore(@NotNull final DisplayLoreBuilder builder) {
+            if (builder.isSynced() && !this.changedOnItem()) {
+                return;
+            }
+
+            this.render(builder);
+        }
+
+        /**
+         * Write the built lore to the item after all modules, if it changed or a legacy module
+         * changed it since it was last rendered.
+         *
+         * @param builder The lore builder.
+         */
+        private void finish(@NotNull final DisplayLoreBuilder builder) {
+            if (this.rendered) {
+                this.syncLore(builder);
+            } else {
+                this.render(builder);
+            }
+        }
+
+        private void render(@NotNull final DisplayLoreBuilder builder) {
+            this.lore = builder.render(this.legacyPrefix);
+            this.recorder.setLore(this.itemStack, this.lore);
+            this.loreState = this.recorder.getLoreState(this.itemStack);
+            this.rendered = true;
+            builder.markSynced();
+        }
+
+        /**
+         * Read back lore that a legacy module set on the item.
+         *
+         * @param builder The lore builder.
+         * @return A builder matching the lore on the item.
+         */
+        @NotNull
+        private DisplayLoreBuilder readBack(@NotNull final DisplayLoreBuilder builder) {
+            if (!this.changedOnItem()) {
+                return builder;
+            }
+
+            List<Component> itemLore = FastItemStack.wrap(this.itemStack).getLoreComponents();
+            DisplayLoreBuilder matched = new DisplayLoreBuilder(
+                    LegacyLoreMatcher.match(builder.getNodes(), this.lore, itemLore)
+            );
+            this.lore = itemLore;
+            this.loreState = this.recorder.getLoreState(this.itemStack);
+            this.rendered = false;
+            matched.markSynced();
+
+            return matched;
+        }
+
+        private boolean changedOnItem() {
+            return this.recorder.getLoreState(this.itemStack) != this.loreState;
+        }
     }
 
     /**

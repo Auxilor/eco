@@ -13,13 +13,13 @@ import org.jetbrains.annotations.Nullable;
 @ApiStatus.Internal
 public interface DisplayRecorder {
     /**
-     * Get the lore on an item.
+     * Get an item backed by a server item, so every change to it is made in one place.
      *
      * @param itemStack The item.
-     * @return The lore.
+     * @return The same item if it is already backed by a server item, otherwise a copy that is.
      */
     @NotNull
-    List<Component> getLore(@NotNull ItemStack itemStack);
+    ItemStack mirror(@NotNull ItemStack itemStack);
 
     /**
      * Get an object that is replaced whenever the lore on an item is set, to find out cheaply if
@@ -46,7 +46,8 @@ public interface DisplayRecorder {
      * <p>
      * No record is written if display changed nothing. No record is written either if display
      * changed the item's type or amount, so the item is reverted by stripping display lines and
-     * running module reverts instead.
+     * running module reverts instead. The same applies if the record would be larger than the
+     * maximum record size.
      *
      * @param itemStack    The displayed item.
      * @param snapshot     A copy of the item taken before display.

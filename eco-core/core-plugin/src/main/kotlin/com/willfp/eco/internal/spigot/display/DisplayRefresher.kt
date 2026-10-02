@@ -8,6 +8,8 @@ import org.bukkit.entity.Player
 
 private const val MIN_RECOMMENDED_INTERVAL = 20L
 
+private const val REFRESH_SPREAD_TICKS = 20
+
 class DisplayRefresher(
     private val plugin: EcoPlugin,
     private val clearDisplayFrame: (Player) -> Unit
@@ -31,8 +33,8 @@ class DisplayRefresher(
     fun refresh() {
         Display.invalidate()
 
-        for (player in Bukkit.getOnlinePlayers()) {
-            plugin.scheduler.on(player).run { player.updateInventory() }
+        Bukkit.getOnlinePlayers().forEachIndexed { index, player ->
+            plugin.scheduler.on(player).runLater(1L + index % REFRESH_SPREAD_TICKS) { resend(player) }
         }
     }
 
@@ -51,10 +53,18 @@ class DisplayRefresher(
 
             for (player in Bukkit.getOnlinePlayers()) {
                 if (Math.floorMod(player.uniqueId.hashCode().toLong(), interval) == bucket) {
-                    clearDisplayFrame(player)
-                    plugin.scheduler.on(player).run { player.updateInventory() }
+                    plugin.scheduler.on(player).run { resend(player) }
                 }
             }
         }
+    }
+
+    private fun resend(player: Player) {
+        if (!player.isOnline) {
+            return
+        }
+
+        clearDisplayFrame(player)
+        player.updateInventory()
     }
 }

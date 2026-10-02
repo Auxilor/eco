@@ -49,6 +49,22 @@ public class LegacyToMiniMessageTest {
     }
 
     @Test
+    public void testLegacyColorKeepsFontAndHoverTags() {
+        Assertions.assertEquals(
+                "<font:uniform><hover:show_text:'Tip'><bold><reset><font:uniform><hover:show_text:'Tip'><gray>A</gray></hover>B</font>",
+                LegacyToMiniMessage.convert("<font:uniform><hover:show_text:'Tip'><bold>§7A</hover>B</font>")
+        );
+    }
+
+    @Test
+    public void testLegacyResetKeepsFontTag() {
+        Assertions.assertEquals(
+                "<font:uniform><red><reset><font:uniform>A</font>",
+                LegacyToMiniMessage.convert("<font:uniform><red>§rA</font>")
+        );
+    }
+
+    @Test
     public void testMiniMessageColorClosesLegacyDecorations() {
         Assertions.assertEquals("<bold></bold><red>X", LegacyToMiniMessage.convert("§l<red>X"));
     }

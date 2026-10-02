@@ -22,6 +22,8 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -103,11 +105,18 @@ public final class StringUtils {
             .build(StringUtils::processFormatting);
 
     /**
+     * Rich MiniMessage cache.
+     */
+    private static final EcoCache<String, String> RICH_MINI_MESSAGE_CACHE = EcoCache.<String, String>builder()
+            .expireAfterAccess(Duration.ofSeconds(10))
+            .build(StringUtils::toRichMiniMessage);
+
+    /**
      * Rich format cache.
      */
     private static final EcoCache<String, Component> RICH_FORMAT_CACHE = EcoCache.<String, Component>builder()
             .expireAfterAccess(Duration.ofSeconds(10))
-            .build(StringUtils::processRichFormatting);
+            .build(message -> MiniMessage.miniMessage().deserialize(RICH_MINI_MESSAGE_CACHE.get(message)));
 
     /**
      * If the server's Adventure can show sprites and player heads in text.
@@ -422,9 +431,9 @@ public final class StringUtils {
     /**
      * Format a string to a component, keeping everything MiniMessage can express.
      * <p>
-     * MiniMessage tags in placeholder values are escaped, so a player can't inject click events
-     * or other tags through a name or any other value they control. Legacy colour codes in
-     * values still apply.
+     * Placeholder values are inserted as components and never parsed as MiniMessage, so a player
+     * can't inject click events or other tags through a name or any other value they control.
+     * Legacy colour codes in a value apply to that value only.
      *
      * @param message The message to format.
      * @param context The context to translate placeholders with respect to.
@@ -434,16 +443,26 @@ public final class StringUtils {
     @NotNull
     public static Component formatToRichComponent(@NotNull final String message,
                                                   @NotNull final PlaceholderContext context) {
-        String translated = message;
+        List<String> placeholders = PlaceholderManager.findPlaceholdersIn(message);
 
-        for (String placeholder : PlaceholderManager.findPlaceholdersIn(message)) {
-            translated = translated.replace(
-                    placeholder,
-                    MiniMessage.miniMessage().escapeTags(PlaceholderManager.translatePlaceholders(placeholder, context))
-            );
+        if (placeholders.isEmpty()) {
+            return RICH_FORMAT_CACHE.get(message);
         }
 
-        return RICH_FORMAT_CACHE.get(translated);
+        String template = message;
+        TagResolver.Builder resolver = TagResolver.builder();
+
+        for (int index = 0; index < placeholders.size(); index++) {
+            String placeholder = placeholders.get(index);
+            String tag = "eco_placeholder_" + index;
+            template = template.replace(placeholder, "<" + tag + "/>");
+            resolver.resolver(Placeholder.component(
+                    tag,
+                    toComponent(translateLegacyCodes(PlaceholderManager.translatePlaceholders(placeholder, context)))
+            ));
+        }
+
+        return MiniMessage.miniMessage().deserialize(RICH_MINI_MESSAGE_CACHE.get(template), resolver.build());
     }
 
     /**
@@ -470,23 +489,23 @@ public final class StringUtils {
         String processedMessage = message;
         // Run MiniMessage first so it doesn't complain
         processedMessage = translateMiniMessage(processedMessage);
-        processedMessage = ChatColor.translateAlternateColorCodes('&', processedMessage);
-        processedMessage = translateGradients(processedMessage);
-        processedMessage = translateHexColorCodes(processedMessage);
-        return processedMessage;
+        return translateLegacyCodes(processedMessage);
     }
 
-    private static Component processRichFormatting(@NotNull final String message) {
-        String processedMessage = ChatColor.translateAlternateColorCodes('&', message);
-        processedMessage = translateGradients(processedMessage);
-        processedMessage = translateHexColorCodes(processedMessage);
-        processedMessage = LegacyToMiniMessage.convert(processedMessage);
+    private static String toRichMiniMessage(@NotNull final String message) {
+        String processedMessage = LegacyToMiniMessage.convert(translateLegacyCodes(message));
 
         if (!HAS_OBJECT_COMPONENTS) {
             processedMessage = LegacyToMiniMessage.stripObjectTags(processedMessage);
         }
 
-        return MiniMessage.miniMessage().deserialize(processedMessage);
+        return processedMessage;
+    }
+
+    private static String translateLegacyCodes(@NotNull final String message) {
+        String processedMessage = ChatColor.translateAlternateColorCodes('&', message);
+        processedMessage = translateGradients(processedMessage);
+        return translateHexColorCodes(processedMessage);
     }
 
     private static String translateMiniMessage(@NotNull final String message) {

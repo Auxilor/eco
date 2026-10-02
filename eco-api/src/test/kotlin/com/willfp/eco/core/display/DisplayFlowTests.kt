@@ -30,7 +30,7 @@ class DisplayFlowTests {
         var restores = 0
         var recorded: IntArray? = null
 
-        override fun getLore(itemStack: ItemStack): List<Component> = lore
+        override fun mirror(itemStack: ItemStack): ItemStack = itemStack
 
         override fun getLoreState(itemStack: ItemStack): Any = lore
 
@@ -132,7 +132,7 @@ class DisplayFlowTests {
 
         register(object : DisplayModule(plugin, 2) {
             override fun display(itemStack: ItemStack, vararg args: Any) {
-                recorder.setLore(itemStack, recorder.getLore(itemStack).map { Component.text().append(it).build() } + Component.text("§zLegacy"))
+                recorder.setLore(itemStack, recorder.lore.map { Component.text().append(it).build() } + Component.text("§zLegacy"))
             }
         })
 
@@ -142,6 +142,23 @@ class DisplayFlowTests {
         assertEquals(3, recorder.lore.size)
         assertTrue(Display.isDisplayLine(recorder.lore[1]))
         assertTrue(Display.isDisplayLine(recorder.lore[2]))
+        assertArrayEquals(intArrayOf(1, 2), recorder.recorded)
+    }
+
+    @Test
+    fun `consecutive legacy modules render the lore once after all modules`() {
+        for (weight in 1..2) {
+            register(object : DisplayModule(plugin, weight) {
+                override fun display(itemStack: ItemStack, vararg args: Any) {
+                    recorder.setLore(itemStack, recorder.lore + Component.text("§zLegacy $weight"))
+                }
+            })
+        }
+
+        Display.display(item())
+
+        assertEquals(3, recorder.writes)
+        assertSame(foreign, recorder.lore[0])
         assertArrayEquals(intArrayOf(1, 2), recorder.recorded)
     }
 
