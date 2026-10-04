@@ -35,6 +35,7 @@ tasks {
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/ItemComponents*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/CommonsInitializer*.class")
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SNBTConverter*.class")
+        exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/SpiderClimbing*.class")
 
         exclude("com/willfp/eco/internal/spigot/proxy/v1_21_8/Hologram*.class")
         // Superseded by this version's own handle, and no longer links here.

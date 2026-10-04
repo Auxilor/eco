@@ -143,6 +143,8 @@ import com.willfp.eco.internal.spigot.dragdrop.DragAndDropShellListener
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.ProfileLoadListener
 import com.willfp.eco.internal.spigot.drops.CollatedRunnable
+import com.willfp.eco.internal.spigot.entities.EntityArgParserNoClimb
+import com.willfp.eco.internal.spigot.entities.SpiderClimbing
 import com.willfp.eco.internal.spigot.eventlisteners.AutocrafterPatch
 import com.willfp.eco.internal.spigot.eventlisteners.EntityDeathByEntityListeners
 import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersPaper
@@ -372,6 +374,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserJumpStrength)
         Entities.registerArgParser(EntityArgParserScale)
         Entities.registerArgParser(EntityArgParserFirework)
+        Entities.registerArgParser(EntityArgParserNoClimb)
 
         Prices.registerDefaultPriceFactory(PriceFactoryEconomy)
         Prices.registerDefaultPriceFactory(PriceFactoryXPLevels)
@@ -673,7 +676,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             OutdatedPlugins,
             AutocrafterPatch,
             PlayerHealthPatch,
-            UnenchantablePatch
+            UnenchantablePatch,
+            SpiderClimbing
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {

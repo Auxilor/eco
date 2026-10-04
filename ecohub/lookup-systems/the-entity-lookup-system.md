@@ -44,6 +44,7 @@ Entities can have modifiers applied to them in the key. For example, let's say y
 - `knockback-resistance` Set the entity's knockback resistance
 - `name` Set the entity's display name, use quotes (") for multi-word names
 - `no-ai` Set the entity to have no AI
+- `no-climb` Stop a spider or cave spider from climbing walls
 - `size` Set the size of a slime or phantom
 - `spawn-reinforcements` Set a zombie to spawn reinforcements
 - `speed` Set the movement speed of the entity
