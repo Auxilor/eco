@@ -10,5 +10,7 @@ interface PacketHandlerProxy {
 
     fun clearDisplayFrames()
 
+    fun clearDisplayFrame(player: Player)
+
     fun getPacketListeners(plugin: EcoPlugin): List<PacketListener>
 }

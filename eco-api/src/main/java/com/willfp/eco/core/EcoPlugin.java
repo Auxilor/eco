@@ -698,7 +698,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
      * Updates all configs, optionally cancels all running tasks, runs the reload lifecycle
      * ({@link #handleReload()}), and then reloads all loaded extensions. The
      * {@link #createTasks()} lifecycle is only run when {@code cancelTasks} is true, as
-     * otherwise the existing tasks are still running.
+     * otherwise the existing tasks are still running. Finally, displayed items are sent to
+     * players again.
      *
      * @param cancelTasks If tasks should be cancelled.
      */
@@ -718,6 +719,8 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
             extension.handleReload();
         }
+
+        Eco.get().requestDisplayRefresh();
     }
 
     /**

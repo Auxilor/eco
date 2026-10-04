@@ -8,6 +8,8 @@ version = rootProject.version
 dependencies {
     implementation(project(":eco-core:core-nms:common"))
     paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+
+    testRuntimeOnly("net.kyori:adventure-platform-bukkit:4.4.1")
 }
 
 tasks {
@@ -17,6 +19,11 @@ tasks {
 
     reobfJar {
         mustRunAfter(shadowJar)
+    }
+
+    test {
+        workingDir = layout.buildDirectory.dir("test-run").get().asFile
+        doFirst { workingDir.mkdirs() }
     }
 
     shadowJar {

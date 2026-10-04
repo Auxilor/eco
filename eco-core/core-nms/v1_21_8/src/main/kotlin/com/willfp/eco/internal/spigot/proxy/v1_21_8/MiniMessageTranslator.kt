@@ -6,6 +6,7 @@ import com.willfp.eco.util.toLegacy
 import net.kyori.adventure.text.minimessage.MiniMessage
 
 class MiniMessageTranslator : MiniMessageTranslatorProxy {
+    @Suppress("DEPRECATION")
     override fun format(message: String): String {
         var mut = message
 
