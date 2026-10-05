@@ -44,10 +44,10 @@ public class IntegrationLoader {
     }
 
     /**
-     * Load the integration if the specified plugin is present on the server.
+     * Load the integration if the specified plugin is present on the server and not disabled.
      */
     public void loadIfPresent() {
-        if (LOADED_PLUGINS.contains(this.pluginName.toLowerCase())) {
+        if (LOADED_PLUGINS.contains(this.pluginName.toLowerCase()) && !DisabledIntegrations.isDisabled(this.pluginName)) {
             this.load();
         }
     }

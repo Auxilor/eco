@@ -97,6 +97,15 @@ sqlite:
 # would be committing once a second.
 save-interval: 1
 
+# Plugins that eco and eco plugins should not integrate with, by name, for example:
+# disabled-integrations:
+#   - WorldGuard
+#   - MythicMobs
+# Nothing is hooked for a listed plugin: no antigrief, item or entity lookups, shop, economy,
+# placeholders, or effects, triggers and conditions. Eco plugins can't be listed.
+# Requires a restart.
+disabled-integrations: []
+
 # Options to manage the conflict finder
 conflicts:
   whitelist: # Plugins that should never be marked as conflicts
