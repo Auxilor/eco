@@ -15,6 +15,7 @@ import com.willfp.eco.core.factory.MetadataValueFactory;
 import com.willfp.eco.core.factory.NamespacedKeyFactory;
 import com.willfp.eco.core.factory.RunnableFactory;
 import com.willfp.eco.core.bstats.EcoMetricsChart;
+import com.willfp.eco.core.integrations.DisabledIntegrations;
 import com.willfp.eco.core.integrations.IntegrationLoader;
 import com.willfp.eco.core.map.ListMap;
 import com.willfp.eco.core.packet.PacketListener;
@@ -452,12 +453,13 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
         Set<String> enabledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).map(String::toLowerCase).collect(Collectors.toSet());
 
-        if (enabledPlugins.contains("PlaceholderAPI".toLowerCase())) {
+        if (enabledPlugins.contains("PlaceholderAPI".toLowerCase()) && !DisabledIntegrations.isDisabled("PlaceholderAPI")) {
             Eco.get().createPAPIIntegration(this);
         }
 
         this.loadIntegrationLoaders().forEach(integrationLoader -> {
-            if (enabledPlugins.contains(integrationLoader.getPluginName().toLowerCase())) {
+            if (enabledPlugins.contains(integrationLoader.getPluginName().toLowerCase())
+                    && !DisabledIntegrations.isDisabled(integrationLoader.getPluginName())) {
                 try {
                     integrationLoader.load();
                     this.loadedIntegrations.add(integrationLoader.getPluginName());
