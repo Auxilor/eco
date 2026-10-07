@@ -2,7 +2,9 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_8
 
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.packet.PacketListener
+import com.willfp.eco.internal.spigot.EcoSpigotPlugin
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
+import com.willfp.eco.internal.spigot.proxy.common.packet.PacketActionBarDetection
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearDisplayFrame
@@ -47,7 +49,8 @@ class PacketHandler : PacketHandlerProxy {
             PacketSetSlot,
             NewItemsPacketWindowItems(plugin),
             PacketContainerClick,
-            PacketSetCursorItem
+            PacketSetCursorItem,
+            PacketActionBarDetection((plugin as EcoSpigotPlugin).persistentActionBars)
         )
     }
 }

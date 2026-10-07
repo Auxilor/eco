@@ -136,6 +136,8 @@ import com.willfp.eco.internal.particle.ParticleFactoryRGB
 import com.willfp.eco.internal.price.PriceFactoryEconomy
 import com.willfp.eco.internal.price.PriceFactoryXP
 import com.willfp.eco.internal.price.PriceFactoryXPLevels
+import com.willfp.eco.internal.spigot.actionbar.PersistentActionBarService
+import com.willfp.eco.internal.spigot.actionbar.PersistentActionBarTicker
 import com.willfp.eco.internal.spigot.anvil.AnvilMechanicsListener
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
 import com.willfp.eco.internal.spigot.data.DataYml
@@ -270,6 +272,13 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
      * Sends displayed items to players again after reloads.
      */
     val displayRefresher = DisplayRefresher(this) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrame(it) }
+
+    /**
+     * Picks and sends every player's persistent action bar.
+     */
+    val persistentActionBars = PersistentActionBarService(this.logger)
+
+    private val persistentActionBarTicker = PersistentActionBarTicker(this, persistentActionBars)
 
     /**
      * Owns every plugin's datapack, and all the timing decisions around them.
@@ -496,6 +505,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
     override fun createTasks() {
         CollatedRunnable(this)
 
+        persistentActionBarTicker.startAll()
+
         if (!profileHandler.migrateIfNecessary()) {
             profileHandler.profileWriter.startTickingAutosave()
             profileHandler.profileWriter.startTickingSaves()
@@ -693,7 +704,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             PlayerHealthPatch,
             UnenchantablePatch,
             SpiderClimbing,
-            UnconsumablePatch
+            UnconsumablePatch,
+            persistentActionBarTicker
         )
 
         if (Prerequisite.HAS_PAPER.isMet) {

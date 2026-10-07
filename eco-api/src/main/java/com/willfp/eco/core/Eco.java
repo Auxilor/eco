@@ -1,6 +1,8 @@
 package com.willfp.eco.core;
 
 import com.google.common.base.Preconditions;
+import com.willfp.eco.core.actionbar.ActionBarProvider;
+import com.willfp.eco.core.actionbar.PersistentActionBar;
 import com.willfp.eco.core.command.CommandBase;
 import com.willfp.eco.core.command.PluginCommandBase;
 import com.willfp.eco.core.command.impl.PluginCommand;
@@ -624,6 +626,28 @@ public interface Eco {
      */
     @NotNull
     Collection<PlayerbaseTally> getTallies();
+
+    /**
+     * Register a persistent action bar.
+     *
+     * @param plugin   The plugin that owns the bar.
+     * @param id       The ID of the bar, unique within the plugin.
+     * @param priority The priority. Higher priorities show over lower ones.
+     * @param provider The provider of the bar.
+     * @return The bar.
+     */
+    @NotNull
+    PersistentActionBar registerPersistentActionBar(@NotNull EcoPlugin plugin,
+                                                    @NotNull String id,
+                                                    int priority,
+                                                    @NotNull ActionBarProvider provider);
+
+    /**
+     * Render and send a player's persistent action bar on the next tick, even if unchanged.
+     *
+     * @param player The player.
+     */
+    void refreshPersistentActionBar(@NotNull Player player);
 
     /**
      * Create dummy entity - never spawned, exists purely in code.
