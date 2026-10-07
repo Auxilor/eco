@@ -204,6 +204,24 @@ When running on these server platforms, libreforge unlocks extra effects, condit
 
 ---
 
+## ⛔ Disabling an integration
+
+To stop eco, libreforge and the eco plugins hooking into a plugin, add its name to `disabled-integrations` in `/plugins/eco/config.yml` and restart the server.
+
+```yaml
+disabled-integrations:
+  - WorldGuard
+  - MythicMobs
+```
+
+Nothing is loaded for a listed plugin: no antigrief checks, item or entity lookups, shop, economy or placeholder hooks, and no effects, triggers or conditions. The plugin itself keeps running as normal.
+
+:::warning
+Eco plugins can't be disabled this way. Listing one, such as EcoSkills, does nothing.
+:::
+
+---
+
 :::info Total integrations
 eco, libreforge, and the eco plugins natively support **75+ plugins** across all categories, and the list keeps growing!
 :::
