@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,10 @@ import org.jetbrains.annotations.Nullable;
  * Getting a key that is absent (or mapped to null) inserts a freshly supplied default value for
  * that key and returns it, so {@link #get(Object)} never returns null. Getting a null key returns
  * a default value without inserting anything.
+ * <p>
+ * A default map is as thread-safe as its backing map. When backed by a
+ * {@link java.util.concurrent.ConcurrentMap}, inserting a default is atomic, so concurrent gets of
+ * the same absent key all receive the same instance.
  *
  * @param <K> The key type.
  * @param <V> The value type.
@@ -80,11 +85,7 @@ public class DefaultMap<K, V> implements Map<K, V> {
             return defaultValue.get();
         }
 
-        if (map.get(key) == null) {
-            map.put((K) key, defaultValue.get());
-        }
-
-        return map.get(key);
+        return map.computeIfAbsent((K) key, k -> defaultValue.get());
     }
 
     @Override
@@ -169,5 +170,39 @@ public class DefaultMap<K, V> implements Map<K, V> {
     @NotNull
     public static <K, K1, V> DefaultMap<K, ListMap<K1, V>> createNestedListMap() {
         return new DefaultMap<>(ListMap::new);
+    }
+
+    /**
+     * Create a new thread-safe nested map.
+     * <p>
+     * Both levels are backed by {@link ConcurrentHashMap}, so null keys and values are rejected.
+     *
+     * @param <K>  The key type.
+     * @param <K1> The nested key type.
+     * @param <V>  The value type.
+     * @return The nested map.
+     */
+    @NotNull
+    public static <K, K1, V> DefaultMap<K, Map<K1, V>> createConcurrentNestedMap() {
+        Map<K, Map<K1, V>> map = new ConcurrentHashMap<>();
+        Supplier<Map<K1, V>> inner = ConcurrentHashMap::new;
+        return new DefaultMap<K, Map<K1, V>>(map, inner);
+    }
+
+    /**
+     * Create a new thread-safe nested list map.
+     * <p>
+     * Every level is thread-safe; see {@link ListMap#concurrent()}.
+     *
+     * @param <K>  The key type.
+     * @param <K1> The nested key type.
+     * @param <V>  The value type.
+     * @return The nested list map.
+     */
+    @NotNull
+    public static <K, K1, V> DefaultMap<K, ListMap<K1, V>> createConcurrentNestedListMap() {
+        Map<K, ListMap<K1, V>> map = new ConcurrentHashMap<>();
+        Supplier<ListMap<K1, V>> inner = ListMap::concurrent;
+        return new DefaultMap<K, ListMap<K1, V>>(map, inner);
     }
 }

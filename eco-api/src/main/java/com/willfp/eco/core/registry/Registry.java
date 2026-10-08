@@ -2,12 +2,16 @@ package com.willfp.eco.core.registry;
 
 import com.google.common.base.Preconditions;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * A registry for {@link Registrable}s.
+ * <p>
+ * Registries are thread-safe: reads never block, and may run on any thread while another thread
+ * registers or removes elements. Mutations are serialised against each other.
  *
  * @param <T> The type of {@link Registrable}.
  */
@@ -20,24 +24,29 @@ public class Registry<T extends Registrable> implements Iterable<T> {
     /**
      * The registry.
      */
-    private final Map<String, T> registry = new HashMap<>();
+    private final Map<String, T> registry = new ConcurrentHashMap<>();
 
     /**
      * If the registry is locked.
      */
-    private boolean isLocked = false;
+    private volatile boolean isLocked = false;
 
     /**
      * Cached values set, invalidated on mutation.
      */
     @Nullable
-    private Set<T> cachedValues = null;
+    private volatile Set<T> cachedValues = null;
 
     /**
      * The locker, used to 'secure' registries and prevent random unlocking.
      */
     @Nullable
-    private Object locker = null;
+    private volatile Object locker = null;
+
+    /**
+     * Guards mutation of the registry, the lock state, and the cached values.
+     */
+    private final Object mutex = new Object();
 
     /**
      * Instantiate a new registry.
@@ -59,14 +68,16 @@ public class Registry<T extends Registrable> implements Iterable<T> {
      */
     @NotNull
     public T register(@NotNull final T element) {
-        if (this.isLocked) {
-            throw new IllegalStateException("Cannot add to locked registry! (ID: " + element.getID() + ")");
-        }
-
         Preconditions.checkArgument(ID_PATTERN.matcher(element.getID()).matches(), "ID must match pattern: " + ID_PATTERN.pattern() + " (was " + element.getID() + ")");
 
-        registry.put(element.getID(), element);
-        this.cachedValues = null;
+        synchronized (mutex) {
+            if (this.isLocked) {
+                throw new IllegalStateException("Cannot add to locked registry! (ID: " + element.getID() + ")");
+            }
+
+            registry.put(element.getID(), element);
+            this.cachedValues = null;
+        }
 
         element.onRegister();
         onRegister(element);
@@ -92,8 +103,14 @@ public class Registry<T extends Registrable> implements Iterable<T> {
         element.onRemove();
         onRemove(element);
 
-        registry.remove(element.getID());
-        this.cachedValues = null;
+        synchronized (mutex) {
+            if (this.isLocked) {
+                throw new IllegalStateException("Cannot remove from locked registry! (ID: " + element.getID() + ")");
+            }
+
+            registry.remove(element.getID());
+            this.cachedValues = null;
+        }
 
         return element;
     }
@@ -153,11 +170,20 @@ public class Registry<T extends Registrable> implements Iterable<T> {
      */
     public Set<T> values() {
         Set<T> cached = this.cachedValues;
-        if (cached == null) {
-            cached = Set.copyOf(registry.values());
-            this.cachedValues = cached;
+        if (cached != null) {
+            return cached;
         }
-        return cached;
+
+        // Rebuilt under the mutex so a copy taken before a concurrent mutation can never be
+        // stored after that mutation has invalidated the cache.
+        synchronized (mutex) {
+            cached = this.cachedValues;
+            if (cached == null) {
+                cached = Set.copyOf(registry.values());
+                this.cachedValues = cached;
+            }
+            return cached;
+        }
     }
 
     /**
@@ -178,12 +204,14 @@ public class Registry<T extends Registrable> implements Iterable<T> {
      * @throws IllegalArgumentException If the registry is already locked with a different locker.
      */
     public void lock(@Nullable final Object locker) {
-        if (this.isLocked && this.locker != locker) {
-            throw new IllegalArgumentException("Registry is already locked with a different locker!");
-        }
+        synchronized (mutex) {
+            if (this.isLocked && this.locker != locker) {
+                throw new IllegalArgumentException("Registry is already locked with a different locker!");
+            }
 
-        this.locker = locker;
-        isLocked = true;
+            this.locker = locker;
+            isLocked = true;
+        }
     }
 
     /**
@@ -193,12 +221,14 @@ public class Registry<T extends Registrable> implements Iterable<T> {
      * @throws IllegalArgumentException If the locker is not the one used to lock the registry.
      */
     public void unlock(@Nullable final Object locker) {
-        if (this.locker != locker) {
-            throw new IllegalArgumentException("Cannot unlock registry!");
-        }
+        synchronized (mutex) {
+            if (this.locker != locker) {
+                throw new IllegalArgumentException("Cannot unlock registry!");
+            }
 
-        this.locker = null;
-        isLocked = false;
+            this.locker = null;
+            isLocked = false;
+        }
     }
 
     /**
