@@ -18,6 +18,8 @@ import com.willfp.eco.core.datapack.DatapackHandle;
 import com.willfp.eco.core.datapack.InstallResult;
 import com.willfp.eco.core.display.DisplayRecorder;
 import com.willfp.eco.core.drops.DropQueue;
+import com.willfp.eco.core.enchant.CustomEnchantment;
+import com.willfp.eco.core.enchant.VanillaEnchantmentOverrides;
 import com.willfp.eco.core.entities.ai.EntityController;
 import com.willfp.eco.core.events.EventManager;
 import com.willfp.eco.core.extensions.ExtensionLoader;
@@ -60,6 +62,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
@@ -1045,6 +1048,48 @@ public interface Eco {
                       @NotNull Block block,
                       @NotNull BlockFace face,
                       @Nullable Vector clickedPosition);
+
+    /**
+     * Unfreeze the enchantment registry and route bukkit lookups through eco.
+     */
+    void unfreezeEnchantmentRegistry();
+
+    /**
+     * Freeze the enchantment registry.
+     */
+    void freezeEnchantmentRegistry();
+
+    /**
+     * Register a custom enchantment.
+     *
+     * @param enchantment The enchantment.
+     * @return The bukkit enchantment.
+     */
+    @NotNull
+    Enchantment registerCustomEnchantment(@NotNull CustomEnchantment enchantment);
+
+    /**
+     * Stop bukkit lookups resolving to a custom enchantment.
+     *
+     * @param enchantment The enchantment.
+     */
+    void unregisterCustomEnchantment(@NotNull CustomEnchantment enchantment);
+
+    /**
+     * Set the overrides for vanilla enchantments.
+     *
+     * @param overrides The overrides, or null to clear them.
+     */
+    void setVanillaEnchantmentOverrides(@Nullable VanillaEnchantmentOverrides overrides);
+
+    /**
+     * Get the custom enchantment behind a bukkit enchantment.
+     *
+     * @param enchantment The bukkit enchantment.
+     * @return The custom enchantment, or null if it isn't one.
+     */
+    @Nullable
+    CustomEnchantment getCustomEnchantment(@NotNull Enchantment enchantment);
 
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.

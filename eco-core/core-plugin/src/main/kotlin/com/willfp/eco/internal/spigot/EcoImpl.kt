@@ -5,6 +5,8 @@ import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.FoliaSupport
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.bstats.EcoMetricsChart
+import com.willfp.eco.core.enchant.CustomEnchantment
+import com.willfp.eco.core.enchant.VanillaEnchantmentOverrides
 import com.willfp.eco.core.integrations.anticheat.AnticheatManager
 import com.willfp.eco.core.integrations.antigrief.AntigriefManager
 import com.willfp.eco.core.integrations.customitems.CustomItemsManager
@@ -84,6 +86,7 @@ import com.willfp.eco.internal.spigot.proxies.CommonsInitializerProxy
 import com.willfp.eco.internal.spigot.proxies.DisplayNameProxy
 import com.willfp.eco.internal.spigot.proxies.DisplayRecordsProxy
 import com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy
+import com.willfp.eco.internal.spigot.proxies.EnchantmentRegistryProxy
 import com.willfp.eco.internal.spigot.proxies.EntityControllerFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.ExtendedPersistentDataContainerFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
@@ -106,6 +109,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
@@ -738,6 +742,24 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun useItemOn(player: Player, hand: EquipmentSlot, block: Block, face: BlockFace, clickedPosition: Vector?) =
         getProxy(ItemUseProxy::class.java).useItemOn(player, hand, block, face, clickedPosition)
+
+    override fun unfreezeEnchantmentRegistry() =
+        getProxy(EnchantmentRegistryProxy::class.java).unfreeze()
+
+    override fun freezeEnchantmentRegistry() =
+        getProxy(EnchantmentRegistryProxy::class.java).freeze()
+
+    override fun registerCustomEnchantment(enchantment: CustomEnchantment) =
+        getProxy(EnchantmentRegistryProxy::class.java).register(enchantment)
+
+    override fun unregisterCustomEnchantment(enchantment: CustomEnchantment) =
+        getProxy(EnchantmentRegistryProxy::class.java).unregister(enchantment)
+
+    override fun setVanillaEnchantmentOverrides(overrides: VanillaEnchantmentOverrides?) =
+        getProxy(EnchantmentRegistryProxy::class.java).setVanillaOverrides(overrides)
+
+    override fun getCustomEnchantment(enchantment: Enchantment) =
+        getProxy(EnchantmentRegistryProxy::class.java).getCustomEnchantment(enchantment)
 
     override fun getCustomCharts() = listOf(
         EcoMetricsChart.SimplePie("data_handler") { profileHandler.defaultHandler.id },
