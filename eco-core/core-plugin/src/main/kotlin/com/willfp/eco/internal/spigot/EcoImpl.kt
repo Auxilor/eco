@@ -91,6 +91,7 @@ import com.willfp.eco.internal.spigot.proxies.MiniMessageTranslatorProxy
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxies.PlayerHandlerProxy
 import com.willfp.eco.internal.spigot.proxies.ItemComponentsProxy
+import com.willfp.eco.internal.spigot.proxies.ItemUseProxy
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxies.SkullProxy
 import com.willfp.eco.internal.spigot.proxies.TPSProxy
@@ -102,11 +103,14 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Mob
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
@@ -116,6 +120,7 @@ import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder
 import org.bukkit.inventory.MenuType as BukkitMenuType
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.util.Vector
 
 private val loadedEcoPlugins = ConcurrentHashMap<String, EcoPlugin>()
 private val DEFAULT_PROFILE_RESOLVER = PlayerProfileResolver { it.uniqueId }
@@ -730,6 +735,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
             getProxy(PlayerHandlerProxy::class.java).giveExpAndApplyMending(player, amount, applyMending)
         }
     }
+
+    override fun useItemOn(player: Player, hand: EquipmentSlot, block: Block, face: BlockFace, clickedPosition: Vector?) =
+        getProxy(ItemUseProxy::class.java).useItemOn(player, hand, block, face, clickedPosition)
 
     override fun getCustomCharts() = listOf(
         EcoMetricsChart.SimplePie("data_handler") { profileHandler.defaultHandler.id },
