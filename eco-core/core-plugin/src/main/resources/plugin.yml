@@ -2,7 +2,7 @@ name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoImpl
 api-version: 1.21.4
-authors: [ Auxilor ]
+authors: [ Auxilor, Exanthiax, Callum ]
 website: willfp.com
 load: STARTUP
 folia-supported: true
