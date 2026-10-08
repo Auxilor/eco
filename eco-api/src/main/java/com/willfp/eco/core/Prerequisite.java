@@ -1,10 +1,12 @@
 package com.willfp.eco.core;
 
+import com.willfp.eco.core.proxy.ProxyConstants;
 import com.willfp.eco.util.ClassUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -38,6 +40,46 @@ public class Prerequisite {
     public static final Prerequisite HAS_FOLIA = new Prerequisite(
             () -> ClassUtils.exists("io.papermc.paper.threadedregions.RegionizedServer"),
             "Requires server to be running Folia (or a fork)"
+    );
+
+    /**
+     * Requires the server to be running at least 26.3.
+     */
+    public static final Prerequisite HAS_26_3 = new Prerequisite(
+            () -> isAtLeast("v26_3"),
+            "Requires server to be running 26.3+"
+    );
+
+    /**
+     * Requires the server to be running at least 26.2.
+     */
+    public static final Prerequisite HAS_26_2 = new Prerequisite(
+            () -> isAtLeast("v26_2"),
+            "Requires server to be running 26.2+"
+    );
+
+    /**
+     * Requires the server to be running at least 26.1.
+     */
+    public static final Prerequisite HAS_26_1 = new Prerequisite(
+            () -> isAtLeast("v26_1_2"),
+            "Requires server to be running 26.1+"
+    );
+
+    /**
+     * Requires the server to be running at least 1.21.11.
+     */
+    public static final Prerequisite HAS_1_21_11 = new Prerequisite(
+            () -> isAtLeast("v1_21_11"),
+            "Requires server to be running 1.21.11+"
+    );
+
+    /**
+     * Requires the server to be running at least 1.21.9.
+     */
+    public static final Prerequisite HAS_1_21_9 = new Prerequisite(
+            () -> isAtLeast("v1_21_10"),
+            "Requires server to be running 1.21.9+"
     );
 
     /**
@@ -232,5 +274,24 @@ public class Prerequisite {
      */
     public String getDescription() {
         return this.description;
+    }
+
+    /**
+     * Get if the server is running at least a supported NMS version.
+     * <p>
+     * Compares positions in {@link ProxyConstants#SUPPORTED_VERSIONS}, which is ordered oldest first.
+     *
+     * @param version The NMS version, as listed in {@link ProxyConstants#SUPPORTED_VERSIONS}.
+     * @return If the server version is the same or newer, or false with no server running.
+     */
+    private static boolean isAtLeast(@NotNull final String version) {
+        if (Bukkit.getServer() == null) {
+            return false;
+        }
+
+        List<String> supportedVersions = ProxyConstants.SUPPORTED_VERSIONS;
+        int current = supportedVersions.indexOf(ProxyConstants.NMS_VERSION);
+
+        return current != -1 && current >= supportedVersions.indexOf(version);
     }
 }
