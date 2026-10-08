@@ -272,10 +272,14 @@ class AnvilMechanicsListener(
         } else {
             @Suppress("DEPRECATION")
             ChatColor.stripColor(itemName)
-        }.let { if (it.isNullOrEmpty()) left.fast().displayName else it }
-            .let { withAnvilRenameItalics(it) }
+        }.takeUnless { it.isNullOrBlank() }?.let { withAnvilRenameItalics(it) }
 
         if (right == null || right.type == Material.AIR) {
+            if (formattedItemName == null) {
+                if (left.itemMeta?.hasDisplayName() != true) return FAIL
+                left.itemMeta = left.itemMeta?.apply { setDisplayName(null) }
+                return AnvilResult(left, 0)
+            }
             if (left.fast().displayName == formattedItemName) return FAIL
             left.fast().displayName = formattedItemName
             return AnvilResult(left, 0)
@@ -302,7 +306,11 @@ class AnvilMechanicsListener(
             }
         }
 
-        left.fast().displayName = formattedItemName
+        if (formattedItemName == null) {
+            leftMeta.setDisplayName(null)
+        } else {
+            left.fast().displayName = formattedItemName
+        }
 
         val leftEnchants = left.fast().getEnchants(true)
         val rightEnchants = right.fast().getEnchants(true)
