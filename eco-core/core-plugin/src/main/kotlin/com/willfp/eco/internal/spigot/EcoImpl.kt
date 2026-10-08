@@ -3,6 +3,8 @@ package com.willfp.eco.internal.spigot
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
 import com.willfp.eco.core.FoliaSupport
+import com.willfp.eco.core.actionbar.ActionBarProvider
+import com.willfp.eco.core.actionbar.PersistentActionBar
 import com.willfp.eco.core.entities.ai.EntityController
 import com.willfp.eco.core.bstats.EcoMetricsChart
 import com.willfp.eco.core.enchant.CustomEnchantment
@@ -329,6 +331,8 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
         loadedEcoPlugins.remove(plugin.name.lowercase())
 
+        persistentActionBars.unregisterAll(plugin)
+
         for (customItem in Items.getCustomItems()) {
             if (customItem.key.namespace.equals(plugin.name.lowercase(), ignoreCase = true)) {
                 Items.removeCustomItem(customItem.key)
@@ -451,6 +455,16 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
 
     override fun getTallies(): Collection<PlayerbaseTally> =
         leaderboardService.tallies()
+
+    override fun registerPersistentActionBar(
+        plugin: EcoPlugin,
+        id: String,
+        priority: Int,
+        provider: ActionBarProvider
+    ): PersistentActionBar = persistentActionBars.register(plugin, id, priority, provider)
+
+    override fun refreshPersistentActionBar(player: Player) =
+        persistentActionBars.refresh(player)
 
     // Read from whichever thread touches player data, so publication has to be guaranteed.
     @Volatile
