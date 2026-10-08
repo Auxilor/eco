@@ -712,14 +712,22 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
             this.getScheduler().cancelAll();
         }
 
-        this.handleLifecycle(this.onReload, this::handleReload);
+        // Coalesce command (un)registrations made during reload (e.g. config-defined
+        // commands) into a single sync. Syncing per command fires overlapping async
+        // command tree sends, which race with the next mutation and throw CMEs.
+        Eco.get().beginCommandBatch();
+        try {
+            this.handleLifecycle(this.onReload, this::handleReload);
 
-        if (cancelTasks) {
-            this.handleLifecycle(this.onCreateTasks, this::createTasks);
-        }
+            if (cancelTasks) {
+                this.handleLifecycle(this.onCreateTasks, this::createTasks);
+            }
 
-        for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
-            extension.handleReload();
+            for (Extension extension : this.extensionLoader.getLoadedExtensions()) {
+                extension.handleReload();
+            }
+        } finally {
+            Eco.get().endCommandBatch();
         }
 
         Eco.get().requestDisplayRefresh();
