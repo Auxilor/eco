@@ -10,9 +10,13 @@ import java.util.function.Consumer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -301,5 +305,25 @@ public final class PlayerUtils {
      */
     public static void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending) {
         Eco.get().giveExpAndApplyMending(player, amount, applyMending);
+    }
+
+    /**
+     * Run the vanilla use of a held item against a block face, skipping the clicked block's own use.
+     * <p>
+     * Placements fire the usual BlockPlaceEvent.
+     *
+     * @param player          The player.
+     * @param hand            The hand holding the item.
+     * @param block           The clicked block.
+     * @param face            The clicked face.
+     * @param clickedPosition The clicked position relative to the block, or null for the face centre.
+     * @return If the item use did something.
+     */
+    public static boolean useItemOn(@NotNull final Player player,
+                                    @NotNull final EquipmentSlot hand,
+                                    @NotNull final Block block,
+                                    @NotNull final BlockFace face,
+                                    @Nullable final Vector clickedPosition) {
+        return Eco.get().useItemOn(player, hand, block, face, clickedPosition);
     }
 }

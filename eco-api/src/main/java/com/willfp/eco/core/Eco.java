@@ -57,11 +57,14 @@ import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -70,6 +73,7 @@ import org.bukkit.inventory.view.builder.InventoryViewBuilder;
 import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -1025,6 +1029,22 @@ public interface Eco {
      * @param applyMending Mend players items with mending, with same behavior as picking up orbs.
      */
     void giveExpAndApplyMending(@NotNull Player player, int amount, boolean applyMending);
+
+    /**
+     * Run the vanilla use of a held item against a block face, skipping the clicked block's own use.
+     *
+     * @param player          The player.
+     * @param hand            The hand holding the item.
+     * @param block           The clicked block.
+     * @param face            The clicked face.
+     * @param clickedPosition The clicked position relative to the block, or null for the face centre.
+     * @return If the item use did something.
+     */
+    boolean useItemOn(@NotNull Player player,
+                      @NotNull EquipmentSlot hand,
+                      @NotNull Block block,
+                      @NotNull BlockFace face,
+                      @Nullable Vector clickedPosition);
 
     /**
      * Get the instance of eco; the bridge between the api frontend and the implementation backend.

@@ -4,9 +4,13 @@ package com.willfp.eco.util
 
 import net.kyori.adventure.audience.Audience
 import org.bukkit.OfflinePlayer
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.util.Vector
 
 /**
  * The display name stored in this player's eco profile, readable while they are offline.
@@ -101,3 +105,16 @@ fun Entity?.tryAsPlayer(): Player? =
  */
 fun Player.giveExpAndApplyMending(amount: Int, applyMending: Boolean) =
     PlayerUtils.giveExpAndApplyMending(this, amount, applyMending)
+
+/**
+ * Run the vanilla use of the item in [hand] against a block face, skipping the clicked block's own use.
+ *
+ * @param hand            The hand holding the item.
+ * @param block           The clicked block.
+ * @param face            The clicked face.
+ * @param clickedPosition The clicked position relative to the block, or null for the face centre.
+ * @return If the item use did something.
+ * @see PlayerUtils.useItemOn
+ */
+fun Player.useItemOn(hand: EquipmentSlot, block: Block, face: BlockFace, clickedPosition: Vector? = null) =
+    PlayerUtils.useItemOn(this, hand, block, face, clickedPosition)
