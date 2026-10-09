@@ -248,7 +248,7 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         relocate("org.apache.commons.lang3", "com.willfp.eco.libs.lang3")
-relocate("org.intellij", "com.willfp.eco.libs.intellij")
+        relocate("org.intellij", "com.willfp.eco.libs.intellij")
         relocate("org.jetbrains.annotations", "com.willfp.eco.libs.jetbrains.annotations")
         relocate("com.willfp.modelenginebridge", "com.willfp.eco.libs.modelenginebridge")
         relocate("com.github.benmanes.caffeine", "com.willfp.eco.libs.caffeine")
