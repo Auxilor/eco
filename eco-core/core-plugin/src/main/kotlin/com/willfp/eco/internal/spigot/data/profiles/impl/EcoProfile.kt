@@ -6,6 +6,7 @@ import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.function.UnaryOperator
 
 abstract class EcoProfile(
     val uuid: UUID,
@@ -14,9 +15,30 @@ abstract class EcoProfile(
     private val data = ConcurrentHashMap<PersistentDataKey<*>, Any>()
 
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
-        this.data[key] = value
+        // Queued inside compute so writes to the same key reach the writer in the order they land.
+        this.data.compute(key) { _, _ ->
+            handler.profileWriter.write(uuid, key, value)
+            value
+        }
+    }
 
-        handler.profileWriter.write(uuid, key, value)
+    override fun <T : Any> compute(key: PersistentDataKey<T>, function: UnaryOperator<T>): T {
+        while (true) {
+            // Load outside compute: a fetch can block, and read() writes to the same map.
+            read(key)
+
+            @Suppress("UNCHECKED_CAST")
+            val result = this.data.computeIfPresent(key) { _, current ->
+                val value = function.apply(current as T)
+                handler.profileWriter.write(uuid, key, value)
+                value
+            } as T?
+
+            // Null only if the key was invalidated between the read and the compute; load it again.
+            if (result != null) {
+                return result
+            }
+        }
     }
 
     override fun <T : Any> read(key: PersistentDataKey<T>): T {

@@ -15,10 +15,12 @@ open class EcoConfig(
 ) : Config {
     private val values = ConcurrentHashMap<String, Any?>()
 
+    // Read and injected into from any region thread; getSubsection injects on read.
     @Transient
-    private val injections = mutableMapOf<String, InjectablePlaceholder>()
+    private val injections = ConcurrentHashMap<String, InjectablePlaceholder>()
 
     @Transient
+    @Volatile
     private var injectionHash = 0
 
     fun init(values: Map<String, Any?>, injections: Map<String, InjectablePlaceholder>) {
@@ -182,9 +184,15 @@ open class EcoConfig(
     }
 
     override fun addInjectablePlaceholder(placeholders: Iterable<InjectablePlaceholder>) {
-        for (placeholder in placeholders) {
-            injections[placeholder.patternString] = placeholder
-            injectionHash = injectionHash xor placeholder.hashCode()
+        synchronized(injections) {
+            for (placeholder in placeholders) {
+                val previous = injections.put(placeholder.patternString, placeholder)
+
+                // Re-injecting the same placeholder (as every subsection read does) leaves the hash alone.
+                if (previous != placeholder) {
+                    injectionHash = injectionHash xor (previous?.hashCode() ?: 0) xor placeholder.hashCode()
+                }
+            }
         }
     }
 
@@ -193,8 +201,10 @@ open class EcoConfig(
     }
 
     override fun clearInjectedPlaceholders() {
-        injections.clear()
-        injectionHash = 0 // Reset the hash
+        synchronized(injections) {
+            injections.clear()
+            injectionHash = 0 // Reset the hash
+        }
     }
 
     override fun toMap(): MutableMap<String, Any?> {
