@@ -1,0 +1,53 @@
+package com.willfp.eco.internal.spigot.integrations.price
+
+import com.willfp.eco.core.placeholder.context.PlaceholderContext
+import com.willfp.eco.core.placeholder.context.PlaceholderContextSupplier
+import com.willfp.eco.core.price.Price
+import com.willfp.eco.core.price.PriceFactory
+import com.willfp.eco.util.toSingletonList
+import dev.unnm3d.rediseconomy.currency.Currency
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import org.bukkit.entity.Player
+
+class PriceFactoryRedisEconomy(private val currency: Currency) : PriceFactory {
+    override fun getNames(): List<String> {
+        return currency.currencyName.lowercase().toSingletonList()
+    }
+
+    override fun create(baseContext: PlaceholderContext, function: PlaceholderContextSupplier<Double>): Price {
+        return PriceRedisEconomy(currency, baseContext) { function.get(it) }
+    }
+
+    private class PriceRedisEconomy(
+        private val currency: Currency,
+        private val baseContext: PlaceholderContext,
+        private val function: (PlaceholderContext) -> Double
+    ) : Price {
+        private val multipliers = ConcurrentHashMap<UUID, Double>()
+
+        override fun canAfford(player: Player, multiplier: Double): Boolean {
+            return currency.getBalance(player) >= getValue(player, multiplier)
+        }
+
+        override fun pay(player: Player, multiplier: Double) {
+            currency.withdrawPlayer(player, getValue(player, multiplier))
+        }
+
+        override fun giveTo(player: Player, multiplier: Double) {
+            currency.depositPlayer(player, getValue(player, multiplier))
+        }
+
+        override fun getValue(player: Player, multiplier: Double): Double {
+            return function(baseContext.copyWithPlayer(player)) * getMultiplier(player) * multiplier
+        }
+
+        override fun getMultiplier(player: Player): Double {
+            return multipliers[player.uniqueId] ?: 1.0
+        }
+
+        override fun setMultiplier(player: Player, multiplier: Double) {
+            multipliers[player.uniqueId] = multiplier
+        }
+    }
+}

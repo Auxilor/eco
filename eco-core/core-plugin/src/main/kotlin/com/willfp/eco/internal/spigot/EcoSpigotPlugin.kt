@@ -209,6 +209,7 @@ import com.willfp.eco.internal.spigot.integrations.multiverseinventories.Multive
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryCoinsEngine
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryPlayerPoints
+import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRedisEconomy
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryRoyaleEconomy
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryUltraEconomy
 import com.willfp.eco.internal.spigot.integrations.shop.ShopDeluxeSellwands
@@ -231,6 +232,7 @@ import com.willfp.eco.internal.spigot.recipes.workstation.WorkstationRecipeListe
 import com.willfp.eco.util.ClassUtils
 import com.willfp.eco.util.PlayerUtils
 import me.TechsCode.UltraEconomy.UltraEconomy
+import dev.unnm3d.rediseconomy.api.RedisEconomyAPI
 import me.qKing12.RoyaleEconomy.MultiCurrency.MultiCurrencyHandler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
@@ -648,6 +650,14 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     val api = rsp.provider
                     for (currency in api.currencies) {
                         registerCurrency(PriceFactoryCoinsEngine(api, currency))
+                    }
+                }
+            },
+            IntegrationLoader("RedisEconomy") {
+                val api = RedisEconomyAPI.getAPI()
+                if (api != null) {
+                    for (currency in api.currencies) {
+                        registerCurrency(PriceFactoryRedisEconomy(currency))
                     }
                 }
             },
