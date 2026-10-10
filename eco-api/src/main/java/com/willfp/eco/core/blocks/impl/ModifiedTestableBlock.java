@@ -2,10 +2,12 @@ package com.willfp.eco.core.blocks.impl;
 
 import com.google.common.base.Preconditions;
 import com.willfp.eco.core.blocks.TestableBlock;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +57,12 @@ public class ModifiedTestableBlock implements TestableBlock {
         Preconditions.checkNotNull(location.getWorld());
 
         return provider.apply(location);
+    }
+
+    @Override
+    public @Nullable List<ItemStack> getDrops(@NotNull final Block block,
+                                              @Nullable final ItemStack tool) {
+        return handle.getDrops(block, tool);
     }
 
     /**

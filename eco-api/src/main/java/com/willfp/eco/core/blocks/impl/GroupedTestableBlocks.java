@@ -5,8 +5,10 @@ import com.willfp.eco.core.blocks.TestableBlock;
 import com.willfp.eco.util.NumberUtils;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +48,18 @@ public class GroupedTestableBlocks implements TestableBlock {
         return new ArrayList<>(children)
                 .get(NumberUtils.randInt(0, children.size() - 1))
                 .place(location);
+    }
+
+    @Override
+    public @Nullable List<ItemStack> getDrops(@NotNull final Block block,
+                                              @Nullable final ItemStack tool) {
+        for (TestableBlock child : children) {
+            if (child.matches(block)) {
+                return child.getDrops(block, tool);
+            }
+        }
+
+        return null;
     }
 
     /**
