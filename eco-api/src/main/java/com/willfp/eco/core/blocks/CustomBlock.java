@@ -1,11 +1,14 @@
 package com.willfp.eco.core.blocks;
 
 import com.google.common.base.Preconditions;
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +43,12 @@ public class CustomBlock implements TestableBlock {
     private final float hardness;
 
     /**
+     * The drops as rolled by the custom block plugin, or null for vanilla drops.
+     */
+    @Nullable
+    private final BiFunction<Block, ItemStack, List<ItemStack>> drops;
+
+    /**
      * Create a new custom block.
      *
      * @param key      The block key.
@@ -51,10 +60,28 @@ public class CustomBlock implements TestableBlock {
                        @NotNull final Predicate<@NotNull Block> test,
                        @NotNull final Function<Location, Block> provider,
                        final float hardness) {
+        this(key, test, provider, hardness, null);
+    }
+
+    /**
+     * Create a new custom block with its own drops.
+     *
+     * @param key      The block key.
+     * @param test     The test.
+     * @param provider The provider to spawn the block.
+     * @param hardness The hardness, or -1 if not provided by the plugin.
+     * @param drops    Rolls the drops for a block and tool (tool may be null), or null for vanilla drops.
+     */
+    public CustomBlock(@NotNull final NamespacedKey key,
+                       @NotNull final Predicate<@NotNull Block> test,
+                       @NotNull final Function<Location, Block> provider,
+                       final float hardness,
+                       @Nullable final BiFunction<Block, ItemStack, List<ItemStack>> drops) {
         this.key = key;
         this.test = test;
         this.provider = provider;
         this.hardness = hardness;
+        this.drops = drops;
     }
 
     /**
@@ -82,6 +109,16 @@ public class CustomBlock implements TestableBlock {
     @Override
     public float hardness() {
         return this.hardness;
+    }
+
+    @Override
+    public @Nullable List<ItemStack> getDrops(@NotNull final Block block,
+                                              @Nullable final ItemStack tool) {
+        if (drops == null) {
+            return null;
+        }
+
+        return drops.apply(block, tool);
     }
 
     @Override

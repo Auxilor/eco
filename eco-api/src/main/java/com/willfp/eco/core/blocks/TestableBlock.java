@@ -3,8 +3,11 @@ package com.willfp.eco.core.blocks;
 import com.willfp.eco.core.lookup.Testable;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * A block with a test.
@@ -49,5 +52,22 @@ public interface TestableBlock extends Testable<Block> {
      */
     default float hardness() {
         return -1f;
+    }
+
+    /**
+     * The items this block drops when broken with a tool, as the custom block plugin rolls them.
+     * <p>
+     * Custom block plugins hand out their own drops when a player breaks a block, so anything
+     * that breaks blocks without a player, like a minion, asks here instead of using
+     * {@link Block#getDrops(ItemStack)}.
+     *
+     * @param block The block in the world, which must match this test.
+     * @param tool  The tool used, or null for none.
+     * @return The drops, or null if the block uses its vanilla drops.
+     */
+    @Nullable
+    default List<ItemStack> getDrops(@NotNull final Block block,
+                                     @Nullable final ItemStack tool) {
+        return null;
     }
 }
