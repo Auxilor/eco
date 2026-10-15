@@ -77,6 +77,7 @@ import com.willfp.eco.internal.scheduling.EcoSchedulerFolia
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.KeyRegistry
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
+import com.willfp.eco.internal.spigot.data.profiles.impl.serverProfileUUID
 import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import com.willfp.eco.internal.spigot.integrations.bstats.MetricHandler
 import com.willfp.eco.internal.spigot.leaderboard.KeyLeaderboardValueProvider
@@ -387,7 +388,7 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         profileHandler.getPlayerProfile(uuid)
 
     override fun getSavedProfileUUIDs(): Set<UUID> =
-        profileHandler.defaultHandler.getSavedUUIDs()
+        profileHandler.defaultHandler.getSavedUUIDs() - serverProfileUUID
 
     override fun <T> readAllProfileValues(
         uuids: Set<UUID>,
