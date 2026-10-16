@@ -3,9 +3,10 @@ package com.willfp.eco.core.enchant
 import org.bukkit.NamespacedKey
 
 /**
- * Overrides for vanilla enchantments, read live each time the value is needed.
+ * Overrides for vanilla enchantments.
  *
- * Only applied once the registry has been unfrozen with [CustomEnchantments.unfreezeRegistry].
+ * Applied to the registry when set with [CustomEnchantments.setVanillaOverrides]
+ * and each time the registry is frozen with [CustomEnchantments.freezeRegistry].
  */
 interface VanillaEnchantmentOverrides {
     /**

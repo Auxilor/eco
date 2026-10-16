@@ -5,7 +5,7 @@ import com.willfp.eco.core.enchant.CustomEnchantment
 import com.willfp.eco.core.enchant.VanillaEnchantmentOverrides
 import com.willfp.eco.internal.spigot.proxies.EnchantmentRegistryProxy
 import com.willfp.eco.internal.spigot.proxy.v1_21_8.enchant.EcoCraftEnchantment
-import com.willfp.eco.internal.spigot.proxy.v1_21_8.enchant.ModifiedVanillaCraftEnchantment
+import com.willfp.eco.internal.spigot.proxy.v1_21_8.enchant.VanillaEnchantmentPatcher
 import io.papermc.paper.adventure.PaperAdventure
 import io.papermc.paper.registry.entry.RegistryTypeMapper
 import io.papermc.paper.registry.legacy.DelayedRegistry
@@ -21,6 +21,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.Registry as BukkitRegistry
 import org.bukkit.craftbukkit.CraftRegistry
 import org.bukkit.craftbukkit.CraftServer
+import org.bukkit.craftbukkit.enchantments.CraftEnchantment
 import org.bukkit.craftbukkit.util.CraftNamespacedKey
 import org.bukkit.enchantments.Enchantment
 import java.lang.reflect.Modifier
@@ -59,13 +60,15 @@ class EnchantmentRegistry : EnchantmentRegistryProxy {
 
     private val customEnchantments = ConcurrentHashMap<NamespacedKey, EcoCraftEnchantment>()
 
+    private val vanillaPatcher = VanillaEnchantmentPatcher(enchantmentRegistry)
+
     @Volatile
     private var vanillaOverrides: VanillaEnchantmentOverrides? = null
 
     override fun unfreeze() {
         val minecraftToBukkit = BiFunction<NamespacedKey, NMSEnchantment, Enchantment?> { key, _ ->
             customEnchantments[key] ?: enchantmentRegistry.get(CraftNamespacedKey.toMinecraft(key))
-                .map { ModifiedVanillaCraftEnchantment(key, it) { vanillaOverrides } }
+                .map { CraftEnchantment(it) }
                 .orElse(null)
         }
 
@@ -97,6 +100,7 @@ class EnchantmentRegistry : EnchantmentRegistryProxy {
     }
 
     override fun freeze() {
+        vanillaPatcher.patch(vanillaOverrides, customEnchantments.keys)
         enchantmentRegistry.freeze()
     }
 
@@ -126,6 +130,7 @@ class EnchantmentRegistry : EnchantmentRegistryProxy {
 
     override fun setVanillaOverrides(overrides: VanillaEnchantmentOverrides?) {
         vanillaOverrides = overrides
+        vanillaPatcher.patch(overrides, customEnchantments.keys)
     }
 
     override fun getCustomEnchantment(enchantment: Enchantment): CustomEnchantment? {
