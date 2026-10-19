@@ -36,7 +36,7 @@ internal class PositionedComponentTests {
         unmockkAll()
     }
 
-    private fun configButton(config: Config, enabledByDefault: Boolean): ConfigButton {
+    private fun configButton(config: Config, enabledByDefault: Boolean, defaultItem: String? = "stone"): ConfigButton {
         mockkStatic(Items::class)
         every { Items.lookup(any()) } returns mockk<TestableItem> { every { item } returns mockk<ItemStack>(relaxed = true) }
         mockkConstructor(ItemStackBuilder::class)
@@ -46,7 +46,7 @@ internal class PositionedComponentTests {
         every { Eco.get() } returns eco
         every { eco.createSlotBuilder(any()) } returns mockk<SlotBuilder>(relaxed = true)
 
-        return ConfigButton(config, defaultItem = "stone", enabledByDefault = enabledByDefault)
+        return ConfigButton(config, defaultItem = defaultItem, enabledByDefault = enabledByDefault)
     }
 
     private fun enabledConfig(enabled: Boolean?) = mockk<Config>(relaxed = true) {
@@ -90,5 +90,10 @@ internal class PositionedComponentTests {
         assertEquals(true, configButton(enabledConfig(true), enabledByDefault = false).isEnabled)
         assertEquals(true, configButton(enabledConfig(null), enabledByDefault = true).isEnabled)
         assertEquals(false, configButton(enabledConfig(null), enabledByDefault = false).isEnabled)
+    }
+
+    @Test
+    fun `config button without item or default item does not throw`() {
+        configButton(enabledConfig(null), enabledByDefault = true, defaultItem = null)
     }
 }

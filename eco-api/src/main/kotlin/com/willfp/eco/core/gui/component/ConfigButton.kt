@@ -38,11 +38,7 @@ class ConfigButton(
 ) : PositionedComponent {
     private val slot = slot(
         ItemStackBuilder(
-            Items.lookup(
-                checkNotNull(config.getStringOrNull("item") ?: config.getStringOrNull("material") ?: defaultItem) {
-                    "Button config sets no item or material and has no default item"
-                }
-            )
+            Items.lookup(config.getStringOrNull("item") ?: config.getStringOrNull("material") ?: defaultItem ?: "")
         )
             .apply {
                 (name ?: config.getStringOrNull("name"))?.let { setDisplayName(it) }
