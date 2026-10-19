@@ -7,6 +7,7 @@ import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.gui.slot.SlotBuilder
+import com.willfp.eco.core.gui.slot.functional.SlotProvider
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.builder.ItemStackBuilder
@@ -14,11 +15,14 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.unmockkAll
 import io.mockk.verify
+import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
 internal class PositionedComponentTests {
@@ -95,5 +99,25 @@ internal class PositionedComponentTests {
     @Test
     fun `config button without item or default item does not throw`() {
         configButton(enabledConfig(null), enabledByDefault = true, defaultItem = null)
+    }
+
+    @Test
+    fun `config button keeps an air item unchanged`() {
+        val airItem = mockk<ItemStack> { every { type } returns Material.AIR }
+        mockkStatic(Items::class)
+        every { Items.lookup(any()) } returns mockk<TestableItem> { every { item } returns airItem }
+        mockkConstructor(ItemStackBuilder::class)
+        mockkStatic(Eco::class)
+        val eco = mockk<Eco>()
+        every { Eco.get() } returns eco
+        val provider = slot<SlotProvider>()
+        every { eco.createSlotBuilder(capture(provider)) } returns mockk<SlotBuilder>(relaxed = true)
+        val config = enabledConfig(null)
+        every { config.getStringOrNull("name") } returns "Name"
+
+        ConfigButton(config)
+
+        assertSame(airItem, provider.captured.provide(mockk(), mockk()))
+        verify(exactly = 0) { anyConstructed<ItemStackBuilder>().setDisplayName(any<String>()) }
     }
 }
