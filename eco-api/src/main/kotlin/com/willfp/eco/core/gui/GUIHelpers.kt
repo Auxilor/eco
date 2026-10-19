@@ -16,6 +16,7 @@ import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
+import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.sound.AbstractPlayableSound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -246,19 +247,24 @@ fun Config.getSlotLocations(path: String = "", default: List<SlotLocation>? = nu
 /**
  * Add a page changer button placed directly from a config section.
  *
- * Reads the combined-lookup shape: `basePath.item` for the active button and the
- * optional `basePath.item-inactive` for the first or last page. The location is
- * read with [getSlotLocations], so a `basePath.locations` list places the button
- * in every listed slot. If no active item is
- * configured and no [defaultItem] is given, the changer is not added, so a missing
- * button stays hidden rather than rendering a broken item.
+ * Reads the combined shape (`basePath.item` and the optional `basePath.item-inactive`)
+ * or the split shape (`basePath.item.active` and `basePath.item.inactive`, with optional
+ * `name` and `lore` per state), and `material` as a fallback for the active item.
+ * The location is read with [getSlotLocations], so a `basePath.locations` list places
+ * the button in every listed slot. If no active item is configured and no [defaultItem]
+ * is given, the changer is not added, so a missing button stays hidden rather than
+ * rendering a broken item.
  *
  * @param config The config holding the button section.
  * @param basePath The path of the button section.
  * @param direction The direction.
  * @param sound The page turn sound, or null for silent.
  * @param layer The layer, defaults to [MenuLayer.TOP].
- * @param defaultItem The item lookup string to use as the active item when `basePath.item` is missing, or null to hide the button.
+ * @param defaultItem The item lookup string to use as the active item when none is configured, or null to hide the button.
+ * @param name The display name of both states, used instead of the config's when set.
+ * @param defaultLocations The locations when the config sets none.
+ * @param format Applied to the item lookup strings and to every name and lore line read from config.
+ * @param hideInactive Whether to hide the button on the first or last page even when an inactive item is configured.
  * @return The builder.
  */
 fun MenuBuilder.addPageChanger(
@@ -267,16 +273,34 @@ fun MenuBuilder.addPageChanger(
     direction: PageChanger.Direction,
     sound: AbstractPlayableSound<*>?,
     layer: Int = MenuLayer.TOP,
-    defaultItem: String? = null
+    defaultItem: String? = null,
+    name: String? = null,
+    defaultLocations: List<SlotLocation>? = null,
+    format: (String) -> String = { it },
+    hideInactive: Boolean = false
 ): MenuBuilder {
-    val active = (config.getStringOrNull("$basePath.item") ?: defaultItem)
-        ?.let { Items.lookup(it).item }
-        ?: return this
+    val section = config.getSubsection(basePath)
 
-    val inactive = config.getStringOrNull("$basePath.item-inactive")
-        ?.let { Items.lookup(it).item }
+    if (section.getPlainStringOrNull("item.active") == null
+        && section.getPlainStringOrNull("item") == null
+        && section.getStringOrNull("material") == null
+        && defaultItem == null
+    ) {
+        return this
+    }
 
-    for ((row, column) in config.getSlotLocations(basePath)) {
+    val active = section.getConfigItem(defaultItem, name, state = "active", format = format)
+
+    val inactive = when {
+        hideInactive -> null
+        section.has("item-inactive") -> Items.lookup(format(section.getString("item-inactive"))).item.let { item ->
+            name?.let { ItemStackBuilder(item).setDisplayName(it).build() } ?: item
+        }
+        section.getPlainStringOrNull("item.inactive") != null -> section.getConfigItem(name = name, state = "inactive", format = format)
+        else -> null
+    }
+
+    for ((row, column) in config.getSlotLocations(basePath, defaultLocations)) {
         addPageChanger(direction, active, inactive, sound, row, column, layer)
     }
 
