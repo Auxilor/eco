@@ -10,7 +10,6 @@ import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.Slot
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.builder.ItemStackBuilder
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
 
@@ -37,24 +36,27 @@ class ConfigButton(
     override val layer: Int = MenuLayer.MIDDLE,
     action: (Player, InventoryClickEvent, Slot, Menu) -> Unit = { _, _, _, _ -> }
 ) : PositionedComponent {
-    private val slot = Items.lookup(config.getStringOrNull("item") ?: config.getStringOrNull("material") ?: defaultItem ?: "").item.let { base ->
-        slot(
-            if (base.type == Material.AIR) {
+    private val slot = slot(
+        Items.lookup(config.getStringOrNull("item") ?: config.getStringOrNull("material") ?: defaultItem ?: "").item.let { base ->
+            val displayName = name ?: config.getStringOrNull("name")
+            val hasLore = config.has("lore")
+
+            if (displayName == null && !hasLore) {
                 base
             } else {
                 ItemStackBuilder(base)
                     .apply {
-                        (name ?: config.getStringOrNull("name"))?.let { setDisplayName(it) }
+                        displayName?.let { setDisplayName(it) }
 
-                        if (config.has("lore")) {
+                        if (hasLore) {
                             addLoreLines(config.getStrings("lore"))
                         }
                     }
                     .build()
             }
-        ) {
-            onLeftClick(action)
         }
+    ) {
+        onLeftClick(action)
     }
 
     override val isEnabled = config.getBoolOrNull("enabled") ?: enabledByDefault

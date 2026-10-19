@@ -101,23 +101,41 @@ internal class PositionedComponentTests {
         configButton(enabledConfig(null), enabledByDefault = true, defaultItem = null)
     }
 
-    @Test
-    fun `config button keeps an air item unchanged`() {
-        val airItem = mockk<ItemStack> { every { type } returns Material.AIR }
+    private val airItem = mockk<ItemStack>(relaxed = true) { every { type } returns Material.AIR }
+
+    private fun airButton(config: Config): SlotProvider {
         mockkStatic(Items::class)
         every { Items.lookup(any()) } returns mockk<TestableItem> { every { item } returns airItem }
         mockkConstructor(ItemStackBuilder::class)
+        every { anyConstructed<ItemStackBuilder>().build() } returns mockk<ItemStack>()
+        every { anyConstructed<ItemStackBuilder>().setDisplayName(any<String>()) } returns mockk<ItemStackBuilder>()
         mockkStatic(Eco::class)
         val eco = mockk<Eco>()
         every { Eco.get() } returns eco
         val provider = slot<SlotProvider>()
         every { eco.createSlotBuilder(capture(provider)) } returns mockk<SlotBuilder>(relaxed = true)
-        val config = enabledConfig(null)
-        every { config.getStringOrNull("name") } returns "Name"
 
         ConfigButton(config)
 
-        assertSame(airItem, provider.captured.provide(mockk(), mockk()))
-        verify(exactly = 0) { anyConstructed<ItemStackBuilder>().setDisplayName(any<String>()) }
+        return provider.captured
+    }
+
+    @Test
+    fun `config button without name or lore keeps an air item`() {
+        val provider = airButton(enabledConfig(null))
+
+        assertSame(airItem, provider.provide(mockk(), mockk()))
+        verify(exactly = 0) { anyConstructed<ItemStackBuilder>().build() }
+    }
+
+    @Test
+    fun `config button with a name builds an air item through the item builder`() {
+        val config = enabledConfig(null)
+        every { config.getStringOrNull("name") } returns "Name"
+
+        airButton(config)
+
+        verify(exactly = 1) { anyConstructed<ItemStackBuilder>().setDisplayName("Name") }
+        verify(exactly = 1) { anyConstructed<ItemStackBuilder>().build() }
     }
 }
