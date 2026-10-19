@@ -127,6 +127,7 @@ import com.willfp.eco.internal.items.ArgParserTrim
 import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.items.ArgParserUnconsumable
 import com.willfp.eco.internal.items.ArgParserUnenchantable
+import com.willfp.eco.internal.items.ArgParserUngrindable
 import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
@@ -155,6 +156,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.NaturalExpGainListenersSpig
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerHealthPatch
 import com.willfp.eco.internal.spigot.eventlisteners.UnconsumablePatch
 import com.willfp.eco.internal.spigot.eventlisteners.UnenchantablePatch
+import com.willfp.eco.internal.spigot.eventlisteners.UngrindablePatch
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersPaper
 import com.willfp.eco.internal.spigot.eventlisteners.PlayerJumpListenersSpigot
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListeners
@@ -317,6 +319,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserTrim)
         Items.registerArgParser(ArgParserAttribute)
         Items.registerArgParser(ArgParserUnenchantable)
+        Items.registerArgParser(ArgParserUngrindable)
         Items.registerArgParser(ArgParserUnconsumable)
 
         Blocks.registerArgParser(BlockArgParserAgeable)
@@ -713,6 +716,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             AutocrafterPatch,
             PlayerHealthPatch,
             UnenchantablePatch,
+            UngrindablePatch,
             SpiderClimbing,
             UnconsumablePatch,
             persistentActionBarTicker
