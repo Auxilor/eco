@@ -20,6 +20,19 @@ object MenuHandler {
         return rendered
     }
 
+    fun replaceInventory(
+        rendered: RenderedInventory,
+        inventory: Inventory
+    ): RenderedInventory {
+        inventory.contents = rendered.inventory.contents
+        unregisterInventory(rendered.inventory)
+
+        return registerInventory(inventory, rendered.menu, rendered.player).apply {
+            state.putAll(rendered.state)
+            captiveItems.putAll(rendered.captiveItems)
+        }
+    }
+
     fun unregisterInventory(inventory: Inventory) {
         inventories.remove(inventory)
     }

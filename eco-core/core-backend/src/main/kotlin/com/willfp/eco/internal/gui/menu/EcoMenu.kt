@@ -43,15 +43,8 @@ class EcoMenu(
         getPossiblyReactiveSlot(row, column, player)
 
     override fun open(player: Player): Inventory {
-        @Suppress("DEPRECATION")
-        val inventory = if (columns == 9) {
-            Bukkit.createInventory(null, rows * columns, title)
-        } else {
-            Bukkit.createInventory(null, InventoryType.DISPENSER, title)
-        }
-
         // Register the inventory first
-        val rendered = MenuHandler.registerInventory(inventory, this, player)
+        var rendered = MenuHandler.registerInventory(createInventory(title), this, player)
 
         // Set the player's open menu forcefully
         player.forceRenderedInventory(rendered)
@@ -65,18 +58,30 @@ class EcoMenu(
         // Run second render with updated state from onOpen
         rendered.render()
 
-        // Show the inventory to the player
-        player.openInventory(inventory)
+        // Titles are fixed at creation, so fill page placeholders before the first open packet
+        val resolvedTitle = rendered.resolveDynamicTitle()
+        if (resolvedTitle != null && resolvedTitle != title) {
+            rendered = MenuHandler.replaceInventory(rendered, createInventory(resolvedTitle))
+            rendered.markTitleRendered(resolvedTitle)
+            player.forceRenderedInventory(rendered)
+        }
 
-        // The inventory is now the player's open top inventory, so substitute
-        // any page placeholders in the title for the initial page.
-        rendered.refreshDynamicTitle()
+        // Show the inventory to the player
+        player.openInventory(rendered.inventory)
 
         // Stop forcing the menu to be open, as Player#openInventory#topInventory is now the menu
         player.removeForcedRenderedInventory()
 
-        return inventory
+        return rendered.inventory
     }
+
+    @Suppress("DEPRECATION")
+    private fun createInventory(title: String): Inventory =
+        if (columns == 9) {
+            Bukkit.createInventory(null, rows * columns, title)
+        } else {
+            Bukkit.createInventory(null, InventoryType.DISPENSER, title)
+        }
 
     fun handleClose(event: InventoryCloseEvent) {
         onClose.forEach { it.handle(event, this) }
