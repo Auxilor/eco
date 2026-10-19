@@ -56,6 +56,7 @@ internal class PositionedComponentTests {
     private fun enabledConfig(enabled: Boolean?) = mockk<Config>(relaxed = true) {
         every { getBoolOrNull("enabled") } returns enabled
         every { getStringOrNull(any()) } returns null
+        every { getSubsectionOrNull(any()) } returns null
         every { has(any()) } returns false
         every { getSubsections("locations") } returns emptyList()
         every { getIntOrNull(any()) } returns 1
@@ -103,7 +104,7 @@ internal class PositionedComponentTests {
 
     private val airItem = mockk<ItemStack>(relaxed = true) { every { type } returns Material.AIR }
 
-    private fun airButton(config: Config): SlotProvider {
+    private fun airButton(config: Config, create: (Config) -> ConfigButton = { ConfigButton(it) }): SlotProvider {
         mockkStatic(Items::class)
         every { Items.lookup(any()) } returns mockk<TestableItem> { every { item } returns airItem }
         mockkConstructor(ItemStackBuilder::class)
@@ -115,7 +116,7 @@ internal class PositionedComponentTests {
         val provider = slot<SlotProvider>()
         every { eco.createSlotBuilder(capture(provider)) } returns mockk<SlotBuilder>(relaxed = true)
 
-        ConfigButton(config)
+        create(config)
 
         return provider.captured
     }
@@ -137,5 +138,19 @@ internal class PositionedComponentTests {
 
         verify(exactly = 1) { anyConstructed<ItemStackBuilder>().setDisplayName("Name") }
         verify(exactly = 1) { anyConstructed<ItemStackBuilder>().build() }
+    }
+
+    @Test
+    fun `config button reads the state keys first and formats them`() {
+        val config = enabledConfig(null)
+        every { config.getStringOrNull("item.active") } returns "%arrow%"
+        every { config.getStringOrNull("item") } returns "stone"
+        every { config.getStringOrNull("name.active") } returns "Active %page%"
+        every { config.getStringOrNull("name") } returns "Name"
+
+        airButton(config) { ConfigButton(it, state = "active", format = { line -> line.replace("%arrow%", "arrow").replace("%page%", "1") }) }
+
+        verify(exactly = 1) { Items.lookup("arrow") }
+        verify(exactly = 1) { anyConstructed<ItemStackBuilder>().setDisplayName("Active 1") }
     }
 }

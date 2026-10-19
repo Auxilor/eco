@@ -2,16 +2,17 @@ package com.willfp.eco.core.gui.component
 
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.gui.SlotLocation
+import com.willfp.eco.core.gui.getConfigItem
 import com.willfp.eco.core.gui.getSlotLocations
 import com.willfp.eco.core.gui.menu.Menu
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.onLeftClick
 import com.willfp.eco.core.gui.slot
 import com.willfp.eco.core.gui.slot.Slot
-import com.willfp.eco.core.items.Items
-import com.willfp.eco.core.items.builder.ItemStackBuilder
+import com.willfp.eco.core.sound.AbstractPlayableSound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
 
 /**
  * A button read from a config section.
@@ -25,6 +26,12 @@ import org.bukkit.event.inventory.InventoryClickEvent
  * @param enabledByDefault Whether the button is enabled when the config does not set `enabled`.
  * @param defaultLocations The locations when the config sets none.
  * @param layer The layer to place the button on.
+ * @param lore The lore, used instead of the config's `lore` when set.
+ * @param state The key read first under `item`, `name` and `lore` (for example `active`), or null.
+ * @param invalidItem The item lookup string used when the configured item does not resolve, or null.
+ * @param format Applied to the item lookup string and to every name and lore line read from config.
+ * @param itemModifier Applied to the built item, or null.
+ * @param sound Played to the player before [action], or null.
  * @param action Runs when a player left clicks the button.
  */
 class ConfigButton(
@@ -34,29 +41,21 @@ class ConfigButton(
     enabledByDefault: Boolean = true,
     defaultLocations: List<SlotLocation>? = null,
     override val layer: Int = MenuLayer.MIDDLE,
+    lore: List<String>? = null,
+    state: String? = null,
+    invalidItem: String? = null,
+    format: (String) -> String = { it },
+    itemModifier: ((ItemStack) -> ItemStack)? = null,
+    sound: AbstractPlayableSound<*>? = null,
     action: (Player, InventoryClickEvent, Slot, Menu) -> Unit = { _, _, _, _ -> }
 ) : PositionedComponent {
     private val slot = slot(
-        Items.lookup(config.getStringOrNull("item") ?: config.getStringOrNull("material") ?: defaultItem ?: "").item.let { base ->
-            val displayName = name ?: config.getStringOrNull("name")
-            val hasLore = config.has("lore")
-
-            if (displayName == null && !hasLore) {
-                base
-            } else {
-                ItemStackBuilder(base)
-                    .apply {
-                        displayName?.let { setDisplayName(it) }
-
-                        if (hasLore) {
-                            addLoreLines(config.getStrings("lore"))
-                        }
-                    }
-                    .build()
-            }
-        }
+        config.getConfigItem(defaultItem, name, lore, state, invalidItem, format).let { itemModifier?.invoke(it) ?: it }
     ) {
-        onLeftClick(action)
+        onLeftClick { player, event, slot, menu ->
+            sound?.playTo(player)
+            action(player, event, slot, menu)
+        }
     }
 
     override val isEnabled = config.getBoolOrNull("enabled") ?: enabledByDefault
@@ -73,7 +72,26 @@ fun closeButton(
     name: String? = null,
     enabledByDefault: Boolean = true,
     defaultLocations: List<SlotLocation>? = null,
-    layer: Int = MenuLayer.MIDDLE
-): ConfigButton = ConfigButton(config, defaultItem, name, enabledByDefault, defaultLocations, layer) { player, _, _, _ ->
+    layer: Int = MenuLayer.MIDDLE,
+    lore: List<String>? = null,
+    state: String? = null,
+    invalidItem: String? = null,
+    format: (String) -> String = { it },
+    itemModifier: ((ItemStack) -> ItemStack)? = null,
+    sound: AbstractPlayableSound<*>? = null
+): ConfigButton = ConfigButton(
+    config,
+    defaultItem,
+    name,
+    enabledByDefault,
+    defaultLocations,
+    layer,
+    lore,
+    state,
+    invalidItem,
+    format,
+    itemModifier,
+    sound
+) { player, _, _, _ ->
     player.closeInventory()
 }
