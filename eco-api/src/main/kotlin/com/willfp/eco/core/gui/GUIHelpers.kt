@@ -201,14 +201,50 @@ fun MenuBuilder.onBuild(action: (Menu) -> Unit): MenuBuilder =
     this.onBuild { action(it) }
 
 /**
+ * A row and column in a menu.
+ *
+ * @param row The row.
+ * @param column The column.
+ */
+data class SlotLocation(
+    val row: Int,
+    val column: Int
+)
+
+/**
+ * Get the slots a config section places something in.
+ *
+ * Reads `path.locations`, a list of `row` / `column` sections, so one item can
+ * fill several slots. Without it, reads `path.location.row` / `path.location.column`,
+ * falling back to a flat `path.row` / `path.column`.
+ *
+ * @param path The path of the section, or empty for this config itself.
+ * @return The slot locations, never empty.
+ */
+fun Config.getSlotLocations(path: String = ""): List<SlotLocation> {
+    val prefix = if (path.isEmpty()) "" else "$path."
+
+    val locations = getSubsections("${prefix}locations")
+
+    if (locations.isNotEmpty()) {
+        return locations.map { SlotLocation(it.getInt("row"), it.getInt("column")) }
+    }
+
+    return listOf(
+        SlotLocation(
+            getIntOrNull("${prefix}location.row") ?: getInt("${prefix}row"),
+            getIntOrNull("${prefix}location.column") ?: getInt("${prefix}column")
+        )
+    )
+}
+
+/**
  * Add a page changer button placed directly from a config section.
  *
  * Reads the combined-lookup shape: `basePath.item` for the active button and the
  * optional `basePath.item-inactive` for the first or last page. The location is
- * read tolerantly as `basePath.location.row` / `basePath.location.column`,
- * falling back to a flat `basePath.row` / `basePath.column`. A `basePath.locations`
- * list of `row` / `column` sections places the button in every listed slot instead,
- * so one button can span several slots. If no active item is
+ * read with [getSlotLocations], so a `basePath.locations` list places the button
+ * in every listed slot. If no active item is
  * configured the changer is not added, so a missing button stays hidden rather
  * than rendering a broken item.
  *
@@ -233,20 +269,11 @@ fun MenuBuilder.addPageChanger(
     val inactive = config.getStringOrNull("$basePath.item-inactive")
         ?.let { Items.lookup(it).item }
 
-    val locations = config.getSubsections("$basePath.locations")
-
-    if (locations.isNotEmpty()) {
-        for (location in locations) {
-            addPageChanger(direction, active, inactive, sound, location.getInt("row"), location.getInt("column"), layer)
-        }
-
-        return this
+    for ((row, column) in config.getSlotLocations(basePath)) {
+        addPageChanger(direction, active, inactive, sound, row, column, layer)
     }
 
-    val row = config.getIntOrNull("$basePath.location.row") ?: config.getInt("$basePath.row")
-    val column = config.getIntOrNull("$basePath.location.column") ?: config.getInt("$basePath.column")
-
-    return addPageChanger(direction, active, inactive, sound, row, column, layer)
+    return this
 }
 
 /**
