@@ -1,13 +1,24 @@
 package com.willfp.eco.core.gui.component
 
+import com.willfp.eco.core.Eco
+import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.gui.SlotLocation
 import com.willfp.eco.core.gui.menu.MenuBuilder
 import com.willfp.eco.core.gui.menu.MenuLayer
 import com.willfp.eco.core.gui.slot.Slot
+import com.willfp.eco.core.gui.slot.SlotBuilder
+import com.willfp.eco.core.items.Items
+import com.willfp.eco.core.items.TestableItem
+import com.willfp.eco.core.items.builder.ItemStackBuilder
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import io.mockk.verify
+import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class PositionedComponentTests {
@@ -23,6 +34,28 @@ internal class PositionedComponentTests {
     @AfterEach
     fun teardown() {
         unmockkAll()
+    }
+
+    private fun configButton(config: Config, enabledByDefault: Boolean): ConfigButton {
+        mockkStatic(Items::class)
+        every { Items.lookup(any()) } returns mockk<TestableItem> { every { item } returns mockk<ItemStack>(relaxed = true) }
+        mockkConstructor(ItemStackBuilder::class)
+        every { anyConstructed<ItemStackBuilder>().build() } returns mockk<ItemStack>()
+        mockkStatic(Eco::class)
+        val eco = mockk<Eco>()
+        every { Eco.get() } returns eco
+        every { eco.createSlotBuilder(any()) } returns mockk<SlotBuilder>(relaxed = true)
+
+        return ConfigButton(config, defaultItem = "stone", enabledByDefault = enabledByDefault)
+    }
+
+    private fun enabledConfig(enabled: Boolean?) = mockk<Config>(relaxed = true) {
+        every { getBoolOrNull("enabled") } returns enabled
+        every { getStringOrNull(any()) } returns null
+        every { has(any()) } returns false
+        every { getSubsections("locations") } returns emptyList()
+        every { getIntOrNull(any()) } returns 1
+        every { getInt(any()) } returns 1
     }
 
     @Test
@@ -49,5 +82,13 @@ internal class PositionedComponentTests {
         builder.addComponent(MenuLayer.LOWER, component)
 
         verify(exactly = 1) { builder.addComponent(MenuLayer.LOWER, 2, 3, component) }
+    }
+
+    @Test
+    fun `config button enabled flag overrides the default`() {
+        assertEquals(false, configButton(enabledConfig(false), enabledByDefault = true).isEnabled)
+        assertEquals(true, configButton(enabledConfig(true), enabledByDefault = false).isEnabled)
+        assertEquals(true, configButton(enabledConfig(null), enabledByDefault = true).isEnabled)
+        assertEquals(false, configButton(enabledConfig(null), enabledByDefault = false).isEnabled)
     }
 }
