@@ -40,21 +40,21 @@ fun Config.getConfigItem(
     invalidItem: String? = null,
     format: (String) -> String = { it }
 ): ItemStack {
-    val lookup = (state?.let { getPlainStringOrNull("item.$it") }
-        ?: getPlainStringOrNull("item")
-        ?: getStringOrNull("material")
-        ?: defaultItem
-        ?: "").let(format)
-
-    val base = Items.lookup(lookup).let {
+    val base = Items.lookup(
+        (state?.let { getPlainStringOrNull("item.$it") }
+            ?: getPlainStringOrNull("item")
+            ?: getStringOrNull("material")
+            ?: defaultItem
+            ?: "").let(format)
+    ).let {
         if (it is EmptyTestableItem && invalidItem != null) Items.lookup(invalidItem) else it
     }.item
 
     val displayName = name ?: (state?.let { getPlainStringOrNull("name.$it") } ?: getPlainStringOrNull("name"))?.let(format)
 
-    val lorePath = state?.let { "lore.$it" }?.takeIf { has(it) } ?: "lore".takeIf { has(it) }
-
-    val loreLines = lore ?: lorePath?.let { getStrings(it) }?.map(format)
+    val loreLines = lore ?: (state?.let { "lore.$it" }?.takeIf { has(it) } ?: "lore".takeIf { has(it) })
+        ?.let { getStrings(it) }
+        ?.map(format)
 
     if (displayName == null && loreLines == null) {
         return base
