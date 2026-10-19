@@ -219,15 +219,20 @@ data class SlotLocation(
  * falling back to a flat `path.row` / `path.column`.
  *
  * @param path The path of the section, or empty for this config itself.
+ * @param default The locations to return when none of those keys are set, or null to read the flat row and column regardless.
  * @return The slot locations, never empty.
  */
-fun Config.getSlotLocations(path: String = ""): List<SlotLocation> {
+fun Config.getSlotLocations(path: String = "", default: List<SlotLocation>? = null): List<SlotLocation> {
     val prefix = if (path.isEmpty()) "" else "$path."
 
     val locations = getSubsections("${prefix}locations")
 
     if (locations.isNotEmpty()) {
         return locations.map { SlotLocation(it.getInt("row"), it.getInt("column")) }
+    }
+
+    if (default != null && !has("${prefix}location.row") && !has("${prefix}row")) {
+        return default
     }
 
     return listOf(
@@ -245,14 +250,15 @@ fun Config.getSlotLocations(path: String = ""): List<SlotLocation> {
  * optional `basePath.item-inactive` for the first or last page. The location is
  * read with [getSlotLocations], so a `basePath.locations` list places the button
  * in every listed slot. If no active item is
- * configured the changer is not added, so a missing button stays hidden rather
- * than rendering a broken item.
+ * configured and no [defaultItem] is given, the changer is not added, so a missing
+ * button stays hidden rather than rendering a broken item.
  *
  * @param config The config holding the button section.
  * @param basePath The path of the button section.
  * @param direction The direction.
  * @param sound The page turn sound, or null for silent.
  * @param layer The layer, defaults to [MenuLayer.TOP].
+ * @param defaultItem The item lookup string to use as the active item when `basePath.item` is missing, or null to hide the button.
  * @return The builder.
  */
 fun MenuBuilder.addPageChanger(
@@ -260,9 +266,10 @@ fun MenuBuilder.addPageChanger(
     basePath: String,
     direction: PageChanger.Direction,
     sound: AbstractPlayableSound<*>?,
-    layer: Int = MenuLayer.TOP
+    layer: Int = MenuLayer.TOP,
+    defaultItem: String? = null
 ): MenuBuilder {
-    val active = config.getStringOrNull("$basePath.item")
+    val active = (config.getStringOrNull("$basePath.item") ?: defaultItem)
         ?.let { Items.lookup(it).item }
         ?: return this
 
