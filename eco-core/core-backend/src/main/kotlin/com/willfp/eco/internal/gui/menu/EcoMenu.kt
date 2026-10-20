@@ -43,45 +43,46 @@ class EcoMenu(
         getPossiblyReactiveSlot(row, column, player)
 
     override fun open(player: Player): Inventory {
-        // Register the inventory first
-        var rendered = MenuHandler.registerInventory(createInventory(title), this, player)
+        val rendered = RenderedInventory(this, player)
 
         // Set the player's open menu forcefully
         player.forceRenderedInventory(rendered)
 
+        runOnRender(player)
+
+        onOpen.forEach { it.handle(player, this) }
+
+        // Titles are fixed at creation, so fill page placeholders before the inventory is made
+        val resolvedTitle = rendered.resolveDynamicTitle()
+
+        @Suppress("DEPRECATION")
+        val inventory = if (columns == 9) {
+            Bukkit.createInventory(null, rows * columns, resolvedTitle ?: title)
+        } else {
+            Bukkit.createInventory(null, InventoryType.DISPENSER, resolvedTitle ?: title)
+        }
+
+        MenuHandler.registerInventory(rendered, inventory)
+        resolvedTitle?.let { rendered.markTitleRendered(it) }
+
         // Render default captive items
         rendered.renderDefaultCaptiveItems()
-
-        // Run onOpen with items already there
-        onOpen.forEach { it.handle(player, this) }
 
         // Run second render with updated state from onOpen
         rendered.render()
 
-        // Titles are fixed at creation, so fill page placeholders before the first open packet
-        val resolvedTitle = rendered.resolveDynamicTitle()
-        if (resolvedTitle != null && resolvedTitle != title) {
-            rendered = MenuHandler.replaceInventory(rendered, createInventory(resolvedTitle))
-            rendered.markTitleRendered(resolvedTitle)
-            player.forceRenderedInventory(rendered)
-        }
-
         // Show the inventory to the player
-        player.openInventory(rendered.inventory)
+        player.openInventory(inventory)
+
+        // The inventory is now the player's open top inventory, so substitute
+        // any page placeholders in the title for the initial page.
+        rendered.refreshDynamicTitle()
 
         // Stop forcing the menu to be open, as Player#openInventory#topInventory is now the menu
         player.removeForcedRenderedInventory()
 
-        return rendered.inventory
+        return inventory
     }
-
-    @Suppress("DEPRECATION")
-    private fun createInventory(title: String): Inventory =
-        if (columns == 9) {
-            Bukkit.createInventory(null, rows * columns, title)
-        } else {
-            Bukkit.createInventory(null, InventoryType.DISPENSER, title)
-        }
 
     fun handleClose(event: InventoryCloseEvent) {
         onClose.forEach { it.handle(event, this) }

@@ -3,7 +3,6 @@ package com.willfp.eco.internal.gui.menu
 import com.willfp.eco.core.gui.menu.Menu
 import java.util.Collections
 import java.util.WeakHashMap
-import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 
 private val inventories: MutableMap<Inventory, RenderedInventory> =
@@ -11,26 +10,11 @@ private val inventories: MutableMap<Inventory, RenderedInventory> =
 
 object MenuHandler {
     fun registerInventory(
-        inventory: Inventory,
-        menu: EcoMenu,
-        player: Player
-    ): RenderedInventory {
-        val rendered = RenderedInventory(menu, inventory, player)
-        inventories[inventory] = rendered
-        return rendered
-    }
-
-    fun replaceInventory(
         rendered: RenderedInventory,
         inventory: Inventory
-    ): RenderedInventory {
-        inventory.contents = rendered.inventory.contents
-        unregisterInventory(rendered.inventory)
-
-        return registerInventory(inventory, rendered.menu, rendered.player).apply {
-            state.putAll(rendered.state)
-            captiveItems.putAll(rendered.captiveItems)
-        }
+    ) {
+        rendered.inventory = inventory
+        inventories[inventory] = rendered
     }
 
     fun unregisterInventory(inventory: Inventory) {

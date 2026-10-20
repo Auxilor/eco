@@ -35,13 +35,18 @@ val Player.renderedInventory: RenderedInventory?
 
 class RenderedInventory(
     val menu: EcoMenu,
-    val inventory: Inventory,
     val player: Player
 ) {
+    lateinit var inventory: Inventory
+
     val captiveItems = mutableMapOf<GUIPosition, ItemStack>()
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
+        if (!::inventory.isInitialized) {
+            return
+        }
+
         if (this.menu != player.openMenu) {
             MenuHandler.unregisterInventory(this.inventory)
             return
@@ -155,8 +160,6 @@ class RenderedInventory(
     }
 
     fun renderDefaultCaptiveItems() {
-        menu.runOnRender(player)
-
         var bukkit = 0
         for (row in (1..menu.rows)) {
             for (column in (1..menu.columns)) {
