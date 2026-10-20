@@ -13,7 +13,7 @@ import org.bukkit.persistence.PersistentDataType
 object UngrindablePatch : Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     fun onPrepareGrindstone(event: PrepareGrindstoneEvent) {
-        if (event.inventory.hasUngrindableInput()) {
+        if (hasUngrindableInput(event.inventory)) {
             event.result = null
         }
     }
@@ -23,15 +23,15 @@ object UngrindablePatch : Listener {
         if (event.rawSlot != 2) return
         val inventory = event.view.topInventory as? GrindstoneInventory ?: return
 
-        if (inventory.hasUngrindableInput()) {
+        if (hasUngrindableInput(inventory)) {
             event.isCancelled = true
             inventory.setItem(2, null)
         }
     }
 
-    private fun GrindstoneInventory.hasUngrindableInput(): Boolean =
-        upperItem.isUngrindable() || lowerItem.isUngrindable()
+    private fun hasUngrindableInput(inventory: GrindstoneInventory): Boolean =
+        isUngrindable(inventory.upperItem) || isUngrindable(inventory.lowerItem)
 
-    private fun ItemStack?.isUngrindable(): Boolean =
-        this?.itemMeta?.persistentDataContainer?.has(ArgParserUngrindable.key, PersistentDataType.BOOLEAN) == true
+    private fun isUngrindable(item: ItemStack?): Boolean =
+        item?.itemMeta?.persistentDataContainer?.has(ArgParserUngrindable.key, PersistentDataType.BOOLEAN) == true
 }
