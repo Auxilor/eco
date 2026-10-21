@@ -114,6 +114,29 @@ public final class PlaceholderManager {
     }
 
     /**
+     * Unregister a placeholder.
+     * <p>
+     * Does nothing if a different placeholder has since been registered with the same pattern.
+     *
+     * @param placeholder The placeholder to unregister.
+     */
+    public static void unregisterPlaceholder(@NotNull final RegistrablePlaceholder placeholder) {
+        Map<String, Placeholder> pluginPlaceholders = REGISTERED_PLACEHOLDERS.get(placeholder.getPlugin());
+        if (pluginPlaceholders == null) {
+            return;
+        }
+
+        String key = placeholder.getPattern().pattern();
+        synchronized (pluginPlaceholders) {
+            if (pluginPlaceholders.get(key) != placeholder) {
+                return;
+            }
+            pluginPlaceholders.remove(key);
+        }
+        PLACEHOLDER_SNAPSHOT_CACHE.remove(placeholder.getPlugin());
+    }
+
+    /**
      * Get the result of a placeholder with respect to a player.
      *
      * @param player     The player to get the result from.
