@@ -108,7 +108,7 @@ eco hooks into economy providers for all money-related features — prices, rewa
 | --- | --- |
 | Vault | PlayerPoints |
 | ExcellentEconomy | RoyaleEconomy |
-| UltraEconomy | |
+| UltraEconomy | RedisEconomy |
 
 ---
 
