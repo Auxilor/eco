@@ -90,6 +90,9 @@ class EcoLeaderboard(
     /**
      * Build a new snapshot from values that have already been read.
      *
+     * With `leaderboards.shared-tie-ranks` on, tied players share a rank and the next one skips
+     * past them: 1, 2, 2, 4. Without, every player gets their own: 1, 2, 3, 4.
+     *
      * Called only from the refresh executor.
      */
     internal fun rebuildFrom(values: Map<UUID, Double>, maxEntries: Int) {
@@ -106,8 +109,6 @@ class EcoLeaderboard(
         val sharedTieRanks = service.sharedTieRanks
         var rank = 0
         for ((index, pair) in sorted.withIndex()) {
-            // With shared tie ranks, tied players share a rank and the next one skips past
-            // them: 1, 2, 2, 4. Without, every player gets their own: 1, 2, 3, 4.
             if (!sharedTieRanks || index == 0 || pair.second != sorted[index - 1].second) {
                 rank = index + 1
             }

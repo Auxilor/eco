@@ -71,7 +71,7 @@ class EcoLeaderboardTests {
     private val tiedValues = mapOf(first to 9.0, tiedOne to 5.0, tiedTwo to 5.0, last to 1.0)
 
     @Test
-    fun `tied players get their own ranks when shared tie ranks are off`() {
+    fun `ties get own ranks when off`() {
         val leaderboard = leaderboard()
 
         leaderboard.rebuildFrom(tiedValues, -1)
@@ -81,7 +81,7 @@ class EcoLeaderboardTests {
     }
 
     @Test
-    fun `tied players share a rank and the next rank skips past them`() {
+    fun `ties share a rank when on`() {
         every { config.getBool("leaderboards.shared-tie-ranks") } returns true
         val leaderboard = leaderboard()
 

@@ -152,32 +152,29 @@ class LeaderboardService(
         return leaderboard
     }
 
-    private fun queueRegistrationRefresh() {
-        if (!enabled || !registrationRefreshQueued.compareAndSet(false, true)) {
+    /**
+     * Refresh every leaderboard a second after a registration made once the startup load has run.
+     *
+     * Registrations within that second share one refresh. A sweep already running may have listed
+     * the leaderboards before the registration, so this waits for it to finish rather than
+     * letting the overlap guard drop it.
+     */
+    private fun queueRegistrationRefresh(requeue: Boolean = false) {
+        if (!enabled || (!requeue && !registrationRefreshQueued.compareAndSet(false, true))) {
             return
         }
 
-        plugin.scheduler.async().runLater(
-            Runnable { runRegistrationRefresh() },
-            1,
-            TimeUnit.SECONDS
-        )
-    }
-
-    private fun runRegistrationRefresh() {
-        // A sweep already running may have listed the leaderboards before this registration, so
-        // wait for it to finish rather than letting the overlap guard drop this one.
-        if (refreshing.get()) {
-            plugin.scheduler.async().runLater(
-                Runnable { runRegistrationRefresh() },
-                1,
-                TimeUnit.SECONDS
-            )
-            return
-        }
-
-        registrationRefreshQueued.set(false)
-        refreshAll()
+        plugin.scheduler.async().runLater(Runnable {
+            if (refreshing.get()) {
+                queueRegistrationRefresh(requeue = true)
+            } else {
+                registrationRefreshQueued.set(false)
+                refreshAll().exceptionally { error ->
+                    plugin.logger.log(Level.WARNING, "Failed to refresh leaderboards after a reload", error)
+                    null
+                }
+            }
+        }, 1, TimeUnit.SECONDS)
     }
 
     private fun unindex(leaderboard: EcoLeaderboard) {
