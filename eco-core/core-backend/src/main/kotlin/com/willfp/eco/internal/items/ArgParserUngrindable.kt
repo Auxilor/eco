@@ -12,7 +12,6 @@ object ArgParserUngrindable : FlagArgParser("ungrindable") {
         meta.persistentDataContainer.set(key, PersistentDataType.BOOLEAN, true)
     }
 
-    override fun test(meta: ItemMeta): Boolean {
-        return meta.persistentDataContainer.has(key, PersistentDataType.BOOLEAN)
-    }
+    override fun test(meta: ItemMeta): Boolean =
+        meta.persistentDataContainer.has(key, PersistentDataType.BOOLEAN)
 }

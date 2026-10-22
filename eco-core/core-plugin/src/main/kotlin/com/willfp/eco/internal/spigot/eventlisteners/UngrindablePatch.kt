@@ -32,6 +32,8 @@ object UngrindablePatch : Listener {
     private fun hasUngrindableInput(inventory: GrindstoneInventory): Boolean =
         isUngrindable(inventory.upperItem) || isUngrindable(inventory.lowerItem)
 
-    private fun isUngrindable(item: ItemStack?): Boolean =
-        item?.itemMeta?.persistentDataContainer?.has(ArgParserUngrindable.key, PersistentDataType.BOOLEAN) == true
+    private fun isUngrindable(item: ItemStack?): Boolean {
+        val meta = item?.itemMeta ?: return false
+        return meta.persistentDataContainer.has(ArgParserUngrindable.key, PersistentDataType.BOOLEAN)
+    }
 }
