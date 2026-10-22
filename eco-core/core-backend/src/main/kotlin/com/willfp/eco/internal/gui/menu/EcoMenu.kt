@@ -52,7 +52,6 @@ class EcoMenu(
 
         onOpen.forEach { it.handle(player, this) }
 
-        // Titles are fixed at creation, so fill page placeholders before the inventory is made
         val resolvedTitle = rendered.resolveDynamicTitle()
 
         @Suppress("DEPRECATION")
