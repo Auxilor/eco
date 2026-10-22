@@ -42,7 +42,7 @@ internal class UnregisterPlaceholderTests {
     private val plugin = mockk<EcoPlugin>()
 
     @Test
-    fun `unregistered placeholder no longer resolves`() {
+    fun `unregister removes placeholder`() {
         val placeholder = PlayerlessPlaceholder(plugin, "unregister_removed") { "value" }.register()
 
         placeholder.unregister()
@@ -52,7 +52,7 @@ internal class UnregisterPlaceholderTests {
     }
 
     @Test
-    fun `unregister keeps a newer placeholder with the same pattern`() {
+    fun `unregister keeps replacement`() {
         val old = PlayerlessPlaceholder(plugin, "unregister_replaced") { "old" }.register()
         val replacement = PlayerlessPlaceholder(plugin, "unregister_replaced") { "new" }.register()
 
