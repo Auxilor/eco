@@ -258,6 +258,15 @@ public interface Eco {
                                          @NotNull String... updateBlacklist);
 
     /**
+     * Create the lang config for a plugin, selecting the language set in eco's config.yml.
+     *
+     * @param plugin The plugin.
+     * @return The config implementation.
+     */
+    @NotNull
+    LoadableConfig createLangConfig(@NotNull EcoPlugin plugin);
+
+    /**
      * Loadable config.
      *
      * @param configName            The name of the config.

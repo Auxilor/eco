@@ -1,8 +1,8 @@
 package com.willfp.eco.core.config.base;
 
+import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.EcoPlugin;
 import com.willfp.eco.core.config.BaseConfig;
-import com.willfp.eco.core.config.ConfigType;
 import com.willfp.eco.util.StringUtils;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -34,12 +34,14 @@ public class LangYml extends BaseConfig {
     /**
      * Create a new lang.yml.
      * <p>
-     * Unused keys are never removed on update, so custom messages are preserved.
+     * Loads lang/&lt;language&gt;.yml, where the language is set in eco's config.yml, falling back
+     * to english if the plugin doesn't have it. Unused keys are never removed on update, so custom
+     * messages are preserved.
      *
      * @param plugin The plugin.
      */
     public LangYml(@NotNull final EcoPlugin plugin) {
-        super("lang", plugin, false, ConfigType.YAML);
+        super(Eco.get().createLangConfig(plugin));
     }
 
     /**

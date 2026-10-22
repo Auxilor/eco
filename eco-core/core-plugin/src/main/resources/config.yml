@@ -4,6 +4,13 @@
 # Default config (With Comments) can be found here: https://github.com/Auxilor/eco/blob/master/eco-core/core-plugin/src/main/resources/config.yml
 #
 
+# The language used by eco and all eco plugins.
+# Matches a file name in plugins/<plugin>/lang/ (without .yml), e.g. english, spanish.
+# "existing" is your lang.yml from before languages were added.
+# If a plugin doesn't have the selected language, it uses english and logs a warning.
+# Changing this requires a server restart.
+language: english
+
 # How player/server data is saved:
 # sqlite - Stored in data.db: the default, and the right choice for single-node servers (i.e. no BungeeCord/Velocity)
 # mysql/mariadb - Standard database, great option for multi-node servers (i.e. BungeeCord/Velocity)

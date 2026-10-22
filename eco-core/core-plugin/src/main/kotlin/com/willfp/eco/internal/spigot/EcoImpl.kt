@@ -25,6 +25,7 @@ import com.willfp.eco.core.command.CommandBase
 import com.willfp.eco.core.command.PluginCommandBase
 import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.interfaces.Config
+import com.willfp.eco.core.config.interfaces.LoadableConfig
 import com.willfp.eco.core.data.PlayerProfileResolver
 import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.willfp.eco.core.datapack.DatapackContributor
@@ -51,6 +52,8 @@ import com.willfp.eco.internal.config.EcoConfigSection
 import com.willfp.eco.internal.config.EcoLoadableConfig
 import com.willfp.eco.internal.config.EcoUpdatableConfig
 import com.willfp.eco.internal.config.handler.SimpleConfigHandler
+import com.willfp.eco.internal.config.lang.JarLangSource
+import com.willfp.eco.internal.config.lang.LangFiles
 import com.willfp.eco.internal.config.toMap
 import com.willfp.eco.internal.drops.EcoDropQueue
 import com.willfp.eco.internal.drops.EcoFastCollatedDropQueue
@@ -231,6 +234,20 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         source,
         requiresChangesToSave
     )
+
+    override fun createLangConfig(plugin: EcoPlugin): LoadableConfig {
+        val migrated = LangFiles.migrate(plugin.dataFolder, plugin.logger)
+
+        // eco's own lang.yml is what tells an existing server apart from a new one.
+        if (plugin === this && migrated) {
+            this.configYml.set("language", LangFiles.EXISTING)
+            this.configYml.save()
+        }
+
+        LangFiles.sync(plugin, JarLangSource.open(plugin.file, plugin.logger))
+
+        return LangFiles.select(plugin, this.configYml.getStringOrNull("language"), migrated)
+    }
 
     override fun createUpdatableConfig(
         configName: String,
