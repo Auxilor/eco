@@ -206,7 +206,9 @@ fun MenuBuilder.onBuild(action: (Menu) -> Unit): MenuBuilder =
  * Reads the combined-lookup shape: `basePath.item` for the active button and the
  * optional `basePath.item-inactive` for the first or last page. The location is
  * read tolerantly as `basePath.location.row` / `basePath.location.column`,
- * falling back to a flat `basePath.row` / `basePath.column`. If no active item is
+ * falling back to a flat `basePath.row` / `basePath.column`. A `basePath.locations`
+ * list of `row` / `column` sections places the button in every listed slot instead,
+ * so one button can span several slots. If no active item is
  * configured the changer is not added, so a missing button stays hidden rather
  * than rendering a broken item.
  *
@@ -230,6 +232,16 @@ fun MenuBuilder.addPageChanger(
 
     val inactive = config.getStringOrNull("$basePath.item-inactive")
         ?.let { Items.lookup(it).item }
+
+    val locations = config.getSubsections("$basePath.locations")
+
+    if (locations.isNotEmpty()) {
+        for (location in locations) {
+            addPageChanger(direction, active, inactive, sound, location.getInt("row"), location.getInt("column"), layer)
+        }
+
+        return this
+    }
 
     val row = config.getIntOrNull("$basePath.location.row") ?: config.getInt("$basePath.row")
     val column = config.getIntOrNull("$basePath.location.column") ?: config.getInt("$basePath.column")

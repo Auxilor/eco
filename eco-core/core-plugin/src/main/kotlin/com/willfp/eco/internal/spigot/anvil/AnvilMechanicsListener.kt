@@ -274,7 +274,12 @@ class AnvilMechanicsListener(
             ChatColor.stripColor(itemName)
         }.takeUnless { it.isNullOrBlank() }?.let { withAnvilRenameItalics(it) }
 
+        // The client fills the rename box with the current name as plain text, so an untouched box keeps the formatting
+        @Suppress("DEPRECATION")
+        val keepsCurrentName = itemName.isNotBlank() && ChatColor.stripColor(left.fast().displayName) == itemName
+
         if (right == null || right.type == Material.AIR) {
+            if (keepsCurrentName) return FAIL
             if (formattedItemName == null) {
                 if (left.itemMeta?.hasDisplayName() != true) return FAIL
                 left.itemMeta = left.itemMeta?.apply { setDisplayName(null) }
@@ -306,10 +311,12 @@ class AnvilMechanicsListener(
             }
         }
 
-        if (formattedItemName == null) {
-            leftMeta.setDisplayName(null)
-        } else {
-            left.fast().displayName = formattedItemName
+        if (!keepsCurrentName) {
+            if (formattedItemName == null) {
+                leftMeta.setDisplayName(null)
+            } else {
+                left.fast().displayName = formattedItemName
+            }
         }
 
         val leftEnchants = left.fast().getEnchants(true)

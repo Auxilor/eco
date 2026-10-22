@@ -87,3 +87,32 @@ custom-slots:
   - <slot 3>
   - ...etc
   ```
+
+## Page Change Buttons
+
+Paged GUIs have a forwards and a backwards button, usually configured like this:
+
+```yaml
+forwards-arrow:
+  item: arrow name:"&fNext Page" # The item shown when there is a next page.
+  item-inactive: gray_dye name:"&7Next Page" # Optional. The item shown on the last page; leave it out to hide the button there.
+  location:
+    row: 6
+    column: 8
+```
+
+To make one button cover several slots, add a `locations` list. The button then shows in every listed slot instead of the single `location`:
+
+```yaml
+forwards-arrow:
+  item: arrow name:"&fNext Page"
+  locations:
+    - row: 6
+      column: 7
+    - row: 6
+      column: 8
+    - row: 6
+      column: 9
+```
+
+Plugins that use a flat `row` and `column` under the button accept the same `locations` list.
