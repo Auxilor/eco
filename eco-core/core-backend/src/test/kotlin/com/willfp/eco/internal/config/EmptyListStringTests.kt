@@ -19,18 +19,18 @@ class EmptyListStringTests {
     private fun read(path: String) = config.getStringOrNull(path, false, StringUtils.FormatOption.WITHOUT_PLACEHOLDERS)
 
     @Test
-    fun `an empty list reads as an empty string`() {
+    fun `empty list reads as empty`() {
         assertEquals("", read("empty"))
     }
 
     @Test
-    fun `a non-empty list and a string read as before`() {
+    fun `list and string unchanged`() {
         assertEquals("[a, b]", read("list"))
         assertEquals("value", read("text"))
     }
 
     @Test
-    fun `a missing key reads as null`() {
+    fun `missing key reads as null`() {
         assertNull(read("missing"))
     }
 }
