@@ -3,11 +3,14 @@ package com.willfp.eco.core.price;
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.placeholder.context.PlaceholderContext;
+import com.willfp.eco.core.price.impl.PriceCombined;
 import com.willfp.eco.core.price.impl.PriceFree;
 import com.willfp.eco.core.serialization.ConfigDeserializer;
 import com.willfp.eco.util.NumberUtils;
 import com.willfp.eco.util.StringUtils;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +43,11 @@ public final class ConfiguredPrice implements Price {
     private final String formatString;
 
     /**
+     * The prices this combines, empty if it is a single price.
+     */
+    private final List<ConfiguredPrice> parts;
+
+    /**
      * Create a new Configured Price.
      *
      * @param price        The price.
@@ -50,6 +58,35 @@ public final class ConfiguredPrice implements Price {
                            @NotNull final String formatString) {
         this.price = price;
         this.formatString = formatString;
+        this.parts = List.of();
+    }
+
+    /**
+     * Create a configured price that charges several prices together.
+     *
+     * @param parts The prices, at least one.
+     */
+    private ConfiguredPrice(@NotNull final List<ConfiguredPrice> parts) {
+        this.price = new PriceCombined(parts);
+        this.formatString = "";
+        this.parts = List.copyOf(parts);
+    }
+
+    /**
+     * Combine several prices into one that charges all of them together.
+     * <p>
+     * The display joins the display of each price with a comma.
+     *
+     * @param prices The prices, at least one.
+     * @return The combined price.
+     */
+    @NotNull
+    public static ConfiguredPrice combine(@NotNull final List<ConfiguredPrice> prices) {
+        if (prices.size() == 1) {
+            return prices.getFirst();
+        }
+
+        return new ConfiguredPrice(prices);
     }
 
     @Override
@@ -120,6 +157,12 @@ public final class ConfiguredPrice implements Price {
      */
     public String getDisplay(@NotNull final Player player,
                              final double multiplier) {
+        if (!parts.isEmpty()) {
+            return parts.stream()
+                    .map(part -> part.getDisplay(player, multiplier))
+                    .collect(Collectors.joining(", "));
+        }
+
         double value = this.getPrice().getValue(player, multiplier);
 
         return StringUtils.format(
@@ -160,6 +203,15 @@ public final class ConfiguredPrice implements Price {
         @Override
         @Nullable
         public ConfiguredPrice deserialize(@NotNull final Config config) {
+            if (config.has("prices")) {
+                List<ConfiguredPrice> prices = config.getSubsections("prices").stream()
+                        .map(this::deserialize)
+                        .filter(Objects::nonNull)
+                        .toList();
+
+                return prices.isEmpty() ? null : combine(prices);
+            }
+
             if (!(
                     config.has("value")
                             && config.has("type")
