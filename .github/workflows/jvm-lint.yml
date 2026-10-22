@@ -24,8 +24,13 @@ on:
       - 'detekt.yml'
       - '.github/workflows/jvm-lint.yml'
   workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref to lint, for example refs/pull/123/head. Defaults to the dispatched branch.
+        type: string
+        default: ''
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
 env:
   JVM_LINT_VERSION: v1.0.0
@@ -45,6 +50,15 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - name: Resolve ref
+        id: target
+        env:
+          TARGET_REF: ${{ inputs.ref || github.ref }}
+        run: |
+          echo "ref=$TARGET_REF" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
@@ -115,11 +129,13 @@ jobs:
         with:
           sarif_file: build/jvm-lint/jvm-lint.sarif
           category: jvm-lint
+          ref: ${{ steps.target.outputs.ref }}
+          sha: ${{ steps.target.outputs.sha }}
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jvm-lint-reports
+          name: jvm-lint-reports-${{ steps.target.outputs.sha }}
           path: |
             build/jvm-lint/*.sarif
             build/jvm-lint/*.txt
