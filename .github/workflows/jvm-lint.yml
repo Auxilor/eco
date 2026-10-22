@@ -29,6 +29,10 @@ on:
         description: Git ref to lint, for example refs/pull/123/head. Defaults to the dispatched branch.
         type: string
         default: ''
+      create-baseline:
+        description: Write detekt-baseline.xml and jvm-lint-baseline.json from the current findings and upload them as an artifact.
+        type: boolean
+        default: false
 concurrency:
   group: ${{ github.workflow }}-${{ inputs.ref || github.ref }}
   cancel-in-progress: true
@@ -36,7 +40,7 @@ env:
   JVM_LINT_VERSION: v1.0.0
   DETEKT_VERSION: 2.0.0-alpha.6
   DETEKT_SHA256: d46ca62ea4d62769b5d5c3ba94d49fa9b80ba11c7dba74ddb6df7fcc2c19c5fd
-  FAIL_ON: never
+  FAIL_ON: error
   LINT_DIR: build/jvm-lint
 jobs:
   jvm-lint:
@@ -59,10 +63,12 @@ jobs:
         run: |
           echo "ref=$TARGET_REF" >> "$GITHUB_OUTPUT"
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          if [ ! -f jvm-lint.toml ]; then
-            git fetch --depth=1 origin "$GITHUB_SHA"
-            git show FETCH_HEAD:jvm-lint.toml > jvm-lint.toml
-          fi
+          for file in jvm-lint.toml detekt-baseline.xml jvm-lint-baseline.json; do
+            if [ ! -f "$file" ]; then
+              git fetch --depth=1 origin "$GITHUB_SHA"
+              git show "FETCH_HEAD:$file" > "$file" 2>/dev/null || rm -f "$file"
+            fi
+          done
       - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
@@ -92,9 +98,17 @@ jobs:
             --init-script "$TOOLS_DIR/classpath.init.gradle" --no-configuration-cache
           cat "$LINT_DIR"/classpath/*.txt | sort -u > "$LINT_DIR/classpath.txt"
       - name: Detekt
+        env:
+          CREATE_BASELINE: ${{ inputs.create-baseline }}
         run: |
           config="detekt.yml"
           [ -f "$config" ] || config="$TOOLS_DIR/detekt.yml"
+          baseline=()
+          if [ "$CREATE_BASELINE" = "true" ]; then
+            baseline=(--create-baseline --baseline "$LINT_DIR/detekt-baseline.xml")
+          elif [ -f detekt-baseline.xml ]; then
+            baseline=(--baseline detekt-baseline.xml)
+          fi
           java -jar "$TOOLS_DIR/detekt-cli.jar" \
             --input . \
             --excludes '**/build/**,**/.gradle/**,**/.jvm-lint-tools/**,buildSrc/**,*.kts,**/*.kts' \
@@ -107,12 +121,19 @@ jobs:
             --all-rules \
             --fail-on-severity never \
             --plugins "$TOOLS_DIR/jvm-lint-rules.jar:$TOOLS_DIR/jvm-lint-report.jar" \
+            "${baseline[@]}" \
             --report "jvm-lint-github:$LINT_DIR/detekt-github.txt" \
             --report "jvm-lint-sarif:$LINT_DIR/detekt.sarif" \
             --report "jvm-lint:$LINT_DIR/detekt.txt"
           cat "$LINT_DIR/detekt-github.txt"
       - name: Companion
+        env:
+          CREATE_BASELINE: ${{ inputs.create-baseline }}
         run: |
+          if [ "$CREATE_BASELINE" = "true" ]; then
+            java -jar "$TOOLS_DIR/jvm-lint-companion.jar" baseline --root . --config jvm-lint.toml \
+              --classpath "$LINT_DIR/classpath.txt" --output "$LINT_DIR/jvm-lint-baseline.json"
+          fi
           java -jar "$TOOLS_DIR/jvm-lint-companion.jar" check --root . --config jvm-lint.toml \
             --classpath "$LINT_DIR/classpath.txt" --fail-on never \
             --format github --format "sarif:$LINT_DIR/companion.sarif" --format "text:$LINT_DIR/companion.txt"
@@ -143,7 +164,10 @@ jobs:
           path: |
             build/jvm-lint/*.sarif
             build/jvm-lint/*.txt
+            build/jvm-lint/*.xml
+            build/jvm-lint/*.json
       - name: Gate
+        if: ${{ !inputs.create-baseline }}
         run: |
           java -jar "$TOOLS_DIR/jvm-lint-companion.jar" gate --fail-on "$FAIL_ON" \
             "$LINT_DIR/detekt.sarif" "$LINT_DIR/companion.sarif"
