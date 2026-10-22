@@ -1,0 +1,2 @@
+library-modules = ["eco-api"]
+root-classes = ["com.willfp.eco.internal.spigot.proxy.**"]
