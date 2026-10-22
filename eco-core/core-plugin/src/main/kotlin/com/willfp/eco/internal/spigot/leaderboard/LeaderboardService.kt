@@ -60,6 +60,14 @@ class LeaderboardService(
     // rather than queued behind the one still running.
     private val refreshing = AtomicBoolean(false)
 
+    // Set once the startup load has run. A leaderboard registered after that, by a plugin
+    // reload, starts empty and would otherwise rank nobody until the next reconcile.
+    private val startupLoaded = AtomicBoolean(false)
+
+    // Coalesces the refreshes asked for by registrations, so a reload registering every skill
+    // or job reads the database once rather than once per leaderboard.
+    private val registrationRefreshQueued = AtomicBoolean(false)
+
     /**
      * Whether ranking is on hold, set while profiles are still being carried out of data.yml.
      *
@@ -137,7 +145,39 @@ class LeaderboardService(
             byKey.computeIfAbsent(it.rankedKey) { ConcurrentHashMap.newKeySet() }.add(leaderboard)
         }
 
+        if (startupLoaded.get()) {
+            queueRegistrationRefresh()
+        }
+
         return leaderboard
+    }
+
+    private fun queueRegistrationRefresh() {
+        if (!enabled || !registrationRefreshQueued.compareAndSet(false, true)) {
+            return
+        }
+
+        plugin.scheduler.async().runLater(
+            Runnable { runRegistrationRefresh() },
+            1,
+            TimeUnit.SECONDS
+        )
+    }
+
+    private fun runRegistrationRefresh() {
+        // A sweep already running may have listed the leaderboards before this registration, so
+        // wait for it to finish rather than letting the overlap guard drop this one.
+        if (refreshing.get()) {
+            plugin.scheduler.async().runLater(
+                Runnable { runRegistrationRefresh() },
+                1,
+                TimeUnit.SECONDS
+            )
+            return
+        }
+
+        registrationRefreshQueued.set(false)
+        refreshAll()
     }
 
     private fun unindex(leaderboard: EcoLeaderboard) {
@@ -266,7 +306,10 @@ class LeaderboardService(
         // there will ever be. Without it nothing would populate the caches and every leaderboard
         // would rank nobody for the lifetime of the server.
         startupTask = plugin.scheduler.async().runLater(
-            Runnable { refreshAll() },
+            Runnable {
+                startupLoaded.set(true)
+                refreshAll()
+            },
             initialDelay,
             TimeUnit.SECONDS
         )
