@@ -46,6 +46,7 @@ class LeaderboardServiceConfigTests {
         every { config.getInt("leaderboards.initial-delay") } returns 1
         every { config.getInt("leaderboards.exact-rank-cutoff") } returns 0
         every { config.getInt("leaderboards.max-entries") } returns -1
+        every { config.getBool("leaderboards.shared-tie-ranks") } returns false
         every { config.getInt("leaderboards.percent-decimal-places") } returns 1
         every { config.getInt("leaderboards.sort-interval") } returns 5
         every { config.getInt("leaderboards.max-reconcile-overlay") } returns 10000

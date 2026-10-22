@@ -112,6 +112,9 @@ class LeaderboardService(
     val maxEntries: Int
         get() = plugin.configYml.getInt("leaderboards.max-entries")
 
+    val sharedTieRanks: Boolean
+        get() = plugin.configYml.getBool("leaderboards.shared-tie-ranks")
+
     val percentDecimalPlaces: Int
         get() = plugin.configYml.getInt("leaderboards.percent-decimal-places")
 

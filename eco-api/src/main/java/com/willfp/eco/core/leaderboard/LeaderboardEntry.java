@@ -46,7 +46,10 @@ public final class LeaderboardEntry {
     /**
      * Get the position on the leaderboard.
      * <p>
-     * Positions are one-indexed, so the top entry is at position 1.
+     * Positions are one-indexed, so the top entry is at position 1. With
+     * {@code leaderboards.shared-tie-ranks} on, tied players share a position and the next one
+     * skips past them (1, 2, 2, 4), so this can be lower than the index the entry was read from
+     * with {@link Leaderboard#getTop(int)}.
      *
      * @return The position.
      */

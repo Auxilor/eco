@@ -36,6 +36,7 @@ class EcoLeaderboardTests {
         every { config.getInt("leaderboards.exact-rank-cutoff") } returns 1
         every { config.getInt("leaderboards.max-entries") } returns -1
         every { config.getInt("leaderboards.percent-decimal-places") } returns 1
+        every { config.getBool("leaderboards.shared-tie-ranks") } returns false
     }
 
     private val target = UUID.randomUUID()
@@ -60,6 +61,38 @@ class EcoLeaderboardTests {
 
         assertEquals(100, leaderboard.getPosition(target))
         assertEquals(100.0, leaderboard.getRank(target).percent)
+    }
+
+    private val first = UUID.randomUUID()
+    private val tiedOne = UUID.randomUUID()
+    private val tiedTwo = UUID.randomUUID()
+    private val last = UUID.randomUUID()
+
+    private val tiedValues = mapOf(first to 9.0, tiedOne to 5.0, tiedTwo to 5.0, last to 1.0)
+
+    @Test
+    fun `tied players get their own ranks when shared tie ranks are off`() {
+        val leaderboard = leaderboard()
+
+        leaderboard.rebuildFrom(tiedValues, -1)
+
+        assertEquals(listOf(1, 2, 3, 4), leaderboard.snapshot.entries.map { it.position })
+        assertEquals(4, leaderboard.getPosition(last))
+    }
+
+    @Test
+    fun `tied players share a rank and the next rank skips past them`() {
+        every { config.getBool("leaderboards.shared-tie-ranks") } returns true
+        val leaderboard = leaderboard()
+
+        leaderboard.rebuildFrom(tiedValues, -1)
+
+        assertEquals(1, leaderboard.getPosition(first))
+        assertEquals(2, leaderboard.getPosition(tiedOne))
+        assertEquals(2, leaderboard.getPosition(tiedTwo))
+        assertEquals(4, leaderboard.getPosition(last))
+        assertEquals(listOf(1, 2, 2, 4), leaderboard.snapshot.entries.map { it.position })
+        assertEquals(last, leaderboard.getTop(4)?.uuid)
     }
 
     @Test

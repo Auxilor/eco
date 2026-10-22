@@ -103,14 +103,21 @@ class EcoLeaderboard(
         // Ranks are never capped, so a player outside the retained top-N can still find their
         // own position.
         val ranks = HashMap<UUID, Int>(sorted.size)
+        val sharedTieRanks = service.sharedTieRanks
+        var rank = 0
         for ((index, pair) in sorted.withIndex()) {
-            ranks[pair.first] = index + 1
+            // With shared tie ranks, tied players share a rank and the next one skips past
+            // them: 1, 2, 2, 4. Without, every player gets their own: 1, 2, 3, 4.
+            if (!sharedTieRanks || index == 0 || pair.second != sorted[index - 1].second) {
+                rank = index + 1
+            }
+            ranks[pair.first] = rank
         }
 
         // A negative max means uncapped.
         val capped = if (maxEntries < 0) sorted else sorted.take(maxEntries)
-        val entries = capped.mapIndexed { index, (uuid, value) ->
-            LeaderboardEntry(index + 1, uuid, value)
+        val entries = capped.map { (uuid, value) ->
+            LeaderboardEntry(ranks.getValue(uuid), uuid, value)
         }
 
         snapshot = LeaderboardSnapshot(entries, ranks, sorted.size, System.currentTimeMillis())
