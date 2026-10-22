@@ -12,19 +12,19 @@ import org.junit.jupiter.api.assertThrows
 
 internal class CaptiveItemTests {
     @Test
-    fun `unbound captive item returns null`() {
+    fun `unbound item returns null`() {
         assertNull(CaptiveItem()[mockk<Player>()])
     }
 
     @Test
-    fun `bound captive item reads the menu`() {
+    fun `bound item reads the menu`() {
         val player = mockk<Player>()
         val stack = mockk<ItemStack>()
         val menu = mockk<Menu>()
         every { menu.getCaptiveItem(player, 2, 3) } returns stack
         val captiveItem = CaptiveItem()
 
-        captiveItem.bind(menu, 2, 3)
+        captiveItem.bind(menu, row = 2, column = 3)
 
         assertSame(stack, captiveItem[player])
     }

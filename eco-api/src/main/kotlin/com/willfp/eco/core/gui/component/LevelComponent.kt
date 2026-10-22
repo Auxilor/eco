@@ -28,6 +28,7 @@ enum class LevelState(
 
     companion object {
         /** Get the state of [level] for a player at [currentLevel]. */
+        @Suppress("FunctionNameMinLength")
         fun of(level: Int, currentLevel: Int): LevelState = when {
             level <= currentLevel -> UNLOCKED
             level == currentLevel + 1 -> IN_PROGRESS
@@ -50,7 +51,7 @@ fun parseProgressionPattern(pattern: List<String>): Map<SlotLocation, Int> {
             val index = PROGRESSION_ORDER.indexOf(character)
 
             if (index != -1) {
-                offsets[SlotLocation(rowIndex + 1, columnIndex + 1)] = index + 1
+                offsets[SlotLocation(row = rowIndex + 1, column = columnIndex + 1)] = index + 1
             }
         }
     }
@@ -73,6 +74,28 @@ abstract class LevelComponent : AutofillComponent() {
 
     /** Whether level items are refreshed while the menu is open. */
     open val updatesLive: Boolean = false
+
+    private var _levelsPerPage by Delegates.notNull<Int>()
+
+    val levelsPerPage: Int
+        get() {
+            if (!isBuilt) {
+                build()
+            }
+
+            return _levelsPerPage
+        }
+
+    private var _pages by Delegates.notNull<Int>()
+
+    val pages: Int
+        get() {
+            if (!isBuilt) {
+                build()
+            }
+
+            return _pages
+        }
 
     private fun buildSlot(level: Int) = Slot.builder { player, menu ->
         getLevelItem(player, menu, level, getLevelState(player, level))
@@ -104,28 +127,6 @@ abstract class LevelComponent : AutofillComponent() {
             }
         }
     }
-
-    private var _levelsPerPage by Delegates.notNull<Int>()
-
-    val levelsPerPage: Int
-        get() {
-            if (!isBuilt) {
-                build()
-            }
-
-            return _levelsPerPage
-        }
-
-    private var _pages by Delegates.notNull<Int>()
-
-    val pages: Int
-        get() {
-            if (!isBuilt) {
-                build()
-            }
-
-            return _pages
-        }
 
     private fun build() {
         isBuilt = true

@@ -25,11 +25,11 @@ internal class SlotAreaTests {
 
     @Test
     fun `box area from corners`() {
-        corners(2, 2, 5, 8)
+        corners(topRow = 2, topColumn = 2, bottomRow = 5, bottomColumn = 8)
 
         val area = config.getSlotArea("a")
 
-        assertEquals(SlotArea(2, 2, 4, 7), area)
+        assertEquals(SlotArea(row = 2, column = 2, rows = 4, columns = 7), area)
         assertEquals(28, area.size)
     }
 
@@ -41,12 +41,12 @@ internal class SlotAreaTests {
         every { config.getInt("a.height") } returns 4
         every { config.getInt("a.width") } returns 9
 
-        assertEquals(SlotArea(2, 1, 4, 9), config.getSlotArea("a"))
+        assertEquals(SlotArea(row = 2, column = 1, rows = 4, columns = 9), config.getSlotArea("a"))
     }
 
     @Test
-    fun `inverted corners give an empty area`() {
-        corners(5, 5, 2, 2)
+    fun `inverted corners give no area`() {
+        corners(topRow = 5, topColumn = 5, bottomRow = 2, bottomColumn = 2)
 
         assertEquals(0, config.getSlotArea("a").size)
     }

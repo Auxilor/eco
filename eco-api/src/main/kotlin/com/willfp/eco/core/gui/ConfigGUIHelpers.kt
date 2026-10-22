@@ -32,6 +32,7 @@ internal fun Config.getPlainStringOrNull(path: String): String? =
  * @param format Applied to the item lookup string and to every name and lore line read from config.
  * @return The item.
  */
+@Suppress("LongParameterList", "UnreachableCode")
 fun Config.getConfigItem(
     defaultItem: String? = null,
     name: String? = null,
@@ -40,32 +41,37 @@ fun Config.getConfigItem(
     invalidItem: String? = null,
     format: (String) -> String = { it }
 ): ItemStack {
-    val base = Items.lookup(
-        (state?.let { getPlainStringOrNull("item.$it") }
-            ?: getPlainStringOrNull("item")
-            ?: getStringOrNull("material")
-            ?: defaultItem
-            ?: "").let(format)
-    ).let {
-        if (it is EmptyTestableItem && invalidItem != null) Items.lookup(invalidItem) else it
-    }.item
-
-    val displayName = name ?: (state?.let { getPlainStringOrNull("name.$it") } ?: getPlainStringOrNull("name"))?.let(format)
-
-    val loreLines = lore ?: (state?.let { "lore.$it" }?.takeIf { has(it) } ?: "lore".takeIf { has(it) })
-        ?.let { getStrings(it) }
-        ?.map(format)
+    val lookup = Items.lookup(
+        format(getStateString("item", state) ?: getStringOrNull("material") ?: defaultItem.orEmpty())
+    )
+    val base = if (lookup is EmptyTestableItem && invalidItem != null) Items.lookup(invalidItem).item else lookup.item
+    val displayName = name ?: getStateString("name", state)?.let(format)
+    val loreLines = lore ?: getStateLore(state)?.map(format)
 
     if (displayName == null && loreLines == null) {
         return base
     }
 
-    return ItemStackBuilder(base)
-        .apply {
-            displayName?.let { setDisplayName(it) }
-            loreLines?.let { addLoreLines(it) }
-        }
-        .build()
+    val builder = ItemStackBuilder(base)
+
+    if (displayName != null) {
+        builder.setDisplayName(displayName)
+    }
+
+    if (loreLines != null) {
+        builder.addLoreLines(loreLines)
+    }
+
+    return builder.build()
+}
+
+private fun Config.getStateString(key: String, state: String?): String? =
+    state?.let { getPlainStringOrNull("$key.$it") } ?: getPlainStringOrNull(key)
+
+private fun Config.getStateLore(state: String?): List<String>? = when {
+    state != null && has("lore.$state") -> getStrings("lore.$state")
+    has("lore") -> getStrings("lore")
+    else -> null
 }
 
 /**
@@ -76,6 +82,7 @@ fun Config.getConfigItem(
  * @param path The path of the section holding `mask`, or empty for this config itself.
  * @return The filler mask.
  */
+@Suppress("SpreadOperator")
 fun Config.getFillerMask(path: String = ""): FillerMask {
     val prefix = if (path.isEmpty()) "" else "$path."
 

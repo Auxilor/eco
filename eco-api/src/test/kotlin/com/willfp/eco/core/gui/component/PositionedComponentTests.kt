@@ -42,7 +42,9 @@ internal class PositionedComponentTests {
 
     private fun configButton(config: Config, enabledByDefault: Boolean, defaultItem: String? = "stone"): ConfigButton {
         mockkStatic(Items::class)
-        every { Items.lookup(any()) } returns mockk<TestableItem> { every { item } returns mockk<ItemStack>(relaxed = true) }
+        every { Items.lookup(any()) } returns mockk<TestableItem> {
+            every { item } returns mockk<ItemStack>(relaxed = true)
+        }
         mockkConstructor(ItemStackBuilder::class)
         every { anyConstructed<ItemStackBuilder>().build() } returns mockk<ItemStack>()
         mockkStatic(Eco::class)
@@ -64,8 +66,8 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `component is added at every location`() {
-        val component = StubComponent(listOf(SlotLocation(6, 1), SlotLocation(6, 9)))
+    fun `added at every location`() {
+        val component = StubComponent(listOf(SlotLocation(row = 6, column = 1), SlotLocation(row = 6, column = 9)))
 
         builder.addComponent(component)
 
@@ -74,15 +76,15 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `disabled component is not added`() {
-        builder.addComponent(StubComponent(listOf(SlotLocation(6, 1)), isEnabled = false))
+    fun `disabled component not added`() {
+        builder.addComponent(StubComponent(listOf(SlotLocation(row = 6, column = 1)), isEnabled = false))
 
         verify(exactly = 0) { builder.addComponent(any<Int>(), any(), any(), any()) }
     }
 
     @Test
     fun `explicit layer wins`() {
-        val component = StubComponent(listOf(SlotLocation(2, 3)))
+        val component = StubComponent(listOf(SlotLocation(row = 2, column = 3)))
 
         builder.addComponent(MenuLayer.LOWER, component)
 
@@ -90,7 +92,7 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `config button enabled flag overrides the default`() {
+    fun `enabled flag overrides default`() {
         assertEquals(false, configButton(enabledConfig(false), enabledByDefault = true).isEnabled)
         assertEquals(true, configButton(enabledConfig(true), enabledByDefault = false).isEnabled)
         assertEquals(true, configButton(enabledConfig(null), enabledByDefault = true).isEnabled)
@@ -98,7 +100,7 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `config button without item or default item does not throw`() {
+    fun `missing item does not throw`() {
         configButton(enabledConfig(null), enabledByDefault = true, defaultItem = null)
     }
 
@@ -122,7 +124,7 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `config button without name or lore keeps an air item`() {
+    fun `no name or lore keeps air item`() {
         val provider = airButton(enabledConfig(null))
 
         assertSame(airItem, provider.provide(mockk(), mockk()))
@@ -130,7 +132,7 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `config button with a name builds an air item through the item builder`() {
+    fun `named air item uses builder`() {
         val config = enabledConfig(null)
         every { config.getStringOrNull("name") } returns "Name"
 
@@ -141,14 +143,18 @@ internal class PositionedComponentTests {
     }
 
     @Test
-    fun `config button reads the state keys first and formats them`() {
+    fun `reads state keys and formats`() {
         val config = enabledConfig(null)
         every { config.getStringOrNull("item.active") } returns "%arrow%"
         every { config.getStringOrNull("item") } returns "stone"
         every { config.getStringOrNull("name.active") } returns "Active %page%"
         every { config.getStringOrNull("name") } returns "Name"
 
-        airButton(config) { ConfigButton(it, state = "active", format = { line -> line.replace("%arrow%", "arrow").replace("%page%", "1") }) }
+        airButton(config) { buttonConfig ->
+            ConfigButton(buttonConfig, state = "active", format = { line ->
+                line.replace(oldValue = "%arrow%", newValue = "arrow").replace(oldValue = "%page%", newValue = "1")
+            })
+        }
 
         verify(exactly = 1) { Items.lookup("arrow") }
         verify(exactly = 1) { anyConstructed<ItemStackBuilder>().setDisplayName("Active 1") }

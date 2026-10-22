@@ -23,7 +23,7 @@ internal class MenuStateVarTests {
     }
 
     @Test
-    fun `nullable state var reads and writes menu state`() {
+    fun `nullable var reads and writes`() {
         every { menu.getState<String>(player, "k") } returns "v"
         val stateVar = menuStateVar<String>(menu, "k")
 
@@ -35,14 +35,14 @@ internal class MenuStateVarTests {
     }
 
     @Test
-    fun `state var with default returns default when unset`() {
+    fun `unset var returns default`() {
         every { menu.getState<Int>(player, "k") } returns null
 
         assertEquals(1, menuStateVar(menu, "k", 1)[player])
     }
 
     @Test
-    fun `delegate state var is cached per menu`() {
+    fun `delegate is cached per menu`() {
         assertSame(menu.delegatedState, menu.delegatedState)
     }
 }

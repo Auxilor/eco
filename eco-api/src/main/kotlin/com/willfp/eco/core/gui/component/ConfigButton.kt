@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack
  * @param name The display name, used instead of the config's `name` when set.
  * @param enabledByDefault Whether the button is enabled when the config does not set `enabled`.
  * @param defaultLocations The locations when the config sets none.
- * @param layer The layer to place the button on.
+ * @property layer The layer to place the button on.
  * @param lore The lore, used instead of the config's `lore` when set.
  * @param state The key read first under `item`, `name` and `lore` (for example `active`), or null.
  * @param invalidItem The item lookup string used when the configured item does not resolve, or null.
@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack
  * @param sound Played to the player before [action], or null.
  * @param action Runs when a player left clicks the button.
  */
+@Suppress("LongParameterList")
 class ConfigButton(
     config: Config,
     defaultItem: String? = null,
@@ -50,7 +51,8 @@ class ConfigButton(
     action: (Player, InventoryClickEvent, Slot, Menu) -> Unit = { _, _, _, _ -> }
 ) : PositionedComponent {
     private val slot = slot(
-        config.getConfigItem(defaultItem, name, lore, state, invalidItem, format).let { itemModifier?.invoke(it) ?: it }
+        config.getConfigItem(defaultItem, name, lore, state, invalidItem, format)
+            .let { itemModifier?.invoke(it) ?: it }
     ) {
         onLeftClick { player, event, slot, menu ->
             sound?.playTo(player)
@@ -66,6 +68,7 @@ class ConfigButton(
 }
 
 /** A [ConfigButton] that closes the menu when left clicked. */
+@Suppress("LongParameterList")
 fun closeButton(
     config: Config,
     defaultItem: String? = null,

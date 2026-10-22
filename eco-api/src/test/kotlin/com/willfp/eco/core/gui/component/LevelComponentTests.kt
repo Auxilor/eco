@@ -19,11 +19,12 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.concurrent.CopyOnWriteArrayList
 
 internal class LevelComponentTests {
     private lateinit var player: Player
     private lateinit var menu: Menu
-    private val requestedLevels = mutableListOf<Int>()
+    private val requestedLevels = CopyOnWriteArrayList<Int>()
 
     @BeforeEach
     fun setup() {
@@ -61,20 +62,20 @@ internal class LevelComponentTests {
     }
 
     @Test
-    fun `pattern maps characters to level offsets`() {
+    fun `pattern maps to level offsets`() {
         assertEquals(
             mapOf(
-                SlotLocation(1, 2) to 1,
-                SlotLocation(1, 3) to 2,
-                SlotLocation(2, 1) to 10,
-                SlotLocation(2, 4) to 11
+                SlotLocation(row = 1, column = 2) to 1,
+                SlotLocation(row = 1, column = 3) to 2,
+                SlotLocation(row = 2, column = 1) to 10,
+                SlotLocation(row = 2, column = 4) to 11
             ),
             parseProgressionPattern(listOf("0120", "a00b"))
         )
     }
 
     @Test
-    fun `pattern without levels has no pages`() {
+    fun `empty pattern has no pages`() {
         val component = component(listOf("000"), 10)
 
         assertEquals(0, component.levelsPerPage)
@@ -93,11 +94,11 @@ internal class LevelComponentTests {
     }
 
     @Test
-    fun `slot on page two shows the offset level`() {
+    fun `page two shows offset level`() {
         val component = component(listOf("1234567"), 20)
         every { menu.getPage(player) } returns 2
 
-        component.getSlotAt(1, 3, player, menu)!!.getItemStack(player)
+        component.getSlotAt(row = 1, column = 3, player = player, menu = menu)!!.getItemStack(player)
 
         assertEquals(listOf(10), requestedLevels)
     }
@@ -107,14 +108,14 @@ internal class LevelComponentTests {
         val component = component(listOf("1234567"), 8)
         every { menu.getPage(player) } returns 2
 
-        assertNotNull(component.getSlotAt(1, 1, player, menu))
-        assertNull(component.getSlotAt(1, 3, player, menu))
+        assertNotNull(component.getSlotAt(row = 1, column = 1, player = player, menu = menu))
+        assertNull(component.getSlotAt(row = 1, column = 3, player = player, menu = menu))
     }
 
     @Test
     fun `level state of`() {
-        assertEquals(LevelState.UNLOCKED, LevelState.of(3, 3))
-        assertEquals(LevelState.IN_PROGRESS, LevelState.of(4, 3))
-        assertEquals(LevelState.LOCKED, LevelState.of(5, 3))
+        assertEquals(LevelState.UNLOCKED, LevelState.of(level = 3, currentLevel = 3))
+        assertEquals(LevelState.IN_PROGRESS, LevelState.of(level = 4, currentLevel = 3))
+        assertEquals(LevelState.LOCKED, LevelState.of(level = 5, currentLevel = 3))
     }
 }

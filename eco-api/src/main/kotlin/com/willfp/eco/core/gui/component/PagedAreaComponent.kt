@@ -15,7 +15,8 @@ import org.bukkit.entity.Player
  *
  * Fill order is row by row. A position with no entry shows [getEmptySlot].
  *
- * @param area The area the grid covers.
+ * @param T The entry type.
+ * @property area The area the grid covers.
  */
 abstract class PagedAreaComponent<T>(
     val area: SlotArea

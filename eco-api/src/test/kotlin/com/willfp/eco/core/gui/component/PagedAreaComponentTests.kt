@@ -38,28 +38,36 @@ internal class PagedAreaComponentTests {
     fun `entry index follows page`() {
         every { menu.getPage(player) } returns 2
 
-        assertEquals(7, component(SlotArea(1, 1, 2, 3), 10).getEntryAt(player, menu, 1, 2))
+        assertEquals(
+            7,
+            component(SlotArea(row = 1, column = 1, rows = 2, columns = 3), 10)
+                .getEntryAt(player, menu, row = 1, column = 2)
+        )
     }
 
     @Test
-    fun `missing entry uses the empty slot`() {
+    fun `missing entry uses empty slot`() {
         every { menu.getPage(player) } returns 2
 
-        assertSame(emptySlot, component(SlotArea(1, 1, 2, 3), 10).getSlotAt(2, 3, player, menu))
+        assertSame(
+            emptySlot,
+            component(SlotArea(row = 1, column = 1, rows = 2, columns = 3), 10)
+                .getSlotAt(row = 2, column = 3, player = player, menu = menu)
+        )
     }
 
     @Test
     fun `empty entries give zero pages`() {
-        assertEquals(0, component(SlotArea(1, 1, 2, 3), 0).getPages(player, menu))
+        assertEquals(0, component(SlotArea(row = 1, column = 1, rows = 2, columns = 3), 0).getPages(player, menu))
     }
 
     @Test
-    fun `zero size area gives zero pages`() {
-        assertEquals(0, component(SlotArea(1, 1, 0, 0), 5).getPages(player, menu))
+    fun `empty area gives zero pages`() {
+        assertEquals(0, component(SlotArea(row = 1, column = 1, rows = 0, columns = 0), 5).getPages(player, menu))
     }
 
     @Test
     fun `pages round up`() {
-        assertEquals(3, component(SlotArea(1, 1, 2, 3), 13).getPages(player, menu))
+        assertEquals(3, component(SlotArea(row = 1, column = 1, rows = 2, columns = 3), 13).getPages(player, menu))
     }
 }

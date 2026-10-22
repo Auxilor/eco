@@ -5,10 +5,10 @@ import com.willfp.eco.core.config.interfaces.Config
 /**
  * A rectangle of slots in a menu.
  *
- * @param row The first row.
- * @param column The first column.
- * @param rows The height in rows.
- * @param columns The width in columns.
+ * @property row The first row.
+ * @property column The first column.
+ * @property rows The height in rows.
+ * @property columns The width in columns.
  */
 data class SlotArea(
     val row: Int,
@@ -39,17 +39,17 @@ fun Config.getSlotArea(path: String = ""): SlotArea {
         val leftColumn = getInt("${prefix}top-left.column")
 
         return SlotArea(
-            topRow.coerceAtLeast(0),
-            leftColumn.coerceAtLeast(0),
-            (getInt("${prefix}bottom-right.row") - topRow + 1).coerceAtLeast(0),
-            (getInt("${prefix}bottom-right.column") - leftColumn + 1).coerceAtLeast(0)
+            row = topRow.coerceAtLeast(0),
+            column = leftColumn.coerceAtLeast(0),
+            rows = (getInt("${prefix}bottom-right.row") - topRow + 1).coerceAtLeast(0),
+            columns = (getInt("${prefix}bottom-right.column") - leftColumn + 1).coerceAtLeast(0)
         )
     }
 
     return SlotArea(
-        getInt("${prefix}row").coerceAtLeast(0),
-        getInt("${prefix}column").coerceAtLeast(0),
-        getInt("${prefix}height").coerceAtLeast(0),
-        getInt("${prefix}width").coerceAtLeast(0)
+        row = getInt("${prefix}row").coerceAtLeast(0),
+        column = getInt("${prefix}column").coerceAtLeast(0),
+        rows = getInt("${prefix}height").coerceAtLeast(0),
+        columns = getInt("${prefix}width").coerceAtLeast(0)
     )
 }

@@ -204,8 +204,8 @@ fun MenuBuilder.onBuild(action: (Menu) -> Unit): MenuBuilder =
 /**
  * A row and column in a menu.
  *
- * @param row The row.
- * @param column The column.
+ * @property row The row.
+ * @property column The column.
  */
 data class SlotLocation(
     val row: Int,
@@ -220,7 +220,8 @@ data class SlotLocation(
  * falling back to a flat `path.row` / `path.column`.
  *
  * @param path The path of the section, or empty for this config itself.
- * @param default The locations to return when none of those keys are set, or null to read the flat row and column regardless.
+ * @param default The locations to return when none of those keys are set, or null to read the
+ * flat row and column regardless.
  * @return The slot locations, never empty.
  */
 fun Config.getSlotLocations(path: String = "", default: List<SlotLocation>? = null): List<SlotLocation> {
@@ -228,20 +229,16 @@ fun Config.getSlotLocations(path: String = "", default: List<SlotLocation>? = nu
 
     val locations = getSubsections("${prefix}locations")
 
-    if (locations.isNotEmpty()) {
-        return locations.map { SlotLocation(it.getInt("row"), it.getInt("column")) }
-    }
-
-    if (default != null && !has("${prefix}location.row") && !has("${prefix}row")) {
-        return default
-    }
-
-    return listOf(
-        SlotLocation(
-            getIntOrNull("${prefix}location.row") ?: getInt("${prefix}row"),
-            getIntOrNull("${prefix}location.column") ?: getInt("${prefix}column")
+    return when {
+        locations.isNotEmpty() -> locations.map { SlotLocation(row = it.getInt("row"), column = it.getInt("column")) }
+        default != null && !has("${prefix}location.row") && !has("${prefix}row") -> default
+        else -> listOf(
+            SlotLocation(
+                row = getIntOrNull("${prefix}location.row") ?: getInt("${prefix}row"),
+                column = getIntOrNull("${prefix}location.column") ?: getInt("${prefix}column")
+            )
         )
-    )
+    }
 }
 
 /**
@@ -260,7 +257,8 @@ fun Config.getSlotLocations(path: String = "", default: List<SlotLocation>? = nu
  * @param direction The direction.
  * @param sound The page turn sound, or null for silent.
  * @param layer The layer, defaults to [MenuLayer.TOP].
- * @param defaultItem The item lookup string to use as the active item when none is configured, or null to hide the button.
+ * @param defaultItem The item lookup string to use as the active item when none is configured,
+ * or null to hide the button.
  * @param name The display name of both states, used instead of the config's when set.
  * @param defaultLocations The locations when the config sets none.
  * @param format Applied to the item lookup strings and to every name and lore line read from config.
@@ -281,23 +279,26 @@ fun MenuBuilder.addPageChanger(
 ): MenuBuilder {
     val section = config.getSubsection(basePath)
 
-    if (section.getPlainStringOrNull("item.active") == null
-        && section.getPlainStringOrNull("item") == null
-        && section.getStringOrNull("material") == null
-        && defaultItem == null
-    ) {
+    if (defaultItem == null && !section.hasActiveItem()) {
         return this
     }
 
     val active = section.getConfigItem(defaultItem, name, state = "active", format = format)
 
     val inactive = when {
-        hideInactive -> null
-        section.has("item-inactive") -> Items.lookup(format(section.getString("item-inactive"))).item.let { item ->
-            name?.let { ItemStackBuilder(item).setDisplayName(it).build() } ?: item
+        hideInactive -> {
+            null
         }
-        section.getPlainStringOrNull("item.inactive") != null -> section.getConfigItem(name = name, state = "inactive", format = format)
-        else -> null
+        section.has("item-inactive") -> {
+            val item = Items.lookup(format(section.getString("item-inactive"))).item
+            if (name == null) item else ItemStackBuilder(item).setDisplayName(name).build()
+        }
+        section.getPlainStringOrNull("item.inactive") != null -> {
+            section.getConfigItem(name = name, state = "inactive", format = format)
+        }
+        else -> {
+            null
+        }
     }
 
     for ((row, column) in config.getSlotLocations(basePath, defaultLocations)) {
@@ -306,6 +307,11 @@ fun MenuBuilder.addPageChanger(
 
     return this
 }
+
+private fun Config.hasActiveItem(): Boolean =
+    getPlainStringOrNull("item.active") != null
+        || getPlainStringOrNull("item") != null
+        || getStringOrNull("material") != null
 
 /**
  * Add a page changer button from prebuilt items.
