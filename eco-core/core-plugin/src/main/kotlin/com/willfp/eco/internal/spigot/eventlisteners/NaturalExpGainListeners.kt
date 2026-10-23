@@ -1,6 +1,7 @@
 package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.events.NaturalExpGainEvent
+import java.util.concurrent.CopyOnWriteArrayList
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ThrownExpBottle
@@ -24,7 +25,7 @@ class NaturalExpGainListenersPaper : Listener {
 }
 
 class NaturalExpGainListenersSpigot : Listener {
-    private val bottles = mutableListOf<BrokenBottle>()
+    private val bottles = CopyOnWriteArrayList<BrokenBottle>()
 
     @EventHandler
     fun playerChange(event: PlayerExpChangeEvent) {
