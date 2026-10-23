@@ -65,7 +65,9 @@ class LeaderboardService(
     private val startupLoaded = AtomicBoolean(false)
 
     // Coalesces the refreshes asked for by registrations, so a reload registering every skill
-    // or job reads the database once rather than once per leaderboard.
+    // or job reads the database once rather than once per leaderboard. A sweep already running
+    // may have listed the leaderboards before the registration, so the refresh waits for it
+    // rather than letting the overlap guard drop it.
     private val registrationRefreshQueued = AtomicBoolean(false)
 
     /**
@@ -152,15 +154,8 @@ class LeaderboardService(
         return leaderboard
     }
 
-    /**
-     * Refresh every leaderboard a second after a registration made once the startup load has run.
-     *
-     * Registrations within that second share one refresh. A sweep already running may have listed
-     * the leaderboards before the registration, so this waits for it to finish rather than
-     * letting the overlap guard drop it.
-     */
     private fun queueRegistrationRefresh(requeue: Boolean = false) {
-        if (!enabled || (!requeue && !registrationRefreshQueued.compareAndSet(false, true))) {
+        if (!enabled || !requeue && !registrationRefreshQueued.compareAndSet(false, true)) {
             return
         }
 
