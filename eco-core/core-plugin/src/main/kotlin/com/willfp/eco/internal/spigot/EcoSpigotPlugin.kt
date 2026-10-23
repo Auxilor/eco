@@ -17,7 +17,7 @@ import com.willfp.eco.core.integrations.economy.EconomyManager
 import com.willfp.eco.core.integrations.discord.DiscordManager
 import com.willfp.eco.internal.discord.DiscordIntegrationImpl
 import com.willfp.eco.core.integrations.mcmmo.McmmoManager
-import com.willfp.eco.core.integrations.modelengine.ModelEngineManager
+import com.willfp.eco.core.integrations.model.ModelManager
 import com.willfp.eco.core.integrations.placeholder.PlaceholderManager
 import com.willfp.eco.core.integrations.shop.ShopManager
 import com.willfp.eco.core.items.Items
@@ -206,9 +206,9 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
-import com.willfp.eco.internal.spigot.integrations.entitylookup.EntityLookupModelEngine
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
-import com.willfp.eco.internal.spigot.integrations.modelengine.ModelEngineIntegrationImpl
+import com.willfp.eco.internal.spigot.integrations.model.EntityArgParserModel
+import com.willfp.eco.internal.spigot.integrations.model.ModelIntegrationModelEngine
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
 import com.willfp.eco.internal.spigot.integrations.price.PriceFactoryCoinsEngine
@@ -400,6 +400,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Entities.registerArgParser(EntityArgParserScale)
         Entities.registerArgParser(EntityArgParserFirework)
         Entities.registerArgParser(EntityArgParserNoClimb)
+        Entities.registerArgParser(EntityArgParserModel)
 
         Prices.registerDefaultPriceFactory(PriceFactoryEconomy)
         Prices.registerDefaultPriceFactory(PriceFactoryXPLevels)
@@ -677,10 +678,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     MultiverseInventoriesIntegration(this)
                 )
             },
-            IntegrationLoader("ModelEngine") {
-                ModelEngineManager.register(ModelEngineIntegrationImpl())
-                EntityLookupModelEngine.register()
-            }
+            IntegrationLoader("ModelEngine") { ModelManager.register(ModelIntegrationModelEngine()) }
         )
     }
 
