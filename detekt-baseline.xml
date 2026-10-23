@@ -1376,7 +1376,6 @@
     <ID>IC002:PlayerbaseValues.kt:PlayerbaseValues$// Captured before the swap: these are the values that are newer than the read.</ID>
     <ID>IC002:PlayerbaseValuesTests.kt:PlayerbaseValuesTests$// Lands after the sweep read the database, but before it installs.</ID>
     <ID>IC002:PlayerbaseValuesTests.kt:PlayerbaseValuesTests$// The player dropped back to the key's default while the sweep was reading.</ID>
-    <ID>IC002:PlayerflowHandler.kt:PlayerflowHandler$// Silently fail</ID>
     <ID>IC002:PostgreSQLPersistentDataHandler.kt:PostgreSQLPersistentDataHandler.&lt;no name provided&gt;.&lt;no name provided&gt;$// 34 digits of precision, 4 digits of scale</ID>
     <ID>IC002:PriceFactoryXP.kt:// XP Formula from NMS Player</ID>
     <ID>IC002:PriceFactoryXP.kt:PriceFactoryXP.PriceXP$// Handle recursive level down</ID>
@@ -1817,7 +1816,6 @@
     <ID>MagicNumber:PlayerHealthPatch.kt:PlayerHealthPatch$20L</ID>
     <ID>MagicNumber:PlayerHealthPatch.kt:PlayerHealthPatch$3</ID>
     <ID>MagicNumber:PlayerJumpListeners.kt:PlayerJumpListenersSpigot$0.1f</ID>
-    <ID>MagicNumber:PlayerflowHandler.kt:PlayerflowHandler$1200L</ID>
     <ID>MagicNumber:PriceFactoryXP.kt:112</ID>
     <ID>MagicNumber:PriceFactoryXP.kt:15</ID>
     <ID>MagicNumber:PriceFactoryXP.kt:30</ID>
@@ -2608,7 +2606,6 @@
     <ID>SwallowedException:MetricHandler.kt:MetricHandler$e: Exception</ID>
     <ID>SwallowedException:PackPublisher.kt:PackPublisher$e: AtomicMoveNotSupportedException</ID>
     <ID>SwallowedException:ParticleKeys.kt:e: IllegalArgumentException</ID>
-    <ID>SwallowedException:PlayerflowHandler.kt:PlayerflowHandler$e: Exception</ID>
     <ID>SwallowedException:YamlPersistentDataHandler.kt:YamlPersistentDataHandler$e: IllegalArgumentException</ID>
     <ID>ThrowsCount:EcoExtensionLoader.kt:EcoExtensionLoader$@Suppress("DEPRECATION") @Throws(MalformedExtensionException::class) private fun loadExtension</ID>
     <ID>ThrowsCount:FastNumberParsing.kt:FastNumberParsing$@JvmStatic fun parseDouble: Double</ID>
@@ -2628,7 +2625,6 @@
     <ID>TooGenericExceptionCaught:PersistentActionBarService.kt:PersistentActionBarService$exception: Exception</ID>
     <ID>TooGenericExceptionCaught:PlayerHealthPatch.kt:PlayerHealthPatch$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:PlayerbaseOperations.kt:e: Exception</ID>
-    <ID>TooGenericExceptionCaught:PlayerflowHandler.kt:PlayerflowHandler$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ProfileWriter.kt:ProfileWriter$e: Exception</ID>
     <ID>TooGenericExceptionCaught:RedisPersistentDataHandler.kt:RedisPersistentDataHandler$e: Exception</ID>
     <ID>TooGenericExceptionCaught:RedisPersistentDataHandler.kt:RedisPersistentDataHandler.RedisSerializer$e: Exception</ID>

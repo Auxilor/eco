@@ -220,7 +220,6 @@ import com.willfp.eco.internal.spigot.integrations.shop.ShopEconomyShopGUI
 import com.willfp.eco.internal.spigot.integrations.shop.ShopExcellentShop
 import com.willfp.eco.internal.spigot.integrations.shop.ShopShopGuiPlus
 import com.willfp.eco.internal.spigot.integrations.shop.ShopZShop
-import com.willfp.eco.internal.spigot.metrics.PlayerflowHandler
 import com.willfp.eco.internal.spigot.proxies.FastItemStackFactoryProxy
 import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.recipes.CraftingRecipeListener
@@ -524,10 +523,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             this.configYml.getInt("display-frame-ttl").toLong(),
             this.configYml.getInt("display-frame-ttl").toLong(),
         ) { getProxy(PacketHandlerProxy::class.java).clearDisplayFrames() }
-
-        if (this.configYml.getBool("playerflow")) {
-            PlayerflowHandler(this.scheduler).startTicking()
-        }
 
         this.scheduler.global().runTimer(1L, 20L) {
             Recipes.checkBatching()
