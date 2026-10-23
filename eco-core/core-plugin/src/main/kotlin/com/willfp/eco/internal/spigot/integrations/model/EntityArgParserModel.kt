@@ -26,10 +26,19 @@ object EntityArgParserModel : EntityArgParser {
 
     private fun parseModel(arg: String): ModelArg? {
         val argSplit = arg.split(":", limit = 2)
-        val integration = argSplit.takeIf { it.size == 2 }?.let { ModelManager.getIntegration(it[0]) } ?: return null
+        if (argSplit.size < 2) {
+            return null
+        }
+
         val value = argSplit[1].split(",")
 
-        return ModelArg(integration, value[0], value.getOrNull(1)?.takeIf { it.isNotBlank() })
+        return ModelManager.getIntegration(argSplit[0])?.let {
+            ModelArg(
+                integration = it,
+                id = value[0],
+                animation = value.getOrNull(1)?.takeIf { animation -> animation.isNotBlank() }
+            )
+        }
     }
 
     private fun apply(entity: Entity, model: ModelArg, hideBase: Boolean) {
