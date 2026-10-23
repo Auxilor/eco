@@ -78,6 +78,20 @@ custom-slots:
       - console:eco give %player% 1000
 ```
 
+To show the same custom slot in several places, use a `locations` list instead of `row` and `column`:
+
+```yaml
+custom-slots:
+  - locations:
+      - row: 6
+        column: 1
+      - row: 6
+        column: 9
+    item: compass name:"&aSpawn"
+    left-click:
+      - spawn
+```
+
 And you can add as many custom slots as you want, like this:
 
 ```yaml
@@ -116,3 +130,7 @@ forwards-arrow:
 ```
 
 Plugins that use a flat `row` and `column` under the button accept the same `locations` list.
+
+## Multiple Slots for Buttons
+
+Every button placed with a `row` and `column` (or a `location` section), such as close, back, info and confirm buttons, accepts the same `locations` list. When `locations` has entries, the button shows in each listed slot and the single `row` / `column` is ignored. Leave it as `locations: [ ]` to keep the single slot.
