@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.integrations.modelengine
 
+import com.ticxo.modelengine.api.animation.BlueprintAnimation
 import com.ticxo.modelengine.api.animation.handler.AnimationHandler
 import com.ticxo.modelengine.api.animation.property.SimpleProperty
 import com.willfp.eco.core.integrations.modelengine.BridgedActiveModel
@@ -22,10 +23,17 @@ class AnimationHandlerImpl(
     }
 
     override fun playAnimation(animation: BridgedAnimation, force: Boolean) {
+        playAnimation(animation, force, false)
+    }
+
+    override fun playAnimation(animation: BridgedAnimation, force: Boolean, loop: Boolean) {
         if (animation !is AnimationImpl) {
             return
         }
 
+        if (loop) {
+            animation.handle.forceLoopMode = BlueprintAnimation.LoopMode.LOOP
+        }
         handle.playAnimation(animation.handle, force)
     }
 

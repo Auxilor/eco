@@ -34,6 +34,19 @@ public interface BridgedAnimationHandler {
                        boolean force);
 
     /**
+     * Play an animation, optionally looping it until it is stopped.
+     *
+     * @param animation The animation, from {@link #getAnimation(String)}.
+     * @param force     If the animation should play even if it is already playing.
+     * @param loop      If the animation should loop whatever loop mode the model gives it.
+     */
+    default void playAnimation(@NotNull final BridgedAnimation animation,
+                               final boolean force,
+                               final boolean loop) {
+        playAnimation(animation, force);
+    }
+
+    /**
      * Get if an animation is playing.
      *
      * @param name The name of the animation.
