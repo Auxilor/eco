@@ -116,6 +116,9 @@ dependencies {
     compileOnly("io.lumine:Mythic:5.11.1")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
     compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
+    compileOnly("io.github.toxicity188:bettermodel-bukkit-api:2.2.0") {
+        exclude("*", "kotlin-stdlib")
+    }
     compileOnly("com.iridium:IridiumSkyblock:4.1.5")
     compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5.10")
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")

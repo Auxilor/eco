@@ -208,6 +208,7 @@ import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCus
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
 import com.willfp.eco.internal.spigot.integrations.model.EntityArgParserModel
+import com.willfp.eco.internal.spigot.integrations.model.ModelIntegrationBetterModel
 import com.willfp.eco.internal.spigot.integrations.model.ModelIntegrationModelEngine
 import com.willfp.eco.internal.spigot.integrations.multiverseinventories.MultiverseInventoriesIntegration
 import com.willfp.eco.internal.spigot.integrations.placeholder.PlaceholderIntegrationPAPI
@@ -678,7 +679,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                     MultiverseInventoriesIntegration(this)
                 )
             },
-            IntegrationLoader("ModelEngine") { ModelManager.register(ModelIntegrationModelEngine()) }
+            IntegrationLoader("ModelEngine") { ModelManager.register(ModelIntegrationModelEngine()) },
+            IntegrationLoader("BetterModel") { ModelManager.register(ModelIntegrationBetterModel()) }
         )
     }
 
