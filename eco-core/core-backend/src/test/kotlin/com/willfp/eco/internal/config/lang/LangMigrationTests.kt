@@ -17,7 +17,7 @@ class LangMigrationTests {
     private val log = CapturingLogger()
 
     @Test
-    fun `lang yml is moved to lang existing yml`(@TempDir path: Path) {
+    fun `lang yml moved to existing`(@TempDir path: Path) {
         val dir = path.toFile()
         File(dir, "lang.yml").writeText("a: custom")
 
@@ -28,13 +28,13 @@ class LangMigrationTests {
     }
 
     @Test
-    fun `nothing to migrate returns false`(@TempDir path: Path) {
+    fun `no lang yml returns false`(@TempDir path: Path) {
         assertFalse(LangFiles.migrate(path.toFile(), log.logger))
         assertTrue(log.warnings.isEmpty())
     }
 
     @Test
-    fun `existing yml is never overwritten`(@TempDir path: Path) {
+    fun `existing yml is kept`(@TempDir path: Path) {
         val dir = path.toFile()
         File(dir, "lang").mkdirs()
         File(dir, "lang.yml").writeText("a: new")
@@ -50,7 +50,7 @@ class LangMigrationTests {
     }
 
     @Test
-    fun `a move that fails leaves lang yml in place`(@TempDir path: Path) {
+    fun `failed move keeps lang yml`(@TempDir path: Path) {
         val dir = path.toFile()
         File(dir, "lang.yml").writeText("a: custom")
         File(dir, "lang").writeText("not a directory")

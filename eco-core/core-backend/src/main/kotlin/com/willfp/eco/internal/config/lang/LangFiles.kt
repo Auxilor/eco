@@ -34,103 +34,60 @@ object LangFiles {
         val directory = File(dataFolder, DIRECTORY)
         directory.mkdirs()
 
-        var target = File(directory, "$EXISTING.yml")
-        if (target.exists()) {
-            var n = 2
-            while (File(directory, "$EXISTING-$n.yml").exists()) {
-                n++
-            }
-            target = File(directory, "$EXISTING-$n.yml")
+        val target = generateSequence(1) { it + 1 }
+            .map { number -> File(directory, if (number == 1) "$EXISTING.yml" else "$EXISTING-$number.yml") }
+            .first { !it.exists() }
 
-            logger.warning(
-                "lang/$EXISTING.yml already exists, so lang.yml was moved to lang/${target.name} instead"
-            )
+        if (target.name != "$EXISTING.yml") {
+            logger.warning("lang/$EXISTING.yml already exists, so lang.yml was moved to lang/${target.name} instead")
         }
 
-        try {
+        return try {
             Files.move(legacy.toPath(), target.toPath())
+            true
         } catch (e: IOException) {
-            logger.warning("Could not move lang.yml to lang/${target.name}, leaving it in place: ${e.message}")
-            return false
+            logger.warning(
+                "Could not move lang.yml to lang/${target.name}, leaving it in place: ${e.message.orEmpty()}"
+            )
+            false
         }
-
-        return true
     }
 
     /**
      * Copies out every shipped language, then fills each language file on disk with the keys
      * it is missing: from its own shipped copy, then from english. Keys are never removed.
+     *
+     * Language files are read and written directly rather than as configs: only the selected
+     * language is registered with the plugin, or every reload and save would touch every language.
+     * Their leading comment lines are kept the same way [EcoLoadableConfig] keeps them.
      */
     fun sync(plugin: PluginLike, source: LangSource) {
         val directory = File(plugin.dataFolder, DIRECTORY)
         directory.mkdirs()
 
-        val texts = mutableMapOf<String, String>()
-        val shipped = mutableMapOf<String, Config>()
-        for (language in source.languages) {
-            val text = source.read(language) ?: ""
-            shipped[language] = runCatching { parse(text) }.getOrElse {
-                plugin.logger.warning("The jar's $language language could not be read, skipping it: ${it.message}")
-                continue
-            }
-            texts[language] = text
-        }
-        val english = shipped[ENGLISH]
+        val shipped = readShipped(plugin, source)
+        val english = shipped[ENGLISH]?.config
 
-        for ((language, text) in texts) {
+        for ((language, shippedLanguage) in shipped) {
             val file = File(directory, "$language.yml")
             if (!file.exists()) {
-                file.writeText(text, Charsets.UTF_8)
+                file.writeText(shippedLanguage.text, Charsets.UTF_8)
             }
         }
 
-        // Read and written directly rather than as configs: only the selected language is
-        // registered with the plugin, or every reload and save would touch every language.
         for (file in languageFiles(directory)) {
-            val contents = file.readText(Charsets.UTF_8)
-            val config = runCatching { parse(contents) }.getOrElse {
-                plugin.logger.warning("Could not read lang/${file.name}, skipping it: ${it.message}")
-                continue
-            }
-
-            val added = shipped[file.nameWithoutExtension.lowercase()]?.let { fill(config, it) }.orEmpty()
-
-            val addedFromEnglish = if (english != null && !file.nameWithoutExtension.equals(ENGLISH, ignoreCase = true)) {
-                fill(config, english)
-            } else {
-                emptyList()
-            }
-
-            if (addedFromEnglish.isNotEmpty()) {
-                plugin.logger.warning(
-                    "Added english messages to lang/${file.name} for missing keys: ${addedFromEnglish.joinToString()}"
-                )
-            }
-
-            if (added.isNotEmpty() || addedFromEnglish.isNotEmpty()) {
-                file.writeText(header(contents) + config.toPlaintext(), Charsets.UTF_8)
-            }
+            fillLanguageFile(plugin, file, shipped[file.nameWithoutExtension.lowercase()]?.config, english)
         }
 
         if (english != null) {
-            for ((language, config) in shipped) {
-                if (language == ENGLISH) {
-                    continue
-                }
-
-                val missing = english.getKeys(true).filterNot { config.has(it) }
-                if (missing.isNotEmpty()) {
-                    plugin.logger.warning(
-                        "The jar's $language language is missing keys that english has: ${missing.joinToString()}"
-                    )
-                }
-            }
+            warnIncompleteShipped(plugin, shipped, english)
         }
     }
 
     /**
      * Loads the requested language, or english if the plugin doesn't have it.
      *
+     * @param plugin The plugin to load the language for.
      * @param requested The language set in eco's config.yml.
      * @param migrated If this plugin's lang.yml was just moved to lang/existing.yml.
      */
@@ -138,7 +95,7 @@ object LangFiles {
         val directory = File(plugin.dataFolder, DIRECTORY)
         directory.mkdirs()
 
-        val language = requested?.trim()?.lowercase()?.ifEmpty { null } ?: ENGLISH
+        val language = requested?.run { trim().lowercase().ifEmpty { null } } ?: ENGLISH
         val files = languageFiles(directory).associateBy { it.nameWithoutExtension.lowercase() }
 
         if (migrated && language != EXISTING) {
@@ -166,17 +123,71 @@ object LangFiles {
         return load(plugin, english.nameWithoutExtension)
     }
 
+    private class ShippedLanguage(val text: String, val config: Config)
+
+    private fun readShipped(plugin: PluginLike, source: LangSource): Map<String, ShippedLanguage> {
+        val shipped = mutableMapOf<String, ShippedLanguage>()
+
+        for (language in source.languages) {
+            val text = source.read(language).orEmpty()
+            runCatching { parse(text) }
+                .onSuccess { config -> shipped[language] = ShippedLanguage(text, config) }
+                .onFailure { error ->
+                    plugin.logger.warning(
+                        "The jar's $language language could not be read, skipping it: ${error.message.orEmpty()}"
+                    )
+                }
+        }
+
+        return shipped
+    }
+
+    private fun fillLanguageFile(plugin: PluginLike, file: File, shipped: Config?, english: Config?) {
+        val contents = file.readText(Charsets.UTF_8)
+        val config = runCatching { parse(contents) }
+            .onFailure { error ->
+                plugin.logger.warning("Could not read lang/${file.name}, skipping it: ${error.message.orEmpty()}")
+            }
+            .getOrNull()
+            ?: return
+
+        val added = shipped?.let { addMissingKeys(to = config, from = it) }.orEmpty()
+
+        val addedFromEnglish = when {
+            english == null -> emptyList()
+            file.nameWithoutExtension.equals(ENGLISH, ignoreCase = true) -> emptyList()
+            else -> addMissingKeys(to = config, from = english)
+        }
+
+        if (addedFromEnglish.isNotEmpty()) {
+            plugin.logger.warning(
+                "Added english messages to lang/${file.name} for missing keys: ${addedFromEnglish.joinToString()}"
+            )
+        }
+
+        if (added.isNotEmpty() || addedFromEnglish.isNotEmpty()) {
+            file.writeText(leadingComments(contents) + config.toPlaintext(), Charsets.UTF_8)
+        }
+    }
+
+    private fun warnIncompleteShipped(plugin: PluginLike, shipped: Map<String, ShippedLanguage>, english: Config) {
+        for ((language, shippedLanguage) in shipped.filterKeys { it != ENGLISH }) {
+            val missing = english.getKeys(true).filterNot { shippedLanguage.config.has(it) }
+            if (missing.isNotEmpty()) {
+                plugin.logger.warning(
+                    "The jar's $language language is missing keys that english has: ${missing.joinToString()}"
+                )
+            }
+        }
+    }
+
     private fun languageFiles(directory: File): List<File> =
-        directory.listFiles { file -> file.isFile && file.extension == "yml" }?.sortedBy { it.name }
-            ?: emptyList()
+        directory.listFiles { file -> file.isFile && file.extension == "yml" }?.sortedBy { it.name }.orEmpty()
 
     private fun load(plugin: PluginLike, language: String) =
         EcoLoadableConfig(ConfigType.YAML, language, plugin, "$DIRECTORY/", LangFiles::class.java, true)
 
-    /**
-     * The leading comment lines of a file, kept the same way [EcoLoadableConfig] keeps them.
-     */
-    private fun header(contents: String): String {
+    private fun leadingComments(contents: String): String {
         val header = contents.lines().takeWhile { it.startsWith("#") }
         return if (header.isEmpty()) "" else header.joinToString("\n", postfix = "\n\n")
     }
@@ -184,17 +195,12 @@ object LangFiles {
     private fun parse(text: String?): Config =
         EcoConfig(ConfigType.YAML).apply { init(ConfigType.YAML.toMap(text), emptyMap()) }
 
-    /**
-     * Adds every key [from] has that [to] doesn't.
-     *
-     * @return The keys that were added.
-     */
-    private fun fill(to: Config, from: Config): List<String> {
+    private fun addMissingKeys(to: Config, from: Config): List<String> {
         val added = mutableListOf<String>()
 
         for (key in from.getKeys(true)) {
             if (!to.has(key)) {
-                to.set(key, from.get(key))
+                to[key] = from[key]
                 added.add(key)
             }
         }

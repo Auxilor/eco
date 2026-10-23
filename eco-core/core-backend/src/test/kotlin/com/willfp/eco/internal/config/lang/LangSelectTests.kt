@@ -29,8 +29,8 @@ class LangSelectTests {
     }
 
     private fun englishAndSpanish() {
-        onDisk("english", "a: hi")
-        onDisk("spanish", "a: hola")
+        onDisk(language = "english", contents = "a: hi")
+        onDisk(language = "spanish", contents = "a: hola")
     }
 
     @Test
@@ -42,16 +42,16 @@ class LangSelectTests {
     }
 
     @Test
-    fun `selector is case and whitespace insensitive`() {
+    fun `case and spaces are ignored`() {
         englishAndSpanish()
 
         assertEquals("hola", LangFiles.select(plugin, " SPANISH ", false).getString("a"))
     }
 
     @Test
-    fun `owner file names are matched case insensitively`() {
-        onDisk("english", "a: hi")
-        onDisk("German", "a: hallo")
+    fun `file names ignore case`() {
+        onDisk(language = "english", contents = "a: hi")
+        onDisk(language = "German", contents = "a: hallo")
 
         assertEquals("hallo", LangFiles.select(plugin, "german", false).getString("a"))
     }
@@ -66,7 +66,7 @@ class LangSelectTests {
     }
 
     @Test
-    fun `missing language falls back to english with a warning`() {
+    fun `missing language uses english`() {
         englishAndSpanish()
 
         assertEquals("hi", LangFiles.select(plugin, "russian", false).getString("a"))
@@ -74,25 +74,25 @@ class LangSelectTests {
     }
 
     @Test
-    fun `malformed selected language falls back to english`() {
+    fun `broken language uses english`() {
         englishAndSpanish()
-        onDisk("broken", "a: [unclosed")
+        onDisk(language = "broken", contents = "a: [unclosed")
 
         assertEquals("hi", LangFiles.select(plugin, "broken", false).getString("a"))
         assertTrue(log.warnings.any { "broken" in it }, log.warnings.toString())
     }
 
     @Test
-    fun `no language files at all gives an empty english`() {
+    fun `no files gives empty english`() {
         assertDoesNotThrow { LangFiles.select(plugin, "english", false) }
 
         assertTrue(File(dir, "lang/english.yml").isFile)
     }
 
     @Test
-    fun `migrated but not selected warns`() {
+    fun `migrated unselected warns`() {
         englishAndSpanish()
-        onDisk("existing", "a: custom")
+        onDisk(language = "existing", contents = "a: custom")
 
         LangFiles.select(plugin, "english", true)
 
@@ -100,9 +100,9 @@ class LangSelectTests {
     }
 
     @Test
-    fun `migrated and selected is silent`() {
+    fun `migrated selected is silent`() {
         englishAndSpanish()
-        onDisk("existing", "a: custom")
+        onDisk(language = "existing", contents = "a: custom")
 
         assertEquals("custom", LangFiles.select(plugin, "existing", true).getString("a"))
         assertTrue(log.warnings.isEmpty(), log.warnings.toString())

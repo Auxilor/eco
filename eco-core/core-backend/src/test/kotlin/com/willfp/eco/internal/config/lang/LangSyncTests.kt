@@ -35,7 +35,7 @@ class LangSyncTests {
         EcoLoadableConfig(ConfigType.YAML, language, plugin, "lang/", LangSyncTests::class.java, false)
 
     @Test
-    fun `shipped languages are copied out`() {
+    fun `shipped languages copied out`() {
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi", "spanish" to "a: hola"))
 
         assertEquals("a: hola", File(dir, "lang/spanish.yml").readText().trim())
@@ -44,7 +44,7 @@ class LangSyncTests {
 
     @Test
     fun `user edits are not overwritten`() {
-        onDisk("english", "a: custom")
+        onDisk(language = "english", contents = "a: custom")
 
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi"))
 
@@ -52,8 +52,8 @@ class LangSyncTests {
     }
 
     @Test
-    fun `new keys come from the matching shipped file silently`() {
-        onDisk("spanish", "a: hola")
+    fun `keys fill from shipped file`() {
+        onDisk(language = "spanish", contents = "a: hola")
 
         LangFiles.sync(
             plugin,
@@ -65,8 +65,8 @@ class LangSyncTests {
     }
 
     @Test
-    fun `existing yml is filled from english with a warning`() {
-        onDisk("existing", "a: custom")
+    fun `existing fills from english`() {
+        onDisk(language = "existing", contents = "a: custom")
 
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi\nb: bye"))
 
@@ -76,8 +76,8 @@ class LangSyncTests {
     }
 
     @Test
-    fun `owner made language is filled from english`() {
-        onDisk("german", "a: hallo")
+    fun `custom language fills english`() {
+        onDisk(language = "german", contents = "a: hallo")
 
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi\nb: bye"))
 
@@ -86,7 +86,7 @@ class LangSyncTests {
     }
 
     @Test
-    fun `lagging translation is filled from english`() {
+    fun `lagging translation fills`() {
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi\nb: bye", "spanish" to "a: hola"))
 
         assertEquals("hola", reload("spanish").getString("a"))
@@ -95,7 +95,7 @@ class LangSyncTests {
 
     @Test
     fun `unused keys are kept`() {
-        onDisk("existing", "a: x\nold: y")
+        onDisk(language = "existing", contents = "a: x\nold: y")
 
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi"))
 
@@ -103,7 +103,7 @@ class LangSyncTests {
     }
 
     @Test
-    fun `dev check warns about shipped files missing english keys`() {
+    fun `incomplete shipped file warns`() {
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi\nb: bye", "spanish" to "a: hola"))
 
         assertTrue(
@@ -113,15 +113,15 @@ class LangSyncTests {
     }
 
     @Test
-    fun `complete shipped files produce no warnings`() {
+    fun `complete shipped files silent`() {
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi", "spanish" to "a: hola"))
 
         assertTrue(log.warnings.isEmpty(), log.warnings.toString())
     }
 
     @Test
-    fun `malformed file is skipped with a warning`() {
-        onDisk("broken", "a: [unclosed")
+    fun `malformed file is skipped`() {
+        onDisk(language = "broken", contents = "a: [unclosed")
 
         assertDoesNotThrow { LangFiles.sync(plugin, MapLangSource("english" to "a: hi")) }
 
@@ -131,7 +131,7 @@ class LangSyncTests {
 
     @Test
     fun `junk in lang folder is ignored`() {
-        onDisk("english", "a: hi")
+        onDisk(language = "english", contents = "a: hi")
         File(dir, "lang/README.txt").writeText("")
         File(dir, "lang/spanish.yml.bak").writeText("")
         File(dir, "lang/sub").mkdirs()
@@ -146,8 +146,8 @@ class LangSyncTests {
     }
 
     @Test
-    fun `sync registers nothing with the config handler`() {
-        onDisk("existing", "a: custom")
+    fun `sync registers no configs`() {
+        onDisk(language = "existing", contents = "a: custom")
 
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi\nb: bye", "spanish" to "a: hola"))
 
@@ -156,7 +156,7 @@ class LangSyncTests {
 
     @Test
     fun `header comments survive a fill`() {
-        onDisk("existing", "# My server's messages\n\na: custom")
+        onDisk(language = "existing", contents = "# My server's messages\n\na: custom")
 
         LangFiles.sync(plugin, MapLangSource("english" to "a: hi\nb: bye"))
 
@@ -164,7 +164,7 @@ class LangSyncTests {
     }
 
     @Test
-    fun `malformed shipped language is skipped with a warning`() {
+    fun `malformed shipped is skipped`() {
         assertDoesNotThrow {
             LangFiles.sync(plugin, MapLangSource("english" to "a: hi", "spanish" to "a: [unclosed"))
         }

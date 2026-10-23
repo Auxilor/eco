@@ -235,12 +235,14 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
         requiresChangesToSave
     )
 
+    /**
+     * eco's own lang.yml is what tells an existing server apart from a new one.
+     */
     override fun createLangConfig(plugin: EcoPlugin): LoadableConfig {
         val migrated = LangFiles.migrate(plugin.dataFolder, plugin.logger)
 
-        // eco's own lang.yml is what tells an existing server apart from a new one.
         if (plugin === this && migrated) {
-            this.configYml.set("language", LangFiles.EXISTING)
+            this.configYml["language"] = LangFiles.EXISTING
             this.configYml.save()
         }
 

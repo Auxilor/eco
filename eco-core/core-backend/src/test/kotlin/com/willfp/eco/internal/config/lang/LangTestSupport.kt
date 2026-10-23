@@ -4,6 +4,7 @@ import com.willfp.eco.core.PluginLike
 import io.mockk.every
 import io.mockk.mockk
 import java.nio.file.Path
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.logging.Handler
 import java.util.logging.Level
 import java.util.logging.LogRecord
@@ -13,7 +14,7 @@ import java.util.logging.Logger
  * A logger that keeps every warning it is given, so tests can assert on what the owner would see.
  */
 class CapturingLogger {
-    private val records = mutableListOf<String>()
+    private val records = CopyOnWriteArrayList<String>()
 
     val warnings: List<String>
         get() = records
@@ -35,9 +36,9 @@ class CapturingLogger {
 }
 
 // Relaxed, so the config handler configs register themselves with is a mock of its own.
-fun pluginIn(dir: Path, logger: Logger): PluginLike = mockk<PluginLike>(relaxed = true).also {
-    every { it.dataFolder } returns dir.toFile()
-    every { it.logger } returns logger
+fun pluginIn(dir: Path, logger: Logger): PluginLike = mockk<PluginLike>(relaxed = true).also { plugin ->
+    every { plugin.dataFolder } returns dir.toFile()
+    every { plugin.logger } returns logger
 }
 
 /**

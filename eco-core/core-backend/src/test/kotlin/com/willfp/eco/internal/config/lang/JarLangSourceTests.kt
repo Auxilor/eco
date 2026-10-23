@@ -17,18 +17,20 @@ import org.junit.jupiter.api.io.TempDir
 class JarLangSourceTests {
     private fun jarIn(dir: Path, vararg entries: Pair<String, String>): File {
         val jar = File(dir.toFile(), "plugin.jar")
-        JarOutputStream(jar.outputStream()).use { out ->
-            for ((name, contents) in entries) {
-                out.putNextEntry(JarEntry(name))
-                out.write(contents.toByteArray(Charsets.UTF_8))
-                out.closeEntry()
+        jar.outputStream().use { fileOut ->
+            JarOutputStream(fileOut).use { out ->
+                for ((name, contents) in entries) {
+                    out.putNextEntry(JarEntry(name))
+                    out.write(contents.toByteArray(Charsets.UTF_8))
+                    out.closeEntry()
+                }
             }
         }
         return jar
     }
 
     @Test
-    fun `lang folder entries become languages`(@TempDir dir: Path) {
+    fun `lang folder gives languages`(@TempDir dir: Path) {
         val source = JarLangSource(jarIn(dir, "lang/english.yml" to "a: 1", "lang/spanish.yml" to "a: uno"))
 
         assertEquals(setOf("english", "spanish"), source.languages)
@@ -36,7 +38,7 @@ class JarLangSourceTests {
     }
 
     @Test
-    fun `root lang yml counts as english`(@TempDir dir: Path) {
+    fun `root lang yml is english`(@TempDir dir: Path) {
         val source = JarLangSource(jarIn(dir, "lang.yml" to "a: root"))
 
         assertEquals(setOf("english"), source.languages)
@@ -44,14 +46,14 @@ class JarLangSourceTests {
     }
 
     @Test
-    fun `lang english yml wins over root lang yml`(@TempDir dir: Path) {
+    fun `lang english yml beats root`(@TempDir dir: Path) {
         val source = JarLangSource(jarIn(dir, "lang.yml" to "a: root", "lang/english.yml" to "a: folder"))
 
         assertEquals("a: folder", source.read("english")?.trim())
     }
 
     @Test
-    fun `non yml and nested entries are ignored`(@TempDir dir: Path) {
+    fun `non yml and nested ignored`(@TempDir dir: Path) {
         val source = JarLangSource(
             jarIn(
                 dir,
@@ -73,7 +75,7 @@ class JarLangSourceTests {
     }
 
     @Test
-    fun `a plugin file that isn't a jar gives no languages and a warning`(@TempDir dir: Path) {
+    fun `non jar gives none and warns`(@TempDir dir: Path) {
         val log = CapturingLogger()
 
         val source = JarLangSource.open(dir.toFile(), log.logger)
