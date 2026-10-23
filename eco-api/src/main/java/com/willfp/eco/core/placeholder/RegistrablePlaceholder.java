@@ -27,5 +27,12 @@ public interface RegistrablePlaceholder extends Placeholder {
         PlaceholderManager.registerPlaceholder(this);
         return this;
     }
+
+    /**
+     * Unregister the placeholder from the {@link PlaceholderManager}.
+     */
+    default void unregister() {
+        PlaceholderManager.unregisterPlaceholder(this);
+    }
 }
 

@@ -325,3 +325,8 @@ leaderboards:
 
   # Decimal places for percentile ranks.
   percent-decimal-places: 1
+
+  # Whether players tied on the same value share a rank. With true, a tie for second
+  # reads 1, 2, 2, 4; with false, tied players get their own ranks, 1, 2, 3, 4, ordered
+  # by UUID so they do not swap places between refreshes.
+  shared-tie-ranks: false

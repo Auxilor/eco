@@ -16,6 +16,7 @@ import com.willfp.eco.core.gui.slot.SlotBuilder
 import com.willfp.eco.core.config.interfaces.Config
 import com.willfp.eco.core.items.Items
 import com.willfp.eco.core.items.TestableItem
+import com.willfp.eco.core.items.builder.ItemStackBuilder
 import com.willfp.eco.core.sound.AbstractPlayableSound
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -201,22 +202,67 @@ fun MenuBuilder.onBuild(action: (Menu) -> Unit): MenuBuilder =
     this.onBuild { action(it) }
 
 /**
+ * A row and column in a menu.
+ *
+ * @property row The row.
+ * @property column The column.
+ */
+data class SlotLocation(
+    val row: Int,
+    val column: Int
+)
+
+/**
+ * Get the slots a config section places something in.
+ *
+ * Reads `path.locations`, a list of `row` / `column` sections, so one item can
+ * fill several slots. Without it, reads `path.location.row` / `path.location.column`,
+ * falling back to a flat `path.row` / `path.column`.
+ *
+ * @param path The path of the section, or empty for this config itself.
+ * @param default The locations to return when none of those keys are set, or null to read the
+ * flat row and column regardless.
+ * @return The slot locations, never empty.
+ */
+fun Config.getSlotLocations(path: String = "", default: List<SlotLocation>? = null): List<SlotLocation> {
+    val prefix = if (path.isEmpty()) "" else "$path."
+
+    val locations = getSubsections("${prefix}locations")
+
+    return when {
+        locations.isNotEmpty() -> locations.map { SlotLocation(row = it.getInt("row"), column = it.getInt("column")) }
+        default != null && !has("${prefix}location.row") && !has("${prefix}row") -> default
+        else -> listOf(
+            SlotLocation(
+                row = getIntOrNull("${prefix}location.row") ?: getInt("${prefix}row"),
+                column = getIntOrNull("${prefix}location.column") ?: getInt("${prefix}column")
+            )
+        )
+    }
+}
+
+/**
  * Add a page changer button placed directly from a config section.
  *
- * Reads the combined-lookup shape: `basePath.item` for the active button and the
- * optional `basePath.item-inactive` for the first or last page. The location is
- * read tolerantly as `basePath.location.row` / `basePath.location.column`,
- * falling back to a flat `basePath.row` / `basePath.column`. A `basePath.locations`
- * list of `row` / `column` sections places the button in every listed slot instead,
- * so one button can span several slots. If no active item is
- * configured the changer is not added, so a missing button stays hidden rather
- * than rendering a broken item.
+ * Reads the combined shape (`basePath.item` and the optional `basePath.item-inactive`)
+ * or the split shape (`basePath.item.active` and `basePath.item.inactive`, with optional
+ * `name` and `lore` per state), and `material` as a fallback for the active item.
+ * The location is read with [getSlotLocations], so a `basePath.locations` list places
+ * the button in every listed slot. If no active item is configured and no [defaultItem]
+ * is given, the changer is not added, so a missing button stays hidden rather than
+ * rendering a broken item.
  *
  * @param config The config holding the button section.
  * @param basePath The path of the button section.
  * @param direction The direction.
  * @param sound The page turn sound, or null for silent.
  * @param layer The layer, defaults to [MenuLayer.TOP].
+ * @param defaultItem The item lookup string to use as the active item when none is configured,
+ * or null to hide the button.
+ * @param name The display name of both states, used instead of the config's when set.
+ * @param defaultLocations The locations when the config sets none.
+ * @param format Applied to the item lookup strings and to every name and lore line read from config.
+ * @param hideInactive Whether to hide the button on the first or last page even when an inactive item is configured.
  * @return The builder.
  */
 fun MenuBuilder.addPageChanger(
@@ -224,30 +270,48 @@ fun MenuBuilder.addPageChanger(
     basePath: String,
     direction: PageChanger.Direction,
     sound: AbstractPlayableSound<*>?,
-    layer: Int = MenuLayer.TOP
+    layer: Int = MenuLayer.TOP,
+    defaultItem: String? = null,
+    name: String? = null,
+    defaultLocations: List<SlotLocation>? = null,
+    format: (String) -> String = { it },
+    hideInactive: Boolean = false
 ): MenuBuilder {
-    val active = config.getStringOrNull("$basePath.item")
-        ?.let { Items.lookup(it).item }
-        ?: return this
+    val section = config.getSubsection(basePath)
 
-    val inactive = config.getStringOrNull("$basePath.item-inactive")
-        ?.let { Items.lookup(it).item }
-
-    val locations = config.getSubsections("$basePath.locations")
-
-    if (locations.isNotEmpty()) {
-        for (location in locations) {
-            addPageChanger(direction, active, inactive, sound, location.getInt("row"), location.getInt("column"), layer)
-        }
-
+    if (defaultItem == null && !section.hasActiveItem()) {
         return this
     }
 
-    val row = config.getIntOrNull("$basePath.location.row") ?: config.getInt("$basePath.row")
-    val column = config.getIntOrNull("$basePath.location.column") ?: config.getInt("$basePath.column")
+    val active = section.getConfigItem(defaultItem, name, state = "active", format = format)
 
-    return addPageChanger(direction, active, inactive, sound, row, column, layer)
+    val inactive = when {
+        hideInactive -> {
+            null
+        }
+        section.has("item-inactive") -> {
+            val item = Items.lookup(format(section.getString("item-inactive"))).item
+            if (name == null) item else ItemStackBuilder(item).setDisplayName(name).build()
+        }
+        section.getPlainStringOrNull("item.inactive") != null -> {
+            section.getConfigItem(name = name, state = "inactive", format = format)
+        }
+        else -> {
+            null
+        }
+    }
+
+    for ((row, column) in config.getSlotLocations(basePath, defaultLocations)) {
+        addPageChanger(direction, active, inactive, sound, row, column, layer)
+    }
+
+    return this
 }
+
+private fun Config.hasActiveItem(): Boolean =
+    getPlainStringOrNull("item.active") != null
+        || getPlainStringOrNull("item") != null
+        || getStringOrNull("material") != null
 
 /**
  * Add a page changer button from prebuilt items.

@@ -76,4 +76,5 @@ libraries:
   - net.kyori:adventure-api:5.0.1
   - net.kyori:adventure-text-serializer-gson:5.0.1
   - net.kyori:adventure-text-serializer-legacy:5.0.1
+  - net.kyori:adventure-text-minimessage:5.0.1
   - com.github.ben-manes.caffeine:caffeine:3.2.3

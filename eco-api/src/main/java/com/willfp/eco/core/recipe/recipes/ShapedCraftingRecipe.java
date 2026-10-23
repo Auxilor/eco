@@ -86,7 +86,7 @@ public final class ShapedCraftingRecipe implements CraftingRecipe {
         this.key = plugin.getNamespacedKeyFactory().create(key);
         this.displayedKey = plugin.getNamespacedKeyFactory().create(key + "_displayed");
         this.output = output;
-        this.permission = permission;
+        this.permission = permission == null || permission.isBlank() ? null : permission;
         this.crafterSupported = crafterSupported;
     }
 

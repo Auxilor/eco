@@ -1,0 +1,830 @@
+{
+  "version": 1,
+  "findings": [
+    {
+      "code": "CX016",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/Eco.java",
+      "message": "File has 1171 lines, over the limit of 600"
+    },
+    {
+      "code": "CX016",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "File has 1399 lines, over the limit of 600"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "`HashSet` in shared field; use `ConcurrentHashMap.newKeySet()`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "Commented-out code"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/EcoPlugin.java",
+      "message": "Variable `before` is unused"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/PluginProps.java",
+      "message": "`HashMap` in shared field; use `ConcurrentHashMap`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/blocks/Blocks.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/blocks/Blocks.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/blocks/Blocks.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/command/CommandBase.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/Configs.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "CX016",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/interfaces/Config.java",
+      "message": "File has 751 lines, over the limit of 600"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/interfaces/Config.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/interfaces/Config.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/interfaces/LoadableConfig.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/updating/ConfigHandler.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/config/updating/ConfigUpdater.java",
+      "message": "Wildcard import `java.lang.annotation.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/data/handlers/PersistentDataHandler.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/data/handlers/PersistentDataHandler.java",
+      "message": "Wildcard import `java.util.concurrent.*`"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/data/keys/PersistentDataKeyType.java",
+      "message": "`HashMap` in shared field; use `ConcurrentHashMap`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/data/keys/PersistentDataKeyType.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/display/DisplayModule.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/Entities.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/Entities.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/CustomGoal.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/EntityGoals.java",
+      "message": "Wildcard import `com.willfp.eco.core.entities.ai.entity.*`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/TargetGoals.java",
+      "message": "Wildcard import `com.willfp.eco.core.entities.ai.target.*`"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/entity/EntityGoalUseItem.java",
+      "message": "Variable `filter` is unused"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/target/TargetGoalNearestAttackable.java",
+      "message": "Variable `filter` is unused"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/target/TargetGoalNearestAttackableWitch.java",
+      "message": "Variable `filter` is unused"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/target/TargetGoalNearestHealableRaider.java",
+      "message": "Variable `filter` is unused"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/ai/target/TargetGoalNonTameRandom.java",
+      "message": "Variable `filter` is unused"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/entities/tag/EntityTag.java",
+      "message": "Fully qualified type `org.bukkit.Location`; import `Location`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/extensions/Extension.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/gui/GUIComponent.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/gui/menu/Menu.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/gui/slot/ConfigSlot.java",
+      "message": "`HashMap` in shared field; use `ConcurrentHashMap`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/gui/slot/ConfigSlot.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/gui/slot/ConfigSlot.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/customblocks/CustomBlocksIntegration.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/customitems/CustomItemsIntegration.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/hologram/Hologram.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/hologram/HologramOptions.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/placeholder/PlaceholderManager.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/placeholder/PlaceholderManager.java",
+      "message": "Fully qualified type `java.util.regex.Pattern`; import `Pattern`"
+    },
+    {
+      "code": "IM002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/placeholder/PlaceholderManager.java",
+      "message": "Fully qualified call through `java.util.regex.Pattern`; import `Pattern`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/placeholder/PlaceholderManager.java",
+      "message": "Wildcard import `com.willfp.eco.core.placeholder.*`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/placeholder/PlaceholderManager.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/integrations/shop/ShopIntegration.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/CustomItem.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "CX016",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/Items.java",
+      "message": "File has 774 lines, over the limit of 600"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/Items.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/Items.java",
+      "message": "Wildcard import `com.willfp.eco.core.recipe.parts.*`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/Items.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/Items.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/builder/AbstractItemStackBuilder.java",
+      "message": "`LinkedHashMap` in shared field; use `ConcurrentHashMap`"
+    },
+    {
+      "code": "IC001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/items/builder/AbstractItemStackBuilder.java",
+      "message": "Trailing comment on a code line"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/lookup/LookupHandler.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/packet/PacketListener.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/particle/impl/EmptyParticle.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/particle/impl/SimpleParticle.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/placeholder/context/MergedInjectableContext.java",
+      "message": "`HashSet` in shared field; use `ConcurrentHashMap.newKeySet()`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/placeholder/context/MergedInjectableContext.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/placeholder/context/PlaceholderContext.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/placeholder/context/PlaceholderContext.java",
+      "message": "Fully qualified type `com.willfp.eco.core.math.MathContext`; import `MathContext`"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/CombinedDisplayPrice.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/CombinedDisplayPrice.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/Price.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/PriceFactory.java",
+      "message": "Fully qualified type `com.willfp.eco.core.math.MathContext`; import `MathContext`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/Prices.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/Prices.java",
+      "message": "Fully qualified type `com.willfp.eco.core.math.MathContext`; import `MathContext`"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/impl/PriceEconomy.java",
+      "message": "`HashMap` in shared field; use `ConcurrentHashMap`"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/impl/PriceEconomy.java",
+      "message": "Fully qualified type `com.willfp.eco.core.math.MathContext`; import `MathContext`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/impl/PriceFree.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/impl/PriceItem.java",
+      "message": "`HashMap` in shared field; use `ConcurrentHashMap`"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/price/impl/PriceItem.java",
+      "message": "Fully qualified type `com.willfp.eco.core.math.MathContext`; import `MathContext`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/proxy/ProxyConstants.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F008",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/Recipes.java",
+      "message": "Shared mutable `lastScheduledRegistration` without `volatile` or an atomic"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/Recipes.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "U006",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/Recipes.java",
+      "message": "Variable `namespacedKey` is unused"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/recipes/ShapedCraftingRecipe.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "IC001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/recipes/ShapedCraftingRecipe.java",
+      "message": "Trailing comment on a code line"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/recipes/ShapelessCraftingRecipe.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/recipes/ShapelessCraftingRecipe.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/workstation/CrafterRecipe.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/recipe/workstation/CrafterRecipe.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/registry/Registrable.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/registry/Registry.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/registry/Registry.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/core/version/Version.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/BlockUtils.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/BlockUtils.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/BlockUtils.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/DurabilityUtils.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "F001",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/LegacyToMiniMessage.java",
+      "message": "`ArrayList` in shared field; use `CopyOnWriteArrayList`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/ListUtils.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/NumberUtils.java",
+      "message": "Fully qualified type `com.willfp.eco.core.math.MathContext`; import `MathContext`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/NumberUtils.java",
+      "message": "Wildcard import `java.util.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/PlayerUtils.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/PlayerUtils.java",
+      "message": "Wildcard import `org.bukkit.entity.*`"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/PotionUtils.java",
+      "message": "Fully qualified type `org.bukkit.potion.PotionData`; import `PotionData`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/SoundUtils.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "CX016",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/StringUtils.java",
+      "message": "File has 1103 lines, over the limit of 600"
+    },
+    {
+      "code": "IC001",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/StringUtils.java",
+      "message": "Trailing comment on a code line"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/StringUtils.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/TeamUtils.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "PF012",
+      "path": "eco-api/src/main/java/com/willfp/eco/util/TeamUtils.java",
+      "message": "Enum `values()` in a loop; cache the array in a static field"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/HologramOptionsTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/test/java/HologramOptionsTest.java",
+      "message": "Fully qualified type `java.util.ArrayList`; import `ArrayList`"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/test/java/HologramOptionsTest.java",
+      "message": "Wildcard import `org.junit.jupiter.api.Assertions.*`"
+    },
+    {
+      "code": "IC003",
+      "path": "eco-api/src/test/java/NumberUtilsTest.java",
+      "message": "Commented-out code"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/PricesTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM001",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/data/ExternalDataStoreTest.java",
+      "message": "Fully qualified type `java.util.ArrayList`; import `ArrayList`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/data/handlers/PersistentDataHandlerTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/display/DisplayLineTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/leaderboard/LeaderboardTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/leaderboard/TallyCountsTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/LevelCurveTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/LevelCurveTest.java",
+      "message": "Wildcard import `org.junit.jupiter.api.Assertions.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/LevelLadderTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/LevelLadderTest.java",
+      "message": "Wildcard import `org.junit.jupiter.api.Assertions.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/LevelProgressionTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/LevelProgressionTest.java",
+      "message": "Wildcard import `org.junit.jupiter.api.Assertions.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/ProgressionPlaceholdersTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/test/java/com/willfp/eco/core/progression/ProgressionPlaceholdersTest.java",
+      "message": "Wildcard import `org.junit.jupiter.api.Assertions.*`"
+    },
+    {
+      "code": "IC002",
+      "path": "eco-api/src/test/java/com/willfp/eco/util/NumericalPermissionsTest.java",
+      "message": "Comment inside a function body"
+    },
+    {
+      "code": "IM003",
+      "path": "eco-api/src/test/java/com/willfp/eco/util/NumericalPermissionsTest.java",
+      "message": "Wildcard import `org.junit.jupiter.api.Assertions.*`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-backend/src/main/kotlin/com/willfp/eco/internal/fast/InternalNamespacedKeyFactory.kt",
+      "message": "Unused function `create`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-backend/src/main/kotlin/com/willfp/eco/internal/gui/menu/RenderedInventory.kt",
+      "message": "Unused interface `TopInventoryProxy`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-nms/common/src/main/kotlin/com/willfp/eco/internal/spigot/proxy/common/NMSCommons.kt",
+      "message": "Unused function `addBukkitRecipeNoResend`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-nms/common/src/main/kotlin/com/willfp/eco/internal/spigot/proxy/common/NMSCommons.kt",
+      "message": "Unused function `removeBukkitRecipeNoResend`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-nms/common/src/main/kotlin/com/willfp/eco/internal/spigot/proxy/common/NMSCommons.kt",
+      "message": "Unused function `resendBukkitRecipes`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-nms/v26_3/src/main/kotlin/com/willfp/eco/internal/spigot/proxy/v26_3/DatapackCodec.kt",
+      "message": "Unused function `canSerialize`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/mongodb/internal/diagnostics/logging/Loggers.kt",
+      "message": "Unused object `Loggers`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/discord/DiscordWebhookClient.kt",
+      "message": "Unused function `sendContentWithWait`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/discord/DiscordWebhookClient.kt",
+      "message": "Unused function `sendContent`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/data/handlers/impl/LegacyMongoDBPersistentDataHandler.kt",
+      "message": "Unused class `LegacyMongoDBPersistentDataHandler`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/data/handlers/impl/LegacyMySQLPersistentDataHandler.kt",
+      "message": "Unused class `LegacyMySQLPersistentDataHandler`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/data/profiles/ProfileHandler.kt",
+      "message": "Unused function `unloadProfile`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/hologram/EcoHologram.kt",
+      "message": "Unused function `getWorldLocation`"
+    },
+    {
+      "code": "U008",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/bstats/PublishPlatform.kt",
+      "message": "Unused enum entry `BUILTBYBIT`"
+    },
+    {
+      "code": "U008",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/bstats/PublishPlatform.kt",
+      "message": "Unused enum entry `ECOHUB`"
+    },
+    {
+      "code": "U008",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/bstats/PublishPlatform.kt",
+      "message": "Unused enum entry `MCMODELS`"
+    },
+    {
+      "code": "U008",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/bstats/PublishPlatform.kt",
+      "message": "Unused enum entry `MODRINTH`"
+    },
+    {
+      "code": "U008",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/bstats/PublishPlatform.kt",
+      "message": "Unused enum entry `POLYMART`"
+    },
+    {
+      "code": "U008",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/bstats/PublishPlatform.kt",
+      "message": "Unused enum entry `SPIGOT`"
+    },
+    {
+      "code": "U001",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/integrations/guidetection/GUIDetectionDeluxeMenus.kt",
+      "message": "Unused class `GUIDetectionDeluxeMenus`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/CompiledExpression.kt",
+      "message": "Unused function `clone`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/Variable.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/data/CharTree.kt",
+      "message": "Unused function `get`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/functional/ArgumentList.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/functional/Function.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/functional/FunctionCall.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/BinaryOperation.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/BinaryOperator.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/Constant.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/LiteralValue.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/Token.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/UnaryOperation.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/UnaryOperator.kt",
+      "message": "Unused function `getPriority`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/math/token/UnaryOperator.kt",
+      "message": "Unused function `getType`"
+    },
+    {
+      "code": "U002",
+      "path": "eco-core/core-plugin/src/main/kotlin/com/willfp/eco/internal/spigot/proxies/PlayerHandlerProxy.kt",
+      "message": "Unused function `applyMending`"
+    }
+  ]
+}

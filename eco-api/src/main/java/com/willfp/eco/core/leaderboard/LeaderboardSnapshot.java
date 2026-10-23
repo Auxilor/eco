@@ -87,7 +87,8 @@ public final class LeaderboardSnapshot {
      * Get the rank of a player.
      * <p>
      * Ranks are one-indexed and uncapped, so a player outside the retained entries still has a
-     * rank.
+     * rank. With {@code leaderboards.shared-tie-ranks} on, tied players share a rank and the
+     * next one skips past them (1, 2, 2, 4).
      *
      * @param uuid The UUID of the player.
      * @return The rank, or null if the player was not ranked.

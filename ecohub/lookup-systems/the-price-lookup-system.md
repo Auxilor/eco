@@ -62,6 +62,26 @@ between different prices.
 
 You can display prices in two ways, using `%value%` which will return the number unformatted (e.g.  `$1234567.89`), or you can use `%value_commas%` to format the price with commas (e.g. `$1,234,567.89`).
 
+## Combining Prices
+
+To charge several currencies at once, list them under `prices`. The player must be able to afford every price, and all of them are paid together. Each entry is a normal price with its own `value`, `type` and `display`.
+
+```yaml
+price:
+    prices:
+        - value: 1000
+          type: coins
+          display: "&a$%value%"
+        - value: 5
+          type: levels
+          display: "&e%value% Levels"
+        - value: 16
+          type: diamond
+          display: "&b%value% Diamonds"
+```
+
+The prices are shown one after another, separated by commas, e.g. `$1000, 5 Levels, 16 Diamonds`. Multipliers, such as buying several of an item at once, apply to every price in the list.
+
 ## Config Examples
 
 ```yaml

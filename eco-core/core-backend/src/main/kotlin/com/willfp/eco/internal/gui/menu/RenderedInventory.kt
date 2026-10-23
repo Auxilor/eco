@@ -35,13 +35,18 @@ val Player.renderedInventory: RenderedInventory?
 
 class RenderedInventory(
     val menu: EcoMenu,
-    val inventory: Inventory,
     val player: Player
 ) {
+    lateinit var inventory: Inventory
+
     val captiveItems = mutableMapOf<GUIPosition, ItemStack>()
     val state = mutableMapOf<String, Any?>()
 
     fun render() {
+        if (!::inventory.isInitialized) {
+            return
+        }
+
         if (this.menu != player.openMenu) {
             MenuHandler.unregisterInventory(this.inventory)
             return
@@ -120,16 +125,24 @@ class RenderedInventory(
         }
     }
 
-    fun refreshDynamicTitle() {
+    fun resolveDynamicTitle(): String? {
         val template = menu.getTitle()
 
         if (!template.contains("%page%") && !template.contains("%max_page%")) {
-            return
+            return null
         }
 
-        val resolved = template
+        return template
             .replace("%page%", menu.getPage(player).toString())
             .replace("%max_page%", menu.getMaxPage(player).toString())
+    }
+
+    fun markTitleRendered(title: String) {
+        state[RENDERED_TITLE_KEY] = title
+    }
+
+    fun refreshDynamicTitle() {
+        val resolved = resolveDynamicTitle() ?: return
 
         if (state[RENDERED_TITLE_KEY] == resolved) {
             return
@@ -143,12 +156,10 @@ class RenderedInventory(
 
         @Suppress("DEPRECATION")
         player.openInventory.setTitle(resolved)
-        state[RENDERED_TITLE_KEY] = resolved
+        markTitleRendered(resolved)
     }
 
     fun renderDefaultCaptiveItems() {
-        menu.runOnRender(player)
-
         var bukkit = 0
         for (row in (1..menu.rows)) {
             for (column in (1..menu.columns)) {

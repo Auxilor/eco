@@ -43,24 +43,29 @@ class EcoMenu(
         getPossiblyReactiveSlot(row, column, player)
 
     override fun open(player: Player): Inventory {
-        @Suppress("DEPRECATION")
-        val inventory = if (columns == 9) {
-            Bukkit.createInventory(null, rows * columns, title)
-        } else {
-            Bukkit.createInventory(null, InventoryType.DISPENSER, title)
-        }
-
-        // Register the inventory first
-        val rendered = MenuHandler.registerInventory(inventory, this, player)
+        val rendered = RenderedInventory(this, player)
 
         // Set the player's open menu forcefully
         player.forceRenderedInventory(rendered)
 
+        runOnRender(player)
+
+        onOpen.forEach { it.handle(player, this) }
+
+        val resolvedTitle = rendered.resolveDynamicTitle()
+
+        @Suppress("DEPRECATION")
+        val inventory = if (columns == 9) {
+            Bukkit.createInventory(null, rows * columns, resolvedTitle ?: title)
+        } else {
+            Bukkit.createInventory(null, InventoryType.DISPENSER, resolvedTitle ?: title)
+        }
+
+        MenuHandler.registerInventory(rendered, inventory)
+        resolvedTitle?.let { rendered.markTitleRendered(it) }
+
         // Render default captive items
         rendered.renderDefaultCaptiveItems()
-
-        // Run onOpen with items already there
-        onOpen.forEach { it.handle(player, this) }
 
         // Run second render with updated state from onOpen
         rendered.render()
