@@ -7,6 +7,7 @@ import com.willfp.eco.internal.gui.menu.EcoMenu
 import com.willfp.eco.internal.gui.menu.MenuHandler
 import com.willfp.eco.internal.gui.menu.asRenderedInventory
 import com.willfp.eco.internal.gui.menu.getMenu
+import com.willfp.eco.internal.gui.menu.removeForcedRenderedInventory
 import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.MenuUtils
@@ -20,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.PlayerInventory
 
 class GUIListener(private val plugin: EcoPlugin) : Listener {
@@ -142,6 +144,11 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
         menu.handleClose(event)
 
         plugin.scheduler.global().run { MenuHandler.unregisterInventory(event.inventory) }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    fun handleQuit(event: PlayerQuitEvent) {
+        event.player.removeForcedRenderedInventory()
     }
 
     @EventHandler(
