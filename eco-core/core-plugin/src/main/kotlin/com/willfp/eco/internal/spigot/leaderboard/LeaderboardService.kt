@@ -60,6 +60,16 @@ class LeaderboardService(
     // rather than queued behind the one still running.
     private val refreshing = AtomicBoolean(false)
 
+    // Set once the startup load has run. A leaderboard registered after that, by a plugin
+    // reload, starts empty and would otherwise rank nobody until the next reconcile.
+    private val startupLoaded = AtomicBoolean(false)
+
+    // Coalesces the refreshes asked for by registrations, so a reload registering every skill
+    // or job reads the database once rather than once per leaderboard. A sweep already running
+    // may have listed the leaderboards before the registration, so the refresh waits for it
+    // rather than letting the overlap guard drop it.
+    private val registrationRefreshQueued = AtomicBoolean(false)
+
     /**
      * Whether ranking is on hold, set while profiles are still being carried out of data.yml.
      *
@@ -112,6 +122,9 @@ class LeaderboardService(
     val maxEntries: Int
         get() = plugin.configYml.getInt("leaderboards.max-entries")
 
+    val sharedTieRanks: Boolean
+        get() = plugin.configYml.getBool("leaderboards.shared-tie-ranks")
+
     val percentDecimalPlaces: Int
         get() = plugin.configYml.getInt("leaderboards.percent-decimal-places")
 
@@ -134,7 +147,29 @@ class LeaderboardService(
             byKey.computeIfAbsent(it.rankedKey) { ConcurrentHashMap.newKeySet() }.add(leaderboard)
         }
 
+        if (startupLoaded.get()) {
+            queueRegistrationRefresh()
+        }
+
         return leaderboard
+    }
+
+    private fun queueRegistrationRefresh(requeue: Boolean = false) {
+        if (!enabled || !requeue && !registrationRefreshQueued.compareAndSet(false, true)) {
+            return
+        }
+
+        plugin.scheduler.async().runLater(Runnable {
+            if (refreshing.get()) {
+                queueRegistrationRefresh(requeue = true)
+            } else {
+                registrationRefreshQueued.set(false)
+                refreshAll().exceptionally { error ->
+                    plugin.logger.log(Level.WARNING, "Failed to refresh leaderboards after a reload", error)
+                    null
+                }
+            }
+        }, 1, TimeUnit.SECONDS)
     }
 
     private fun unindex(leaderboard: EcoLeaderboard) {
@@ -263,7 +298,10 @@ class LeaderboardService(
         // there will ever be. Without it nothing would populate the caches and every leaderboard
         // would rank nobody for the lifetime of the server.
         startupTask = plugin.scheduler.async().runLater(
-            Runnable { refreshAll() },
+            Runnable {
+                startupLoaded.set(true)
+                refreshAll()
+            },
             initialDelay,
             TimeUnit.SECONDS
         )

@@ -53,6 +53,7 @@ class WriteHookTests {
 
         every { config.getBool("leaderboards.enabled") } returns true
         every { config.getInt("leaderboards.max-entries") } returns -1
+        every { config.getBool("leaderboards.shared-tie-ranks") } returns false
         every { config.getInt("leaderboards.exact-rank-cutoff") } returns 0
         every { config.getInt("leaderboards.percent-decimal-places") } returns 1
     }
