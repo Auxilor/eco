@@ -8,21 +8,16 @@ import org.bukkit.entity.Entity
 import java.util.UUID
 
 class ModelEngineIntegrationImpl : ModelEngineIntegration {
-    override fun createActiveModel(id: String): BridgedActiveModel? {
-        val blueprint = ModelEngineAPI.getBlueprint(id) ?: return null
+    override fun createActiveModel(id: String): BridgedActiveModel? =
+        ModelEngineAPI.getBlueprint(id)
+            ?.let { ModelEngineAPI.createActiveModel(it) }
+            ?.let { ActiveModelImpl(id, it) }
 
-        return ActiveModelImpl(id, ModelEngineAPI.createActiveModel(blueprint) ?: return null)
-    }
+    override fun createModeledEntity(entity: Entity): BridgedModeledEntity =
+        ModeledEntityImpl(ModelEngineAPI.getOrCreateModeledEntity(entity))
 
-    override fun createModeledEntity(entity: Entity): BridgedModeledEntity {
-        return ModeledEntityImpl(ModelEngineAPI.getOrCreateModeledEntity(entity))
-    }
+    override fun getModeledEntity(uuid: UUID): BridgedModeledEntity? =
+        ModelEngineAPI.getModeledEntity(uuid)?.let { ModeledEntityImpl(it) }
 
-    override fun getModeledEntity(uuid: UUID): BridgedModeledEntity? {
-        return ModelEngineAPI.getModeledEntity(uuid)?.let { ModeledEntityImpl(it) }
-    }
-
-    override fun getPluginName(): String {
-        return "ModelEngine"
-    }
+    override fun getPluginName(): String = "ModelEngine"
 }

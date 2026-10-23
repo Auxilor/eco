@@ -10,11 +10,7 @@ class ActiveModelImpl(
 ) : BridgedActiveModel {
     private val animationHandler = AnimationHandlerImpl(handle.animationHandler, this)
 
-    override fun getId(): String {
-        return id
-    }
+    override fun getId(): String = id
 
-    override fun getAnimationHandler(): BridgedAnimationHandler {
-        return animationHandler
-    }
+    override fun getAnimationHandler(): BridgedAnimationHandler = animationHandler
 }

@@ -9,13 +9,10 @@ class AnimationHandlerImpl(
     private val handle: AnimationHandler,
     private val model: BridgedActiveModel
 ) : BridgedAnimationHandler {
-    override fun getModel(): BridgedActiveModel {
-        return model
-    }
+    override fun getModel(): BridgedActiveModel = model
 
-    override fun getAnimation(name: String): BridgedAnimation? {
-        return handle.getAnimation(name)?.let { AnimationImpl(it) }
-    }
+    override fun getAnimation(name: String): BridgedAnimation? =
+        handle.getAnimation(name)?.let { AnimationImpl(it) }
 
     override fun playAnimation(animation: BridgedAnimation, force: Boolean) {
         if (animation !is AnimationImpl) {
@@ -25,9 +22,7 @@ class AnimationHandlerImpl(
         handle.playAnimation(animation.handle, force)
     }
 
-    override fun isPlayingAnimation(name: String): Boolean {
-        return handle.isPlayingAnimation(name)
-    }
+    override fun isPlayingAnimation(name: String): Boolean = handle.isPlayingAnimation(name)
 
     override fun stopAnimation(name: String) {
         handle.stopAnimation(name)

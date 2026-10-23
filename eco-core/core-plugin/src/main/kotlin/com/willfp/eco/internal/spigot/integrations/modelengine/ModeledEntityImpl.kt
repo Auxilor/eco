@@ -7,17 +7,14 @@ import com.willfp.eco.core.integrations.modelengine.BridgedModeledEntity
 class ModeledEntityImpl(
     private val handle: ModeledEntity
 ) : BridgedModeledEntity {
-    override fun isBaseEntityVisible(): Boolean {
-        return handle.isBaseEntityVisible
-    }
+    override fun isBaseEntityVisible(): Boolean = handle.isBaseEntityVisible
 
     override fun setBaseEntityVisible(visible: Boolean) {
         handle.isBaseEntityVisible = visible
     }
 
-    override fun getModels(): Map<String, BridgedActiveModel> {
-        return handle.models.mapValues { ActiveModelImpl(it.key, it.value) }
-    }
+    override fun getModels(): Map<String, BridgedActiveModel> =
+        handle.models.mapValues { ActiveModelImpl(it.key, it.value) }
 
     override fun addModel(model: BridgedActiveModel) {
         if (model !is ActiveModelImpl) {

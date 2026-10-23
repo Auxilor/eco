@@ -6,7 +6,5 @@ import com.willfp.eco.core.integrations.modelengine.BridgedAnimation
 class AnimationImpl(
     val handle: IAnimationProperty
 ) : BridgedAnimation {
-    override fun getName(): String {
-        return handle.name
-    }
+    override fun getName(): String = handle.name
 }
