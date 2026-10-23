@@ -32,9 +32,9 @@ object EntityArgParserModel : EntityArgParser {
 
         val value = argSplit[1].split(",")
 
-        return ModelManager.getIntegration(argSplit[0])?.let {
+        return ModelManager.getIntegration(argSplit[0])?.let { integration ->
             ModelArg(
-                integration = it,
+                integration = integration,
                 id = value[0],
                 animation = value.getOrNull(1)?.takeIf { animation -> animation.isNotBlank() }
             )
