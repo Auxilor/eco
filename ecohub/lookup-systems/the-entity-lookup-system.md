@@ -55,7 +55,8 @@ Entities can have modifiers applied to them in the key. For example, let's say y
 - `feet` Set the boots
 - `hand` Set the held item
 - `off_hand` Set the held item in the offhand
-- `model-engine` Set the Model Engine ID and animation (for ID do `model-engine:id`, for ID and animation do `model-engine:id,animation`)
+- `model-engine` Set the Model Engine ID and animation (for ID do `model-engine:id`, for ID and animation do `model-engine:id,animation`). The animation loops.
+- `model-engine-hide-base` Hide the entity under the Model Engine model
 
 - **Firework Builder:** You can also create custom fireworks using `firework_effect:<index>:<type>:<colors>:<fadeColors>:<trail>:<flicker>`. <br/>
   It may look complicated at first, but it's easy once you know the parts:
