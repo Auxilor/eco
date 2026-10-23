@@ -8,11 +8,16 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.time.Duration
 import org.bukkit.Bukkit
 
 private const val PLAYERFLOW_URL = "https://playerflow.auxilor.io/api/v1/ping"
 
-private val client = HttpClient.newBuilder().build()
+private val PLAYERFLOW_TIMEOUT = Duration.ofSeconds(10)
+
+private val client = HttpClient.newBuilder()
+    .connectTimeout(PLAYERFLOW_TIMEOUT)
+    .build()
 
 class PlayerflowHandler(
     private val scheduler: Scheduler
@@ -33,11 +38,14 @@ class PlayerflowHandler(
         val request = HttpRequest.newBuilder()
             .uri(URI.create(PLAYERFLOW_URL))
             .header("Content-Type", "application/json")
+            .timeout(PLAYERFLOW_TIMEOUT)
             .POST(HttpRequest.BodyPublishers.ofString(body))
             .build()
 
         try {
             client.send(request, HttpResponse.BodyHandlers.ofString())
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
         } catch (e: Exception) {
             // Silently fail
         }
