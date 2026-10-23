@@ -51,7 +51,7 @@ Use custom mobs, models, and disguises from these plugins inside eco plugins.
 | --- | --- |
 | MythicMobs | Custom entities in the Entity Lookup System |
 | ModelEngine | Entity Lookup, EcoMobs models, EcoPets pet models, EcoMinions models, animation effect |
-| BetterModel | EcoMobs models, EcoMinions models, animation effect |
+| BetterModel | Entity Lookup, EcoMobs models, EcoPets pet models, EcoMinions models, animation effect |
 | LevelledMobs | EcoMobs compatibility, mob level placeholders |
 | LibsDisguises | EcoMobs disguises |
 
