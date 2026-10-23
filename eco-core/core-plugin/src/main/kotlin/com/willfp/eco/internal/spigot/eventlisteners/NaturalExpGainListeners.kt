@@ -2,6 +2,7 @@ package com.willfp.eco.internal.spigot.eventlisteners
 
 import com.willfp.eco.core.events.NaturalExpGainEvent
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.ThrownExpBottle
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -23,37 +24,34 @@ class NaturalExpGainListenersPaper : Listener {
 }
 
 class NaturalExpGainListenersSpigot : Listener {
-    private val events: MutableSet<NaturalExpGainBuilder> = HashSet()
+    private val bottles = mutableListOf<BrokenBottle>()
 
     @EventHandler
     fun playerChange(event: PlayerExpChangeEvent) {
-        val builder = NaturalExpGainBuilder(NaturalExpGainBuilder.BuildReason.PLAYER)
-        builder.event = event
-        var toRemove: NaturalExpGainBuilder? = null
-        for (searchBuilder in events) {
-            if (searchBuilder.location!!.world != event.player.location.world) {
-                continue
-            }
-            if (searchBuilder.reason == NaturalExpGainBuilder.BuildReason.BOTTLE && searchBuilder.location!!.distanceSquared(
-                    event.player.location
-                ) > 52
-            ) {
-                toRemove = searchBuilder
-            }
+        val now = System.currentTimeMillis()
+        bottles.removeIf { now - it.time > BOTTLE_EXPIRY_MILLIS }
+
+        val location = event.player.location
+        val fromBottle = bottles.any {
+            it.location.world == location.world && it.location.distanceSquared(location) <= BOTTLE_RADIUS_SQUARED
         }
-        if (toRemove != null) {
-            events.remove(toRemove)
+
+        if (fromBottle) {
             return
         }
-        builder.event = event
-        builder.push()
-        events.remove(builder)
+
+        Bukkit.getPluginManager().callEvent(NaturalExpGainEvent(event))
     }
 
     @EventHandler
     fun onExpBottle(event: ExpBottleEvent) {
-        val builtEvent = NaturalExpGainBuilder(NaturalExpGainBuilder.BuildReason.BOTTLE)
-        builtEvent.location = event.entity.location
-        events.add(builtEvent)
+        bottles.add(BrokenBottle(event.entity.location, System.currentTimeMillis()))
+    }
+
+    private data class BrokenBottle(val location: Location, val time: Long)
+
+    private companion object {
+        const val BOTTLE_RADIUS_SQUARED = 52.0
+        const val BOTTLE_EXPIRY_MILLIS = 5000L
     }
 }
