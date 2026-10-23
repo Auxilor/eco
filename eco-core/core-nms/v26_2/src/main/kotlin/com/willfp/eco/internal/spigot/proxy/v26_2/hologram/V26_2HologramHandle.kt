@@ -126,7 +126,7 @@ class V26_2HologramHandle private constructor(
 
         private fun applyText(display: Display.TextDisplay, contents: List<String>) {
             val joined = contents.joinToString("\n")
-            bukkitOf(display).text(StringUtils.toComponent(joined))
+            display.setText(StringUtils.toComponent(joined).toNMS())
         }
 
         private fun applyOptions(display: Display.TextDisplay, options: HologramOptions) {
