@@ -14,7 +14,7 @@ import org.bukkit.profile.PlayerProfile
 var SkullMeta.texture: String?
     get() {
         if (!Prerequisite.HAS_PAPER.isMet) {
-            val url = this.ownerProfile?.textures?.skin ?: return null
+            val url = this.ownerProfile?.run { textures.skin } ?: return null
             return Base64.getEncoder().encodeToString("""{"textures":{"SKIN":{"url":"$url"}}}""".toByteArray())
         }
 
@@ -46,7 +46,8 @@ private fun createSpigotProfile(base64: String): PlayerProfile? {
         JsonParser.parseString(String(Base64.getDecoder().decode(base64))).asJsonObject
             .getAsJsonObject("textures")
             .getAsJsonObject("SKIN")
-            .get("url").asString
+            .get("url")
+            .asString
     }.getOrNull() ?: return null
 
     return Bukkit.createPlayerProfile(UUID.randomUUID()).apply {
