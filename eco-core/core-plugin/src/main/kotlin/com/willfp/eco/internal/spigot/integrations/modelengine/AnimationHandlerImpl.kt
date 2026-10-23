@@ -37,9 +37,30 @@ class AnimationHandlerImpl(
         handle.playAnimation(animation.handle, force)
     }
 
+    override fun playAnimation(
+        name: String,
+        lerpIn: Double,
+        lerpOut: Double,
+        speed: Double,
+        force: Boolean,
+        loop: Boolean
+    ): Boolean {
+        val property = handle.playAnimation(name, lerpIn, lerpOut, speed, force)
+            ?: return handle.isPlayingAnimation(name)
+
+        if (loop) {
+            property.forceLoopMode = BlueprintAnimation.LoopMode.LOOP
+        }
+        return true
+    }
+
     override fun isPlayingAnimation(name: String): Boolean = handle.isPlayingAnimation(name)
 
     override fun stopAnimation(name: String) {
         handle.stopAnimation(name)
+    }
+
+    override fun forceStopAnimation(name: String) {
+        handle.forceStopAnimation(name)
     }
 }

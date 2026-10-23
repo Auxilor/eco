@@ -47,6 +47,33 @@ public interface BridgedAnimationHandler {
     }
 
     /**
+     * Play an animation by name.
+     *
+     * @param name    The name of the animation.
+     * @param lerpIn  Seconds to blend into the animation.
+     * @param lerpOut Seconds to blend out of the animation when it stops.
+     * @param speed   The playback speed, where 1 is normal speed.
+     * @param force   If the animation should restart if it is already playing.
+     * @param loop    If the animation should loop whatever loop mode the model gives it.
+     * @return If the animation is playing.
+     */
+    default boolean playAnimation(@NotNull final String name,
+                                  final double lerpIn,
+                                  final double lerpOut,
+                                  final double speed,
+                                  final boolean force,
+                                  final boolean loop) {
+        BridgedAnimation animation = getAnimation(name);
+
+        if (animation == null) {
+            return false;
+        }
+
+        playAnimation(animation, force, loop);
+        return true;
+    }
+
+    /**
      * Get if an animation is playing.
      *
      * @param name The name of the animation.
@@ -60,4 +87,13 @@ public interface BridgedAnimationHandler {
      * @param name The name of the animation.
      */
     void stopAnimation(@NotNull String name);
+
+    /**
+     * Stop an animation straight away, without fading out.
+     *
+     * @param name The name of the animation.
+     */
+    default void forceStopAnimation(@NotNull final String name) {
+        stopAnimation(name);
+    }
 }
