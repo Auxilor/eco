@@ -4,7 +4,7 @@ import com.willfp.eco.core.entities.Entities
 import com.willfp.eco.core.entities.args.EntityArgParseResult
 import com.willfp.eco.core.entities.args.EntityArgParser
 import com.willfp.eco.core.integrations.Integration
-import com.willfp.modelenginebridge.ModelEngineBridge
+import com.willfp.eco.core.integrations.modelengine.ModelEngineManager
 
 object EntityLookupModelEngine : Integration {
     fun register() {
@@ -38,14 +38,14 @@ object EntityLookupModelEngine : Integration {
             return EntityArgParseResult(
                 {
                     val modelled =
-                        ModelEngineBridge.instance.getModeledEntity(it.uniqueId) ?: return@EntityArgParseResult false
+                        ModelEngineManager.getModeledEntity(it) ?: return@EntityArgParseResult false
 
                     modelled.models.containsKey(id)
                 },
                 {
-                    val model = ModelEngineBridge.instance.createActiveModel(id) ?: return@EntityArgParseResult
+                    val model = ModelEngineManager.createActiveModel(id) ?: return@EntityArgParseResult
 
-                    val modelled = ModelEngineBridge.instance.createModeledEntity(it)
+                    val modelled = ModelEngineManager.createModeledEntity(it) ?: return@EntityArgParseResult
                     modelled.addModel(model)
                 }
             )
