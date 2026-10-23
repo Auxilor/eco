@@ -52,6 +52,7 @@ softdepend:
   - DeluxeSellwands
   - Scyther
   - ModelEngine
+  - BetterModel
   - PvPManager
   - DeluxeMenus
   - UltraEconomy
