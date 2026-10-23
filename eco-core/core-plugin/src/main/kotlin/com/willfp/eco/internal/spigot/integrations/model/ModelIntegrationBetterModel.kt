@@ -7,6 +7,7 @@ import kr.toxicity.model.api.BetterModel
 import kr.toxicity.model.api.animation.AnimationIterator
 import kr.toxicity.model.api.animation.AnimationModifier
 import kr.toxicity.model.api.bukkit.platform.BukkitAdapter
+import kr.toxicity.model.api.tracker.EntityHideOption
 import kr.toxicity.model.api.tracker.EntityTracker
 import org.bukkit.entity.Entity
 
@@ -25,6 +26,13 @@ class ModelIntegrationBetterModel : ModelIntegration {
     }
 
     override fun hasModel(entity: Entity, modelId: String?): Boolean = trackers(entity, modelId).isNotEmpty()
+
+    override fun setBaseEntityVisible(entity: Entity, visible: Boolean) {
+        for (tracker in trackers(entity, modelId = null)) {
+            val current = tracker.hideOption()
+            tracker.hideOption(EntityHideOption(current.equipment(), current.fire(), !visible, current.glowing()))
+        }
+    }
 
     override fun playAnimation(entity: Entity, modelId: String?, name: String, animation: ModelAnimation): Boolean {
         val modifier = AnimationModifier.builder()
@@ -48,7 +56,8 @@ class ModelIntegrationBetterModel : ModelIntegration {
     override fun stopAnimation(entity: Entity, modelId: String?, name: String, fade: Boolean): Boolean =
         trackers(entity, modelId).count { it.stopAnimation(name) } > 0
 
-    override fun isPlayingAnimation(entity: Entity, modelId: String?, name: String): Boolean = false
+    override fun isPlayingAnimation(entity: Entity, modelId: String?, name: String): Boolean =
+        trackers(entity, modelId).any { it.pipeline.runningAnimation()?.name().equals(name, ignoreCase = true) }
 
     override fun setStateAnimation(entity: Entity, modelId: String?, state: ModelState, name: String) {
         val loop = AnimationModifier.builder().type(AnimationIterator.Type.LOOP).build()
