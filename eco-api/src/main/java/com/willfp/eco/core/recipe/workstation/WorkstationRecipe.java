@@ -43,7 +43,7 @@ public abstract class WorkstationRecipe {
                                 @Nullable final String permission) {
         this.key = key;
         this.output = output;
-        this.permission = permission;
+        this.permission = permission == null || permission.isBlank() ? null : permission;
     }
 
     /**

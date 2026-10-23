@@ -146,7 +146,11 @@ open class EcoConfig(
         format: Boolean,
         option: StringUtils.FormatOption
     ): String? {
-        var string = get(path)?.toString() ?: return null
+        var string = when (val value = get(path)) {
+            null -> return null
+            is List<*> -> if (value.isEmpty()) "" else value.toString()
+            else -> value.toString()
+        }
         if (format && option == StringUtils.FormatOption.WITH_PLACEHOLDERS) {
             for (injection in placeholderInjections) {
                 string = injection.tryTranslateQuickly(string, PlaceholderContext.EMPTY)
