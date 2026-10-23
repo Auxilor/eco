@@ -17,12 +17,11 @@ class ModelIntegrationModelEngine : ModelIntegration {
     override fun modelExists(modelId: String): Boolean = ModelEngineAPI.getBlueprint(modelId) != null
 
     override fun attachModel(entity: Entity, modelId: String): Boolean {
-        if (hasModel(entity, modelId)) {
-            return true
+        if (!hasModel(entity, modelId)) {
+            val blueprint = ModelEngineAPI.getBlueprint(modelId) ?: return false
+            ModelEngineAPI.getOrCreateModeledEntity(entity).addModel(ModelEngineAPI.createActiveModel(blueprint), true)
         }
 
-        val blueprint = ModelEngineAPI.getBlueprint(modelId) ?: return false
-        ModelEngineAPI.getOrCreateModeledEntity(entity).addModel(ModelEngineAPI.createActiveModel(blueprint), true)
         return true
     }
 
@@ -33,7 +32,7 @@ class ModelIntegrationModelEngine : ModelIntegration {
     }
 
     override fun playAnimation(entity: Entity, modelId: String?, name: String, animation: ModelAnimation): Boolean =
-        handlers(entity, modelId).filter { play(it, name, animation) }.isNotEmpty()
+        handlers(entity, modelId).count { it.play(name, animation) } > 0
 
     override fun stopAnimation(entity: Entity, modelId: String?, name: String, fade: Boolean): Boolean {
         val handlers = handlers(entity, modelId).filter { it.isPlayingAnimation(name) }
@@ -60,22 +59,27 @@ class ModelIntegrationModelEngine : ModelIntegration {
         }
     }
 
-    private fun play(handler: AnimationHandler, name: String, animation: ModelAnimation): Boolean {
-        val property = handler.playAnimation(name, animation.lerpIn, animation.lerpOut, animation.speed, animation.force)
-            ?: return handler.isPlayingAnimation(name)
-
-        when (animation.loopMode) {
-            ModelAnimation.LoopMode.LOOP -> property.forceLoopMode = BlueprintAnimation.LoopMode.LOOP
-            ModelAnimation.LoopMode.ONCE -> property.forceLoopMode = BlueprintAnimation.LoopMode.ONCE
-            ModelAnimation.LoopMode.HOLD -> property.forceLoopMode = BlueprintAnimation.LoopMode.HOLD
-            ModelAnimation.LoopMode.MODEL -> Unit
-        }
-        return true
-    }
-
     private fun handlers(entity: Entity, modelId: String?): List<AnimationHandler> =
         ModelEngineAPI.getModeledEntity(entity.uniqueId)?.models.orEmpty()
             .filterKeys { modelId == null || it.equals(modelId, ignoreCase = true) }
             .values
             .map { it.animationHandler }
+}
+
+private fun AnimationHandler.play(name: String, animation: ModelAnimation): Boolean {
+    val property = playAnimation(
+        name,
+        animation.lerpIn,
+        animation.lerpOut,
+        animation.speed,
+        animation.force
+    ) ?: return isPlayingAnimation(name)
+
+    when (animation.loopMode) {
+        ModelAnimation.LoopMode.LOOP -> property.forceLoopMode = BlueprintAnimation.LoopMode.LOOP
+        ModelAnimation.LoopMode.ONCE -> property.forceLoopMode = BlueprintAnimation.LoopMode.ONCE
+        ModelAnimation.LoopMode.HOLD -> property.forceLoopMode = BlueprintAnimation.LoopMode.HOLD
+        ModelAnimation.LoopMode.MODEL -> Unit
+    }
+    return true
 }

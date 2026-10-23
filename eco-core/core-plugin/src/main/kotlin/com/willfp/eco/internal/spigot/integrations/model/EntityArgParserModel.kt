@@ -5,6 +5,7 @@ import com.willfp.eco.core.entities.args.EntityArgParser
 import com.willfp.eco.core.integrations.model.ModelAnimation
 import com.willfp.eco.core.integrations.model.ModelIntegration
 import com.willfp.eco.core.integrations.model.ModelManager
+import org.bukkit.entity.Entity
 
 /**
  * Parses `<model plugin>:<id>[,<animation>]` (such as `model-engine:dragon,flap`) and
@@ -14,47 +15,38 @@ object EntityArgParserModel : EntityArgParser {
     private val loop = ModelAnimation.builder().loopMode(ModelAnimation.LoopMode.LOOP).build()
 
     override fun parseArguments(args: Array<out String>): EntityArgParseResult? {
-        var integration: ModelIntegration? = null
-        var id: String? = null
-        var animation: String? = null
-        var hideBase = false
-
-        for (arg in args) {
-            if (arg.equals("model-hide-base", ignoreCase = true)) {
-                hideBase = true
-                continue
-            }
-
-            val argSplit = arg.split(":", limit = 2)
-            if (argSplit.size < 2) {
-                continue
-            }
-
-            val found = ModelManager.getIntegration(argSplit[0]) ?: continue
-            val value = argSplit[1].split(",")
-            integration = found
-            id = value[0]
-            animation = value.getOrNull(1)?.takeIf { it.isNotBlank() }
-        }
-
-        val modelIntegration = integration ?: return null
-        val modelId = id ?: return null
+        val hideBase = args.any { it.equals("model-hide-base", ignoreCase = true) }
+        val model = args.mapNotNull { parseModel(it) }.lastOrNull() ?: return null
 
         return EntityArgParseResult(
-            {
-                modelIntegration.hasModel(it, modelId)
-            },
-            {
-                if (!modelIntegration.attachModel(it, modelId)) {
-                    return@EntityArgParseResult
-                }
-
-                if (hideBase) {
-                    modelIntegration.setBaseEntityVisible(it, false)
-                }
-
-                animation?.let { name -> modelIntegration.playAnimation(it, modelId, name, loop) }
-            }
+            { model.integration.hasModel(it, model.id) },
+            { apply(it, model, hideBase) }
         )
     }
+
+    private fun parseModel(arg: String): ModelArg? {
+        val argSplit = arg.split(":", limit = 2)
+        val integration = argSplit.takeIf { it.size == 2 }?.let { ModelManager.getIntegration(it[0]) } ?: return null
+        val value = argSplit[1].split(",")
+
+        return ModelArg(integration, value[0], value.getOrNull(1)?.takeIf { it.isNotBlank() })
+    }
+
+    private fun apply(entity: Entity, model: ModelArg, hideBase: Boolean) {
+        if (!model.integration.attachModel(entity, model.id)) {
+            return
+        }
+
+        if (hideBase) {
+            model.integration.setBaseEntityVisible(entity, false)
+        }
+
+        model.animation?.let { model.integration.playAnimation(entity, model.id, it, loop) }
+    }
+
+    private data class ModelArg(
+        val integration: ModelIntegration,
+        val id: String,
+        val animation: String?
+    )
 }

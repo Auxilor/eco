@@ -60,13 +60,11 @@ public final class ModelManager {
     public static ModelIntegration getIntegration(@NotNull final String id) {
         String key = normalise(id);
 
-        for (ModelIntegration integration : REGISTRY.values()) {
-            if (normalise(integration.getId()).equals(key) || normalise(integration.getPluginName()).equals(key)) {
-                return integration;
-            }
-        }
-
-        return null;
+        return REGISTRY.values().stream()
+                .filter(integration -> normalise(integration.getId()).equals(key)
+                        || normalise(integration.getPluginName()).equals(key))
+                .findFirst()
+                .orElse(null);
     }
 
     /**

@@ -19,6 +19,7 @@ class ModelIntegrationBetterModel : ModelIntegration {
 
     override fun attachModel(entity: Entity, modelId: String): Boolean {
         val model = BetterModel.modelOrNull(modelId) ?: return false
+        @Suppress("MissingUseCall")
         model.getOrCreate(BukkitAdapter.adapt(entity))
         return true
     }
@@ -38,14 +39,14 @@ class ModelIntegrationBetterModel : ModelIntegration {
             .override(animation.force)
             .start((animation.lerpIn * TICKS_PER_SECOND).toInt())
             .end((animation.lerpOut * TICKS_PER_SECOND).toInt())
-            .apply { animation.viewer?.let { player(BukkitAdapter.adapt(it)) } }
+            .player(animation.viewer?.let(BukkitAdapter::adapt))
             .build()
 
-        return trackers(entity, modelId).filter { it.animate(name, modifier) }.isNotEmpty()
+        return trackers(entity, modelId).count { it.animate(name, modifier) } > 0
     }
 
     override fun stopAnimation(entity: Entity, modelId: String?, name: String, fade: Boolean): Boolean =
-        trackers(entity, modelId).filter { it.stopAnimation(name) }.isNotEmpty()
+        trackers(entity, modelId).count { it.stopAnimation(name) } > 0
 
     override fun isPlayingAnimation(entity: Entity, modelId: String?, name: String): Boolean = false
 
