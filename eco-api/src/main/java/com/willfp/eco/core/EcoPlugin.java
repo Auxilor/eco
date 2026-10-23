@@ -380,11 +380,7 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.extensionLoader = Eco.get().createExtensionLoader(this);
         this.configHandler = Eco.get().createConfigHandler(this);
 
-        if (this instanceof Eco) {
-            /*
-            eco's config.yml holds the language every plugin's lang is selected
-            by, so eco has to load it before its own lang.
-             */
+        if (this.loadsConfigBeforeLang()) {
             this.configYml = this.createConfigYml();
             this.langYml = this.createLangYml();
         } else {
@@ -432,6 +428,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
             throw new OutdatedEcoVersionError("This plugin requires at least eco version " + requiredVersion + " to run.");
         }
+    }
+
+    /**
+     * Get if config.yml should be loaded before lang.yml.
+     * <p>
+     * eco's config.yml holds the language every plugin's lang is selected
+     * by, so eco has to load it before its own lang.
+     *
+     * @return If config.yml should be loaded first.
+     */
+    private boolean loadsConfigBeforeLang() {
+        return this instanceof Eco;
     }
 
     /**
