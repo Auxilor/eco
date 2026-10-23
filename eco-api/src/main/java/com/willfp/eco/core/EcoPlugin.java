@@ -380,15 +380,20 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
         this.extensionLoader = Eco.get().createExtensionLoader(this);
         this.configHandler = Eco.get().createConfigHandler(this);
 
-        this.langYml = this.createLangYml();
+        if (this.loadsConfigBeforeLang()) {
+            this.configYml = this.createConfigYml();
+            this.langYml = this.createLangYml();
+        } else {
+            this.langYml = this.createLangYml();
 
-        if (!this.langYml.isValid() && !(this instanceof Eco)) {
-            this.getLogger().warning("Notify plugin authors " + String.join(", ", this.getDescription().getAuthors()) + " that");
-            this.getLogger().warning("they are missing crucial lang.yml keys! They can be found");
-            this.getLogger().warning("in the LangYml class.");
+            if (!this.langYml.isValid()) {
+                this.getLogger().warning("Notify plugin authors " + String.join(", ", this.getDescription().getAuthors()) + " that");
+                this.getLogger().warning("they are missing crucial lang.yml keys! They can be found");
+                this.getLogger().warning("in the LangYml class.");
+            }
+
+            this.configYml = this.createConfigYml();
         }
-
-        this.configYml = this.createConfigYml();
 
         Eco.get().addNewPlugin(this);
 
@@ -423,6 +428,18 @@ public abstract class EcoPlugin extends JavaPlugin implements PluginLike, Regist
 
             throw new OutdatedEcoVersionError("This plugin requires at least eco version " + requiredVersion + " to run.");
         }
+    }
+
+    /**
+     * Get if config.yml should be loaded before lang.yml.
+     * <p>
+     * eco's config.yml holds the language every plugin's lang is selected
+     * by, so eco has to load it before its own lang.
+     *
+     * @return If config.yml should be loaded first.
+     */
+    private boolean loadsConfigBeforeLang() {
+        return this instanceof Eco;
     }
 
     /**

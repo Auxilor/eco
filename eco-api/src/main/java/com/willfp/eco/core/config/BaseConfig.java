@@ -2,6 +2,7 @@ package com.willfp.eco.core.config;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.PluginLike;
+import com.willfp.eco.core.config.interfaces.LoadableConfig;
 import com.willfp.eco.core.config.wrapper.LoadableConfigWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,5 +52,14 @@ public abstract class BaseConfig extends LoadableConfigWrapper {
                 type,
                 requiresChangeToSave
         ));
+    }
+
+    /**
+     * Create new Base Config wrapping an already created config.
+     *
+     * @param handle The config.
+     */
+    protected BaseConfig(@NotNull final LoadableConfig handle) {
+        super(handle);
     }
 }
