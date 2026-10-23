@@ -203,12 +203,6 @@ math-cache-ttl: 200
 # less reactive values. (Do not change unless you are told to).
 literal-cache-ttl: 10
 
-# If anonymous usage statistics should be tracked. This is very valuable information as it
-# helps understand how eco and other plugins are being used by logging player and server
-# counts. This is completely anonymous and no personal information is logged. This data
-# is primarily used for optimisation and server insights.
-playerflow: true
-
 # Options for the {#{expression}} progress bar placeholder syntax.
 progress-bar:
   # The character used to draw each section of the bar.
