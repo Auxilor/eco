@@ -163,6 +163,7 @@ import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorChangeEventListe
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListener
 import com.willfp.eco.internal.spigot.eventlisteners.armor.ArmorListenerPaper
 import com.willfp.eco.internal.spigot.gui.GUIListener
+import com.willfp.eco.internal.spigot.gui.GUIQuitListener
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
@@ -707,6 +708,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             WorkstationRecipeListener(this),
             brewingPacketHandler,
             GUIListener(this),
+            GUIQuitListener,
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
             ProfileLoadListener(this, profileHandler),
