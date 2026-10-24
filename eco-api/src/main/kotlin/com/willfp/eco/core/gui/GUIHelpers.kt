@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
+import org.jetbrains.annotations.ApiStatus
 
 /** Shorthand for the `event.whoClicked as Player` pattern used everywhere. */
 val InventoryClickEvent.player: Player
@@ -307,6 +308,28 @@ fun MenuBuilder.addPageChanger(
 
     return this
 }
+
+/**
+ * Add a page changer button placed directly from a config section.
+ *
+ * Kept so plugins compiled against 2026.42 and earlier still link.
+ *
+ * @param config The config holding the button section.
+ * @param basePath The path of the button section.
+ * @param direction The direction.
+ * @param sound The page turn sound, or null for silent.
+ * @param layer The layer, defaults to [MenuLayer.TOP].
+ * @return The builder.
+ */
+@Deprecated("Use the overload with slot location and item options", level = DeprecationLevel.HIDDEN)
+@ApiStatus.ScheduledForRemoval(inVersion = "2027.43")
+fun MenuBuilder.addPageChanger(
+    config: Config,
+    basePath: String,
+    direction: PageChanger.Direction,
+    sound: AbstractPlayableSound<*>?,
+    layer: Int = MenuLayer.TOP
+): MenuBuilder = addPageChanger(config, basePath, direction, sound, layer, defaultItem = null)
 
 private fun Config.hasActiveItem(): Boolean =
     getPlainStringOrNull("item.active") != null
