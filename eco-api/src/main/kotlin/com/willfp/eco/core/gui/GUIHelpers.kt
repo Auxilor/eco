@@ -320,7 +320,6 @@ fun MenuBuilder.addPageChanger(
  * @param sound The page turn sound, or null for silent.
  * @param layer The layer, defaults to [MenuLayer.TOP].
  * @return The builder.
- * @deprecated Use the overload with slot location and item options.
  */
 @Deprecated("Use the overload with slot location and item options", level = DeprecationLevel.HIDDEN)
 @ApiStatus.ScheduledForRemoval(inVersion = "2027.43")
