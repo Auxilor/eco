@@ -82,7 +82,6 @@ dependencies {
     compileOnly("io.hotmoka:toml4j:0.7.3") {
         exclude(group = "com.google.code.gson", module = "gson")
     }
-    implementation("com.willfp:ModelEngineBridge:1.4.0")
 
     // Included in spigot jar
     compileOnly("com.google.code.gson:gson:2.8.9")
@@ -116,6 +115,10 @@ dependencies {
     compileOnly("org.black_ixx:playerpoints:3.2.6")
     compileOnly("io.lumine:Mythic:5.11.1")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")
+    compileOnly("com.ticxo.modelengine:ModelEngine:R4.0.4")
+    compileOnly("io.github.toxicity188:bettermodel-bukkit-api:2.2.0") {
+        exclude("*", "kotlin-stdlib")
+    }
     compileOnly("com.iridium:IridiumSkyblock:4.1.5")
     compileOnly("net.william278.huskclaims:huskclaims-bukkit:1.5.10")
     compileOnly("net.william278.husktowns:husktowns-bukkit:3.1.4")
@@ -144,7 +147,6 @@ tasks {
     shadowJar {
         minimize {
             exclude(dependency("org.jetbrains.exposed:.*:.*"))
-            exclude(dependency("com.willfp:ModelEngineBridge:.*"))
         }
     }
 
