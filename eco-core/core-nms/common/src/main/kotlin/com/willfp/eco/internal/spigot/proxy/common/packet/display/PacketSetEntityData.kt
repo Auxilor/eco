@@ -35,23 +35,16 @@ object PacketSetEntityData : PacketListener {
         return if (changed) ClientboundBundlePacket(subPackets as List<Packet<in ClientGamePacketListener>>) else null
     }
 
-    /**
-     * The same packet object is broadcast to every viewer, so display goes on copies in a new packet.
-     */
     private fun ClientboundSetEntityDataPacket.displayed(player: Player): ClientboundSetEntityDataPacket? {
         if (this.packedItems.none { it.serializer == EntityDataSerializers.ITEM_STACK }) {
             return null
         }
 
-        return ClientboundSetEntityDataPacket(this.id, this.packedItems.map { it.displayed(player) })
+        return ClientboundSetEntityDataPacket(this.id, this.packedItems.map { it.displayedCopy(player) })
     }
 
-    private fun SynchedEntityData.DataValue<*>.displayed(player: Player): SynchedEntityData.DataValue<*> {
-        if (this.serializer != EntityDataSerializers.ITEM_STACK) {
-            return this
-        }
-
-        val itemStack = (this.value as ItemStack).takeUnless { it.isEmpty }?.copy() ?: return this
+    private fun SynchedEntityData.DataValue<*>.displayedCopy(player: Player): SynchedEntityData.DataValue<*> {
+        val itemStack = (this.value as? ItemStack)?.takeUnless { it.isEmpty }?.copy() ?: return this
 
         Display.display(itemStack.asBukkitStack(), player)
 
