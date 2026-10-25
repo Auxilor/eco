@@ -7,6 +7,7 @@ import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketActionBarDetection
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketSeenAdvancements
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetEntityData
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearDisplayFrame
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearFrames
@@ -48,6 +49,7 @@ class PacketHandler : PacketHandlerProxy {
             NewItemsPacketOpenWindowMerchant,
             NewItemsPacketSetCreativeSlot,
             PacketSetSlot,
+            PacketSetEntityData,
             NewItemsPacketWindowItems(plugin),
             PacketContainerClick,
             PacketSetCursorItem,
