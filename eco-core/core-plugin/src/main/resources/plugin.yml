@@ -1,7 +1,7 @@
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoImpl
-api-version: 1.21.4
+api-version: 1.21.8
 authors: [ Auxilor, Exanthiax, Callum ]
 website: willfp.com
 load: STARTUP
@@ -28,7 +28,6 @@ softdepend:
   - PlotSquared
   - FactionsUUID
   - Kingdoms
-  - AAC
   - Matrix
   - Vulcan
   - PlaceholderAPI
@@ -39,7 +38,6 @@ softdepend:
   - Nexo
   - HeadDatabase
   - Multiverse-Inventories
-  - Alice
   - Essentials
   - Vault
   - BentoBox
@@ -50,7 +48,6 @@ softdepend:
   - RPGHorses
   - zShop
   - DeluxeSellwands
-  - Scyther
   - ModelEngine
   - BetterModel
   - PvPManager

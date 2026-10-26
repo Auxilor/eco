@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Wrapper interface for anticheat integrations.
  * <p>
- * Implemented for anticheat plugins such as Spartan, Vulcan, Alice, and AAC, so that eco can
+ * Implemented for anticheat plugins such as Spartan and Vulcan, so that eco can
  * temporarily exempt players from anticheat checks while performing movement or combat that
  * would otherwise look like cheating.
  *

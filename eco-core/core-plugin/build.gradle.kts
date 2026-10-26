@@ -111,7 +111,6 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude(group = "*", module = "*")
     }
-    compileOnly("com.github.N0RSKA:ScytherAPI:55a")
     compileOnly("org.black_ixx:playerpoints:3.2.6")
     compileOnly("io.lumine:Mythic:5.11.1")
     compileOnly("io.lumine:LumineUtils:1.21-SNAPSHOT")

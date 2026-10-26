@@ -38,8 +38,7 @@ eco exempts its own gameplay mechanics from anticheat false-positives.
 
 | Plugin | Plugin |
 | --- | --- |
-| AAC | Spartan |
-| Alice | Vulcan |
+| Spartan | Vulcan |
 
 ---
 
@@ -69,7 +68,7 @@ Items from these plugins can be used anywhere eco accepts an [Item Lookup](https
 | CustomCrafting | ItemsAdder |
 | Denizen | Nexo |
 | ExecutableItems | Oraxen |
-| HeadDatabase | Scyther |
+| HeadDatabase | |
 
 ### Custom Blocks
 

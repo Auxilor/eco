@@ -168,8 +168,6 @@ import com.willfp.eco.internal.spigot.gui.GUIListener
 import com.willfp.eco.internal.spigot.gui.GUIQuitListener
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
@@ -205,7 +203,6 @@ import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsItemsA
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsMythicMobs
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsNexo
 import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsOraxen
-import com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther
 import com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting
 import com.willfp.eco.internal.spigot.integrations.economy.EconomyVault
 import com.willfp.eco.internal.spigot.integrations.mcmmo.McmmoIntegrationImpl
@@ -579,10 +576,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("PlotSquared") { AntigriefManager.register(AntigriefPlotSquared()) },
 
             // Anticheat
-            IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
-            IntegrationLoader("Alice") { AnticheatManager.register(AnticheatAlice()) },
 
             // Custom Entities
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
@@ -611,7 +606,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
                 CraftingRecipeListener.registerValidator(CustomRecipeCustomCrafting())
             },
             IntegrationLoader("MythicMobs") { CustomItemsManager.register(CustomItemsMythicMobs(this)) },
-            IntegrationLoader("Scyther") { CustomItemsManager.register(CustomItemsScyther()) },
             IntegrationLoader("Denizen") { CustomItemsManager.register(CustomItemsDenizen()) },
             IntegrationLoader("ItemBridge") { CustomItemsManager.register(CustomItemsItemBridge()) },
 
