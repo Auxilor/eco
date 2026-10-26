@@ -48,7 +48,6 @@ softdepend:
   - RPGHorses
   - zShop
   - DeluxeSellwands
-  - Scyther
   - ModelEngine
   - BetterModel
   - PvPManager

@@ -347,7 +347,6 @@
     <ID>ExpressionBodySyntax:CustomItemsMythicMobs.kt:CustomItemsMythicMobs$return "MythicMobs"</ID>
     <ID>ExpressionBodySyntax:CustomItemsNexo.kt:CustomItemsNexo$return "Nexo"</ID>
     <ID>ExpressionBodySyntax:CustomItemsOraxen.kt:CustomItemsOraxen$return "Oraxen"</ID>
-    <ID>ExpressionBodySyntax:CustomItemsScyther.kt:CustomItemsScyther$return "Scyther"</ID>
     <ID>ExpressionBodySyntax:CustomRecipeCustomCrafting.kt:CustomRecipeCustomCrafting$return "CustomCrafting"</ID>
     <ID>ExpressionBodySyntax:DefaultMap.kt:MutableListMap$return super.getOrDefault(key, defaultValue)</ID>
     <ID>ExpressionBodySyntax:DelegatedBukkitCommand.kt:DelegatedBukkitCommand$return delegate.onCommand(sender, this, label, args)</ID>
@@ -2099,7 +2098,6 @@
     <ID>NewLineAtEndOfFile:CustomItemsCustomCrafting.kt:com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsCustomCrafting.kt</ID>
     <ID>NewLineAtEndOfFile:CustomItemsHeadDatabase.kt:com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsHeadDatabase.kt</ID>
     <ID>NewLineAtEndOfFile:CustomItemsNexo.kt:com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsNexo.kt</ID>
-    <ID>NewLineAtEndOfFile:CustomItemsScyther.kt:com.willfp.eco.internal.spigot.integrations.customitems.CustomItemsScyther.kt</ID>
     <ID>NewLineAtEndOfFile:CustomRecipeCustomCrafting.kt:com.willfp.eco.internal.spigot.integrations.customrecipes.CustomRecipeCustomCrafting.kt</ID>
     <ID>NewLineAtEndOfFile:DummyEntityFactoryProxy.kt:com.willfp.eco.internal.spigot.proxies.DummyEntityFactoryProxy.kt</ID>
     <ID>NewLineAtEndOfFile:EcoExtensionLoader.kt:com.willfp.eco.internal.extensions.EcoExtensionLoader.kt</ID>
