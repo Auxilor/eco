@@ -1,7 +1,7 @@
 name: eco
 version: ${projectVersion}
 main: com.willfp.eco.internal.spigot.EcoImpl
-api-version: 1.21.4
+api-version: 1.21.8
 authors: [ Auxilor, Exanthiax, Callum ]
 website: willfp.com
 load: STARTUP
