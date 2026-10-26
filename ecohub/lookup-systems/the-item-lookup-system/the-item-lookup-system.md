@@ -117,6 +117,7 @@ Items can  have modifiers applied to them. For example, lets say you're configur
 - **Glider:** You can make any chestplate slot item a glider (work like an elytra) with `glider`
 - **Item Model:** You can set the item model (different to custom-model-data) with `item_model:<namespace>:<id>`, e.g. `item_model:nexo:dragon_helmet`. For minecraft items, you can skip the namespace
 - **Tooltip Style:** You can set the tooltip style with `tooltip_style:<namespace>:<id>`, e.g. `tooltip_style:nexo:epic_tooltip`.
+- **Use Cooldown:** You can give an item a cooldown after it is used with `use_cooldown:<seconds>:[namespace:id]`, e.g. `use_cooldown:5` or `use_cooldown:2.5:myserver:dash`. The cooldown group is optional; items in the same group share one cooldown. Without a group, the cooldown applies to that item type only
 - **Item Name:** You can set the item name (different to display name) with `item_name:<name>`
 - **Attribute:** You can add an attribute modifier with `attribute:<attribute>:<operation>:<amount>:[slot]`. The `<slotGroup>` is optional and defaults to `any`.
 
