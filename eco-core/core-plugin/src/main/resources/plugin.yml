@@ -28,7 +28,6 @@ softdepend:
   - PlotSquared
   - FactionsUUID
   - Kingdoms
-  - AAC
   - Matrix
   - Vulcan
   - PlaceholderAPI

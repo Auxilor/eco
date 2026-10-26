@@ -258,7 +258,6 @@
     <ID>ExpressionBodySyntax:AFKIntegrationCMI.kt:AFKIntegrationCMI$return CMI.getInstance().playerManager.getUser(player)?.isAfk ?: false</ID>
     <ID>ExpressionBodySyntax:AFKIntegrationEssentials.kt:AFKIntegrationEssentials$return "Essentials"</ID>
     <ID>ExpressionBodySyntax:AFKIntegrationEssentials.kt:AFKIntegrationEssentials$return ess.getUser(player) != null &amp;&amp; ess.getUser(player).isAfk</ID>
-    <ID>ExpressionBodySyntax:AnticheatAAC.kt:AnticheatAAC$return "AAC"</ID>
     <ID>ExpressionBodySyntax:AnticheatAlice.kt:AnticheatAlice$return "Alice"</ID>
     <ID>ExpressionBodySyntax:AnticheatSpartan.kt:AnticheatSpartan$return "Spartan"</ID>
     <ID>ExpressionBodySyntax:AnticheatVulcan.kt:AnticheatVulcan$return "Vulcan"</ID>
@@ -2015,7 +2014,6 @@
     <ID>NestedScopeFunctions:JsonUtils.kt:JsonUtils$let { authorParts += "\"url\":\"${escape(it)}\"" }</ID>
     <ID>NestedScopeFunctions:JsonUtils.kt:JsonUtils$let { footerParts += "\"icon_url\":\"${escape(it)}\"" }</ID>
     <ID>NestedScopeFunctions:JsonUtils.kt:JsonUtils$let { fp += "\"inline\":${it}" }</ID>
-    <ID>NewLineAtEndOfFile:AnticheatAAC.kt:com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC.kt</ID>
     <ID>NewLineAtEndOfFile:AnticheatAlice.kt:com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice.kt</ID>
     <ID>NewLineAtEndOfFile:AnticheatSpartan.kt:com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan.kt</ID>
     <ID>NewLineAtEndOfFile:AnticheatVulcan.kt:com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan.kt</ID>
@@ -2823,7 +2821,6 @@
     <ID>UnreachableCode:WorkstationRecipeListener.kt:WorkstationRecipeListener$existing.add(merchantRecipe)</ID>
     <ID>UnreachableCode:WorkstationRecipeListener.kt:WorkstationRecipeListener$merchantRecipe.addIngredient((villagerRecipe.input1Display ?: villagerRecipe.input1.item ?: return@forEach).clone())</ID>
     <ID>UnreachableCode:WorkstationRecipeListener.kt:WorkstationRecipeListener$villagerRecipe.input2?.let { secondInput -&gt; merchantRecipe.addIngredient((villagerRecipe.input2Display ?: secondInput.item ?: return@let).clone()) }</ID>
-    <ID>UnsafeCallOnNullableType:AnticheatAAC.kt:AnticheatAAC$Bukkit.getServicesManager().load(AACAPI::class.java)!!</ID>
     <ID>UnsafeCallOnNullableType:ArgParserEntity.kt:ArgParserEntity$state.spawnedType!!</ID>
     <ID>UnsafeCallOnNullableType:ArgParserHead.kt:ArgParserHead$meta.owningPlayer!!</ID>
     <ID>UnsafeCallOnNullableType:ArmorListener.kt:ArmorListener$event.clickedInventory!!</ID>

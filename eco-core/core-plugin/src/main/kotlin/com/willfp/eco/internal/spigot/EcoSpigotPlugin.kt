@@ -168,7 +168,6 @@ import com.willfp.eco.internal.spigot.gui.GUIListener
 import com.willfp.eco.internal.spigot.gui.GUIQuitListener
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAAC
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
@@ -579,7 +578,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             IntegrationLoader("PlotSquared") { AntigriefManager.register(AntigriefPlotSquared()) },
 
             // Anticheat
-            IntegrationLoader("AAC5") { AnticheatManager.register(AnticheatAAC()) },
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
             IntegrationLoader("Alice") { AnticheatManager.register(AnticheatAlice()) },
