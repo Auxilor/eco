@@ -129,6 +129,7 @@ import com.willfp.eco.internal.items.ArgParserUnbreakable
 import com.willfp.eco.internal.items.ArgParserUnconsumable
 import com.willfp.eco.internal.items.ArgParserUnenchantable
 import com.willfp.eco.internal.items.ArgParserUngrindable
+import com.willfp.eco.internal.items.ArgParserUseCooldown
 import com.willfp.eco.internal.items.tags.VanillaItemTags
 import com.willfp.eco.internal.lookup.SegmentParserGroup
 import com.willfp.eco.internal.lookup.SegmentParserUseIfPresent
@@ -324,6 +325,7 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
         Items.registerArgParser(ArgParserUnenchantable)
         Items.registerArgParser(ArgParserUngrindable)
         Items.registerArgParser(ArgParserUnconsumable)
+        Items.registerArgParser(ArgParserUseCooldown)
 
         Blocks.registerArgParser(BlockArgParserAgeable)
         Blocks.registerArgParser(BlockArgParserAnaloguePowerable)
