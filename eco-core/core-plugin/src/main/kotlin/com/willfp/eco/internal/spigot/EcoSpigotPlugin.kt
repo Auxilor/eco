@@ -142,8 +142,10 @@ import com.willfp.eco.internal.spigot.actionbar.PersistentActionBarService
 import com.willfp.eco.internal.spigot.actionbar.PersistentActionBarTicker
 import com.willfp.eco.internal.spigot.anvil.AnvilMechanicsListener
 import com.willfp.eco.internal.spigot.arrows.ArrowDataListener
+import com.willfp.eco.internal.spigot.data.BlockDestroyListener
 import com.willfp.eco.internal.spigot.data.DataYml
 import com.willfp.eco.internal.spigot.data.PlayerBlockListener
+import com.willfp.eco.internal.spigot.data.PlayerPlacedMarkers
 import com.willfp.eco.internal.spigot.dragdrop.DragAndDropShellListener
 import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.ProfileLoadListener
@@ -698,6 +700,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
      * @return The listeners.
      */
     override fun loadListeners(): List<Listener> {
+        val playerPlacedMarkers = PlayerPlacedMarkers(this)
+
         val listeners = mutableListOf(
             AnvilMechanicsListener(this),
             DragAndDropShellListener(),
@@ -712,7 +716,8 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             ArrowDataListener(this),
             ArmorChangeEventListeners(this),
             ProfileLoadListener(this, profileHandler),
-            PlayerBlockListener(this),
+            PlayerBlockListener(this, playerPlacedMarkers),
+            BlockDestroyListener(playerPlacedMarkers),
             ServerLocking,
             OutdatedPlugins,
             AutocrafterPatch,

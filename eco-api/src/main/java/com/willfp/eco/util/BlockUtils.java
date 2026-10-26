@@ -6,6 +6,7 @@ import java.util.*;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,14 +74,21 @@ public final class BlockUtils {
      * <p>
      * This reads a marker stored by eco in the persistent data container of the block's
      * {@link Chunk}, so it only reports blocks placed while eco was tracking them.
+     * <p>
+     * Markers are keyed by the block's position within its chunk. Markers written by older
+     * versions of eco are keyed by the location hash, which several positions can share, and
+     * are still read so that blocks placed before the update stay player-placed.
      *
      * @param block The block.
      * @return If placed by a player.
      */
     public static boolean isPlayerPlaced(@NotNull final Block block) {
-        Chunk chunk = block.getChunk();
+        PersistentDataContainer container = block.getChunk().getPersistentDataContainer();
 
-        return chunk.getPersistentDataContainer().has(
+        return container.has(
+                NamespacedKeyUtils.createEcoKey("placed_" + (block.getX() & 15) + "_" + block.getY() + "_" + (block.getZ() & 15)),
+                PersistentDataType.INTEGER
+        ) || container.has(
                 NamespacedKeyUtils.createEcoKey(Integer.toString(block.getLocation().hashCode(), 16)),
                 PersistentDataType.INTEGER
         );
