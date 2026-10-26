@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import java.util.UUID
 import kotlin.math.abs
+import kotlin.math.max
 
 /** Outcome of an anvil merge: null [result]/[xp] fields aren't set unless a merge succeeded. */
 private data class AnvilResult(val result: ItemStack?, val xp: Int?)
@@ -225,19 +226,24 @@ class AnvilMechanicsListener(
             if (left == old) return@run
 
             val renameCost = if (old?.fast()?.displayName != outItem.fast().displayName) 1 else 0
-            val cost = computeAnvilCost(priorWorkCost, renameCost, price)
+            val clampRepairCost = settings.clampRepairCost
+            val maxRepairCost = settings.maxRepairCost
+            val onlyRenaming = right == null
+            val cost = computeAnvilCost(priorWorkCost, renameCost, price).let {
+                if (onlyRenaming && maxRepairCost > 0) it.coerceAtMost(maxRepairCost - 1) else it
+            }
             if (cost <= 0) return@run
 
             val leftEnchants = left?.fast()?.getEnchants(true) ?: emptyMap()
             val outEnchants = outItem.fast().getEnchants(true)
             if (event.inventory.getItem(1) == null && leftEnchants != outEnchants) return@run
 
-            if (settings.useReworkPenalty) {
-                outItem.fast().repairCost = applyReworkPenalty(outItem.fast().repairCost)
+            if (settings.useReworkPenalty && !onlyRenaming) {
+                outItem.fast().repairCost = applyReworkPenalty(
+                    max(outItem.fast().repairCost, right?.fast()?.repairCost ?: 0)
+                )
             }
 
-            val clampRepairCost = settings.clampRepairCost
-            val maxRepairCost = settings.maxRepairCost
             if (latestPreviewGeneration[player.uniqueId] != generation) return@run
 
             event.view.maximumRepairCost = maxRepairCost
