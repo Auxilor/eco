@@ -311,14 +311,6 @@ class AnvilMechanicsListener(
             }
         }
 
-        if (!keepsCurrentName) {
-            if (formattedItemName == null) {
-                leftMeta.setDisplayName(null)
-            } else {
-                left.fast().displayName = formattedItemName
-            }
-        }
-
         val leftEnchants = left.fast().getEnchants(true)
         val rightEnchants = right.fast().getEnchants(true)
         val outEnchants = leftEnchants.toMutableMap()
@@ -357,6 +349,14 @@ class AnvilMechanicsListener(
         }
 
         left.itemMeta = leftMeta
+
+        if (!keepsCurrentName) {
+            if (formattedItemName == null) {
+                left.itemMeta = left.itemMeta?.apply { setDisplayName(null) }
+            } else {
+                left.fast().displayName = formattedItemName
+            }
+        }
 
         val enchantLevelDiff = abs(leftEnchants.values.sum() - outEnchants.values.sum())
         val xpCost = computeXpCost(enchantLevelDiff, unitRepairCost + combineRepairCost, settings.costExponent)
