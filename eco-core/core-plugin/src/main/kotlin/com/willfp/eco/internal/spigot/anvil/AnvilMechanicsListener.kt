@@ -223,7 +223,7 @@ class AnvilMechanicsListener(
             val outItem = result.result ?: ItemStack(Material.AIR)
             val oldLeft = event.inventory.getItem(0)
             if (oldLeft == null || oldLeft.type != outItem.type) return@run
-            if (left == old) return@run
+            if (left == old && price == 0) return@run
 
             val renameCost = if (old?.fast()?.displayName != outItem.fast().displayName) 1 else 0
             val clampRepairCost = settings.clampRepairCost
@@ -320,15 +320,19 @@ class AnvilMechanicsListener(
         val leftEnchants = left.fast().getEnchants(true)
         val rightEnchants = right.fast().getEnchants(true)
         val outEnchants = leftEnchants.toMutableMap()
+        var appliedLevels = 0
 
         for ((enchant, level) in rightEnchants) {
             if (outEnchants.containsKey(enchant)) {
                 val currentLevel = outEnchants[enchant]!!
-                outEnchants[enchant] = mergeEnchantLevel(currentLevel, level, handler.maxLevel(enchant))
+                val mergedLevel = mergeEnchantLevel(currentLevel, level, handler.maxLevel(enchant))
+                outEnchants[enchant] = mergedLevel
+                appliedLevels += mergedLevel
             } else {
                 if (handler.canCombine(enchant, level, left, outEnchants.keys)) {
                     if (outEnchants.size < settings.enchantLimit.infiniteIfNegative()) {
                         outEnchants[enchant] = level
+                        appliedLevels += level
                     }
                 }
             }
@@ -365,6 +369,7 @@ class AnvilMechanicsListener(
         }
 
         val enchantLevelDiff = abs(leftEnchants.values.sum() - outEnchants.values.sum())
+            .takeIf { it > 0 } ?: appliedLevels
         val xpCost = computeXpCost(enchantLevelDiff, unitRepairCost + combineRepairCost, settings.costExponent)
         return AnvilResult(left, xpCost)
     }
