@@ -168,7 +168,6 @@ import com.willfp.eco.internal.spigot.gui.GUIListener
 import com.willfp.eco.internal.spigot.gui.GUIQuitListener
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationCMI
 import com.willfp.eco.internal.spigot.integrations.afk.AFKIntegrationEssentials
-import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatAlice
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatSpartan
 import com.willfp.eco.internal.spigot.integrations.anticheat.AnticheatVulcan
 import com.willfp.eco.internal.spigot.integrations.antigrief.AntigriefBentoBox
@@ -580,7 +579,6 @@ abstract class EcoSpigotPlugin : EcoPlugin() {
             // Anticheat
             IntegrationLoader("Spartan") { AnticheatManager.register(AnticheatSpartan()) },
             IntegrationLoader("Vulcan") { AnticheatManager.register(AnticheatVulcan()) },
-            IntegrationLoader("Alice") { AnticheatManager.register(AnticheatAlice()) },
 
             // Custom Entities
             IntegrationLoader("MythicMobs") { CustomEntitiesManager.register(CustomEntitiesMythicMobs()) },
