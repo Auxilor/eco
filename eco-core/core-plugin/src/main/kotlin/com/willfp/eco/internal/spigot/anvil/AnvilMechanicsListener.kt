@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import java.util.UUID
 import kotlin.math.abs
+import kotlin.math.max
 
 /** Outcome of an anvil merge: null [result]/[xp] fields aren't set unless a merge succeeded. */
 private data class AnvilResult(val result: ItemStack?, val xp: Int?)
@@ -222,22 +223,26 @@ class AnvilMechanicsListener(
             val outItem = result.result ?: ItemStack(Material.AIR)
             val oldLeft = event.inventory.getItem(0)
             if (oldLeft == null || oldLeft.type != outItem.type) return@run
-            if (left == old) return@run
+            if (left == old && price == 0) return@run
 
             val renameCost = if (old?.fast()?.displayName != outItem.fast().displayName) 1 else 0
-            val cost = computeAnvilCost(priorWorkCost, renameCost, price)
+            val clampRepairCost = settings.clampRepairCost
+            val maxRepairCost = settings.maxRepairCost
+            val onlyRenaming = right == null
+            val mergeCost = computeAnvilCost(priorWorkCost, renameCost, price)
+            val cost = if (onlyRenaming && maxRepairCost > 0) mergeCost.coerceAtMost(maxRepairCost - 1) else mergeCost
             if (cost <= 0) return@run
 
             val leftEnchants = left?.fast()?.getEnchants(true) ?: emptyMap()
             val outEnchants = outItem.fast().getEnchants(true)
             if (event.inventory.getItem(1) == null && leftEnchants != outEnchants) return@run
 
-            if (settings.useReworkPenalty) {
-                outItem.fast().repairCost = applyReworkPenalty(outItem.fast().repairCost)
+            if (settings.useReworkPenalty && !onlyRenaming) {
+                outItem.fast().repairCost = applyReworkPenalty(
+                    max(outItem.fast().repairCost, right.fast().repairCost)
+                )
             }
 
-            val clampRepairCost = settings.clampRepairCost
-            val maxRepairCost = settings.maxRepairCost
             if (latestPreviewGeneration[player.uniqueId] != generation) return@run
 
             event.view.maximumRepairCost = maxRepairCost
@@ -311,28 +316,23 @@ class AnvilMechanicsListener(
             }
         }
 
-        if (!keepsCurrentName) {
-            if (formattedItemName == null) {
-                leftMeta.setDisplayName(null)
-            } else {
-                left.fast().displayName = formattedItemName
-            }
-        }
-
         val leftEnchants = left.fast().getEnchants(true)
         val rightEnchants = right.fast().getEnchants(true)
         val outEnchants = leftEnchants.toMutableMap()
+        var appliedLevels = 0
 
         for ((enchant, level) in rightEnchants) {
             if (outEnchants.containsKey(enchant)) {
                 val currentLevel = outEnchants[enchant]!!
-                outEnchants[enchant] = mergeEnchantLevel(currentLevel, level, handler.maxLevel(enchant))
-            } else {
-                if (handler.canCombine(enchant, level, left, outEnchants.keys)) {
-                    if (outEnchants.size < settings.enchantLimit.infiniteIfNegative()) {
-                        outEnchants[enchant] = level
-                    }
-                }
+                val mergedLevel = mergeEnchantLevel(currentLevel, level, handler.maxLevel(enchant))
+                outEnchants[enchant] = mergedLevel
+                appliedLevels += mergedLevel
+            } else if (
+                handler.canCombine(enchant, level, left, outEnchants.keys) &&
+                outEnchants.size < settings.enchantLimit.infiniteIfNegative()
+            ) {
+                outEnchants[enchant] = level
+                appliedLevels += level
             }
         }
 
@@ -358,7 +358,17 @@ class AnvilMechanicsListener(
 
         left.itemMeta = leftMeta
 
+        if (!keepsCurrentName) {
+            if (formattedItemName == null) {
+                left.itemMeta = left.itemMeta?.apply { setDisplayName(null) }
+            } else {
+                left.fast().displayName = formattedItemName
+            }
+        }
+
         val enchantLevelDiff = abs(leftEnchants.values.sum() - outEnchants.values.sum())
+            .takeIf { it > 0 }
+            ?: appliedLevels
         val xpCost = computeXpCost(enchantLevelDiff, unitRepairCost + combineRepairCost, settings.costExponent)
         return AnvilResult(left, xpCost)
     }
