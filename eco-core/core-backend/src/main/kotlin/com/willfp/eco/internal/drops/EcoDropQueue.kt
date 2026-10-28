@@ -8,6 +8,7 @@ import com.willfp.eco.util.giveExpAndApplyMending
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.ExperienceOrb
 import org.bukkit.entity.Player
@@ -53,7 +54,9 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
      * so a queue pushed more than once drops in the same place every time.
      */
     override fun push() {
-        val world = location.takeIf { it.isWorldLoaded }?.world ?: return
+        if (!location.isWorldLoaded) {
+            return
+        }
 
         if (!player.isOnline) {
             hasTelekinesis = false
@@ -76,22 +79,23 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
         items.addAll(pushEvent.items)
         xp = pushEvent.xp
 
+        location.takeIf { it.isWorldLoaded }?.world?.let { world -> deliver(world) }
+    }
+
+    private fun deliver(world: World) {
         val dropLocation = location.clone().add(0.5, 0.5, 0.5)
         items.removeIf { itemStack: ItemStack -> itemStack.type == Material.AIR }
         if (hasTelekinesis) {
-            if (!items.isEmpty()) {
-                val leftover = player.inventory.addItem(*items.toTypedArray())
-                for (drop in leftover.values) {
-                    world.dropItem(dropLocation, drop!!).velocity = Vector()
-                }
+            val leftover = player.inventory.addItem(*items.toTypedArray())
+            for (drop in leftover.values) {
+                world.dropItem(dropLocation, drop!!).velocity = Vector()
             }
-            if (xp > 0)
+            if (xp > 0) {
                 player.giveExpAndApplyMending(xp, true)
+            }
         } else {
-            if (!items.isEmpty()) {
-                for (drop in items) {
-                    world.dropItem(dropLocation, drop).velocity = Vector()
-                }
+            for (drop in items) {
+                world.dropItem(dropLocation, drop).velocity = Vector()
             }
             if (xp > 0) {
                 val orb = world.spawnEntity(dropLocation, EntityType.EXPERIENCE_ORB) as ExperienceOrb
