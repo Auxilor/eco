@@ -62,6 +62,11 @@ class SQLitePersistentDataHandler private constructor(
     }
 
     /**
+     * SQLite does not enforce the length of a varchar, so there is nothing to widen.
+     */
+    override fun widenKeyColumn(column: Column<String>) = Unit
+
+    /**
      * Rebuild a table as WITHOUT ROWID, so its rows live in the primary key.
      *
      * SQLite gives every table an implicit integer rowid unless it is told not to, and nothing

@@ -20,8 +20,6 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.and
@@ -41,6 +39,10 @@ internal const val VALUE_COLUMN_NAME = "dataValue"
 internal const val UUID_COLUMN_NAME = "profileUUID"
 internal const val KEY_COLUMN_NAME = "dataKey"
 internal const val INDEX_COLUMN_NAME = "listIndex"
+
+// The longest a column in a primary key can be on InnoDB without large index prefixes: 767 bytes
+// of utf8mb4. Bookkeeping keys already use the same length.
+internal const val KEY_COLUMN_LENGTH = 191
 
 // A dropped write is silent data loss, so the handler waits far longer than the old ~124ms total
 // before giving up. On sqlite busy_timeout already blocks instead of throwing, so reaching the end
@@ -99,6 +101,19 @@ abstract class ExposedPersistentDataHandler(
      */
     protected open fun alterValueColumn(tableName: String, sqlType: String) {
         // Do nothing
+    }
+
+    /**
+     * Widen an existing key column to [KEY_COLUMN_LENGTH], for a table created by an older version
+     * of eco with a shorter one.
+     *
+     * SQLite does not enforce the length of a varchar, and cannot modify a column, so it overrides
+     * this to do nothing.
+     */
+    protected open fun widenKeyColumn(column: Column<String>) {
+        transaction(database) {
+            column.modifyStatements(KEY_COLUMN_DIFF).forEach { statement -> exec(statement) }
+        }
     }
 
     /**
@@ -296,6 +311,7 @@ abstract class ExposedPersistentDataHandler(
             // Before clustering, so that a dialect which rewrites the table to cluster it picks up
             // whatever column types afterCreate() widened it to.
             this.afterCreate()
+            widenKeyColumn(table.key)
 
             clusterOnPrimaryKey(table.tableName)
             return this
@@ -484,6 +500,8 @@ abstract class ExposedPersistentDataHandler(
         @OptIn(ExperimentalUuidApi::class)
         val uuid = uuid(UUID_COLUMN_NAME)
 
+        abstract val key: Column<String>
+
         /**
          * Indices a previous version of eco created on this table that nothing needs any more.
          *
@@ -495,7 +513,7 @@ abstract class ExposedPersistentDataHandler(
 
     @OptIn(ExperimentalUuidApi::class)
     protected abstract inner class KeyTable<T>(name: String) : ProfileTable(name) {
-        val key = varchar(KEY_COLUMN_NAME, 128)
+        override val key = varchar(KEY_COLUMN_NAME, KEY_COLUMN_LENGTH)
         abstract val value: Column<T>
 
         override val primaryKey = PrimaryKey(uuid, key)
@@ -507,7 +525,7 @@ abstract class ExposedPersistentDataHandler(
 
     @OptIn(ExperimentalUuidApi::class)
     protected abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
-        val key = varchar(KEY_COLUMN_NAME, 128)
+        override val key = varchar(KEY_COLUMN_NAME, KEY_COLUMN_LENGTH)
         val index = integer(INDEX_COLUMN_NAME)
         abstract val value: Column<T>
 
@@ -518,30 +536,37 @@ abstract class ExposedPersistentDataHandler(
             listOf("${tableName}_${UUID_COLUMN_NAME}_${KEY_COLUMN_NAME}_$INDEX_COLUMN_NAME")
     }
 
+    /**
+     * Run a write, retrying it with a capped exponential backoff while it fails for a reason that
+     * can pass, such as a dropped connection or a deadlock.
+     *
+     * A key longer than the key column is refused up front, with one error per key, and any other
+     * failure is logged once and given up on at once, because retrying it cannot succeed.
+     */
     protected fun <T> withRetries(uuid: UUID, key: PersistentDataKey<*>, action: () -> T): T? {
         var retries = 1
-        while (true) {
+        while (!key.isTooLongToSave(logger)) {
             try {
                 return action()
             } catch (e: Exception) {
-                e.printStackTrace()
-                if (retries > MAX_WRITE_RETRIES) {
+                if (!e.isTransient || retries > MAX_WRITE_RETRIES) {
                     logger.log(
                         Level.SEVERE,
-                        "Gave up writing ${key.key} for $uuid after $MAX_WRITE_RETRIES attempts. " +
-                                "This value has been lost.",
+                        "Gave up writing ${key.key} for $uuid after $retries attempts. This value has been lost.",
                         e
                     )
-                    return null
+                    break
                 }
-                retries++
 
-                // Exponential backoff, capped so a long outage does not stall the write executor
-                // on a single value.
-                runBlocking {
-                    delay(retryBackoffMillis(retries))
+                if (retries == 1) {
+                    logger.log(Level.WARNING, "Failed to write ${key.key} for $uuid, retrying", e)
                 }
+
+                retries++
+                Thread.sleep(retryBackoffMillis(retries))
             }
         }
+
+        return null
     }
 }
