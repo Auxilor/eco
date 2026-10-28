@@ -53,6 +53,8 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
      * so a queue pushed more than once drops in the same place every time.
      */
     override fun push() {
+        val world = location.takeIf { it.isWorldLoaded }?.world ?: return
+
         if (!player.isOnline) {
             hasTelekinesis = false
         } else if (!hasTelekinesis) {
@@ -74,7 +76,6 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
         items.addAll(pushEvent.items)
         xp = pushEvent.xp
 
-        val world = location.world ?: return
         val dropLocation = location.clone().add(0.5, 0.5, 0.5)
         items.removeIf { itemStack: ItemStack -> itemStack.type == Material.AIR }
         if (hasTelekinesis) {
