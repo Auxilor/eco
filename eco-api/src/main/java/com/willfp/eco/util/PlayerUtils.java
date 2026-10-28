@@ -69,9 +69,9 @@ public final class PlayerUtils {
             }
         } else {
             if (adventure == null) {
-                return Audience.empty();
+                return new SpigotAudience(player, Audience.empty());
             } else {
-                return adventure.player(player);
+                return new SpigotAudience(player, adventure.player(player));
             }
         }
     }
@@ -94,9 +94,9 @@ public final class PlayerUtils {
             }
         } else {
             if (adventure == null) {
-                return Audience.empty();
+                return new SpigotAudience(sender, Audience.empty());
             } else {
-                return adventure.sender(sender);
+                return new SpigotAudience(sender, adventure.sender(sender));
             }
         }
     }
