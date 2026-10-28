@@ -125,6 +125,12 @@ abstract class ExposedPersistentDataHandler(
     }
 
     /**
+     * The key column of a profile table, bounded to [KEY_COLUMN_LENGTH] for databases that
+     * enforce the length of a varchar.
+     */
+    protected open fun Table.keyColumn(): Column<String> = varchar(KEY_COLUMN_NAME, KEY_COLUMN_LENGTH)
+
+    /**
      * Whether a value under this key can be written, logging the key once if it cannot.
      *
      * SQLite does not enforce the length of a varchar, so it overrides this to accept every key.
@@ -528,7 +534,7 @@ abstract class ExposedPersistentDataHandler(
 
     @OptIn(ExperimentalUuidApi::class)
     protected abstract inner class KeyTable<T>(name: String) : ProfileTable(name) {
-        override val key = varchar(KEY_COLUMN_NAME, KEY_COLUMN_LENGTH)
+        override val key = keyColumn()
         abstract val value: Column<T>
 
         override val primaryKey = PrimaryKey(uuid, key)
@@ -540,7 +546,7 @@ abstract class ExposedPersistentDataHandler(
 
     @OptIn(ExperimentalUuidApi::class)
     protected abstract inner class ListKeyTable<T>(name: String) : ProfileTable(name) {
-        override val key = varchar(KEY_COLUMN_NAME, KEY_COLUMN_LENGTH)
+        override val key = keyColumn()
         val index = integer(INDEX_COLUMN_NAME)
         abstract val value: Column<T>
 

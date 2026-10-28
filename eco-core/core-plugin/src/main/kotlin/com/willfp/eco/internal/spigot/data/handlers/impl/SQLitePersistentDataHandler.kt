@@ -73,6 +73,11 @@ class SQLitePersistentDataHandler private constructor(
     override fun canSave(key: PersistentDataKey<*>) = true
 
     /**
+     * Unbounded, so that a key of any length can be saved.
+     */
+    override fun Table.keyColumn(): Column<String> = text(KEY_COLUMN_NAME)
+
+    /**
      * Rebuild a table as WITHOUT ROWID, so its rows live in the primary key.
      *
      * SQLite gives every table an implicit integer rowid unless it is told not to, and nothing
