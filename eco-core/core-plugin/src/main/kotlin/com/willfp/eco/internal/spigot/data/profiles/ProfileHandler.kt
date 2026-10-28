@@ -179,7 +179,16 @@ class ProfileHandler(
         sync = RedisProfileSync(redis, getServerProfile().localServerID, profiles, plugin.logger).also { it.start() }
     }
 
+    /**
+     * Pass on every value the writer still holds, then shut down the handlers.
+     *
+     * The timer that drains the writer has already stopped by the time this runs, so the values
+     * written in the last interval - and every value written as players are kicked - are only
+     * saved because of the flush here.
+     */
     fun save() {
+        profileWriter.flush()
+
         // Before the handler is shut down, so the subscriber's connection is returned to a live pool.
         sync?.stop()
 

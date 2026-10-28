@@ -52,43 +52,58 @@ class ProfileWriter(
         return valuesToWrite.containsKey(WriteRequest(uuid, key))
     }
 
+    /**
+     * The value waiting to be committed for [key], or null if there is none.
+     */
+    fun <T : Any> pendingValue(uuid: UUID, key: PersistentDataKey<T>): T? {
+        @Suppress("UNCHECKED_CAST")
+        return valuesToWrite[WriteRequest(uuid, key)] as T?
+    }
+
     fun startTickingSaves() {
         plugin.scheduler.global().runTimer(20, saveInterval) {
-            val iterator = valuesToWrite.iterator()
+            flush()
+        }
+    }
 
-            while (iterator.hasNext()) {
-                val (request, value) = iterator.next()
-                iterator.remove()
+    /**
+     * Pass every waiting value to its data handler.
+     *
+     * A value is only removed once it has been passed on, and only if nothing replaced it in the
+     * meantime, so a newer value written mid-drain waits for the next one instead of being lost.
+     */
+    fun flush() {
+        for ((request, value) in valuesToWrite) {
+            val dataHandler = if (request.key.isSavedLocally) handler.localHandler else handler.defaultHandler
 
-                val dataHandler = if (request.key.isSavedLocally) handler.localHandler else handler.defaultHandler
+            // Pass the value to the data handler
+            @Suppress("UNCHECKED_CAST")
+            dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
 
-                // Pass the value to the data handler
-                @Suppress("UNCHECKED_CAST")
-                dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
+            // Every profile the server writes to during a migration is remembered, so that
+            // verification leaves it alone. A profile part-way out of data.yml also has two
+            // live stores, so it is written to both: the copy skips what was written here,
+            // and a server that stops mid-copy resumes from a data.yml that has the value
+            // rather than from before it.
+            val migration = handler.liveMigration
 
-                // Every profile the server writes to during a migration is remembered, so that
-                // verification leaves it alone. A profile part-way out of data.yml also has two
-                // live stores, so it is written to both: the copy skips what was written here,
-                // and a server that stops mid-copy resumes from a data.yml that has the value
-                // rather than from before it.
-                val migration = handler.liveMigration
+            if (migration != null) {
+                migration.noteWrite(request.uuid, request.key)
 
-                if (migration != null) {
-                    migration.noteWrite(request.uuid, request.key)
-
-                    if (migration.isMigrating(request.uuid)) {
-                        handler.dataYmlStore.write(request.uuid, request.key, value)
-                    }
-                }
-
-                // A broken listener must not stop the rest of the queue from being written: the
-                // data itself is already committed above, and losing the drain would lose writes.
-                try {
-                    onWrite?.invoke(request.uuid, request.key, value)
-                } catch (e: Exception) {
-                    plugin.logger.log(Level.WARNING, "Failed to notify a listener of a profile write", e)
+                if (migration.isMigrating(request.uuid)) {
+                    handler.dataYmlStore.write(request.uuid, request.key, value)
                 }
             }
+
+            // A broken listener must not stop the rest of the queue from being written: the
+            // data itself is already committed above, and losing the drain would lose writes.
+            try {
+                onWrite?.invoke(request.uuid, request.key, value)
+            } catch (e: Exception) {
+                plugin.logger.log(Level.WARNING, "Failed to notify a listener of a profile write", e)
+            }
+
+            valuesToWrite.remove(request, value)
         }
     }
 
