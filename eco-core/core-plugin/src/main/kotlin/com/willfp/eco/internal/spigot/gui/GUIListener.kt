@@ -10,6 +10,7 @@ import com.willfp.eco.internal.gui.menu.getMenu
 import com.willfp.eco.internal.gui.menu.renderedInventory
 import com.willfp.eco.internal.gui.slot.EcoSlot
 import com.willfp.eco.util.MenuUtils
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -20,7 +21,37 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
+
+/**
+ * The slots of this inventory that a shift-click would move [item] into, in the order vanilla
+ * fills them: partial stacks of the same item first, then the first empty slot.
+ */
+internal fun Inventory.shiftClickDestinations(item: ItemStack): List<Int> {
+    var remaining = item.amount
+    val destinations = mutableListOf<Int>()
+
+    for ((index, stack) in contents.withIndex()) {
+        if (remaining <= 0) {
+            break
+        }
+
+        if (stack != null && stack.isSimilar(item) && stack.amount < stack.maxStackSize) {
+            destinations += index
+            remaining -= stack.maxStackSize - stack.amount
+        }
+    }
+
+    val empty = contents.indexOfFirst { it == null || it.type == Material.AIR }
+
+    if (remaining > 0 && empty != -1) {
+        destinations += empty
+    }
+
+    return destinations
+}
 
 class GUIListener(private val plugin: EcoPlugin) : Listener {
     // Prevents StackOverflow exceptions with poorly implemented custom slots.
@@ -118,16 +149,18 @@ class GUIListener(private val plugin: EcoPlugin) : Listener {
 
         val menu = inv.getMenu() ?: return
 
-        val (row, column) = MenuUtils.convertSlotToRowColumn(inv.firstEmpty(), menu.columns)
+        val item = event.currentItem ?: return
 
-        val slot = menu.getSlot(row, column, player)
+        val destinations = inv.shiftClickDestinations(item)
 
-        if (slot.isCaptive(player, menu)) {
-            if (!slot.isAllowedCaptive(player, menu, event.currentItem)) {
-                event.isCancelled = true
-            } else {
-                player.renderActiveMenu()
-            }
+        val allowed = destinations.isNotEmpty() && destinations.all { slotID ->
+            val (row, column) = MenuUtils.convertSlotToRowColumn(slotID, menu.columns)
+            val slot = menu.getSlot(row, column, player)
+            slot.isCaptive(player, menu) && slot.isAllowedCaptive(player, menu, item)
+        }
+
+        if (allowed) {
+            player.renderActiveMenu()
         } else {
             event.isCancelled = true
         }
