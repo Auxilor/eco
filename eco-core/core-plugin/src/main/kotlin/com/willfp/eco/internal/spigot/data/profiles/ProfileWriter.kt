@@ -41,8 +41,24 @@ class ProfileWriter(
     @Volatile
     var onWrite: ((UUID, PersistentDataKey<*>, Any) -> Unit)? = null
 
+    @Volatile
+    private var closed = false
+
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         valuesToWrite[WriteRequest(uuid, key)] = value
+
+        if (closed) {
+            flush()
+        }
+    }
+
+    /**
+     * Drain every waiting value for the last time. Anything written afterwards is passed on as it
+     * arrives, so a value written during or after the final drain is not left behind.
+     */
+    fun close() {
+        closed = true
+        flush()
     }
 
     /**
@@ -73,6 +89,7 @@ class ProfileWriter(
      * meantime, so a newer value written mid-drain waits for the next one instead of being lost.
      * A value that cannot be passed on is logged and dropped, so it cannot hold up the rest.
      */
+    @Synchronized
     fun flush() {
         for ((request, value) in valuesToWrite) {
             try {

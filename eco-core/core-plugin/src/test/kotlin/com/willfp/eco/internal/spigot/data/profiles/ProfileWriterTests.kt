@@ -77,6 +77,20 @@ class ProfileWriterTests {
     }
 
     @Test
+    fun `close keeps mid-drain write`() {
+        val uuid = UUID.randomUUID()
+        val writer = ProfileWriter(plugin, handler)
+
+        every { defaultHandler.write(uuid, key, 1) } answers { writer.write(uuid, key, 2) }
+
+        writer.write(uuid, key, 1)
+        writer.close()
+
+        assertFalse(writer.isPending(uuid, key))
+        verify(exactly = 1) { defaultHandler.write(uuid, key, 2) }
+    }
+
+    @Test
     fun `a reload reads pending values`() {
         val uuid = UUID.randomUUID()
         val writer = ProfileWriter(plugin, handler)

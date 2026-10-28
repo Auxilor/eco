@@ -189,7 +189,7 @@ class ProfileHandler(
      */
     fun save() {
         try {
-            profileWriter.flush()
+            profileWriter.close()
 
             if (liveMigration != null) {
                 plugin.dataYml.save()
