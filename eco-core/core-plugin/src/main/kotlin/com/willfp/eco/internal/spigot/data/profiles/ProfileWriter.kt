@@ -41,8 +41,11 @@ class ProfileWriter(
     @Volatile
     var onWrite: ((UUID, PersistentDataKey<*>, Any) -> Unit)? = null
 
+    private val pendingKeys = ConcurrentHashMap<UUID, MutableSet<PersistentDataKey<*>>>()
+
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
         valuesToWrite[WriteRequest(uuid, key)] = value
+        pendingKeys.compute(uuid) { _, keys -> (keys ?: ConcurrentHashMap.newKeySet()).apply { add(key) } }
     }
 
     /**
@@ -55,7 +58,7 @@ class ProfileWriter(
     /**
      * Whether any value for [uuid] is waiting to be committed.
      */
-    fun hasPending(uuid: UUID): Boolean = valuesToWrite.keys.any { it.uuid == uuid }
+    fun hasPending(uuid: UUID): Boolean = pendingKeys.containsKey(uuid)
 
     fun startTickingSaves() {
         plugin.scheduler.global().runTimer(20, saveInterval) {
@@ -64,6 +67,12 @@ class ProfileWriter(
             while (iterator.hasNext()) {
                 val (request, value) = iterator.next()
                 iterator.remove()
+                pendingKeys.computeIfPresent(request.uuid) { _, keys ->
+                    if (!valuesToWrite.containsKey(request)) {
+                        keys.remove(request.key)
+                    }
+                    keys.takeIf { it.isNotEmpty() }
+                }
 
                 val dataHandler = if (request.key.isSavedLocally) handler.localHandler else handler.defaultHandler
 

@@ -177,7 +177,12 @@ class ProfileHandler(
      * Unload a player's own profile along with every profile they resolved to.
      */
     fun unloadPlayer(player: UUID) {
-        loaded.remove(player)
+        transientUses.compute(player) { _, uses ->
+            if (uses == null) {
+                loaded.remove(player)
+            }
+            uses
+        }
         resolvedProfiles.remove(player)?.forEach { loaded.remove(it) }
     }
 
