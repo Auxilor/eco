@@ -34,6 +34,7 @@ import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.upsert
+import org.jetbrains.exposed.v1.jdbc.vendors.currentDialectMetadata
 
 internal const val VALUE_COLUMN_NAME = "dataValue"
 internal const val UUID_COLUMN_NAME = "profileUUID"
@@ -105,16 +106,30 @@ abstract class ExposedPersistentDataHandler(
 
     /**
      * Widen an existing key column to [KEY_COLUMN_LENGTH], for a table created by an older version
-     * of eco with a shorter one.
+     * of eco with a shorter one. A column that is already wide enough is left alone, so startup
+     * does not take a table lock or need to own the table.
      *
      * SQLite does not enforce the length of a varchar, and cannot modify a column, so it overrides
      * this to do nothing.
      */
     protected open fun widenKeyColumn(column: Column<String>) {
         transaction(database) {
-            column.modifyStatements(KEY_COLUMN_DIFF).forEach { statement -> exec(statement) }
+            val existingLength = currentDialectMetadata.tableColumns(column.table)[column.table]
+                ?.firstOrNull { it.name.equals(column.name, ignoreCase = true) }
+                ?.size
+
+            if (existingLength != null && existingLength < KEY_COLUMN_LENGTH) {
+                column.modifyStatements(KEY_COLUMN_DIFF).forEach { statement -> exec(statement) }
+            }
         }
     }
+
+    /**
+     * Whether a value under this key can be written, logging the key once if it cannot.
+     *
+     * SQLite does not enforce the length of a varchar, so it overrides this to accept every key.
+     */
+    protected open fun canSave(key: PersistentDataKey<*>): Boolean = !key.isTooLongToSave(logger)
 
     /**
      * Drop an index left behind by an older version of eco, if this database still has it.
@@ -540,12 +555,12 @@ abstract class ExposedPersistentDataHandler(
      * Run a write, retrying it with a capped exponential backoff while it fails for a reason that
      * can pass, such as a dropped connection or a deadlock.
      *
-     * A key longer than the key column is refused up front, with one error per key, and any other
+     * A key the database cannot store is refused up front, with one error per key, and any other
      * failure is logged once and given up on at once, because retrying it cannot succeed.
      */
     protected fun <T> withRetries(uuid: UUID, key: PersistentDataKey<*>, action: () -> T): T? {
         var retries = 1
-        while (!key.isTooLongToSave(logger)) {
+        while (canSave(key)) {
             try {
                 return action()
             } catch (e: Exception) {
