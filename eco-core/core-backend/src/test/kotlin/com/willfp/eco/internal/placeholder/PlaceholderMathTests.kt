@@ -47,6 +47,13 @@ class PlaceholderMathTests {
     }
 
     @Test
+    fun `repeats evaluate separately`() {
+        every { NumberUtils.evaluateExpression("rand", any<PlaceholderContext>()) } returnsMany listOf(1.0, 2.0)
+
+        assertEquals("1.0 / 2.0", parser.translatePlacholders("{{rand}} / {{rand}}", PlaceholderContext.EMPTY))
+    }
+
+    @Test
     fun `one expression is unchanged`() {
         assertEquals("Damage: 2.0", parser.translatePlacholders("Damage: {{1+1}}", PlaceholderContext.EMPTY))
     }
