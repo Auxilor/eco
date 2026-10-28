@@ -36,6 +36,18 @@ public interface Profile {
     <T> @NotNull T read(@NotNull PersistentDataKey<T> key);
 
     /**
+     * Drop the cached value of a key, so the next read fetches it from storage again.
+     * <p>
+     * Use this to see a value that another server has written to shared storage.
+     * A value written on this server that is not saved yet is kept, because it is
+     * newer than the stored one.
+     *
+     * @param key The key.
+     */
+    default void invalidate(@NotNull final PersistentDataKey<?> key) {
+    }
+
+    /**
      * Atomically replace the value of a key with the result of a function of its current value.
      * <p>
      * Concurrent calls for the same key are serialised, so no update is lost when several

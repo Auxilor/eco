@@ -62,10 +62,13 @@ abstract class EcoProfile(
     }
 
     /**
-     * Drop the cached value of [key], so the next read fetches it from the handler again.
+     * Drop the cached value of [key], so the next read fetches it from the handler again. A value
+     * still waiting to be saved is kept, since the stored one is older.
      */
-    fun invalidate(key: PersistentDataKey<*>) {
-        this.data.remove(key)
+    override fun invalidate(key: PersistentDataKey<*>) {
+        this.data.computeIfPresent(key) { _, value ->
+            value.takeIf { handler.profileWriter.isPending(uuid, key) }
+        }
     }
 
     /**

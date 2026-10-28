@@ -72,6 +72,19 @@ class ProfileSyncHookTests {
     }
 
     @Test
+    fun `invalidate keeps pending value`() {
+        val uuid = UUID.randomUUID()
+        every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
+        every { handler.profileWriter.isPending(uuid, sharedKey) } returns true
+        val profile = EcoPlayerProfile(uuid, handler)
+
+        profile.write(sharedKey, 7)
+        profile.invalidate(sharedKey)
+
+        assertEquals(7, profile.read(sharedKey))
+    }
+
+    @Test
     fun `invalidating shared keys keeps local keys cached`() {
         val uuid = UUID.randomUUID()
         every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
