@@ -10,7 +10,7 @@ import kotlin.math.pow
 
 fun String.fastToDoubleOrNull(): Double? {
     val len = length
-    if (len == 0) return null
+    if (none { it in '0'..'9' }) return null
 
     var idx = 0
     val isNegative = this[0] == '-'
@@ -54,7 +54,7 @@ class ExpressionEvaluator(
 ) {
     private val compilationCache = ConcurrentHashMap<String, Any>()
 
-    private val resultCache: EcoCache<Long, Double> = EcoCache.builder<Long, Double>()
+    private val resultCache: EcoCache<String, Double> = EcoCache.builder<String, Double>()
         .expireAfterWrite(Duration.ofMillis(resultCacheTtlMs))
         .build()
 
@@ -97,13 +97,12 @@ class ExpressionEvaluator(
             return validate(evaluateFresh(prepared, context))
         }
 
-        val cacheKey = resultCacheKey(expression, context)
-        resultCache.get(cacheKey)?.let { hits++; return it }
+        resultCache[expression]?.let { hits++; return it }
 
         val validated = validate(evaluateFresh(prepared, context))
         if (validated != null) {
             writes++
-            resultCache.put(cacheKey, validated)
+            resultCache.put(expression, validated)
         }
         return validated
     }
@@ -137,13 +136,6 @@ class ExpressionEvaluator(
             ExpressionParser(expression, env).parse()
         }.getOrNull() ?: return null
         return PreparedExpression(compiled, placeholders)
-    }
-
-    private fun resultCacheKey(expression: String, context: PlaceholderContext): Long {
-        var hash = expression.hashCode().toLong()
-        hash = hash * 31 + (context.player?.uniqueId?.hashCode()?.toLong() ?: 0L)
-        hash = hash * 31 + context.injectableContext.hashCode().toLong()
-        return hash
     }
 
     private fun getArray(size: Int): DoubleArray {

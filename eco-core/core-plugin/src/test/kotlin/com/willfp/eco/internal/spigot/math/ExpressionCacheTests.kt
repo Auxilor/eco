@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.bukkit.entity.Player
 import org.junit.jupiter.api.Test
+import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -192,6 +194,28 @@ internal class ExpressionCacheTests {
         assertEquals(9.0, evaluator.evaluate("min(4, 5) + 5", context))
         assertEquals(0L, evaluator.cacheHits, "Distinct expressions must not collide")
         assertEquals(2L, evaluator.cacheWrites)
+    }
+
+    @Test
+    fun `hash collisions don't share`() {
+        val evaluator = cachingEvaluator()
+
+        assertEquals(2.0, evaluator.evaluate("1 + 1", contextOf(UUID(0L, 1000L))))
+        assertEquals(3.0, evaluator.evaluate("1 + 2", contextOf(UUID(0L, 969L))))
+    }
+
+    @Test
+    fun `bare signs are not numbers`() {
+        assertNull("-".fastToDoubleOrNull())
+        assertNull(".".fastToDoubleOrNull())
+        assertNull("-.".fastToDoubleOrNull())
+        assertEquals(-0.5, "-.5".fastToDoubleOrNull())
+    }
+
+    private fun contextOf(uuid: UUID): PlaceholderContext {
+        val player = mockk<Player>()
+        every { player.uniqueId } returns uuid
+        return PlaceholderContext(player)
     }
 
     @Test
