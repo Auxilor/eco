@@ -63,12 +63,8 @@ abstract class EcoProfile(
             handler.defaultHandler.read(uuid, key)
         } ?: key.defaultValue
 
-        this.data.putIfAbsent(key, fetched)
-
-        if (invalidations.get() != invalidationsBeforeFetch) {
-            this.data.computeIfPresent(key) { _, value ->
-                value.takeIf { it !== fetched || handler.profileWriter.isPending(uuid, key) }
-            }
+        this.data.compute(key) { _, current ->
+            current ?: fetched.takeIf { invalidations.get() == invalidationsBeforeFetch }
         }
 
         return read(key)
