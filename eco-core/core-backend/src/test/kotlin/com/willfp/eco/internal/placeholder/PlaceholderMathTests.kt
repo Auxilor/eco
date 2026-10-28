@@ -2,6 +2,7 @@ package com.willfp.eco.internal.placeholder
 
 import com.willfp.eco.core.placeholder.context.PlaceholderContext
 import com.willfp.eco.util.NumberUtils
+import com.willfp.eco.util.StringUtils
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
@@ -51,6 +52,34 @@ class PlaceholderMathTests {
         every { NumberUtils.evaluateExpression("rand", any<PlaceholderContext>()) } returnsMany listOf(1.0, 2.0)
 
         assertEquals("1.0 / 2.0", parser.translatePlacholders("{{rand}} / {{rand}}", PlaceholderContext.EMPTY))
+    }
+
+    @Test
+    fun `pretty repeats separately`() {
+        every { NumberUtils.evaluateExpression("prettyRand", any<PlaceholderContext>()) } returnsMany listOf(4.0, 6.0)
+
+        assertEquals(
+            "4 / 6",
+            parser.translatePlacholders("{^{prettyRand}} / {^{prettyRand}}", PlaceholderContext.EMPTY)
+        )
+    }
+
+    @Test
+    fun `bar repeats separately`() {
+        every { NumberUtils.evaluateExpression("barRand", any<PlaceholderContext>()) } returnsMany listOf(0.0, 100.0)
+        mockkStatic(StringUtils::class)
+        every {
+            StringUtils.createProgressBar(any(), any(), any(), any(), any(), any())
+        } answers { "bar ${thirdArg<Double>()}" }
+
+        try {
+            assertEquals(
+                "bar 0.0 / bar 1.0",
+                parser.translatePlacholders("{#{barRand}} / {#{barRand}}", PlaceholderContext.EMPTY)
+            )
+        } finally {
+            unmockkStatic(StringUtils::class)
+        }
     }
 
     @Test
