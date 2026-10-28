@@ -68,6 +68,33 @@ public final class Recipes {
     }
 
     /**
+     * Unregister a recipe from eco's own recipe registry and from the server.
+     * <p>
+     * Removes the real, displayed and Crafter Bukkit recipes for the key. Use this when
+     * a recipe's config is removed or renamed, so the old recipe stops being craftable.
+     *
+     * @param key The recipe key.
+     */
+    public static void unregister(@NotNull final NamespacedKey key) {
+        RECIPES.remove(key);
+        RECIPES_FROM_MATRIX.invalidateAll();
+
+        scheduleBukkitRecipeRemoval(key);
+        scheduleBukkitRecipeRemoval(NamespacedKeyUtils.create(key.getNamespace(), key.getKey() + "_displayed"));
+        scheduleBukkitRecipeRemoval(NamespacedKeyUtils.create(key.getNamespace(), key.getKey() + "_crafter"));
+    }
+
+    /**
+     * Unregister a recipe from eco's own recipe registry and from the server.
+     *
+     * @param recipe The recipe.
+     * @see #unregister(NamespacedKey)
+     */
+    public static void unregister(@NotNull final CraftingRecipe recipe) {
+        unregister(recipe.getKey());
+    }
+
+    /**
      * Get recipe matching matrix.
      *
      * @param matrix The matrix to test.
