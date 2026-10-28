@@ -16,6 +16,7 @@ import com.willfp.eco.util.toLegacy
 import net.minecraft.network.chat.Component as NMSComponent
 import net.minecraft.world.item.ItemStack as NMSItemStack
 import kotlin.math.max
+import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextDecoration
@@ -92,6 +93,11 @@ class ContinuallyAppliedPersistentDataContainer(
     // Abstract on PersistentDataContainerView since 1.21.10, which this module doesn't compile
     // against, so it can't be an override or delegated; without it the call is an AbstractMethodError.
     fun getSize(): Int = handle.keys.size
+
+    // Abstract since Paper 26.3 build 227, and absent from this module's API, so it is reached by reflection.
+    fun getPrimitiveStorageType(key: Key): PersistentDataType<*, *>? =
+        handle.javaClass.getMethod("getPrimitiveStorageType", Key::class.java)
+            .invoke(handle, key) as? PersistentDataType<*, *>
 }
 
 class EcoFastItemStack(
