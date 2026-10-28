@@ -71,39 +71,48 @@ class ProfileWriter(
      *
      * A value is only removed once it has been passed on, and only if nothing replaced it in the
      * meantime, so a newer value written mid-drain waits for the next one instead of being lost.
+     * A value that cannot be passed on is logged and dropped, so it cannot hold up the rest.
      */
     fun flush() {
         for ((request, value) in valuesToWrite) {
-            val dataHandler = if (request.key.isSavedLocally) handler.localHandler else handler.defaultHandler
-
-            // Pass the value to the data handler
-            @Suppress("UNCHECKED_CAST")
-            dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
-
-            // Every profile the server writes to during a migration is remembered, so that
-            // verification leaves it alone. A profile part-way out of data.yml also has two
-            // live stores, so it is written to both: the copy skips what was written here,
-            // and a server that stops mid-copy resumes from a data.yml that has the value
-            // rather than from before it.
-            val migration = handler.liveMigration
-
-            if (migration != null) {
-                migration.noteWrite(request.uuid, request.key)
-
-                if (migration.isMigrating(request.uuid)) {
-                    handler.dataYmlStore.write(request.uuid, request.key, value)
-                }
-            }
-
-            // A broken listener must not stop the rest of the queue from being written: the
-            // data itself is already committed above, and losing the drain would lose writes.
             try {
-                onWrite?.invoke(request.uuid, request.key, value)
+                commit(request, value)
             } catch (e: Exception) {
-                plugin.logger.log(Level.WARNING, "Failed to notify a listener of a profile write", e)
+                plugin.logger.log(Level.SEVERE, "Failed to write ${request.key.key} for ${request.uuid}", e)
             }
 
             valuesToWrite.remove(request, value)
+        }
+    }
+
+    private fun commit(request: WriteRequest<*>, value: Any) {
+        val dataHandler = if (request.key.isSavedLocally) handler.localHandler else handler.defaultHandler
+
+        // Pass the value to the data handler
+        @Suppress("UNCHECKED_CAST")
+        dataHandler.write(request.uuid, request.key as PersistentDataKey<Any>, value)
+
+        // Every profile the server writes to during a migration is remembered, so that
+        // verification leaves it alone. A profile part-way out of data.yml also has two
+        // live stores, so it is written to both: the copy skips what was written here,
+        // and a server that stops mid-copy resumes from a data.yml that has the value
+        // rather than from before it.
+        val migration = handler.liveMigration
+
+        if (migration != null) {
+            migration.noteWrite(request.uuid, request.key)
+
+            if (migration.isMigrating(request.uuid)) {
+                handler.dataYmlStore.write(request.uuid, request.key, value)
+            }
+        }
+
+        // A broken listener must not stop the rest of the queue from being written: the
+        // data itself is already committed above, and losing the drain would lose writes.
+        try {
+            onWrite?.invoke(request.uuid, request.key, value)
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed to notify a listener of a profile write", e)
         }
     }
 

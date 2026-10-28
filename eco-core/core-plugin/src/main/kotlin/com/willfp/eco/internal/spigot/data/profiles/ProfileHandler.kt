@@ -184,16 +184,23 @@ class ProfileHandler(
      *
      * The timer that drains the writer has already stopped by the time this runs, so the values
      * written in the last interval - and every value written as players are kicked - are only
-     * saved because of the flush here.
+     * saved because of the flush here. So is data.yml, which the flush writes to mid-migration
+     * after its autosave timer has stopped too.
      */
     fun save() {
-        profileWriter.flush()
+        try {
+            profileWriter.flush()
 
-        // Before the handler is shut down, so the subscriber's connection is returned to a live pool.
-        sync?.stop()
+            if (liveMigration != null) {
+                plugin.dataYml.save()
+            }
+        } finally {
+            // Before the handler is shut down, so the subscriber's connection is returned to a live pool.
+            sync?.stop()
 
-        for (handler in handlersToShutdown(localHandler, defaultHandler)) {
-            handler.shutdown()
+            for (handler in handlersToShutdown(localHandler, defaultHandler)) {
+                handler.shutdown()
+            }
         }
     }
 
