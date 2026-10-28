@@ -52,6 +52,11 @@ class ProfileWriter(
         return valuesToWrite.containsKey(WriteRequest(uuid, key))
     }
 
+    /**
+     * Whether any value for [uuid] is waiting to be committed.
+     */
+    fun hasPending(uuid: UUID): Boolean = valuesToWrite.keys.any { it.uuid == uuid }
+
     fun startTickingSaves() {
         plugin.scheduler.global().runTimer(20, saveInterval) {
             val iterator = valuesToWrite.iterator()

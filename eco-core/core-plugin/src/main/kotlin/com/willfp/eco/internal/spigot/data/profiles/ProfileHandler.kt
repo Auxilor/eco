@@ -27,9 +27,12 @@ import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.Configs
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import org.bukkit.Bukkit
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+
+private const val RELEASE_RETRY_TICKS = 20L
 
 const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
 const val LOCAL_MIGRATED_KEY = "local-handler-migrated"
@@ -113,6 +116,23 @@ class ProfileHandler(
     }
 
     fun unloadProfile(uuid: UUID) {
+        loaded.remove(uuid)
+    }
+
+    /**
+     * Unload an offline player's profile once nothing written to it is waiting to be saved. A
+     * profile loaded again before its writes are saved would read the older stored values.
+     */
+    fun releaseProfile(uuid: UUID) {
+        if (Bukkit.getPlayer(uuid) != null) {
+            return
+        }
+
+        if (profileWriter.hasPending(uuid)) {
+            plugin.scheduler.global().runLater(RELEASE_RETRY_TICKS) { releaseProfile(uuid) }
+            return
+        }
+
         loaded.remove(uuid)
     }
 

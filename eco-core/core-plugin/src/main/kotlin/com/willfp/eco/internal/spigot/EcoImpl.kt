@@ -409,6 +409,10 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getSavedProfileUUIDs(): Set<UUID> =
         profileHandler.defaultHandler.getSavedUUIDs() - serverProfileUUID
 
+    override fun releasePlayerProfile(uuid: UUID) {
+        profileHandler.releaseProfile(uuid)
+    }
+
     override fun <T> readAllProfileValues(
         uuids: Set<UUID>,
         key: PersistentDataKey<T>
