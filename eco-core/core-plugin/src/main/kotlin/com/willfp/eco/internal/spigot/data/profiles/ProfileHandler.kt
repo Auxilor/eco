@@ -119,22 +119,44 @@ class ProfileHandler(
         loaded.remove(uuid)
     }
 
+    private val transientUses = ConcurrentHashMap<UUID, Int>()
+
     /**
-     * Unload an offline player's profile once nothing written to it is waiting to be saved. A
-     * profile loaded again before its writes are saved would read the older stored values.
+     * Run [action], then unload the player's profile once no other transient use holds it.
      */
-    fun releaseProfile(uuid: UUID) {
+    fun runWithTransientProfile(uuid: UUID, action: Runnable) {
+        transientUses.merge(uuid, 1, Int::plus)
+
+        try {
+            action.run()
+        } finally {
+            transientUses.computeIfPresent(uuid) { _, uses -> (uses - 1).takeIf { it > 0 } }
+            plugin.scheduler.global().run { releaseProfile(uuid) }
+        }
+    }
+
+    private fun releaseProfile(uuid: UUID) {
         if (Bukkit.getPlayer(uuid) != null) {
             return
         }
 
-        if (profileWriter.hasPending(uuid)) {
-            plugin.scheduler.global().runLater(RELEASE_RETRY_TICKS) { releaseProfile(uuid) }
-            return
-        }
+        transientUses.compute(uuid) { _, uses ->
+            when {
+                uses != null -> Unit
+                hasUnsavedWrites(uuid) -> plugin.scheduler.global().runLater(RELEASE_RETRY_TICKS) {
+                    releaseProfile(uuid)
+                }
+                else -> loaded.remove(uuid)
+            }
 
-        loaded.remove(uuid)
+            uses
+        }
     }
+
+    private fun hasUnsavedWrites(uuid: UUID): Boolean =
+        profileWriter.hasPending(uuid) ||
+            localHandler.hasWritesInFlight(uuid) ||
+            defaultHandler.hasWritesInFlight(uuid)
 
     /**
      * Record that a player's data resolved to [profile], so it can be unloaded when they leave.

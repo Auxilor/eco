@@ -531,13 +531,16 @@ public interface Eco {
     Set<UUID> getSavedProfileUUIDs();
 
     /**
-     * Drop an offline player's profile from the in-memory cache once its pending writes are saved.
+     * Run an action that uses a player's profile, then drop the profile from the in-memory cache
+     * once no other such action is using it and its writes are saved.
      * <p>
-     * Does nothing while the player is online.
+     * The profile is kept while the player is online.
      *
-     * @param uuid The player's UUID.
+     * @param uuid   The player's UUID.
+     * @param action The action.
      */
-    void releasePlayerProfile(@NotNull UUID uuid);
+    void runWithTransientProfile(@NotNull UUID uuid,
+                                 @NotNull Runnable action);
 
     /**
      * Read a key for many profiles at once, bypassing the in-memory profile cache.

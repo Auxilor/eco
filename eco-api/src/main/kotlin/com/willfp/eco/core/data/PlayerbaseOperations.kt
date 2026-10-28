@@ -88,9 +88,7 @@ fun forEachSavedPlayer(
     onProgress: (Int, Int) -> Unit = { _, _ -> },
     action: (OfflinePlayer) -> Unit
 ): CompletableFuture<Void> = forEachSavedProfile(plugin, batchSize, onProgress) { uuid ->
-    try {
+    Eco.get().runWithTransientProfile(uuid) {
         action(Bukkit.getOfflinePlayer(uuid))
-    } finally {
-        Eco.get().releasePlayerProfile(uuid)
     }
 }
