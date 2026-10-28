@@ -1,8 +1,10 @@
 package com.willfp.eco.util;
 
+import java.util.Objects;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.chat.ChatType;
+import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatMessageType;
@@ -16,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
  * An audience for Spigot, where chat messages and action bars go through Spigot's own chat API.
  * <p>
  * adventure-platform-bukkit cannot send either on current Spigot versions: chat messages never
- * arrive, and the action bar is sent empty, which disconnects the player. Everything else is
- * forwarded to the adventure-platform audience.
+ * arrive, and the action bar is sent empty, which disconnects the player. Every chat message
+ * overload goes through Spigot; everything else is forwarded to the adventure-platform audience.
  */
 final class SpigotAudience implements ForwardingAudience.Single {
     /**
@@ -57,6 +59,22 @@ final class SpigotAudience implements ForwardingAudience.Single {
     public void sendMessage(@NotNull final Component message,
                             @NotNull final ChatType.Bound boundChatType) {
         sendMessage(message);
+    }
+
+    /**
+     * Send a signed message as its content alone, since Spigot's chat API has no sender or
+     * signature.
+     *
+     * @param signedMessage The signed message.
+     * @param boundChatType The chat type.
+     */
+    @Override
+    public void sendMessage(@NotNull final SignedMessage signedMessage,
+                            @NotNull final ChatType.Bound boundChatType) {
+        sendMessage(Objects.requireNonNullElseGet(
+                signedMessage.unsignedContent(),
+                () -> Component.text(signedMessage.message())
+        ));
     }
 
     @Override
