@@ -6,6 +6,7 @@ import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.UnaryOperator
 
 abstract class EcoProfile(
@@ -13,6 +14,8 @@ abstract class EcoProfile(
     private val handler: ProfileHandler
 ) : Profile {
     private val data = ConcurrentHashMap<PersistentDataKey<*>, Any>()
+
+    private val invalidations = AtomicInteger()
 
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         // Queued inside compute so writes to the same key reach the writer in the order they land.
@@ -52,11 +55,19 @@ abstract class EcoProfile(
         // path for everything else - offline lookups, placeholders, admin commands.
         handler.ensureMigrated(uuid)
 
-        this.data[key] = if (key.isSavedLocally) {
+        val invalidationsBeforeFetch = invalidations.get()
+
+        val fetched = if (key.isSavedLocally) {
             handler.localHandler.read(uuid, key)
         } else {
             handler.defaultHandler.read(uuid, key)
         } ?: key.defaultValue
+
+        this.data.putIfAbsent(key, fetched)
+
+        if (invalidations.get() != invalidationsBeforeFetch) {
+            this.data.remove(key, fetched)
+        }
 
         return read(key)
     }
@@ -66,6 +77,7 @@ abstract class EcoProfile(
      * still waiting to be saved is kept, since the stored one is older.
      */
     override fun invalidate(key: PersistentDataKey<*>) {
+        invalidations.incrementAndGet()
         this.data.computeIfPresent(key) { _, value ->
             value.takeIf { handler.profileWriter.isPending(uuid, key) }
         }
@@ -73,10 +85,11 @@ abstract class EcoProfile(
 
     /**
      * Drop every cached value that is shared with other servers, keeping the ones only this server
-     * stores.
+     * stores and the ones still waiting to be saved.
      */
     fun invalidateShared() {
-        this.data.keys.removeIf { !it.isSavedLocally }
+        invalidations.incrementAndGet()
+        this.data.keys.removeIf { !it.isSavedLocally && !handler.profileWriter.isPending(uuid, it) }
     }
 
     override fun equals(other: Any?): Boolean {

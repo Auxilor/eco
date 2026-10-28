@@ -85,6 +85,35 @@ class ProfileSyncHookTests {
     }
 
     @Test
+    fun `racing invalidate refetches`() {
+        val uuid = UUID.randomUUID()
+        val profile = EcoPlayerProfile(uuid, handler)
+        var reads = 0
+        every { defaultHandler.read(uuid, sharedKey) } answers {
+            reads++
+            if (reads == 1) {
+                profile.invalidate(sharedKey)
+            }
+            reads
+        }
+
+        assertEquals(2, profile.read(sharedKey))
+    }
+
+    @Test
+    fun `invalidateShared keeps pending`() {
+        val uuid = UUID.randomUUID()
+        every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
+        every { handler.profileWriter.isPending(uuid, sharedKey) } returns true
+        val profile = EcoPlayerProfile(uuid, handler)
+
+        profile.write(sharedKey, 7)
+        profile.invalidateShared()
+
+        assertEquals(7, profile.read(sharedKey))
+    }
+
+    @Test
     fun `invalidating shared keys keeps local keys cached`() {
         val uuid = UUID.randomUUID()
         every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
