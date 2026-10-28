@@ -196,11 +196,13 @@ class ProfileHandler(
             }
         } finally {
             // Before the handler is shut down, so the subscriber's connection is returned to a live pool.
-            sync?.stop()
+            sync?.stopListening()
 
             for (handler in handlersToShutdown(localHandler, defaultHandler)) {
                 handler.shutdown()
             }
+
+            sync?.stop()
         }
     }
 
