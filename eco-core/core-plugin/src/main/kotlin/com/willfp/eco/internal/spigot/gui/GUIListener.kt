@@ -38,9 +38,13 @@ internal fun Inventory.shiftClickDestinations(item: ItemStack): List<Int> {
             break
         }
 
-        if (stack != null && stack.isSimilar(item) && stack.amount < stack.maxStackSize) {
-            destinations += index
-            remaining -= stack.maxStackSize - stack.amount
+        if (stack != null && stack.isSimilar(item)) {
+            val stackLimit = stack.maxStackSize.coerceAtMost(maxStackSize)
+
+            if (stack.amount < stackLimit) {
+                destinations += index
+                remaining -= stackLimit - stack.amount
+            }
         }
     }
 

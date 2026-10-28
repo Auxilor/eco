@@ -36,9 +36,17 @@ class ShiftClickDestinationTests {
         assertEquals(emptyList<Int>(), inventory.shiftClickDestinations(moved))
     }
 
-    private fun inventoryOf(vararg contents: ItemStack?): Inventory {
+    @Test
+    fun `the menu stack limit applies`() {
+        val inventory = inventoryOf(stackOf(Material.DIAMOND, 30), null, maxStackSize = 32)
+
+        assertEquals(listOf(0, 1), inventory.shiftClickDestinations(moved))
+    }
+
+    private fun inventoryOf(vararg contents: ItemStack?, maxStackSize: Int = 64): Inventory {
         val inventory = mockk<Inventory>()
         every { inventory.contents } returns arrayOf(*contents)
+        every { inventory.maxStackSize } returns maxStackSize
         return inventory
     }
 
