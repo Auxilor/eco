@@ -43,6 +43,13 @@ class ShiftClickDestinationTests {
         assertEquals(listOf(0, 1), inventory.shiftClickDestinations(moved))
     }
 
+    @Test
+    fun `overflow fills more empties`() {
+        val inventory = inventoryOf(null, null, null, maxStackSize = 4)
+
+        assertEquals(listOf(0, 1, 2), inventory.shiftClickDestinations(moved))
+    }
+
     private fun inventoryOf(vararg contents: ItemStack?, maxStackSize: Int = 64): Inventory {
         val inventory = mockk<Inventory>()
         every { inventory.contents } returns arrayOf(*contents)

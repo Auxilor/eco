@@ -27,7 +27,7 @@ import org.bukkit.inventory.PlayerInventory
 
 /**
  * The slots of this inventory that a shift-click would move [item] into, in the order vanilla
- * fills them: partial stacks of the same item first, then the first empty slot.
+ * fills them: partial stacks of the same item first, then as many empty slots as it needs.
  */
 internal fun Inventory.shiftClickDestinations(item: ItemStack): List<Int> {
     var remaining = item.amount
@@ -48,10 +48,17 @@ internal fun Inventory.shiftClickDestinations(item: ItemStack): List<Int> {
         }
     }
 
-    val empty = contents.indexOfFirst { it == null || it.type == Material.AIR }
+    val emptyLimit = item.maxStackSize.coerceAtMost(maxStackSize)
 
-    if (remaining > 0 && empty != -1) {
-        destinations += empty
+    for ((index, stack) in contents.withIndex()) {
+        if (remaining <= 0) {
+            break
+        }
+
+        if (stack == null || stack.type == Material.AIR) {
+            destinations += index
+            remaining -= emptyLimit
+        }
     }
 
     return destinations
