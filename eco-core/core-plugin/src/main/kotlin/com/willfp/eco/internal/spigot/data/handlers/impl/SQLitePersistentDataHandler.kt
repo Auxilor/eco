@@ -1,5 +1,6 @@
 package com.willfp.eco.internal.spigot.data.handlers.impl
 
+import com.willfp.eco.core.data.keys.PersistentDataKey
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.io.File
@@ -60,6 +61,21 @@ class SQLitePersistentDataHandler private constructor(
         super.dropIndexIfExists(tableName, indexName)
         hasFreePages = true
     }
+
+    /**
+     * SQLite does not enforce the length of a varchar, so there is nothing to widen.
+     */
+    override fun widenKeyColumn(column: Column<String>) = Unit
+
+    /**
+     * SQLite does not enforce the length of a varchar, so a key of any length can be saved.
+     */
+    override fun canSave(key: PersistentDataKey<*>) = true
+
+    /**
+     * Unbounded, so that a key of any length can be saved.
+     */
+    override fun Table.keyColumn(): Column<String> = text(KEY_COLUMN_NAME)
 
     /**
      * Rebuild a table as WITHOUT ROWID, so its rows live in the primary key.

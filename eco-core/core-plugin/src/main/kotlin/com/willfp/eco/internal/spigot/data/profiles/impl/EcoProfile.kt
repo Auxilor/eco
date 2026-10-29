@@ -62,11 +62,9 @@ abstract class EcoProfile(
 
         val invalidationsBeforeFetch = invalidations.get()
 
-        val fetched = if (key.isSavedLocally) {
-            handler.localHandler.read(uuid, key)
-        } else {
-            handler.defaultHandler.read(uuid, key)
-        } ?: key.defaultValue
+        val fetched = handler.profileWriter.pendingValue(uuid, key)
+            ?: readStored(key)
+            ?: key.defaultValue
 
         invalidationLock.read {
             this.data.compute(key) { _, current ->
@@ -75,6 +73,14 @@ abstract class EcoProfile(
         }
 
         return read(key)
+    }
+
+    private fun <T : Any> readStored(key: PersistentDataKey<T>): T? {
+        return if (key.isSavedLocally) {
+            handler.localHandler.read(uuid, key)
+        } else {
+            handler.defaultHandler.read(uuid, key)
+        }
     }
 
     /**
