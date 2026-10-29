@@ -6,13 +6,21 @@ import com.willfp.eco.internal.spigot.data.profiles.ProfileHandler
 import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.function.UnaryOperator
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 abstract class EcoProfile(
     val uuid: UUID,
     private val handler: ProfileHandler
 ) : Profile {
     private val data = ConcurrentHashMap<PersistentDataKey<*>, Any>()
+
+    private val invalidations = AtomicInteger()
+
+    private val invalidationLock = ReentrantReadWriteLock()
 
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         // Queued inside compute so writes to the same key reach the writer in the order they land.
@@ -52,9 +60,17 @@ abstract class EcoProfile(
         // path for everything else - offline lookups, placeholders, admin commands.
         handler.ensureMigrated(uuid)
 
-        this.data[key] = handler.profileWriter.pendingValue(uuid, key)
+        val invalidationsBeforeFetch = invalidations.get()
+
+        val fetched = handler.profileWriter.pendingValue(uuid, key)
             ?: readStored(key)
             ?: key.defaultValue
+
+        invalidationLock.read {
+            this.data.compute(key) { _, current ->
+                current ?: fetched.takeIf { invalidations.get() == invalidationsBeforeFetch }
+            }
+        }
 
         return read(key)
     }
@@ -68,18 +84,25 @@ abstract class EcoProfile(
     }
 
     /**
-     * Drop the cached value of [key], so the next read fetches it from the handler again.
+     * Drop the cached value of [key], so the next read fetches it from the handler again. A value
+     * still waiting to be saved is kept, since the stored one is older.
      */
-    fun invalidate(key: PersistentDataKey<*>) {
-        this.data.remove(key)
+    override fun invalidate(key: PersistentDataKey<*>) {
+        invalidations.incrementAndGet()
+        this.data.computeIfPresent(key) { _, value ->
+            value.takeIf { handler.profileWriter.isPending(uuid, key) }
+        }
     }
 
     /**
      * Drop every cached value that is shared with other servers, keeping the ones only this server
-     * stores.
+     * stores and the ones still waiting to be saved.
      */
     fun invalidateShared() {
-        this.data.keys.removeIf { !it.isSavedLocally }
+        invalidationLock.write {
+            invalidations.incrementAndGet()
+            this.data.keys.removeIf { !it.isSavedLocally && !handler.profileWriter.isPending(uuid, it) }
+        }
     }
 
     override fun equals(other: Any?): Boolean {

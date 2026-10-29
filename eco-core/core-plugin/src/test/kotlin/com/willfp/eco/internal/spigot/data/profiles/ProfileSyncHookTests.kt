@@ -73,6 +73,63 @@ class ProfileSyncHookTests {
     }
 
     @Test
+    fun `invalidate keeps pending value`() {
+        val uuid = UUID.randomUUID()
+        every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
+        every { handler.profileWriter.isPending(uuid, sharedKey) } returns true
+        val profile = EcoPlayerProfile(uuid, handler)
+
+        profile.write(sharedKey, 7)
+        profile.invalidate(sharedKey)
+
+        assertEquals(7, profile.read(sharedKey))
+    }
+
+    @Test
+    fun `racing invalidate refetches`() {
+        val uuid = UUID.randomUUID()
+        val profile = EcoPlayerProfile(uuid, handler)
+        var reads = 0
+        every { defaultHandler.read(uuid, sharedKey) } answers {
+            reads++
+            if (reads == 1) {
+                profile.invalidate(sharedKey)
+            }
+            reads
+        }
+
+        assertEquals(2, profile.read(sharedKey))
+    }
+
+    @Test
+    fun `racing write is kept`() {
+        val uuid = UUID.randomUUID()
+        val profile = EcoPlayerProfile(uuid, handler)
+        every { handler.profileWriter.isPending(uuid, sharedKey) } returns true
+        every { defaultHandler.read(uuid, sharedKey) } answers {
+            profile.invalidate(sharedKey)
+            profile.write(sharedKey, 1)
+            1
+        }
+
+        assertEquals(1, profile.read(sharedKey))
+        verify(exactly = 1) { defaultHandler.read(uuid, sharedKey) }
+    }
+
+    @Test
+    fun `invalidateShared keeps pending`() {
+        val uuid = UUID.randomUUID()
+        every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
+        every { handler.profileWriter.isPending(uuid, sharedKey) } returns true
+        val profile = EcoPlayerProfile(uuid, handler)
+
+        profile.write(sharedKey, 7)
+        profile.invalidateShared()
+
+        assertEquals(7, profile.read(sharedKey))
+    }
+
+    @Test
     fun `invalidating shared keys keeps local keys cached`() {
         val uuid = UUID.randomUUID()
         every { defaultHandler.read(uuid, sharedKey) } returnsMany listOf(1, 2)
