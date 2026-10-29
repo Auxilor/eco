@@ -47,8 +47,10 @@ class ProfileWriter(
     private var closed = false
 
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-        valuesToWrite[WriteRequest(uuid, key)] = value
-        pendingKeys.compute(uuid) { _, keys -> (keys ?: ConcurrentHashMap.newKeySet()).apply { add(key) } }
+        pendingKeys.compute(uuid) { _, keys ->
+            valuesToWrite[WriteRequest(uuid, key)] = value
+            (keys ?: ConcurrentHashMap.newKeySet()).apply { add(key) }
+        }
 
         if (closed) {
             flush()
