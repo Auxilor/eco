@@ -7,7 +7,10 @@ import com.willfp.eco.internal.spigot.data.profiles.isSavedLocally
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.locks.ReentrantReadWriteLock
 import java.util.function.UnaryOperator
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 abstract class EcoProfile(
     val uuid: UUID,
@@ -16,6 +19,8 @@ abstract class EcoProfile(
     private val data = ConcurrentHashMap<PersistentDataKey<*>, Any>()
 
     private val invalidations = AtomicInteger()
+
+    private val invalidationLock = ReentrantReadWriteLock()
 
     override fun <T : Any> write(key: PersistentDataKey<T>, value: T) {
         // Queued inside compute so writes to the same key reach the writer in the order they land.
@@ -63,8 +68,10 @@ abstract class EcoProfile(
             handler.defaultHandler.read(uuid, key)
         } ?: key.defaultValue
 
-        this.data.compute(key) { _, current ->
-            current ?: fetched.takeIf { invalidations.get() == invalidationsBeforeFetch }
+        invalidationLock.read {
+            this.data.compute(key) { _, current ->
+                current ?: fetched.takeIf { invalidations.get() == invalidationsBeforeFetch }
+            }
         }
 
         return read(key)
@@ -86,8 +93,10 @@ abstract class EcoProfile(
      * stores and the ones still waiting to be saved.
      */
     fun invalidateShared() {
-        invalidations.incrementAndGet()
-        this.data.keys.removeIf { !it.isSavedLocally && !handler.profileWriter.isPending(uuid, it) }
+        invalidationLock.write {
+            invalidations.incrementAndGet()
+            this.data.keys.removeIf { !it.isSavedLocally && !handler.profileWriter.isPending(uuid, it) }
+        }
     }
 
     override fun equals(other: Any?): Boolean {
