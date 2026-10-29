@@ -6,6 +6,7 @@ import com.willfp.eco.core.tuples.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -16,8 +17,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Handles persistent data.
  * <p>
- * Writes are dispatched to an internal, bounded executor; reads run on the calling
- * thread.
+ * Writes are dispatched to a fixed set of single-threaded executors, and every write to
+ * the same key of the same profile goes to the same one, so writes to a key always commit
+ * in the order they were made. Reads run on the calling thread.
  */
 public abstract class PersistentDataHandler implements Registrable {
     /**
@@ -31,14 +33,14 @@ public abstract class PersistentDataHandler implements Registrable {
     public static final int DEFAULT_THREADS = 8;
 
     /**
-     * The executor that writes are dispatched to.
+     * The executors that writes are dispatched to, one thread each.
      * <p>
-     * This pool is deliberately bounded. An unbounded pool starts a new thread for
+     * The set is deliberately bounded. An unbounded pool starts a new thread for
      * every queued task, so a bulk write - a mass reset, a data migration - starts
      * one thread per key written, all of them then contending for the same handful
      * of connections.
      */
-    private final ExecutorService executor;
+    private final ExecutorService[] executors;
 
     /**
      * The number of submitted writes per uuid that have not finished yet.
@@ -66,7 +68,24 @@ public abstract class PersistentDataHandler implements Registrable {
     protected PersistentDataHandler(@NotNull final String id,
                                     final int threads) {
         this.id = id;
-        this.executor = Executors.newFixedThreadPool(Math.max(1, threads));
+        this.executors = new ExecutorService[Math.max(1, threads)];
+
+        for (int i = 0; i < executors.length; i++) {
+            executors[i] = Executors.newSingleThreadExecutor();
+        }
+    }
+
+    /**
+     * Get the executor that every write to a key of a profile goes to.
+     *
+     * @param uuid The uuid of the profile.
+     * @param key  The key.
+     * @return The executor.
+     */
+    @NotNull
+    private ExecutorService executorFor(@NotNull final UUID uuid,
+                                        @NotNull final PersistentDataKey<?> key) {
+        return executors[Math.floorMod(Objects.hash(uuid, key.getKey()), executors.length)];
     }
 
     /**
@@ -93,7 +112,7 @@ public abstract class PersistentDataHandler implements Registrable {
      * the default implementation does nothing.
      * <p>
      * This method is called asynchronously by {@link #save()}, and on the calling
-     * thread by {@link #shutdown()}.
+     * thread by {@link #shutdown()} once every write has completed.
      */
     protected void doSave() {
         // Save to disk
@@ -111,10 +130,10 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Save the data.
      * <p>
-     * This submits {@link #doSave()} to the executor and returns immediately.
+     * This submits {@link #doSave()} to an executor and returns immediately.
      */
     public final void save() {
-        executor.submit(this::doSave);
+        executors[0].submit(this::doSave);
     }
 
     /**
@@ -233,7 +252,7 @@ public abstract class PersistentDataHandler implements Registrable {
         writesInFlight.merge(uuid, 1, Integer::sum);
 
         try {
-            executor.submit(() -> {
+            executorFor(uuid, key).submit(() -> {
                 try {
                     serializer.writeAsync(uuid, key, value);
                 } finally {
@@ -276,7 +295,7 @@ public abstract class PersistentDataHandler implements Registrable {
         Map<PersistentDataKey<?>, CompletableFuture<Object>> futures = keys.stream()
                 .collect(Collectors.toMap(
                         key -> key,
-                        key -> CompletableFuture.supplyAsync(() -> read(uuid, key), executor)
+                        key -> CompletableFuture.supplyAsync(() -> read(uuid, key), executorFor(uuid, key))
                 ));
 
         Map<PersistentDataKey<?>, Object> data = futures.entrySet().stream()
@@ -308,23 +327,24 @@ public abstract class PersistentDataHandler implements Registrable {
     /**
      * Save and shutdown the handler.
      * <p>
-     * Calls {@link #doSave()} on the calling thread, then blocks until every submitted
-     * read and write has completed. If the executor has already been shut down, only
-     * the save is performed.
+     * Blocks until every submitted read and write has completed, then calls
+     * {@link #doSave()} on the calling thread, so the save includes every write. If the
+     * handler has already been shut down, only the save is performed.
      *
      * @throws InterruptedException If the writes could not be awaited.
      */
     public final void shutdown() throws InterruptedException {
+        for (ExecutorService executor : executors) {
+            executor.shutdown();
+        }
+
+        for (ExecutorService executor : executors) {
+            while (!executor.awaitTermination(2, TimeUnit.MINUTES)) {
+                // Wait
+            }
+        }
+
         doSave();
-
-        if (executor.isShutdown()) {
-            return;
-        }
-
-        executor.shutdown();
-        while (!executor.awaitTermination(2, TimeUnit.MINUTES)) {
-            // Wait
-        }
     }
 
     @Override

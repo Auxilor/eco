@@ -55,6 +55,7 @@ class ProfileSyncHookTests {
         every { handler.defaultHandler } returns defaultHandler
         every { handler.localHandler } returns localHandler
         every { handler.liveMigration } returns null
+        every { handler.profileWriter.pendingValue(any(), any<PersistentDataKey<Int>>()) } returns null
     }
 
     @Test

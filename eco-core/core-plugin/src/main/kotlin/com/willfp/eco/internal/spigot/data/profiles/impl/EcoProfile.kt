@@ -52,13 +52,19 @@ abstract class EcoProfile(
         // path for everything else - offline lookups, placeholders, admin commands.
         handler.ensureMigrated(uuid)
 
-        this.data[key] = if (key.isSavedLocally) {
+        this.data[key] = handler.profileWriter.pendingValue(uuid, key)
+            ?: readStored(key)
+            ?: key.defaultValue
+
+        return read(key)
+    }
+
+    private fun <T : Any> readStored(key: PersistentDataKey<T>): T? {
+        return if (key.isSavedLocally) {
             handler.localHandler.read(uuid, key)
         } else {
             handler.defaultHandler.read(uuid, key)
-        } ?: key.defaultValue
-
-        return read(key)
+        }
     }
 
     /**
