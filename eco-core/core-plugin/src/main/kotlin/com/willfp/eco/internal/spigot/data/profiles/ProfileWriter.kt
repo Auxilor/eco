@@ -41,11 +41,16 @@ class ProfileWriter(
     @Volatile
     var onWrite: ((UUID, PersistentDataKey<*>, Any) -> Unit)? = null
 
+    private val pendingKeys = ConcurrentHashMap<UUID, MutableSet<PersistentDataKey<*>>>()
+
     @Volatile
     private var closed = false
 
     fun <T : Any> write(uuid: UUID, key: PersistentDataKey<T>, value: T) {
-        valuesToWrite[WriteRequest(uuid, key)] = value
+        pendingKeys.compute(uuid) { _, keys ->
+            valuesToWrite[WriteRequest(uuid, key)] = value
+            (keys ?: ConcurrentHashMap.newKeySet()).apply { add(key) }
+        }
 
         if (closed) {
             flush()
@@ -67,6 +72,11 @@ class ProfileWriter(
     fun isPending(uuid: UUID, key: PersistentDataKey<*>): Boolean {
         return valuesToWrite.containsKey(WriteRequest(uuid, key))
     }
+
+    /**
+     * Whether any value for [uuid] is waiting to be committed.
+     */
+    fun hasPending(uuid: UUID): Boolean = pendingKeys.containsKey(uuid)
 
     /**
      * The value waiting to be committed for [key], or null if there is none.
@@ -99,6 +109,12 @@ class ProfileWriter(
             }
 
             valuesToWrite.remove(request, value)
+            pendingKeys.computeIfPresent(request.uuid) { _, keys ->
+                if (!valuesToWrite.containsKey(request)) {
+                    keys.remove(request.key)
+                }
+                keys.takeIf { it.isNotEmpty() }
+            }
         }
     }
 

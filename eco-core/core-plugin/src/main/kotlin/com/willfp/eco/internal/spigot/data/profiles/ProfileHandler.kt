@@ -27,9 +27,12 @@ import com.willfp.eco.core.config.ConfigType
 import com.willfp.eco.core.config.Configs
 import com.willfp.eco.core.data.handlers.PersistentDataHandler
 import com.willfp.eco.core.data.keys.PersistentDataKey
+import org.bukkit.Bukkit
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
+
+private const val RELEASE_RETRY_TICKS = 20L
 
 const val LEGACY_MIGRATED_KEY = "legacy-data-migrated"
 const val LOCAL_MIGRATED_KEY = "local-handler-migrated"
@@ -116,6 +119,45 @@ class ProfileHandler(
         loaded.remove(uuid)
     }
 
+    private val transientUses = ConcurrentHashMap<UUID, Int>()
+
+    /**
+     * Run [action], then unload the player's profile once no other transient use holds it.
+     */
+    fun runWithTransientProfile(uuid: UUID, action: Runnable) {
+        transientUses.merge(uuid, 1, Int::plus)
+
+        try {
+            action.run()
+        } finally {
+            transientUses.computeIfPresent(uuid) { _, uses -> (uses - 1).takeIf { it > 0 } }
+            plugin.scheduler.global().run { releaseProfile(uuid) }
+        }
+    }
+
+    private fun releaseProfile(uuid: UUID) {
+        if (Bukkit.getPlayer(uuid) != null) {
+            return
+        }
+
+        transientUses.compute(uuid) { _, uses ->
+            when {
+                uses != null -> Unit
+                hasUnsavedWrites(uuid) -> plugin.scheduler.global().runLater(RELEASE_RETRY_TICKS) {
+                    releaseProfile(uuid)
+                }
+                else -> loaded.remove(uuid)
+            }
+
+            uses
+        }
+    }
+
+    private fun hasUnsavedWrites(uuid: UUID): Boolean =
+        profileWriter.hasPending(uuid) ||
+            localHandler.hasWritesInFlight(uuid) ||
+            defaultHandler.hasWritesInFlight(uuid)
+
     /**
      * Record that a player's data resolved to [profile], so it can be unloaded when they leave.
      *
@@ -135,8 +177,15 @@ class ProfileHandler(
      * Unload a player's own profile along with every profile they resolved to.
      */
     fun unloadPlayer(player: UUID) {
-        loaded.remove(player)
-        resolvedProfiles.remove(player)?.forEach { loaded.remove(it) }
+        transientUses.compute(player) { _, uses ->
+            if (uses == null) {
+                loaded.remove(player)
+            }
+            uses
+        }
+        resolvedProfiles.remove(player)?.forEach {
+            plugin.scheduler.global().run { releaseProfile(it) }
+        }
     }
 
     /**
