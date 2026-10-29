@@ -183,7 +183,9 @@ class ProfileHandler(
             }
             uses
         }
-        resolvedProfiles.remove(player)?.forEach { loaded.remove(it) }
+        resolvedProfiles.remove(player)?.forEach {
+            plugin.scheduler.global().run { releaseProfile(it) }
+        }
     }
 
     /**
