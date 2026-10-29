@@ -409,10 +409,6 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun getSavedProfileUUIDs(): Set<UUID> =
         profileHandler.defaultHandler.getSavedUUIDs() - serverProfileUUID
 
-    override fun runWithTransientProfile(uuid: UUID, action: Runnable) {
-        profileHandler.runWithTransientProfile(uuid, action)
-    }
-
     override fun <T> readAllProfileValues(
         uuids: Set<UUID>,
         key: PersistentDataKey<T>
