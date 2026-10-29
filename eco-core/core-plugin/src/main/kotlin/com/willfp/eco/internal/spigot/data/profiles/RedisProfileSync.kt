@@ -83,12 +83,20 @@ class RedisProfileSync(
     }
 
     fun stop() {
+        stopListening()
+        redis.syncSender = null
+    }
+
+    /**
+     * Stop receiving other servers' writes, while this server's own writes are still announced
+     * until [stop], so writes queued during shutdown still invalidate other servers' caches.
+     */
+    fun stopListening() {
         if (!running) {
             return
         }
 
         running = false
-        redis.syncSender = null
 
         runCatching { subscriber?.takeIf { it.isSubscribed }?.unsubscribe() }
 
