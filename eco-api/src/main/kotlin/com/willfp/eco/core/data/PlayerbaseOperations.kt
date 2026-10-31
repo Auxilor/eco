@@ -4,6 +4,8 @@ package com.willfp.eco.core.data
 
 import com.willfp.eco.core.Eco
 import com.willfp.eco.core.EcoPlugin
+import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
@@ -63,3 +65,30 @@ fun forEachSavedProfile(
 
     onProgress(uuids.size, uuids.size)
 }, Executor { plugin.scheduler.async().run(it) })
+
+/**
+ * Run an action for every player the server has saved data for, off the main thread, without
+ * keeping their profiles in memory afterwards.
+ *
+ * Works like [forEachSavedProfile], but hands the action the player, so APIs that take an
+ * [OfflinePlayer] can be used. Reading or writing `player.profile` inside the action loads the
+ * profile; once the action returns it is released again for a player who is offline, after its
+ * writes are saved. Online players keep their profile.
+ *
+ * @param plugin     The plugin, used for its async scheduler and its logger.
+ * @param batchSize  How many players to process before yielding. 500 is a sane default.
+ * @param onProgress Called with (processed, total) after each batch, off the main thread.
+ * @param action     The action to run per player.
+ * @return A future completing when every player has been processed.
+ */
+@JvmOverloads
+fun forEachSavedPlayer(
+    plugin: EcoPlugin,
+    batchSize: Int = 500,
+    onProgress: (Int, Int) -> Unit = { _, _ -> },
+    action: (OfflinePlayer) -> Unit
+): CompletableFuture<Void> = forEachSavedProfile(plugin, batchSize, onProgress) { uuid ->
+    Eco.get().runWithTransientProfile(uuid) {
+        action(Bukkit.getOfflinePlayer(uuid))
+    }
+}
