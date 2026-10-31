@@ -43,6 +43,11 @@ public abstract class PersistentDataHandler implements Registrable {
     private final ExecutorService[] executors;
 
     /**
+     * The number of submitted writes per uuid that have not finished yet.
+     */
+    private final Map<UUID, Integer> writesInFlight = new ConcurrentHashMap<>();
+
+    /**
      * Create a new persistent data handler.
      *
      * @param id The id.
@@ -244,7 +249,34 @@ public abstract class PersistentDataHandler implements Registrable {
                                 @NotNull final PersistentDataKey<T> key,
                                 @NotNull final T value) {
         DataTypeSerializer<T> serializer = key.getType().getSerializer(this);
-        executorFor(uuid, key).submit(() -> serializer.writeAsync(uuid, key, value));
+        writesInFlight.merge(uuid, 1, Integer::sum);
+
+        try {
+            executorFor(uuid, key).submit(() -> {
+                try {
+                    serializer.writeAsync(uuid, key, value);
+                } finally {
+                    finishWrite(uuid);
+                }
+            });
+        } catch (RejectedExecutionException e) {
+            finishWrite(uuid);
+            throw e;
+        }
+    }
+
+    /**
+     * Get if a write for a uuid has been submitted and has not finished yet.
+     *
+     * @param uuid The uuid.
+     * @return If a write is in flight.
+     */
+    public final boolean hasWritesInFlight(@NotNull final UUID uuid) {
+        return writesInFlight.containsKey(uuid);
+    }
+
+    private void finishWrite(@NotNull final UUID uuid) {
+        writesInFlight.computeIfPresent(uuid, (ignored, count) -> count > 1 ? count - 1 : null);
     }
 
     /**

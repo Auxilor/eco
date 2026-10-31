@@ -174,6 +174,34 @@ class ProfileSyncHookTests {
     }
 
     @Test
+    fun `pending writes found by uuid`() {
+        val uuid = UUID.randomUUID()
+        val config = mockk<ConfigYml>(relaxed = true)
+        val scheduler = mockk<Scheduler>()
+        val global = mockk<TaskContext>()
+        val plugin = mockk<EcoSpigotPlugin>()
+        val task = slot<Runnable>()
+
+        every { plugin.configYml } returns config
+        every { plugin.scheduler } returns scheduler
+        every { scheduler.global() } returns global
+        every { config.getInt("save-interval") } returns 1
+        every { global.runTimer(any(), any(), capture(task)) } returns mockk()
+
+        val writer = ProfileWriter(plugin, handler)
+        writer.startTickingSaves()
+
+        assertFalse(writer.hasPending(uuid))
+
+        writer.write(uuid, sharedKey, 5)
+        assertTrue(writer.hasPending(uuid))
+        assertFalse(writer.hasPending(UUID.randomUUID()))
+
+        task.captured.run()
+        assertFalse(writer.hasPending(uuid))
+    }
+
+    @Test
     fun `a registered key is found by its id`() {
         assertSame(sharedKey, KeyRegistry.getKey(sharedKey.key))
         assertNull(KeyRegistry.getKey(namespacedKeyOf("synchook", "never_registered")))
