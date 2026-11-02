@@ -1,11 +1,13 @@
 package com.willfp.eco.internal.spigot.recipes.workstation
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.recipe.workstation.AnvilRecipe
 import com.willfp.eco.core.recipe.workstation.BrewingRecipe
 import com.willfp.eco.core.recipe.workstation.GrindstoneRecipe
 import com.willfp.eco.core.recipe.workstation.SmeltingRecipe
 import com.willfp.eco.core.recipe.workstation.SmeltingType
+import com.willfp.eco.core.recipe.workstation.SmithingRecipe
 import com.willfp.eco.core.recipe.workstation.VillagerRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
@@ -23,8 +25,11 @@ import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.inventory.PrepareGrindstoneEvent
+import org.bukkit.event.inventory.PrepareSmithingEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantInventory
 import org.bukkit.inventory.MerchantRecipe
+import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
@@ -108,6 +113,44 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         event.result = result
         event.inventory.repairCost = recipe.repairCost
         WorkstationRecipes.setPendingRecipe(player.uniqueId, recipe)
+    }
+
+    // Smithing table
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onPrepareSmithing(event: PrepareSmithingEvent) {
+        val inventory = event.inventory
+        val base = inventory.inputEquipment ?: return
+        val output = WorkstationRecipes.getAll(SmithingRecipe::class.java)
+            .firstOrNull { recipe ->
+                recipe.template.matches(inventory.inputTemplate) &&
+                    recipe.base.matches(base) &&
+                    recipe.addition.matches(inventory.inputMineral)
+            }
+            ?.output
+            ?: return
+        event.result = smithingResult(base, output)
+    }
+
+    // Vanilla carries the base item's data (damage, enchantments, trims) onto the result.
+    private fun smithingResult(base: ItemStack, output: ItemStack): ItemStack {
+        if (Prerequisite.HAS_PAPER.isMet) {
+            return base.withType(output.type).apply {
+                amount = output.amount
+                copyDataFrom(output) { output.isDataOverridden(it) }
+            }
+        }
+        return output.clone().also { result -> copyDamageAndEnchants(base, result) }
+    }
+
+    private fun copyDamageAndEnchants(base: ItemStack, result: ItemStack) {
+        val baseMeta = base.itemMeta ?: return
+        val resultMeta = result.itemMeta ?: return
+        if (resultMeta is Damageable && baseMeta is Damageable) {
+            resultMeta.damage = baseMeta.damage
+        }
+        baseMeta.enchants.forEach { (enchantment, level) -> resultMeta.addEnchant(enchantment, level, true) }
+        result.itemMeta = resultMeta
     }
 
     // Villager / merchant
