@@ -1,16 +1,20 @@
 package com.willfp.eco.internal.spigot.recipes.workstation
 
 import com.willfp.eco.core.EcoPlugin
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.recipe.workstation.AnvilRecipe
 import com.willfp.eco.core.recipe.workstation.BrewingRecipe
 import com.willfp.eco.core.recipe.workstation.GrindstoneRecipe
 import com.willfp.eco.core.recipe.workstation.SmeltingRecipe
 import com.willfp.eco.core.recipe.workstation.SmeltingType
+import com.willfp.eco.core.recipe.workstation.SmithingRecipe
 import com.willfp.eco.core.recipe.workstation.VillagerRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import com.willfp.eco.util.formatEco
+import org.bukkit.Keyed
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -23,8 +27,12 @@ import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.event.inventory.PrepareGrindstoneEvent
+import org.bukkit.event.inventory.PrepareSmithingEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantInventory
 import org.bukkit.inventory.MerchantRecipe
+import org.bukkit.inventory.meta.ArmorMeta
+import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
@@ -108,6 +116,61 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
         event.result = result
         event.inventory.repairCost = recipe.repairCost
         WorkstationRecipes.setPendingRecipe(player.uniqueId, recipe)
+    }
+
+    // Smithing table
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    fun onPrepareSmithing(event: PrepareSmithingEvent) {
+        val inventory = event.inventory
+        val base = inventory.inputEquipment ?: return
+        val matches = WorkstationRecipes.getAll(SmithingRecipe::class.java)
+            .filter { smithingRecipe ->
+                smithingRecipe.template.matches(inventory.inputTemplate) &&
+                    smithingRecipe.base.matches(base) &&
+                    smithingRecipe.addition.matches(inventory.inputMineral)
+            }
+        val recipe = matches.firstOrNull { it.isPermittedFor(event.view.player) }
+        val output = recipe?.output
+        val bukkitKey = (inventory.recipe as? Keyed)?.key
+        event.result = when {
+            output != null -> smithingResult(base, output)
+            recipe == null && matches.isNotEmpty() -> null
+            recipe == null && bukkitKey != null && WorkstationRecipes.getByKey(bukkitKey) is SmithingRecipe -> null
+            else -> event.result
+        }
+    }
+
+    private fun SmithingRecipe.isPermittedFor(player: HumanEntity): Boolean =
+        permission?.let { player.hasPermission(it) } != false
+
+    // Vanilla carries the base item's data (damage, enchantments, trims) onto the result.
+    private fun smithingResult(base: ItemStack, output: ItemStack): ItemStack {
+        if (Prerequisite.HAS_PAPER.isMet) {
+            return base.withType(output.type).apply {
+                amount = output.amount
+                copyDataFrom(output) { output.isDataOverridden(it) }
+            }
+        }
+        return output.clone().also { result -> copyBaseData(base, result) }
+    }
+
+    private fun copyBaseData(base: ItemStack, result: ItemStack) {
+        val baseMeta = base.itemMeta ?: return
+        val resultMeta = result.itemMeta ?: return
+        if (resultMeta is Damageable && baseMeta is Damageable && !resultMeta.hasDamage()) {
+            resultMeta.damage = baseMeta.damage
+        }
+        if (!resultMeta.hasEnchants()) {
+            baseMeta.enchants.forEach { (enchantment, level) -> resultMeta.addEnchant(enchantment, level, true) }
+        }
+        if (!resultMeta.hasDisplayName() && baseMeta.hasDisplayName()) {
+            resultMeta.setDisplayName(baseMeta.displayName)
+        }
+        if (resultMeta is ArmorMeta && baseMeta is ArmorMeta && !resultMeta.hasTrim()) {
+            resultMeta.trim = baseMeta.trim
+        }
+        result.itemMeta = resultMeta
     }
 
     // Villager / merchant
