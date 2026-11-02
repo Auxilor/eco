@@ -239,7 +239,7 @@ public final class Items {
         boolean isTag = base.startsWith("#");
 
         if (isTag) {
-            String tag = split[0].substring(1);
+            String tag = args[0].substring(1);
             ItemTag itemTag = TAGS.get(tag);
 
             if (itemTag == null) {
