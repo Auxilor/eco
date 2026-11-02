@@ -13,6 +13,7 @@ import com.willfp.eco.core.recipe.workstation.WorkstationRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import com.willfp.eco.util.formatEco
 import org.bukkit.NamespacedKey
+import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -29,6 +30,7 @@ import org.bukkit.event.inventory.PrepareSmithingEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.MerchantInventory
 import org.bukkit.inventory.MerchantRecipe
+import org.bukkit.inventory.meta.ArmorMeta
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
@@ -121,16 +123,23 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
     fun onPrepareSmithing(event: PrepareSmithingEvent) {
         val inventory = event.inventory
         val base = inventory.inputEquipment ?: return
-        val output = WorkstationRecipes.getAll(SmithingRecipe::class.java)
-            .firstOrNull { recipe ->
-                recipe.template.matches(inventory.inputTemplate) &&
-                    recipe.base.matches(base) &&
-                    recipe.addition.matches(inventory.inputMineral)
+        val recipe = WorkstationRecipes.getAll(SmithingRecipe::class.java)
+            .firstOrNull { smithingRecipe ->
+                smithingRecipe.template.matches(inventory.inputTemplate) &&
+                    smithingRecipe.base.matches(base) &&
+                    smithingRecipe.addition.matches(inventory.inputMineral)
             }
-            ?.output
             ?: return
-        event.result = smithingResult(base, output)
+        val output = recipe.output
+        event.result = if (output != null && recipe.isPermittedFor(event.view.player)) {
+            smithingResult(base, output)
+        } else {
+            null
+        }
     }
+
+    private fun SmithingRecipe.isPermittedFor(player: HumanEntity): Boolean =
+        permission?.let { player.hasPermission(it) } ?: true
 
     // Vanilla carries the base item's data (damage, enchantments, trims) onto the result.
     private fun smithingResult(base: ItemStack, output: ItemStack): ItemStack {
@@ -140,16 +149,24 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
                 copyDataFrom(output) { output.isDataOverridden(it) }
             }
         }
-        return output.clone().also { result -> copyDamageAndEnchants(base, result) }
+        return output.clone().also { result -> copyBaseData(base, result) }
     }
 
-    private fun copyDamageAndEnchants(base: ItemStack, result: ItemStack) {
+    private fun copyBaseData(base: ItemStack, result: ItemStack) {
         val baseMeta = base.itemMeta ?: return
         val resultMeta = result.itemMeta ?: return
-        if (resultMeta is Damageable && baseMeta is Damageable) {
+        if (resultMeta is Damageable && baseMeta is Damageable && !resultMeta.hasDamage()) {
             resultMeta.damage = baseMeta.damage
         }
-        baseMeta.enchants.forEach { (enchantment, level) -> resultMeta.addEnchant(enchantment, level, true) }
+        if (!resultMeta.hasEnchants()) {
+            baseMeta.enchants.forEach { (enchantment, level) -> resultMeta.addEnchant(enchantment, level, true) }
+        }
+        if (!resultMeta.hasDisplayName() && baseMeta.hasDisplayName()) {
+            resultMeta.setDisplayName(baseMeta.displayName)
+        }
+        if (resultMeta is ArmorMeta && baseMeta is ArmorMeta && !resultMeta.hasTrim()) {
+            resultMeta.trim = baseMeta.trim
+        }
         result.itemMeta = resultMeta
     }
 
