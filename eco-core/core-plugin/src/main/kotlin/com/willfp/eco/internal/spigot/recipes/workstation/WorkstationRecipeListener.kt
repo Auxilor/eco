@@ -12,6 +12,7 @@ import com.willfp.eco.core.recipe.workstation.VillagerRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipe
 import com.willfp.eco.core.recipe.workstation.WorkstationRecipes
 import com.willfp.eco.util.formatEco
+import org.bukkit.Keyed
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
@@ -123,23 +124,25 @@ class WorkstationRecipeListener(private val plugin: EcoPlugin) : Listener {
     fun onPrepareSmithing(event: PrepareSmithingEvent) {
         val inventory = event.inventory
         val base = inventory.inputEquipment ?: return
-        val recipe = WorkstationRecipes.getAll(SmithingRecipe::class.java)
-            .firstOrNull { smithingRecipe ->
+        val matches = WorkstationRecipes.getAll(SmithingRecipe::class.java)
+            .filter { smithingRecipe ->
                 smithingRecipe.template.matches(inventory.inputTemplate) &&
                     smithingRecipe.base.matches(base) &&
                     smithingRecipe.addition.matches(inventory.inputMineral)
             }
-            ?: return
-        val output = recipe.output
-        event.result = if (output != null && recipe.isPermittedFor(event.view.player)) {
-            smithingResult(base, output)
-        } else {
-            null
+        val recipe = matches.firstOrNull { it.isPermittedFor(event.view.player) }
+        val output = recipe?.output
+        val bukkitKey = (inventory.recipe as? Keyed)?.key
+        event.result = when {
+            output != null -> smithingResult(base, output)
+            recipe == null && matches.isNotEmpty() -> null
+            recipe == null && bukkitKey != null && WorkstationRecipes.getByKey(bukkitKey) is SmithingRecipe -> null
+            else -> event.result
         }
     }
 
     private fun SmithingRecipe.isPermittedFor(player: HumanEntity): Boolean =
-        permission?.let { player.hasPermission(it) } ?: true
+        permission?.let { player.hasPermission(it) } != false
 
     // Vanilla carries the base item's data (damage, enchantments, trims) onto the result.
     private fun smithingResult(base: ItemStack, output: ItemStack): ItemStack {
