@@ -4,6 +4,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.serialization.Dynamic
 import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.recipe.parts.EmptyTestableItem
+import com.willfp.eco.core.recipe.parts.TestableStack
 import com.willfp.eco.internal.spigot.proxies.SNBTConverterProxy
 import com.willfp.eco.internal.spigot.proxy.v26_1_2.common.asBukkitStack
 import net.minecraft.SharedConstants
@@ -72,21 +73,36 @@ class SNBTConverter : SNBTConverterProxy {
     override fun makeSNBTTestable(snbt: String): TestableItem {
         try {
             val tag = parseItemSNBT(snbt) ?: return EmptyTestableItem()
+            val exact = tag.contains("DataVersion")
             tag.remove("Count")
             val minecraftStack = NMSItemStack.CODEC.parse(
                 MinecraftServer.getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE),
                 tag
             ).getOrThrow()
-            return SNBTTestableItem(minecraftStack.asBukkitStack(), tag)
+            val item = minecraftStack.asBukkitStack()
+
+            if (exact) {
+                tag.remove("DataVersion")
+                tag.remove("count")
+                val testable = SNBTTestableItem(item, tag, true)
+                return if (item.amount > 1) TestableStack(testable, item.amount) else testable
+            }
+
+            return SNBTTestableItem(item, tag)
         } catch (_: CommandSyntaxException) {
             return EmptyTestableItem()
         }
 
     }
 
+    /**
+     * With [exact], every value in the tag must be on the item. Without it only the tag's
+     * keys are checked, which is what configs written by hand have always had.
+     */
     class SNBTTestableItem(
         private val item: ItemStack,
-        private val tag: CompoundTag
+        private val tag: CompoundTag,
+        private val exact: Boolean = false
     ) : TestableItem {
         override fun matches(itemStack: ItemStack?): Boolean {
             if (itemStack == null) {
@@ -98,7 +114,8 @@ class SNBTConverter : SNBTConverterProxy {
                 CraftItemStack.asNMSCopy(itemStack)
             ).getOrThrow() as CompoundTag
             nmsTag.remove("Count")
-            return tag.copy().merge(nmsTag) == nmsTag && itemStack.type == item.type
+            val merged = if (exact) nmsTag.copy().merge(tag) else tag.copy().merge(nmsTag)
+            return merged == nmsTag && itemStack.type == item.type
         }
 
         override fun getItem(): ItemStack = item
