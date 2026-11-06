@@ -63,5 +63,8 @@ class CustomItemsNexo(
                 item.build()
             )
         }
+
+        override fun getKey(itemStack: ItemStack): String? =
+            NexoItems.idFromItem(itemStack)
     }
 }

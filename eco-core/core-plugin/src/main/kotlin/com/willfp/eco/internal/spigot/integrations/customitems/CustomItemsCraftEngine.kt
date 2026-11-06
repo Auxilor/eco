@@ -58,5 +58,8 @@ class CustomItemsCraftEngine(
             )
         }
 
+        override fun getKey(itemStack: ItemStack): String? =
+            CraftEngineItems.byItemStack(itemStack)?.id()?.toString()
+
     }
 }

@@ -1,6 +1,7 @@
 package com.willfp.eco.core.items.provider;
 
 import com.willfp.eco.core.items.TestableItem;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +36,20 @@ public abstract class ItemProvider {
      */
     @Nullable
     public abstract TestableItem provideForKey(@NotNull String key);
+
+    /**
+     * Get the item ID of an ItemStack, the reverse of {@link #provideForKey(String)}.
+     * <p>
+     * Providers only register their items when a request is made, so this is what lets
+     * an item be recognised before anything has looked it up.
+     *
+     * @param itemStack The ItemStack.
+     * @return The item ID, or null if the ItemStack isn't from this provider.
+     */
+    @Nullable
+    public String getKey(@NotNull final ItemStack itemStack) {
+        return null;
+    }
 
     /**
      * Get the namespace.

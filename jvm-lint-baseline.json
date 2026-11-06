@@ -269,7 +269,7 @@
     {
       "code": "CX016",
       "path": "eco-api/src/main/java/com/willfp/eco/core/items/Items.java",
-      "message": "File has 774 lines, over the limit of 600"
+      "message": "File has 849 lines, over the limit of 600"
     },
     {
       "code": "IC002",

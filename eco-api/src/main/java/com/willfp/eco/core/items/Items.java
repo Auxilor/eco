@@ -12,6 +12,7 @@ import com.willfp.eco.util.NumberUtils;
 import net.kyori.adventure.text.Component;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.time.Duration;
 import java.util.function.Predicate;
@@ -35,6 +36,13 @@ public final class Items {
     private static final Map<NamespacedKey, TestableItem> REGISTRY = new ConcurrentHashMap<>();
 
     /**
+     * The keys of registered items that came from an {@link ItemProvider}. A registered
+     * item can be built on top of one of these, so they're only used when nothing more
+     * specific matches.
+     */
+    private static final Set<NamespacedKey> PROVIDED_KEYS = ConcurrentHashMap.newKeySet();
+
+    /**
      * Cached custom item lookups, using {@link HashedItem}.
      */
     private static final EcoCache<HashedItem, Optional<TestableItem>> CACHE = EcoCache.<HashedItem, Optional<TestableItem>>builder()
@@ -44,21 +52,27 @@ public final class Items {
                     return Optional.empty();
                 }
 
-                TestableItem match = null;
-                for (TestableItem item : REGISTRY.values()) {
-                    if (item.shouldMarkAsCustom() && item.matches(key.getItem())) {
-                        match = item;
-                        break;
+                TestableItem providedMatch = null;
+                for (Map.Entry<NamespacedKey, TestableItem> entry : REGISTRY.entrySet()) {
+                    TestableItem item = entry.getValue();
+                    if (!item.shouldMarkAsCustom() || !item.matches(key.getItem())) {
+                        continue;
                     }
+
+                    if (!PROVIDED_KEYS.contains(entry.getKey())) {
+                        return Optional.of(item);
+                    }
+
+                    providedMatch = item;
                 }
 
-                return Optional.ofNullable(match);
+                return Optional.ofNullable(providedMatch);
             });
 
     /**
-     * All item providers.
+     * All item providers, sorted so that reverse lookups are deterministic.
      */
-    private static final Map<String, ItemProvider> PROVIDERS = new ConcurrentHashMap<>();
+    private static final Map<String, ItemProvider> PROVIDERS = new ConcurrentSkipListMap<>();
 
     /**
      * All registered arg parsers, used to parse lookup string modifiers.
@@ -121,6 +135,7 @@ public final class Items {
      */
     public static void removeCustomItem(@NotNull final NamespacedKey key) {
         REGISTRY.remove(key);
+        PROVIDED_KEYS.remove(key);
     }
 
     /**
@@ -139,8 +154,12 @@ public final class Items {
 
         CustomItem customItem = getCustomItem(itemStack);
 
+        String providerKey = customItem == null ? findProviderKey(itemStack) : null;
+
         if (customItem != null) {
             builder.append(customItem.getKey());
+        } else if (providerKey != null) {
+            builder.append(providerKey);
         } else {
             builder.append(itemStack.getType().name().toLowerCase());
         }
@@ -163,6 +182,61 @@ public final class Items {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Turn an ItemStack into a lookup string that resolves back to the same item.
+     * <p>
+     * A custom item is written as its key and amount alone, so it follows later changes
+     * to that item. Anything else is written as in {@link #toLookupString(ItemStack)},
+     * unless that would lose custom data held by the ItemStack, such as data from a plugin
+     * with no eco integration. It is then written as SNBT, which matches by value.
+     *
+     * @param itemStack The ItemStack.
+     * @return The lookup string.
+     */
+    @NotNull
+    public static String toExactLookupString(@NotNull final ItemStack itemStack) {
+        CustomItem customItem = getCustomItem(itemStack);
+
+        if (customItem != null && !PROVIDED_KEYS.contains(customItem.getKey())) {
+            return withAmount(customItem.getKey().toString(), itemStack);
+        }
+
+        String key = customItem != null ? customItem.getKey().toString() : findProviderKey(itemStack);
+        String lookup = key != null ? withAmount(key, itemStack) : toLookupString(itemStack);
+
+        return ItemCustomData.isKeptBy(lookup, itemStack) ? lookup : ItemCustomData.toCompactSNBT(itemStack);
+    }
+
+    @NotNull
+    private static String withAmount(@NotNull final String key,
+                                     @NotNull final ItemStack itemStack) {
+        return itemStack.getAmount() > 1 ? key + " " + itemStack.getAmount() : key;
+    }
+
+    /**
+     * Find the lookup key of an ItemStack from the item providers, for items that nothing
+     * has looked up yet.
+     *
+     * @param itemStack The ItemStack.
+     * @return The key, or null if no provider has the item.
+     */
+    @Nullable
+    private static String findProviderKey(@NotNull final ItemStack itemStack) {
+        for (ItemProvider provider : PROVIDERS.values()) {
+            String id = provider.getKey(itemStack);
+            if (id == null) {
+                continue;
+            }
+
+            String key = provider.getNamespace() + ":" + id.toLowerCase().replace(":", "__");
+            if (!(lookup(key) instanceof EmptyTestableItem)) {
+                return key;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -278,6 +352,7 @@ public final class Items {
                     return new EmptyTestableItem();
                 }
                 registerCustomItem(namespacedKey, part);
+                PROVIDED_KEYS.add(namespacedKey);
             }
 
             /*

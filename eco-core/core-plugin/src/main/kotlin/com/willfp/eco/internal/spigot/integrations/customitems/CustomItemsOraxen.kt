@@ -11,6 +11,7 @@ import io.th0rgal.oraxen.api.OraxenItems
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 
 class CustomItemsOraxen(
     private val plugin: EcoPlugin
@@ -40,5 +41,8 @@ class CustomItemsOraxen(
                 item.build()
             )
         }
+
+        override fun getKey(itemStack: ItemStack): String? =
+            OraxenItems.getIdByItem(itemStack)
     }
 }
