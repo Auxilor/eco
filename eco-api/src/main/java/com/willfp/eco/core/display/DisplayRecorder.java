@@ -32,6 +32,28 @@ public interface DisplayRecorder {
     Object getLoreState(@NotNull ItemStack itemStack);
 
     /**
+     * Get the lore a lore state stands for. It is the same whenever this is called, whatever
+     * happened to the item since the state was taken.
+     *
+     * @param loreState The lore state, from {@link #getLoreState(ItemStack)}.
+     * @return The lore, empty if the state is null.
+     */
+    @NotNull
+    List<Component> getLore(@Nullable Object loreState);
+
+    /**
+     * If any lore line on an item may be a display line, checked without converting the lore
+     * to components. If this returns false, {@link Display#isDisplayLine(Component)} is false for
+     * every line on the item.
+     *
+     * @param itemStack The item.
+     * @return If there may be display lines.
+     */
+    default boolean mayHaveDisplayLines(@NotNull final ItemStack itemStack) {
+        return true;
+    }
+
+    /**
      * Set the lore on an item. Display lines are styled as eco has always shown them, and every
      * other line is set exactly as given.
      *
