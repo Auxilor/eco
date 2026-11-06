@@ -554,9 +554,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     }
 
     override fun handleDisable() {
+        leaderboardService.shutdown()
         super.handleDisable()
         hologramTracker.shutdown()
-        leaderboardService.shutdown()
     }
 
     override fun createNamespacedKey(namespace: String, key: String) =

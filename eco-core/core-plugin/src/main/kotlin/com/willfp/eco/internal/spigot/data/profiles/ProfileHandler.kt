@@ -12,6 +12,7 @@ import com.willfp.eco.internal.spigot.data.handlers.PersistentDataHandlers
 import com.willfp.eco.internal.spigot.data.handlers.handlersToShutdown
 import com.willfp.eco.internal.spigot.data.handlers.resolveHandlerId
 import com.willfp.eco.internal.spigot.data.handlers.sqliteHandlerFor
+import com.willfp.eco.internal.spigot.data.handlers.impl.ExposedPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMongoDBPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.LegacyMySQLPersistentDataHandler
 import com.willfp.eco.internal.spigot.data.handlers.impl.MongoDBPersistentDataHandler
@@ -235,6 +236,9 @@ class ProfileHandler(
      * written in the last interval - and every value written as players are kicked - are only
      * saved because of the flush here. So is data.yml, which the flush writes to mid-migration
      * after its autosave timer has stopped too.
+     *
+     * The pools close last, and are skipped if a shutdown throws, so one is never closed under a
+     * write. Closing the last sqlite connection is what checkpoints and removes its -wal and -shm.
      */
     fun save() {
         try {
@@ -247,11 +251,15 @@ class ProfileHandler(
             // Before the handler is shut down, so the subscriber's connection is returned to a live pool.
             sync?.stopListening()
 
-            for (handler in handlersToShutdown(localHandler, defaultHandler)) {
+            val handlers = handlersToShutdown(localHandler, defaultHandler)
+
+            for (handler in handlers) {
                 handler.shutdown()
             }
 
             sync?.stop()
+
+            handlers.filterIsInstance<ExposedPersistentDataHandler>().forEach { it.closePool() }
         }
     }
 
@@ -645,6 +653,7 @@ class ProfileHandler(
         // The source handler is only ever built for this migration, and its pool holds fixed
         // threads that would otherwise keep the JVM alive.
         fromHandler.shutdown()
+        (fromHandler as? ExposedPersistentDataHandler)?.closePool()
 
         plugin.logger.info("Updating previous handler...")
         bookkeeping.set(PREVIOUS_HANDLER_KEY, defaultHandler.id)
