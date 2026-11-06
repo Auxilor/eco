@@ -110,7 +110,7 @@ Items can  have modifiers applied to them. For example, lets say you're configur
 - **Leather Armor & Potion Color:** You can specify the leather armor or potion color with `color:#hex`, e.g. `color:#303030`
 - **Armor Trims:** You can specify armor trims with `trim:<material>:<pattern>`, e.g. `trim:emerald:snout`
 - **Fire Resistance:** You can make an item fire-resistant with `fire_resistant`
-- **Player Head:** If the material is a player head, you can specify a player using `head:<name>`. You can also use placeholders, e.g. `head:%player%`
+- **Player Head:** If the material is a player head, you can specify a player using `head:<name>`. In GUI custom slots you can also use placeholders: `head:%player%` shows the head of the player viewing the GUI.
 - **Skull Texture:** If the material is a player head, you can specify the texture with `texture:"<base64>"`. A list of skulls and textures can be found [here](https://minecraft-heads.com/).
 - **Reforge:** You can specify the reforge by adding `reforge:<id>` to the key.
 - **Spawner Entity:** You can specify the spawner entity with `entity:<id>`
