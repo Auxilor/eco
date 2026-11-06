@@ -197,16 +197,35 @@ public final class Items {
      */
     @NotNull
     public static String toExactLookupString(@NotNull final ItemStack itemStack) {
-        CustomItem customItem = getCustomItem(itemStack);
+        NamespacedKey registeredKey = CACHE.get(HashedItem.of(itemStack)).map(Items::findRegisteredKey).orElse(null);
 
-        if (customItem != null && !PROVIDED_KEYS.contains(customItem.getKey())) {
-            return withAmount(customItem.getKey().toString(), itemStack);
+        if (registeredKey != null && !PROVIDED_KEYS.contains(registeredKey)) {
+            return withAmount(registeredKey.toString(), itemStack);
         }
 
-        String key = customItem != null ? customItem.getKey().toString() : findProviderKey(itemStack);
+        String key = registeredKey != null ? registeredKey.toString() : findProviderKey(itemStack);
         String lookup = key != null ? withAmount(key, itemStack) : toLookupString(itemStack);
 
         return ItemCustomData.isKeptBy(lookup, itemStack) ? lookup : ItemCustomData.toCompactSNBT(itemStack);
+    }
+
+    /**
+     * Find the key an item is registered under. This isn't always the key from
+     * {@link #getOrWrap(TestableItem)}, which makes up a key for items that aren't a
+     * {@link CustomItem}.
+     *
+     * @param item The registered item.
+     * @return The key, or null if the item is no longer registered.
+     */
+    @Nullable
+    private static NamespacedKey findRegisteredKey(@NotNull final TestableItem item) {
+        for (Map.Entry<NamespacedKey, TestableItem> entry : REGISTRY.entrySet()) {
+            if (entry.getValue() == item) {
+                return entry.getKey();
+            }
+        }
+
+        return null;
     }
 
     @NotNull
