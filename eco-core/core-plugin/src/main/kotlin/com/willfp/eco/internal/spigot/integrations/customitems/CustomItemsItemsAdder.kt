@@ -36,5 +36,8 @@ class CustomItemsItemsAdder : CustomItemsIntegration {
                 stack
             )
         }
+
+        override fun getKey(itemStack: ItemStack): String? =
+            CustomStack.byItemStack(itemStack)?.namespacedID
     }
 }

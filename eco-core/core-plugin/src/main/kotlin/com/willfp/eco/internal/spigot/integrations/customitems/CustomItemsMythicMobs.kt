@@ -73,6 +73,9 @@ class CustomItemsMythicMobs(
                 itemStack
             )
         }
+
+        override fun getKey(itemStack: ItemStack): String? =
+            MythicBukkit.inst().getItemManager().getMythicTypeFromItem(itemStack)?.takeIf { it.isNotBlank() }
     }
 
     private class MythicMobsDrop(
