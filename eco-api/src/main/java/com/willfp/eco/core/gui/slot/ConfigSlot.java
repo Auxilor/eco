@@ -2,11 +2,15 @@ package com.willfp.eco.core.gui.slot;
 
 import com.willfp.eco.core.Eco;
 import com.willfp.eco.core.Prerequisite;
+import com.willfp.eco.core.cache.EcoCache;
 import com.willfp.eco.core.config.interfaces.Config;
 import com.willfp.eco.core.fast.FastItemStack;
 import com.willfp.eco.core.gui.slot.functional.SlotHandler;
+import com.willfp.eco.core.integrations.placeholder.PlaceholderManager;
 import com.willfp.eco.core.items.Items;
+import com.willfp.eco.core.placeholder.context.PlaceholderContext;
 import com.willfp.eco.util.StringUtils;
+import java.time.Duration;
 import java.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,6 +33,13 @@ public class ConfigSlot extends CustomSlot {
     private final Map<String, List<CommandToDispatch>> handlers = new HashMap<>();
 
     /**
+     * Items for lookups with placeholders, by resolved lookup, as a player head lookup is expensive.
+     */
+    private final EcoCache<String, ItemStack> resolvedItems = EcoCache.<String, ItemStack>builder()
+            .expireAfterAccess(Duration.ofMinutes(10))
+            .build(lookup -> Items.lookup(lookup).getItem());
+
+    /**
      * Create a new config slot.
      *
      * @param config The config.
@@ -36,9 +47,18 @@ public class ConfigSlot extends CustomSlot {
     public ConfigSlot(@NotNull final Config config) {
         this.config = config;
 
-        ItemStack item = Items.lookup(config.getString("item")).getItem();
+        String itemLookup = config.getString("item");
+        ItemStack staticItem = PlaceholderManager.findPlaceholdersIn(itemLookup).isEmpty()
+                ? Items.lookup(itemLookup).getItem()
+                : null;
 
         SlotBuilder builder = Slot.builder((player, menu) -> {
+            ItemStack item = staticItem != null
+                    ? staticItem
+                    : resolvedItems.get(
+                            PlaceholderManager.translatePlaceholders(itemLookup, new PlaceholderContext(player))
+                    );
+
             if (!config.has("lore")) {
                 return item;
             } else {
