@@ -9,6 +9,7 @@ import com.willfp.eco.core.items.TestableItem
 import com.willfp.eco.core.items.provider.ItemProvider
 import com.willfp.eco.util.NamespacedKeyUtils
 import org.bukkit.event.Listener
+import org.bukkit.inventory.ItemStack
 
 class CustomItemsDenizen : CustomItemsIntegration, Listener {
 
@@ -32,5 +33,8 @@ class CustomItemsDenizen : CustomItemsIntegration, Listener {
                 stack
             )
         }
+
+        override fun getKey(itemStack: ItemStack): String? =
+            ItemScriptHelper.getItemScriptNameText(itemStack)
     }
 }
