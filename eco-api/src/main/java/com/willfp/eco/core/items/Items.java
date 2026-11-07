@@ -52,7 +52,7 @@ public final class Items {
                     return Optional.empty();
                 }
 
-                TestableItem providedMatch = null;
+                NamespacedKey providedKey = null;
                 for (Map.Entry<NamespacedKey, TestableItem> entry : REGISTRY.entrySet()) {
                     TestableItem item = entry.getValue();
                     if (!item.shouldMarkAsCustom() || !item.matches(key.getItem())) {
@@ -63,10 +63,12 @@ public final class Items {
                         return Optional.of(item);
                     }
 
-                    providedMatch = item;
+                    if (providedKey == null || entry.getKey().toString().compareTo(providedKey.toString()) < 0) {
+                        providedKey = entry.getKey();
+                    }
                 }
 
-                return Optional.ofNullable(providedMatch);
+                return providedKey == null ? Optional.empty() : Optional.ofNullable(REGISTRY.get(providedKey));
             });
 
     /**
@@ -108,6 +110,10 @@ public final class Items {
     public static void registerCustomItem(@NotNull final NamespacedKey key,
                                           @NotNull final TestableItem item) {
         REGISTRY.put(key, item);
+
+        if (PROVIDED_KEYS.remove(key)) {
+            CACHE.invalidateAll();
+        }
     }
 
     /**
