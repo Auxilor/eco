@@ -25,6 +25,14 @@ If you run one server, keep `sqlite`: there is nothing to set up. If you run a n
 
 `yaml` is no longer a storage type. A config that still says `yaml` is treated as `sqlite`, and any data left in `data.yml` is moved across automatically.
 
+## The local database file
+
+Every server has a local SQLite database in `/plugins/eco/`, whichever `data-handler` you use. It is named by `sqlite.file`, which defaults to `data.db`. It holds eco's own records for that server (such as which migrations have run) and the data of any plugin set to local storage, so do not delete it.
+
+While the server runs, SQLite keeps two files next to it, with `-wal` and `-shm` added to its name (`data.db-wal` and `data.db-shm` by default). They are removed when the server stops cleanly. After a crash they can remain and can hold data that is not in the database file yet, so leave them in place: the next start recovers them.
+
+To back up the local database, stop the server cleanly and then copy the file. While the server runs, recent data can be only in the `-wal` file, so a copy of the database file alone can miss it. After a crash, start and stop the server once before you copy the file, or copy the `-wal` file together with it.
+
 ## SQLite
 
 ```yaml

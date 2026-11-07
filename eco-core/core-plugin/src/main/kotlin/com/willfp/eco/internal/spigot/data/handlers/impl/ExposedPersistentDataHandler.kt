@@ -68,7 +68,7 @@ internal fun retryBackoffMillis(attempt: Int): Long =
  */
 abstract class ExposedPersistentDataHandler(
     id: String,
-    dataSource: DataSource,
+    private val dataSource: DataSource,
     protected val prefix: String,
     private val placeholderBudget: Int,
     threads: Int = PersistentDataHandler.DEFAULT_THREADS
@@ -85,6 +85,11 @@ abstract class ExposedPersistentDataHandler(
      * configured handler is a remote database there is no reason to create the table there too.
      */
     val bookkeeping: Bookkeeping by lazy { ExposedBookkeeping(database, prefix) }
+
+    /** Not part of [shutdown]: a migration still writes bookkeeping through a drained handler. */
+    fun closePool() {
+        (dataSource as? AutoCloseable)?.close()
+    }
 
     /** The column type a plain string value is stored in. */
     protected abstract fun Table.textValueColumn(name: String): Column<String>

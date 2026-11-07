@@ -13,6 +13,7 @@ import java.nio.file.Files
 import java.util.UUID
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -193,5 +194,77 @@ class SQLitePersistentDataHandlerTests {
 
         assertEquals(uuids.size, values[intKey]?.size)
         assertEquals(emptyMap<UUID, Any>(), values[stringKey])
+    }
+
+    private fun File.sibling(suffix: String) = File("$path$suffix")
+
+    private fun readAndClose(file: File, uuid: UUID): Pair<Int?, String?> {
+        val reader = SQLitePersistentDataHandler(file)
+        try {
+            return reader.read(uuid, intKey) to reader.read(uuid, stringKey)
+        } finally {
+            reader.shutdown()
+            reader.closePool()
+        }
+    }
+
+    @Test
+    fun `closing removes temp files`() {
+        val file = tempDatabase()
+        val handler = SQLitePersistentDataHandler(file)
+        handler.write(UUID.randomUUID(), intKey, 1)
+        handler.shutdown()
+        assertTrue(file.sibling("-wal").exists(), "expected a WAL before close")
+
+        handler.closePool()
+
+        assertTrue(file.exists())
+        assertFalse(file.sibling("-wal").exists(), "expected the WAL to be removed")
+        assertFalse(file.sibling("-shm").exists(), "expected the shm to be removed")
+    }
+
+    @Test
+    fun `closed store keeps every write`() {
+        val file = tempDatabase()
+        val uuids = List(500) { UUID.randomUUID() }
+        val handler = SQLitePersistentDataHandler(file)
+        uuids.forEachIndexed { index, uuid ->
+            handler.write(uuid, intKey, index)
+            handler.write(uuid, stringKey, "value-$index")
+        }
+        handler.shutdown()
+        handler.closePool()
+
+        assertFalse(file.sibling("-wal").exists())
+        val reader = SQLitePersistentDataHandler(file)
+        try {
+            uuids.forEachIndexed { index, uuid ->
+                assertEquals(index, reader.read(uuid, intKey))
+                assertEquals("value-$index", reader.read(uuid, stringKey))
+            }
+        } finally {
+            reader.shutdown()
+            reader.closePool()
+        }
+    }
+
+    @Test
+    fun `leftover wal is recovered`() {
+        val file = tempDatabase()
+        val uuid = UUID.randomUUID()
+        val running = SQLitePersistentDataHandler(file)
+        running.write(uuid, intKey, 7)
+        running.write(uuid, stringKey, "kept")
+        running.shutdown()
+
+        val copy = Files.createTempDirectory("eco-sqlite-crash").resolve("data.db").toFile()
+        file.copyTo(copy)
+        file.sibling("-wal").copyTo(copy.sibling("-wal"))
+        running.closePool()
+        assertTrue(copy.sibling("-wal").length() > 0, "expected the writes to be in the WAL")
+
+        assertEquals(7 to "kept", readAndClose(copy, uuid))
+        assertFalse(copy.sibling("-wal").exists(), "expected the WAL to be checkpointed")
+        assertEquals(7 to "kept", readAndClose(copy, uuid))
     }
 }
