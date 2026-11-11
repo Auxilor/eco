@@ -2,6 +2,8 @@ package com.willfp.eco.core.display;
 
 import com.willfp.eco.util.StringUtils;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,69 @@ public class DisplayLoreBuilderTest {
 
         Assertions.assertSame(foreign, lore.getForeignLines().get(0));
         Assertions.assertSame(foreign, lore.render(true).get(1));
+    }
+
+    private static Supplier<List<Component>> counting(final AtomicInteger reads,
+                                                      final Component... lore) {
+        return () -> {
+            reads.incrementAndGet();
+            return List.of(lore);
+        };
+    }
+
+    @Test
+    public void testUnreadLoreStaysUnread() {
+        AtomicInteger reads = new AtomicInteger();
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(counting(reads, Component.text("Foreign")));
+
+        lore.append(List.of());
+        lore.prepend(List.of());
+        lore.removeStaleLines();
+
+        Assertions.assertArrayEquals(new int[0], lore.getDisplayIndices());
+        Assertions.assertTrue(lore.isSynced());
+        Assertions.assertEquals(0, reads.get());
+    }
+
+    @Test
+    public void testUnreadLoreIsReadOnce() {
+        AtomicInteger reads = new AtomicInteger();
+        Component foreign = Component.text("Foreign");
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(counting(reads, foreign));
+
+        Assertions.assertSame(foreign, lore.getForeignLines().get(0));
+        lore.append(List.of(Component.text("Eco")));
+        lore.prepend(List.of(Component.text("Eco")));
+        lore.removeStaleLines();
+
+        Assertions.assertSame(foreign, lore.render(false).get(1));
+        Assertions.assertArrayEquals(new int[]{0, 2}, lore.getDisplayIndices());
+        Assertions.assertFalse(lore.isSynced());
+        Assertions.assertEquals(1, reads.get());
+    }
+
+    @Test
+    public void testUnreadLoreKeepsLineOrderWhenAdded() {
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(counting(new AtomicInteger(), Component.text("Foreign")));
+
+        lore.prepend(List.of(Component.text("Before")));
+        lore.append(List.of(Component.text("After")));
+
+        Assertions.assertEquals(
+                List.of("Before", "Foreign", "After"),
+                legacy(lore.getNodes().stream().map(LoreNode::component).toList())
+        );
+    }
+
+    @Test
+    public void testStaleLinesAreStillRemovedFromUnreadLore() {
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(counting(new AtomicInteger(), Component.text(Display.PREFIX + "Eco")));
+
+        lore.append(List.of(Component.text("Eco")));
+        lore.removeStaleLines();
+
+        Assertions.assertArrayEquals(new int[]{0}, lore.getDisplayIndices());
+        Assertions.assertEquals(1, lore.getNodes().size());
     }
 
     @Test
