@@ -4,7 +4,7 @@
     {
       "code": "CX016",
       "path": "eco-api/src/main/java/com/willfp/eco/core/Eco.java",
-      "message": "File has 1192 lines, over the limit of 600"
+      "message": "File has 1204 lines, over the limit of 600"
     },
     {
       "code": "CX016",
@@ -529,7 +529,7 @@
     {
       "code": "CX016",
       "path": "eco-api/src/main/java/com/willfp/eco/util/StringUtils.java",
-      "message": "File has 1103 lines, over the limit of 600"
+      "message": "File has 1106 lines, over the limit of 600"
     },
     {
       "code": "IC001",

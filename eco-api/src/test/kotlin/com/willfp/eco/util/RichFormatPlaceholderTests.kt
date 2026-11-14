@@ -24,6 +24,10 @@ class RichFormatPlaceholderTests {
             firstArg<String>()
                 .replace("%nick%", "<click:run_command:'/op me'>&cNick")
                 .replace("%rank%", "&cAdmin")
+                .replace("%level%", "2")
+        }
+        every { eco.translateExpressions(any(), any()) } answers {
+            firstArg<String>().replace("{{ %level% * 2 }}", "4.0")
         }
 
         mockkStatic(Eco::class)
@@ -74,5 +78,12 @@ class RichFormatPlaceholderTests {
             "§lHi <click:run_command:'/op me'>§c§lNick",
             StringUtils.toLegacy(component)
         )
+    }
+
+    @Test
+    fun `expressions evaluate first`() {
+        val component = StringUtils.formatToRichComponent("&7{{ %level% * 2 }} / %level%", PlaceholderContext.EMPTY)
+
+        assertEquals("§74.0 / 2", StringUtils.toLegacy(component))
     }
 }
