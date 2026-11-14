@@ -7,6 +7,11 @@ import org.bukkit.inventory.ItemStack
 
 class EcoFastCollatedDropQueue(player: Player) : EcoDropQueue(player) {
     override fun push() {
+        if (isDirect) {
+            super.push()
+            return
+        }
+
         val fetched = COLLATED_MAP[player]
 
         if (fetched == null) {

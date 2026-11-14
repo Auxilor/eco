@@ -117,6 +117,25 @@ public class DropQueue {
     }
 
     /**
+     * Give the queued items and xp straight to the player when pushed.
+     * <p>
+     * The push skips collation, the {@link com.willfp.eco.core.events.DropQueuePushEvent},
+     * the telekinesis test and the antigrief pickup check. Items that do not fit in the
+     * inventory are dropped at the location. Use this to return items that already belong
+     * to the player, such as items placed in a GUI, or to give items from a command.
+     *
+     * @return The DropQueue.
+     */
+    public DropQueue giveDirectly() {
+        if (delegate == null) {
+            return this;
+        }
+
+        delegate.giveDirectly();
+        return this;
+    }
+
+    /**
      * Push the queue, giving out all queued items and xp.
      */
     public void push() {

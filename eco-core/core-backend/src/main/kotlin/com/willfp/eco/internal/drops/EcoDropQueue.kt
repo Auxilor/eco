@@ -20,6 +20,7 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
     var xp: Int = 0
     var location: Location
     var hasTelekinesis = false
+    var isDirect = false
 
     override fun addItem(item: ItemStack): DropQueue {
         items.add(item)
@@ -46,18 +47,34 @@ open class EcoDropQueue(val player: Player) : DropQueue() {
         return this
     }
 
+    override fun giveDirectly(): DropQueue {
+        isDirect = true
+        return this
+    }
+
     /**
      * Give the drops to the player, or drop them at the location.
      *
      * A player who has gone offline since the drops were queued gets them dropped at the location,
      * and drops in a world that has since been unloaded are discarded. The location is not changed,
      * so a queue pushed more than once drops in the same place every time.
+     *
+     * A direct queue skips the push event and the telekinesis and antigrief checks.
      */
     override fun push() {
         if (!location.isWorldLoaded) {
             return
         }
 
+        if (isDirect) {
+            hasTelekinesis = player.isOnline
+            location.world?.let { world -> deliver(world) }
+        } else {
+            pushThroughEvent()
+        }
+    }
+
+    private fun pushThroughEvent() {
         if (!player.isOnline) {
             hasTelekinesis = false
         } else if (!hasTelekinesis) {
