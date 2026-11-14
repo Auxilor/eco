@@ -94,9 +94,11 @@ class StackedRecipeListener(
         val existingResult = inventory.result
 
         if (event.isShiftClick) {
-            val player = event.whoClicked
-            shiftCrafting.add(player.uniqueId)
-            plugin.scheduler.on(player).run { shiftCrafting.remove(player.uniqueId) }
+            val playerId = event.whoClicked.uniqueId
+            shiftCrafting.add(playerId)
+            plugin.scheduler.on(event.whoClicked)
+                .onRetired { shiftCrafting.remove(playerId) }
+                .run { shiftCrafting.remove(playerId) }
         }
 
         // Deduct the correct number of items from the inventory
