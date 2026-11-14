@@ -1044,6 +1044,18 @@ public interface Eco {
                                  @NotNull PlaceholderContext context);
 
     /**
+     * Evaluate the math and progress bar expressions in a string, leaving placeholders outside
+     * them untranslated.
+     *
+     * @param text    The text.
+     * @param context The context.
+     * @return The text with its expressions evaluated.
+     */
+    @NotNull
+    String translateExpressions(@NotNull String text,
+                                @NotNull PlaceholderContext context);
+
+    /**
      * Get the value of a placeholder.
      *
      * @param plugin  The plugin that owns the placeholder.

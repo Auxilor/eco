@@ -766,6 +766,9 @@ class EcoImpl : EcoSpigotPlugin(), Eco {
     override fun translatePlaceholders(text: String, context: PlaceholderContext) =
         placeholderParser.translatePlacholders(text, context)
 
+    override fun translateExpressions(text: String, context: PlaceholderContext) =
+        placeholderParser.translateExpressions(text, context)
+
     override fun getPlaceholderValue(plugin: EcoPlugin?, args: String, context: PlaceholderContext) =
         placeholderParser.getPlaceholderResult(plugin, args, context)
 

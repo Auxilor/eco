@@ -443,13 +443,16 @@ public final class StringUtils {
     @NotNull
     public static Component formatToRichComponent(@NotNull final String message,
                                                   @NotNull final PlaceholderContext context) {
-        List<String> placeholders = PlaceholderManager.findPlaceholdersIn(message);
+        String evaluated = message.indexOf('{') == -1
+                ? message
+                : Eco.get().translateExpressions(message, context);
+        List<String> placeholders = PlaceholderManager.findPlaceholdersIn(evaluated);
 
         if (placeholders.isEmpty()) {
-            return RICH_FORMAT_CACHE.get(message);
+            return RICH_FORMAT_CACHE.get(evaluated);
         }
 
-        String template = message;
+        String template = evaluated;
         TagResolver.Builder resolver = TagResolver.builder();
 
         for (int index = 0; index < placeholders.size(); index++) {

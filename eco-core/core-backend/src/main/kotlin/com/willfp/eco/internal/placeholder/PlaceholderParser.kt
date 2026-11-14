@@ -45,42 +45,7 @@ class PlaceholderParser(
         injections: Collection<InjectablePlaceholder>,
         translateEcoPlaceholders: Boolean = true
     ): String {
-        var processed = text
-
-        // Only evaluate math expressions if there might be any
-        // Checking { as a char is faster than checking a string sequence,
-        // even if it might lead to false positives.
-        if ('{' in processed) {
-            if ('^' in processed) {
-                // Evaluate pretty math expressions
-                processed = prettyMathExpressionRegex.replace(processed) { matchResult ->
-                    evaluateExpression(matchResult.groupValues[1], context).toNiceString()
-                }
-            }
-
-            // Evaluate math expressions
-            processed = mathExpressionRegex.replace(processed) { matchResult ->
-                val result: Double = evaluateExpression(matchResult.groupValues[1], context)
-                result.toString()
-            }
-
-            if ('#' in processed) {
-                // Evaluate progress bar expressions; the expression must evaluate to a
-                // percentage between 0 and 100, e.g. {#{%libreforge_item_progress_example%}}
-                processed = progressBarExpressionRegex.replace(processed) { matchResult ->
-                    val percentage = evaluateExpression(matchResult.groupValues[1], context)
-                    val progress = (percentage / 100.0).coerceIn(0.0, 1.0)
-                    StringUtils.createProgressBar(
-                        progressBarCharacter,
-                        progressBarBars,
-                        progress,
-                        progressBarCompleteFormat,
-                        progressBarInProgressFormat,
-                        progressBarIncompleteFormat
-                    )
-                }
-            }
-        }
+        var processed = translateExpressions(text, context)
 
         /*
 
@@ -142,6 +107,47 @@ class PlaceholderParser(
         return injections.fold(processed) { acc, injection ->
             injection.tryTranslateQuickly(acc, context)
         }
+    }
+
+    fun translateExpressions(text: String, context: PlaceholderContext): String {
+        var processed = text
+
+        // Only evaluate math expressions if there might be any
+        // Checking { as a char is faster than checking a string sequence,
+        // even if it might lead to false positives.
+        if ('{' in processed) {
+            if ('^' in processed) {
+                // Evaluate pretty math expressions
+                processed = prettyMathExpressionRegex.replace(processed) { matchResult ->
+                    evaluateExpression(matchResult.groupValues[1], context).toNiceString()
+                }
+            }
+
+            // Evaluate math expressions
+            processed = mathExpressionRegex.replace(processed) { matchResult ->
+                val result: Double = evaluateExpression(matchResult.groupValues[1], context)
+                result.toString()
+            }
+
+            if ('#' in processed) {
+                // Evaluate progress bar expressions; the expression must evaluate to a
+                // percentage between 0 and 100, e.g. {#{%libreforge_item_progress_example%}}
+                processed = progressBarExpressionRegex.replace(processed) { matchResult ->
+                    val percentage = evaluateExpression(matchResult.groupValues[1], context)
+                    val progress = (percentage / 100.0).coerceIn(0.0, 1.0)
+                    StringUtils.createProgressBar(
+                        progressBarCharacter,
+                        progressBarBars,
+                        progress,
+                        progressBarCompleteFormat,
+                        progressBarInProgressFormat,
+                        progressBarIncompleteFormat
+                    )
+                }
+            }
+        }
+
+        return processed
     }
 
     fun getPlaceholderResult(
