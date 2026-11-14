@@ -7,6 +7,8 @@ import com.willfp.eco.core.recipe.Recipes
 import com.willfp.eco.core.recipe.parts.GroupedTestableItems
 import com.willfp.eco.core.recipe.parts.TestableStack
 import com.willfp.eco.core.recipe.recipes.CraftingRecipe
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.max
 import kotlin.math.min
 import org.bukkit.Material
@@ -15,12 +17,28 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.PrepareItemCraftEvent
 import org.bukkit.inventory.CraftingInventory
 import org.bukkit.inventory.ItemStack
 
 class StackedRecipeListener(
     private val plugin: EcoPlugin
 ) : Listener {
+    private val shiftCrafting: MutableSet<UUID> = ConcurrentHashMap.newKeySet()
+
+    /**
+     * Vanilla repeats a shift-click craft while the result matches, taking one item per slot each time.
+     * The stacked craft has already been paid for, so clear the result to end that loop.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun stopShiftCraftRepeat(event: PrepareItemCraftEvent) {
+        if (event.viewers.none { it.uniqueId in shiftCrafting }) {
+            return
+        }
+
+        event.inventory.result = null
+    }
+
     /*
     If you think you can fix this code, you're wrong.
     Or, pray to whatever god you have that you can figure it out.
@@ -74,6 +92,12 @@ class StackedRecipeListener(
 
         // Run this first before the deduction or shift-clicking breaks
         val existingResult = inventory.result
+
+        if (event.isShiftClick) {
+            val player = event.whoClicked
+            shiftCrafting.add(player.uniqueId)
+            plugin.scheduler.on(player).run { shiftCrafting.remove(player.uniqueId) }
+        }
 
         // Deduct the correct number of items from the inventory
 
