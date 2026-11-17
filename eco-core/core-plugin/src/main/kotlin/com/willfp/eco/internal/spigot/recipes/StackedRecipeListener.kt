@@ -29,8 +29,9 @@ class StackedRecipeListener(
     /**
      * Vanilla repeats a shift-click craft while the result matches, taking one item per slot each time.
      * The stacked craft has already been paid for, so clear the result to end that loop.
+     * Runs at MONITOR so a plugin setting the result at HIGHEST cannot restart the loop.
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     fun stopShiftCraftRepeat(event: PrepareItemCraftEvent) {
         if (event.viewers.none { it.uniqueId in shiftCrafting }) {
             return
