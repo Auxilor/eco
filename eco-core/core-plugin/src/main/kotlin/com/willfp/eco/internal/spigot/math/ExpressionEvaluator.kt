@@ -60,6 +60,8 @@ class ExpressionEvaluator(
 
     private val threadLocalArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
 
+    private val nestingDepth = ThreadLocal.withInitial { 0 }
+
     @Volatile
     private var hits = 0L
 
@@ -85,8 +87,7 @@ class ExpressionEvaluator(
     fun evaluate(expression: String, context: PlaceholderContext): Double? {
         expression.fastToDoubleOrNull()?.let { return it }
 
-        val cached = compilationCache.getOrPut(expression) { compile(expression) ?: CompilationFailed }
-        val prepared = cached as? PreparedExpression ?: return null
+        val prepared = prepare(expression) ?: return null
 
         // Two bypasses, for different reasons:
         //  - Non-deterministic: caching freezes a single random draw for the whole TTL window.
@@ -117,10 +118,29 @@ class ExpressionEvaluator(
             val arr = getArray(prepared.placeholderCount)
             var i = 0
             for (v in values) {
-                arr[i++] = v.fastToDoubleOrNull() ?: 0.0
+                arr[i++] = v.fastToDoubleOrNull() ?: evaluateNested(v, context)
             }
             runCatching { prepared.compiled.evaluate(*arr) }.getOrNull()
         }
+
+    private fun evaluateNested(value: String, context: PlaceholderContext): Double {
+        val depth = nestingDepth.get()
+        val prepared = when {
+            depth >= MAX_NESTING_DEPTH || value.none { it.isDigit() || it == '%' } -> null
+            '%' in value -> prepare(value)
+            else -> compile(value)
+        } ?: return 0.0
+
+        nestingDepth.set(depth + 1)
+        return try {
+            validate(evaluateFresh(prepared, context)) ?: 0.0
+        } finally {
+            nestingDepth.set(depth)
+        }
+    }
+
+    private fun prepare(expression: String): PreparedExpression? =
+        compilationCache.getOrPut(expression) { compile(expression) ?: CompilationFailed } as? PreparedExpression
 
     private fun validate(result: Double?): Double? =
         if (result?.isFinite() == true) result else null
@@ -139,6 +159,9 @@ class ExpressionEvaluator(
     }
 
     private fun getArray(size: Int): DoubleArray {
+        if (nestingDepth.get() > 0) {
+            return DoubleArray(size)
+        }
         return threadLocalArrays.get().getOrPut(size) { DoubleArray(size) }
     }
 
@@ -151,6 +174,8 @@ class ExpressionEvaluator(
     }
 
     companion object {
+        private const val MAX_NESTING_DEPTH = 8
+
         fun findPlaceholders(expression: String): List<String> {
             val result = mutableListOf<String>()
             var i = 0

@@ -80,4 +80,26 @@ internal class ExpressionEvaluatorTests {
         assertNull(evaluator.evaluate("* 5", context))
     }
 
+    @Test
+    fun `formula value is evaluated`() {
+        every { parser.parseIndividualPlaceholders(any(), context) } answers {
+            firstArg<Collection<String>>().map { placeholder ->
+                when (placeholder) {
+                    "%amount%" -> "120-(120*(%eco_reduction%*0.01))"
+                    "%eco_reduction%" -> "20"
+                    else -> "0"
+                }
+            }
+        }
+        assertEquals(96.0, evaluator.evaluate("%amount%", context))
+        assertEquals(-96.0, evaluator.evaluate("- %amount%", context))
+        assertEquals(97.0, evaluator.evaluate("%amount% + 1", context))
+    }
+
+    @Test
+    fun `self reference stops`() {
+        stubPlaceholder("%eco_loop%", "%eco_loop% + 1")
+        assertEquals(8.0, evaluator.evaluate("%eco_loop%", context))
+    }
+
 }
