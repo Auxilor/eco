@@ -3,6 +3,7 @@ package com.willfp.eco.internal.spigot.proxy.v1_21_8
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.willfp.eco.core.Eco
+import com.willfp.eco.core.Prerequisite
 import com.willfp.eco.core.display.Display
 import com.willfp.eco.internal.spigot.proxies.DisplayRecordsProxy
 import com.willfp.eco.internal.spigot.proxy.common.asBukkitStack
@@ -11,6 +12,7 @@ import com.willfp.eco.internal.spigot.proxy.common.item.unstyled
 import com.willfp.eco.internal.spigot.proxy.common.mergeIfNeeded
 import com.willfp.eco.internal.spigot.proxy.common.toAdventure
 import com.willfp.eco.internal.spigot.proxy.common.toNMS
+import io.papermc.paper.adventure.AdventureComponent
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -33,6 +35,8 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.nbt.NbtIo
 import net.minecraft.nbt.NbtOps
 import net.minecraft.nbt.Tag
+import net.minecraft.network.chat.Component as NMSComponent
+import net.minecraft.network.chat.contents.PlainTextContents
 import net.minecraft.resources.RegistryOps
 import net.minecraft.world.item.ItemStack as NMSItemStack
 import net.minecraft.world.item.component.CustomData
@@ -55,6 +59,10 @@ private const val SEALED_CACHE_SIZE = 10_000L
 private const val LINES_KEY = "lines"
 private const val RESTORE_KEY = "restore"
 private const val PLAIN_LORE_KEY = "plain_lore"
+
+// Must match DisplayLines, which can't be reached from here. DisplayRecordsTests compares the two.
+private const val DISPLAY_MARKER = "eco:display"
+private const val LEGACY_PREFIX = "§z"
 
 private class RecordKeys(
     val signing: SecretKeySpec,
@@ -93,6 +101,34 @@ class DisplayRecords(
 
     override fun getLoreState(itemStack: ItemStack): Any? =
         itemStack.asNMSStack().get(DataComponents.LORE)
+
+    override fun getLore(loreState: Any?): List<Component> =
+        (loreState as ItemLore?)?.lines?.map { it.toAdventure() } ?: emptyList()
+
+    override fun mayHaveDisplayLines(itemStack: ItemStack): Boolean =
+        itemStack.asNMSStack().get(DataComponents.LORE)?.lines?.any { it.isDisplayLine() } ?: false
+
+    /**
+     * If a server component may be a display line, so that lore without display lines doesn't
+     * have to be converted to Adventure to find that out.
+     *
+     * This errs on the side of true: Adventure drops empty children on conversion, so the
+     * shape of the server component can't tell which line Display.isDisplayLine will unwrap to.
+     * A wrong true only costs the conversion, a wrong false would leave display lines on the item.
+     */
+    private fun NMSComponent.isDisplayLine(): Boolean {
+        // Holds the Adventure component already, and reading its style would convert it.
+        if (Prerequisite.HAS_PAPER.isMet && this is AdventureComponent) {
+            return Display.isDisplayLine(this.toAdventure())
+        }
+
+        return this.hasDisplayMark()
+    }
+
+    private fun NMSComponent.hasDisplayMark(): Boolean =
+        style.insertion == DISPLAY_MARKER ||
+                (contents as? PlainTextContents)?.text()?.contains(LEGACY_PREFIX) == true ||
+                siblings.any { it.hasDisplayMark() }
 
     override fun setLore(itemStack: ItemStack, lore: List<Component>) {
         val handle = itemStack.asNMSStack()
