@@ -320,6 +320,7 @@ class AnvilMechanicsListener(
         val rightEnchants = right.fast().getEnchants(true)
         val outEnchants = leftEnchants.toMutableMap()
         var appliedLevels = 0
+        var rejectedEnchants = 0
 
         for ((enchant, level) in rightEnchants) {
             if (outEnchants.containsKey(enchant)) {
@@ -333,8 +334,12 @@ class AnvilMechanicsListener(
             ) {
                 outEnchants[enchant] = level
                 appliedLevels += level
+            } else {
+                rejectedEnchants++
             }
         }
+
+        if (rejectedEnchants == rightEnchants.size && rejectedEnchants > 0) return FAIL
 
         if (leftMeta is Damageable && rightMeta is Damageable && unitRepairCost == 0 && rightMeta !is EnchantmentStorageMeta) {
             val damage = plugin.getProxy(AnvilRepairProxy::class.java).combineRepair(left, right)
