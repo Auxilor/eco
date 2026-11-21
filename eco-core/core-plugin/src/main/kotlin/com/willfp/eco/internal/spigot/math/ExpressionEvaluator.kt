@@ -121,15 +121,17 @@ class ExpressionEvaluator(
             )
             val arr = getArray(prepared.placeholderCount)
             var i = 0
+            var startsBudget = true
             for (v in values) {
-                arr[i++] = v.fastToDoubleOrNull() ?: evaluateNested(v, context)
+                arr[i++] = v.fastToDoubleOrNull() ?: evaluateNested(v, context, startsBudget)
+                    .also { startsBudget = false }
             }
             runCatching { prepared.compiled.evaluate(*arr) }.getOrNull()
         }
 
-    private fun evaluateNested(value: String, context: PlaceholderContext): Double {
+    private fun evaluateNested(value: String, context: PlaceholderContext, startsBudget: Boolean): Double {
         val state = nestedState.get()
-        if (state.depth == 0) {
+        if (startsBudget && state.depth == 0) {
             state.remaining = MAX_NESTED_EVALUATIONS
         }
 

@@ -7,6 +7,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Duration
@@ -121,12 +122,15 @@ internal class ExpressionEvaluatorTests {
     fun `branching references stop`() {
         val names = (0 until 10).map { "%eco_branch_$it%" }
         val formula = names.joinToString(" + ")
+        var resolutions = 0
         every { parser.parseIndividualPlaceholders(any(), context) } answers {
+            resolutions++
             firstArg<Collection<String>>().map { formula }
         }
         assertTimeoutPreemptively(Duration.ofSeconds(5)) {
             evaluator.evaluate(formula, context)
         }
+        assertTrue(resolutions <= 65, "resolved $resolutions times")
     }
 
 }
