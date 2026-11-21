@@ -60,6 +60,12 @@ class ExpressionEvaluator(
 
     private val threadLocalArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
 
+    private val nestedCompilationCache: EcoCache<String, Any> = EcoCache.builder<String, Any>()
+        .maxSize(MAX_NESTED_CACHE_SIZE)
+        .build()
+
+    private val nestedState = ThreadLocal.withInitial { NestedState() }
+
     @Volatile
     private var hits = 0L
 
@@ -85,8 +91,7 @@ class ExpressionEvaluator(
     fun evaluate(expression: String, context: PlaceholderContext): Double? {
         expression.fastToDoubleOrNull()?.let { return it }
 
-        val cached = compilationCache.getOrPut(expression) { compile(expression) ?: CompilationFailed }
-        val prepared = cached as? PreparedExpression ?: return null
+        val prepared = prepare(expression) ?: return null
 
         // Two bypasses, for different reasons:
         //  - Non-deterministic: caching freezes a single random draw for the whole TTL window.
@@ -116,11 +121,42 @@ class ExpressionEvaluator(
             )
             val arr = getArray(prepared.placeholderCount)
             var i = 0
+            var startsBudget = true
             for (v in values) {
-                arr[i++] = v.fastToDoubleOrNull() ?: 0.0
+                arr[i++] = v.fastToDoubleOrNull() ?: evaluateNested(v, context, startsBudget)
+                    .also { startsBudget = false }
             }
             runCatching { prepared.compiled.evaluate(*arr) }.getOrNull()
         }
+
+    private fun evaluateNested(value: String, context: PlaceholderContext, startsBudget: Boolean): Double {
+        val state = nestedState.get()
+        if (startsBudget && state.depth == 0) {
+            state.remaining = MAX_NESTED_EVALUATIONS
+        }
+
+        val canExpand = state.depth < MAX_NESTING_DEPTH && state.remaining > 0
+        val prepared = if (canExpand && value.any { it in NESTED_VALUE_MARKERS }) {
+            nestedCompilationCache.get(value) { compile(it) ?: CompilationFailed }
+        } else {
+            CompilationFailed
+        }
+
+        if (prepared !is PreparedExpression) {
+            return 0.0
+        }
+
+        state.remaining--
+        state.depth++
+        return try {
+            validate(evaluateFresh(prepared, context)) ?: 0.0
+        } finally {
+            state.depth--
+        }
+    }
+
+    private fun prepare(expression: String): PreparedExpression? =
+        compilationCache.getOrPut(expression) { compile(expression) ?: CompilationFailed } as? PreparedExpression
 
     private fun validate(result: Double?): Double? =
         if (result?.isFinite() == true) result else null
@@ -139,7 +175,15 @@ class ExpressionEvaluator(
     }
 
     private fun getArray(size: Int): DoubleArray {
+        if (nestedState.get().depth > 0) {
+            return DoubleArray(size)
+        }
         return threadLocalArrays.get().getOrPut(size) { DoubleArray(size) }
+    }
+
+    private class NestedState {
+        var depth = 0
+        var remaining = 0
     }
 
     private class PreparedExpression(
@@ -151,6 +195,14 @@ class ExpressionEvaluator(
     }
 
     companion object {
+        private const val MAX_NESTING_DEPTH = 8
+
+        private const val MAX_NESTED_EVALUATIONS = 64
+
+        private const val MAX_NESTED_CACHE_SIZE = 1024L
+
+        private const val NESTED_VALUE_MARKERS = "0123456789%+-*/^()<>=!&|"
+
         fun findPlaceholders(expression: String): List<String> {
             val result = mutableListOf<String>()
             var i = 0
