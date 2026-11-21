@@ -7,6 +7,7 @@ import com.willfp.eco.internal.spigot.proxies.PacketHandlerProxy
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketActionBarDetection
 import com.willfp.eco.internal.spigot.proxy.common.packet.PacketSeenAdvancements
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketHeldItemSlot
+import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketRenameItem
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetEntityData
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.PacketSetSlot
 import com.willfp.eco.internal.spigot.proxy.common.packet.display.frame.clearDisplayFrame
@@ -46,6 +47,7 @@ class PacketHandler : PacketHandlerProxy {
     override fun getPacketListeners(plugin: EcoPlugin): List<PacketListener> {
         return listOf(
             PacketHeldItemSlot,
+            PacketRenameItem,
             NewItemsPacketOpenWindowMerchant,
             NewItemsPacketSetCreativeSlot,
             PacketSetSlot,
