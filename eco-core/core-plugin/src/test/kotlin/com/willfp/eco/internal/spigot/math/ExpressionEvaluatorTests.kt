@@ -6,8 +6,11 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTimeoutPreemptively
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Duration
+import kotlin.math.PI
 
 internal class ExpressionEvaluatorTests {
 
@@ -100,6 +103,30 @@ internal class ExpressionEvaluatorTests {
     fun `self reference stops`() {
         stubPlaceholder("%eco_loop%", "%eco_loop% + 1")
         assertEquals(8.0, evaluator.evaluate("%eco_loop%", context))
+    }
+
+    @Test
+    fun `constant formula evaluates`() {
+        stubPlaceholder("%eco_angle%", "pi + pi")
+        assertEquals(2 * PI, evaluator.evaluate("%eco_angle%", context))
+    }
+
+    @Test
+    fun `single word value stays zero`() {
+        stubPlaceholder("%eco_flag%", "true")
+        assertEquals(5.0, evaluator.evaluate("%eco_flag% + 5", context))
+    }
+
+    @Test
+    fun `branching references stop`() {
+        val names = (0 until 10).map { "%eco_branch_$it%" }
+        val formula = names.joinToString(" + ")
+        every { parser.parseIndividualPlaceholders(any(), context) } answers {
+            firstArg<Collection<String>>().map { formula }
+        }
+        assertTimeoutPreemptively(Duration.ofSeconds(5)) {
+            evaluator.evaluate(formula, context)
+        }
     }
 
 }

@@ -60,7 +60,11 @@ class ExpressionEvaluator(
 
     private val threadLocalArrays = ThreadLocal.withInitial { HashMap<Int, DoubleArray>() }
 
-    private val nestingDepth = ThreadLocal.withInitial { 0 }
+    private val nestedCompilationCache: EcoCache<String, Any> = EcoCache.builder<String, Any>()
+        .maxSize(MAX_NESTED_CACHE_SIZE)
+        .build()
+
+    private val nestedState = ThreadLocal.withInitial { NestedState() }
 
     @Volatile
     private var hits = 0L
@@ -124,18 +128,28 @@ class ExpressionEvaluator(
         }
 
     private fun evaluateNested(value: String, context: PlaceholderContext): Double {
-        val depth = nestingDepth.get()
-        val prepared = when {
-            depth >= MAX_NESTING_DEPTH || value.none { it.isDigit() || it == '%' } -> null
-            '%' in value -> prepare(value)
-            else -> compile(value)
-        } ?: return 0.0
+        val state = nestedState.get()
+        if (state.depth == 0) {
+            state.remaining = MAX_NESTED_EVALUATIONS
+        }
 
-        nestingDepth.set(depth + 1)
+        val canExpand = state.depth < MAX_NESTING_DEPTH && state.remaining > 0
+        val prepared = if (canExpand && value.any { it in NESTED_VALUE_MARKERS }) {
+            nestedCompilationCache.get(value) { compile(it) ?: CompilationFailed }
+        } else {
+            CompilationFailed
+        }
+
+        if (prepared !is PreparedExpression) {
+            return 0.0
+        }
+
+        state.remaining--
+        state.depth++
         return try {
             validate(evaluateFresh(prepared, context)) ?: 0.0
         } finally {
-            nestingDepth.set(depth)
+            state.depth--
         }
     }
 
@@ -159,10 +173,15 @@ class ExpressionEvaluator(
     }
 
     private fun getArray(size: Int): DoubleArray {
-        if (nestingDepth.get() > 0) {
+        if (nestedState.get().depth > 0) {
             return DoubleArray(size)
         }
         return threadLocalArrays.get().getOrPut(size) { DoubleArray(size) }
+    }
+
+    private class NestedState {
+        var depth = 0
+        var remaining = 0
     }
 
     private class PreparedExpression(
@@ -175,6 +194,12 @@ class ExpressionEvaluator(
 
     companion object {
         private const val MAX_NESTING_DEPTH = 8
+
+        private const val MAX_NESTED_EVALUATIONS = 64
+
+        private const val MAX_NESTED_CACHE_SIZE = 1024L
+
+        private const val NESTED_VALUE_MARKERS = "0123456789%+-*/^()<>=!&|"
 
         fun findPlaceholders(expression: String): List<String> {
             val result = mutableListOf<String>()
