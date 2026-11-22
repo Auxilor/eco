@@ -228,19 +228,19 @@ class AnvilMechanicsListener(
             val renameCost = if (old?.fast()?.displayName != outItem.fast().displayName) 1 else 0
             val clampRepairCost = settings.clampRepairCost
             val maxRepairCost = settings.maxRepairCost
-            val onlyRenaming = right == null
+            val outEnchants = outItem.fast().getEnchants(true)
+            val onlyRenaming = price == 0 && old != null && old.fast().getEnchants(true) == outEnchants &&
+                (old.itemMeta as? Damageable)?.damage == (outItem.itemMeta as? Damageable)?.damage
             val mergeCost = computeAnvilCost(priorWorkCost, renameCost, price)
             val cost = if (onlyRenaming && maxRepairCost > 0) mergeCost.coerceAtMost(maxRepairCost - 1) else mergeCost
             if (cost <= 0) return@run
 
             val leftEnchants = left?.fast()?.getEnchants(true) ?: emptyMap()
-            val outEnchants = outItem.fast().getEnchants(true)
             if (event.inventory.getItem(1) == null && leftEnchants != outEnchants) return@run
 
-            if (settings.useReworkPenalty && !onlyRenaming) {
-                outItem.fast().repairCost = applyReworkPenalty(
-                    max(outItem.fast().repairCost, right.fast().repairCost)
-                )
+            if (settings.useReworkPenalty) {
+                val priorWork = max(outItem.fast().repairCost, if (right == null) 0 else right.fast().repairCost)
+                outItem.fast().repairCost = if (onlyRenaming) priorWork else applyReworkPenalty(priorWork)
             }
 
             if (latestPreviewGeneration[player.uniqueId] != generation) return@run
