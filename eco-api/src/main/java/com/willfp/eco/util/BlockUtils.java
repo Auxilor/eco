@@ -14,11 +14,14 @@ import org.jetbrains.annotations.NotNull;
  * Utilities / API methods for blocks.
  */
 public final class BlockUtils {
+    private static final List<int[]> VEIN_OFFSETS = buildVeinOffsets();
+
     /**
      * Get a set of all blocks in contact with each other of a specific type.
      * <p>
-     * The search is a flood fill starting at the given block, and treats every {@link BlockFace}
-     * value as adjacent, so diagonally touching blocks are included in the vein.
+     * The search is a flood fill starting at the given block. Every block touching another at a
+     * face, an edge or a corner is adjacent, so diagonally touching blocks are included in the
+     * vein. The horizontal offsets of every {@link BlockFace} value are adjacent as well.
      * <p>
      * On Folia the search stops at the boundary of the calling thread's region, so a vein
      * spanning two regions is returned only in part. Off Folia there is no such bound.
@@ -49,8 +52,8 @@ public final class BlockUtils {
 
             blocks.add(currentBlock);
 
-            for (BlockFace face : BlockFace.values()) {
-                Block adjacentBlock = currentBlock.getRelative(face);
+            for (int[] offset : VEIN_OFFSETS) {
+                Block adjacentBlock = currentBlock.getRelative(offset[0], offset[1], offset[2]);
 
                 // On Folia a vein can cross a region boundary, and reading a block in
                 // another region is not allowed. Off Folia this is always owned, so the
@@ -67,6 +70,28 @@ public final class BlockUtils {
         }
 
         return blocks;
+    }
+
+    private static List<int[]> buildVeinOffsets() {
+        Set<List<Integer>> offsets = new LinkedHashSet<>();
+
+        for (BlockFace face : BlockFace.values()) {
+            offsets.add(List.of(face.getModX(), face.getModY(), face.getModZ()));
+        }
+
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                for (int z = -1; z <= 1; z++) {
+                    offsets.add(List.of(x, y, z));
+                }
+            }
+        }
+
+        offsets.remove(List.of(0, 0, 0));
+
+        return offsets.stream()
+                .map(offset -> new int[]{offset.get(0), offset.get(1), offset.get(2)})
+                .toList();
     }
 
     /**
