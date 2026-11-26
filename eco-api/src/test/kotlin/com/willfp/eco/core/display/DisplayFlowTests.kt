@@ -29,10 +29,20 @@ class DisplayFlowTests {
         var writes = 0
         var restores = 0
         var recorded: IntArray? = null
+        var reads = 0
+        var mayHaveDisplayLines = false
 
         override fun mirror(itemStack: ItemStack): ItemStack = itemStack
 
         override fun getLoreState(itemStack: ItemStack): Any = lore
+
+        @Suppress("UNCHECKED_CAST")
+        override fun getLore(loreState: Any?): List<Component> {
+            reads++
+            return loreState as List<Component>
+        }
+
+        override fun mayHaveDisplayLines(itemStack: ItemStack): Boolean = mayHaveDisplayLines
 
         override fun setLore(itemStack: ItemStack, lore: List<Component>) {
             writes++
@@ -53,11 +63,20 @@ class DisplayFlowTests {
     private val recorder = FakeRecorder()
     private val modules = mutableListOf<DisplayModule>()
     private val foreign = Component.text("Foreign")
+    private var fastReads = 0
+    private var fastWrites: List<List<Component>> = emptyList()
 
     @BeforeEach
     fun mockEco() {
         val fastItemStack = mockk<FastItemStack>(relaxed = true)
-        every { fastItemStack.loreComponents } answers { recorder.lore }
+        every { fastItemStack.loreComponents } answers {
+            fastReads++
+            recorder.lore
+        }
+        every { fastItemStack.setLoreComponents(any()) } answers {
+            fastWrites = fastWrites + listOf(firstArg<List<Component>>())
+            recorder.lore = firstArg()
+        }
 
         val eco = mockk<Eco>(relaxed = true)
         every { eco.displayRecorder } returns recorder
@@ -167,6 +186,119 @@ class DisplayFlowTests {
         Display.display(item())
 
         assertTrue(recorder.restores > 0)
+    }
+
+    @Test
+    fun `lore is not read when no module touches it`() {
+        register(object : DisplayModule(plugin, 1) {
+            override fun display(context: DisplayContext) {
+                context.lore.append(emptyList<Component>())
+            }
+        })
+
+        Display.display(item())
+
+        assertEquals(0, recorder.reads)
+        assertEquals(0, fastReads)
+        assertEquals(0, recorder.writes)
+        assertSame(foreign, recorder.lore[0])
+        assertArrayEquals(intArrayOf(), recorder.recorded)
+    }
+
+    @Test
+    fun `lore is read once when a module adds lines`() {
+        register(object : DisplayModule(plugin, 1) {
+            override fun display(context: DisplayContext) {
+                context.lore.append(listOf(Component.text("Eco")))
+            }
+        })
+
+        Display.display(item())
+
+        assertEquals(1, recorder.reads)
+        assertEquals(0, fastReads)
+        assertEquals(1, recorder.writes)
+        assertSame(foreign, recorder.lore[0])
+        assertTrue(Display.isDisplayLine(recorder.lore[1]))
+        assertEquals(2, recorder.lore.size)
+    }
+
+    @Test
+    fun `a module asking for foreign lines sees the lore on the item`() {
+        var seen: List<Component>? = null
+
+        register(object : DisplayModule(plugin, 1) {
+            override fun display(context: DisplayContext) {
+                seen = context.lore.foreignLines
+            }
+        })
+
+        Display.display(item())
+
+        assertEquals(listOf(foreign), seen)
+        assertEquals(0, recorder.writes)
+    }
+
+    @Test
+    fun `a legacy module is matched against the lore from before it ran`() {
+        val replaced = Component.text("Replaced")
+
+        register(object : DisplayModule(plugin, 1) {
+            override fun display(itemStack: ItemStack, vararg args: Any) {
+                recorder.setLore(itemStack, listOf(replaced, Component.text().append(foreign).build()))
+            }
+        })
+
+        Display.display(item())
+
+        assertEquals(2, recorder.lore.size)
+        assertSame(replaced, recorder.lore[0])
+        assertSame(foreign, recorder.lore[1])
+    }
+
+    @Test
+    fun `a module writing lore straight to the item does not win over the built lore`() {
+        register(object : DisplayModule(plugin, 1) {
+            override fun display(context: DisplayContext) {
+                recorder.lore = listOf(Component.text("Written directly"))
+            }
+        })
+
+        Display.display(item())
+
+        assertEquals(listOf(foreign), recorder.lore)
+    }
+
+    @Test
+    fun `revert reads no lore on an item without display lines`() {
+        recorder.mayHaveDisplayLines = false
+
+        Display.revert(item())
+
+        assertEquals(0, fastReads)
+        assertEquals(emptyList<List<Component>>(), fastWrites)
+        assertEquals(listOf(foreign), recorder.lore)
+    }
+
+    @Test
+    fun `revert strips display lines and nothing else`() {
+        recorder.mayHaveDisplayLines = true
+        recorder.lore = listOf(foreign, Component.text("Eco").insertion("eco:display"))
+
+        Display.revert(item())
+
+        assertEquals(1, fastReads)
+        assertEquals(listOf(listOf(foreign)), fastWrites)
+    }
+
+    @Test
+    fun `revert leaves lore alone when the check was only a maybe`() {
+        recorder.mayHaveDisplayLines = true
+
+        Display.revert(item())
+
+        assertEquals(emptyList<List<Component>>(), fastWrites)
+        assertEquals(listOf(foreign), recorder.lore)
     }
 
     @Test

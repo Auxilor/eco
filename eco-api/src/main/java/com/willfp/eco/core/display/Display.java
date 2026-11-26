@@ -155,7 +155,7 @@ public final class Display {
                 itemStack,
                 Eco.get().getEcoPlugin().getConfigYml().getBool("display-legacy-prefix-marker")
         );
-        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(sync.getLore());
+        DisplayLoreBuilder lore = DisplayLoreBuilder.ofForeign(sync::getLore);
 
         for (DisplayModule module : modules) {
             Object[] varargs = moduleVarArgs.get(module);
@@ -250,7 +250,8 @@ public final class Display {
      */
     @SuppressWarnings("removal")
     public static ItemStack revert(@NotNull final ItemStack itemStack) {
-        boolean restored = Eco.get().getDisplayRecorder().restore(itemStack);
+        DisplayRecorder recorder = Eco.get().getDisplayRecorder();
+        boolean restored = recorder.restore(itemStack);
         FastItemStack fast = FastItemStack.wrap(itemStack);
         PersistentDataContainer container = fast.getPersistentDataContainer();
 
@@ -267,7 +268,7 @@ public final class Display {
             if (!lore.isEmpty() && lore.removeIf(line -> line.startsWith(DisplayLines.LEGACY_PREFIX))) {
                 fast.setLore(lore);
             }
-        } else {
+        } else if (recorder.mayHaveDisplayLines(itemStack)) {
             List<Component> lore = new ArrayList<>(fast.getLoreComponents());
             if (!lore.isEmpty() && lore.removeIf(DisplayLines::isDisplayLine)) {
                 fast.setLoreComponents(lore);
@@ -394,6 +395,9 @@ public final class Display {
      * Keeps the lore on an item in step with the lore display modules build, so that it is only
      * written when modules changed it, and only read back when a legacy module changed it. Lore
      * that legacy modules changed is rendered once, after all modules.
+     * <p>
+     * Converting lore to components is slow, so it is left until something asks for the lines.
+     * Most items pass through display without any module looking at their lore.
      */
     private static final class LoreSync {
         /**
@@ -412,8 +416,10 @@ public final class Display {
         private final boolean legacyPrefix;
 
         /**
-         * The lore last read from or written to the item.
+         * The lore last read from or written to the item, or null if the lore in
+         * {@link #loreState} has not been needed yet.
          */
+        @Nullable
         private List<Component> lore;
 
         /**
@@ -427,7 +433,7 @@ public final class Display {
         private boolean rendered = true;
 
         /**
-         * Create a lore sync, reading the lore on the item.
+         * Create a lore sync, noting the lore on the item without reading it.
          *
          * @param recorder     The display recorder.
          * @param itemStack    The item.
@@ -439,7 +445,6 @@ public final class Display {
             this.recorder = recorder;
             this.itemStack = itemStack;
             this.legacyPrefix = legacyPrefix;
-            this.lore = FastItemStack.wrap(itemStack).getLoreComponents();
             this.loreState = recorder.getLoreState(itemStack);
         }
 
@@ -450,6 +455,10 @@ public final class Display {
          */
         @NotNull
         private List<Component> getLore() {
+            if (this.lore == null) {
+                this.lore = this.recorder.getLore(this.loreState);
+            }
+
             return this.lore;
         }
 
@@ -502,7 +511,7 @@ public final class Display {
 
             List<Component> itemLore = FastItemStack.wrap(this.itemStack).getLoreComponents();
             DisplayLoreBuilder matched = new DisplayLoreBuilder(
-                    LegacyLoreMatcher.match(builder.getNodes(), this.lore, itemLore)
+                    LegacyLoreMatcher.match(builder.getNodes(), this.getLore(), itemLore)
             );
             this.lore = itemLore;
             this.loreState = this.recorder.getLoreState(this.itemStack);

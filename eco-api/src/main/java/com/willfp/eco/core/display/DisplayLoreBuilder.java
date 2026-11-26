@@ -6,19 +6,27 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The lore of an item as display modules build it.
  */
 final class DisplayLoreBuilder implements DisplayLore {
     /**
-     * The lines, in order.
+     * The lines, in order. Null until the unread lore is read, see {@link #nodes()}.
      */
-    private final List<LoreNode> nodes;
+    private List<LoreNode> nodes;
+
+    /**
+     * The lore no module has asked for yet, or null once it has become nodes.
+     */
+    @Nullable
+    private Supplier<List<Component>> unreadLore;
 
     /**
      * If the rendered lore matches the lore last read from or written to the item.
@@ -34,6 +42,10 @@ final class DisplayLoreBuilder implements DisplayLore {
         this.nodes = new ArrayList<>(nodes);
     }
 
+    private DisplayLoreBuilder(@NotNull final Supplier<List<Component>> unreadLore) {
+        this.unreadLore = unreadLore;
+    }
+
     /**
      * Create a builder from lore that no module has touched yet.
      *
@@ -41,15 +53,35 @@ final class DisplayLoreBuilder implements DisplayLore {
      * @return The builder.
      */
     static DisplayLoreBuilder ofForeign(@NotNull final List<Component> lore) {
-        DisplayLoreBuilder builder = new DisplayLoreBuilder(lore.stream().map(LoreNode::foreign).toList());
+        return ofForeign(() -> lore);
+    }
+
+    /**
+     * Create a builder from lore that no module has touched yet, reading it only if a module asks
+     * for the lines or changes them.
+     *
+     * @param lore The lore.
+     * @return The builder.
+     */
+    static DisplayLoreBuilder ofForeign(@NotNull final Supplier<List<Component>> lore) {
+        DisplayLoreBuilder builder = new DisplayLoreBuilder(lore);
         builder.markSynced();
         return builder;
+    }
+
+    private List<LoreNode> nodes() {
+        if (this.unreadLore != null) {
+            this.nodes = new ArrayList<>(this.unreadLore.get().stream().map(LoreNode::foreign).toList());
+            this.unreadLore = null;
+        }
+
+        return this.nodes;
     }
 
     @Override
     public void prepend(@NotNull final List<? extends ComponentLike> lines) {
         if (!lines.isEmpty()) {
-            this.nodes.addAll(0, toNodes(lines));
+            this.nodes().addAll(0, toNodes(lines));
             this.synced = false;
         }
     }
@@ -57,7 +89,7 @@ final class DisplayLoreBuilder implements DisplayLore {
     @Override
     public void append(@NotNull final List<? extends ComponentLike> lines) {
         if (!lines.isEmpty()) {
-            this.nodes.addAll(toNodes(lines));
+            this.nodes().addAll(toNodes(lines));
             this.synced = false;
         }
     }
@@ -81,7 +113,7 @@ final class DisplayLoreBuilder implements DisplayLore {
     @Override
     @NotNull
     public List<Component> getForeignLines() {
-        return this.nodes.stream()
+        return this.nodes().stream()
                 .filter(node -> !node.display())
                 .map(LoreNode::component)
                 .toList();
@@ -94,7 +126,7 @@ final class DisplayLoreBuilder implements DisplayLore {
      */
     @NotNull
     List<LoreNode> getNodes() {
-        return List.copyOf(this.nodes);
+        return List.copyOf(this.nodes());
     }
 
     /**
@@ -105,7 +137,7 @@ final class DisplayLoreBuilder implements DisplayLore {
      */
     @NotNull
     List<Component> render(final boolean legacyPrefix) {
-        return this.nodes.stream()
+        return this.nodes().stream()
                 .map(node -> node.display() ? DisplayLines.mark(node.component(), legacyPrefix) : node.component())
                 .toList();
     }
@@ -116,6 +148,10 @@ final class DisplayLoreBuilder implements DisplayLore {
      * @return The indices.
      */
     int[] getDisplayIndices() {
+        if (this.unreadLore != null) {
+            return new int[0];
+        }
+
         return IntStream.range(0, this.nodes.size())
                 .filter(index -> this.nodes.get(index).display())
                 .toArray();
@@ -129,6 +165,10 @@ final class DisplayLoreBuilder implements DisplayLore {
      * without the prefix belong to other plugins and are never removed.
      */
     void removeStaleLines() {
+        if (this.unreadLore != null) {
+            return;
+        }
+
         if (this.nodes.stream().noneMatch(LoreNode::display)
                 || this.nodes.stream().noneMatch(node -> !node.display() && DisplayLines.mayStartWithLegacyPrefix(node.component()))) {
             return;
